@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="" />
+<title>Test_4_Edit_static_page</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Test_4_Edit_static_page</td></tr>
+</thead><tbody>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=static pages</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>list static pages</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>title</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>permalink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Welcome to the ICA-AtoM DemoCD</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=About</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>permalink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='content-two-column']/div/table/tbody/tr[2]/td[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Welcome to the ICA-AtoM DemoCD</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>content</td>
+	<td>Hello ICA-AtoM users!</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@name='commit' and @value='save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Hello ICA-AtoM users!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=edit this page</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>content</td>
+	<td>You are currently using the DemoCD version of ICA-AtoM which runs on a temporary Ubuntu Linux operating system, straight from your computer's CD drive.&nbsp;&nbsp;&nbsp;Please note that you are able to test all of ICA-AtoM's features using this DemoCD but any data changes you make will be lost once you end this DemoCD session. You can download a fully operational version of the software from the &lt;a href=&quot;http://ica-atom.org&quot;&gt;ica-atom.org&lt;/a&gt; website.&nbsp;&nbsp;Press the &lt;i&gt;browse&lt;/i&gt; button on the right to view some sample data or check the DemoCD Quickstart Guide for additional instructions.&nbsp;&nbsp;&nbsp;If you did not receive a Quickstart Guide with your DemoCD there is an &lt;a href=&quot;http://www.ica-atom.org/docs/index.php?title=Demo_CD&quot;&gt;online version&lt;/a&gt; available. The full &lt;a href=&quot;http://ica-atom.org/docs&quot;&gt;ICA-AtoM user manual&lt;/a&gt; is also available online. </td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>title</td>
+	<td>Hi there!</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@name='commit' and @value='save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Hi there!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=static pages</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Hi there!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Hi there!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>title</td>
+	<td>Welcome to the ICA-AtoM DemoCD</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@name='commit' and @value='save']</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

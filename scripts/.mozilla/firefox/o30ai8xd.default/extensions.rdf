@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:NS1="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="rdf:#$wKPHC3"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:ubufox@ubuntu.com"
+                   NS1:installLocation="app-global"
+                   NS1:version="0.5"
+                   NS1:iconURL="chrome://ubufox/content/ubuntulogo32.png"
+                   NS1:name="Ubuntu Firefox Modifications"
+                   NS1:description="Ubuntu configuration defaults and apt support for firefox extensions/plugins."
+                   NS1:creator="Canonical Ltd.">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>Alexander Sack &lt;asac@ubuntu.com&gt;</NS1:contributor>
+    <NS1:contributor>Sasa Bodiroza &lt;jazzva@gmail.com&gt;</NS1:contributor>
+    <NS1:contributor>Daniel Abramov &lt;ex@vingrad.ru&gt;</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$xKPHC3"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{972ce4c6-7e08-4474-a285-3208198ce6fd}"
+                   NS1:installLocation="gre-global"
+                   NS1:version="2.0"
+                   NS1:internalName="classic/1.0"
+                   NS1:locked="true"
+                   NS1:appManaged="true"
+                   NS1:name="Firefox (default)"
+                   NS1:description="The default theme"
+                   NS1:creator="Gerich and Horlander"
+                   NS1:contributor="Mozilla Contributors">
+    <NS1:type NC:parseType="Integer">4</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$AKPHC3"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$xKPHC3"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:firebug@software.joehewitt.com"
+                   NS1:installLocation="app-global"
+                   NS1:version="1.2.0a21X"
+                   NS1:updateURL="http://getfirebug.com/releases/firebug/1.2/update.rdf"
+                   NS1:iconURL="chrome://firebug/content/firebug.png"
+                   NS1:updateKey="ToBeReplaceByAKeyFromMcCoy"
+                   NS1:name="Firebug"
+                   NS1:description="Web Development Evolved."
+                   NS1:creator="Joe Hewitt"
+                   NS1:homepageURL="http://www.getfirebug.com/">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>1.1 and 1.2 enhancements: John J. Barton (IBM Almaden)</NS1:contributor>
+    <NS1:contributor>Jan Odvarko (All Peers Inc.)</NS1:contributor>
+    <NS1:contributor>Max Stepanov (Aptana Inc.)</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$yKPHC3"/>
+    <NS1:targetApplication RDF:resource="rdf:#$zKPHC3"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{a6fd85ed-e919-4a43-a5af-8da18bda539f}"
+                   NS1:installLocation="app-global"
+                   NS1:version="1.0b2"
+                   NS1:optionsURL="chrome://selenium-ide/content/optionsDialog.xul"
+                   NS1:name="Selenium IDE"
+                   NS1:description="Record, edit and play Selenium tests"
+                   NS1:creator="Shinya Kasatani"
+                   NS1:homepageURL="http://www.openqa.org/selenium-ide/">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$wKPHC3"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$AKPHC3"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="3.0b5"
+                   NS1:maxVersion="3.0b5" />
+  <RDF:Seq RDF:about="urn:mozilla:item:root">
+    <RDF:li RDF:resource="urn:mozilla:item:{972ce4c6-7e08-4474-a285-3208198ce6fd}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:firebug@software.joehewitt.com"/>
+    <RDF:li RDF:resource="urn:mozilla:item:ubufox@ubuntu.com"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{a6fd85ed-e919-4a43-a5af-8da18bda539f}"/>
+  </RDF:Seq>
+  <RDF:Description RDF:about="rdf:#$zKPHC3"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="0.5"
+                   NS1:maxVersion="1.0.*" />
+  <RDF:Description RDF:about="rdf:#$yKPHC3"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0.*" />
+</RDF:RDF>

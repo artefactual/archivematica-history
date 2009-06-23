@@ -1,0 +1,795 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+<HEAD>
+  <META name="generator" content=
+  "HTML Tidy for Windows (vers 14 June 2007), see www.w3.org">
+  <META http-equiv="Content-Type" content=
+  "text/html; charset=us-ascii">
+  <META name="Generator" content="Microsoft Word 11 (filtered)">
+
+  <TITLE>Metadata Extraction Tool, Tutorial</TITLE>
+  <STYLE type="text/css">
+<!--
+  p, li, div {
+    margin:0cm;
+    margin-bottom: 0.5em;
+    font-size: medium;
+    font-family:"Times New Roman";
+  }
+  
+  h1 {
+    font-size: x-large;
+    font-family:"Times New Roman";
+    font-style:italic;
+    font-weight: bold;
+    margin-top: 2em; 
+    margin-bottom: 0.5em;
+  }
+  
+  h2 {
+    margin-top: 1em;
+	margin-bottom: 0.5em;
+    margin-left:0cm;
+    page-break-after:avoid;
+    font-size: large;
+    font-family:Arial;
+    font-style:italic;
+  }
+ 
+
+  p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+        {margin-top:0cm;
+        margin-right:0cm;
+        margin-bottom: 0.5em;
+        margin-left:9.0pt;
+        font-size: medium;
+        font-family:"Times New Roman";}
+  p.MsoBodyText2, li.MsoBodyText2, div.MsoBodyText2
+        {margin-top:0cm;
+        margin-right:32.55pt;
+        margin-left:0cm;
+        margin-bottom:.0001pt;
+        text-align:justify;
+        font-size: medium;
+        font-family:"Times New Roman";}
+  p.MsoBodyText3, li.MsoBodyText3, div.MsoBodyText3
+        {margin:0cm;
+        margin-bottom:.0001pt;
+        font-size: medium;
+        font-family:"Times New Roman";}
+  a:link, span.MsoHyperlink
+        {color:blue;
+        text-decoration:underline;}
+  a:visited, span.MsoHyperlinkFollowed
+        {color:#606420;
+        text-decoration:underline;}
+  span.b1
+        {font-family:"Courier New";
+        color:red;
+        font-weight:bold;
+        text-decoration:none none;}
+  span.d1
+        {color:blue;}
+  span.m1
+        {color:blue;}
+  span.t1
+        {color:#990000;}
+  span.tx1
+        {font-weight:bold;}
+  @page Section1
+        {size:595.3pt 841.9pt;
+        margin:42.55pt 90.0pt 72.0pt 90.0pt;
+        border:solid windowtext 1.0pt;
+        padding:24.0pt 24.0pt 24.0pt 24.0pt;}
+  div.Section1
+        {page:Section1;}
+  /* List Definitions */
+  ol
+        {margin-bottom:0cm;}
+  ul
+        {margin-bottom:0cm;}
+
+body {
+  background-colorx: white;
+  margin: 10px;
+  }
+  :link { color: blue }
+  :visited { color: #606420 }
+  span.c20 {font-size: medium}
+  span.c19 {font-family:Symbol}
+  span.c18 {font-size: medium;font-family:Arial}
+  .instr { font-family: "Courier New"; font-size: normal; font-weight: bold; }
+  ol.c13 {margin-top:0cm}
+  span.c11 {font-size:16.0pt;font-family:"Times New Roman"}
+  br.c10 {page-break-before:always}
+  span.c9 {color:windowtext;display:none;text-decoration:none}
+  span.c8 {color:windowtext;display:none; text-decoration:none}
+  span.c7 {color:windowtext;display:none;text-decoration: none}
+  span.c6 {color:windowtext; display:none;text-decoration:none}
+  span.c5 {color:windowtext;font-weight:normal;text-decoration:none}
+  span.c3 {font-size: medium}
+  div.c1 {text-align: center}
+  .mainHeading { text-align: center; font-size: x-large; font-weight: bold; }
+  
+  -->
+  </STYLE>
+</HEAD>
+
+<BODY>
+  <DIV class="Section1">
+    <P></P>
+
+    <DIV class="c1">
+      <IMG width="554" height="155" src=
+      "help_files/image001.jpg">
+    </DIV>
+
+    <div class="mainHeading">Metadata Extraction Tool</div>
+    <div class="mainHeading">User Guide</div>
+    <div class="mainHeading">Version: 3.1.</div>
+
+
+    <P class="MsoToc1"> </P>
+
+    <P> </P>
+
+    <P>
+    </P><SPAN class='c11'><BR clear="all"
+    class='c10'></SPAN>
+
+    <H1 class='c12'><A name="_Toc157924814"></A> What is the Metadata Extraction Tool</H1>
+
+    <P> </P>
+
+    <P>The metadata extraction
+    tool is a tool built by Sytec Resources for the <I>National
+    Library of New Zealand Te Puna M&#257;tauranga o Aotearoa</I>
+    <I>(National Library)</I> to process digital master files and
+    extract metadata about those files.  Metadata is descriptive
+    information about an object - not the object itself.  In this
+    case metadata information about a Image would be things like
+    size, colours, resolution, etc&hellip; There are two output
+    formats that an output metadata file can take</P>
+
+    <P> </P>
+
+    <OL class='c13' start="1" type="1">
+      <LI>Native form.  A XML
+      (Extensible Mark-up Language) file based on a DTD (Document
+      Type Definition) that reflects all information available from
+      the digital master.</LI>
+
+      <LI>National Library
+      Preservation Metadata Data Dictionary - nlnz-presmet.xsd. 
+      This is the primary format.</LI>
+    </OL>
+
+    <P> </P>
+
+    <P>For more information
+    about any of these file formats see the Solution Architecture
+    or Software Architecture documents for this extraction tool. 
+    Note: The POC output types of demta.dtd and pmeta.dtd have been
+    deprecated, they are not supported in the production
+    tool.</P>
+
+    <P> </P>
+
+    <H1 class='c12'><A name="_Toc157924815"></A> Starting the Tool</H1>
+
+    <P> </P>
+
+    <P class="MsoHeader">To start the tool,
+    firstly make sure that JAVA_HOME is set correctly.</P>
+
+    <P> </P>
+
+    <P>Then change into the
+    Metadata Harvester's directory and run
+    <B><I>metadata.bat</I></B> (Windows) or
+    <B><I>metadata.sh</I></B> (Linux/Unix).</P><SPAN class='c11'><BR clear="all" class='c10'></SPAN>
+
+    <H1 class='c12'><A name="_Toc157924816"></A> Graphical User Interface</H1>
+
+    <P> </P>
+
+    <P>The software will
+    be driven by a graphical user interface and a command line
+    interface.  Both will access the underlying extraction tool in
+    an identical way (using the same configuration).  The graphical
+    user interface will allow the user to select files for
+    processing and process them according to a predefined
+    configuration.  The predefined configurations (see:
+    configuration) will specify the output format and the output
+    directory that will hold the extracted files.  The user
+    interface is designed to be fully compliant with current Win32
+    best practice for GUIs.  One of the features of the User
+    interface is the capability to alert the user to errors that
+    may have occurred during the extraction process.</P>
+
+    <P> </P>
+
+    <P>Key controls of the
+    software:</P>
+
+    <P> </P>
+
+    <P><IMG border="0" width=
+    "38" height="30" src="help_files/image003.gif">   <B>Create New
+    Object</B></P>
+
+    <P>Allows the user to
+    create a new object.  An object is a logical grouping of files
+    and is the first step to creating a list of files to be
+    harvested for metadata.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="30" height="30" src="help_files/image004.gif"><B>     Add
+    Files/Folders to Object</B></P>
+
+    <P>When the user pressed
+    the "add" button a file dialog will appear to allow the user to
+    select as many files as they wish to process.  The files that
+    have been selected will appear in the files list in the middle
+    of the main screen.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="30" height="30" src="help_files/image005.gif">  <B>  
+    Remove Files/Folders from Object</B></P>
+
+    <P>The remove button will
+    remove all selected files from the files table.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="30" height="30" src="help_files/image006.gif"> <B>  
+    Remove All Files/Folders and Objects from the list</B></P>
+
+    <P>Removes all
+    files/folders and object from the file list.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="30" height="30" src="help_files/image007.gif">  <B>  Edit
+    the properties of an Object</B></P>
+
+    <P>The 'Object' folders
+    (the highest level folders) have properties associated with
+    them.  The properties editor allows the user to change
+    these.</P>
+
+    <P> </P>
+
+    <P>The dialog you will be
+    presented with looks like the image shown here.  You can edit
+    any property of an object using this dialog.  You may notice
+    some fields go 'red' while typing - this is because the field
+    validation has determined that the field contents are
+    incorrect.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="32" height="30" src="help_files/image009.gif">   <B>
+    Process all of the Objects in the list</B></P>
+
+    <P> </P>
+
+    <P>The process button will
+    process all files currently in the files list.  The results of
+    the processing will be output to the directory specified by the
+    currently selected Config.  Any errors will be highlighted with
+    a red exclamation point icon appearing as the icon of the
+    erroneous file.  Files that were processed without any errors
+    are given a 'tick' icon and files that are yet to be processed
+    are given plain icon.  The Graphical User Interface is
+    multithreaded - this means that processing can take place and
+    the UI does not appear to "lock-up".</P>
+
+    <P></P>
+
+    <P><IMG border="0"
+    width="30" height="30" src="help_files/image010.gif"> <B>    View
+    Usage/Error Log</B></P>
+
+    <P>Pops up a log window
+    for usage and error reporting.  Logs can be filtered in this
+    window so that only log messages with the log 'level' desired
+    are shown.  Old logs may be viewed in this window also with the
+    'open' log file function.</P>
+
+    <P> </P>
+
+    <P> <IMG border="0"
+    width="21" height="25" src="help_files/image011.jpg"> <B>     View
+    Scheduling Window</B></P>
+
+    <P>Pops up the scheduling
+    window to allow scheduling to be queued up to happen at a later
+    time.  If processing is scheduled the application will suspend
+    operation until the allotted time.</P>
+
+    <P> </P>
+
+    <P> <IMG border="0"
+    width="24" height="30" src="help_files/image012.jpg"><B>     View
+    Administration window</B></P>
+
+    <P>Pops up the
+    administration window.  This is a series of tabs which allow
+    the user/administrator to configure all aspects of the
+    harvesting application.  See administration section
+    below.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="30" height="30" src="help_files/image013.gif">  <B>   View
+    simple help</B></P>
+
+    <P>Pops up a window that
+    displays help, Help is not context sensitive and does not go
+    into substantial detail.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="30" height="30" src="help_files/image014.gif">  <B>   Exit
+    the Application</B></P>
+
+    <P>Exits the application,
+    saving the configuration if you have changed it (users,
+    destination directories, etc&hellip;)</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="296" height="24" src="help_files/image015.jpg">   <B>      
+    Extraction Configuration</B></P>
+
+    <P>The available
+    configurations are listed in a drop down box labelled "Config"
+    these configurations can each have a different output
+    directory, which is indicated immediately to the right of the
+    drop down box.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="295" height="25" src="help_files/image016.jpg">    <B>    
+    Destination Folder</B></P>
+
+    <P>The destination folder
+    that output files will be sent.  You can change this setting by
+    clicking on the folder icon to the right of the text field. 
+    The field itself is not editable.</P>
+
+    <P> </P>
+
+    <P><IMG border="0" width=
+    "283" height="25" src="help_files/image017.jpg"><B>            
+                Profile Used</B></P>
+
+    <P>The profile is the set
+    of parameters to use. Profiles are created and maintained using
+    the administration tool and include settings for which adapters
+    are current and log directory, etc.</P>
+
+    <P>  </P>
+
+    <P>When creating an Object
+    or Adding files to an existing object you will be prompted with
+    a dialog to select files or folders.  You can select any number
+    of files or folders and add them all to the current object. 
+    The recurse option will force the file adding process to
+    traverse all subfolders within a selection.  The flatten option
+    will force the adding process to ignore folder boundaries while
+    recursing and add all the files found at an equal level within
+    the current object.</P>
+
+    <P> </P><SPAN class='c11'><BR clear="all" class='c10'></SPAN>
+
+    <H1 class='c12'><A name="_Toc157924817"></A> Logging</H1>
+
+    <P> </P>
+
+    <P>The logging window
+    displays the current log.  You can elect to clear the current
+    log and start it fresh, or filter the current log to only show
+    a certain level of logging.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="15" height="15" src="help_files/image020.gif" alt=
+    "*"><b>Critical</B></P>
+
+    <P class="MsoBodyTextIndent">            The
+    application has had a critical failure, harvesting could not be
+    considered unstable and the application should be
+    restarted.</P>
+
+    <P><IMG border="0"
+    width="15" height="15" src=
+    "help_files/image020.gif"><B>Error</B></P>
+
+    <P class="MsoBodyTextIndent">            An error is
+    an application problem or a problem while harvesting metadata
+    that is isolated to the object being harvested.  Chances are
+    other objects were unaffected and harvesting can
+    continue.</P>
+
+    <P><IMG border="0"
+    width="15" height="15" src="help_files/image021.gif" alt=
+    "*"><B>Debug</B></P>
+
+    <P class="MsoBodyTextIndent">            Information
+    about program behaviour, there should be very little of these
+    messages in the production system.</P>
+
+    <P><IMG border="0"
+    width="15" height="15" src="help_files/image021.gif" alt=
+    "*"><B>Information</B></P>
+
+    <P class="MsoBodyTextIndent">            Superfluous
+    information about application behaviour.  This includes things
+    like usage reporting.</P>
+
+    <P><IMG border="0"
+    width="15" height="15" src="help_files/image022.gif" alt=
+    "*"><B>Program Workings</B></P>
+
+    <P class="MsoBodyTextIndent">            Similar to
+    debug, these messages are closely related to system functions -
+    they may not be very meaningful to most operators, there should
+    be very little of these messages in the production
+    system.</P>
+
+    <P> </P>
+
+    <P> </P><SPAN class='c11'><BR clear="all" class='c10'></SPAN>
+
+    <H1 class='c12'><A name="_Toc157924818"></A> Administration</H1>
+
+    <P> </P>
+
+    <P>The administration
+    screens allow configuration of all aspects of the harvesting
+    environment.  Administration screens are divided into a number
+    of tabs.  While changes are generally saved when
+    <B><SPAN class='c16'>OK</SPAN></B> is selected, some administration tasks are implemented
+    immediately due to their complex nature.  This is explained on
+    each tab description below:</P>
+
+    <P> </P>
+
+    <H2><A name="_Toc157924819"><IMG border="0"
+    width="16" height="16" src="help_files/image023.gif">
+    General</A></H2>
+
+    <P> </P>
+
+    <P>This screen allows the
+    user to manage profiles and change settings of the currently
+    selected profile.  A profile is used to easily store some
+    settings to be used again in the future without having to
+    recreate everything for a future harvesting run.  Configuration
+    elements within the profile are the input directory, the log
+    directory and which adapters are currently enabled for
+    harvesting.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="24" height="24" src="help_files/image025.gif"> <B>Create
+    Profile</B> - Simply type the new profile name in the combo box
+    and select <SPAN class="instr">Create</SPAN> and a new profile of
+    that name will be created with the normal default
+    values.</P>
+
+    <P class="MsoToc4"> </P>
+
+    <P><IMG border="0"
+    width="24" height="24" src="help_files/image026.gif"> <B>Delete
+    Profile</B> - Select the profile to delete and click the
+    <SPAN class='instr'>Delete</SPAN> button.  It is not possible to delete the last
+    (default) profile.</P>
+
+    <P><IMG border="0"
+    width="20" height="20" src="help_files/image027.gif"> <B>Input
+    Directory</B> - Select the directory used as the standard
+    directory to look for files to harvest. It is therefore the
+    starting point of any file selection.</P>
+
+    <P> </P>
+
+    <P><IMG border="0"
+    width="20" height="20" src="help_files/image027.gif"> <B>Log
+    Directory</B> - Select the directory used for log
+    creation.</P><SPAN class='c18'><BR clear=
+    "all" class='c10'></SPAN>
+
+    <H2><A name="_Toc157924820"><IMG border="0"
+    width="16" height="16" src="help_files/image028.gif">
+    Adapters</A></H2>
+
+    <P>This screen allows the
+    user to manage which adapters are turned on for the currently
+    selected profile.  The user can simply select or deselect
+    adapters and any future harvest will only use the currently
+    selected set.</P>
+
+    <P> </P>
+
+    <P><B>NOTE:</B>
+    The default adapter cannot be
+    deselected.</P>
+
+    <P> </P>
+
+    <P>   </P>
+
+    <H2><A name="_Toc157924821"><IMG border="0"
+    width="24" height="24" src="help_files/image030.gif"> Admin
+    Tabs</A></H2>
+
+    <P> </P>
+
+    <P>Some of the less common
+    administration tabs are grouped under an Admin tab.  An
+    incorrect configuration can cause the Metadata Harvester to
+    fail. </P>
+
+    <P> </P>
+
+    <H2><A name="_Toc157924822"><IMG border="0"
+    width="16" height="16" src="help_files/image031.gif">
+    Defaults</A></H2>
+
+    <P> </P>
+
+    <P>The defaults tab allows
+    the selection of certain defaults:</P>
+
+    <table>
+      <tr>
+        <td>User</td>
+        <td>Used as the
+    normal user of the application - ie will be selected when the
+    application is launched.</td>
+      </tr>
+      <tr>
+        <td>Input Directory</td>
+        <td>The default input
+    directory used within a profile when a profile is
+    created</td>
+      </tr>
+      <tr>
+        <td>Log Directory</td>
+        <td>The default log
+    directory used within a profile when a profile is
+    created</td>
+      </tr>
+    </table>
+
+    <P> </P>
+
+    <P>  </P>
+
+    <H2><A name="_Toc157924823"><IMG border="0"
+    width="18" height="18" src="help_files/image033.gif">
+    Users</A></H2>
+
+    <P> </P>
+
+    <P class="MsoHeader">The users tab allows
+    the administrator to maintain users.  Users can added or
+    deleted from the system.</P>
+
+    <P class="MsoHeader"> </P>
+
+    <P><IMG border="0" width=
+    "20" height="20" src="help_files/image035.gif"> <B>Add User</B>
+    - Click the <SPAN class="instr">Add</SPAN> button and enter the
+    name of the new user.  All users must have unique
+    names.</P>
+
+    <P> </P>
+
+    <P><IMG border="0" width=
+    "20" height="20" src="help_files/image036.gif"> <B>Delete
+    User</B> - Clicking the <SPAN class="instr">Del</SPAN> button will result in
+    the currently selected user to be deleted.</P>
+
+    <P class="MsoToc4"> </P>
+
+    <P class="MsoHeader">  </P>
+
+    <H2><A name="_Toc157924824"><IMG border="0"
+    width="16" height="16" src="help_files/image037.gif">
+    Mappings</A></H2>
+
+    <P> </P>
+
+    <P class="MsoHeader">The mappings tab allows
+    the administrator to maintain mappings between Adapter outputs
+    and end-result meta-data schemas.  Mappings can be added or
+    deleted from the system using this tab.</P>
+
+    <P class="MsoHeader"> </P>
+
+    <P><IMG border="0" width=
+    "20" height="20" src="help_files/image039.gif"> <B>Add
+    Mapping</B> - Select mapping configuration elements from the
+    three drop-down boxes and then click the <SPAN class="instr">Add</SPAN> button. 
+    Any installed adapter will have an entry in the first drop-down
+    box.  All mapping <B>xslt</B> files in the application XML
+    directory will be in the second drop-down box.  All
+    configuration schemas will be populated in the third drop-down
+    box (see <SPAN class="instr">Configurations</SPAN> below)</P>
+
+    <P> </P>
+
+    <P><IMG border="0" width=
+    "19" height="19" src="help_files/image040.gif"> <B>Delete
+    Mapping</B> - Clicking the <SPAN class="instr">Delete</SPAN> button will result
+    in the currently selected mapping to be deleted.</P>
+
+    <P class="MsoToc4"> </P>
+
+    <P>  </P>
+
+    <H2><A name="_Toc157924825"><IMG border="0"
+    width="16" height="16" src="help_files/image041.gif">
+    Configuration</A></H2>
+
+    <P> </P>
+
+    <P class="MsoHeader">The configuration tab
+    allows the administrator to maintain configurations.  A
+    configuration encapsulates a particular output schema type and
+    is normally tightly bound to a certain Harvester instance.
+    </P>
+
+    <P class="MsoHeader"> </P>
+
+    <P><B><IMG border="0"
+    width="20" height="20" src="help_files/image043.gif"> Add
+    Configuration</B> -Click
+    <SPAN class="instr">Add</SPAN> and enter the name, harvester class, and output
+    directory for the new configuration.</P>
+
+    <P> </P>
+
+    <P><IMG border="0" width=
+    "20" height="20" src="help_files/image044.gif"> <B>Delete
+    Configuration</B> - Clicking the <SPAN 
+    class='instr'>Delete</SPAN> button will
+    result in the currently selected configuration to be
+    deleted.</P>
+
+    <P class="MsoToc4"> </P><SPAN class='c18'><BR clear="all" class='c10'></SPAN>
+
+    <H2><A name="_Toc157924826"><IMG border="0"
+    width="24" height="24" src="help_files/image045.gif"> Adapter
+    Maintenance</A></H2>
+
+    <P> </P>
+
+    <P class="MsoHeader">The adapter maintenance
+    tab allows the administrator to install new adapters and remove
+    old adapters. </P>
+
+    <P class="MsoHeader"> </P>
+
+    <P><B><IMG border="0"
+    width="20" height="20" src="help_files/image047.gif"> Add
+    Adapter</B> - Click
+    <SPAN class="instr">Add</SPAN> and select the jar file that contains the adapter and
+    other associated files (xml schemas and xslt mappings, etc). 
+    After clicking <SPAN class=
+    'instr'>install</SPAN> the operation
+    immediately happens and the adapter is now reflected in all
+    other admin screens (adapters, mappings, etc). </P>
+
+    <P> </P>
+
+    <P><B>NOTE:</B>Choosing cancel from
+    the admin screen itself will not result in the adapter not
+    being installed!</P>
+
+    <P> </P>
+
+    <P><IMG border="0" width=
+    "20" height="20" src="help_files/image048.gif"> <B>Delete
+    Adapter</B> - Clicking the <SPAN class=
+    'instr'>Delete</SPAN> button will result
+    in the currently selected adapter to be uninstalled from the
+    system.  A backup of the original jar installation file will
+    still be found in the system jar directory.</P>
+
+    <P class="MsoToc4"> </P>
+
+    <P class="MsoHeader"> </P>
+
+    <P> </P>
+
+    <H1 class='c12'><A name="_Toc157924827"></A> Help</H1>
+
+    <P>Help is very simple. 
+    It is sufficient for basic usage but is neither comprehensive
+    or context sensitive. </P>
+
+    <P> </P><SPAN class=
+    'c11'><BR clear="all" class='c10'></SPAN>
+
+    <H1 class='c12'><A name="_Toc157924828"></A><A name=
+    "_Toc43792650"></A> Command Line</H1>
+
+    <P> </P>
+
+    <P>The command line is
+    executed by running the extract.bat file (under Windows) or
+    extract.sh (under Linx/Unix) that can be found in the
+    installation directory.</P>
+
+    <P> </P>
+
+    <P class="instr"><I>extract.bat</I> &lt;arg1&gt; &lt;arg2&gt; &lt;arg3&gt;
+    ...</P>
+
+    <P class="instr"><I>extract.sh</I> &lt;arg1&gt; &lt;arg2&gt; &lt;arg3&gt;
+    ...</P>
+
+    <P> </P>
+
+    <P> </P>
+
+    <P>see the java runtime
+    environment documentation for particular arguments that can be
+    made to allocate additional memory and use different JIT
+    compilers.</P>
+
+    <P> </P>
+
+    <P>The command line
+    interface is able to operate in several modes:</P>
+
+    <P> </P>
+
+    <P>1.<SPAN class='c20'>     </SPAN>
+    Help:  The help mode produces a screen of
+    information describing the modes and parameters that are
+    available.</P>
+
+    <P>2.<SPAN class='c20'>     </SPAN>
+    Self-discovery:  Self-discovery can produce
+    a screen that can inform the user about the configurations
+    installed in the extraction tool as well as information on
+    available xslt maps and the types of adapters
+    installed.</P>
+
+    <P>3.<SPAN class='c20'>     </SPAN>
+    Extraction:  Extraction is the mode that
+    actually causes the tool to parse files and output results. 
+    You must tell the extraction tool which configuration to use
+    (by name, use quotes for names with spaces) and the directory
+    to find the digital master files to be processed.</P>
+
+    <P> </P>
+
+    <P>The command line
+    interface is not multithreaded, meaning it will block until
+    finished.</P>
+
+    <P> </P>
+  </DIV>
+</BODY>
+</HTML>
