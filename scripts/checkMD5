@@ -7,6 +7,8 @@
 # NAME:		Check md5
 # DESCRIPTION:	Checks the md5 hash checksum of files listed in a .md5-file
 
+CheckName=`zenity --entry --title="Check md5" --entry-text "integrity.report" --text="name checksum report"`
+
 # Language settings
 
                Passed="OK"
@@ -46,6 +48,8 @@ NumberFailed=`cat /tmp/checktext.txt | fgrep -o -e "$Failed" | wc -l`
    fi
 echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-" >> /tmp/checktext.txt
 echo "$StatusMessage" >> /tmp/checktext.txt
+
+cp /tmp/checktext.txt $CheckName
 
 zenity --text-info --title "$File" --width=640 --height=480 --filename=/tmp/checktext.txt
 
