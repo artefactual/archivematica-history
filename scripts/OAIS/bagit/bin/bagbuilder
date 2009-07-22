@@ -1,0 +1,9 @@
+#!/bin/bash
+
+NOW=$(date +"%F")
+BAGNAME=`echo $1 | sed 's/ /_/g'`
+echo $2
+
+/usr/local/OAIS/bagit/bin/bag create ~/mybags/$BAGNAME-$NOW "$2"
+
+
