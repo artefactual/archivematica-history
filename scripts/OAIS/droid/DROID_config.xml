@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConfigFile xmlns="http://www.nationalarchives.gov.uk/pronom/ConfigFile">
+  <SigFile>DROID_SignatureFile_V16.xml</SigFile>
+  <SigFileVersion>20</SigFileVersion>
+  <SigFileURL>http://www.nationalarchives.gov.uk/pronom/service.asmx</SigFileURL>
+  <ProxyHost />
+  <ProxyPort />
+  <PuidResolution>http://www.nationalarchives.gov.uk/pronom/</PuidResolution>
+  <BrowserPath>/usr/bin/firefox</BrowserPath>
+  <SigFileCheckFreq>30</SigFileCheckFreq>
+  <DateLastDownload></DateLastDownload>
+  <ProfileDatabasePath>defaultDB</ProfileDatabasePath>
+  <ProfileReportPath>reports</ProfileReportPath>
+  <ReportTemporaryDir>tempDir</ReportTemporaryDir>
+  <StartMode>Droid</StartMode>
+  <PauseFrequency>1</PauseFrequency>
+  <PauseLength>150</PauseLength>
+</ConfigFile>
+
