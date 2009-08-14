@@ -1,0 +1,41 @@
+Making check in src
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/src' wordt binnengegaan
+make[1]: Er is niets te doen voor 'check'.
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/src' wordt verlaten
+Making check in magic
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/magic' wordt binnengegaan
+make[1]: Er is niets te doen voor 'check'.
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/magic' wordt verlaten
+Making check in tests
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/tests' wordt binnengegaan
+make.exe  test.exe
+make[2]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/tests' wordt binnengegaan
+/bin/sh ../libtool --tag=CC   --mode=link gcc  -Wall -Wpointer-arith -O3 -fms-extensions -mms-bitfields -fno-exceptions -fomit-frame-pointer -march=i386 -ffast-math  -Wstrict-prototypes    -Wl,-s -Wl,--force-exe-suffix -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc -Wl,--allow-multiple-definition -Wl,--enable-stdcall-fixup -LD:/Progra~1/GnuWin32/lib    -o test.exe test-test.o ../src/libmagic.la -lz  -Wl,-s -lregex -LD:/Progra~1/GnuWin32/lib  -lintl -lwsock32 -lole32 -luuid -lmsvcp60  
+gcc -Wall -Wpointer-arith -O3 -fms-extensions -mms-bitfields -fno-exceptions -fomit-frame-pointer -march=i386 -ffast-math -Wstrict-prototypes -Wl,-s -Wl,--force-exe-suffix -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc -Wl,--allow-multiple-definition -Wl,--enable-stdcall-fixup -o .libs/test.exe test-test.o -Wl,-s  -LD:/Progra~1/GnuWin32/lib ../src/.libs/libmagic.dll.a -lz -lregex -lintl -lwsock32 -lole32 -luuid -lmsvcp60 -Lc:/progra~1/file/lib
+creating test.exe
+.libs/lt-test.exe.c: In function `main':
+.libs/lt-test.exe.c:79: warning: passing arg 2 of `execv' from incompatible pointer type
+make[2]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/tests' wordt verlaten
+make.exe  check-local
+make[2]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/tests' wordt binnengegaan
+MAGIC=../magic/magic ./test
+../magic/magic, 1030: Warning: offset `!:strength +1' invalid
+../magic/magic, 1030: Warning: type `!:strength +1' invalid
+../magic/magic, 4561: Warning: offset `!:strength *2' invalid
+../magic/magic, 4561: Warning: type `!:strength *2' invalid
+ERROR loading with NULL file: File 2293244.4071320 supports only 4074816 version magic files. `../magic/magic' is version 0
+make[2]: [check-local] Fout 11 (genegeerd)
+for i in ../../file-4.25-src/tests/*.testfile; do MAGIC=../../file-4.25-src/tests/${i%%.testfile}.magic ../tests/test ../../file-4.25-src/tests/$i ../../file-4.25-src/tests/${i%%.testfile}.result; done
+../../file-4.25-src/tests/../../file-4.25-src/tests/gedcom.testfile: GEDCOM genealogy data version 5.5
+make[2]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/tests' wordt verlaten
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/tests' wordt verlaten
+Making check in doc
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/doc' wordt binnengegaan
+make[1]: Er is niets te doen voor 'check'.
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/doc' wordt verlaten
+Making check in python
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/python' wordt binnengegaan
+make[1]: Er is niets te doen voor 'check'.
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25/python' wordt verlaten
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25' wordt binnengegaan
+make[1]: Map '/cygdrive/j/Sysutils/file/4.25/file-4.25' wordt verlaten
