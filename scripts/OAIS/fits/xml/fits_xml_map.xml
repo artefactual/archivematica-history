@@ -1,0 +1,59 @@
+<fitsXmlMap>
+
+<!-- METADATA EXTRACTION TOOLS -->
+
+	<!-- Mapping Example -->
+	<!-- 
+	<tool name="jhove" version="1.2">
+		<mime type="all">
+			<element name="identity">
+				<attribute name="format">
+					<map from="JPEG JFIF" to="JPEG File Interchange Format"/>
+					<map from="GIF GIF 87a" to="Graphics Interchange Format"/>
+					<map from="TIFF" to="Tagged Image File Format"/>	
+					<map from="TIFF Baseline RGB (Class R)" to="Tagged Image File Format"/>		
+					<map from="TIFF TIFF/IT-BP/P2 (ISO 12639:1998)" to="Tagged Image File Format"/>
+					<map from="XML" to="Extensible Markup Language"/>			
+					<map from="HTML" to="Hypertext Markup Language"/>
+					<map from="WAVE PCMWAVEFORMAT" to="Waveform Audio"/>
+					<map from="WAVE WAVEFORMATEX" to="Waveform Audio"/>
+					<map from="JPEG 2000 JP2" to="JPEG 2000"/>					
+				</attribute>	
+				<attribute name="mimetype">
+					<map from="text/plain; charset=US-ASCII" to="text/plain"/>
+					<map from="text/plain; charset=UTF-8" to="text/plain"/>					
+				</attribute>
+			</element>
+		</mime>
+		<mime type="image/jpeg,image/jp2,image/tiff">
+			<element name="compression">
+				<map from="0" to="Non"/>
+				<map from="1" to="Uncompressed"/>
+				<map from="2" to="CCITT 1D"/>
+				<map from="3" to="T5/Group 3 Fax"/>
+				<map from="4" to="T6/Group 4 Fax"/>
+				<map from="5" to="LZW"/>
+				<map from="6" to="JPEG"/>
+				<map from="32773" to="PackBits"/>
+				<map from="34712" to="JPEG 2000"/>
+			</element>	
+			<element name="samplingFrequencyUnit">
+				<map from="1" to="None"/>
+				<map from="2" to="inches"/>
+				<map from="3" to="cm"/>
+			</element>	
+			<element name="colorSpace">
+				<map from="0" to="WhiteIsZero"/>
+				<map from="1" to="BlackIsZero"/>
+				<map from="2" to="RGB"/>
+				<map from="3" to="Palette"/>
+				<map from="4" to="Transparency"/>
+				<map from="5" to="CMYK"/>
+				<map from="6" to="YCbCr"/>
+				<map from="8" to="CIELab"/>
+			</element>
+		</mime>
+	</tool>
+	 -->
+</fitsXmlMap>
+
