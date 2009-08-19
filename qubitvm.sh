@@ -1,6 +1,5 @@
 #!/bin/bash
 #Prepare Ubuntu
-chroot $1 tar xvzf /usr/local/scripts.tar.gz
 chroot $1 chmod -R 777 /etc/apt/sources.list
 chroot $1 cp /etc/apt/sources.list /etc/apt/sources.list.bak
 chroot $1 sed -i -e "s/# deb/deb/g" /etc/apt/sources.list
@@ -9,7 +8,7 @@ chroot $1 sed -i -e "s/127.0.0.1:9999/archive.ubuntu.com/g" /etc/apt/sources.lis
 chroot $1 echo 'deb http://archive.ubuntu.com/ubuntu/ jaunty-proposed main restricted universe multiverse' >> /etc/apt/sources.list
 chroot $1 aptitude update
 chroot $1 aptitude -q -Ry build-dep -d openjdk-6-jre jacksum openoffice.org-java-common
-chroot $1 aptitude -t jaunty-proposed install openjdk-6-jre jacksum openoffice.org-java-common
+#chroot $1 aptitude -t jaunty-proposed install openjdk-6-jre jacksum openoffice.org-java-common
 
 #Install OAIS
 chroot $1 mkdir /var/archivalstorage
