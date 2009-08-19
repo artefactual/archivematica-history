@@ -11,7 +11,7 @@ do
   mv "$FILE" ~/quarantine/$shortcleanfile
 
   #accession of file
-  /usr/local/OAIS/fits/access.sh  ~/quarantine/$shortcleanfile
+  /usr/local/OAIS/fits/access.sh  ~/quarantine/$shortcleanfile 
 
   #lock file for quarentine 
   chmod 000 ~/quarantine/$shortcleanfile

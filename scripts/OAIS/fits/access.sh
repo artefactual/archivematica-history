@@ -1,6 +1,9 @@
 #!/bin/bash
-NOW=$(date +"%s")
+NOW=`date +%s`
 SIP=`echo $@ | sed 's/ /_/g'`
+shortfile=`basename "$1"`
 
-cd /usr/local/OAIS/fits/ ; ./fits.sh -i $1 -o /home/demo/accession/$NOW.log
+
+mkdir /home/demo/accessionrecords/$NOW
+cd /usr/local/OAIS/fits/ ; ./fits.sh -i $1 -o /home/demo/accessionrecords/$NOW/$shortfile.log
 
