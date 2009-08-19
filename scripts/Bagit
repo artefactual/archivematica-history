@@ -1,0 +1,14 @@
+#!/bin/bash
+
+NOW=$(date +"%F")
+BAGNAME=`echo $@ | sed 's/ /_/g'`
+
+
+
+#BAG NAME SELECTION
+CheckName=`zenity --entry --title="Bagit!" --entry-text "$BAGNAME-$NOW" --text="Enter the name of your bag"`
+if [ "$?" == 1 ] ; then exit ; fi
+
+# BAG THE FILE
+(/usr/local/OAIS/bagit/bin/bag create ~/mybags/"$CheckName" "$@") 2>&1 | zenity --progress --title "Bagit!" --text "Baging $CheckName" --pulsate --auto-close
+
