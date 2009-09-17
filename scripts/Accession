@@ -1,0 +1,24 @@
+#!/bin/bash
+NOW=`date +%s`
+SIP=`echo $@ | sed 's/ /_/g'`
+
+
+
+#BAG NAME SELECTION
+#CheckName=`zenity --entry --title="Accesssion" --entry-text "$SIP-$NOW" --text="Please label the accession log"`
+if [ "$?" == 1 ] ; then exit ; fi
+
+# FITS THE FILE
+#Sanatize newly added user files
+file_clean=${@//[ ()&\'\,]/_}
+shortcleanfile=`basename "$file_clean"`
+	
+#move file to quarantine
+mv "$1" ~/quarantine/$shortcleanfile 
+
+
+(/usr/local/OAIS/fits/access.sh  ~/quarantine/$shortcleanfile) 2>&1 | zenity --progress --title "Accession in progress" --text "Processing record $shortcleanfile.log" --pulsate --auto-close
+
+#lock file for quarentine 
+chmod 000 ~/quarantine/$shortcleanfile
+

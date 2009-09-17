@@ -1,6 +1,6 @@
 #!/bin/bash
 
-find /home/demo/ingest/. -type f -print| while read FILE
+find /home/demo/processing -type f -print| while read FILE
 do
   #Sanatize newly added user files
   file_clean=${FILE//[ ()&\'\,]/_}
