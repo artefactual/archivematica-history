@@ -9,6 +9,12 @@ echo "deb http://archive.ubuntu.com/ubuntu/ jaunty-proposed main restricted univ
 chroot $1 aptitude update
 chroot $1 aptitude -q -Ry build-dep -d openjdk-6-jre jacksum openoffice.org-java-common
 chroot $1 aptitude -t jaunty-proposed install openjdk-6-jre jacksum openoffice.org-java-common
+chroot $1 rm -rf /home/demo/Documents
+chroot $1 rm -rf /home/demo/Music
+chroot $1 rm -rf /home/demo/Pictures
+chroot $1 rm -rf /home/demo/Public
+chroot $1 rm -rf /home/demo/Templates
+chroot $1 rm -rf /home/demo/Videos
 
 #Install OAIS
 chroot $1 mkdir /var/archivalstorage
@@ -30,10 +36,11 @@ chroot $1 ln -s /var/ingest/ /home/demo
 chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 chroot $1 mkdir /home/demo/accessionrecords
-chroot $1 mkdir /home/demo/mybags
+chroot $1 mkdir /home/demo/myAIPs
 chroot $1 mkdir /home/demo/quarantine
 chroot $1 mkdir /home/demo/qubitdrop
 chroot $1 mkdir /home/demo/processing
+chroot $1 mkdir /home/demo/autoAIP
 
 cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
