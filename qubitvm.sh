@@ -41,6 +41,7 @@ chroot $1 mkdir /home/demo/quarantine
 chroot $1 mkdir /home/demo/qubitdrop
 chroot $1 mkdir /home/demo/processing
 chroot $1 mkdir /home/demo/autoAIP
+chroot $1 mkdir /home/demo/normalizeMe
 
 cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
