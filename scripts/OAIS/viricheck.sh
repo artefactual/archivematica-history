@@ -6,5 +6,5 @@ do
   chmod 700 $FILE
   clamscan  $FILE >> ~/virus.log
   echo "\n" >> ~/virus.log
-  mv $FILE ~/autoAIP
+  mv $FILE ~/normalizeME
 done
