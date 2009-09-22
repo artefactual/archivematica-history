@@ -2,13 +2,14 @@
 
 NOW=$(date +"%F")
 BAGNAME=`echo $@ | sed 's/ /_/g'`
+BAGBASE=`basename $BAGNAME`
 
 
 
 #BAG NAME SELECTION
-CheckName=`zenity --entry --title="Bagit!" --entry-text "$BAGNAME-$NOW" --text="Enter the name of your bag"`
+CheckName=`zenity --entry --title="Bagit!" --entry-text "$BAGBASE-$NOW.zip" --text="Enter the name of your bag"`
 if [ "$?" == 1 ] ; then exit ; fi
 
 # BAG THE FILE
-(/usr/local/OAIS/bagit/bin/bag create ~/mybags/"$CheckName" "$@") 2>&1 | zenity --progress --title "Bagit!" --text "Baging $CheckName" --pulsate --auto-close
+(/usr/local/OAIS/bagit/bin/bag create ~/myAIPs/"$CheckName" "$@" --writer zip) 2>&1 | zenity --progress --title "Bagit!" --text "Baging $CheckName" --pulsate --auto-close
 
