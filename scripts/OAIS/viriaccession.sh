@@ -2,8 +2,8 @@
 
 find ~/quarantine/* -amin +4 -print| while read FILE
 do
-	chmod 700 $FILE
 	if [ -d "$FILE" ]; then
+		chmod 700 $FILE		
 		NOW=`date +%s`
 		mkdir /home/demo/accessionrecords/$NOW		
 		mkdir -p /tmp/accession-$NOW
@@ -18,6 +18,7 @@ do
 		mv /tmp/accession-$NOW/* ~/normalizeMe/.
 		rm -rf /tmp/accession-$NOW
 	elif [ -f "$FILE" ]; then
+		chmod 700 $FILE		
 		NOW=`date +%s`
 		mkdir /home/demo/accessionrecords/$NOW
 		/usr/local/OAIS/fits/access.sh $FILE $NOW
