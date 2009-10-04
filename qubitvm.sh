@@ -19,12 +19,14 @@ chroot $1 rm -rf /home/demo/Videos
 #Install OAIS
 chroot $1 mkdir /var/archivalstorage
 chroot $1 mkdir /var/ingest
+chroot $1 mkdir /var/sharedfolder
 #SWITCH TO SVN EXPORT
-svn export scripts/sampledata $1/var/sharedfolder
+svn export scripts/sampledata $1/home/demo/testFiles
 svn export scripts/OAIS $1/usr/local/OAIS
 svn export scripts/.mozilla $1/home/demo/.mozilla
-chroot $1 mkdir -p /home/demo/.config/fsniper
+chroot $1 mkdir -p /home/demo/.config/fsniper/scripts
 cp -rf scripts/fsniper.config $1/home/demo/.config/fsniper/config
+cp -rf scripts/snipemod.sh $1/home/demo/.config/fsniper/scripts/snipemod.sh
 #REMOVED fsniper autostart for now
 cp -rf scripts/fsniper.init.d $1/etc/init.d/fsniper
 chroot $1 chmod +x /etc/init.d/fsniper
@@ -39,9 +41,10 @@ chroot $1 mkdir /home/demo/accessionrecords
 chroot $1 mkdir /home/demo/myAIPs
 chroot $1 mkdir /home/demo/quarantine
 chroot $1 mkdir /home/demo/qubitdrop
-chroot $1 mkdir /home/demo/processing
 chroot $1 mkdir /home/demo/autoAIP
 chroot $1 mkdir /home/demo/normalizeMe
+chroot $1 mkdir /home/demo/possiblevirii
+
 
 cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
