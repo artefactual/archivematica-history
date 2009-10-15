@@ -1,6 +1,6 @@
 #!/bin/bash
 
-find ~/quarantine/* -amin +2 -perm 0000 -print| while read FILE
+find ~/quarantine/* -maxdepth 0 -amin +2 -perm 0000 -print| while read FILE
 do
 	if [ -d "$FILE" ]; then
 		chmod 700 $FILE		
