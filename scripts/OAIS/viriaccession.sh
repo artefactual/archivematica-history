@@ -1,6 +1,6 @@
 #!/bin/bash
 
-find ~/quarantine/* -amin +2 -maxdepth 0 -perm 0000 -print| while read FILE
+find ~/quarantine/* -amin +2 -perm 0000 -print| while read FILE
 do
 	if [ -d "$FILE" ]; then
 		chmod 700 $FILE		
@@ -8,7 +8,7 @@ do
 		mkdir /home/demo/accessionrecords/$NOW		
 		mkdir -p /tmp/accession-$NOW
 		mv $FILE /tmp/accession-$NOW
-		chmod 700 /tmp/accession-$NOW/$FILE
+		chmod 700 /tmp/accession-$NOW/*
 		find /tmp/accession-$NOW/ -type f -print| while read NEWDOCS
 			do
 				chmod 700 $NEWDOCS
