@@ -18,8 +18,6 @@ chroot $1 rm -rf /home/demo/Videos
 
 #Install OAIS
 chroot $1 mkdir /var/archivalstorage
-chroot $1 mkdir /var/ingest
-chroot $1 mkdir /var/sharedfolder
 #SWITCH TO SVN EXPORT
 svn export scripts/sampledata $1/home/demo/testFiles
 svn export scripts/OAIS $1/usr/local/OAIS
@@ -33,8 +31,6 @@ chroot $1 chmod +x /etc/init.d/fsniper
 chroot $1 update-rc.d fsniper defaults
 chroot $1 chmod -R 770 /home/demo/.mozilla
 chroot $1 ln -s /var/archivalstorage/ /home/demo
-chroot $1 ln -s /var/sharedfolder/ /home/demo
-chroot $1 ln -s /var/ingest/ /home/demo
 chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 chroot $1 mkdir /home/demo/accessionrecords
@@ -44,6 +40,8 @@ chroot $1 mkdir /home/demo/qubitdrop
 chroot $1 mkdir /home/demo/autoAIP
 chroot $1 mkdir /home/demo/normalizeMe
 chroot $1 mkdir /home/demo/possiblevirii
+chroot $1 mkdir /home/demo/ingestdrop
+chroot $1 mkdir /home/demo/ingestdropbackup
 
 
 cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
@@ -66,8 +64,6 @@ chroot $1 mkdir /home/demo/xena-output
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
 chroot $1 chown -R demo:demo /usr/local/OAIS
-chroot $1 chown -R demo:demo /var/ingest
-chroot $1 chown -R demo:demo /var/sharedfolder
 chroot $1 chown -R demo:demo /var/archivalstorage
 
 #Begin Qubit Configuration
