@@ -17,7 +17,7 @@ chroot $1 rm -rf /home/demo/Templates
 chroot $1 rm -rf /home/demo/Videos
 
 #Install OAIS
-chroot $1 mkdir /var/archivalstorage
+chroot $1 mkdir /var/storeAIP
 #SWITCH TO SVN EXPORT
 svn export scripts/sampledata $1/home/demo/testFiles
 svn export scripts/OAIS $1/usr/local/OAIS
@@ -28,24 +28,24 @@ cp -rf scripts/snipemod.sh $1/usr/local/bin/snipemod.sh
 cp -rf scripts/incron.allow $1/etc/incron.allow
 cp -rf scripts/incron.tab $1/etc/incron.tab
 chroot $1 chmod -R 770 /home/demo/.mozilla
-chroot $1 ln -s /var/archivalstorage/ /home/demo
+chroot $1 ln -s /var/storeAIP/ /home/demo
 chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
-chroot $1 mkdir /home/demo/accessionrecords
-chroot $1 mkdir /home/demo/myAIPs
+chroot $1 mkdir /home/demo/accessionreports
+chroot $1 mkdir /home/demo/recieveAIP
 chroot $1 mkdir /home/demo/quarantine
-chroot $1 mkdir /home/demo/qubitdrop
-chroot $1 mkdir /home/demo/autoAIP
-chroot $1 mkdir /home/demo/normalizeMe
+chroot $1 mkdir /home/demo/generateDIP
+chroot $1 mkdir /home/demo/generateAIP
+chroot $1 mkdir /home/demo/prepareAIP
 chroot $1 mkdir /home/demo/possiblevirii
-chroot $1 mkdir /home/demo/ingestdrop
-chroot $1 mkdir /home/demo/ingestdropbackup
+chroot $1 mkdir /home/demo/recieveSIP
+chroot $1 mkdir /home/demo/recieveSIPbackup
 
 
 cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/Bagit $1/home/demo/.gnome2/nautilus-scripts
-cp -p scripts/Accession $1/home/demo/.gnome2/nautilus-scripts
+#cp -p scripts/Accession $1/home/demo/.gnome2/nautilus-scripts
 cp scripts/Qubit.png $1/usr/share/icons
 cp scripts/ica-atom.desktop $1/home/demo/Desktop
 cp scripts/droid.desktop $1/home/demo/Desktop
@@ -62,7 +62,7 @@ chroot $1 mkdir /home/demo/xena-output
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
 chroot $1 chown -R demo:demo /usr/local/OAIS
-chroot $1 chown -R demo:demo /var/archivalstorage
+chroot $1 chown -R demo:demo /var/storeAIP
 
 #Begin Qubit Configuration
 chroot $1 /etc/init.d/mysql start
