@@ -22,13 +22,11 @@ chroot $1 mkdir /var/archivalstorage
 svn export scripts/sampledata $1/home/demo/testFiles
 svn export scripts/OAIS $1/usr/local/OAIS
 svn export scripts/.mozilla $1/home/demo/.mozilla
-chroot $1 mkdir -p /home/demo/.config/fsniper/scripts
-cp -rf scripts/fsniper.config $1/home/demo/.config/fsniper/config
-cp -rf scripts/snipemod.sh $1/home/demo/.config/fsniper/scripts/snipemod.sh
-#REMOVED fsniper autostart for now
-cp -rf scripts/fsniper.init.d $1/etc/init.d/fsniper
-chroot $1 chmod +x /etc/init.d/fsniper
-chroot $1 update-rc.d fsniper defaults
+cp -rf scripts/cron.tab $1/etc/cron.tab
+chroot $1 crontab -u demo /etc/cron.tab
+cp -rf scripts/snipemod.sh $1/usr/local/bin/snipemod.sh
+cp -rf scripts/incron.allow $1/etc/incron.allow
+cp -rf scripts/incron.tab $1/etc/incron.tab
 chroot $1 chmod -R 770 /home/demo/.mozilla
 chroot $1 ln -s /var/archivalstorage/ /home/demo
 chroot $1 mkdir -p /home/demo/Desktop
