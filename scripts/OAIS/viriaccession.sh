@@ -5,27 +5,27 @@ do
 	if [ -d "$FILE" ]; then
 		chmod 700 $FILE		
 		NOW=`date +%s`
-		mkdir /home/demo/accessionrecords/$NOW		
+		mkdir /home/demo/accessionreports/$NOW		
 		mkdir -p /tmp/accession-$NOW
 		mv $FILE /tmp/accession-$NOW
 		chmod 700 /tmp/accession-$NOW/*
 		find /tmp/accession-$NOW/ -type f -print| while read NEWDOCS
 			do
 				chmod 700 $NEWDOCS
-				clamscan --move=/home/demo/possiblevirii/  $NEWDOCS >> ~/accessionrecords/$NOW/virus.log
+				clamscan --move=/home/demo/possiblevirii/  $NEWDOCS >> ~/accessionreports/$NOW/virus.log
 				/usr/local/OAIS/fits/folderaccess.sh  $NEWDOCS $NOW 
-				echo "Acession of $NEWDOCS completed successfully" >> ~/accessionrecords/accession.log
+				echo "Acession of $NEWDOCS completed successfully" >> ~/accessionreports/accession.log
 			done		
-		mv /tmp/accession-$NOW/* ~/normalizeMe/.
+		mv /tmp/accession-$NOW/* ~/prepareAIP/.
 		rm -rf /tmp/accession-$NOW
 	elif [ -f "$FILE" ]; then
 		chmod 700 $FILE		
 		NOW=`date +%s`
-		mkdir /home/demo/accessionrecords/$NOW
-		clamscan --move=/home/demo/possiblevirii/  $FILE >> ~/accessionrecords/$NOW/virus.log		
+		mkdir /home/demo/accessionreports/$NOW
+		clamscan --move=/home/demo/possiblevirii/  $FILE >> ~/accessionreports/$NOW/virus.log		
 		/usr/local/OAIS/fits/access.sh $FILE $NOW		
-		mv $FILE ~/normalizeMe/.
-		echo "Acession of $FILE completed successfully" >> ~/accessionrecords/accession.log
+		mv $FILE ~/prepareAIP/.
+		echo "Acession of $FILE completed successfully" >> ~/accessionreports/accession.log
 	else
 		echo "$FILE is not a file or directory"
 	fi

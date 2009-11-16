@@ -4,6 +4,6 @@ NOW=$(date +"%F")
 BAGNAME=`echo $1 | sed 's/ /_/g'`
 echo $2
 
-/usr/local/OAIS/bagit/bin/bag create ~/myAIPs/$BAGNAME-$NOW.zip "$2" --writer zip
+/usr/local/OAIS/bagit/bin/bag create ~/recieveAIP/$BAGNAME-$NOW.zip "$2" --writer zip
 
 
