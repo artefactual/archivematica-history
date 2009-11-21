@@ -32,14 +32,14 @@ chroot $1 ln -s /var/storeAIP/ /home/demo
 chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 chroot $1 mkdir /home/demo/accessionreports
-chroot $1 mkdir /home/demo/recieveAIP
+chroot $1 mkdir /home/demo/receiveAIP
 chroot $1 mkdir /home/demo/quarantine
 chroot $1 mkdir /home/demo/generateDIP
 chroot $1 mkdir /home/demo/generateAIP
 chroot $1 mkdir /home/demo/prepareAIP
 chroot $1 mkdir /home/demo/possiblevirii
-chroot $1 mkdir /home/demo/recieveSIP
-chroot $1 mkdir /home/demo/recieveSIPbackup
+chroot $1 mkdir /home/demo/receiveSIP
+chroot $1 mkdir /home/demo/receiveSIPbackup
 
 
 cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
@@ -71,7 +71,7 @@ cp scripts/php.ini $1/etc/php5/cli
 cp scripts/php.ini $1/etc/php5/apache2
 cp scripts/apache.default $1/etc/apache2/sites-available/default
 chroot $1 apache2ctl restart
-svn checkout http://qubit-toolkit.googlecode.com/svn/tags/release-1.0.7  qubit-svn
+svn checkout http://qubit-toolkit.googlecode.com/svn/tags/release-1.0.8  qubit-svn
 svn export qubit-svn $1/var/www/qubit
 
 apache2ctl restart

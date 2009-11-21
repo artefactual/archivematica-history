@@ -1,3 +1,6 @@
 /home/demo/quarantine IN_MOVED_TO flock -x /var/lock/viriaccession.lock /usr/local/bin/snipemod.sh $@/$#
 /home/demo/generateAIP IN_MOVED_TO flock -x /var/lock/bagbuilder.lock /usr/local/OAIS/bagit/bin/bagbuilder $# $@/$#
 /home/demo/generateDIP IN_MOVED_TO flock -x /var/lock/qubitupload.lock /usr/local/OAIS/uploader.sh $# $@/$#
+/home/demo/quarantine IN_CLOSE_WRITE flock -x /var/lock/viriaccession.lock /usr/local/bin/snipemod.sh $@/$#
+/home/demo/generateAIP IN_CLOSE_WRITE flock -x /var/lock/bagbuilder.lock /usr/local/OAIS/bagit/bin/bagbuilder $# $@/$#
+/home/demo/generateDIP IN_CLOSE_WRITE flock -x /var/lock/qubitupload.lock /usr/local/OAIS/uploader.sh $# $@/$#
