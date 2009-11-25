@@ -7,5 +7,5 @@ curl --retry 20 -s -b /tmp/qubitcookies -d "parent=%2Findex.php%2Finformationobj
 cat /tmp/foobject |cut -d'/' -f11 > /tmp/foobject
 cat /tmp/foobject |cut -d';' -f2 > /tmp/foobject
 speakup=$(echo `cat /tmp/foobject` | sed 's/ //g')
-curl -b /tmp/qubitcookies -F file=@$2 http://localhost/index.php/digitalobject/create?informationObject=$speakup
+curl --retry 20 -b /tmp/qubitcookies -F file=@$2 http://localhost/index.php/digitalobject/create?informationObject=$speakup
 
