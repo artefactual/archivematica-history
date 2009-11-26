@@ -39,7 +39,7 @@ chroot $1 mkdir /home/demo/generateAIP
 chroot $1 mkdir /home/demo/prepareAIP
 chroot $1 mkdir /home/demo/possiblevirii
 chroot $1 mkdir /home/demo/receiveSIP
-chroot $1 mkdir /home/demo/receiveSIPbackup
+chroot $1 mkdir /home/demo/ingestSIP
 
 
 cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
