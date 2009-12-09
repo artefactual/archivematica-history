@@ -11,5 +11,5 @@ CheckName=`zenity --entry --title="Bagit!" --entry-text "$BAGBASE-$NOW.zip" --te
 if [ "$?" == 1 ] ; then exit ; fi
 
 # BAG THE FILE
-(/usr/local/OAIS/bagit/bin/bag create ~/receiveAIP/"$CheckName" "$@" --writer zip) 2>&1 | zenity --progress --title "Bagit!" --text "Baging $CheckName" --pulsate --auto-close
+(/opt/OAIS/bagit/bin/bag create ~/receiveAIP/"$CheckName" "$@" --writer zip) 2>&1 | zenity --progress --title "Bagit!" --text "Baging $CheckName" --pulsate --auto-close
 
