@@ -45,6 +45,7 @@ chroot $1 mkdir /home/demo/ingestSIP
 cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/Bagit $1/home/demo/.gnome2/nautilus-scripts
+cp -p scripts/RemoveWhiteSpace $1/home/demo/.gnome2/nautilus-scripts
 #cp -p scripts/Accession $1/home/demo/.gnome2/nautilus-scripts
 cp scripts/Qubit.png $1/usr/share/icons
 cp scripts/ica-atom.desktop $1/home/demo/Desktop
