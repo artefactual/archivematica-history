@@ -20,7 +20,7 @@ chroot $1 rm -rf /home/demo/Videos
 chroot $1 mkdir /var/storeAIP
 #SWITCH TO SVN EXPORT
 svn export scripts/sampledata $1/home/demo/testFiles
-svn export scripts/OAIS $1/usr/local/OAIS
+svn export scripts/OAIS $1/opt/OAIS
 svn export scripts/.mozilla $1/home/demo/.mozilla
 cp -rf scripts/cron.tab $1/etc/cron.tab
 chroot $1 crontab -u demo /etc/cron.tab
@@ -61,7 +61,7 @@ cp scripts/runview.sh $1/usr/bin
 chroot $1 mkdir /home/demo/xena-output
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
-chroot $1 chown -R demo:demo /usr/local/OAIS
+chroot $1 chown -R demo:demo /opt/OAIS
 chroot $1 chown -R demo:demo /var/storeAIP
 
 #Begin Qubit Configuration
