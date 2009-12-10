@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cd /usr/local/OAIS/xena/ ; ./viewer.sh
+cd /opt/OAIS/xena/ ; ./viewer.sh

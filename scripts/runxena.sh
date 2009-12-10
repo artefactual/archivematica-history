@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar /usr/local/OAIS/xena/xena.jar
+java -jar /opt/OAIS/xena/xena.jar

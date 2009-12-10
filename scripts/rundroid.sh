@@ -1,2 +1,2 @@
 #!/bin/bash
-cd /usr/local/OAIS/droid && java -jar droid.jar
+cd /opt/OAIS/droid && java -jar droid.jar
