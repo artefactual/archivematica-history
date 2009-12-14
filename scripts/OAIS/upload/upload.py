@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Author: Jack Bates
+# Author: Jesús García Crespo
+import optparse
+import os.path
+import re
+import sys
+import urllib
+import urllib2
+import urlparse
+
+from poster.encode import multipart_encode
+from poster.streaminghttp import register_openers
+
+URL_LOGIN='http://localhost/qubit/index.php/user/login'
+URL_CREATE_ISAD='http://localhost/qubit/index.php/create/isad'
+URL_CREATE_DO='http://localhost/qubit/index.php/digitalobject/create'
+ROOT_ID='/~jesus/qubit/index.php/1/show/isad'
+
+class LoginError(Exception):
+  response = None
+  message = None
+
+  def __init__(self, response):
+    self.response = response.read()
+    self.message = self.search_error()
+    Exception.__init__(self, self.message)
+
+  def search_error(self):
+    regex = re.compile(r'<div class=\"form_error\">(.*?)</div>', re.DOTALL)
+    robj = regex.search(self.response)
+
+    if robj is None:
+      return "Login was not successful"
+    else:
+      return robj.group(1).strip()
+
+class FileNotFound(Exception):
+  pass
+
+def get_id_from_url(url):
+  path = urlparse.urlparse(url).path
+  return re.search(r'\d+', path).group()
+
+def upload(opts):
+  # Build opener with HTTPCookieProcessor, which send cookies back automatically
+  opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+  urllib2.install_opener(opener)
+
+  # Login
+  data = { 'login[email]' : opts['email'], 'login[password]' : opts['password'] }
+  response = urllib2.urlopen(URL_LOGIN, urllib.urlencode(data))
+
+  # Check if login was successful
+  if 'user/login' in response.geturl():
+    raise LoginError(response)
+
+  # Check if file exists
+  if os.path.exists is not True:
+    raise FileNotFound('File \'%s\' not found' % opts['file'])
+
+  # Create information object
+  data = { 'title' : opts['title'], 'parent' : ROOT_ID }
+  response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
+
+  # Get information object id
+  id = get_id_from_url(response.geturl())
+
+  # Upload digital object, (poster: register_openers(), multipart_encode())
+  register_openers()
+  data, headers = multipart_encode({ 'file' : open(opts['file']), 'informationObject' : id })
+  request = urllib2.Request(URL_CREATE_DO, data, headers)
+  response = urllib2.urlopen(request)
+
+# Main program
+if __name__ == '__main__':
+  try:
+    # Parse command line
+    parser = optparse.OptionParser(usage='Usage: %prog [options]')
+
+    authentication = optparse.OptionGroup(parser, 'Authentication options')
+    authentication.add_option('-e', '--email', dest='email', metavar='EMAIL', help='account e-mail')
+    authentication.add_option('-p', '--password', dest='password', metavar='PASSWORD', help='account password')
+
+    parser.add_option_group(authentication)
+
+    digitalobject = optparse.OptionGroup(parser, 'Digital Object options')
+    digitalobject.add_option('-t', '--title', dest='title', metavar='TITLE', help='information object title')
+    digitalobject.add_option('-f', '--file', dest='file', metavar='FILE', help='file path')
+
+    parser.add_option_group(digitalobject)
+
+    (opts, args) = parser.parse_args()
+
+    # Check missing options, parse.error() raises sys.exit(2) (in UNIX, syntax problem)
+    if opts.email is None and opts.password is None and opts.title is None and opts.file is None:
+       parser.print_help()
+       sys.exit(2)
+    if opts.email is None or opts.password is None:
+      parser.error('You must provide login details (e-mail and password).')
+    if opts.title is None:
+      parser.error('You must provide a title.')
+    if opts.file is None:
+      parser.error('You must provide a file.')
+
+    # Call main function
+    upload({
+      'email' : opts.email,
+      'password' : opts.password,
+      'title' : opts.title,
+      'file' : opts.file,
+      })
+
+  except KeyboardInterrupt:
+    sys.exit('ERROR: Interrupted by user')
+
+  except Exception, err:
+    sys.exit('ERROR: %s' % err)
