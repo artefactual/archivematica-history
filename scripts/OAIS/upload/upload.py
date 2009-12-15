@@ -13,10 +13,10 @@ import urlparse
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
-URL_LOGIN='http://localhost/qubit/index.php/user/login'
-URL_CREATE_ISAD='http://localhost/qubit/index.php/create/isad'
-URL_CREATE_DO='http://localhost/qubit/index.php/digitalobject/create'
-ROOT_ID='/~jesus/qubit/index.php/1/show/isad'
+URL_LOGIN='http://localhost/index.php/user/login'
+URL_CREATE_ISAD='http://localhost/index.php/informationobject/isad/create'
+URL_CREATE_DO='http://localhost/index.php/digitalobject/create'
+ROOT_ID='/index.php/1/show/isad'
 
 class LoginError(Exception):
   response = None
@@ -57,7 +57,7 @@ def upload(opts):
     raise LoginError(response)
 
   # Check if file exists
-  if os.path.exists is not True:
+  if os.path.exists(opts['file']) is False:
     raise FileNotFound('File \'%s\' not found' % opts['file'])
 
   # Create information object
