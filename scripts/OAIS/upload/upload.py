@@ -79,6 +79,8 @@ if __name__ == '__main__':
     # Parse command line
     parser = optparse.OptionParser(usage='Usage: %prog [options]')
 
+    parser.add_option('-d', '--debug', dest='debug', action='store_true', help='debug mode')
+
     authentication = optparse.OptionGroup(parser, 'Authentication options')
     authentication.add_option('-e', '--email', dest='email', metavar='EMAIL', help='account e-mail')
     authentication.add_option('-p', '--password', dest='password', metavar='PASSWORD', help='account password')
@@ -114,6 +116,18 @@ if __name__ == '__main__':
 
   except KeyboardInterrupt:
     sys.exit('ERROR: Interrupted by user')
+
+  except urllib2.HTTPError, err:
+    if opts.debug:
+      print err.geturl()
+      print err.info()
+    sys.exit('ERROR: The server couldn\'t fulfill the request. Error code: %s.' % err.code) 
+
+  except urllib2.URLError, err:
+    if opts.debug:
+      print err.geturl()
+      print err.info()
+    sys.exit('ERROR: Failed trying to reach the server. Reason: %s.' % err.reason)
 
   except Exception, err:
     sys.exit('ERROR: %s' % err)
