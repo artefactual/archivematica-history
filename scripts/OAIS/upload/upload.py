@@ -13,10 +13,12 @@ import urlparse
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
+# Take into account that the url paths below changed in 1.1
+# This is compatible with 1.0.8.1
 URL_LOGIN='http://localhost/index.php/user/login'
 URL_CREATE_ISAD='http://localhost/index.php/informationobject/isad/create'
 URL_CREATE_DO='http://localhost/index.php/digitalobject/create'
-ROOT_ID='/index.php/1/show/isad'
+ROOT_ID='/index.php/informationobject/show/isad/1'
 
 class LoginError(Exception):
   response = None
