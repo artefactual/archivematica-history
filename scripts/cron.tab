@@ -1,1 +1,1 @@
-* * * * * flock -xn /var/lock/viriaccession.lock /opt/OAIS/viriaccession.sh
+* * * * * flock -xn /var/lock/viriaccession.lock /opt/archivematica/viriaccession.sh
