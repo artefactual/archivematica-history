@@ -21,6 +21,7 @@ chroot $1 mkdir /var/storeAIP
 #SWITCH TO SVN EXPORT
 svn export scripts/sampledata $1/home/demo/testFiles
 svn export scripts/OAIS $1/opt/OAIS
+svn export scripts/archivematica $/opt/archivematica
 svn export scripts/.mozilla $1/home/demo/.mozilla
 cp -rf scripts/cron.tab $1/etc/cron.tab
 chroot $1 crontab -u demo /etc/cron.tab
@@ -46,16 +47,15 @@ cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/Bagit $1/home/demo/.gnome2/nautilus-scripts
 cp -p scripts/RemoveWhiteSpace $1/home/demo/.gnome2/nautilus-scripts
-#cp -p scripts/Accession $1/home/demo/.gnome2/nautilus-scripts
 cp scripts/Qubit.png $1/usr/share/icons
-cp scripts/ica-atom.desktop $1/home/demo/Desktop
+cp scripts/qubit.desktop $1/home/demo/Desktop
 cp scripts/droid.desktop $1/home/demo/Desktop
 cp scripts/jhove.desktop $1/home/demo/Desktop
 cp scripts/NLNZ-metadata-extractor.desktop $1/home/demo/Desktop
 cp scripts/xena.desktop $1/home/demo/Desktop
 cp scripts/view.desktop $1/home/demo/Desktop
 cp scripts/rundroid.sh $1/usr/bin
-cp scripts/runica.sh $1/usr/bin
+cp scripts/runqubit.sh $1/usr/bin
 cp scripts/runjhove.sh $1/usr/bin
 cp scripts/runxena.sh $1/usr/bin
 cp scripts/runview.sh $1/usr/bin
