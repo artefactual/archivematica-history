@@ -25,7 +25,7 @@ do
 		clamscan --move=/home/demo/possiblevirii/  $FILE >> ~/accessionreports/virus.log		
 		/opt/OAIS/fits/access.sh $FILE $NOW		
 		mv $FILE ~/prepareAIP/.
-		echo "Acession of $FILE completed successfully" >> ~/accessionreports/accession.log
+		echo "Accession of $FILE completed successfully" >> ~/accessionreports/accession.log
 	else
 		echo "$FILE is not a file or directory"
 	fi
