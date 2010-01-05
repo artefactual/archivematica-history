@@ -19,15 +19,15 @@ chroot $1 rm -rf /home/demo/Videos
 #Install OAIS
 chroot $1 mkdir /var/storeAIP
 #SWITCH TO SVN EXPORT
-svn export scripts/sampledata $1/home/demo/testFiles
-svn export scripts/OAIS $1/opt/OAIS
-svn export scripts/archivematica $/opt/archivematica
-svn export scripts/.mozilla $1/home/demo/.mozilla
-cp -rf scripts/cron.tab $1/etc/cron.tab
+svn export includes/sampledata $1/home/demo/testFiles
+svn export includes/OAIS $1/opt/OAIS
+svn export includes/archivematica $/opt/archivematica
+svn export includes/.mozilla $1/home/demo/.mozilla
+cp -rf includes/cron.tab $1/etc/cron.tab
 chroot $1 crontab -u demo /etc/cron.tab
-cp -rf scripts/snipemod.sh $1/usr/local/bin/snipemod.sh
-cp -rf scripts/incron.allow $1/etc/incron.allow
-cp -rf scripts/incron.tab $1/etc/incron.tab
+cp -rf includes/snipemod.sh $1/usr/local/bin/snipemod.sh
+cp -rf includes/incron.allow $1/etc/incron.allow
+cp -rf includes/incron.tab $1/etc/incron.tab
 chroot $1 chmod -R 770 /home/demo/.mozilla
 chroot $1 ln -s /var/storeAIP/ /home/demo
 chroot $1 mkdir -p /home/demo/Desktop
@@ -43,22 +43,22 @@ chroot $1 mkdir /home/demo/receiveSIP
 chroot $1 mkdir /home/demo/ingestSIP
 
 
-cp -p scripts/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
-cp -p scripts/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
-cp -p scripts/Bagit $1/home/demo/.gnome2/nautilus-scripts
-cp -p scripts/RemoveWhiteSpace $1/home/demo/.gnome2/nautilus-scripts
-cp scripts/Qubit.png $1/usr/share/icons
-cp scripts/qubit.desktop $1/home/demo/Desktop
-cp scripts/droid.desktop $1/home/demo/Desktop
-cp scripts/jhove.desktop $1/home/demo/Desktop
-cp scripts/NLNZ-metadata-extractor.desktop $1/home/demo/Desktop
-cp scripts/xena.desktop $1/home/demo/Desktop
-cp scripts/view.desktop $1/home/demo/Desktop
-cp scripts/rundroid.sh $1/usr/bin
-cp scripts/runqubit.sh $1/usr/bin
-cp scripts/runjhove.sh $1/usr/bin
-cp scripts/runxena.sh $1/usr/bin
-cp scripts/runview.sh $1/usr/bin
+cp -p includes/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
+cp -p includes/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
+cp -p includes/Bagit $1/home/demo/.gnome2/nautilus-scripts
+cp -p includes/RemoveWhiteSpace $1/home/demo/.gnome2/nautilus-scripts
+cp includes/Qubit.png $1/usr/share/icons
+cp includes/qubit.desktop $1/home/demo/Desktop
+cp includes/droid.desktop $1/home/demo/Desktop
+cp includes/jhove.desktop $1/home/demo/Desktop
+cp includes/NLNZ-metadata-extractor.desktop $1/home/demo/Desktop
+cp includes/xena.desktop $1/home/demo/Desktop
+cp includes/view.desktop $1/home/demo/Desktop
+cp includes/rundroid.sh $1/usr/bin
+cp includes/runqubit.sh $1/usr/bin
+cp includes/runjhove.sh $1/usr/bin
+cp includes/runxena.sh $1/usr/bin
+cp includes/runview.sh $1/usr/bin
 chroot $1 mkdir /home/demo/xena-output
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
@@ -68,9 +68,9 @@ chroot $1 chown -R demo:demo /var/storeAIP
 #Begin Qubit Configuration
 chroot $1 /etc/init.d/mysql start
 chroot $1 mysqladmin create qubit
-cp scripts/php.ini $1/etc/php5/cli
-cp scripts/php.ini $1/etc/php5/apache2
-cp scripts/apache.default $1/etc/apache2/sites-available/default
+cp includes/php.ini $1/etc/php5/cli
+cp includes/php.ini $1/etc/php5/apache2
+cp includes/apache.default $1/etc/apache2/sites-available/default
 chroot $1 apache2ctl restart
 svn checkout http://qubit-toolkit.googlecode.com/svn/tags/release-1.0.8  qubit-svn
 svn export qubit-svn $1/var/www/qubit
