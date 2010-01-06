@@ -21,7 +21,7 @@ chroot $1 mkdir /var/storeAIP
 #SWITCH TO SVN EXPORT
 svn export includes/sampledata $1/home/demo/testFiles
 svn export includes/OAIS $1/opt/OAIS
-svn export includes/archivematica $/opt/archivematica
+svn export includes/archivematica $1/opt/archivematica
 svn export includes/.mozilla $1/home/demo/.mozilla
 cp -rf includes/cron.tab $1/etc/cron.tab
 chroot $1 crontab -u demo /etc/cron.tab
