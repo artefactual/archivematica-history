@@ -16,11 +16,11 @@ chroot $1 rm -rf /home/demo/Public
 chroot $1 rm -rf /home/demo/Templates
 chroot $1 rm -rf /home/demo/Videos
 
-#Install OAIS
+#Install externals
 chroot $1 mkdir /var/storeAIP
 #SWITCH TO SVN EXPORT
 svn export includes/sampledata $1/home/demo/testFiles
-svn export includes/OAIS $1/opt/OAIS
+svn export includes/externals $1/opt/externals
 svn export includes/archivematica $1/opt/archivematica
 svn export includes/.mozilla $1/home/demo/.mozilla
 cp -rf includes/cron.tab $1/etc/cron.tab
@@ -62,7 +62,7 @@ cp includes/runview.sh $1/usr/bin
 chroot $1 mkdir /home/demo/xena-output
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
-chroot $1 chown -R demo:demo /opt/OAIS
+chroot $1 chown -R demo:demo /opt/externals
 chroot $1 chown -R demo:demo /var/storeAIP
 
 #Begin Qubit Configuration
