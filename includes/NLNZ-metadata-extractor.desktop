@@ -3,6 +3,6 @@ Encoding=UTF-8
 Version=1.0
 Type=Application
 Terminal=false
-Exec=/usr/local/OAIS/metadata-extractor/metadata.sh
+Exec=/opt/externals/metadata-extractor/metadata.sh
 Name=NLNZ-metadata-extractor
 Icon=gnome-panel-launcher
