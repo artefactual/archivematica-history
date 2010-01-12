@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #Prepare Ubuntu
 chroot $1 chmod -R 777 /etc/apt/sources.list
 chroot $1 cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -16,9 +17,8 @@ chroot $1 rm -rf /home/demo/Public
 chroot $1 rm -rf /home/demo/Templates
 chroot $1 rm -rf /home/demo/Videos
 
-#Install externals
+#Install externals/archivematica
 chroot $1 mkdir /var/storeAIP
-#SWITCH TO SVN EXPORT
 svn export includes/sampledata $1/home/demo/testFiles
 svn export includes/externals $1/opt/externals
 svn export includes/archivematica $1/opt/archivematica
@@ -42,7 +42,7 @@ chroot $1 mkdir /home/demo/possiblevirii
 chroot $1 mkdir /home/demo/receiveSIP
 chroot $1 mkdir /home/demo/ingestSIP
 
-
+#Gnome Integration/Customization
 cp -p includes/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p includes/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p includes/Bagit $1/home/demo/.gnome2/nautilus-scripts
@@ -60,6 +60,8 @@ cp includes/runjhove.sh $1/usr/bin
 cp includes/runxena.sh $1/usr/bin
 cp includes/runview.sh $1/usr/bin
 chroot $1 mkdir /home/demo/xena-output
+
+#fix permissions 
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
 chroot $1 chown -R demo:demo /opt/externals
@@ -80,4 +82,3 @@ chroot $1 chown -R www-data:www-data /var/www/qubit
 chroot $1 sh -c 'echo EnableSendfile Off >> /etc/apache2/apache2.conf'
 chroot $1 a2enmod rewrite
 
-echo Apache is configured and Qubit has been downloaded please finish with the installer!
