@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://java.sun.com/dtd/preferences.dtd">
+<map MAP_XML_VERSION="1.0">
+<entry key="Audio/Flac Executable Location" value="/usr/bin/flac"/>
+<entry key="Email/Readpst Executable Location" value=""/>
+<entry key="Image/Image Magick Convert Executable Location" value=""/>
+<entry key="Image/Tesseract Executable Location" value="/usr/bin/tesseract"/>
+<entry key="Office/Office Location" value="/usr/lib/openoffice"/>
+<entry key="Office/Office Startup Sleep Time" value="15"/>
+</map>
