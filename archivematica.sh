@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # This file is part of Archivematica.
 #
 # Archivematica is free software: you can redistribute it and/or modify
@@ -14,7 +16,11 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#!/bin/bash
+# @package Archivematica
+# @subpackage Configuration
+# @author Austin Trask <austin@artefactual.com>
+# @version svn: $Id$
+
 
 #Prepare Ubuntu
 chroot $1 chmod -R 777 /etc/apt/sources.list
