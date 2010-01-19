@@ -45,6 +45,7 @@ svn export includes/sampledata $1/home/demo/testFiles
 svn export includes/externals $1/opt/externals
 svn export includes/archivematica $1/opt/archivematica
 svn export includes/.mozilla $1/home/demo/.mozilla
+svn export includes/xenaconfig $1/home/demo/.java
 cp -rf includes/cron.tab $1/etc/cron.tab
 chroot $1 crontab -u demo /etc/cron.tab
 cp -rf includes/snipemod.sh $1/usr/local/bin/snipemod.sh
