@@ -27,17 +27,20 @@ do
 		chmod 700 $FILE		
 		UUID=`uuid`
 		mkdir /home/demo/accessionreports/$UUID		
-		mkdir -p /tmp/accession-$UUID
-		mv $FILE /tmp/accession-$UUID
-		chmod 700 /tmp/accession-$UUID/*
-		find /tmp/accession-$UUID/ -type f -print| while read NEWDOCS
+#		mkdir -p /tmp/$UUID
+		mv $FILE /tmp/$UUID
+		chmod 700 /tmp/$UUID/*
+		find /tmp/$UUID/ -type f -print| while read NEWDOCS
 			do
 				chmod 700 $NEWDOCS
 				clamscan --move=/home/demo/possiblevirii/  $NEWDOCS >> ~/accessionreports/virus.log
 				/opt/externals/fits/folderaccess.sh  $NEWDOCS $UUID 
 				echo "Acession of $NEWDOCS completed successfully" >> ~/accessionreports/accession.log
-			done		
-		mv /tmp/accession-$UUID/* ~/prepareAIP/.
+				/opt/archivematica/normalize.sh $NEWDOCS $UUID
+			done
+		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
+		BASEFILE=`basename "$FILE"`
+		mv /tmp/$UUID ~/prepareAIP/$BASEFILE
 		rm -rf /tmp/accession-$UUID
 	elif [ -f "$FILE" ]; then
 		chmod 700 $FILE		
