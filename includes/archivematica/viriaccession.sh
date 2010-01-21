@@ -21,13 +21,12 @@
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
 
-find ~/quarantine/* -maxdepth 0 -amin +2 -perm 0000 -print| while read FILE
+find ~/quarantine/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
 do
 	if [ -d "$FILE" ]; then
 		chmod 700 $FILE		
 		UUID=`uuid`
 		mkdir /home/demo/accessionreports/$UUID		
-#		mkdir -p /tmp/$UUID
 		mv $FILE /tmp/$UUID
 		chmod 700 /tmp/$UUID/*
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
@@ -40,16 +39,22 @@ do
 			done
 		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
 		BASEFILE=`basename "$FILE"`
-		mv /tmp/$UUID ~/prepareAIP/$BASEFILE
-		rm -rf /tmp/accession-$UUID
+		/opt/externals/bagit/bin/bag create ~/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
+		rm -rf /tmp/$UUID
 	elif [ -f "$FILE" ]; then
 		chmod 700 $FILE		
-		UUID=`uuid`
-		mkdir /home/demo/accessionreports/$UUID
-		clamscan --move=/home/demo/possiblevirii/  $FILE >> ~/accessionreports/virus.log		
-		/opt/externals/fits/access.sh $FILE $UUID		
-		mv $FILE ~/prepareAIP/.
+                UUID=`uuid`
+                BASEFILE=`basename "$FILE"`
+                mkdir -p /tmp/$UUID
+                mv $FILE /tmp/$UUID
+                mkdir /home/demo/accessionreports/$UUID
+                clamscan --move=/home/demo/possiblevirii/  /tmp/$UUID/$BASEFILE >> ~/accessionreports/virus.log$
+                /opt/externals/fits/access.sh /tmp/$UUID/$BASEFILE $UUID
+		/opt/archivematica/normalize.sh /tmp/$UUID/$BASEFILE $UUID
+		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
+		/opt/externals/bagit/bin/bag create ~/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
 		echo "Accession of $FILE completed successfully" >> ~/accessionreports/accession.log
+		rm -rf /tmp/$UUID
 	else
 		echo "$FILE is not a file or directory"
 	fi
