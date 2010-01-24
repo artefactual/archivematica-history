@@ -27,6 +27,7 @@ do
 		chmod 700 $FILE		
 		UUID=`uuid`
 		mkdir /home/demo/accessionreports/$UUID		
+#		mkdir -p /tmp/$UUID
 		mv $FILE /tmp/$UUID
 		chmod 700 /tmp/$UUID/*
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
@@ -39,8 +40,8 @@ do
 			done
 		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
 		BASEFILE=`basename "$FILE"`
-		/opt/externals/bagit/bin/bag create ~/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
-		rm -rf /tmp/$UUID
+		/opt/externals/bagit/bin/bag create /home/demo/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
+		/opt/archivematica/upload/upload.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
 	elif [ -f "$FILE" ]; then
 		chmod 700 $FILE		
                 UUID=`uuid`
@@ -53,8 +54,8 @@ do
 		/opt/archivematica/normalize.sh /tmp/$UUID/$BASEFILE $UUID
 		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
 		/opt/externals/bagit/bin/bag create ~/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
+		/opt/archivematica/upload/upload.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
 		echo "Accession of $FILE completed successfully" >> ~/accessionreports/accession.log
-		rm -rf /tmp/$UUID
 	else
 		echo "$FILE is not a file or directory"
 	fi
