@@ -42,7 +42,7 @@ do
 		BASEFILE=`basename "$FILE"`
 		/opt/externals/bagit/bin/bag create /home/demo/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
 		/opt/archivematica/upload/upload.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
-		notify-send "bagit" "baging of $BASEFILE is complete"
+		DISPLAY=:0.0 /usr/bin/notify-send "bagit" "baging of $BASEFILE is complete"
 	elif [ -f "$FILE" ]; then
 		chmod 700 $FILE		
                 UUID=`uuid`
@@ -56,7 +56,7 @@ do
 		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
 		/opt/externals/bagit/bin/bag create ~/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
 		/opt/archivematica/upload/upload.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
-		notify-send "bagit" "baging of $BASEFILE is complete"
+		DISPLAY=:0.0 /usr/bin/notify-send "bagit" "baging of $BASEFILE is complete"
 		echo "Accession of $FILE completed successfully" >> ~/accessionreports/accession.log
 	else
 		echo "$FILE is not a file or directory"
