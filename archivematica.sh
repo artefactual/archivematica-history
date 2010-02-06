@@ -58,9 +58,10 @@ chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 chroot $1 mkdir /home/demo/accessionreports
 chroot $1 mkdir /home/demo/receiveAIP
 chroot $1 mkdir /home/demo/quarantine
-chroot $1 mkdir /home/demo/generateDIP
-chroot $1 mkdir /home/demo/generateAIP
-chroot $1 mkdir /home/demo/prepareAIP
+#THESE FOLDERS ARE NOT CURRENTLY IN USE
+#chroot $1 mkdir /home/demo/generateDIP
+#chroot $1 mkdir /home/demo/generateAIP
+#chroot $1 mkdir /home/demo/prepareAIP
 chroot $1 mkdir /home/demo/possiblevirii
 chroot $1 mkdir /home/demo/receiveSIP
 chroot $1 mkdir /home/demo/ingestSIP
