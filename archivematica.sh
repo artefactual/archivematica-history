@@ -70,6 +70,7 @@ cp -p includes/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p includes/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p includes/Bagit $1/home/demo/.gnome2/nautilus-scripts
 cp -p includes/bagcheck $1/home/demo/.gnome2/nautilus-scripts
+cp -p includes/clean $1/home/demo/.gnome2/nautilus-scripts
 cp -p includes/RemoveWhiteSpace $1/home/demo/.gnome2/nautilus-scripts
 cp includes/Qubit.png $1/usr/share/icons
 cp includes/qubit.desktop $1/home/demo/Desktop
