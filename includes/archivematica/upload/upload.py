@@ -19,7 +19,7 @@
 # @package Archivematica
 # @subpackage Configuration
 # @author Jack Bates <jack@artefactual.com>
-# @author Jesús García Crespo <jesus@artefactual.com>
+# @author Jesus Garcia Crespo <jesus@artefactual.com>
 # @version svn: $Id$
 
 
