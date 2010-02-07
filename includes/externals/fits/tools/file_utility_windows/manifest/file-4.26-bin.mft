@@ -1,0 +1,24 @@
+bin/file.exe 4d565ab578d47435df31a8a9b649ad13
+bin/magic1.dll 3da5251a59ea7b2c014fff30b2e0a1ea
+share/file/magic 4cfbea507010f4f9bf9940784d87b487
+share/file/magic.mgc 366e25c1b9a918423b4950cd572865dc
+man/cat1/file.1.txt 173456fc03b59851181024ceb27f6083
+man/cat1p/file.1p.txt 5ed8dc29ab3d2f305eddeb10c63279ae
+man/cat3/libmagic.3.txt 0742218fa3ae5c2c606bbff32daefacc
+man/cat5/magic.5.txt 66b710d1aa986f0ee45a3e5bd90a6116
+contrib/file/4.26/file-4.26-GnuWin32.README d250050b4a9453f6c5c5849b6b963410
+contrib/file/4.26/file-4.26-src/AUTHORS 4b28a4081004b1965edb47d0796317a2
+contrib/file/4.26/file-4.26-src/ChangeLog 6a8bc898ae39e84ef4eb49ccb1d7f2eb
+contrib/file/4.26/file-4.26-src/COPYING c9d069b760269fd5364b578a1256ec8d
+contrib/file/4.26/file-4.26-src/INSTALL c59cbaf0df9bcf35feca0d0f1fc01dae
+contrib/file/4.26/file-4.26-src/magic/Header 3d7224cdc754105cf58015e85b6b9d14
+contrib/file/4.26/file-4.26-src/magic/Magdir/fonts d60442399ccf3a82e32982d9f9280965
+contrib/file/4.26/file-4.26-src/magic/Magdir/news d40091b2d63a7de72ebecb3203326400
+contrib/file/4.26/file-4.26-src/MAINT b8e2d2a430c1ae4a03526305480d10d5
+contrib/file/4.26/file-4.26-src/NEWS 3ddab3d6494614ae3e464e159c5c50c3
+contrib/file/4.26/file-4.26-src/python/README 60da99d5b953725db75a05a0a5501a1e
+contrib/file/4.26/file-4.26-src/README 1e8623c7754a83ee35a06907bed2e492
+contrib/file/4.26/file-4.26-src/tests/README 659027f2af6653a1d668bba1a9eef7b7
+contrib/file/4.26/file-4.26-src/TODO 8ee834018997958279443297d325732c
+manifest/file-4.26-bin.mft
+manifest/file-4.26-bin.ver a0e7fbf70714eedfe7baecadad556be3
