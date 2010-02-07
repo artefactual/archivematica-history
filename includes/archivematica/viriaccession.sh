@@ -34,7 +34,7 @@ do
 			do
 				chmod 700 $NEWDOCS
 				clamscan --move=/home/demo/possiblevirii/  $NEWDOCS >> ~/accessionreports/virus.log
-				/opt/externals/fits/folderaccess.sh  $NEWDOCS $UUID 
+				/opt/archivematica/folderaccess.sh  $NEWDOCS $UUID 
 				echo "Acession of $NEWDOCS completed successfully" >> ~/accessionreports/accession.log
 				/opt/archivematica/normalize.sh $NEWDOCS $UUID
 			done
