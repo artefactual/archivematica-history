@@ -51,7 +51,7 @@ do
                 mv $FILE /tmp/$UUID
                 mkdir /home/demo/accessionreports/$UUID
                 clamscan --move=/home/demo/possiblevirii/  /tmp/$UUID/$BASEFILE >> ~/accessionreports/virus.log$
-                /opt/externals/fits/access.sh /tmp/$UUID/$BASEFILE $UUID
+                /opt/archivematica/access.sh /tmp/$UUID/$BASEFILE $UUID
 		/opt/archivematica/normalize.sh /tmp/$UUID/$BASEFILE $UUID
 		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
 		/opt/externals/bagit/bin/bag create ~/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
