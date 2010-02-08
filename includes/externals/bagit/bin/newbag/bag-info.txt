@@ -1,3 +1,0 @@
-Payload-Oxum: 3373.1
-Bagging-Date: 2009-07-15
-Bag-Size: 3.4 KB
