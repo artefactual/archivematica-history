@@ -1,0 +1,111 @@
+# Archivematica Dashboard demo data
+
+SipStatus:
+  sipstatus1:
+    name: received
+  sipstatus2:
+    name: processing
+  sipstatus3:
+    name: ingested
+
+Sip:
+  sip1:
+    SipStatus:      sipstatus3
+    identifier:     f08aac90-19b1-11df-8a39-0800200c9a66
+    title:          TRIM transfer 2010-1
+    dateSubmitted:  '2010-01-23'
+    provenance:     'City ERDMS system'
+    partOf:         'City Clerk Department fonds'
+
+  sip2:
+    SipStatus:      sipstatus2
+    identifier:     f83f42a0-19b3-11df-8a39-0800200c9a66
+    title:          Alfresco transfer 2010-2
+    dateSubmitted:  '2010-01-27'
+    provenance:     'Public Works CMS system'
+    partOf:         'Public Works Department fonds'
+
+  sip3:
+    SipStatus:      sipstatus1
+    identifier:     292989c0-19b4-11df-8a39-0800200c9a66
+    title:          Spearmont Foundation transfer
+    dateSubmitted:  '2010-01-27'
+    provenance:     'Spearmont Foundation'
+
+AipStatus:
+  aipstatus1:
+    name: ready for storage transfer
+  aipstatus2:
+    name: in storage
+  aipstatus3:
+    name: failed integrity check
+  aipstatus5: 
+    name: awaiting update
+
+Aip:
+  aip1:
+    AipStatus:         aipstatus2
+    identifier:        35beeeb0-19b3-11df-8a39-0800200c9a66
+    dateAccepted:      2009-12-21
+    location:          'nas1://2009/12/35beeeb0'
+    dip_location:      'http://example.com/informationobject/99/show/isad'
+
+  aip2:
+    AipStatus:         aipstatus1
+    identifier:        79ba89c0-19b4-11df-8a39-0800200c9a66
+    dateAccepted:      2010-01-12
+    location:          'nas1://2010/01/79ba89c0'
+    dip_location:      'http://example.com/informationobject/101/show/isad'
+
+FileStatus:
+  filestatus1:
+    name: pre-ingest
+  filestatus2:
+    name: verified
+  filestatus3:
+    name: identified
+  filestatus4:
+    name: validated
+  filestatus3:
+    name: metadata extracted
+  filestatus4:
+    name: normalized to preservation format
+  filestatus5:
+    name: normalized to access format
+  filestatus6:
+    name: added to AIP
+
+File:
+  file1:
+    Sip:               sip1
+    identifier:         eccb39f0-19b9-11df-8a39-0800200c9a66
+    original_filename:  0234__<ar.mpg
+    clean_filename:     0234---ar.mpg
+    filepath:           '/'
+    checksum:           48a67672194004ad5321d61b3eb2884d
+    checksum_type:      md5
+ 
+Format:
+  format1:
+    name:         MPEG
+    extension:    .mpg
+  format2:
+    name:         MOTION JPEG2000
+    extension:    .mpg
+  format3:
+    name:         Flash Video
+    extension:    .flv
+
+FormatRole:
+  formatrole1:
+    Format:          format1
+    File:            file1
+    role:            original format
+  formatrole2:
+    Format:          format2
+    File:            file1
+    role:            preservation format
+  formatrole3:
+    Format:          format3
+    File:            file1
+    role:            access format

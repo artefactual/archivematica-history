@@ -1,0 +1,74 @@
+# config/doctrine/schema.yml
+SipStatus:
+  columns:
+    name: { type: string(255), notnull: true, unique: true }
+
+Sip:
+  columns:
+    sip_status_id:  { type: integer, notnull: true }
+    identifier:     { type: string(255) }
+    title:          { type: string(255), notnull: true }
+    dateSubmitted:  { type: timestamp(25), notnull: true }
+    provenance:     { type: string(255) }
+    partOf:         { type: string(255) }
+    checksum:       { type: string(255) }
+    checksum_type:  { type: string(255) }
+  relations:
+    SipStatus: { onDelete: CASCADE, local: sip_status_id, foreign: id, foreignAlias: Sips } 
+
+AipStatus:
+  columns:
+    name: { type: string(255), notnull: true, unique: true }
+
+Aip:
+  columns:
+    aip_status_id:     { type: integer, notnull: true }
+    identifier:        { type: string(255) }
+    dateAccepted:      { type: timestamp(25), notnull: true }
+    checksum:          { type: string(255) }
+    checksum_type:     { type: string(255) }
+    location:          { type: string(255) }
+    dip_location:      { type: string(255) }
+  relations:
+    AipStatus: { onDelete: CASCADE, local: aip_status_id, foreign: id, foreignAlias: Aips } 
+
+FileStatus:
+  columns:
+    name: { type: string(255), notnull: true, unique: true }
+
+File:
+  columns:
+    sip_id:             { type: integer, notnull: true }
+    aip_id:             { type: integer }
+    file_status_id:     { type: integer }
+    identifier:         { type: string(255) }
+    title:              { type: string(255) } 
+    original_filename:  { type: string(255) }
+    clean_filename:     { type: string(255) }
+    filepath:           { type: string(255) }
+    date:               { type: date }
+    checksum:           { type: string(255) }
+    checksum_type:      { type: string(255) }
+  relations:
+    Sip:                { onDelete: CASCADE, local: sip_id, foreign: id, foreignAlias: Files } 
+    Aip:                { onDelete: CASCADE, local: aip_id, foreign: id, foreignAlias: Files }
+    FileStatus:         { onDelete: CASCADE, local: file_status_id, foreign: id, foreignAlias: Aips } 
+    Formats:            { class: Format, refClass: FormatRole, local: format_id, foreign: file_id, foreignAlias: Files }
+ 
+Format:
+  columns:
+    name:         { type: string(255), notnull: true, unique: true }
+    extension:    { type: string(255) }
+    mime_type:    { type: string(255) }
+    registry_uri: { type: string(255) }
+  relations:
+    Files: { class: File, refClass: FormatRole, local: format_id, foreign: file_id, foreignAlias: Formats }
+
+FormatRole:
+  columns:
+    format_id:          { type: integer, primary: true }
+    file_id:            { type: integer, primary: true }
+    role:               { type: string(255) }
+  relations:
+    Format:             { onDelete: CASCADE, local: format_id, foreign: id }
+    File:               { onDelete: CASCADE, local: file_id, foreign: id }
