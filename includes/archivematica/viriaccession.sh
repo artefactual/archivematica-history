@@ -26,7 +26,7 @@ do
 	if [ -d "$FILE" ]; then
 		chmod 700 $FILE		
 		UUID=`uuid`
-		mkdir /home/demo/accessionreports/$UUID		
+		mkdir /home/demo/ingestLogs/$UUID		
 #		mkdir -p /tmp/$UUID
 		mv $FILE /tmp/$UUID
 		chmod 700 /tmp/$UUID/*
@@ -34,12 +34,12 @@ do
 			do
 				XENADIR=`dirname "$NEWDOCS"`				
 				chmod 700 $NEWDOCS
-				clamscan --move=/home/demo/possiblevirii/  $NEWDOCS >> ~/accessionreports/virus.log
+				clamscan --move=/home/demo/possiblevirii/  $NEWDOCS >> ~/ingestLogs/virus.log
 				/opt/archivematica/folderaccess.sh  $NEWDOCS $UUID 
-				echo "Acession of $NEWDOCS completed successfully" >> ~/accessionreports/accession.log
+				echo "Acession of $NEWDOCS completed successfully" >> ~/ingestLogs/accession.log
 				/opt/archivematica/normalize.sh $NEWDOCS $XENADIR
 			done
-		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
+		cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/ingestLogs		
 		BASEFILE=`basename "$FILE"`
 		/opt/externals/bagit/bin/bag create /home/demo/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
 		/opt/archivematica/upload/upload.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
@@ -50,15 +50,15 @@ do
                 BASEFILE=`basename "$FILE"`
                 mkdir -p /tmp/$UUID
                 mv $FILE /tmp/$UUID
-                mkdir /home/demo/accessionreports/$UUID
-                clamscan --move=/home/demo/possiblevirii/  /tmp/$UUID/$BASEFILE >> ~/accessionreports/virus.log$
+                mkdir /home/demo/ingestLogs/$UUID
+                clamscan --move=/home/demo/possiblevirii/  /tmp/$UUID/$BASEFILE >> ~/ingestLogs/virus.log$
                 /opt/archivematica/access.sh /tmp/$UUID/$BASEFILE $UUID
 		/opt/archivematica/normalize.sh /tmp/$UUID/$BASEFILE /tmp/$UUID
-		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
+		cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/ingestLogs		
 		/opt/externals/bagit/bin/bag create ~/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
 		/opt/archivematica/upload/upload.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
 		DISPLAY=:0.0 /usr/bin/notify-send "ingest" "ingest of $BASEFILE completed"
-		echo "Accession of $FILE completed successfully" >> ~/accessionreports/accession.log
+		echo "Accession of $FILE completed successfully" >> ~/ingestLogs/accession.log
 	else
 		echo "$FILE is not a file or directory"
 	fi
