@@ -32,11 +32,12 @@ do
 		chmod 700 /tmp/$UUID/*
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
 			do
+				XENADIR=`dirname "$NEWDOCS"`				
 				chmod 700 $NEWDOCS
 				clamscan --move=/home/demo/possiblevirii/  $NEWDOCS >> ~/accessionreports/virus.log
 				/opt/archivematica/folderaccess.sh  $NEWDOCS $UUID 
 				echo "Acession of $NEWDOCS completed successfully" >> ~/accessionreports/accession.log
-				/opt/archivematica/normalize.sh $NEWDOCS $UUID
+				/opt/archivematica/normalize.sh $NEWDOCS $XENADIR
 			done
 		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
 		BASEFILE=`basename "$FILE"`
@@ -52,7 +53,7 @@ do
                 mkdir /home/demo/accessionreports/$UUID
                 clamscan --move=/home/demo/possiblevirii/  /tmp/$UUID/$BASEFILE >> ~/accessionreports/virus.log$
                 /opt/archivematica/access.sh /tmp/$UUID/$BASEFILE $UUID
-		/opt/archivematica/normalize.sh /tmp/$UUID/$BASEFILE $UUID
+		/opt/archivematica/normalize.sh /tmp/$UUID/$BASEFILE /tmp/$UUID
 		cp -a /home/demo/accessionreports/$UUID /tmp/$UUID/accessionreports		
 		/opt/externals/bagit/bin/bag create ~/receiveAIP/$BASEFILE-$UUID.zip /tmp/$UUID/* --writer zip
 		/opt/archivematica/upload/upload.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
