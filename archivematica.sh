@@ -55,7 +55,7 @@ chroot $1 chmod -R 770 /home/demo/.mozilla
 chroot $1 ln -s /var/storeAIP/ /home/demo
 chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
-chroot $1 mkdir /home/demo/accessionreports
+chroot $1 mkdir /home/demo/ingestLogs
 chroot $1 mkdir /home/demo/receiveAIP
 chroot $1 mkdir /home/demo/quarantine
 #THESE FOLDERS ARE NOT CURRENTLY IN USE
