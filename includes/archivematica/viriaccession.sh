@@ -29,7 +29,7 @@ do
 		mkdir /home/demo/ingestLogs/$UUID		
 		mv "$FILE" /tmp/$UUID
 		chmod 700 /tmp/$UUID/*
-		detox -r /tmp/$UUID/. > /home/demo/ingestLogs/$UUID/detox.log
+		detox -r /tmp/$UUID > /home/demo/ingestLogs/$UUID/detox.log
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
 			do
 				XENADIR=`dirname "$NEWDOCS"`				
@@ -37,7 +37,7 @@ do
 				clamscan --move=/home/demo/possiblevirii/  $NEWDOCS >> ~/ingestLogs/virus.log
 				/opt/archivematica/folderaccess.sh  $NEWDOCS $UUID 
 				echo "Acession of $NEWDOCS completed successfully" >> ~/ingestLogs/accession.log
-				/opt/archivematica/normalize.sh $NEWDOCS $XENADIR
+				/opt/archivematica/normalize.sh $NEWDOCS $XENADIR $UUID
 			done
 		cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/ingestLogs		
 		BASEFILE=`basename "$FILE"`
