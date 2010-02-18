@@ -1,3 +1,3 @@
 #!/bin/bash
-touch -a $1
-chmod -R 000 $1
+touch -a "$*"
+chmod -R 000 "$*"
