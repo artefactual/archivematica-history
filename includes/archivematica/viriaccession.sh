@@ -29,7 +29,7 @@ do
 		mkdir /home/demo/ingestLogs/$UUID		
 		mv "$FILE" /tmp/$UUID
 		chmod 700 /tmp/$UUID/*
-		detox -rv /tmp/$UUID |tee /home/demo/ingestLogs/$UUID/detox.log
+		detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
 			do
 				XENADIR=`dirname "$NEWDOCS"`				
