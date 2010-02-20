@@ -73,7 +73,7 @@ color: #FFF;
 font-weight: bold;
 text-decoration: none;
 padding: 0.5em 1em 0.5em 1em;
-border: 2px solid #CCC;
+text-shadow:1px 1px rgba(0, 0, 0, 0.2);
 
 }
 
