@@ -14,7 +14,8 @@
       <?php echo link_to(image_tag('logo.png'), @homepage) ?>
     </div>
 
-    <div id="main-menu">
+    <div class="menu" id="mainMenu">
+      <h2 class="element-invisible">Main menu</h2>
       <ul>
         <li><?php echo link_to('Receive SIP', array('module' => 'sip', 'action' => 'index')) ?></li>
         <li><?php echo link_to('Prepare AIP', array('module' => 'aip', 'action' => 'index')) ?></li>
@@ -22,8 +23,8 @@
         <li>Prepare DIP</li>
         <li>Monitor Preservation</li>
       </ul>
-    <div>
-    
+    </div>
+   
 
     <div id="content">
       <?php echo $sf_content ?>
