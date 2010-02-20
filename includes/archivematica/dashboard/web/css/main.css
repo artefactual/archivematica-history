@@ -61,7 +61,7 @@ display: inline;
 }
 
 #mainMenu {
-padding: 1.2em 2em 1.2em 2em;
+padding: .8em 2em;
 -moz-background-clip:border;
 -moz-background-inline-policy:continuous;
 -moz-background-origin:padding;
