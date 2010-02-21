@@ -93,7 +93,7 @@ cp includes/php.ini $1/etc/php5/cli
 cp includes/php.ini $1/etc/php5/apache2
 cp includes/apache.default $1/etc/apache2/sites-available/default
 chroot $1 apache2ctl restart
-svn checkout http://qubit-toolkit.googlecode.com/svn/tags/release-1.0.8  qubit-svn
+svn checkout http://qubit-toolkit.googlecode.com/svn/branches/ica-atom  qubit-svn
 svn export qubit-svn $1/var/www/qubit
 
 apache2ctl restart
