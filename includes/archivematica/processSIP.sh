@@ -43,7 +43,7 @@ do
 		cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/ingestLogs		
 		BASEFILE=`basename "$FILE"`
 		/opt/externals/bagit/bin/bag create /home/demo/receiveAIP/"$BASEFILE"-$UUID.zip /tmp/$UUID/* --writer zip
-		/opt/archivematica/upload/upload.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
+		/opt/archivematica/upload/upload-qubit.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
 		rm -rf /tmp/$UUID
 		DISPLAY=:0.0 /usr/bin/notify-send "ingest" "ingest of $BASEFILE completed"
 	elif [ -f "$FILE" ]; then
