@@ -48,7 +48,6 @@ svn export includes/.mozilla $1/home/demo/.mozilla
 svn export includes/xenaconfig $1/home/demo/.java
 cp -rf includes/cron.tab $1/etc/cron.tab
 chroot $1 crontab -u demo /etc/cron.tab
-cp -rf includes/snipemod.sh $1/usr/local/bin/snipemod.sh
 cp -rf includes/incron.allow $1/etc/incron.allow
 cp -rf includes/incron.tab $1/etc/incron.tab
 chroot $1 chmod -R 770 /home/demo/.mozilla
