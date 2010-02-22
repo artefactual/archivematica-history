@@ -3,38 +3,78 @@
 SipStatus:
   sipstatus1:
     name: received
+    icon: arrow_down_green_24.png
   sipstatus2:
     name: processing
+    icon: gnome-panel-clock_24.png
   sipstatus3:
     name: ingested
+    icon: accepted_24.png
+  sipstatus4:
+    name: ingest warning
+    icon: warning_24.png
+  sipstatus5:
+    name: ingest error
+    icon: cancel_24.png
 
 Sip:
   sip1:
-    SipStatus:      sipstatus3
+    SipStatus:      sipstatus1
     identifier:     f08aac90-19b1-11df-8a39-0800200c9a66
-    title:          TRIM transfer 2010-1
-    dateSubmitted:  '2010-01-23'
+    title:          TRIM transfer 2010-3
+    dateReceived:   '2010-01-27 15:24:22'
     provenance:     'City ERDMS system'
-    partOf:         'City Clerk Department fonds'
+    partOf:         'City Clerk Department series'
 
   sip2:
     SipStatus:      sipstatus2
-    identifier:     f83f42a0-19b3-11df-8a39-0800200c9a66
+    identifier:     f83f42a0-19b3-11df-8a39-0800200c9a33
     title:          Alfresco transfer 2010-2
-    dateSubmitted:  '2010-01-27'
+    dateReceived:   '2010-01-25 16:05:03'
     provenance:     'Public Works CMS system'
-    partOf:         'Public Works Department fonds'
+    partOf:         'Public Works Department series'
 
   sip3:
-    SipStatus:      sipstatus1
-    identifier:     292989c0-19b4-11df-8a39-0800200c9a66
+    SipStatus:      sipstatus3
+    identifier:     292989c0-19b4-11df-8a39-0800200c9a44
     title:          Spearmont Foundation transfer
-    dateSubmitted:  '2010-01-27'
+    dateReceived:   '2010-01-25 09:45:00'
     provenance:     'Spearmont Foundation'
+
+  sip4:
+    SipStatus:      sipstatus3
+    identifier:     142569d0-29b4-11df-8a39-0800200c9b55
+    title:          Franklin Family donation
+    dateReceived:   '2010-01-24 11:33:56'
+    provenance:     'Franklin Family'
+
+  sip5:
+    SipStatus:      sipstatus4
+    identifier:     99d432f0-1ffa-11df-8a39-0800200c9a66
+    title:          TRIM transfer 2010-2
+    dateReceived:   '2010-01-19 14:12:47'
+    provenance:     'City ERDMS system'
+    partOf:         'Legal Services series'
+
+  sip6:
+    SipStatus:      sipstatus5
+    identifier:     a49e5850-1ffa-11df-8a39-0800200c9c77
+    title:          Alfresco transfer 2010-1
+    dateReceived:   '2010-01-18 10:17:21'
+    provenance:     'Public Works CMS system'
+    partOf:         'Public Works Department series'
+
+  sip7:
+    SipStatus:      sipstatus3
+    identifier:     91ce3f3d-20a8-4e42-825e-9cc1737dad6a
+    title:          TRIM transfer 2010-1
+    dateReceived:   '2010-01-09 12:17:12'
+    provenance:     'City ERDMS system'
+    partOf:         'Engineering Department series'
 
 AipStatus:
   aipstatus1:
-    name: ready for storage transfer
+    name: ready for storage
   aipstatus2:
     name: in storage
   aipstatus3:
