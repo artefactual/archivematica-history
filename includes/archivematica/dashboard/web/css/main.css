@@ -94,21 +94,34 @@ color: #42769F;
 -moz-border-radius-topleft: 20px;
 -moz-border-radius-topright: 20px;
 -moz-border-radius-bottomright: 20px;
--moz-box-shadow: 5px 0px 0px #42769F;
+-moz-box-shadow: 5px 0px 0px #999;
 }
 
 .toolbar {
-padding: 0.4em 0 0 2em;
+padding: 0.4em 2em 0.2em 2em;
 background-color: #42769F;
 color: #FFF;
 -moz-border-radius: 30px;
+text-align: right;
 }
 
 .toolbar li {
 list-style-type:none;
 display: inline;
-margin: 0 0.4em;
+margin: 0 0.2em;
 }
+
+.toolbar img {
+border: 3px solid #FFF;
+padding: 0.15em;
+-moz-box-shadow: 1px 1px 1px #FFF;
+-moz-border-radius: 10px;
+}
+
+.toolbar img:hover {
+background: #FFF;
+}
+
 
 table {
 margin:1em 0;
