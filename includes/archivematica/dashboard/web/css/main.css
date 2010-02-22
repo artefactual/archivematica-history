@@ -75,6 +75,8 @@ background:transparent url(../images/menu-bg.png) repeat-x scroll center top;
 
 #mainMenu a {
 font-weight: bold;
+font-size: 1.1em;
+font-family: Bookman Old Style;
 text-decoration: none;
 padding: 0.6em 1.6em 0.8em 1.6em;
 color: #FFF;
