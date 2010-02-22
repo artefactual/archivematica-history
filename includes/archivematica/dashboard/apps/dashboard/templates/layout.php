@@ -17,18 +17,9 @@
       </div>
     </div>
 
-    <div class="menu" id="mainMenu">
-      <h2 class="element-invisible">Main menu</h2>
-      <ul>
-        <li><?php echo link_to('Receive SIP', array('module' => 'sip', 'action' => 'index')) ?></li>
-        <li><?php echo link_to('Prepare AIP', array('module' => 'aip', 'action' => 'index')) ?></li>
-        <li><?php echo link_to('Store AIP', array('module' => 'aip', 'action' => 'index')) ?></li>
-        <li><?php echo link_to('Prepare DIP', array('module' => 'aip', 'action' => 'index')) ?></li>
-        <li><?php echo link_to('Monitor Preservation', array('module' => 'aip', 'action' => 'index')) ?></li>
-      </ul>
-    </div>
-
-    <div id="page">
+    <?php echo get_component('menu', 'mainMenu') ?>
+ 
+   <div id="page">
 
     <div id="content">
       <?php echo $sf_content ?>
