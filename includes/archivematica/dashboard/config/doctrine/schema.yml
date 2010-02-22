@@ -2,13 +2,14 @@
 SipStatus:
   columns:
     name: { type: string(255), notnull: true, unique: true }
+    icon: { type: string(255) }
 
 Sip:
   columns:
     sip_status_id:  { type: integer, notnull: true }
     identifier:     { type: string(255) }
     title:          { type: string(255), notnull: true }
-    dateSubmitted:  { type: timestamp(25), notnull: true }
+    dateReceived:  { type: timestamp(25), notnull: true }
     provenance:     { type: string(255) }
     partOf:         { type: string(255) }
     checksum:       { type: string(255) }
@@ -19,6 +20,7 @@ Sip:
 AipStatus:
   columns:
     name: { type: string(255), notnull: true, unique: true }
+    icon: { type: string(255) }
 
 Aip:
   columns:
@@ -35,6 +37,7 @@ Aip:
 FileStatus:
   columns:
     name: { type: string(255), notnull: true, unique: true }
+    icon: { type: string(255) }
 
 File:
   columns:
