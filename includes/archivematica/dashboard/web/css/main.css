@@ -123,6 +123,11 @@ padding: 0.15em;
 background: #D1E8EE;
 }
 
+.statusIcon {
+margin: 0 0.4em 0 0;
+float: left;
+}
+
 table {
 margin:1em 0;
 width:100%;

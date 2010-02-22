@@ -9,20 +9,20 @@
 <table>
   <thead>
     <tr>
-      <th><?php echo __('Status')?></th>
+      <th><?php echo __('SIP Status')?></th>
       <th><?php echo __('Identifier') ?></th>
       <th><?php echo __('Title') ?></th>
-      <th><?php echo __('Date submitted') ?></th>
+      <th><?php echo __('Date received') ?></th>
       <th><?php echo __('Provenance') ?></th>
     </tr>
   </thead>
   <tbody>
     <?php foreach ($sips as $sip): ?>
     <tr class="<?php echo 0 == $row++ % 2 ? 'even' : 'odd' ?>">
-      <td><?php echo $sip->getSipStatus() ?></td>
+      <td><div class="statusIcon"><?php echo image_tag($sip->getSipStatus()->getIcon())?></div><?php echo $sip->getSipStatus()->getName() ?></td>
       <td><a href="<?php echo url_for('sip/show?id='.$sip->getId()) ?>"><?php echo $sip->getIdentifier() ?></a></td>
       <td><?php echo $sip->getTitle() ?></td>
-      <td><?php echo $sip->getDateSubmitted() ?></td>
+      <td><?php echo $sip->getDateReceived() ?></td>
       <td><?php echo $sip->getProvenance() ?></td>
     </tr>
     <?php endforeach; ?>
