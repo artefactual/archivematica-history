@@ -8,7 +8,7 @@ background-color: #d1e8ee;
 }
 
 #page {
-margin: 0 2em 0 2em;
+padding: 2em;
 }
 
 h1 {
@@ -50,6 +50,7 @@ text-align: right;
 }
 
 #logo {
+margin: 0 1em;
 }
 
 .menu ul {
@@ -65,7 +66,7 @@ text-shadow:1px 1px rgba(0, 0, 0, 0.2);
 }
 
 #mainMenu {
-margin: 0 0 2em 0;
+//margin: 0 0 2em 0;
 padding: 1.4em 2em 0.8em 2em;
 -moz-background-clip:border;
 -moz-background-inline-policy:continuous;
