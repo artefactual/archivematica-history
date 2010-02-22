@@ -1,13 +1,18 @@
-<h1>Sips List</h1>
+<div class="toolbar">
+  <ul>
+    <li><?php echo link_to(image_tag('folder-new.png'), array('module' => 'sip', 'action' => 'new'), array('alt' => __('new SIP'))) ?></li>
+    <li><?php echo link_to(image_tag('document-print.png'), array('module' => 'report', 'action' => 'index'), array('alt' => __('print report'))) ?></li>
+    <li><?php echo link_to(image_tag('system-search.png'), array('module' => 'search', 'action' => 'index'), array('alt' => __('search'))) ?></li>
+</div>
 
 <table>
   <thead>
     <tr>
-      <th>Status</th>
-      <th>Identifier</th>
-      <th>Title</th>
-      <th>Date submitted</th>
-      <th>Provenance</th>
+      <th><?php echo __('Status')?></th>
+      <th><?php echo __('Identifier') ?></th>
+      <th><?php echo __('Title') ?></th>
+      <th><?php echo __('Date submitted') ?></th>
+      <th><?php echo __('Provenance') ?></th>
     </tr>
   </thead>
   <tbody>
@@ -22,5 +27,3 @@
     <?php endforeach; ?>
   </tbody>
 </table>
-
-  <a href="<?php echo url_for('sip/new') ?>">New</a>

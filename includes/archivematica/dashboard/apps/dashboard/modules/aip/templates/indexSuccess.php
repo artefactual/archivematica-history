@@ -1,13 +1,18 @@
-<h1>Aips List</h1>
+<div class="toolbar">
+  <ul>
+    <li><?php echo link_to(image_tag('folder-new.png'), array('module' => 'aip', 'action' => 'new'), array('alt' => __('new AIP'))) ?></li>
+    <li><?php echo link_to(image_tag('document-print.png'), array('module' => 'report', 'action' => 'index'), array('alt' => __('print report'))) ?></li>
+    <li><?php echo link_to(image_tag('system-search.png'), array('module' => 'search', 'action' => 'index'), array('alt' => __('search'))) ?></li>
+</div>
 
 <table>
   <thead>
     <tr>
-      <th>Aip status</th>
-      <th>Identifier</th>
-      <th>Date accepted</th>
-      <th>Location</th>
-      <th>Dip location</th>
+      <th><?php echo __('Status') ?></th>
+      <th><?php echo __('Identifier') ?></th>
+      <th><?php echo __('Date accepted') ?></th>
+      <th><?php echo __('Location') ?></th>
+      <th><?php echo __('Dip location') ?></th>
     </tr>
   </thead>
   <tbody>
@@ -22,5 +27,3 @@
     <?php endforeach; ?>
   </tbody>
 </table>
-
-  <a href="<?php echo url_for('aip/new') ?>">New</a>
