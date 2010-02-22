@@ -112,16 +112,15 @@ margin: 0 0.2em;
 }
 
 .toolbar img {
-border: 3px solid #FFF;
+border: 2px solid #D1E8EE;
 padding: 0.15em;
--moz-box-shadow: 1px 1px 1px #FFF;
+-moz-box-shadow: 1px 1px 1px #D1E8EE;
 -moz-border-radius: 10px;
 }
 
 .toolbar img:hover {
-background: #FFF;
+background: #D1E8EE;
 }
-
 
 table {
 margin:1em 0;
