@@ -1,9 +1,9 @@
 <div class="toolbar">
   <ul>
-    <li><?php echo link_to(image_tag('folder_add_48.png'), array('module' => 'aip', 'action' => 'new'), array('alt' => __('new AIP'))) ?></li>
-    <li><?php echo link_to(image_tag('refresh_48.png'), array('module' => 'aip', 'action' => 'index'), array('alt' => __('refresh page'))) ?></li>
-    <li><?php echo link_to(image_tag('printer_48.png'), array('module' => 'report', 'action' => 'index'), array('alt' => __('print report'))) ?></li>
-    <li><?php echo link_to(image_tag('search_48.png'), array('module' => 'search', 'action' => 'index'), array('alt' => __('search'))) ?></li>
+    <li><?php echo link_to(image_tag('folder_add_48.png'), array('module' => 'aip', 'action' => 'new'), array('title' => __('new AIP'))) ?></li>
+    <li><?php echo link_to(image_tag('refresh_48.png'), array('module' => 'aip', 'action' => 'index'), array('title' => __('refresh page'))) ?></li>
+    <li><?php echo link_to(image_tag('printer_48.png'), array('module' => 'report', 'action' => 'index'), array('title' => __('print report'))) ?></li>
+    <li><?php echo link_to(image_tag('search_48.png'), array('module' => 'search', 'action' => 'index'), array('title' => __('search'))) ?></li>
 </div>
 
 <table>
