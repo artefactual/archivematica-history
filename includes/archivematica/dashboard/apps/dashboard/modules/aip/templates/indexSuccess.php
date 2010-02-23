@@ -1,3 +1,4 @@
+<h2 class="element-invisible">Toolbar</h2>
 <div class="toolbar">
   <ul>
     <li><?php echo link_to(image_tag('folder_add_48.png'), array('module' => 'aip', 'action' => 'new'), array('title' => __('new AIP'))) ?></li>
