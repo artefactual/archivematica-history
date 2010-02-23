@@ -5,17 +5,17 @@ SipStatus:
     name: received
     icon: arrow_down_green_24.png
   sipstatus2:
-    name: processing
-    icon: gnome-panel-clock_24.png
-  sipstatus3:
-    name: ingested
+    name: accepted
     icon: accepted_24.png
-  sipstatus4:
-    name: ingest warning
-    icon: warning_24.png
-  sipstatus5:
-    name: ingest error
+  sipstatus3:
+    name: rejected
     icon: cancel_24.png
+  sipstatus4:
+    name: preparing AIP
+    icon: box_download_24.png
+  sipstatus5:
+    name: AIP stored
+    icon: box_24.png
 
 Sip:
   sip1:
@@ -107,13 +107,23 @@ SipStatusLog:
 
 AipStatus:
   aipstatus1:
-    name: ready for storage
+    name: processing
+    icon: gnome-panel-clock_24.png
   aipstatus2:
-    name: in storage
+    name: processing warning
+    icon: warning_24.png
   aipstatus3:
-    name: failed integrity check
+    name: processing error
+    icon: cancel_24.png
+  aipstatus4: 
+    name: processing complete
+    icon: accepted_24.png
   aipstatus5: 
-    name: awaiting update
+    name: stored
+    icon: box_24.png
+  aipstatus6:
+    name: storage error
+    icon: cancel_24.png
 
 Aip:
   aip1:
