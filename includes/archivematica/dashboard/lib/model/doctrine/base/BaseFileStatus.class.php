@@ -7,16 +7,13 @@
  * 
  * @property string $name
  * @property string $icon
- * @property Doctrine_Collection $Aips
  * @property Doctrine_Collection $FileStatusLogs
  * 
  * @method string              getName()           Returns the current record's "name" value
  * @method string              getIcon()           Returns the current record's "icon" value
- * @method Doctrine_Collection getAips()           Returns the current record's "Aips" collection
  * @method Doctrine_Collection getFileStatusLogs() Returns the current record's "FileStatusLogs" collection
  * @method FileStatus          setName()           Sets the current record's "name" value
  * @method FileStatus          setIcon()           Sets the current record's "icon" value
- * @method FileStatus          setAips()           Sets the current record's "Aips" collection
  * @method FileStatus          setFileStatusLogs() Sets the current record's "FileStatusLogs" collection
  * 
  * @package    dashboard
@@ -44,10 +41,6 @@ abstract class BaseFileStatus extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('File as Aips', array(
-             'local' => 'id',
-             'foreign' => 'file_status_id'));
-
         $this->hasMany('FileStatusLog as FileStatusLogs', array(
              'local' => 'id',
              'foreign' => 'file_status_id'));

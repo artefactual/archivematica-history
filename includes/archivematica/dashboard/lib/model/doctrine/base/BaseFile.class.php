@@ -7,7 +7,6 @@
  * 
  * @property integer $sip_id
  * @property integer $aip_id
- * @property integer $file_status_id
  * @property string $identifier
  * @property string $title
  * @property string $original_filename
@@ -18,14 +17,12 @@
  * @property string $checksum_type
  * @property Sip $Sip
  * @property Aip $Aip
- * @property FileStatus $FileStatus
  * @property Doctrine_Collection $Formats
  * @property Doctrine_Collection $FileStatusLogs
  * @property Doctrine_Collection $FormatRole
  * 
  * @method integer             getSipId()             Returns the current record's "sip_id" value
  * @method integer             getAipId()             Returns the current record's "aip_id" value
- * @method integer             getFileStatusId()      Returns the current record's "file_status_id" value
  * @method string              getIdentifier()        Returns the current record's "identifier" value
  * @method string              getTitle()             Returns the current record's "title" value
  * @method string              getOriginalFilename()  Returns the current record's "original_filename" value
@@ -36,13 +33,11 @@
  * @method string              getChecksumType()      Returns the current record's "checksum_type" value
  * @method Sip                 getSip()               Returns the current record's "Sip" value
  * @method Aip                 getAip()               Returns the current record's "Aip" value
- * @method FileStatus          getFileStatus()        Returns the current record's "FileStatus" value
  * @method Doctrine_Collection getFormats()           Returns the current record's "Formats" collection
  * @method Doctrine_Collection getFileStatusLogs()    Returns the current record's "FileStatusLogs" collection
  * @method Doctrine_Collection getFormatRole()        Returns the current record's "FormatRole" collection
  * @method File                setSipId()             Sets the current record's "sip_id" value
  * @method File                setAipId()             Sets the current record's "aip_id" value
- * @method File                setFileStatusId()      Sets the current record's "file_status_id" value
  * @method File                setIdentifier()        Sets the current record's "identifier" value
  * @method File                setTitle()             Sets the current record's "title" value
  * @method File                setOriginalFilename()  Sets the current record's "original_filename" value
@@ -53,7 +48,6 @@
  * @method File                setChecksumType()      Sets the current record's "checksum_type" value
  * @method File                setSip()               Sets the current record's "Sip" value
  * @method File                setAip()               Sets the current record's "Aip" value
- * @method File                setFileStatus()        Sets the current record's "FileStatus" value
  * @method File                setFormats()           Sets the current record's "Formats" collection
  * @method File                setFileStatusLogs()    Sets the current record's "FileStatusLogs" collection
  * @method File                setFormatRole()        Sets the current record's "FormatRole" collection
@@ -73,9 +67,6 @@ abstract class BaseFile extends sfDoctrineRecord
              'notnull' => true,
              ));
         $this->hasColumn('aip_id', 'integer', null, array(
-             'type' => 'integer',
-             ));
-        $this->hasColumn('file_status_id', 'integer', null, array(
              'type' => 'integer',
              ));
         $this->hasColumn('identifier', 'string', 255, array(
@@ -121,11 +112,6 @@ abstract class BaseFile extends sfDoctrineRecord
 
         $this->hasOne('Aip', array(
              'local' => 'aip_id',
-             'foreign' => 'id',
-             'onDelete' => 'CASCADE'));
-
-        $this->hasOne('FileStatus', array(
-             'local' => 'file_status_id',
              'foreign' => 'id',
              'onDelete' => 'CASCADE'));
 
