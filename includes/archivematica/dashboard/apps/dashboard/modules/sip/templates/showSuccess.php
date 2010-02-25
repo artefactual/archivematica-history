@@ -5,10 +5,6 @@
       <td><?php echo $sip->getId() ?></td>
     </tr>
     <tr>
-      <th>Sip status:</th>
-      <td><?php echo $sip->getSipStatusId() ?></td>
-    </tr>
-    <tr>
       <th>Identifier:</th>
       <td><?php echo $sip->getIdentifier() ?></td>
     </tr>
@@ -17,8 +13,8 @@
       <td><?php echo $sip->getTitle() ?></td>
     </tr>
     <tr>
-      <th>Date submitted:</th>
-      <td><?php echo $sip->getDateSubmitted() ?></td>
+      <th>Date received:</th>
+      <td><?php echo $sip->getDateReceived() ?></td>
     </tr>
     <tr>
       <th>Provenance:</th>
