@@ -72,38 +72,43 @@ SipStatusLog:
     opened_at:  '2010-01-27 15:24:22'
   log2:
     Sip:        sip2
-    SipStatus:  sipstatus2
-    opened_at:  '2010-01-27 15:24:22'
+    SipStatus:  sipstatus1
+    opened_at:  '2010-01-25 11:21:01'
   log3:
     Sip:        sip3
-    SipStatus:  sipstatus3
-    opened_at:  '2010-01-27 15:24:22'
+    SipStatus:  sipstatus2
+    opened_at:  '2010-01-24 09:19:54'
   log4:
     Sip:        sip4
     SipStatus:  sipstatus4
-    opened_at:  '2010-01-27 15:24:22'
+    opened_at:  '2010-01-27 11:18:22'
   log5:
     Sip:        sip5
-    SipStatus:  sipstatus5
-    opened_at:  '2010-01-27 15:24:22'
+    SipStatus:  sipstatus4
+    opened_at:  '2010-01-26 10:46:22'
   log6:
     Sip:        sip6
-    SipStatus:  sipstatus1
-    opened_at:  '2010-01-27 15:24:22'
+    SipStatus:  sipstatus3
+    opened_at:  '2010-01-24 12:24:09'
   log7:
     Sip:        sip7
-    SipStatus:  sipstatus2
-    opened_at:  '2010-01-27 15:24:22'
+    SipStatus:  sipstatus5
+    opened_at:  '2010-01-26 13:28:12'
   log8:
-    Sip:        sip3
+    Sip:        sip7
     SipStatus:  sipstatus1
     opened_at:  '2010-01-12 15:24:22'
-    closed_at:  '2010-01-13 15:24:22'
+    closed_at:  '2010-01-13 12:24:03'
   log9:
-    Sip:        sip3
+    Sip:        sip7
     SipStatus:  sipstatus2
-    opened_at:  '2010-01-14 15:24:22'
-    closed_at:  '2010-01-15 15:24:22'
+    opened_at:  '2010-01-14 09:34:37'
+    closed_at:  '2010-01-15 16:44:03'
+  log10:
+    Sip:        sip7
+    SipStatus:  sipstatus4
+    opened_at:  '2010-01-25 15:24:22'
+    closed_at:  '2010-01-26 05:01:11'
 
 AipStatus:
   aipstatus1:
