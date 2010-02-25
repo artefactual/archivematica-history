@@ -20,7 +20,7 @@
   <tbody>
     <?php foreach ($sips as $sip): ?>
     <tr class="<?php echo 0 == $row++ % 2 ? 'even' : 'odd' ?>">
-      <td><div class="statusIcon"><?php echo image_tag($sip->getSipStatus()->getIcon())?></div><?php echo $sip->getSipStatus()->getName() ?></td>
+      <td><div class="statusIcon"><?php echo image_tag($sip->getStatus()->getIcon())?></div><?php echo $sip->getStatus()->getName() ?></td>
       <td><a href="<?php echo url_for('sip/show?id='.$sip->getId()) ?>"><?php echo $sip->getIdentifier() ?></a></td>
       <td><?php echo $sip->getTitle() ?></td>
       <td><?php echo $sip->getDateReceived() ?></td>
