@@ -23,4 +23,24 @@ class Sip extends BaseSip
  
     return $q->fetchOne();
   }
+
+  public function getStatusLog()
+  {
+    return Doctrine_Query::create()
+      ->from('SipStatusLog s')
+      ->where('s.sip_id = ?', $this->getId())
+      ->andWhere('s.closed_at IS NOT NULL')
+      ->orderBy('s.closed_at DESC')
+      ->execute();
+  }
+
+  public function getCurrentStatusLog()
+  {
+    $q = Doctrine_Query::create()
+      ->from('SipStatusLog s')
+      ->where('s.sip_id = ?', $this->getId())
+      ->andWhere('s.closed_at IS NULL');
+
+    return $q->fetchOne();
+  }  
 }
