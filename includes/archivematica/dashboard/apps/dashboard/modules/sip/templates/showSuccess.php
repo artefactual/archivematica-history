@@ -37,6 +37,23 @@
 
 <hr />
 
+<h2>Status log</h2>
+<table>
+  <tbody>
+  <thead>
+    <tr>
+      <th><?php echo __('SIP status')?></th>
+      <th><?php echo __('Opened at') ?></th>
+      <th><?php echo __('Closed at') ?></th>
+    </tr>
+  </thead>
+  <?php foreach($sip->getSipStatusLogs() as $log): ?>
+    <tr class="<?php echo 0 == $row++ % 2 ? 'even' : 'odd' ?>">
+    <td><?php echo $log->getSipStatus()?></td><td><?php echo $log->getOpenedAt() ?></td><td><?php echo $log->getClosedAt() ?></td></tr>
+    <?php endforeach; ?>
+  </tbody>
+</table>
+
 <a href="<?php echo url_for('sip/edit?id='.$sip->getId()) ?>">Edit</a>
 &nbsp;
 <a href="<?php echo url_for('sip/index') ?>">List</a>
