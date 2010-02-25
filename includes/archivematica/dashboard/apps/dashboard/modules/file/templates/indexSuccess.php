@@ -6,7 +6,6 @@
       <th>Id</th>
       <th>Sip</th>
       <th>Aip</th>
-      <th>File status</th>
       <th>Identifier</th>
       <th>Title</th>
       <th>Original filename</th>
@@ -23,7 +22,6 @@
       <td><a href="<?php echo url_for('file/show?id='.$file->getId()) ?>"><?php echo $file->getId() ?></a></td>
       <td><?php echo $file->getSipId() ?></td>
       <td><?php echo $file->getAipId() ?></td>
-      <td><?php echo $file->getFileStatusId() ?></td>
       <td><?php echo $file->getIdentifier() ?></td>
       <td><?php echo $file->getTitle() ?></td>
       <td><?php echo $file->getOriginalFilename() ?></td>

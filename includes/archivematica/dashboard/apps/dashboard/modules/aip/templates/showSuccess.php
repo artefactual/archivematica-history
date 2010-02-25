@@ -5,10 +5,6 @@
       <td><?php echo $aip->getId() ?></td>
     </tr>
     <tr>
-      <th>Aip status:</th>
-      <td><?php echo $aip->getAipStatusId() ?></td>
-    </tr>
-    <tr>
       <th>Identifier:</th>
       <td><?php echo $aip->getIdentifier() ?></td>
     </tr>

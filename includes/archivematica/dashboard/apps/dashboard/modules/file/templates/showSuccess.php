@@ -13,10 +13,6 @@
       <td><?php echo $file->getAipId() ?></td>
     </tr>
     <tr>
-      <th>File status:</th>
-      <td><?php echo $file->getFileStatusId() ?></td>
-    </tr>
-    <tr>
       <th>Identifier:</th>
       <td><?php echo $file->getIdentifier() ?></td>
     </tr>
