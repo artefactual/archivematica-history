@@ -31,7 +31,6 @@ AipStatus:
 
 Aip:
   columns:
-    aip_status_id:     { type: integer, notnull: true }
     identifier:        { type: string(255) }
     dateAccepted:      { type: timestamp(25), notnull: true }
     checksum:          { type: string(255) }
@@ -58,7 +57,6 @@ File:
   columns:
     sip_id:             { type: integer, notnull: true }
     aip_id:             { type: integer }
-    file_status_id:     { type: integer }
     identifier:         { type: string(255) }
     title:              { type: string(255) } 
     original_filename:  { type: string(255) }
@@ -70,7 +68,6 @@ File:
   relations:
     Sip:                { onDelete: CASCADE, local: sip_id, foreign: id, foreignAlias: Files } 
     Aip:                { onDelete: CASCADE, local: aip_id, foreign: id, foreignAlias: Files }
-    FileStatus:         { onDelete: CASCADE, local: file_status_id, foreign: id, foreignAlias: Aips } 
     Formats:            { class: Format, refClass: FormatRole, local: format_id, foreign: file_id, foreignAlias: Files }
 
 FileStatusLog:
