@@ -38,7 +38,6 @@ class MainMenuComponent extends sfComponent
   $this->option2 = ($this->mdlName =='aip' ? 'active' : null);
   $this->option3 = null;
   $this->option4 = null;
-  $this->option5 = null;
   }
 }
 
