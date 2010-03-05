@@ -2,20 +2,23 @@
 
 SipStatus:
   sipstatus1:
-    name: received
-    icon: arrow_down_green_24.png
+    name: quarantine
+    icon: security-medium-24.png
   sipstatus2:
-    name: accepted
-    icon: accepted_24.png
+    name: processing
+    icon: appointment-soon-24.png
   sipstatus3:
-    name: rejected
-    icon: cancel_24.png
+    name: error
+    icon: warning-24.png
   sipstatus4:
-    name: preparing AIP
-    icon: box_download_24.png
+    name: rejected
+    icon: dialog-error-24.png
   sipstatus5:
-    name: AIP stored
-    icon: box_24.png
+    name: completed
+    icon: accepted-24.png
+  sipstatus6:
+    name: stored
+    icon: box-24.png
 
 Sip:
   sip1:
@@ -59,6 +62,20 @@ Sip:
     partOf:         'Public Works Department series'
 
   sip7:
+    identifier:     340c94ff-c62e-4ddd-a5f7-17016728fd0b
+    title:          Parks and Recreation transfer 2010-1
+    dateReceived:   '2010-01-17 10:19:43'
+    provenance:     'Parks and Recreation shared directories'
+    partOf:         'Parks and Recreation Board fonds'
+
+  sip8:
+    identifier:     66ab2273-cc87-464d-a1c6-81b632888c46
+    title:          Fair Housing Society transfer
+    dateReceived:   '2010-01-16 13:34:06'
+    provenance:     'Fair Housing Society transfer'
+    partOf:         'Fair Housing Society fonds'
+
+  sip9:
     identifier:     91ce3f3d-20a8-4e42-825e-9cc1737dad6a
     title:          TRIM transfer 2010-1
     dateReceived:   '2010-01-09 12:17:12'
@@ -80,33 +97,41 @@ SipStatusLog:
     opened_at:  '2010-01-24 09:19:54'
   log4:
     Sip:        sip4
-    SipStatus:  sipstatus4
+    SipStatus:  sipstatus3
     opened_at:  '2010-01-27 11:18:22'
   log5:
     Sip:        sip5
-    SipStatus:  sipstatus4
+    SipStatus:  sipstatus2
     opened_at:  '2010-01-26 10:46:22'
   log6:
     Sip:        sip6
-    SipStatus:  sipstatus3
+    SipStatus:  sipstatus4
     opened_at:  '2010-01-24 12:24:09'
   log7:
     Sip:        sip7
     SipStatus:  sipstatus5
-    opened_at:  '2010-01-26 13:28:12'
+    opened_at:  '2010-01-14 09:34:37'
   log8:
-    Sip:        sip7
+    Sip:        sip8
+    SipStatus:  sipstatus6
+    opened_at:  '2010-01-25 15:24:22'
+  log9:
+    Sip:        sip9
+    SipStatus:  sipstatus6
+    opened_at:  '2010-01-26 13:28:12'
+  log10:
+    Sip:        sip9
     SipStatus:  sipstatus1
     opened_at:  '2010-01-12 15:24:22'
     closed_at:  '2010-01-13 12:24:03'
-  log9:
-    Sip:        sip7
+  log11:
+    Sip:        sip9
     SipStatus:  sipstatus2
     opened_at:  '2010-01-14 09:34:37'
     closed_at:  '2010-01-15 16:44:03'
-  log10:
-    Sip:        sip7
-    SipStatus:  sipstatus4
+  log12:
+    Sip:        sip9
+    SipStatus:  sipstatus5
     opened_at:  '2010-01-25 15:24:22'
     closed_at:  '2010-01-26 05:01:11'
 
