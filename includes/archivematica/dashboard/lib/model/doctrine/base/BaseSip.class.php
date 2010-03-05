@@ -10,8 +10,6 @@
  * @property timestamp $dateReceived
  * @property string $provenance
  * @property string $partOf
- * @property string $checksum
- * @property string $checksum_type
  * @property Doctrine_Collection $SipStatusLogs
  * @property Doctrine_Collection $Files
  * 
@@ -20,8 +18,6 @@
  * @method timestamp           getDateReceived()  Returns the current record's "dateReceived" value
  * @method string              getProvenance()    Returns the current record's "provenance" value
  * @method string              getPartOf()        Returns the current record's "partOf" value
- * @method string              getChecksum()      Returns the current record's "checksum" value
- * @method string              getChecksumType()  Returns the current record's "checksum_type" value
  * @method Doctrine_Collection getSipStatusLogs() Returns the current record's "SipStatusLogs" collection
  * @method Doctrine_Collection getFiles()         Returns the current record's "Files" collection
  * @method Sip                 setIdentifier()    Sets the current record's "identifier" value
@@ -29,8 +25,6 @@
  * @method Sip                 setDateReceived()  Sets the current record's "dateReceived" value
  * @method Sip                 setProvenance()    Sets the current record's "provenance" value
  * @method Sip                 setPartOf()        Sets the current record's "partOf" value
- * @method Sip                 setChecksum()      Sets the current record's "checksum" value
- * @method Sip                 setChecksumType()  Sets the current record's "checksum_type" value
  * @method Sip                 setSipStatusLogs() Sets the current record's "SipStatusLogs" collection
  * @method Sip                 setFiles()         Sets the current record's "Files" collection
  * 
@@ -63,14 +57,6 @@ abstract class BaseSip extends sfDoctrineRecord
              'length' => '255',
              ));
         $this->hasColumn('partOf', 'string', 255, array(
-             'type' => 'string',
-             'length' => '255',
-             ));
-        $this->hasColumn('checksum', 'string', 255, array(
-             'type' => 'string',
-             'length' => '255',
-             ));
-        $this->hasColumn('checksum_type', 'string', 255, array(
              'type' => 'string',
              'length' => '255',
              ));

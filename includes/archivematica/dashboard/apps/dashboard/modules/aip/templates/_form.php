@@ -35,20 +35,6 @@
         </td>
       </tr>
       <tr>
-        <th><?php echo $form['checksum']->renderLabel() ?></th>
-        <td>
-          <?php echo $form['checksum']->renderError() ?>
-          <?php echo $form['checksum'] ?>
-        </td>
-      </tr>
-      <tr>
-        <th><?php echo $form['checksum_type']->renderLabel() ?></th>
-        <td>
-          <?php echo $form['checksum_type']->renderError() ?>
-          <?php echo $form['checksum_type'] ?>
-        </td>
-      </tr>
-      <tr>
         <th><?php echo $form['location']->renderLabel() ?></th>
         <td>
           <?php echo $form['location']->renderError() ?>
