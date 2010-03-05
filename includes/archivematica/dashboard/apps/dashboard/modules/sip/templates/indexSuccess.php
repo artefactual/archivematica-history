@@ -1,10 +1,10 @@
 <h2 class="element-invisible">Toolbar</h2>
 <div class="toolbar">
   <ul>
-    <li><?php echo link_to(image_tag('folder_add_48.png'), array('module' => 'sip', 'action' => 'new'), array('title' => __('new SIP'))) ?></li>
-    <li><?php echo link_to(image_tag('refresh_48.png'), array('module' => 'sip', 'action' => 'index'), array('title' => __('refresh page'))) ?></li>
-    <li><?php echo link_to(image_tag('printer_48.png'), array('module' => 'report', 'action' => 'index'), array('title' => __('print report'))) ?></li>
-    <li><?php echo link_to(image_tag('search_48.png'), array('module' => 'search', 'action' => 'index'), array('title' => __('search'))) ?></li>
+    <li><?php echo link_to(image_tag('folder-new-32.png'), array('module' => 'sip', 'action' => 'new'), array('title' => __('new SIP'))) ?></li>
+    <li><?php echo link_to(image_tag('view-refresh-32.png'), array('module' => 'sip', 'action' => 'index'), array('title' => __('refresh page'))) ?></li>
+    <li><?php echo link_to(image_tag('document-print-32.png'), array('module' => 'report', 'action' => 'index'), array('title' => __('print report'))) ?></li>
+    <li><?php echo link_to(image_tag('search-32.png'), array('module' => 'search', 'action' => 'index'), array('title' => __('search'))) ?></li>
 </div>
 
 <table>
