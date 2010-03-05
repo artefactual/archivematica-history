@@ -13,14 +13,6 @@
       <td><?php echo $aip->getDateAccepted() ?></td>
     </tr>
     <tr>
-      <th>Checksum:</th>
-      <td><?php echo $aip->getChecksum() ?></td>
-    </tr>
-    <tr>
-      <th>Checksum type:</th>
-      <td><?php echo $aip->getChecksumType() ?></td>
-    </tr>
-    <tr>
       <th>Location:</th>
       <td><?php echo $aip->getLocation() ?></td>
     </tr>

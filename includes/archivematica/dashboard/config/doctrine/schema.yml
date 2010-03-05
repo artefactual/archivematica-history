@@ -11,8 +11,6 @@ Sip:
     dateReceived:   { type: timestamp(25), notnull: true }
     provenance:     { type: string(255) }
     partOf:         { type: string(255) }
-    checksum:       { type: string(255) }
-    checksum_type:  { type: string(255) }
 
 SipStatusLog:
   columns:
@@ -33,8 +31,6 @@ Aip:
   columns:
     identifier:        { type: string(255) }
     dateAccepted:      { type: timestamp(25), notnull: true }
-    checksum:          { type: string(255) }
-    checksum_type:     { type: string(255) }
     location:          { type: string(255) }
     dip_location:      { type: string(255) }
 
