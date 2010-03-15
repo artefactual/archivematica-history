@@ -29,6 +29,8 @@ do
 		mkdir /home/demo/ingestLogs/$UUID		
 		mv "$FILE" /tmp/$UUID
 		chmod 700 /tmp/$UUID/*
+		#extract all of the .zip .rar etc.
+		python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
 		cd /tmp/$UUID; /opt/archivematica/createXML.py >> /home/demo/ingestLogs/$UUID/SIP.xml
 		detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
