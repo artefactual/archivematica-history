@@ -28,10 +28,10 @@ chroot $1 cp /etc/apt/sources.list /etc/apt/sources.list.bak
 chroot $1 sed -i -e "s/# deb/deb/g" /etc/apt/sources.list
 chroot $1 sed -i -e "s/localhost:9999/archive.ubuntu.com/g" /etc/apt/sources.list
 chroot $1 sed -i -e "s/127.0.0.1:9999/archive.ubuntu.com/g" /etc/apt/sources.list
-echo "deb http://archive.ubuntu.com/ubuntu/ jaunty-proposed main restricted universe multiverse" >> $1/etc/apt/sources.list
+echo "deb http://archive.ubuntu.com/ubuntu/ karmic-proposed main restricted universe multiverse" >> $1/etc/apt/sources.list
 chroot $1 aptitude update
-chroot $1 aptitude -q -Ry build-dep -d openjdk-6-jre jacksum openoffice.org-java-common
-chroot $1 aptitude -t jaunty-proposed install openjdk-6-jre jacksum openoffice.org-java-common
+#chroot $1 aptitude -q -Ry build-dep -d openjdk-6-jre jacksum openoffice.org-java-common
+#chroot $1 aptitude -t jaunty-proposed install openjdk-6-jre jacksum openoffice.org-java-common
 chroot $1 rm -rf /home/demo/Documents
 chroot $1 rm -rf /home/demo/Music
 chroot $1 rm -rf /home/demo/Pictures
