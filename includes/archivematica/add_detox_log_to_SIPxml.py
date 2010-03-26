@@ -1,0 +1,125 @@
+import sys
+
+try:
+  from lxml import etree
+  print("running with lxml.etree")
+except ImportError:
+  try:
+    # Python 2.5
+    import xml.etree.cElementTree as etree
+    print("running with cElementTree on Python 2.5+")
+  except ImportError:
+    try:
+      # Python 2.5
+      import xml.etree.ElementTree as etree
+      print("running with ElementTree on Python 2.5+")
+    except ImportError:
+      try:
+        # normal cElementTree install
+        import cElementTree as etree
+        print("running with cElementTree")
+      except ImportError:
+        try:
+          # normal ElementTree install
+          import elementtree.ElementTree as etree
+          print("running with ElementTree")
+        except ImportError:
+          print("Failed to import ElementTree from any known place")
+
+
+def findDirectory(root, tag=None, text=None):
+	ret = []
+	if (not tag) and (not text):
+		#return all
+		for element in root:
+			ret.append(element)
+	else:
+		if tag:
+			if not text:
+				#match the tag
+				for element in root:
+					if element.tag == tag:
+						ret.append(element)
+			else:
+				#match tag and text
+				for element in root:
+					if element.tag == tag and element.text.rstrip() == text:
+						ret.append(element)
+		else:
+			#match the text
+			for element in root:
+				if element.text.rstrip() == text:
+					ret.append(element)
+	return ret
+
+#open
+detox_fh = open(sys.argv[1]+"/detox.log", "r")
+tree = etree.parse(sys.argv[1]+"/SIP.xml")
+root = tree.getroot()
+
+
+#read first line & find uuid
+line = detox_fh.readline()
+if not line:
+	print "error file empty or failed to open"
+else:
+	print "UUID: ",
+	line = line.strip()
+	uuid = line.split("/tmp/")
+	print uuid[1]
+	#if argv[1] != uuid or root.tag != uuid
+		#error mismatched logs
+		
+
+#... now have the proper folder lined up with xml
+#Each line is a list to process.
+
+
+line = detox_fh.readline()
+while line:
+	#line = line.lstrip()
+	detoxfiles = line.split(" -> ")
+	oldfile = detoxfiles[0].split("/tmp",1)
+	of = (oldfile[1].split("/"))
+	branch = root	
+
+	for folder in of[1:]:
+		current_branch = branch
+
+		#get the list of folders with matching names
+		dirs = findDirectory(branch, "dir")
+		for directory in dirs:
+			if directory.get("name") == folder:
+				branch = directory
+				break
+
+		#if the branch has changed.
+		if current_branch != branch:
+			#if the log indicates the folder name changed:
+			if folder == of[-1]:
+				#modify branch to add old name
+				branch.set("name", detoxfiles[1].split("/")[-1])
+				
+			continue
+		else:
+			#it may be a file
+			if folder == of[-1]:
+				files = findDirectory(branch, "file")
+				for fil in files:				
+					fi = findDirectory(fil, "name" , folder)
+					if fi and len(fi) == 1:
+						fi.text= detoxfiles[1].split("/")[-1]
+					else:
+						"error - logs don't correspond"
+
+			else:
+				print "error - logs don't correspond"
+				print folder
+				print of
+	
+	line = detox_fh.readline()
+
+
+tree.write(sys.argv[1]+"/SIPOUT.xml")
+     
+

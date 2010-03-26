@@ -8,7 +8,8 @@ from xml.sax.saxutils import quoteattr as xml_quoteattr
 path = "/home/demo/"
 
 def DirAsLessXML(path):
-    result = '  <dir name=%s>\n' % xml_quoteattr(os.path.basename(path))
+    result = '  <dir name=%s ' % xml_quoteattr(os.path.basename(path)) 
+    result += 'original_name=%s>\n' % xml_quoteattr(os.path.basename(path))
     for item in os.listdir(path):
         itempath = os.path.join(path, item)
         if os.path.isdir(itempath):
@@ -16,10 +17,11 @@ def DirAsLessXML(path):
                 DirAsLessXML(os.path.join(path, item)).split('\n'))
         elif os.path.isfile(itempath):
             myuuid = uuid.uuid4()
-            result += '    <filename>\n'
-            result += '      <previous>%s</previous>\n' % xml_quoteattr(item)
-            result += '      <UUID>%s</UUID>\n' % (myuuid)
-            result += '    </filename>\n'
+            result += '    <file>\n'
+            result += '       <name>%s</name>\n' % ''.join(xml_quoteattr(item).split("\"")[1:-1])
+            result += '       <original_name>%s</original_name>\n' % ''.join(xml_quoteattr(item).split("\"")[1:-1])
+            result += '       <UUID>%s</UUID>\n' % (myuuid)
+            result += '    </file>\n'
     result += '  </dir>\n'
     return result
 
