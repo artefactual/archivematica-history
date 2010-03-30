@@ -1,31 +1,5 @@
 import sys
-
-try:
-  from lxml import etree
-  print("running with lxml.etree")
-except ImportError:
-  try:
-    # Python 2.5
-    import xml.etree.cElementTree as etree
-    print("running with cElementTree on Python 2.5+")
-  except ImportError:
-    try:
-      # Python 2.5
-      import xml.etree.ElementTree as etree
-      print("running with ElementTree on Python 2.5+")
-    except ImportError:
-      try:
-        # normal cElementTree install
-        import cElementTree as etree
-        print("running with cElementTree")
-      except ImportError:
-        try:
-          # normal ElementTree install
-          import elementtree.ElementTree as etree
-          print("running with ElementTree")
-        except ImportError:
-          print("Failed to import ElementTree from any known place")
-
+import xml.etree.cElementTree as etree
 
 def findDirectory(root, tag=None, text=None):
 	ret = []
@@ -43,12 +17,12 @@ def findDirectory(root, tag=None, text=None):
 			else:
 				#match tag and text
 				for element in root:
-					if element.tag == tag and element.text.rstrip() == text:
+					if element.tag == tag and element.text == text:
 						ret.append(element)
 		else:
 			#match the text
 			for element in root:
-				if element.text.rstrip() == text:
+				if element.text == text:
 					ret.append(element)
 	return ret
 
@@ -77,7 +51,6 @@ else:
 
 line = detox_fh.readline()
 while line:
-	#line = line.lstrip()
 	detoxfiles = line.split(" -> ")
 	oldfile = detoxfiles[0].split("/tmp",1)
 	of = (oldfile[1].split("/"))
@@ -86,7 +59,7 @@ while line:
 	for folder in of[1:]:
 		current_branch = branch
 
-		#get the list of folders with matching names
+		#get the list of folders & find matching name
 		dirs = findDirectory(branch, "dir")
 		for directory in dirs:
 			if directory.get("name") == folder:
@@ -98,9 +71,9 @@ while line:
 			#if the log indicates the folder name changed:
 			if folder == of[-1]:
 				#modify branch to add old name
-				branch.set("name", detoxfiles[1].split("/")[-1])
-				
+				branch.set("name", (detoxfiles[1].split("/")[-1]).split("\n")[0])
 			continue
+
 		else:
 			#it may be a file
 			if folder == of[-1]:
@@ -108,12 +81,12 @@ while line:
 				for fil in files:				
 					fi = findDirectory(fil, "name" , folder)
 					if fi and len(fi) == 1:
-						fi.text= detoxfiles[1].split("/")[-1]
+						fi[0].text= detoxfiles[1].split("/")[-1]
 					else:
 						"error - logs don't correspond"
 
 			else:
-				print "error - logs don't correspond"
+				print "error - logs don't correspond2"
 				print folder
 				print of
 	
