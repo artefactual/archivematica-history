@@ -40,7 +40,7 @@ do
 				chmod 700 $NEWDOCS
 				clamscan --move=/home/demo/possiblevirii/  $NEWDOCS >> ~/ingestLogs/$UUID/virusSCAN.log
 				/opt/archivematica/folderaccess.sh  $NEWDOCS $UUID 
-				echo "Acession of $NEWDOCS completed successfully" >> ~/ingestLogs/accession.log
+				echo "Accession of $NEWDOCS completed successfully" >> ~/ingestLogs/accession.log
 				/opt/archivematica/normalize.sh $NEWDOCS $XENADIR $UUID
 			done
 		cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/ingestLogs		
