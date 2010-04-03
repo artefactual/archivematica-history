@@ -54,12 +54,16 @@ chroot $1 chmod -R 770 /home/demo/.mozilla
 chroot $1 ln -s /var/storeAIP/ /home/demo
 chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
+chroot $1 mkdir /home/demo/1-receiveSIP
+chroot $1 mkdir /home/demo/2-reviewSIP
+chroot $1 mkdir /home/demo/3-quarantine
+chroot $1 mkdir /home/demo/4-appraiseSIP
+chroot $1 mkdir /home/demo/5-prepareAIP
+chroot $1 mkdir /home/demo/6-reviewAIP	
+chroot $1 mkdir /home/demo/7-storeAIP
+chroot $1 mkdir /home/demo/8-uploadDIP
 chroot $1 mkdir /home/demo/ingestLogs
-chroot $1 mkdir /home/demo/receiveAIP
-chroot $1 mkdir /home/demo/quarantine
 chroot $1 mkdir /home/demo/possiblevirii
-chroot $1 mkdir /home/demo/receiveSIP
-chroot $1 mkdir /home/demo/ingestSIP
 chroot $1 mkdir /home/demo/SIPerrors
 
 #Gnome Integration/Customization

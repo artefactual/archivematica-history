@@ -21,7 +21,7 @@
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
 
-find ~/quarantine/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
+find ~/3-quarantine/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
 do
 	if [ -d "$FILE" ]; then
 		chmod 700 "$FILE"		
@@ -45,8 +45,8 @@ do
 			done
 		cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/ingestLogs		
 		BASEFILE=`basename "$FILE"`
-		/opt/externals/bagit/bin/bag create /home/demo/receiveAIP/"$BASEFILE"-$UUID.zip /tmp/$UUID/* --writer zip
-		/opt/archivematica/upload/upload-qubit.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/receiveAIP/"$BASEFILE"-"$UUID".zip
+		/opt/externals/bagit/bin/bag create /home/demo/4-appraiseSIP/"$BASEFILE"-$UUID.zip /tmp/$UUID/* --writer zip
+		/opt/archivematica/upload/upload-qubit.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/4-appraiseSIP/"$BASEFILE"-"$UUID".zip
 		rm -rf /tmp/$UUID
 		DISPLAY=:0.0 /usr/bin/notify-send "ingest" "ingest of $BASEFILE completed"
 	elif [ -f "$FILE" ]; then
