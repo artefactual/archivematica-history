@@ -40,7 +40,8 @@ chroot $1 rm -rf /home/demo/Templates
 chroot $1 rm -rf /home/demo/Videos
 
 #Install externals/archivematica
-chroot $1 mkdir /var/storeAIP
+chroot $1 mkdir /var/7-storeAIP
+chroot $1 ln -s /var/7-storeAIP/ /home/demo
 svn export includes/sampledata $1/home/demo/testFiles
 svn export includes/externals $1/opt/externals
 svn export includes/archivematica $1/opt/archivematica
@@ -51,7 +52,6 @@ chroot $1 crontab -u demo /etc/cron.tab
 cp -rf includes/incron.allow $1/etc/incron.allow
 cp -rf includes/incron.tab $1/etc/incron.tab
 chroot $1 chmod -R 770 /home/demo/.mozilla
-chroot $1 ln -s /var/storeAIP/ /home/demo
 chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 chroot $1 mkdir /home/demo/1-receiveSIP
@@ -60,7 +60,6 @@ chroot $1 mkdir /home/demo/3-quarantine
 chroot $1 mkdir /home/demo/4-appraiseSIP
 chroot $1 mkdir /home/demo/5-prepareAIP
 chroot $1 mkdir /home/demo/6-reviewAIP	
-chroot $1 mkdir /home/demo/7-storeAIP
 chroot $1 mkdir /home/demo/8-uploadDIP
 chroot $1 mkdir /home/demo/ingestLogs
 chroot $1 mkdir /home/demo/possiblevirii
@@ -71,15 +70,19 @@ cp -p includes/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p includes/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
 cp -p includes/Bagit $1/home/demo/.gnome2/nautilus-scripts
 cp -p includes/bagcheck $1/home/demo/.gnome2/nautilus-scripts
-cp includes/Qubit.png $1/usr/share/icons
-cp includes/qubit.desktop $1/home/demo/Desktop
+cp includes/dashboard-desktop-icon.png $1/usr/share/icons
+cp includes/dcb-desktop-icon.png $1/usr/share/icons
+cp includes/ica-atom-desktop-icon.png $1/usr/share/icons
+cp includes/archivematica-xubuntu-steel.png $1/usr/share/backgrounds
+
+cp includes/ica-atom.desktop $1/home/demo/Desktop
 cp includes/droid.desktop $1/home/demo/Desktop
 cp includes/jhove.desktop $1/home/demo/Desktop
 cp includes/NLNZ-metadata-extractor.desktop $1/home/demo/Desktop
 cp includes/xena.desktop $1/home/demo/Desktop
 cp includes/view.desktop $1/home/demo/Desktop
 cp includes/rundroid.sh $1/usr/bin
-cp includes/runqubit.sh $1/usr/bin
+cp includes/runica-atom.sh $1/usr/bin
 cp includes/runjhove.sh $1/usr/bin
 cp includes/runxena.sh $1/usr/bin
 cp includes/runview.sh $1/usr/bin
@@ -88,7 +91,7 @@ cp includes/runview.sh $1/usr/bin
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
 chroot $1 chown -R demo:demo /opt/externals
-chroot $1 chown -R demo:demo /var/storeAIP
+chroot $1 chown -R demo:demo /var/7-storeAIP
 
 #Begin Qubit Configuration
 chroot $1 /etc/init.d/mysql start
@@ -97,11 +100,11 @@ cp includes/php.ini $1/etc/php5/cli
 cp includes/php.ini $1/etc/php5/apache2
 cp includes/apache.default $1/etc/apache2/sites-available/default
 chroot $1 apache2ctl restart
-svn checkout http://qubit-toolkit.googlecode.com/svn/branches/ica-atom  qubit-svn
-svn export qubit-svn $1/var/www/qubit
+svn checkout http://qubit-toolkit.googlecode.com/svn/branches/ica-atom  ica-atom-svn
+svn export ica-atom-svn $1/var/www/ica-atom
 
 apache2ctl restart
-chroot $1 chown -R www-data:www-data /var/www/qubit
+chroot $1 chown -R www-data:www-data /var/www/ica-atom
 chroot $1 sh -c 'echo EnableSendfile Off >> /etc/apache2/apache2.conf'
 chroot $1 a2enmod rewrite
 

@@ -2,12 +2,24 @@ NameVirtualHost *
 <VirtualHost *>
 	ServerAdmin webmaster@localhost
 	
-	DocumentRoot /var/www/qubit/web
+	DocumentRoot /var/www/dashboard/web
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory /var/www/qubit/web/>
+	<Directory /var/www/ica-atom/web/>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Order allow,deny
+		allow from all
+	</Directory>
+	<Directory /var/www/dcb/web/>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Order allow,deny
+		allow from all
+	</Directory>
+	<Directory /var/www/dashboard/web/>
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride All
 		Order allow,deny
