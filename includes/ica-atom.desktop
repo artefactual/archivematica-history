@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=1.0
-Name=Qubit
+Name=ICA-Atom
 Name[ca]=Navegador web Firefox
 Name[cs]=Firefox Webový prohlížeč
 Name[es]=Navegador web Firefox
@@ -61,11 +61,11 @@ GenericName[pt]=Navegador Web
 GenericName[pt_BR]=Navegador Web
 GenericName[sk]=Internetový prehliadač
 GenericName[sv]=Webbläsare
-Exec=runqubit.sh
+Exec=runica-atom.sh
 Terminal=false
 X-MultipleArgs=false
 Type=Application
-Icon=/usr/share/icons/Qubit.png
+Icon=/usr/share/icons/ica-atom-desktop-icon.png
 Categories=Application;Network;
 MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/vnd.mozilla.xul+xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;
 StartupWMClass=Firefox
