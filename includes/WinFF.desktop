@@ -1,0 +1,12 @@
+
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=WinFF
+Comment=GUI for FFMPEG
+Categories=Application;
+Exec=winff
+Icon=winff
+Terminal=false
+StartupNotify=false
