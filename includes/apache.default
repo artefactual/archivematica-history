@@ -31,7 +31,7 @@ NameVirtualHost *
 	CustomLog /var/log/apache2/access.log combined
 	ServerSignature On
 
-    Alias /dcb/ "/var/www/dcb/"
+    Alias /dcb "/var/www/dcb/"
     <Directory "/usr/share/dcb/">
         Options Indexes MultiViews FollowSymLinks
         AllowOverride None
