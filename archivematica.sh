@@ -82,7 +82,7 @@ cp includes/NLNZ-metadata-extractor.desktop $1/home/demo/Desktop
 cp includes/xena.desktop $1/home/demo/Desktop
 cp includes/view.desktop $1/home/demo/Desktop
 cp includes/dcb.desktop $1/home/demo/Desktop
-cp includes/dashboard.desktop $1/home/demo/Desktop
+#cp includes/dashboard.desktop $1/home/demo/Desktop
 cp includes/WinFF.desktop $1/home/demo/Desktop
 cp includes/rundroid.sh $1/usr/bin
 cp includes/runica-atom.sh $1/usr/bin
