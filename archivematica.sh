@@ -81,8 +81,12 @@ cp includes/jhove.desktop $1/home/demo/Desktop
 cp includes/NLNZ-metadata-extractor.desktop $1/home/demo/Desktop
 cp includes/xena.desktop $1/home/demo/Desktop
 cp includes/view.desktop $1/home/demo/Desktop
+cp includes/dcb.desktop $1/home/demo/Desktop
+cp includes/dashboard.desktop $1/home/demo/Desktop
 cp includes/rundroid.sh $1/usr/bin
 cp includes/runica-atom.sh $1/usr/bin
+cp includes/rundcb.sh $1/usr/bin
+cp includes/rundashboard.sh $1/usr/bin
 cp includes/runjhove.sh $1/usr/bin
 cp includes/runxena.sh $1/usr/bin
 cp includes/runview.sh $1/usr/bin
@@ -101,10 +105,13 @@ cp includes/php.ini $1/etc/php5/apache2
 cp includes/apache.default $1/etc/apache2/sites-available/default
 chroot $1 apache2ctl restart
 svn checkout http://qubit-toolkit.googlecode.com/svn/branches/ica-atom  ica-atom-svn
+svn checkout http://qubit-toolkit.googlecode.com/svn/branches/dcb  dcb-svn
 svn export ica-atom-svn $1/var/www/ica-atom
+svn export dcb-svn $1/var/www/dcb
 
 apache2ctl restart
 chroot $1 chown -R www-data:www-data /var/www/ica-atom
+chroot $1 chown -R www-data:www-data /var/www/dcb
 chroot $1 sh -c 'echo EnableSendfile Off >> /etc/apache2/apache2.conf'
 chroot $1 a2enmod rewrite
 

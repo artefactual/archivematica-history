@@ -2,24 +2,12 @@ NameVirtualHost *
 <VirtualHost *>
 	ServerAdmin webmaster@localhost
 	
-	DocumentRoot /var/www/dashboard/web
+	DocumentRoot /var/www/ica-atom/web
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
 	<Directory /var/www/ica-atom/web/>
-		Options Indexes FollowSymLinks MultiViews
-		AllowOverride All
-		Order allow,deny
-		allow from all
-	</Directory>
-	<Directory /var/www/dcb/web/>
-		Options Indexes FollowSymLinks MultiViews
-		AllowOverride All
-		Order allow,deny
-		allow from all
-	</Directory>
-	<Directory /var/www/dashboard/web/>
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride All
 		Order allow,deny
@@ -43,13 +31,12 @@ NameVirtualHost *
 	CustomLog /var/log/apache2/access.log combined
 	ServerSignature On
 
-    Alias /doc/ "/usr/share/doc/"
-    <Directory "/usr/share/doc/">
+    Alias /dcb/ "/var/www/dcb/"
+    <Directory "/usr/share/dcb/">
         Options Indexes MultiViews FollowSymLinks
         AllowOverride None
-        Order deny,allow
-        Deny from all
-        Allow from 127.0.0.0/255.0.0.0 ::1/128
+        Order allow,deny
+        Allow from all
     </Directory>
 
 </VirtualHost>
