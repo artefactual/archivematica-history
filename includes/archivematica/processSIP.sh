@@ -31,9 +31,9 @@ do
 		chmod 700 /tmp/$UUID/*
 		#extract all of the .zip .rar etc.
 		python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
-		cd /tmp/$UUID; /opt/archivematica/createXML.py >> /home/demo/ingestLogs/$UUID/SIP.xml
+		cd /tmp/$UUID; /opt/archivematica/SIPxmlModifiers/addFileStructureToSIP.py >> /home/demo/ingestLogs/$UUID/SIP.xml
 		detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
-		python /opt/archivematica/add_detox_log_to_SIPxml.py "/home/demo/ingestLogs/$UUID/"
+		python /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID/"
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
 			do
 				XENADIR=`dirname "$NEWDOCS"`				
