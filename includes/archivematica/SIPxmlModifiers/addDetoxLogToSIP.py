@@ -81,7 +81,7 @@ while line:
 				for fil in files:				
 					fi = findDirectory(fil, "name" , folder)
 					if fi and len(fi) == 1:
-						fi[0].text= detoxfiles[1].split("/")[-1]
+						fi[0].text= (detoxfiles[1].split("/")[-1]).split("\n")[0]
 					else:
 						"error - logs don't correspond"
 
@@ -93,6 +93,6 @@ while line:
 	line = detox_fh.readline()
 
 
-tree.write(sys.argv[1]+"/SIPOUT.xml")
+tree.write(sys.argv[1]+"/SIP.xml")
      
 
