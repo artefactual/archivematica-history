@@ -64,6 +64,8 @@ chroot $1 mkdir /home/demo/8-uploadDIP
 chroot $1 mkdir /home/demo/ingestLogs
 chroot $1 mkdir /home/demo/possiblevirii
 chroot $1 mkdir /home/demo/SIPerrors
+chroot $1 mkdir /home/demo/.config
+chroot $1 mkdir /home/demo/.config/Thunar
 
 #Gnome Integration/Customization
 cp -p includes/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
@@ -91,6 +93,7 @@ cp includes/rundashboard.sh $1/usr/bin
 cp includes/runjhove.sh $1/usr/bin
 cp includes/runxena.sh $1/usr/bin
 cp includes/runview.sh $1/usr/bin
+cp includes/uca.xml $1/home/demo/.config/Thunar
 
 #fix permissions 
 chroot $1 chown -R demo:demo /home/demo
