@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import xml.etree.cElementTree as etree
 
@@ -48,6 +49,8 @@ else:
 #... now have the proper folder lined up with xml
 #Each line is a list to process.
 
+UUIDitem = findDirectory(root, "dir")
+UUIDitem[0].set("original_name", sys.argv[2].split("/")[-1])
 
 line = detox_fh.readline()
 while line:
