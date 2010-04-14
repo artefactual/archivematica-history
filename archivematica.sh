@@ -100,6 +100,7 @@ cp includes/runview.sh $1/usr/bin
 cp includes/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
 cp includes/uca.xml $1/home/demo/.config/Thunar
 cp includes/gtk-bookmarks $1/home/demo/.gtk-bookmarks
+cp includes/gdm.custom.conf $1/etc/gdm/custom.conf
 
 #fix permissions 
 chroot $1 chown -R demo:demo /home/demo
