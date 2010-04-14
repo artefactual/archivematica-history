@@ -96,6 +96,7 @@ cp includes/runjhove.sh $1/usr/bin
 cp includes/runxena.sh $1/usr/bin
 cp includes/runview.sh $1/usr/bin
 cp includes/uca.xml $1/home/demo/.config/Thunar
+cp includes/gtk-bookmarks $1/home/demo/.gtk-bookmarks
 
 #fix permissions 
 chroot $1 chown -R demo:demo /home/demo
