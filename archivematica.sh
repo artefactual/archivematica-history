@@ -62,8 +62,10 @@ chroot $1 mkdir /home/demo/5-prepareAIP
 chroot $1 mkdir /home/demo/6-reviewAIP	
 chroot $1 mkdir /home/demo/8-uploadDIP
 chroot $1 mkdir /home/demo/ingestLogs
-chroot $1 mkdir /home/demo/possiblevirii
 chroot $1 mkdir /home/demo/SIPerrors
+chroot $1 mkdir /home/demo/SIPerrors/normalizationErrors
+chroot $1 mkdir /home/demo/SIPerrors/possibleVirii
+chroot $1 mkdir /home/demo/SIPerrors/rejectedSIPs
 chroot $1 mkdir /home/demo/.config
 chroot $1 mkdir /home/demo/.config/Thunar
 
