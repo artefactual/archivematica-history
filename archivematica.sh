@@ -117,12 +117,15 @@ cp includes/apache.default $1/etc/apache2/sites-available/default
 chroot $1 apache2ctl restart
 svn checkout http://qubit-toolkit.googlecode.com/svn/branches/ica-atom  ica-atom-svn
 svn checkout http://qubit-toolkit.googlecode.com/svn/branches/dcb  dcb-svn
+svn checkout http://qubit-toolkit.googlecode.com/svn/trunk  qubit-svn
 svn export ica-atom-svn $1/var/www/ica-atom
 svn export dcb-svn $1/var/www/dcb
+svn export qubit-svn $1/var/www/qubit
 
 apache2ctl restart
 chroot $1 chown -R www-data:www-data /var/www/ica-atom
 chroot $1 chown -R www-data:www-data /var/www/dcb
+chroot $1 chown -R www-data:www-data /var/www/qubit
 chroot $1 sh -c 'echo EnableSendfile Off >> /etc/apache2/apache2.conf'
 chroot $1 a2enmod rewrite
 
