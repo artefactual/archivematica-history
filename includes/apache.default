@@ -38,5 +38,12 @@ NameVirtualHost *
         Order allow,deny
         Allow from all
     </Directory>
+    Alias /qubit "/var/www/qubit/"
+    <Directory "/usr/share/qubit/">
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
 
 </VirtualHost>
