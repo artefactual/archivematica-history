@@ -16,8 +16,8 @@ else:
 #CONFIGURE THE FOLLOWING DIRECTORIES
 accessFileDirectory = ""
 archiveFileDirectory = ""
-logsDirectory = "/tmp/logs/"
-failedConversionsDirectory = "/tmp/failedConversions/"
+logsDirectory = "/home/demo/ingestLogs/"
+failedConversionsDirectory = "/home/demo/SIPerrors/normalizationErrors/"
 
 #get file name and extension
 s = fileIn
@@ -44,7 +44,7 @@ ffmpegPath = "/usr/bin/ffmpeg -i " #Audio
 unoconvPath = "/usr/bin/unoconv "
 #...Path = "" #Video
 #...Path = "" #...
-xenaPath = "" #Xena
+xenaPath = "java -jar /opt/externals/xena/xena.jar -f " + fileName + " -o " + archiveFileDirectory + " -p /opt/externals/xena/plugins/" #Xena
 
 conversionDict = {}
 
@@ -98,10 +98,10 @@ conversionDict['WMA']['AltArchiveConversionComand'] = xenaPath + fileName + " +c
 
 conversionDict['PPT'] = {}
 conversionDict['PPT']['archiveFormat'] = "PDF"
-conversionDict['PPT']['accessFormat'] = "ODF"
+conversionDict['PPT']['accessFormat'] = "ODP"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['PPT']['PrimaryAccessConversionComand'] = unoconvPath + " -f " + conversionDict['PPT']['accessFormat'].lower() + fileName 
-conversionDict['PPT']['PrimaryArchiveConversionComand'] = unoconvPath + " -f " + conversionDict['PPT']['archiveFormat'].lower() + fileName  
+conversionDict['PPT']['PrimaryAccessConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['PPT']['accessFormat'].lower() + " " +fileName
+conversionDict['PPT']['PrimaryArchiveConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['PPT']['archiveFormat'].lower() + " " +fileName 
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['PPT']['AltAccessConversionComand'] = xenaPath
 conversionDict['PPT']['AltArchiveConversionComand'] = xenaPath 
@@ -199,11 +199,11 @@ conversionDict['NEF']['AltArchiveConversionComand']=""
 #********************************************
 
 conversionDict['XLS'] = {}
-conversionDict['XLS']['archiveFormat'] = "ODF"
+conversionDict['XLS']['archiveFormat'] = "ODS"
 conversionDict['XLS']['accessFormat'] = "XLS"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['XLS']['PrimaryAccessConversionComand'] = unoconvPath + " -f " + conversionDict['XLS']['accessFormat'].lower() + fileName 
-conversionDict['XLS']['PrimaryArchiveConversionComand'] = unoconvPath + " -f " + conversionDict['XLS']['archiveFormat'].lower() + fileName  
+conversionDict['XLS']['PrimaryAccessConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['XLS']['accessFormat'].lower() + " " +fileName 
+conversionDict['XLS']['PrimaryArchiveConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['XLS']['archiveFormat'].lower() + " " +fileName  
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['XLS']['AltAccessConversionComand'] = xenaPath
 conversionDict['XLS']['AltArchiveConversionComand'] = xenaPath 
@@ -277,11 +277,11 @@ conversionDict['AVI']['AltArchiveConversionComand']=""
 #********************************************
 
 conversionDict['DOC'] = {}
-conversionDict['DOC']['archiveFormat'] = "ODF"
+conversionDict['DOC']['archiveFormat'] = "ODT"
 conversionDict['DOC']['accessFormat'] = "PDF"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['DOC']['PrimaryAccessConversionComand'] = unoconvPath + " -f " + conversionDict['XLS']['accessFormat'].lower() + fileName 
-conversionDict['DOC']['PrimaryArchiveConversionComand'] = unoconvPath + " -f " + conversionDict['XLS']['archiveFormat'].lower() + fileName  
+conversionDict['DOC']['PrimaryAccessConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['DOC']['accessFormat'].lower() + " " +fileName 
+conversionDict['DOC']['PrimaryArchiveConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['DOC']['archiveFormat'].lower() + " " +fileName  
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['DOC']['AltAccessConversionComand'] = xenaPath
 conversionDict['DOC']['AltArchiveConversionComand'] = xenaPath 
