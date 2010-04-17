@@ -68,6 +68,7 @@ chroot $1 mkdir /home/demo/SIPerrors/possibleVirii
 chroot $1 mkdir /home/demo/SIPerrors/rejectedSIPs
 chroot $1 mkdir /home/demo/.config
 chroot $1 mkdir /home/demo/.config/Thunar
+chroot $1 mkdir -p /home/demo/.config/xfce4/desktop
 
 #Gnome Integration/Customization
 cp -p includes/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
