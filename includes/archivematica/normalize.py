@@ -41,10 +41,11 @@ try2 = False
 #CONFIGURE THE FOLLOWING APPLICATION PATHS
 convertPath = "/usr/bin/convert " #Images
 ffmpegPath = "/usr/bin/ffmpeg -i " #Audio
+theoraPath = "/usr/bin/ffmpeg2theora "
 unoconvPath = "/usr/bin/unoconv "
 #...Path = "" #Video
 #...Path = "" #...
-xenaPath = "java -jar /opt/externals/xena/xena.jar -f " + fileName + " -o " + archiveFileDirectory + " -p /opt/externals/xena/plugins/" #Xena
+xenaPath = "" #Xena
 
 conversionDict = {}
 
@@ -100,8 +101,8 @@ conversionDict['PPT'] = {}
 conversionDict['PPT']['archiveFormat'] = "PDF"
 conversionDict['PPT']['accessFormat'] = "ODP"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['PPT']['PrimaryAccessConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['PPT']['accessFormat'].lower() + " " +fileName
-conversionDict['PPT']['PrimaryArchiveConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['PPT']['archiveFormat'].lower() + " " +fileName 
+conversionDict['PPT']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['PPT']['accessFormat'].lower() + " " +fileName
+conversionDict['PPT']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['PPT']['archiveFormat'].lower() + " " +fileName 
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['PPT']['AltAccessConversionComand'] = xenaPath
 conversionDict['PPT']['AltArchiveConversionComand'] = xenaPath 
@@ -202,75 +203,86 @@ conversionDict['XLS'] = {}
 conversionDict['XLS']['archiveFormat'] = "ODS"
 conversionDict['XLS']['accessFormat'] = "XLS"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['XLS']['PrimaryAccessConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['XLS']['accessFormat'].lower() + " " +fileName 
-conversionDict['XLS']['PrimaryArchiveConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['XLS']['archiveFormat'].lower() + " " +fileName  
+conversionDict['XLS']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['XLS']['accessFormat'].lower() + " " +fileName 
+conversionDict['XLS']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['XLS']['archiveFormat'].lower() + " " +fileName  
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['XLS']['AltAccessConversionComand'] = xenaPath
 conversionDict['XLS']['AltArchiveConversionComand'] = xenaPath 
+
 
 #********************************************
 #Video - AVI, FLV, MOV, MPEG, SWF, WMV
 #********************************************
 
 conversionDict['WMV'] = {}
-conversionDict['WMV']['archiveFormat'] = "MPEG-2"
+conversionDict['WMV']['archiveFormat'] = "MXF"
 conversionDict['WMV']['accessFormat'] = "OGV"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['WMV']['PrimaryAccessConversionComand']=""
-conversionDict['WMV']['PrimaryArchiveConversionComand']=""
+conversionDict['WMV']['PrimaryAccessConversionComand']=  theoraPath + fileName
+conversionDict['WMV']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['WMV']['archiveFormat'].lower()
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['WMV']['AltAccessConversionComand']=""
 conversionDict['WMV']['AltArchiveConversionComand']=""
 
-conversionDict['MPEG'] = {}
-conversionDict['MPEG']['archiveFormat'] = "MPEG-2"
-conversionDict['MPEG']['accessFormat'] = "OGV"
+conversionDict['MPG'] = {}
+conversionDict['MPG']['archiveFormat'] = "MXF"
+conversionDict['MPG']['accessFormat'] = "OGV"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['MPEG']['PrimaryAccessConversionComand']=""
-conversionDict['MPEG']['PrimaryArchiveConversionComand']=""
+conversionDict['MPG']['PrimaryAccessConversionComand']= theoraPath + fileName
+conversionDict['MPG']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['MPG']['archiveFormat'].lower()
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['MPEG']['AltAccessConversionComand']=""
-conversionDict['MPEG']['AltArchiveConversionComand']=""
+conversionDict['MPG']['AltAccessConversionComand']=""
+conversionDict['MPG']['AltArchiveConversionComand']=""
 
 conversionDict['SWF'] = {}
-conversionDict['SWF']['archiveFormat'] = "MPEG-2"
+conversionDict['SWF']['archiveFormat'] = "MXF"
 conversionDict['SWF']['accessFormat'] = "OGV"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['SWF']['PrimaryAccessConversionComand']=""
-conversionDict['SWF']['PrimaryArchiveConversionComand']=""
+conversionDict['SWF']['PrimaryAccessConversionComand']= theoraPath + fileName
+conversionDict['SWF']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['SWF']['archiveFormat'].lower()
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['SWF']['AltAccessConversionComand']=""
 conversionDict['SWF']['AltArchiveConversionComand']=""
 
 conversionDict['FLV'] = {}
-conversionDict['FLV']['archiveFormat'] = "MPEG-2"
+conversionDict['FLV']['archiveFormat'] = "MXF"
 conversionDict['FLV']['accessFormat'] = "OGV"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['FLV']['PrimaryAccessConversionComand']=""
-conversionDict['FLV']['PrimaryArchiveConversionComand']=""
+conversionDict['FLV']['PrimaryAccessConversionComand']= theoraPath + fileName
+conversionDict['FLV']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['FLV']['archiveFormat'].lower()
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['FLV']['AltAccessConversionComand']=""
 conversionDict['FLV']['AltArchiveConversionComand']=""
 
 conversionDict['MOV'] = {}
-conversionDict['MOV']['archiveFormat'] = "MPEG-2"
+conversionDict['MOV']['archiveFormat'] = "MXF"
 conversionDict['MOV']['accessFormat'] = "OGV"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['MOV']['PrimaryAccessConversionComand']=""
-conversionDict['MOV']['PrimaryArchiveConversionComand']=""
+conversionDict['MOV']['PrimaryAccessConversionComand']= theoraPath + fileName
+conversionDict['MOV']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['MOV']['archiveFormat'].lower()
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['MOV']['AltAccessConversionComand']=""
 conversionDict['MOV']['AltArchiveConversionComand']=""
 
 conversionDict['AVI'] = {}
-conversionDict['AVI']['archiveFormat'] = "MPEG-2"
+conversionDict['AVI']['archiveFormat'] = "MXF"
 conversionDict['AVI']['accessFormat'] = "OGV"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['AVI']['PrimaryAccessConversionComand']=""
-conversionDict['AVI']['PrimaryArchiveConversionComand']=""
+conversionDict['AVI']['PrimaryAccessConversionComand']= theoraPath + fileName
+conversionDict['AVI']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['AVI']['archiveFormat'].lower()
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['AVI']['AltAccessConversionComand']=""
 conversionDict['AVI']['AltArchiveConversionComand']=""
+
+conversionDict['MP4'] = {}
+conversionDict['MP4']['archiveFormat'] = "MXF"
+conversionDict['MP4']['accessFormat'] = "OGV"
+#using primary tool - CONFIGURE COMMAND BELOW
+conversionDict['MP4']['PrimaryAccessConversionComand']= theoraPath + fileName
+conversionDict['MP4']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['MP4']['archiveFormat'].lower()
+#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
+conversionDict['MP4']['AltAccessConversionComand']=""
+conversionDict['MP4']['AltArchiveConversionComand']=""
 
 #********************************************
 #Word processing files - DOC,WPD
@@ -280,8 +292,8 @@ conversionDict['DOC'] = {}
 conversionDict['DOC']['archiveFormat'] = "ODT"
 conversionDict['DOC']['accessFormat'] = "PDF"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['DOC']['PrimaryAccessConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['DOC']['accessFormat'].lower() + " " +fileName 
-conversionDict['DOC']['PrimaryArchiveConversionComand'] = unoconvPath + " --server localhost -f " + conversionDict['DOC']['archiveFormat'].lower() + " " +fileName  
+conversionDict['DOC']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['DOC']['accessFormat'].lower() + " " +fileName 
+conversionDict['DOC']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['DOC']['archiveFormat'].lower() + " " +fileName  
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['DOC']['AltAccessConversionComand'] = xenaPath
 conversionDict['DOC']['AltArchiveConversionComand'] = xenaPath 
