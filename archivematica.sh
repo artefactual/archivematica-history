@@ -118,7 +118,7 @@ cp includes/apache.default $1/etc/apache2/sites-available/default
 chroot $1 apache2ctl restart
 svn checkout http://qubit-toolkit.googlecode.com/svn/branches/ica-atom  ica-atom-svn
 svn checkout http://qubit-toolkit.googlecode.com/svn/branches/dcb  dcb-svn
-svn checkout http://qubit-toolkit.googlecode.com/svn/qubit/trunk  qubit-svn
+svn checkout http://qubit-toolkit.googlecode.com/svn/trunk  qubit-svn
 svn export ica-atom-svn $1/var/www/ica-atom
 svn export dcb-svn $1/var/www/dcb
 svn export qubit-svn $1/var/www/qubit
