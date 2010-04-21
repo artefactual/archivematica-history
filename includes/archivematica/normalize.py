@@ -5,7 +5,7 @@ import os
 import sys
 import logging
 
-#this script is passed fileIn, fileType, uuid
+#this script is passed fileIn, uuid
 fileIn = sys.argv[1]
 #fileType = sys.argv[2]
 if sys.argv[2]:
@@ -43,9 +43,9 @@ convertPath = "/usr/bin/convert " #Images
 ffmpegPath = "/usr/bin/ffmpeg -i " #Audio
 theoraPath = "/usr/bin/ffmpeg2theora "
 unoconvPath = "/usr/bin/unoconv "
+xenaPath = "" #Xena
 #...Path = "" #Video
 #...Path = "" #...
-xenaPath = "" #Xena
 
 conversionDict = {}
 
