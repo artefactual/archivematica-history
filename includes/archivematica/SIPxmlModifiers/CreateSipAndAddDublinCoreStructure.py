@@ -14,27 +14,27 @@ dc.text = "\n\t\t"
 dc.tail = "\n"
 root.append(dc)
 
-title = etree.Element("Title")
+title = etree.Element("dcterms:title")
 dc.append(title)
 title.text = " "
 title.tail = "\n\t\t"
 
-provenance = etree.Element("provenance")
+provenance = etree.Element("dcterms:provenance")
 dc.append(provenance)
 provenance.text = " "
 provenance.tail = "\n\t\t"
 
-partOf = etree.Element("partOf")
+partOf = etree.Element("dcterms:partOf")
 dc.append(partOf)
 partOf.text = " "
 partOf.tail = "\n\t\t"
 
-description = etree.Element("description")
+description = etree.Element("dcterms:description")
 dc.append(description)
 description.text = " "
 description.tail = "\n\t\t"
 
-dateReceived = etree.Element("dateReceived")
+dateReceived = etree.Element("dcterms:dateReceived")
 dc.append(dateReceived)
 dateReceived.text = (datetime.utcnow()).__str__()
 dateReceived.tail = "\n\t"
