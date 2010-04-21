@@ -50,7 +50,7 @@ else:
 #Each line is a list to process.
 
 UUIDitem = findDirectory(root, "dir")
-UUIDitem[0].set("original_name", sys.argv[2].split("/")[-1])
+UUIDitem[0].set("originalName", sys.argv[2].split("/")[-1])
 
 line = detox_fh.readline()
 while line:
