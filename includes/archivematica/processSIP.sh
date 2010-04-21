@@ -29,11 +29,12 @@ do
 		mkdir /home/demo/ingestLogs/$UUID		
 		mv "$FILE" /tmp/$UUID
 		chmod 700 /tmp/$UUID/*
+		mv /tmp/$UUID/SIP.xml /home/demo/ingestLogs/$UUID/SIP.xml
 		#extract all of the .zip .rar etc.
 		python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
-		cd /tmp/$UUID; /opt/archivematica/SIPxmlModifiers/addFileStructureToSIP.py >> /home/demo/ingestLogs/$UUID/SIP.xml
+		/opt/archivematica/SIPxmlModifiers/addFileStructureToSIP.py "/home/demo/ingestLogs/$UUID" $UUID
 		detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
-		python /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID/" "$FILE"
+		python /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
 			do
 				XENADIR=`dirname "$NEWDOCS"`				

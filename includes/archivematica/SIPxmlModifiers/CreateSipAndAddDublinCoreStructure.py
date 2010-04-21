@@ -7,7 +7,7 @@ import xml.etree.ElementTree as etree
 from datetime import datetime
 
 
-root = etree.Element("root")
+root = etree.Element("SIP")
 root.text = "\n\t"
 dc = etree.Element("doublincore")
 dc.text = "\n\t\t"

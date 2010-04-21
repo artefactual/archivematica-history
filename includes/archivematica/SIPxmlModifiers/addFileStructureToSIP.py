@@ -3,27 +3,54 @@
 
 import os
 import uuid
+import sys
+import xml.etree.cElementTree as etree
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 
-path = "/home/demo/"
 
-def DirAsLessXML(path):
-    result = '  <dir name=%s ' % xml_quoteattr(os.path.basename(path)) 
-    result += 'original_name=%s>\n' % xml_quoteattr(os.path.basename(path))
-    for item in os.listdir(path):
-        itempath = os.path.join(path, item)
-        if os.path.isdir(itempath):
-            result += '\n'.join('  ' + line for line in 
-                DirAsLessXML(os.path.join(path, item)).split('\n'))
-        elif os.path.isfile(itempath):
-            myuuid = uuid.uuid4()
-            result += '    <file>\n'
-            result += '       <name>%s</name>\n' % ''.join(xml_quoteattr(item).split("\"")[1:-1])
-            result += '       <original_name>%s</original_name>\n' % ''.join(xml_quoteattr(item).split("\"")[1:-1])
-            result += '       <UUID>%s</UUID>\n' % (myuuid)
-            result += '    </file>\n'
-    result += '  </dir>\n'
-    return result
+def newChild( parent, tag, text=None, tailText=None ):
+	child = etree.Element(tag)
+	parent.append(child)
+	child.text = text
+	child.tail = tailText
+	return child
 
+def DirAsLessXML( path, parentBranch ):
+	currentBranch = newChild(parentBranch,"dir")
+	filename = os.path.basename(path)
+	currentBranch.set("name", filename)
+	currentBranch.set("originalName", filename)
+	
+	for item in os.listdir(path):
+		itempath = os.path.join(path, item)
+		if os.path.isdir(itempath):
+				DirAsLessXML(os.path.join(path, item), currentBranch)
+		elif os.path.isfile(itempath):
+			myuuid = uuid.uuid4()
+			fileI = newChild(currentBranch, "file")
+			filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
+			newChild(fileI, "name", filename, None )
+			newChild(fileI, "originalName", filename, None )
+			newChild(fileI, "UUID", myuuid.__str__())
+
+  
 if __name__ == '__main__':
-    print '<sipname>\n' + DirAsLessXML(os.getcwd()) + '</sipname>'
+	#cd /tmp/$UUID; 
+	opath = os.getcwd()
+	os.chdir("/tmp/" + sys.argv[2])
+	path = os.getcwd()
+
+	if not os.path.isfile(sys.argv[1]+"/SIP.xml"):
+		print("SIPdoesn't exist... creating.")
+#		/opt/archivematica/SIPxmlModifiers/CreateSipAndAddDublinCoreStructure.py
+
+	tree = etree.parse(sys.argv[1]+"/SIP.xml")
+	root = tree.getroot()
+	
+	DirAsLessXML(path,root)
+	
+	tree.write(sys.argv[1]+"/SIP.xml")
+	
+	#restore original path
+	os.chdir(opath)
+
