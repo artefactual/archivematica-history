@@ -48,7 +48,7 @@ dateReceived.tail = "\n\t"
 # identifier added by addUUIDasDCidentifier.py
 
 #print(etree.tostring(root, None, "xml", None, True, True, None))
-print(etree.tostring(root))
+#print(etree.tostring(root))
 tree = etree.ElementTree(root)
 #tree.write(sys.argv[1]+"/SIP.xml")
 tree.write("SIP.xml")

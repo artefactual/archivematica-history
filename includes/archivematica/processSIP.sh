@@ -29,7 +29,16 @@ do
 		mkdir /home/demo/ingestLogs/$UUID		
 		mv "$FILE" /tmp/$UUID
 		chmod 700 /tmp/$UUID/*
+		if [ ! -f /tmp/$UUID/SIP.xml ]
+		then
+			tmpDir=`pwd`
+			cd /tmp/$UUID/
+			/opt/archivematica/SIPxmlModifiers/CreateSipAndAddDublinCoreStructure.py
+			cd $tmpDir
+			
+		fi
 		mv /tmp/$UUID/SIP.xml /home/demo/ingestLogs/$UUID/SIP.xml
+		
 		#extract all of the .zip .rar etc.
 		python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
 		/opt/archivematica/SIPxmlModifiers/addFileStructureToSIP.py "/home/demo/ingestLogs/$UUID" $UUID
