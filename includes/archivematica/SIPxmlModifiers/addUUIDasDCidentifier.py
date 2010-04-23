@@ -30,10 +30,12 @@ def findDirectory(root, tag=None, text=None):
 tree = etree.parse(sys.argv[1]+"/SIP.xml")
 root = tree.getroot()
 
-dc = findDirectory(root, "dublincore")
-identifier = etree.Element("dcterms:provenance")
-dc.append(identifier)
+
+dc = findDirectory(root, "{http://archivematica.org/}dublincore")
+identifier = etree.Element("{http://purl.org/dc/elements/1.1/}identifier")
+dc[0].append(identifier)
 identifier.text = sys.argv[2].__str__()
+
 
 tree.write(sys.argv[1]+"/SIP.xml")
 
