@@ -33,6 +33,7 @@ do
 		#extract all of the .zip .rar etc.
 		python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
 		/opt/archivematica/SIPxmlModifiers/addFileStructureToSIP.py "/home/demo/ingestLogs/$UUID" $UUID
+		/opt/archivematica/SIPxmlModifiers/addUUIDasDCidentifier.py "/home/demo/ingestLogs/$UUID" $UUID
 		detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
 		python /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS

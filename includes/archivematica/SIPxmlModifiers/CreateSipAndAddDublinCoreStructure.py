@@ -9,10 +9,16 @@ from datetime import datetime
 
 root = etree.Element("SIP")
 root.text = "\n\t"
-dc = etree.Element("doublincore")
+dc = etree.Element("dublincore")
 dc.text = "\n\t\t"
 dc.tail = "\n"
 root.append(dc)
+
+dc.set("xmlns", "http://archivematica.org/")
+dc.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+dc.set("xsi:schemaLocation", "http://dublincore.org")
+#dc.set("xmlns:dc", "http://purl.org/dc/elements/1.1/")
+dc.set("xmlns:dcterms", "http://purl.org/dc/elements/1.1/")
 
 title = etree.Element("dcterms:title")
 dc.append(title)
@@ -39,7 +45,7 @@ dc.append(dateReceived)
 dateReceived.text = (datetime.utcnow()).__str__()
 dateReceived.tail = "\n\t"
 
-# identifier
+# identifier added by addUUIDasDCidentifier.py
 
 #print(etree.tostring(root, None, "xml", None, True, True, None))
 print(etree.tostring(root))
