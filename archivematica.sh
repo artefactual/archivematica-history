@@ -100,6 +100,7 @@ cp includes/runview.sh $1/usr/bin
 
 #xfce4 configuration
 cp includes/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
+cp includes/user-dirs.defaults $1/etc/xdg
 cp includes/uca.xml $1/home/demo/.config/Thunar
 cp includes/gtk-bookmarks $1/home/demo/.gtk-bookmarks
 cp includes/gdm.custom.conf $1/etc/gdm/custom.conf
