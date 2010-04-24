@@ -79,7 +79,7 @@ cp -p includes/bagcheck $1/home/demo/.gnome2/nautilus-scripts
 cp includes/dashboard-desktop-icon.png $1/usr/share/icons
 cp includes/dcb-desktop-icon.png $1/usr/share/icons
 cp includes/ica-atom-desktop-icon.png $1/usr/share/icons
-cp includes/archivematica-xubuntu-steel.png $1/usr/share/backgrounds
+cp includes/archivematica-xubuntu-steel.png $1/usr/share/xfce4/backdrops/xubuntu-karmic.png
 
 cp includes/ica-atom.desktop $1/home/demo/Desktop
 cp includes/droid.desktop $1/home/demo/Desktop
@@ -99,6 +99,7 @@ cp includes/runxena.sh $1/usr/bin
 cp includes/runview.sh $1/usr/bin
 
 #xfce4 configuration
+cp includes/xfce4-desktop.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
 cp includes/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
 cp includes/user-dirs.defaults $1/etc/xdg
 cp includes/uca.xml $1/home/demo/.config/Thunar
