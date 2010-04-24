@@ -47,11 +47,13 @@ svn export includes/externals $1/opt/externals
 svn export includes/archivematica $1/opt/archivematica
 svn export includes/.mozilla $1/home/demo/.mozilla
 svn export includes/xenaconfig $1/home/demo/.java
-svn export includes/Docs $1/home/demo/Desktop/Docs
+svn export includes/Docs $1/home/demo/Docs
+chroot $1 ln -s /home/demo/Docs /home/demo/Desktop
 cp -rf includes/cron.tab $1/etc/cron.tab
 chroot $1 crontab -u demo /etc/cron.tab
 cp -rf includes/incron.allow $1/etc/incron.allow
 cp -rf includes/incron.tab $1/etc/incron.tab
+chroot $1 incrontab /etc/incron.tab
 chroot $1 chmod -R 770 /home/demo/.mozilla
 chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
@@ -69,6 +71,7 @@ chroot $1 mkdir /home/demo/SIPerrors/possibleVirii
 chroot $1 mkdir /home/demo/SIPerrors/rejectedSIPs
 chroot $1 mkdir /home/demo/.config
 chroot $1 mkdir /home/demo/.config/Thunar
+chroot $1 mkdir /home/demo/.config/autostart
 chroot $1 mkdir -p /home/demo/.config/xfce4/desktop
 
 #Gnome Integration/Customization
@@ -104,6 +107,7 @@ cp includes/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
 cp includes/user-dirs.defaults $1/etc/xdg
 cp includes/uca.xml $1/home/demo/.config/Thunar
 cp includes/thunarrc $1/home/demo/.config/Thunar
+cp includes/thunar.desktop $1/home/demo/.config/autostart
 cp includes/gtk-bookmarks $1/home/demo/.gtk-bookmarks
 cp includes/gdm.custom.conf $1/etc/gdm/custom.conf
 
