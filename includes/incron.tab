@@ -1,2 +1,2 @@
-/home/demo/3-quarantine IN_MOVED_TO flock -x /var/lock/processSIP.lock /opt/archivematica/snipemod.sh $@/$#
+/home/demo/3-quarantineSIP IN_MOVED_TO flock -x /var/lock/processSIP.lock /opt/archivematica/snipemod.sh $@/$#
 /home/demo/8-uploadDIP IN_MOVED_TO flock -x /var/lock/qubitupload.lock /opt/archivematica/upload/upload.py -e demo@example.com -p demo -t $# -f $@/$# && rm $@/$#

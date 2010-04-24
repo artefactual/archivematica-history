@@ -21,7 +21,7 @@
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
 
-find ~/3-quarantine/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
+find ~/3-quarantineSIP/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
 do
 	if [ -d "$FILE" ]; then
 		chmod 700 "$FILE"		
