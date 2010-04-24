@@ -2,36 +2,38 @@
 row=0
 col=0
 
-[Droid]
+[Docs]
 row=1
+col=0
+
+[Droid]
+row=2
 col=0
 
 [Home]
-row=2
-col=0
-
-[ICA-Atom]
 row=3
 col=0
 
-[Jhove]
+[ICA-Atom]
 row=4
 col=0
 
-[NLNZ-metadata-extractor]
+[Jhove]
 row=5
 col=0
 
-[WinFF]
+[NLNZ-metadata-extractor]
 row=0
 col=1
 
-[Xena]
+[WinFF]
 row=1
-col=1
+col=0
 
-[Xena-Viewer]
+[Xena]
 row=2
 col=1
 
-
+[Xena-Viewer]
+row=3
+col=1
