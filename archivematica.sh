@@ -47,6 +47,7 @@ svn export includes/externals $1/opt/externals
 svn export includes/archivematica $1/opt/archivematica
 svn export includes/.mozilla $1/home/demo/.mozilla
 svn export includes/xenaconfig $1/home/demo/.java
+svn export includes/Docs $1/home/demo/Desktop/Docs
 cp -rf includes/cron.tab $1/etc/cron.tab
 chroot $1 crontab -u demo /etc/cron.tab
 cp -rf includes/incron.allow $1/etc/incron.allow
