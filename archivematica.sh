@@ -103,6 +103,7 @@ cp includes/xfce4-desktop.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xm
 cp includes/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
 cp includes/user-dirs.defaults $1/etc/xdg
 cp includes/uca.xml $1/home/demo/.config/Thunar
+cp includes/thunarrc $1/home/demo/.config/Thunar
 cp includes/gtk-bookmarks $1/home/demo/.gtk-bookmarks
 cp includes/gdm.custom.conf $1/etc/gdm/custom.conf
 
