@@ -56,7 +56,7 @@ chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 chroot $1 mkdir /home/demo/1-receiveSIP
 chroot $1 mkdir /home/demo/2-reviewSIP
-chroot $1 mkdir /home/demo/3-quarantine
+chroot $1 mkdir /home/demo/3-quarantineSIP
 chroot $1 mkdir /home/demo/4-appraiseSIP
 chroot $1 mkdir /home/demo/5-prepareAIP
 chroot $1 mkdir /home/demo/6-reviewAIP	
