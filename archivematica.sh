@@ -40,6 +40,7 @@ chroot $1 rm -rf /home/demo/Templates
 chroot $1 rm -rf /home/demo/Videos
 
 #Install externals/archivematica
+chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir /var/7-storeAIP
 chroot $1 ln -s /var/7-storeAIP/ /home/demo
 svn export includes/sampledata $1/home/demo/testFiles
@@ -55,7 +56,6 @@ cp -rf includes/incron.allow $1/etc/incron.allow
 cp -rf includes/incron.tab $1/etc/incron.tab
 chroot $1 incrontab /etc/incron.tab
 chroot $1 chmod -R 770 /home/demo/.mozilla
-chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 chroot $1 mkdir /home/demo/1-receiveSIP
 chroot $1 mkdir /home/demo/2-reviewSIP
