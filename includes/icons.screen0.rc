@@ -1,39 +1,40 @@
-[DCB]
-row=0
-col=0
-
-[Docs]
-row=1
+[Jhove]
+row=5
 col=0
 
 [Droid]
 row=2
 col=0
 
-[Home]
+[Xena-Viewer]
 row=3
-col=0
+col=1
 
-[ICA-Atom]
-row=4
-col=0
-
-[Jhove]
-row=5
-col=0
+[WinFF]
+row=1
+col=1
 
 [NLNZ-metadata-extractor]
 row=0
 col=1
 
-[WinFF]
+[ICA-Atom]
+row=4
+col=0
+
+[Docs]
 row=1
+col=0
+
+[DCB]
+row=0
 col=0
 
 [Xena]
 row=2
 col=1
 
-[Xena-Viewer]
+[Home]
 row=3
-col=1
+col=0
+
