@@ -4,6 +4,9 @@ import os.path
 import os
 import sys
 import logging
+import subprocess
+import shlex
+
 
 #this script is passed fileIn, uuid
 fileIn = sys.argv[1]
@@ -102,10 +105,10 @@ conversionDict['PPT']['archiveFormat'] = "PDF"
 conversionDict['PPT']['accessFormat'] = "ODP"
 #using primary tool - CONFIGURE COMMAND BELOW
 conversionDict['PPT']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['PPT']['accessFormat'].lower() + " " +fileName
-conversionDict['PPT']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['PPT']['archiveFormat'].lower() + " " +fileName 
+conversionDict['PPT']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['PPT']['archiveFormat'].lower() + " " +fileName
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['PPT']['AltAccessConversionComand'] = xenaPath
-conversionDict['PPT']['AltArchiveConversionComand'] = xenaPath 
+conversionDict['PPT']['AltArchiveConversionComand'] = xenaPath
 
 #********************************************
 #Images - BMP, GIF, JPG, JP2, PNG, TIFF, TGA
@@ -199,15 +202,16 @@ conversionDict['NEF']['AltArchiveConversionComand']=""
 #Spreadsheets - XLS
 #********************************************
 
+
 conversionDict['XLS'] = {}
 conversionDict['XLS']['archiveFormat'] = "ODS"
 conversionDict['XLS']['accessFormat'] = "XLS"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['XLS']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['XLS']['accessFormat'].lower() + " " +fileName 
+conversionDict['XLS']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['XLS']['accessFormat'].lower() + " " +fileName
 conversionDict['XLS']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['XLS']['archiveFormat'].lower() + " " +fileName  
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['XLS']['AltAccessConversionComand'] = xenaPath
-conversionDict['XLS']['AltArchiveConversionComand'] = xenaPath 
+conversionDict['XLS']['AltArchiveConversionComand'] = xenaPath
 
 
 #********************************************
@@ -292,11 +296,13 @@ conversionDict['DOC'] = {}
 conversionDict['DOC']['archiveFormat'] = "ODT"
 conversionDict['DOC']['accessFormat'] = "PDF"
 #using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['DOC']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['DOC']['accessFormat'].lower() + " " +fileName 
+conversionDict['DOC']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['DOC']['accessFormat'].lower() + " " +fileName
 conversionDict['DOC']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['DOC']['archiveFormat'].lower() + " " +fileName  
 #using secondary tool, usually xena - CONFIGURE COMMAND BELOW
 conversionDict['DOC']['AltAccessConversionComand'] = xenaPath
-conversionDict['DOC']['AltArchiveConversionComand'] = xenaPath 
+conversionDict['DOC']['AltArchiveConversionComand'] = xenaPath
+
+
 
 
 
@@ -347,9 +353,19 @@ def convert_files(type, pass_type ): #pass Type = Primary or Alternate?
   if check_files():
       try:
         command = get_command(type, pass_type )
-        os.system(command)
-#catch both OS errors and standard errors
+        if command != []:
+          print "processing " + pass_type + ": " + shlex.split(command).__str__()
+          retcode = subprocess.call( shlex.split(command) )
+          #it executes check for errors
+          if retcode != 0:
+            print "error code:" + retcode.__str__()
+          else:
+            print "executed OK"
+        else:
+          print "no conversion for type: " + pass_type
+  		#catch OS errors
       except OSError, ose:
+      	print >>sys.stderr, "Execution failed:", ose
         logging.exception("Access "+type+" Type file conversion failed - OS error for "+type+" "+fileIn )
 #check for converted file... if file doesnt exist it wasnt converted, call again using Alternate Command
       fileInPath = get_file_in_path(type)
