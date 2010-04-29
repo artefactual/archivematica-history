@@ -17,8 +17,8 @@ else:
     fileUUID = "9999"
 
 #CONFIGURE THE FOLLOWING DIRECTORIES
-accessFileDirectory = ""
-archiveFileDirectory = ""
+accessFileDirectory = os.path.dirname(fileIn) + "/"
+archiveFileDirectory = os.path.dirname(fileIn) + "/"
 logsDirectory = "/home/demo/ingestLogs/"
 failedConversionsDirectory = "/home/demo/SIPerrors/normalizationErrors/"
 
