@@ -47,19 +47,17 @@ do
 		python /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
 			do
-				XENADIR=`dirname "$NEWDOCS"`				
+				# XENADIR=`dirname "$NEWDOCS"`  # needed if using normalize.sh				
 				chmod 700 $NEWDOCS
 				clamscan --move=/home/demo/SIPerrors/possibleVirii/  $NEWDOCS >> ~/ingestLogs/$UUID/virusSCAN.log
-				/opt/archivematica/folderaccess.sh  $NEWDOCS $UUID 
-				echo "Accession of $NEWDOCS completed successfully" >> ~/ingestLogs/accession.log
-				/opt/archivematica/normalize.sh $NEWDOCS $XENADIR $UUID
+				/opt/archivematica/folderaccess.sh  $NEWDOCS $UUID  # run  FITS
+				echo "Receipt of $NEWDOCS completed" >> ~/ingestLogs/accession.log
+				# /opt/archivematica/normalize.py $NEWDOCS $UUID # move to 5-prepareAIP
 			done
 		cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/ingestLogs		
 		BASEFILE=`basename "$FILE"`
-		/opt/externals/bagit/bin/bag create /home/demo/4-appraiseSIP/"$BASEFILE"-$UUID.zip /tmp/$UUID/* --writer zip
-		/opt/archivematica/upload/upload-qubit.py -d --email=demo@example.com --password=demo --title="$BASEFILE" --file=/home/demo/4-appraiseSIP/"$BASEFILE"-"$UUID".zip
-		rm -rf /tmp/$UUID
-		DISPLAY=:0.0 /usr/bin/notify-send "ingest" "ingest of $BASEFILE completed"
+		mv /tmp/$UUID /home/demo/4-appraiseSIP/"$BASEFILE"-$UUID
+		DISPLAY=:0.0 /usr/bin/notify-send "ingest" "$BASEFILE ready for appraisal"
 	elif [ -f "$FILE" ]; then
 		chmod 700 "$FILE"
 		mv "$FILE" /home/demo/SIPerrors/.
