@@ -23,13 +23,15 @@
 
 mv $1/$2 /tmp/$2
 
-length = `expr length $2`
-position = $length - 36
-UUID = ${2:$position}
+length=`expr length $2`
+position=$length-36
+UUID=${2:$position}
 
 find /tmp/$2/ -type f -print| while read NEWDOCS
   do
     /opt/archivematica/normalize.py $NEWDOCS $UUID
   done
 
-/opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip tmp/$2/* --writer zip
+/opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
+
+rm -rf /tmp/$2
