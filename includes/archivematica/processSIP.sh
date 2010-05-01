@@ -26,8 +26,9 @@ do
 	if [ -d "$FILE" ]; then
 		chmod 700 "$FILE"		
 		UUID=`uuid`
-		mkdir /home/demo/ingestLogs/$UUID		
-		mv "$FILE" /tmp/$UUID
+		mkdir /home/demo/ingestLogs/$UUID
+		mkdir /tmp/$UUID		
+		mv "$FILE" /tmp/$UUID/.
 		chmod 700 /tmp/$UUID/*
 		if [ ! -f /tmp/$UUID/SIP.xml ]
 		then
@@ -44,6 +45,7 @@ do
 		/opt/archivematica/SIPxmlModifiers/addFileStructureToSIP.py "/home/demo/ingestLogs/$UUID" $UUID
 		/opt/archivematica/SIPxmlModifiers/addUUIDasDCidentifier.py "/home/demo/ingestLogs/$UUID" $UUID
 		detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
+		cleanName=`ls /tmp/$UUID`
 		python /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
 		find /tmp/$UUID/ -type f -print| while read NEWDOCS
 			do
@@ -54,10 +56,10 @@ do
 				echo "Receipt of $NEWDOCS completed" >> ~/ingestLogs/accession.log
 				# /opt/archivematica/normalize.py $NEWDOCS $UUID # move to 5-prepareAIP
 			done
-		cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/ingestLogs		
-		BASEFILE=`basename "$FILE"`
-		mv /tmp/$UUID /home/demo/4-appraiseSIP/"$BASEFILE"-$UUID
-		DISPLAY=:0.0 /usr/bin/notify-send "ingest" "$BASEFILE ready for appraisal"
+		cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/$cleanName/ingestLogs		
+		mv /tmp/$UUID/$cleanName /home/demo/4-appraiseSIP/$cleanName-$UUID
+		DISPLAY=:0.0 /usr/bin/notify-send "ingest" "$cleanName ready for appraisal"
+		rm -rf /tmp/$UUID
 	elif [ -f "$FILE" ]; then
 		chmod 700 "$FILE"
 		mv "$FILE" /home/demo/SIPerrors/.
