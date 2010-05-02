@@ -35,3 +35,5 @@ find /tmp/$2/ -type f -print| while read NEWDOCS
 /opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
 
 rm -rf /tmp/$2
+
+DISPLAY=:0.0 /usr/bin/notify-send "prepareAIP" "$2 AIP ready for review"
