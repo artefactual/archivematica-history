@@ -120,6 +120,9 @@ chroot $1 chown -R demo:demo /var/7-storeAIP
 #Begin Qubit Configuration
 chroot $1 /etc/init.d/mysql start
 chroot $1 mysqladmin create qubit
+chroot $1 mysqladmin create icaatom
+chroot $1 mysqladmin create dcb
+chroot $1 mysqladmin create dashboard
 cp includes/php.ini $1/etc/php5/cli
 cp includes/php.ini $1/etc/php5/apache2
 cp includes/apache.default $1/etc/apache2/sites-available/default
