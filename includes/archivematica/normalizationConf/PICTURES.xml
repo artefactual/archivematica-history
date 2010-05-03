@@ -1,0 +1,7 @@
+<extention>
+  <parent></parent>
+  <accessFormat>JPG</accessFormat>
+  <archiveFormat>TIF</archiveFormat>
+  <accessConversionComand>%convertPath% %fileName% +compress %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionComand>
+  <archiveConversionComand>%convertPath% %fileName% +compress %archiveFileDirectory%%fileTitle%.%archiveFormat%</archiveConversionComand>
+</extention>
