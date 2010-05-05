@@ -1,0 +1,8 @@
+<extention>
+  <parent></parent>
+  <accessFormat>MP3</accessFormat>
+  <preservationFormat>WAV</preservationFormat>
+  <accessConversionComand>%ffmpegPath% %fileFullName% +compress %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionComand>
+  <preservationConversionComand>%ffmpegPath% %fileFullName% +compress %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionComand>
+  <preservationConversionComand>%xenaPath%</preservationConversionComand>
+</extention>

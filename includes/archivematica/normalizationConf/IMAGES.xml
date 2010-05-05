@@ -1,0 +1,8 @@
+<extension>
+  <parent></parent>
+  <accessFormat>JPG</accessFormat>
+  <preservationFormat>TIF</preservationFormat>
+  <accessConversionComand>%convertPath% %fileFullName% +compress %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionComand>
+  <preservationConversionComand>%convertPath% %fileFullName% +compress %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionComand>
+  <preservationConversionComand>%xenaPath%</preservationConversionComand>
+</extension>

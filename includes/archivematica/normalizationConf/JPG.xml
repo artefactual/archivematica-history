@@ -1,7 +1,7 @@
-<extention>
-  <parent>PICTURES</parent>
+<extension>
+  <parent>IMAGES</parent>
   <accessFormat></accessFormat>
-  <archiveFormat></archiveFormat>
-  <AccessConversionComand></AccessConversionComand>
-  <ArchiveConversionComand></ArchiveConversionComand>
-</extention>
+  <preservationFormat></preservationFormat>
+  <accessConversionComand></accessConversionComand>
+  <preservationConversionComand></preservationConversionComand>
+</extension>
