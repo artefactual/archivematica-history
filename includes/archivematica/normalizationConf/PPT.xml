@@ -1,0 +1,7 @@
+<extention>
+  <parent></parent>
+  <preservationFormat></preservationFormat>
+  <archiveFormat></archiveFormat>
+  <accessConversionComand>%unoconvPath% -v --server localhost -f %accessFormat% %fileFullName%</accessConversionComand>
+  <preservationConversionComand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</preservationConversionComand>
+</extention>
