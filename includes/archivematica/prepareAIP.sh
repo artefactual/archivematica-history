@@ -29,7 +29,7 @@ UUID=${2:$position}
 
 find /tmp/$2/ -type f -print| while read NEWDOCS
   do
-    /opt/archivematica/normalize.py $NEWDOCS $UUID
+    /opt/archivematica/normalize2.py $NEWDOCS $UUID >> `dirname $NEWDOCS`/normalization2.log 2>&1
   done
 
 /opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
