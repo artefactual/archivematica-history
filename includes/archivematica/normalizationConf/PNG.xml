@@ -2,6 +2,6 @@
   <parent>IMAGES</parent>
   <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
-  <accessConversionComand></accessConversionComand>
-  <preservationConversionComand></preservationConversionComand>
+  <accessConversionCommand></accessConversionCommand>
+  <preservationConversionCommand></preservationConversionCommand>
 </extension>
