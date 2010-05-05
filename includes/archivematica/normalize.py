@@ -138,13 +138,13 @@ def executeCommand(command):
   #execute command
   try:
     if command != []:
-      print "processing: " + command.__str__()
+      print >>sys.stderr, "processing: " + command.__str__()
       retcode = subprocess.call( shlex.split(command) )
       #it executes check for errors
       if retcode != 0:
         print >>sys.stderr, "error code:" + retcode.__str__()
       else:
-        print "processing completed"
+        print >>sys.stderr, "processing completed"
         return 0
     else:
       print >>sys.stderr, "no conversion for type: " 
@@ -185,16 +185,16 @@ if len(accessConversionCommand) > 0 :
     while(result and len(accessConversionCommand) > index):
       if(len(accessFormat) > 0 and accessFormat[0].upper() == fileExtension.upper()):
         result = 0
-        print "Already in access format. No need to normalize."
+        print >>sys.stderr, "Already in access format. No need to normalize."
         continue
       accessFormat.append("")# just make it work :)
       preservationFormat.append("")
       result = executeCommand(accessConversionCommand[index])
       index += 1
     if result:
-      print "!!! ACCESS NORMALIZATION FAILED !!!"
+      print >>sys.stderr, "!!! ACCESS NORMALIZATION FAILED !!!"
 else:
-  print "No access normalization performed."
+  print >>sys.stderr, "No access normalization performed."
 
 #if the file is not in preservation format
 if len(preservationConversionCommand) > 0:
@@ -203,16 +203,16 @@ if len(preservationConversionCommand) > 0:
     while(result and len(preservationConversionCommand) > index):
       if(len(preservationFormat) > 0 and preservationFormat[0].upper() == fileExtension.upper()):
         result = 0
-        print "Already in preservation format. No need to normalize."
+        print >>sys.stderr, "Already in preservation format. No need to normalize."
         continue
       accessFormat.append("")
       preservationFormat.append("")
       result = executeCommand(preservationConversionCommand[index])
       index += 1
     if result:
-      print "!!! PRESERVATION NORMALIZATION FAILED !!!"
+      print >>sys.stderr, "!!! PRESERVATION NORMALIZATION FAILED !!!"
 else:
-  print "No preservation normalization performed."
+  print >>sys.stderr, "No preservation normalization performed."
 #check to see if the file was created
 
 
