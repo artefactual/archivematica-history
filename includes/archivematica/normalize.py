@@ -1,26 +1,56 @@
 #!/usr/bin/python
 
+# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+# @package Archivematica
+# @subpackage Ingest
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+#!/usr/bin/python
 import os.path
 import os
 import sys
 import logging
 import subprocess
 import shlex
+import xml.etree.cElementTree as etree
 
+#CONFIGURE THE FOLLOWING DIRECTORIES
+accessFileDirectory = ""
+fileDirectory = ""
+failedConversionsDirectory = "/home/demo/SIPerrors/normalizationErrors/"
+
+#CONFIGURE THE FOLLOWING APPLICATION PATHS
+#normalizationConfPath = "/mnt/userver910/archivematica2/includes/archivematica/normalizationConf"
+normalizationConfPath = "/opt/archivematica/normalizationConf"
+convertPath = "/usr/bin/convert " #Images
+ffmpegPath = "/usr/bin/ffmpeg -i " #Audio
+theoraPath = "/usr/bin/ffmpeg2theora "
+unoconvPath = "/usr/bin/unoconv "
+xenaPath = "java -jar /opt/externals/xena/xena.jar -f %fileFullName% -o %fileDirectory% -p /opt/externals/xena/plugins/" #Xena
+#...Path = "" #Video
+#...Path = "" #...
+
+#SET THE DEFAULT COMMAND
+defaultCommand = "echo No default normalization tool defined."
 
 #this script is passed fileIn, uuid
 fileIn = sys.argv[1]
-#fileType = sys.argv[2]
-if sys.argv[2]:
-    fileUUID = sys.argv[2]
-else:
-    fileUUID = "9999"
-
-#CONFIGURE THE FOLLOWING DIRECTORIES
-accessFileDirectory = os.path.dirname(fileIn) + "/"
-archiveFileDirectory = os.path.dirname(fileIn) + "/"
-logsDirectory = "/home/demo/ingestLogs/"
-failedConversionsDirectory = "/home/demo/SIPerrors/normalizationErrors/"
+#fileUUID = sys.argv[2]
 
 #get file name and extension
 s = fileIn
@@ -36,356 +66,156 @@ sLen = len(s)
 
 fileTitle = s[x1:x2]
 fileExtension = s[x2mod:sLen]
-fileName = archiveFileDirectory + fileTitle + "." + fileExtension
+fileDirectory = s[:x1]
+fileFullName = fileDirectory + fileTitle + "." + fileExtension
 
-retval = False
-try2 = False
-
-#CONFIGURE THE FOLLOWING APPLICATION PATHS
-convertPath = "/usr/bin/convert " #Images
-ffmpegPath = "/usr/bin/ffmpeg -i " #Audio
-theoraPath = "/usr/bin/ffmpeg2theora "
-unoconvPath = "/usr/bin/unoconv "
-xenaPath = "" #Xena
-#...Path = "" #Video
-#...Path = "" #...
-
-conversionDict = {}
-
-#********************************************
-#Audio - AC3, MP3, WAV, WMA
-#********************************************
-
-conversionDict['AC3'] = {}
-conversionDict['AC3']['archiveFormat'] = "WAV"
-conversionDict['AC3']['accessFormat'] = "MP3"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['AC3']['PrimaryAccessConversionComand'] = ffmpegPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['AC3']['accessFormat'].lower()
-conversionDict['AC3']['PrimaryArchiveConversionComand'] = ffmpegPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['AC3']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['AC3']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['AC3']['archiveFormat'].lower()
-conversionDict['AC3']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['AC3']['archiveFormat'].lower()
-
-conversionDict['MP3'] = {}
-conversionDict['MP3']['archiveFormat'] = "WAV"
-conversionDict['MP3']['accessFormat'] = "MP3"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['MP3']['PrimaryAccessConversionComand'] = ffmpegPath + fileName + " " + accessFileDirectory  + fileTitle + "." + conversionDict['MP3']['accessFormat'].lower()
-conversionDict['MP3']['PrimaryArchiveConversionComand'] = ffmpegPath + fileName + " " + archiveFileDirectory  + fileTitle + "." + conversionDict['MP3']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['MP3']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['MP3']['accessFormat'].lower()
-conversionDict['MP3']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['MP3']['archiveFormat'].lower()
-
-conversionDict['WAV'] = {}
-conversionDict['WAV']['archiveFormat'] = "WAV"
-conversionDict['WAV']['accessFormat'] = "MP3"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['WAV']['PrimaryAccessConversionComand'] = ffmpegPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['WAV']['accessFormat'].lower()
-conversionDict['WAV']['PrimaryArchiveConversionComand'] = ffmpegPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['WAV']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['WAV']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['WAV']['accessFormat'].lower()
-conversionDict['WAV']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['WAV']['archiveFormat'].lower()
-
-conversionDict['WMA'] = {}
-conversionDict['WMA']['archiveFormat'] = "WAV"
-conversionDict['WMA']['accessFormat'] = "MP3"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['WMA']['PrimaryAccessConversionComand'] = ffmpegPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['WMA']['accessFormat'].lower()
-conversionDict['WMA']['PrimaryArchiveConversionComand'] = ffmpegPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['WMA']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['WMA']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['WMA']['accessFormat'].lower()
-conversionDict['WMA']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['WMA']['archiveFormat'].lower()
-
-#********************************************
-#Presentation files - PPT
-#********************************************
-
-conversionDict['PPT'] = {}
-conversionDict['PPT']['archiveFormat'] = "PDF"
-conversionDict['PPT']['accessFormat'] = "ODP"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['PPT']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['PPT']['accessFormat'].lower() + " " +fileName
-conversionDict['PPT']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['PPT']['archiveFormat'].lower() + " " +fileName
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['PPT']['AltAccessConversionComand'] = xenaPath
-conversionDict['PPT']['AltArchiveConversionComand'] = xenaPath
-
-#********************************************
-#Images - BMP, GIF, JPG, JP2, PNG, TIFF, TGA
-#********************************************
-
-conversionDict['BMP'] = {}
-conversionDict['BMP']['archiveFormat'] = "TIF"
-conversionDict['BMP']['accessFormat'] = "JPG"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['BMP']['PrimaryAccessConversionComand'] = convertPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['BMP']['accessFormat'].lower()
-conversionDict['BMP']['PrimaryArchiveConversionComand'] = convertPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['BMP']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['BMP']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['BMP']['accessFormat'].lower()
-conversionDict['BMP']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['BMP']['archiveFormat'].lower()
-
-conversionDict['GIF'] = {}
-conversionDict['GIF']['archiveFormat'] = "TIF"
-conversionDict['GIF']['accessFormat'] = "JPG"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['GIF']['PrimaryAccessConversionComand'] = convertPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['GIF']['accessFormat'].lower()
-conversionDict['GIF']['PrimaryArchiveConversionComand'] = convertPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['GIF']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['GIF']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['GIF']['accessFormat'].lower()
-conversionDict['GIF']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['GIF']['archiveFormat'].lower()
-
-conversionDict['JPG'] = {}
-conversionDict['JPG']['archiveFormat'] = "TIF"
-conversionDict['JPG']['accessFormat'] = "JPG"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['JPG']['PrimaryAccessConversionComand'] = convertPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['JPG']['accessFormat'].lower()
-conversionDict['JPG']['PrimaryArchiveConversionComand'] = convertPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['JPG']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['JPG']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['JPG']['accessFormat'].lower()
-conversionDict['JPG']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['JPG']['archiveFormat'].lower()
-
-conversionDict['JP2'] = {}
-conversionDict['JP2']['archiveFormat'] = "TIF"
-conversionDict['JP2']['accessFormat'] = "JPG"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['JP2']['PrimaryAccessConversionComand'] = convertPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['JP2']['accessFormat'].lower()
-conversionDict['JP2']['PrimaryArchiveConversionComand'] = convertPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['JP2']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['JP2']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['JP2']['accessFormat'].lower()
-conversionDict['JP2']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['JP2']['archiveFormat'].lower()
-
-conversionDict['PNG'] = {}
-conversionDict['PNG']['archiveFormat'] = "TIF"
-conversionDict['PNG']['accessFormat'] = "JPG"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['PNG']['PrimaryAccessConversionComand'] = convertPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['PNG']['accessFormat'].lower()
-conversionDict['PNG']['PrimaryArchiveConversionComand'] = convertPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['PNG']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['PNG']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['PNG']['accessFormat'].lower()
-conversionDict['PNG']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['PNG']['archiveFormat'].lower()
-
-conversionDict['TIFF'] = {}
-conversionDict['TIFF']['archiveFormat'] = "TIF"
-conversionDict['TIFF']['accessFormat'] = "JPG"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['TIFF']['PrimaryAccessConversionComand'] = convertPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['TIFF']['accessFormat'].lower()
-conversionDict['TIFF']['PrimaryArchiveConversionComand'] = convertPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['TIFF']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['TIFF']['AltAccessConversionComand'] = xenaPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['TIFF']['accessFormat'].lower()
-conversionDict['TIFF']['AltArchiveConversionComand'] = xenaPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['TIFF']['archiveFormat'].lower()
-
-conversionDict['TGA'] = {}
-conversionDict['TGA']['archiveFormat'] = "TIF"
-conversionDict['TGA']['accessFormat'] = "JPG"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['TGA']['PrimaryAccessConversionComand'] = convertPath + fileName + " +compress " + accessFileDirectory  + fileTitle + "." + conversionDict['TGA']['accessFormat'].lower()
-conversionDict['TGA']['PrimaryArchiveConversionComand'] = convertPath + fileName + " +compress " + archiveFileDirectory  + fileTitle + "." + conversionDict['TGA']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['TGA']['AltAccessConversionComand'] = xenaPath
-conversionDict['TGA']['AltArchiveConversionComand'] = xenaPath
-
-#********************************************
-#Raw camera files - NEF
-#********************************************
-
-conversionDict['NEF'] = {}
-conversionDict['NEF']['archiveFormat'] = "DNG"
-conversionDict['NEF']['accessFormat'] = "JPEG"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['NEF']['PrimaryAccessConversionComand']=""
-conversionDict['NEF']['PrimaryArchiveConversionComand']=""
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['NEF']['AltAccessConversionComand']=""
-conversionDict['NEF']['AltArchiveConversionComand']=""
-
-#********************************************
-#Spreadsheets - XLS
-#********************************************
-
-
-conversionDict['XLS'] = {}
-conversionDict['XLS']['archiveFormat'] = "ODS"
-conversionDict['XLS']['accessFormat'] = "XLS"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['XLS']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['XLS']['accessFormat'].lower() + " " +fileName
-conversionDict['XLS']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['XLS']['archiveFormat'].lower() + " " +fileName  
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['XLS']['AltAccessConversionComand'] = xenaPath
-conversionDict['XLS']['AltArchiveConversionComand'] = xenaPath
-
-
-#********************************************
-#Video - AVI, FLV, MOV, MPEG, SWF, WMV
-#********************************************
-
-conversionDict['WMV'] = {}
-conversionDict['WMV']['archiveFormat'] = "MXF"
-conversionDict['WMV']['accessFormat'] = "OGV"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['WMV']['PrimaryAccessConversionComand']=  theoraPath + fileName
-conversionDict['WMV']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['WMV']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['WMV']['AltAccessConversionComand']=""
-conversionDict['WMV']['AltArchiveConversionComand']=""
-
-conversionDict['MPG'] = {}
-conversionDict['MPG']['archiveFormat'] = "MXF"
-conversionDict['MPG']['accessFormat'] = "OGV"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['MPG']['PrimaryAccessConversionComand']= theoraPath + fileName
-conversionDict['MPG']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['MPG']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['MPG']['AltAccessConversionComand']=""
-conversionDict['MPG']['AltArchiveConversionComand']=""
-
-conversionDict['SWF'] = {}
-conversionDict['SWF']['archiveFormat'] = "MXF"
-conversionDict['SWF']['accessFormat'] = "OGV"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['SWF']['PrimaryAccessConversionComand']= theoraPath + fileName
-conversionDict['SWF']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['SWF']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['SWF']['AltAccessConversionComand']=""
-conversionDict['SWF']['AltArchiveConversionComand']=""
-
-conversionDict['FLV'] = {}
-conversionDict['FLV']['archiveFormat'] = "MXF"
-conversionDict['FLV']['accessFormat'] = "OGV"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['FLV']['PrimaryAccessConversionComand']= theoraPath + fileName
-conversionDict['FLV']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['FLV']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['FLV']['AltAccessConversionComand']=""
-conversionDict['FLV']['AltArchiveConversionComand']=""
-
-conversionDict['MOV'] = {}
-conversionDict['MOV']['archiveFormat'] = "MXF"
-conversionDict['MOV']['accessFormat'] = "OGV"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['MOV']['PrimaryAccessConversionComand']= theoraPath + fileName
-conversionDict['MOV']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['MOV']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['MOV']['AltAccessConversionComand']=""
-conversionDict['MOV']['AltArchiveConversionComand']=""
-
-conversionDict['AVI'] = {}
-conversionDict['AVI']['archiveFormat'] = "MXF"
-conversionDict['AVI']['accessFormat'] = "OGV"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['AVI']['PrimaryAccessConversionComand']= theoraPath + fileName
-conversionDict['AVI']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['AVI']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['AVI']['AltAccessConversionComand']=""
-conversionDict['AVI']['AltArchiveConversionComand']=""
-
-conversionDict['MP4'] = {}
-conversionDict['MP4']['archiveFormat'] = "MXF"
-conversionDict['MP4']['accessFormat'] = "OGV"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['MP4']['PrimaryAccessConversionComand']= theoraPath + fileName
-conversionDict['MP4']['PrimaryArchiveConversionComand']= ffmpegPath + fileName + " -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 4800 " + accessFileDirectory  + fileTitle + "." + conversionDict['MP4']['archiveFormat'].lower()
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['MP4']['AltAccessConversionComand']=""
-conversionDict['MP4']['AltArchiveConversionComand']=""
-
-#********************************************
-#Word processing files - DOC,WPD
-#********************************************
-
-conversionDict['DOC'] = {}
-conversionDict['DOC']['archiveFormat'] = "ODT"
-conversionDict['DOC']['accessFormat'] = "PDF"
-#using primary tool - CONFIGURE COMMAND BELOW
-conversionDict['DOC']['PrimaryAccessConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['DOC']['accessFormat'].lower() + " " +fileName
-conversionDict['DOC']['PrimaryArchiveConversionComand'] = unoconvPath + " -v --server localhost -f " + conversionDict['DOC']['archiveFormat'].lower() + " " +fileName  
-#using secondary tool, usually xena - CONFIGURE COMMAND BELOW
-conversionDict['DOC']['AltAccessConversionComand'] = xenaPath
-conversionDict['DOC']['AltArchiveConversionComand'] = xenaPath
-
-
-
-
-
-#create log file Directory if needed
-def check_path():
-    if os.path.exists(logsDirectory + fileUUID):
-        return True
-    else:
-        os.mkdir( logsDirectory + fileUUID )
-
-check_path()
-#setup logging
-LOG_FILENAME = '/home/demo/ingestLogs/'+fileUUID+'/normalization.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
-
-def check_files():
-#does extension have a key in Dictionary? can we convert it?
-  if conversionDict.has_key(fileExtension.upper()):
-    return True
+def findDirectory(root, tag=None, text=None):
+  ret = []
+  if (not tag) and (not text):
+    #return all
+    for element in root:
+      ret.append(element)
   else:
-    return False
-#get Command from Dictionary for appropriate pass at conversion (this allows for finest granularity)
-#each fileType has four Commands that must be individually configured in Dictionary above
-def get_command(type, pass_type ):
-#only four possible Commands per fileType
-        if (type == "access"):
-            if (pass_type == "primary"):
-                command = conversionDict[fileExtension.upper()]['PrimaryAccessConversionComand']
-            else:
-                command = conversionDict[fileExtension.upper()]['AltAccessConversionComand']
-        else:
-            if (pass_type == "primary"):
-                command = conversionDict[fileExtension.upper()]['PrimaryArchiveConversionComand']
-            else:
-                command = conversionDict[fileExtension.upper()]['AltArchiveConversionComand']
-        return command;
-
-#based on Type return full Path and Name used in order to check if file has been created
-def get_file_in_path(type):
-      if (type == "access"):
-          fileInPath=accessFileDirectory+fileTitle+"."+conversionDict[fileExtension.upper()]['accessFormat'].lower()
-      if (type == "archive"):
-          fileInPath=archiveFileDirectory+fileTitle+"."+conversionDict[fileExtension.upper()]['archiveFormat'].lower()
-      return fileInPath
-
-#all files converted using only one function
-def convert_files(type, pass_type ): #pass Type = Primary or Alternate?
-  if check_files():
-      try:
-        command = get_command(type, pass_type )
-        if command != []:
-          print "processing " + pass_type + ": " + shlex.split(command).__str__()
-          retcode = subprocess.call( shlex.split(command) )
-          #it executes check for errors
-          if retcode != 0:
-            print "error code:" + retcode.__str__()
-          else:
-            print "executed OK"
-        else:
-          print "no conversion for type: " + pass_type
-  		#catch OS errors
-      except OSError, ose:
-      	print >>sys.stderr, "Execution failed:", ose
-        logging.exception("Access "+type+" Type file conversion failed - OS error for "+type+" "+fileIn )
-#check for converted file... if file doesnt exist it wasnt converted, call again using Alternate Command
-      fileInPath = get_file_in_path(type)
-#cold hard check - did we produce file?
-      if os.path.isfile(fileInPath):
-          return True
-#if not try secondary tool
+    if tag:
+      if not text:
+        #match the tag
+        for element in root:
+          if element.tag == tag:
+            ret.append(element)
       else:
-          if pass_type == "primary":
-             convert_files( type , "alt")
-#did Alternate tool produce file?
-             if os.path.isfile(fileInPath):
-                return True
-             else:
-#else log failure and copy file
-                mvCmd = "cp "+fileIn +" "+failedConversionsDirectory
-                logging.debug(mvCmd)
-                os.system( mvCmd )
-                logging.debug("Failed both attempts at converting "+type+" Type file "+fileIn+". Copied file to Failed "+type+" Conversions Directory" )
-                return False
+        #match tag and text
+        for element in root:
+          if element.tag == tag and element.text == text:
+            ret.append(element)
+    else:
+      #match the text
+      for element in root:
+        if element.text == text:
+          ret.append(element)
+  return ret
 
-convert_files("access", "primary")
-convert_files("archive", "primary")
+def fillAttrib(attrib, var, fileExtension):
+  tree = etree.parse(normalizationConfPath + "/" + fileExtension.upper() + ".xml")
+  root = tree.getroot()
+#  print(etree.tostring(root))
+ 
+  varsxml = findDirectory(root, "parent")
+  if varsxml[0].text :
+    return fillAttrib( attrib, var, varsxml[0].text )
+  
+  varsxml = findDirectory(root, attrib)
+  for varxml in varsxml:
+    var.append(varxml.text)
+#  print var
+
+parent = []
+accessFormat = []
+preservationFormat = []
+accessConversionCommand = []
+preservationConversionCommand =  []
+
+def executeCommand(command):
+  #Replace replacement strings
+  replacementDic = { \
+  "%convertPath%": convertPath, \
+  "%ffmpegPath%": ffmpegPath, \
+  "%theoraPath%": theoraPath, \
+  "%unoconvPath%": unoconvPath, \
+  "%xenaPath%": xenaPath, \
+  "%fileExtension%": fileExtension, \
+  "%fileFullName%": fileFullName, \
+  "%accessFileDirectory%": fileDirectory, \
+  "%preservationFileDirectory%": fileDirectory, \
+  "%fileDirectory%": fileDirectory,\
+  "%fileTitle%": fileTitle, \
+  "%accessFormat%": accessFormat[0], \
+  "%preservationFormat%": preservationFormat[0] }
+  
+  #for each key replace all instances of the key in the command string
+  for key in replacementDic.iterkeys():
+    command = command.replace ( key, replacementDic[key] )
+
+  #execute command
+  try:
+    if command != []:
+      print "processing: " + command.__str__()
+      retcode = subprocess.call( shlex.split(command) )
+      #it executes check for errors
+      if retcode != 0:
+        print >>sys.stderr, "error code:" + retcode.__str__()
+      else:
+        print "processing completed"
+        return 0
+    else:
+      print >>sys.stderr, "no conversion for type: " 
+      return 1
+  #catch OS errors
+  except OSError, ose:
+    print >>sys.stderr, "Execution failed:", ose
+    return 1
+
+try:
+  fillAttrib("parent", parent, fileExtension)
+  fillAttrib("accessFormat", accessFormat, fileExtension)
+  fillAttrib("preservationFormat", preservationFormat, fileExtension)
+  fillAttrib("accessConversionCommand", accessConversionCommand, fileExtension)
+  fillAttrib("preservationConversionCommand", preservationConversionCommand, fileExtension)
+
+except OSError, ose:
+  print >>sys.stderr, "No normalization", ose
+except IOError, ose:
+  #NO config file for this extension
+  
+  #reset variables, to be sure
+  parent = []
+  accessFormat = []
+  preservationFormat = []
+  accessConversionCommand = []
+  preservationConversionCommand =  []
+  
+  #add default command (xena) to preservationConversionCommand
+  preservationConversionCommand.append(defaultCommand)
+  
+#file not exist - no preservation format/malformed conf specified for .fileExtension
+
+#if the file is not in access format
+if len(accessConversionCommand) > 0 :
+    result = 1
+    index = 0
+    while(result and len(accessConversionCommand) > index):
+      if(len(accessFormat) > 0 and accessFormat[0].upper() == fileExtension.upper()):
+        result = 0
+        print "Already in access format. No need to normalize."
+        continue
+      accessFormat.append("")# just make it work :)
+      preservationFormat.append("")
+      result = executeCommand(accessConversionCommand[index])
+      index += 1
+    if result:
+      print "!!! ACCESS NORMALIZATION FAILED !!!"
+else:
+  print "No access normalization performed."
+
+#if the file is not in preservation format
+if len(preservationConversionCommand) > 0:
+    result = 1
+    index = 0
+    while(result and len(preservationConversionCommand) > index):
+      if(len(preservationFormat) > 0 and preservationFormat[0].upper() == fileExtension.upper()):
+        result = 0
+        print "Already in preservation format. No need to normalize."
+        continue
+      accessFormat.append("")
+      preservationFormat.append("")
+      result = executeCommand(preservationConversionCommand[index])
+      index += 1
+    if result:
+      print "!!! PRESERVATION NORMALIZATION FAILED !!!"
+else:
+  print "No preservation normalization performed."
+#check to see if the file was created
+
+
+
+
+

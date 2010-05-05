@@ -1,7 +1,7 @@
-<extention>
+<extension>
   <parent></parent>
+  <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
-  <archiveFormat></archiveFormat>
-  <accessConversionComand></accessConversionComand>
-  <preservationConversionComand></preservationConversionComand>
-</extention>
+  <accessConversionCommand></accessConversionCommand>
+  <preservationConversionCommand></preservationConversionCommand>
+</extension>
