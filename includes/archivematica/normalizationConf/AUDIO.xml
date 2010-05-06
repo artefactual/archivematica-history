@@ -2,7 +2,7 @@
   <parent></parent>
   <accessFormat>MP3</accessFormat>
   <preservationFormat>WAV</preservationFormat>
-  <accessConversionCommand>%ffmpegPath% %fileFullName% +compress %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
-  <preservationConversionCommand>%ffmpegPath% %fileFullName% +compress %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
+  <accessConversionCommand>%ffmpegPath% -i %fileFullName% %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
+  <preservationConversionCommand>%ffmpegPath% -i %fileFullName% %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
   <preservationConversionCommand>%xenaPath%</preservationConversionCommand>
 </extention>

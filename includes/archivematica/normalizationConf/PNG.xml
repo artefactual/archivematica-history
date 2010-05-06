@@ -1,5 +1,5 @@
 <extension>
-  <parent>IMAGES</parent>
+  <parent></parent>
   <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
   <accessConversionCommand></accessConversionCommand>
