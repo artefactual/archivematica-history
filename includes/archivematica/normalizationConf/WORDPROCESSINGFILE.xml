@@ -1,6 +1,6 @@
 <extension>
   <parent></parent>
-  <accessFormat>PDF</accessFormat>
+  <accessFormat>PDFA</accessFormat>
   <preservationFormat>ODF</preservationFormat>
   <accessConversionCommand>%unoconvPath% -v --server localhost -f %accessFormat% %fileFullName%</accessConversionCommand>
   <preservationConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</preservationConversionCommand>
