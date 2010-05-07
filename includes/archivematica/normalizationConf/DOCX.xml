@@ -1,0 +1,7 @@
+<extention>
+  <parent></parent>
+  <accessFormat>PDF</accessFormat>
+  <preservationFormat></preservationFormat>
+  <accessConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</accessConversionCommand>
+  <preservationConversionCommand></preservationConversionCommand>
+</extention>
