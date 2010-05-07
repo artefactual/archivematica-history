@@ -191,7 +191,11 @@ if len(accessConversionCommand) > 0 :
         continue
       accessFormat.append("")# just make it work :)
       preservationFormat.append("")
-      result = executeCommand(accessConversionCommand[index])
+      if accessConversionCommand[index]:
+        result = executeCommand(accessConversionCommand[index])
+      else:
+        print >>sys.stderr, "Skipping Access Normalization: No command"
+        result = 0
       index += 1
     if result:
       print >>sys.stderr, "!!! ACCESS NORMALIZATION FAILED !!!"
@@ -209,7 +213,11 @@ if len(preservationConversionCommand) > 0:
         continue
       accessFormat.append("")
       preservationFormat.append("")
-      result = executeCommand(preservationConversionCommand[index])
+      if preservationConversionCommand[index]:
+        result = executeCommand(preservationConversionCommand[index])
+      else:
+        print >>sys.stderr, "Skipping Preservation Normalization: No command"
+        result = 0 
       index += 1
     if result:
       print >>sys.stderr, "!!! PRESERVATION NORMALIZATION FAILED !!!"
