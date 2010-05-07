@@ -1,5 +1,5 @@
 <extension>
-  <parent></parent>
+  <parent>WORDPROCESSINGFILE</parent>
   <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
   <accessConversionCommand></accessConversionCommand>

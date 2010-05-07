@@ -2,7 +2,7 @@
   <parent></parent>
   <accessFormat>OGF</accessFormat>
   <preservationFormat>MXF</preservationFormat>
-  <accessConversionCommand></accessConversionCommand>
-  <preservationConversionCommand>ffmpeg -i %fileFullName% -vcodec mpeg2video -qscale 1
+  <accessConversionCommand>%ffmpegPath% -i %fileFullName% -acodecvorbis %accessPath%%fileName%.%accessFormat%</accessConversionCommand>
+  <preservationConversionCommand>%ffmpegPath% -i %fileFullName% -vcodec mpeg2video -qscale 1
 -qmin 1 -intra -ar 48000 %preservationPath%%fileName%.%preservationFormat%</preservationConversionCommand>
 </extension>
