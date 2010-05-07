@@ -38,7 +38,7 @@ failedConversionsDirectory = "/home/demo/SIPerrors/normalizationErrors/"
 #normalizationConfPath = "/mnt/userver910/archivematica2/includes/archivematica/normalizationConf"
 normalizationConfPath = "/opt/archivematica/normalizationConf"
 convertPath = "/usr/bin/convert " #Images
-ffmpegPath = "/usr/bin/ffmpeg -i " #Audio
+ffmpegPath = "/usr/bin/ffmpeg " #Audio
 theoraPath = "/usr/bin/ffmpeg2theora "
 unoconvPath = "/usr/bin/unoconv "
 xenaPath = "java -jar /opt/externals/xena/xena.jar -f %fileFullName% -o %fileDirectory% -p /opt/externals/xena/plugins/" #Xena
@@ -68,6 +68,8 @@ fileTitle = s[x1:x2]
 fileExtension = s[x2mod:sLen]
 fileDirectory = s[:x1]
 fileFullName = fileDirectory + fileTitle + "." + fileExtension
+
+print >>sys.stderr, "NORMALIZING: " + fileTitle + "." + fileExtension
 
 def findDirectory(root, tag=None, text=None):
   ret = []
@@ -183,7 +185,7 @@ if len(accessConversionCommand) > 0 :
     result = 1
     index = 0
     while(result and len(accessConversionCommand) > index):
-      if(len(accessFormat) > 0 and accessFormat[0].upper() == fileExtension.upper()):
+      if(len(accessFormat) > 0 and accessFormat[0] and accessFormat[0].upper() == fileExtension.upper()):
         result = 0
         print >>sys.stderr, "Already in access format. No need to normalize."
         continue
@@ -201,7 +203,7 @@ if len(preservationConversionCommand) > 0:
     result = 1
     index = 0
     while(result and len(preservationConversionCommand) > index):
-      if(len(preservationFormat) > 0 and preservationFormat[0].upper() == fileExtension.upper()):
+      if(len(preservationFormat) > 0 and preservationFormat[0] and preservationFormat[0].upper() == fileExtension.upper()):
         result = 0
         print >>sys.stderr, "Already in preservation format. No need to normalize."
         continue

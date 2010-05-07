@@ -1,7 +1,7 @@
 <extention>
   <parent></parent>
   <accessFormat>PDF</accessFormat>
-  <preservationFormat>ODP</preservationFormat>
+  <preservationFormat>ODF</preservationFormat>
   <accessConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</accessConversionCommand>
   <preservationConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</preservationConversionCommand>
 </extention>
