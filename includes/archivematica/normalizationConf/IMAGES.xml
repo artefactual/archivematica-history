@@ -2,7 +2,7 @@
   <parent></parent>
   <accessFormat>JPG</accessFormat>
   <preservationFormat>TIF</preservationFormat>
-  <accessConversionCommand>%convertPath% %fileFullName% +compress %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
+  <accessConversionCommand>%convertPath% %fileFullName% %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
   <preservationConversionCommand>%convertPath% %fileFullName% +compress %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
   <preservationConversionCommand>%xenaPath%</preservationConversionCommand>
 </extension>
