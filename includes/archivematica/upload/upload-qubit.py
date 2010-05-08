@@ -178,15 +178,9 @@ if __name__ == '__main__':
     sys.exit('ERROR: Interrupted by user')
 
   except urllib2.HTTPError, err:
-    if opts.debug:
-      print err.geturl()
-      print err.info()
     sys.exit('ERROR: The server couldn\'t fulfill the request. Error code: %s.' % err.code) 
 
   except urllib2.URLError, err:
-    if opts.debug:
-      print err.geturl()
-      print err.info()
     sys.exit('ERROR: Failed trying to reach the server. Reason: %s.' % err.reason)
 
   except Exception, err:
