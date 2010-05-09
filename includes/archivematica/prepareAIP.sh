@@ -21,19 +21,25 @@
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
 
+#move sip to /tmp
 mv $1/$2 /tmp/$2
 
+#parse line for uuid and sip name
 length=`expr length $2`
 position=$length-36
 UUID=${2:$position}
 
+#read folder structure and run normalize.py on files
 find /tmp/$2/ -type f -print| while read NEWDOCS
   do
     /opt/archivematica/normalize.py $NEWDOCS $UUID >> `dirname $NEWDOCS`/normalization.log 2>&1
   done
 
+#use baggit to create AIP
 /opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
 
+#cleanup
 rm -rf /tmp/$2
 
+#notify user that AIP creation is complete
 DISPLAY=:0.0 /usr/bin/notify-send "prepareAIP" "$2 AIP ready for review"
