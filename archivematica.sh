@@ -113,6 +113,7 @@ cp includes/gtk-bookmarks $1/home/demo/.gtk-bookmarks
 cp includes/gdm.custom.conf $1/etc/gdm/custom.conf
 
 #fix permissions 
+chroot $1 chmod -R 444 /home/demo/.config/xfce4/panel
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
 chroot $1 chown -R demo:demo /opt/externals
