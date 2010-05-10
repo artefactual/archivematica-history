@@ -89,8 +89,8 @@ cp includes/ica-atom.desktop $1/home/demo/Desktop
 cp includes/droid.desktop $1/home/demo/Desktop
 cp includes/jhove.desktop $1/home/demo/Desktop
 cp includes/NLNZ-metadata-extractor.desktop $1/home/demo/Desktop
-cp includes/xena.desktop $1/home/demo/Desktop
-cp includes/view.desktop $1/home/demo/Desktop
+#cp includes/xena.desktop $1/home/demo/Desktop
+#cp includes/view.desktop $1/home/demo/Desktop
 cp includes/dcb.desktop $1/home/demo/Desktop
 #cp includes/dashboard.desktop $1/home/demo/Desktop
 cp includes/WinFF.desktop $1/home/demo/Desktop
@@ -99,8 +99,8 @@ cp includes/runica-atom.sh $1/usr/bin
 cp includes/rundcb.sh $1/usr/bin
 cp includes/rundashboard.sh $1/usr/bin
 cp includes/runjhove.sh $1/usr/bin
-cp includes/runxena.sh $1/usr/bin
-cp includes/runview.sh $1/usr/bin
+#cp includes/runxena.sh $1/usr/bin
+#cp includes/runview.sh $1/usr/bin
 
 #xfce4 configuration
 cp includes/panel/* $/home/demo/.config/xfce4/panel
