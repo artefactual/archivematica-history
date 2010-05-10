@@ -130,8 +130,8 @@ def executeCommand(command):
   "%preservationFileDirectory%": fileDirectory, \
   "%fileDirectory%": fileDirectory,\
   "%fileTitle%": fileTitle, \
-  "%accessFormat%": accessFormat[0], \
-  "%preservationFormat%": preservationFormat[0] }
+  "%accessFormat%": accessFormat[0].lower(), \
+  "%preservationFormat%": preservationFormat[0].lower() }
   
   #for each key replace all instances of the key in the command string
   for key in replacementDic.iterkeys():
@@ -189,8 +189,8 @@ if len(accessConversionCommand) > 0 :
         result = 0
         print >>sys.stderr, "Already in access format. No need to normalize."
         continue
-      accessFormat.append("")# just make it work :)
-      preservationFormat.append("")
+      accessFormat.append("NONE")# just make it work :)
+      preservationFormat.append("NONE")
       if accessConversionCommand[index]:
         result = executeCommand(accessConversionCommand[index])
       else:
@@ -211,8 +211,8 @@ if len(preservationConversionCommand) > 0:
         result = 0
         print >>sys.stderr, "Already in preservation format. No need to normalize."
         continue
-      accessFormat.append("")
-      preservationFormat.append("")
+      accessFormat.append("NONE")
+      preservationFormat.append("NONE")
       if preservationConversionCommand[index]:
         result = executeCommand(preservationConversionCommand[index])
       else:
