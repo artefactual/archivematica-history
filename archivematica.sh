@@ -73,6 +73,7 @@ chroot $1 mkdir /home/demo/.config
 chroot $1 mkdir /home/demo/.config/Thunar
 chroot $1 mkdir /home/demo/.config/autostart
 chroot $1 mkdir -p /home/demo/.config/xfce4/desktop
+chroot $1 mkdir -p /home/demo/.config/xfce4/panel
 
 #Gnome Integration/Customization
 cp -p includes/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
@@ -102,7 +103,7 @@ cp includes/runxena.sh $1/usr/bin
 cp includes/runview.sh $1/usr/bin
 
 #xfce4 configuration
-svn export includes/panel $/home/demo/.config/xfce4/panel
+cp includes/panel/* $/home/demo/.config/xfce4/panel
 cp includes/xfce4-desktop.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
 cp includes/xfce4-session.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
 cp includes/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
@@ -114,7 +115,7 @@ cp includes/gtk-bookmarks $1/home/demo/.gtk-bookmarks
 cp includes/gdm.custom.conf $1/etc/gdm/custom.conf
 
 #fix permissions 
-chroot $1 chmod -R 444 /home/demo/.config/xfce4/panel
+chroot $1 chmod 444 /home/demo/.config/xfce4/panel/*
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
 chroot $1 chown -R demo:demo /opt/externals
