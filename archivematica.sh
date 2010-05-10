@@ -105,7 +105,7 @@ cp includes/runview.sh $1/usr/bin
 #xfce4 configuration
 cp includes/panel/* $/home/demo/.config/xfce4/panel
 cp includes/xfce4-desktop.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
-cp includes/xfce4-session.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
+#cp includes/xfce4-session.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
 cp includes/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
 cp includes/user-dirs.defaults $1/etc/xdg
 cp includes/uca.xml $1/home/demo/.config/Thunar
