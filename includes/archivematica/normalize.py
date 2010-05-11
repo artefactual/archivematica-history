@@ -69,7 +69,7 @@ fileExtension = s[x2mod:sLen]
 fileDirectory = s[:x1]
 fileFullName = fileDirectory + fileTitle + "." + fileExtension
 
-print >>sys.stderr, "NORMALIZING: " + fileTitle + "." + fileExtension
+print >>sys.stderr, "\nNORMALIZING: " + fileTitle + "." + fileExtension + " {" + fileFullName "}"
 
 def findDirectory(root, tag=None, text=None):
   ret = []
