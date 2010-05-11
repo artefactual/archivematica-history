@@ -1,3 +1,3 @@
 #!/bin/bash
-touch -a "$*"
-chmod -R 000 "$*"
+touch -a /home/demo/3-quarantineSIP/"$*"
+chmod -R 000 /home/demo/3-quarantineSIP/"$*"
