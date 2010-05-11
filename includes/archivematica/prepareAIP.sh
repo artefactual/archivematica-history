@@ -22,7 +22,7 @@
 # @version svn: $Id$
 
 #move sip to /tmp
-mv $1/$2 /tmp/$2
+mv /home/demo/5-prepareAIP/$2 /tmp/$2
 
 #parse line for uuid and sip name
 length=`expr length $2`
