@@ -1,7 +1,7 @@
 <extension>
   <parent></parent>
   <accessFormat>JPG</accessFormat>
-  <preservationFormat></preservationFormat>
+  <preservationFormat>PNG</preservationFormat>
   <accessConversionCommand>%convertPath% %fileFullName% %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
 </extension>
