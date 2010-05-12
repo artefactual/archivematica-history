@@ -1,0 +1,4 @@
+#!/bin/bash
+NOW=`date +%F`
+listName=`zenity --entry --title="Create MD5" --entry-text "My.MD5.$NOW.txt" --text="Name of MD5 report"`
+md5deep -rb $* | tee >(zenity --progress --pulsate) > $listName
