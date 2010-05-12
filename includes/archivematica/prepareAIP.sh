@@ -30,13 +30,16 @@ position=$length-36
 UUID=${2:$position}
 
 #read folder structure and run normalize.py on files
-find /tmp/$2/ -type f -print| while read NEWDOCS
+find /tmp/$2/ -type f -exec python /opt/archivematica/normalize.py {} \; -print >>/tmp/$2/normalization.log 2>&1
+"""| while read NEWDOCS
   do
-#    /opt/archivematica/normalize.py $NEWDOCS $UUID >> `dirname $NEWDOCS`/normalization.log 2>&1
-    /opt/archivematica/normalize.py $NEWDOCS $UUID >> /tmp/$2/normalization.log 2>&1
+#    /opt/archivematica/normalize.py $NEWDOCS $UUID >>`dirname $NEWDOCS`/normalization.log 2>&1
+    /opt/archivematica/normalize.py $NEWDOCS $UUID >>/tmp/$2/normalization.log 2>&1
   done
 
 sleep 5 #Allow finish writing to the normalization.log file
+
+"""
 
 #use baggit to create AIP
 /opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
