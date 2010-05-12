@@ -63,7 +63,8 @@ chroot $1 mkdir /home/demo/3-quarantineSIP
 chroot $1 mkdir /home/demo/4-appraiseSIP
 chroot $1 mkdir /home/demo/5-prepareAIP
 chroot $1 mkdir /home/demo/6-reviewAIP	
-chroot $1 mkdir /home/demo/8-uploadDIP
+chroot $1 mkdir /home/demo/8-reviewDIP
+chroot $1 mkdir /home/demo/9-uploadDIP
 chroot $1 mkdir /home/demo/ingestLogs
 chroot $1 mkdir /home/demo/SIPerrors
 chroot $1 mkdir /home/demo/SIPerrors/normalizationErrors
