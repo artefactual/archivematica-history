@@ -200,6 +200,10 @@ if len(accessConversionCommand) > 0 :
     if result:
       print >>sys.stderr, "!!! ACCESS NORMALIZATION FAILED !!!"
 else:
+  accessConversionCommand[0] = "cp %fileFullName% %accessFileDirectory%/."
+  accessFormat.append("NONE")
+  preservationFormat.append("NONE")
+  executeCommand(accessConversionCommand[index])
   print >>sys.stderr, "No access normalization performed."
 
 #if the file is not in preservation format
