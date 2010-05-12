@@ -50,7 +50,7 @@ defaultCommand = "echo No default normalization tool defined."
 
 #this script is passed fileIn, uuid
 fileIn = sys.argv[1]
-#fileUUID = sys.argv[2]
+accesspath = sys.argv[2]
 
 #get file name and extension
 s = fileIn
@@ -126,7 +126,7 @@ def executeCommand(command):
   "%xenaPath%": xenaPath, \
   "%fileExtension%": fileExtension, \
   "%fileFullName%": fileFullName, \
-  "%accessFileDirectory%": fileDirectory, \
+  "%accessFileDirectory%": accesspath, \
   "%preservationFileDirectory%": fileDirectory, \
   "%fileDirectory%": fileDirectory,\
   "%fileTitle%": fileTitle, \
@@ -187,8 +187,8 @@ if len(accessConversionCommand) > 0 :
     while(result and len(accessConversionCommand) > index):
       if(len(accessFormat) > 0 and accessFormat[0] and accessFormat[0].upper() == fileExtension.upper()):
         result = 0
+        accessConversionCommand[0] = "cp %fileFullName% %accessFileDirectory%/."
         print >>sys.stderr, "Already in access format. No need to normalize."
-        continue
       accessFormat.append("NONE")# just make it work :)
       preservationFormat.append("NONE")
       if accessConversionCommand[index]:
