@@ -101,7 +101,7 @@ def fillAttrib(attrib, var, fileExtension):
   root = tree.getroot()
 #  print(etree.tostring(root))
  
-  varsxml = findDirectory(root, "parent")
+  varsxml = findDirectory(root, "inherit")
   if varsxml[0].text :
     return fillAttrib( attrib, var, varsxml[0].text )
   
@@ -110,7 +110,7 @@ def fillAttrib(attrib, var, fileExtension):
     var.append(varxml.text)
 #  print var
 
-parent = []
+inherit = []
 accessFormat = []
 preservationFormat = []
 accessConversionCommand = []
@@ -157,7 +157,7 @@ def executeCommand(command):
     return 1
 
 try:
-  fillAttrib("parent", parent, fileExtension)
+  fillAttrib("inherit", inherit, fileExtension)
   fillAttrib("accessFormat", accessFormat, fileExtension)
   fillAttrib("preservationFormat", preservationFormat, fileExtension)
   fillAttrib("accessConversionCommand", accessConversionCommand, fileExtension)
@@ -169,7 +169,7 @@ except IOError, ose:
   #NO config file for this extension
   
   #reset variables, to be sure
-  parent = []
+  inherit = []
   accessFormat = []
   preservationFormat = []
   accessConversionCommand = []

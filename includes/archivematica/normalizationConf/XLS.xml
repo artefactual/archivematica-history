@@ -1,7 +1,7 @@
-<extension>
-  <parent></parent>
+<formatPolicy>
+  <inherit></inherit>
   <accessFormat></accessFormat>
   <preservationFormat>ODF</preservationFormat>
   <accessConversionCommand></accessConversionCommand>
   <preservationConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</preservationConversionCommand>
-</extension>
+</formatPolicy>

@@ -1,7 +1,7 @@
-<extension>
-  <parent>IMAGES</parent>
+<formatPolicy>
+  <inherit>IMAGE</inherit>
   <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
   <accessConversionCommand></accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
-</extension>
+</formatPolicy>

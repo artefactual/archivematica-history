@@ -1,7 +1,7 @@
-<extension>
-  <parent>TIFF</parent>
+<formatPolicy>
+  <inherit>TIFF</inherit>
   <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
   <accessConversionCommand></accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
-</extension>
+</formatPolicy>

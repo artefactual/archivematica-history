@@ -1,7 +1,7 @@
-<extension>
-  <parent></parent>
+<formatPolicy>
+  <inherit></inherit>
   <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
   <accessConversionCommand></accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
-</extension>
+</formatPolicy>

@@ -1,7 +1,7 @@
-<extension>
-  <parent>WORDPROCESSINGFILE</parent>
+<formatPolicy>
+  <inherit>WORDPROCESSINGFILE</inherit>
   <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
   <accessConversionCommand></accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
-</extension>
+</formatPolicy>

@@ -1,7 +1,7 @@
-<extension>
-  <parent>VIDEO</parent>
+<formatPolicy>
+  <inherit>VIDEO</inherit>
   <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
   <accessConversionCommand></accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
-</extension>
+</formatPolicy>
