@@ -203,7 +203,7 @@ else:
   accessConversionCommand[0] = "cp %fileFullName% %accessFileDirectory%/."
   accessFormat.append("NONE")
   preservationFormat.append("NONE")
-  executeCommand(accessConversionCommand[index])
+  executeCommand(accessConversionCommand[0])
   print >>sys.stderr, "No access normalization performed."
 
 #if the file is not in preservation format
