@@ -19,6 +19,8 @@
 # @package Archivematica
 # @subpackage Ingest
 # @author Austin Trask <austin@artefactual.com>
+# @author Joseph Perry <joseph@artefactual.com>
+# @author Peter Van Garderen <peter@artefactual.com>
 # @version svn: $Id$
 
 find ~/3-quarantineSIP/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
@@ -29,6 +31,7 @@ do
     #Create SIP uuid
     UUID=`uuid`
 
+    DISPLAY=:0.0 /usr/bin/notify-send "Quarantine completed" "Preparing $FILE for appraisal"
     #Create Log directories and move SIP to /tmp for processing
     mkdir /home/demo/ingestLogs/$UUID
     mkdir /tmp/$UUID		
@@ -48,11 +51,13 @@ do
     mv /tmp/$UUID/SIP.xml /home/demo/ingestLogs/$UUID/SIP.xml
 
     #extract all of the .zip .rar etc.
+    DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting any packages (.zip, .rar, etc.) found in $FILE"
     python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
 
     #Add initial file structure to SIP.xml  run detox and add cleaned file structure to SIP.xml
     /opt/archivematica/SIPxmlModifiers/addFileStructureToSIP.py "/home/demo/ingestLogs/$UUID" $UUID
     /opt/archivematica/SIPxmlModifiers/addUUIDasDCidentifier.py "/home/demo/ingestLogs/$UUID" $UUID
+    DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up any illegal file name characters found in $FILE"
     detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
     cleanName=`ls /tmp/$UUID`
     /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
@@ -62,8 +67,10 @@ do
       do
         # XENADIR=`dirname "$NEWDOCS"`  # needed if using normalize.sh				
         chmod 700 $NEWDOCS
+	DISPLAY=:0.0 /usr/bin/notify-send "Virus scan" "checking $NEWDOCS"
         clamscan --move=/home/demo/SIPerrors/possibleVirii/  $NEWDOCS >> ~/ingestLogs/$UUID/virusSCAN.log
-        /opt/archivematica/folderaccess.sh  $NEWDOCS $UUID  # run  FITS
+	DISPLAY=:0.0 /usr/bin/notify-send "Format identification" "Attempting to identify and validate format of $NEWDOCS"
+        /opt/archivematica/folderaccess.sh  $NEWDOCS $UUID  # run FITS
         echo "Receipt of $NEWDOCS completed" >> ~/ingestLogs/accession.log
       done
 
@@ -72,7 +79,7 @@ do
 
     #move processed SIP to 4-appraiseSIP and notify user of completion
     mv /tmp/$UUID/$cleanName /home/demo/4-appraiseSIP/$cleanName-$UUID
-    DISPLAY=:0.0 /usr/bin/notify-send "ingest" "$cleanName ready for appraisal"
+    DISPLAY=:0.0 /usr/bin/notify-send "SIP processing completed" "$cleanName ready for appraisal"
 
     #cleanup
     rm -rf /tmp/$UUID
