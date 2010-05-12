@@ -39,16 +39,16 @@ do
     chmod 700 /tmp/$UUID/*
 
     #if SIP.xml does not exist then create initial structure 
-    if [ ! -f /tmp/$UUID/SIP.xml ]
+    if [ ! -f /tmp/$UUID/$FILE/SIP.xml ]
     then
       tmpDir=`pwd`
-      cd /tmp/$UUID/
+      cd /tmp/$UUID/$FILE/
       /opt/archivematica/SIPxmlModifiers/CreateSipAndAddDublinCoreStructure.py
       cd $tmpDir	
     fi
     
-    #move newly created SIP.xml to logs directory
-    mv /tmp/$UUID/SIP.xml /home/demo/ingestLogs/$UUID/SIP.xml
+    #move SIP.xml to logs directory
+    mv /tmp/$UUID/$FILE/SIP.xml /home/demo/ingestLogs/$UUID/SIP.xml
 
     #extract all of the .zip .rar etc.
     DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting any packages (.zip, .rar, etc.) found in $FILE"
