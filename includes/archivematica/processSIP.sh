@@ -80,10 +80,11 @@ do
     mkdir /home/demo/4-appraiseSIP/$cleanName-$UUID    
 
     #copy logs directory to SIP
-    cp -a /home/demo/ingestLogs/$UUID /home/demo/4-appraiseSIP/$cleanName-$UUID/LOGS
+    cp -a /home/demo/ingestLogs/$UUID /home/demo/4-appraiseSIP/$cleanName-$UUID/logs
+    mv /home/demo/4-appraiseSIP/$cleanName-$UUID/logs/SIP.xml /home/demo/4-appraiseSIP/$cleanName-$UUID/
 
     #move processed SIP to 4-appraiseSIP and notify user of completion
-    mv /tmp/$UUID/$cleanName /home/demo/4-appraiseSIP/$cleanName-$UUID/OBJECTS
+    mv /tmp/$UUID/$cleanName /home/demo/4-appraiseSIP/$cleanName-$UUID/objects
     DISPLAY=:0.0 /usr/bin/notify-send "SIP processing completed" "$cleanName ready for appraisal"
 
     #cleanup
