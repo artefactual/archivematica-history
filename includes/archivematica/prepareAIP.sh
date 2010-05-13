@@ -44,6 +44,7 @@ sleep 5 #Allow finish writing to the normalization.log file
 """
 
 #use baggit to create AIP
+DISPLAY=:0.0 /usr/bin/notify-send "Preparing AIP" "Creating Bagit package"
 /opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
 
 cp /tmp/$2/ingestLogs/SIP.xml /tmp/$UUID/. 
@@ -53,4 +54,4 @@ mv /tmp/$UUID /home/demo/8-reviewDIP/$2
 rm -rf /tmp/$2
 
 #notify user that AIP creation is complete
-DISPLAY=:0.0 /usr/bin/notify-send "prepareAIP" "$2 AIP ready for review"
+DISPLAY=:0.0 /usr/bin/notify-send "AIP prepared" "AIP $2 ready for review"

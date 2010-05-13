@@ -23,7 +23,8 @@
 # @author Peter Van Garderen <peter@artefactual.com>
 # @version svn: $Id$
 
-find ~/3-quarantineSIP/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
+find ~/3-quarantineSIP/* -maxdepth 0 -perm 0000 -print| while read FILE
+#find ~/3-quarantineSIP/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
 do
   if [ -d "$FILE" ]; then
     chmod 700 "$FILE"		
@@ -33,7 +34,7 @@ do
 
     BASENAME=`basename "$FILE"`
 
-    DISPLAY=:0.0 /usr/bin/notify-send "Quarantine completed" "Preparing $FILE for appraisal"
+    DISPLAY=:0.0 /usr/bin/notify-send "Quarantine completed" "Preparing $BASENAME for appraisal"
     #Create Log directories and move SIP to /tmp for processing
     mkdir /home/demo/ingestLogs/$UUID
     mkdir /tmp/$UUID		
@@ -68,7 +69,7 @@ do
       do
         # XENADIR=`dirname "$NEWDOCS"`  # needed if using normalize.sh				
         chmod 700 $NEWDOCS
-	DISPLAY=:0.0 /usr/bin/notify-send "Virus scan" "checking $NEWDOCS"
+	DISPLAY=:0.0 /usr/bin/notify-send "Virus scan" "checking `basename $NEWDOCS`"
         clamscan --move=/home/demo/SIPerrors/possibleVirii/  $NEWDOCS >> ~/ingestLogs/$UUID/virusSCAN.log
 	DISPLAY=:0.0 /usr/bin/notify-send "Format identification" "Attempting to identify and validate format of `basename $NEWDOCS`"
         /opt/archivematica/folderaccess.sh  $NEWDOCS $UUID  # run FITS
@@ -87,7 +88,7 @@ do
   elif [ -f "$FILE" ]; then
     chmod 700 "$FILE"
     mv "$FILE" /home/demo/SIPerrors/.
-    DISPLAY=:0.0 /usr/bin/notify-send "SIP Error" "A SIP must be submitted as a directory"
+    DISPLAY=:0.0 /usr/bin/notify-send "SIP Error" "A SIP must be submitted as a directory. Files moved to SIPerrors folder."
   else
     echo "$FILE is not a file or directory"
   fi
