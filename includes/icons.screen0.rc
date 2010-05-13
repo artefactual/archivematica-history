@@ -29,3 +29,7 @@ col=2
 [Home]
 row=2
 col=8
+
+[Terminal]
+row=3
+col=8
