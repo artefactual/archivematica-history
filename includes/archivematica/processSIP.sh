@@ -31,33 +31,35 @@ do
     #Create SIP uuid
     UUID=`uuid`
 
+    BASENAME=`basename $FILE`
+
     DISPLAY=:0.0 /usr/bin/notify-send "Quarantine completed" "Preparing $FILE for appraisal"
     #Create Log directories and move SIP to /tmp for processing
     mkdir /home/demo/ingestLogs/$UUID
     mkdir /tmp/$UUID		
     mv "$FILE" /tmp/$UUID/.
-    chmod 700 /tmp/$UUID/*
+    chmod 700 -R /tmp/$UUID/
 
     #if SIP.xml does not exist then create initial structure 
     if [ ! -f /tmp/$UUID/$FILE/SIP.xml ]
     then
       tmpDir=`pwd`
-      cd /tmp/$UUID/$FILE/
+      cd /tmp/$UUID/$BASENAME/
       /opt/archivematica/SIPxmlModifiers/CreateSipAndAddDublinCoreStructure.py
       cd $tmpDir	
     fi
     
     #move SIP.xml to logs directory
-    mv /tmp/$UUID/$FILE/SIP.xml /home/demo/ingestLogs/$UUID/SIP.xml
+    mv /tmp/$UUID/$BASENAME/SIP.xml /home/demo/ingestLogs/$UUID/SIP.xml
 
     #extract all of the .zip .rar etc.
-    DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting any packages (.zip, .rar, etc.) found in $FILE"
+    DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting any packages (.zip, .rar, etc.) found in $BASENAME"
     python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
 
     #Add initial file structure to SIP.xml  run detox and add cleaned file structure to SIP.xml
     /opt/archivematica/SIPxmlModifiers/addFileStructureToSIP.py "/home/demo/ingestLogs/$UUID" $UUID
     /opt/archivematica/SIPxmlModifiers/addUUIDasDCidentifier.py "/home/demo/ingestLogs/$UUID" $UUID
-    DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up any illegal file name characters found in $FILE"
+    DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up any illegal file name characters found in $BASENAME"
     detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
     cleanName=`ls /tmp/$UUID`
     /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
@@ -69,7 +71,7 @@ do
         chmod 700 $NEWDOCS
 	DISPLAY=:0.0 /usr/bin/notify-send "Virus scan" "checking $NEWDOCS"
         clamscan --move=/home/demo/SIPerrors/possibleVirii/  $NEWDOCS >> ~/ingestLogs/$UUID/virusSCAN.log
-	DISPLAY=:0.0 /usr/bin/notify-send "Format identification" "Attempting to identify and validate format of $NEWDOCS"
+	DISPLAY=:0.0 /usr/bin/notify-send "Format identification" "Attempting to identify and validate format of `basename $NEWDOCS`"
         /opt/archivematica/folderaccess.sh  $NEWDOCS $UUID  # run FITS
         echo "Receipt of $NEWDOCS completed" >> ~/ingestLogs/accession.log
       done
