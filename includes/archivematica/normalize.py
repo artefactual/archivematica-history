@@ -163,6 +163,8 @@ try:
   fillAttrib("accessConversionCommand", accessConversionCommand, fileExtension)
   fillAttrib("preservationConversionCommand", preservationConversionCommand, fileExtension)
 
+
+
 except OSError, ose:
   print >>sys.stderr, "No normalization", ose
 except IOError, ose:
@@ -175,8 +177,24 @@ except IOError, ose:
   accessConversionCommand = []
   preservationConversionCommand =  []
   
-  #add default command (xena) to preservationConversionCommand
+  #add default command to preservationConversionCommand
   preservationConversionCommand.append(defaultCommand)
+
+if len(accessFormat) == 0:  
+  accessFormat.append("NONE")
+else:
+  if accessFormat[0]:
+    accessFormat[0] = accessFormat[0].lower()
+  else:
+    accessFormat[0] = "NONE"
+
+if len(preservationFormat) == 0:  
+  preservationFormat.append("NONE")
+else:
+  if preservationFormat[0]:
+    preservationFormat[0] = preservationFormat[0].lower()
+  else:
+    preservationFormat[0] = "NONE"
   
 #file not exist - no preservation format/malformed conf specified for .fileExtension
 
@@ -189,20 +207,17 @@ if len(accessConversionCommand) > 0 :
         result = 0
         accessConversionCommand[0] = "cp %fileFullName% %accessFileDirectory%/."
         print >>sys.stderr, "Already in access format. No need to normalize."
-      accessFormat.append("NONE")# just make it work :)
-      preservationFormat.append("NONE")
       if accessConversionCommand[index]:
         result = executeCommand(accessConversionCommand[index])
       else:
         print >>sys.stderr, "Skipping Access Normalization: No command"
-        result = 0
+        accessConversionCommand[index] = "cp %fileFullName% %accessFileDirectory%/."
+        result = executeCommand(accessConversionCommand[index])
       index += 1
     if result:
       print >>sys.stderr, "!!! ACCESS NORMALIZATION FAILED !!!"
 else:
   accessConversionCommand.append("cp %fileFullName% %accessFileDirectory%/.")
-  accessFormat.append("NONE")
-  preservationFormat.append("NONE")
   executeCommand(accessConversionCommand[0])
   print >>sys.stderr, "No access normalization performed."
 
@@ -215,8 +230,6 @@ if len(preservationConversionCommand) > 0:
         result = 0
         print >>sys.stderr, "Already in preservation format. No need to normalize."
         continue
-      accessFormat.append("NONE")
-      preservationFormat.append("NONE")
       if preservationConversionCommand[index]:
         result = executeCommand(preservationConversionCommand[index])
       else:
