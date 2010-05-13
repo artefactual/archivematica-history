@@ -57,6 +57,9 @@ chroot $1 crontab -u demo /etc/cron.tab
 cp -rf includes/incron.allow $1/etc/incron.allow
 cp -rf includes/incron.tab $1/etc/incron.tab
 chroot $1 incrontab /etc/incron.tab
+cp -rf includes/unoconv-listen /etc/init.d/unoconv-listen
+chroot $1 chmod +X /etc/init.d/unoconv-listen
+chroot $1 /usr/sbin/update-rc.d unoconv-listen defaults
 chroot $1 chmod -R 770 /home/demo/.mozilla
 chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 chroot $1 mkdir /home/demo/2-reviewSIP
