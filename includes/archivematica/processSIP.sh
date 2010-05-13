@@ -76,11 +76,14 @@ do
         echo "Receipt of $NEWDOCS completed" >> ~/ingestLogs/accession.log
       done
 
+    
+    mkdir /home/demo/4-appraiseSIP/$cleanName-$UUID    
+
     #copy logs directory to SIP
-    cp -a /home/demo/ingestLogs/$UUID /tmp/$UUID/$cleanName/ingestLogs		
+    cp -a /home/demo/ingestLogs/$UUID /home/demo/4-appraiseSIP/$cleanName-$UUID/LOGS
 
     #move processed SIP to 4-appraiseSIP and notify user of completion
-    mv /tmp/$UUID/$cleanName /home/demo/4-appraiseSIP/$cleanName-$UUID
+    mv /tmp/$UUID/$cleanName /home/demo/4-appraiseSIP/$cleanName-$UUID/OBJECTS
     DISPLAY=:0.0 /usr/bin/notify-send "SIP processing completed" "$cleanName ready for appraisal"
 
     #cleanup
