@@ -31,7 +31,7 @@ do
     #Create SIP uuid
     UUID=`uuid`
 
-    BASENAME=`basename $FILE`
+    BASENAME=`basename "$FILE"`
 
     DISPLAY=:0.0 /usr/bin/notify-send "Quarantine completed" "Preparing $FILE for appraisal"
     #Create Log directories and move SIP to /tmp for processing
@@ -41,16 +41,15 @@ do
     chmod 700 -R /tmp/$UUID/
 
     #if SIP.xml does not exist then create initial structure 
-    if [ ! -f /tmp/$UUID/$FILE/SIP.xml ]
+    if [ ! -f "/tmp/$UUID/$BASENAME/SIP.xml" ]
     then
       tmpDir=`pwd`
-      cd /tmp/$UUID/$BASENAME/
+      cd "/tmp/$UUID/$BASENAME"
       /opt/archivematica/SIPxmlModifiers/CreateSipAndAddDublinCoreStructure.py
       cd $tmpDir	
     fi
-    
     #move SIP.xml to logs directory
-    mv /tmp/$UUID/$BASENAME/SIP.xml /home/demo/ingestLogs/$UUID/SIP.xml
+    mv "/tmp/$UUID/$BASENAME/SIP.xml" "/home/demo/ingestLogs/$UUID/SIP.xml"
 
     #extract all of the .zip .rar etc.
     DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting any packages (.zip, .rar, etc.) found in $BASENAME"
