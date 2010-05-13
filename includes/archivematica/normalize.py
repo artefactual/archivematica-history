@@ -200,7 +200,7 @@ if len(accessConversionCommand) > 0 :
     if result:
       print >>sys.stderr, "!!! ACCESS NORMALIZATION FAILED !!!"
 else:
-  accessConversionCommand[0] = "cp %fileFullName% %accessFileDirectory%/."
+  accessConversionCommand.append("cp %fileFullName% %accessFileDirectory%/.")
   accessFormat.append("NONE")
   preservationFormat.append("NONE")
   executeCommand(accessConversionCommand[0])
