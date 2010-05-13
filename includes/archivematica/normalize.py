@@ -140,7 +140,8 @@ def executeCommand(command):
   #execute command
   try:
     if command != []:
-      print >>sys.stderr, "processing: " + command.__str__()
+      print >>sys.stderr, "processing: " + shlex.split(command).__str__()
+ #command.__str__()
       retcode = subprocess.call( shlex.split(command) )
       #it executes check for errors
       if retcode != 0:
