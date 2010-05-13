@@ -1,0 +1,13 @@
+1. Audio files
+sample.aif http://www.nch.com.au/acm/formats.html
+BigTeen Short1.mp3 http://abmp3.com/download/2735313-bigteen-short-1.html
+brushmuffbeat.flac http://www.loopasonic.com/drums.htm (downloaded as wav file and converted for testing purposes)
+j6059_02.wma "Juno Riff" taken from http://www.loopasonic.com/users.htm (downloaded as wav file and converted for testing purposes)
+funky_breakbeat_4.wav http://www.loopasonic.com/drums.htm
+
+2. Video files
+0239.mpg http://open-video.org/details.php?videoid=4639
+BlastOff.wmv http://open-video.org/details.php?videoid=6581 (downloaded as mpg file and converted for testing purposes)
+MakeUp.mov http://h10025.www1.hp.com/ewfrf/wc/document?docname=lpg40911&lc=en&cc=us&product=81685&dlc=
+
+
