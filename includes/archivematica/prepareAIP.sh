@@ -31,17 +31,15 @@ UUID=${2:$position}
 
 mkdir /tmp/$UUID
 
+DISPLAY=:0.0 /usr/bin/notify-send "NORMALIZING" "$2"
+
 #read folder structure and run normalize.py on files
-find /tmp/$2/ -type f -exec python /opt/archivematica/normalize.py {} /tmp/$UUID/ \; -print >>/tmp/$2/normalization.log 2>&1
-"""| while read NEWDOCS
+find /tmp/$2/ -type f -print| while read NEWDOCS
   do
-#    /opt/archivematica/normalize.py $NEWDOCS $UUID >>`dirname $NEWDOCS`/normalization.log 2>&1
-    /opt/archivematica/normalize.py $NEWDOCS $UUID >>/tmp/$2/normalization.log 2>&1
+    DISPLAY=:0.0 /usr/bin/notify-send "File normalization" "Converting `basename $NEWDOCS` to preservation and access formats"
+    /opt/archivematica/normalize.py $NEWDOCS /tmp/$UUID >>/tmp/$2/normalization.log 2>&1
   done
 
-sleep 5 #Allow finish writing to the normalization.log file
-
-"""
 
 #use baggit to create AIP
 DISPLAY=:0.0 /usr/bin/notify-send "Preparing AIP" "Creating Bagit package"
