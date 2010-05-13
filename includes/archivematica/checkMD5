@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#create temp report files
+UUID=`uuid`
+failTmp=/tmp/fail-$UUID
+passTmp=/tmp/pass-$UUID
+reportTmp=/tmp/report-$UUID
+
+#ask user to name integrity report
+integrityReport=`zenity --entry --title="Check MD5" --entry-text "integrity.report" --text="Name of MD5 integrity report"`
+
+#ask user to select md5 file
+md5Digest=`zenity --file-selection --title="Select list of Checksums"`
+
+#check for passing checksums
+md5deep -r -m $md5Digest "$*" > $passTmp
+#check for failing checksums
+md5deep -r -x $md5Digest "$*" > $failTmp
+
+#Count number of Passed/Failed
+numberPass=`wc -l $passTmp| cut -d" " -f1`
+numberFail=`wc -l $failTmp| cut -d" " -f1`
+
+#Create report
+echo "PASSED" >> $reportTmp
+cat $passTmp >> $reportTmp
+echo " " >> $reportTmp
+echo $numberPass "items passed integrity checking" >> $reportTmp
+echo " " >> $reportTmp
+echo " " >> $reportTmp
+echo "FAILED" >> $reportTmp
+cat $failTmp >> $reportTmp
+echo " " >> $reportTmp
+echo $numberFail "items failed integrity checking" >> $reportTmp
+
+#copy pasta
+cp $reportTmp $integrityReport
+
+#display report
+zenity --text-info --title "MD5 Integrity Report" --width=640 --height=480 --filename=$reportTmp
+
+#cleanup
+rm $failTmp $passTmp $reportTmp

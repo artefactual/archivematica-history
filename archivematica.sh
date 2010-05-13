@@ -77,10 +77,10 @@ chroot $1 mkdir -p /home/demo/.config/xfce4/desktop
 chroot $1 mkdir -p /home/demo/.config/xfce4/panel
 
 #Gnome Integration/Customization
-cp -p includes/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
-cp -p includes/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
-cp -p includes/Bagit $1/home/demo/.gnome2/nautilus-scripts
-cp -p includes/bagcheck $1/home/demo/.gnome2/nautilus-scripts
+#cp -p includes/makeMD5 $1/home/demo/.gnome2/nautilus-scripts
+#cp -p includes/checkMD5 $1/home/demo/.gnome2/nautilus-scripts
+#cp -p includes/Bagit $1/home/demo/.gnome2/nautilus-scripts
+#cp -p includes/bagcheck $1/home/demo/.gnome2/nautilus-scripts
 cp includes/dashboard-desktop-icon.png $1/usr/share/icons
 cp includes/dcb-desktop-icon.png $1/usr/share/icons
 cp includes/ica-atom-desktop-icon.png $1/usr/share/icons
