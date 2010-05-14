@@ -60,7 +60,7 @@ do
     mv "/tmp/$UUID/$BASENAME/METS.xml" "/home/demo/ingestLogs/$UUID/METS.xml"    
 
     # Extract all of the .zip .rar etc.
-    DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting any packages (.zip, .rar, etc.) found in $BASENAME"
+    DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting packages (.zip, .rar, etc.) found in $BASENAME"
     python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
 
     # Add initial file structure to SIP.xml  run detox and add cleaned file structure to SIP.xml
@@ -71,7 +71,7 @@ do
     #/opt/archivematica/xmlScripts/addFileSecToMETS.py "/home/demo/ingestLogs/$UUID" $UUID
 
     # Clean filenames
-    DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up any illegal file name characters found in $BASENAME"
+    DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up illegal file name characters found in $BASENAME"
     detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
     cleanName=`ls /tmp/$UUID`
     /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
@@ -91,7 +91,7 @@ do
       do
         chmod 700 $NEWDOCS
         /opt/archivematica/runFITS.sh  $NEWDOCS $UUID
-        echo "Receipt of $NEWDOCS completed" >> ~/ingestLogs/accession.log
+        echo "`date +%F" "%T` `basename $NEWDOCS`" >> ~/ingestLogs/$UUID/FITS.log
       done
     
     mkdir /home/demo/4-appraiseSIP/$cleanName-$UUID    
