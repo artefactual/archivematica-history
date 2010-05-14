@@ -7,7 +7,7 @@ NameVirtualHost *
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory /var/www/ica-atom/web/>
+	<Directory /var/www/ica-atom/>
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride All
 		Order allow,deny
@@ -32,14 +32,23 @@ NameVirtualHost *
 	ServerSignature On
 
     Alias /dcb "/var/www/dcb/"
-    <Directory "/usr/share/dcb/">
+    <Directory "/var/www/dcb/">
         Options Indexes MultiViews FollowSymLinks
         AllowOverride None
         Order allow,deny
         Allow from all
     </Directory>
+
     Alias /qubit "/var/www/qubit/"
-    <Directory "/usr/share/qubit/">
+    <Directory "/var/www/qubit/">
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+    Alias /dashboard "/var/www/dashboard/web"
+    <Directory "/var/www/dashboard/web">
         Options Indexes MultiViews FollowSymLinks
         AllowOverride None
         Order allow,deny
