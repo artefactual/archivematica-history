@@ -374,10 +374,5 @@ structMapFptr.set("FILEID", "TODO: file $UUID")
 structMapDiv2.append(structMapFptr)
 # end loop -->
 
-
-
-
-
-
 tree = etree.ElementTree(root)
 tree.write("METS.xml")
