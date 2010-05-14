@@ -143,6 +143,7 @@ svn checkout http://qubit-toolkit.googlecode.com/svn/trunk  qubit-svn
 svn export ica-atom-svn $1/var/www/ica-atom
 svn export dcb-svn $1/var/www/dcb
 svn export qubit-svn $1/var/www/qubit
+cp includes/dashboard $1/var/www/dashboard
 
 apache2ctl restart
 chroot $1 chown -R www-data:www-data /var/www/ica-atom
