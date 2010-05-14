@@ -2,7 +2,7 @@ NameVirtualHost *
 <VirtualHost *>
 	ServerAdmin webmaster@localhost
 	
-	DocumentRoot /var/www/ica-atom/web
+	DocumentRoot /var/www/ica-atom
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
