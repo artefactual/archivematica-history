@@ -51,13 +51,25 @@ do
     # Move SIP.xml to logs directory
     mv "/tmp/$UUID/$BASENAME/SIP.xml" "/home/demo/ingestLogs/$UUID/SIP.xml"
 
+    # If DublinCore.xml does not exist then create initial structure 
+    if [ ! -f "/tmp/$UUID/$BASENAME/DublinCore.xml" ]
+    then
+      tmpDir=`pwd`
+      cd "/tmp/$UUID/$BASENAME"
+      /opt/archivematica/xmlScripts/createDublinCore.py
+      cd $tmpDir	
+    fi
+    # Move DublinCore.xml to logs directory
+    mv "/tmp/$UUID/$BASENAME/DublinCore.xml" "/home/demo/ingestLogs/$UUID/DublinCore.xml"
+
     # Create METS.XML
     tmpDir=`pwd`
     cd "/tmp/$UUID/$BASENAME"
     /opt/archivematica/xmlScripts/createMETS.py
-    cd $tmpDir	
-    #move METS.xml to logs directory
-    mv "/tmp/$UUID/$BASENAME/METS.xml" "/home/demo/ingestLogs/$UUID/METS.xml"    
+     cd $tmpDir
+
+    # Insert DublinCore.XML into METS.XML
+    # /opt/archivematica/xmlScripts/addDublinCoreToMETS.py
 
     # Extract all of the .zip .rar etc.
     DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting packages (.zip, .rar, etc.) found in $BASENAME"
@@ -99,6 +111,7 @@ do
     # Copy logs directory to SIP
     cp -a /home/demo/ingestLogs/$UUID /home/demo/4-appraiseSIP/$cleanName-$UUID/logs
     mv /home/demo/4-appraiseSIP/$cleanName-$UUID/logs/SIP.xml /home/demo/4-appraiseSIP/$cleanName-$UUID/
+    mv /home/demo/4-appraiseSIP/$cleanName-$UUID/logs/METS.xml /home/demo/4-appraiseSIP/$cleanName-$UUID/
 
     # Move processed SIP to 4-appraiseSIP and notify user of completion
     mv /tmp/$UUID/$cleanName /home/demo/4-appraiseSIP/$cleanName-$UUID/objects
