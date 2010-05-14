@@ -35,7 +35,7 @@ mkdir /tmp/$UUID
 find /tmp/$2/objects -type f -print| while read NEWDOCS
   do
     DISPLAY=:0.0 /usr/bin/notify-send "File normalization" "Converting `basename $NEWDOCS` to preservation and access formats"
-    /opt/archivematica/normalize.py $NEWDOCS /tmp/$UUID >>/tmp/$2/logs/normalization.log 2>&1
+    /opt/archivematica/normalize.py $NEWDOCS /tmp/$UUID/ >>/tmp/$2/logs/normalization.log 2>&1
   done
 
 
