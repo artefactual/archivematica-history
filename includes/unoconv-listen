@@ -13,7 +13,8 @@ case "$1" in
     killall soffice.bin
     ;;
   restart)
-    \$0 stop \$0 start
+    $0 stop 
+    $0 start
     ;;
   *)
     echo "Usage: /etc/init.d/unoconv-listen {start|stop|restart}"
