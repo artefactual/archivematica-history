@@ -35,8 +35,8 @@ fileDirectory = ""
 failedConversionsDirectory = "/home/demo/SIPerrors/normalizationErrors/"
 
 #CONFIGURE THE FOLLOWING APPLICATION PATHS
-#normalizationConfPath = "/mnt/userver910/archivematica2/includes/archivematica/normalizationConf"
-normalizationConfPath = "/opt/archivematica/normalizationConf"
+#formatPoliciesPath = "/mnt/userver910/archivematica2/includes/archivematica/formatPolicies"
+formatPoliciesPath = "/opt/archivematica/formatPolicies"
 convertPath = "/usr/bin/convert " #Images
 ffmpegPath = "/usr/bin/ffmpeg " #Audio
 theoraPath = "/usr/bin/ffmpeg2theora "
@@ -97,7 +97,7 @@ def findDirectory(root, tag=None, text=None):
   return ret
 
 def fillAttrib(attrib, var, fileExtension):
-  tree = etree.parse(normalizationConfPath + "/" + fileExtension.upper() + ".xml")
+  tree = etree.parse(formatPoliciesPath + "/" + fileExtension.upper() + ".xml")
   root = tree.getroot()
 #  print(etree.tostring(root))
  
