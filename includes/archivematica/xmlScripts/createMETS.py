@@ -48,6 +48,7 @@ dmdSecXmlData1.text = "\n\t\t"
 dmdSecXmlData1.tail = "\n"
 dmdSecMdWrap1.append(dmdSecXmlData1)
 
+#remove once addDublinCoreToMETS.py is completed
 dublinCore = etree.Element("dublincore")
 dublinCore.text = "\n\t\t"
 dublinCore.tail = "\n"
@@ -335,11 +336,6 @@ digiprovMD = etree.Element("digiprovMD")
 digiprovMD.text = "\n\t\t"
 digiprovMD.tail = "\n"
 amdSec.append(digiprovMD)
-
-fileSec = etree.Element("fileSec")
-fileSec.text = "\n\t\t"
-fileSec.tail = "\n"
-root.append(fileSec)
 
 structMap = etree.Element("structMap")
 structMap.text = "\n\t\t"
