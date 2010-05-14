@@ -205,19 +205,19 @@ if len(accessConversionCommand) > 0 :
     while(result and len(accessConversionCommand) > index):
       if(len(accessFormat) > 0 and accessFormat[0] and accessFormat[0].upper() == fileExtension.upper()):
         result = 0
-        accessConversionCommand[0] = "cp %fileFullName% %accessFileDirectory%/."
+        accessConversionCommand[0] = "cp %fileFullName% %accessFileDirectory%."
         print >>sys.stderr, "Already in access format. No need to normalize."
       if accessConversionCommand[index]:
         result = executeCommand(accessConversionCommand[index])
       else:
         print >>sys.stderr, "Skipping Access Normalization: No command"
-        accessConversionCommand[index] = "cp %fileFullName% %accessFileDirectory%/."
+        accessConversionCommand[index] = "cp %fileFullName% %accessFileDirectory%."
         result = executeCommand(accessConversionCommand[index])
       index += 1
     if result:
       print >>sys.stderr, "!!! ACCESS NORMALIZATION FAILED !!!"
 else:
-  accessConversionCommand.append("cp %fileFullName% %accessFileDirectory%/.")
+  accessConversionCommand.append("cp %fileFullName% %accessFileDirectory%.")
   executeCommand(accessConversionCommand[0])
   print >>sys.stderr, "No access normalization performed."
 
