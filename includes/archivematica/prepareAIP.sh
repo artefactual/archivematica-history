@@ -32,7 +32,7 @@ UUID=${2:$position}
 mkdir /tmp/$UUID
 
 #read folder structure and run normalize.py on files
-  find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} /tmp/$UUID/ \; -print >>/tmp/$2/normalization.log 2>&1 
+  find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} /tmp/$UUID/ \; -print >>/tmp/$2/logs/normalization.log 2>&1 
 
 
 #use baggit to create AIP
