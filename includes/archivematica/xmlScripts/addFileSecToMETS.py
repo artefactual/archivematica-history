@@ -44,8 +44,9 @@ def newChild(parent, tag, text=None, tailText=None):
 
 
 def createFileSec(path, parentBranch, indent):
-  filename = os.path.basename(path)
-  filename = string.replace(filename, sys.argv[2], "objects", 1)
+  pathSTR = string.replace(path.__str__(), "/tmp/" + sys.argv[2] + "/" + sys.argv[3], "objects", 1)
+  pathSTR = string.replace(pathSTR, "/tmp/" + sys.argv[2], sys.argv[3] + "-" + sys.argv[2] , 1)
+  filename = os.path.basename(pathSTR)
   parentBranch.set("ID", filename)
 
   for item in os.listdir(path):
@@ -59,7 +60,7 @@ def createFileSec(path, parentBranch, indent):
       fileI = newChild(parentBranch, "file")
       filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
       #filename = replace /tmp/"UUID" with /objects/
-      pathSTR = string.replace(path.__str__(),"/tmp/"+ sys.argv[2], "objects", 1)
+      pathSTR = string.replace(path.__str__(),"/tmp/"+ sys.argv[2] + "/" + sys.argv[3], "objects", 1)
       
       fileI.set("ID", "file-" + myuuid.__str__())
 
