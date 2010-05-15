@@ -31,12 +31,12 @@ UUID=${2:$position}
 
 mkdir /tmp/$UUID
 
+DISPLAY=:0.0 /usr/bin/notify-send "Normalizing" "Converting files in $2 to preservation and access formats"
 #read folder structure and run normalize.py on files
   find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} /tmp/$UUID/ \; -print >>/tmp/$2/logs/normalization.log 2>&1 
 
-
 #use baggit to create AIP
-DISPLAY=:0.0 /usr/bin/notify-send "Preparing AIP" "Creating Bagit package"
+DISPLAY=:0.0 /usr/bin/notify-send "Preparing AIP" "Creating Bagit package for $2"
 /opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
 
 cp /tmp/$2/SIP.xml /tmp/$UUID/. 
