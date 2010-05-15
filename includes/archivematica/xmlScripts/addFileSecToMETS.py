@@ -28,7 +28,21 @@ import xml.etree.cElementTree as etree
 import string
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 
+DetoxDic={}
 
+def loadDetoxDic():
+  detox_fh = open(sys.argv[1]+"/filenameCleanup.log", "r")
+ 
+  line = detox_fh.readline()
+  while line:
+    detoxfiles = line.split(" -> ")
+    if len(detoxfiles) > 1 :
+      oldfile = detoxfiles[0]
+      newfile = detoxfiles[1]
+      newfile = string.replace(newfile, "\n", "", 1)
+      oldfile = os.path.basename(oldfile)
+      DetoxDic[newfile] = oldfile
+    line = detox_fh.readline()
 
 def newChild(parent, tag, text=None, tailText=None):
   child = etree.Element(tag)
@@ -41,7 +55,9 @@ def newChild(parent, tag, text=None, tailText=None):
   return child
 
 
-
+def createDigiprovMD(uuid, filename) :
+  if filename in DetoxDic:
+    print DetoxDic[filename] + "\t RENAMED: \t" + filename
 
 def createFileSec(path, parentBranch, indent):
   pathSTR = string.replace(path.__str__(), "/tmp/" + sys.argv[2] + "/" + sys.argv[3], "objects", 1)
@@ -57,6 +73,7 @@ def createFileSec(path, parentBranch, indent):
       createFileSec(os.path.join(path, item), currentBranch, indent+1)    
     elif os.path.isfile(itempath):
       myuuid = uuid.uuid4()
+      createDigiprovMD(myuuid, itempath)
       fileI = newChild(parentBranch, "file")
       filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
       #filename = replace /tmp/"UUID" with /objects/
@@ -70,10 +87,14 @@ def createFileSec(path, parentBranch, indent):
       Flocat.set("otherLocType", "system")
       
 if __name__ == '__main__':
+
   #cd /tmp/$UUID; 
   opath = os.getcwd()
   os.chdir("/tmp/" + sys.argv[2])
   path = os.getcwd()
+
+  loadDetoxDic()
+  #print "Detox dictionary:\t" + DetoxDic.__str__()
 
   if not os.path.isfile(sys.argv[1]+"/METS.xml"):
     print("System error")
