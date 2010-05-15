@@ -109,7 +109,7 @@ cp includes/runjhove.sh $1/usr/bin
 #cp includes/runview.sh $1/usr/bin
 
 #xfce4 configuration
-cp includes/panel/* $/home/demo/.config/xfce4/panel
+cp includes/panel/* $1/home/demo/.config/xfce4/panel
 cp includes/xfce4-desktop.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
 cp includes/xfce4-session.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
 cp includes/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
@@ -121,7 +121,7 @@ cp includes/gtk-bookmarks $1/home/demo/.gtk-bookmarks
 cp includes/gdm.custom.conf $1/etc/gdm/custom.conf
 
 #fix permissions 
-chroot $1 chmod 444 /home/demo/.config/xfce4/panel/*
+chroot $1 chmod 444 /home/demo/.config/xfce4/panel
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
 chroot $1 chown -R demo:demo /opt/externals
