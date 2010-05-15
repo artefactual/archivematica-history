@@ -84,7 +84,7 @@ do
 
     # Clean filenames
     DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up illegal file name characters found in $BASENAME"
-    detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/detox.log
+    detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/filenameCleanup.log
     cleanName=`ls /tmp/$UUID`
     /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
 
@@ -94,7 +94,7 @@ do
       do
         chmod 700 $NEWDOCS
 	# DISPLAY=:0.0 /usr/bin/notify-send "Virus scan" "checking `basename $NEWDOCS`"
-        clamscan --move=/home/demo/SIPerrors/possibleVirii/  $NEWDOCS >> ~/ingestLogs/$UUID/virusSCAN.log
+        clamscan --move=/home/demo/SIPerrors/possibleVirii/  $NEWDOCS >> ~/ingestLogs/$UUID/virusScan.log
       done
 
     # Run FITS for file identification, validation and metadata extraction
