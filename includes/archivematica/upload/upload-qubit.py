@@ -39,7 +39,7 @@ from poster.encode import multipart_encode
 from poster.streaminghttp import StreamingHTTPHandler, StreamingHTTPRedirectHandler, StreamingHTTPSHandler
 
 # This is for ICA-AtoM 1.0.9 URL schema
-URL_BASE = 'http://localhost/index.php'
+URL_BASE = 'http://localhost:8080/~jesus/qubit/index.php'
 URL_LOGIN = URL_BASE + '/;user/login'
 URL_CREATE_ISAD = URL_BASE + '/;create/isad'
 URL_CREATE_DO = URL_BASE + '/;digitalobject/create'
@@ -112,12 +112,20 @@ def upload(opts):
     # Parse METS.xml
     tree = etree.parse(opts['file'] + '/METS.xml')
 
+    # TODO description, date, creator... ?
     prefix = '{http://purl.org/dc/terms/}'
-    items = [ prefix + 'title', prefix + 'creator', prefix + 'description', prefix + 'date', prefix + 'identifier' ]
+    items = {
+        prefix + 'title': 'title',
+        prefix + 'identifier': 'identifier' }
+
+    data = {}
 
     for item in tree.find("dmdSec/mdWrap/xmlData/dublincore"):
       if item.tag in items:
-        print item.text
+        data[items[item.tag]] = item.text
+
+    # Create information object
+    response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
 
   # Is a file?
   else:
