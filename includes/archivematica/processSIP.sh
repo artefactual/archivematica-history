@@ -64,7 +64,7 @@ do
 
     # Create METS.XML
     tmpDir=`pwd`
-    cd "/tmp/$UUID/$BASENAME"
+    cd "/home/demo/ingestLogs/$UUID"
     /opt/archivematica/xmlScripts/createMETS.py
      cd $tmpDir
 
@@ -80,7 +80,7 @@ do
     /opt/archivematica/SIPxmlModifiers/addUUIDasDCidentifier.py "/home/demo/ingestLogs/$UUID" $UUID
 
     # Add fileSec to METS.XML
-    #/opt/archivematica/xmlScripts/addFileSecToMETS.py "/home/demo/ingestLogs/$UUID" $UUID
+    /opt/archivematica/xmlScripts/addFileSecToMETS.py "/home/demo/ingestLogs/$UUID" $UUID
 
     # Clean filenames
     DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up illegal file name characters found in $BASENAME"
