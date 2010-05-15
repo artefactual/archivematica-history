@@ -50,7 +50,7 @@ def findDirectory(root, tag=None, text=None):
 	return ret
 
 #open
-detox_fh = open(sys.argv[1]+"/detox.log", "r")
+detox_fh = open(sys.argv[1]+"/filenameCleanup.log", "r")
 tree = etree.parse(sys.argv[1]+"/SIP.xml")
 root = tree.getroot()
 

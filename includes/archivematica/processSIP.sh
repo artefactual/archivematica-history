@@ -22,7 +22,7 @@
 # @author Peter Van Garderen <peter@artefactual.com>
 # @version svn: $Id$
 
-#find ~/3-quarantineSIP/* -maxdepth 0 -perm 0000 -print| while read FILE
+
 find ~/3-quarantineSIP/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
 do
   if [ -d "$FILE" ]; then
@@ -60,7 +60,7 @@ do
       cd $tmpDir	
     fi
     # Move DublinCore.xml to logs directory
-    mv "/tmp/$UUID/$BASENAME/DublinCore.xml" "/home/demo/ingestLogs/$UUID/DublinCore.xml"
+    mv "/tmp/$UUID/$BASENAME/DublinCore.xml" "/home/demo/ingestLogs/$UUID/dublincore.xml"
 
     # Create METS.XML
     tmpDir=`pwd`
@@ -69,7 +69,7 @@ do
      cd $tmpDir
 
     # Insert DublinCore.XML into METS.XML
-    # /opt/archivematica/xmlScripts/addDublinCoreToMETS.py
+    /opt/archivematica/xmlScripts/addDublinCoreToMETS.py /home/demo/ingestLogs/$UUID /home/demo/ingestLogs/$UUID
 
     # Extract all of the .zip .rar etc.
     DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting packages (.zip, .rar, etc.) found in $BASENAME"
