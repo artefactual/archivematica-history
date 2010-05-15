@@ -141,11 +141,10 @@ def upload(opts):
       elif item.tag == prefix + 'description':
         data['scopeAndContent'] = item.text
       elif item.tag == prefix + 'date':
-        data['updateEvents[0][typeId]'] = CREATION_ID
-
+        data['updateEvents[new][typeId]'] = CREATION_ID
+        data['updateEvents[new][dateDisplay]'] = ''
         start_date, end_date = item.text.split('/')
-        data['updateEvents[0][startDate]'] = start_date
-        data['updateEvents[0][endDate]'] = end_date
+        data['updateEvents[new][startDate]'], data['updateEvents[new][endDate]'] = item.text.split('/')
 
     # Default values
     data['levelOfDescription'] = SERIES_ID
@@ -154,7 +153,30 @@ def upload(opts):
 
     # Create information object
     response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
-    print response.read()
+
+    # Get information object id
+    parent_id = get_id_from_url(response.url)
+
+    # Print information object id
+    if opts['debug']:
+      print 'New information object ID: ' + parent_id
+
+    # Iterate over files in objects/ directory
+    for file in os.listdir(opts['file'] + '/objects'):
+
+      # Create information object
+      data = { 'title' : file, 'parent' : '/' + parent_id + ';isad' }
+      response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
+
+      id = get_id_from_url(response.url)
+
+      # Print information object id
+      if opts['debug']:
+        print 'New information object ID: %s (parent ID %s)' % (id, parent_id)
+
+      data, headers = multipart_encode({ 'file' : open(opts['file'] + '/objects/' + file), 'informationObject' : id })
+      request = urllib2.Request(URL_CREATE_DO, data, headers)
+      response = urllib2.urlopen(request)
 
   # Is a file?
   else:
@@ -164,7 +186,7 @@ def upload(opts):
     response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
 
     # Get information object id
-    id = get_id_from_url(response.geturl())
+    id = get_id_from_url(response.url)
 
     # Print information object id
     if opts['debug']:
