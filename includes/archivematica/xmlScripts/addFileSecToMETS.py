@@ -63,17 +63,6 @@ def createFileSec(path, parentBranch, indent):
       Flocat.set("otherLocType", "system")
       last=Flocat
       
-      
-def loadDublin(root):      
-  dtree = etree.parse("/home/demo/ingestLogs/" + sys.argv[2] + "/DublinCore.xml")
-  droot = dtree.getroot()
-  """
-  <dmdSec ID="SIP-description">
-    <mdWrap>
-      <xmlData>
-        <dublincore"""
-  
-      
 if __name__ == '__main__':
   #cd /tmp/$UUID; 
   opath = os.getcwd()
