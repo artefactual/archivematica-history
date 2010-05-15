@@ -39,13 +39,16 @@ from poster.encode import multipart_encode
 from poster.streaminghttp import StreamingHTTPHandler, StreamingHTTPRedirectHandler, StreamingHTTPSHandler
 
 # This is for ICA-AtoM 1.0.9 URL schema
-URL_BASE = 'http://localhost:8080/~jesus/qubit/index.php'
+URL_BASE = 'http://localhost/index.php'
 URL_LOGIN = URL_BASE + '/;user/login'
 URL_CREATE_ISAD = URL_BASE + '/;create/isad'
 URL_CREATE_DO = URL_BASE + '/;digitalobject/create'
 
-# URL representation of QubitInformationObject root
+# Some static values
 ROOT_ID = '/1;isad'
+SERIES_ID = '/187;term'
+DRAFT_ID = 159
+CREATION_ID = 111
 
 class LoginError(Exception):
   response = None
@@ -112,20 +115,46 @@ def upload(opts):
     # Parse METS.xml
     tree = etree.parse(opts['file'] + '/METS.xml')
 
-    # TODO description, date, creator... ?
     prefix = '{http://purl.org/dc/terms/}'
-    items = {
-        prefix + 'title': 'title',
-        prefix + 'identifier': 'identifier' }
 
+    # To storage data to post to information object creation form
     data = {}
 
+    # Requirements:
+    # - identifier
+    # - title
+    # - levelOfDescription
+    # - creators (Provenance)
+    # - scopeAndContent (description)
+    # - parent (isPartOf)
+    # - updateEvents (date)
+
+    # TODO
+    # - creators[0] (item.tag = 'Provenance')
+    # - parent (item.tag = 'isPartOf'), search?
+
     for item in tree.find("dmdSec/mdWrap/xmlData/dublincore"):
-      if item.tag in items:
-        data[items[item.tag]] = item.text
+      if item.tag == prefix + 'identifier':
+        data['identifier'] = item.text
+      elif item.tag == prefix + 'title':
+        data['title'] = item.text
+      elif item.tag == prefix + 'description':
+        data['scopeAndContent'] = item.text
+      elif item.tag == prefix + 'date':
+        data['updateEvents[0][typeId]'] = CREATION_ID
+
+        start_date, end_date = item.text.split('/')
+        data['updateEvents[0][startDate]'] = start_date
+        data['updateEvents[0][endDate]'] = end_date
+
+    # Default values
+    data['levelOfDescription'] = SERIES_ID
+    data['parent'] = ROOT_ID
+    data['publicationStatus'] = DRAFT_ID
 
     # Create information object
     response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
+    print response.read()
 
   # Is a file?
   else:
