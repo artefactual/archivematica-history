@@ -38,19 +38,40 @@ def createFileSec(path, parentBranch, indent):
   currentBranch = newChild(parentBranch, "fileGrp")
   filename = os.path.basename(path)
   currentBranch.set("ID", filename)
-  currentBranch.set("originalName", filename)
+  currentBranch.set("USE", "directory")
+  currentBranch.tail = "\n"
+  currentBranch.text = "\n"  
+
+  i=0
+  while i < indent :
+    currentBranch.text = currentBranch.text + "\t"
+    i += 1
 
   for item in os.listdir(path):
     itempath = os.path.join(path, item)
     if os.path.isdir(itempath):
-      DirAsLessXML(os.path.join(path, item), currentBranch, indent+1)
+      createFileSec(os.path.join(path, item), currentBranch, indent+1)
     elif os.path.isfile(itempath):
       myuuid = uuid.uuid4()
       fileI = newChild(currentBranch, "file")
       filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
-      newChild(fileI, "name", filename, None )
-      newChild(fileI, "originalName", filename, None )
-      newChild(fileI, "UUID", myuuid.__str__())
+      fileI.set("ID", "file-" + myuuid.__str__())
+
+      fileI.tail = "\n"
+      i=0
+      while i < (indent+2) :
+        fileI.tail = fileI.tail + "\t"
+        i += 1
+
+      Flocat = newChild(currentBranch, "Flocat")
+      Flocat.set("xlink:href", path.__str__() + item.__str__())
+      Flocat.tail = "\n"
+
+      i=0
+      while i < (indent+3) :
+        Flocat.tail = Flocat.tail + "\t"
+        i += 1
+
 
 if __name__ == '__main__':
   #cd /tmp/$UUID; 
@@ -76,7 +97,7 @@ if __name__ == '__main__':
   sipFileGrp.set("USE", "Objects package")
   fileSec.append(sipFileGrp)
 	
-  createFileSec(path, sipFileGrp, 3)
+  createFileSec(path, sipFileGrp, 4)
   
   tree.write(sys.argv[1]+"/METS.xml")
 	
