@@ -25,6 +25,7 @@ import os
 import uuid
 import sys
 import xml.etree.cElementTree as etree
+import string
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 
 
@@ -33,35 +34,39 @@ def newChild(parent, tag, text=None, tailText=None):
   child = etree.Element(tag)
   parent.append(child)
   child.text = text
-  child.tail = tailText
+  if child.tail:
+    child.tail = tailText
+  else :
+    child.tail = "\n"   
   return child
 
 
 
 
 def createFileSec(path, parentBranch, indent):
-  currentBranch = newChild(parentBranch, "fileGrp")
   filename = os.path.basename(path)
-  currentBranch.set("ID", filename)
-  currentBranch.set("USE", "directory")
+  filename = string.replace(filename, sys.argv[2], "objects", 1)
+  parentBranch.set("ID", filename)
 
-  last=currentBranch
   for item in os.listdir(path):
     itempath = os.path.join(path, item)
     if os.path.isdir(itempath):
+      currentBranch = newChild(parentBranch, "fileGrp")
+      currentBranch.set("USE", "directory")
       createFileSec(os.path.join(path, item), currentBranch, indent+1)    
     elif os.path.isfile(itempath):
       myuuid = uuid.uuid4()
-      fileI = newChild(currentBranch, "file")
+      fileI = newChild(parentBranch, "file")
       filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
       #filename = replace /tmp/"UUID" with /objects/
+      pathSTR = string.replace(path.__str__(),"/tmp/"+ sys.argv[2], "objects", 1)
+      
       fileI.set("ID", "file-" + myuuid.__str__())
 
-      Flocat = newChild(currentBranch, "Flocat")
-      Flocat.set("xlink:href", path.__str__() + item.__str__())
+      Flocat = newChild(fileI, "Flocat")
+      Flocat.set("xlink:href", pathSTR + "/" + filename)
       Flocat.set("locType", "other")
       Flocat.set("otherLocType", "system")
-      last=Flocat
       
 if __name__ == '__main__':
   #cd /tmp/$UUID; 
