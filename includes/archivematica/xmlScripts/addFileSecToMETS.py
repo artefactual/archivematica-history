@@ -37,21 +37,13 @@ def newChild(parent, tag, text=None, tailText=None):
   return child
 
 
-def tabify(string, indent):
-  string = '\n'
-  i=0
-  while i < indent :
-    string = string + "\t"
-    i += 1
-  
+
 
 def createFileSec(path, parentBranch, indent):
-  tabify(parentBranch.tail, indent)
   currentBranch = newChild(parentBranch, "fileGrp")
   filename = os.path.basename(path)
   currentBranch.set("ID", filename)
   currentBranch.set("USE", "directory")
-  tabify(currentBranch.text, indent+1)
 
   last=currentBranch
   for item in os.listdir(path):
@@ -64,16 +56,12 @@ def createFileSec(path, parentBranch, indent):
       filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
       #filename = replace /tmp/"UUID" with /objects/
       fileI.set("ID", "file-" + myuuid.__str__())
-      tabify(fileI.text, indent+2)
-      tabify(fileI.tail, indent+1)
 
       Flocat = newChild(currentBranch, "Flocat")
       Flocat.set("xlink:href", path.__str__() + item.__str__())
       Flocat.set("locType", "other")
       Flocat.set("otherLocType", "system")
-      tabify(Flocat.tail, indent+1)
       last=Flocat
-  tabify(last.tail, indent)
       
       
 def loadDublin(root):      
