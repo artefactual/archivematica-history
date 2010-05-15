@@ -37,7 +37,7 @@ def newChild(parent, tag, text=None, tailText=None):
   return child
 
 
-def tabify(string, i)
+def tabify(string, indent):
   string = '\n'
   i=0
   while i < indent :
@@ -76,7 +76,7 @@ def createFileSec(path, parentBranch, indent):
   tabify(last.tail, indent)
       
       
-def loadDublin(root)      
+def loadDublin(root):      
   dtree = etree.parse("/home/demo/ingestLogs/" + sys.argv[2] + "/DublinCore.xml")
   droot = dtree.getroot()
   """
