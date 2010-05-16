@@ -43,6 +43,8 @@ URL_BASE = 'http://localhost/index.php'
 URL_LOGIN = URL_BASE + '/;user/login'
 URL_CREATE_ISAD = URL_BASE + '/;create/isad'
 URL_CREATE_DO = URL_BASE + '/;digitalobject/create'
+URL_CREATE_ISAAR = URL_BASE + '/;create/isaar'
+URL_AUTOCOMPLETE_ACTOR = URL_BASE + '/;actor/autocomplete'
 
 # Some static values
 ROOT_ID = '/1;isad'
@@ -77,6 +79,25 @@ class URLNotAccessible(Exception):
 def get_id_from_url(url):
   path = urlparse.urlparse(url).path
   return re.search(r'\d+', path).group()
+
+def find_or_create_actor(name):
+  # Search for actor
+  data = { 'query': name }
+  response = urllib2.urlopen(URL_AUTOCOMPLETE_ACTOR, urllib.urlencode(data))
+  content = response.read()
+
+  regex = re.compile(r'<div class=\"result-count\">(.*?)</div>', re.DOTALL)
+  robj = regex.search(content)
+
+  if robj.group(1).strip() == 'No results':
+    # Create a new actor
+    data = { 'authorizedFormOfName': name }
+    response = urllib2.urlopen(URL_CREATE_ISAAR, urllib.urlencode(data))
+    return response.url
+  else:
+    regex = re.compile(r'<tbody>\s+<tr class=\"odd\">\s+<td>\s+<a href=\"(.*?)\"', re.DOTALL)
+    robj = regex.search(content)
+    return robj.group(1)
 
 def upload(opts):
   # Check if file exists
@@ -130,7 +151,6 @@ def upload(opts):
     # - updateEvents (date)
 
     # TODO
-    # - creators[0] (item.tag = 'Provenance')
     # - parent (item.tag = 'isPartOf'), search?
 
     for item in tree.find("dmdSec/mdWrap/xmlData/dublincore"):
@@ -145,6 +165,8 @@ def upload(opts):
         data['updateEvents[new][dateDisplay]'] = ''
         start_date, end_date = item.text.split('/')
         data['updateEvents[new][startDate]'], data['updateEvents[new][endDate]'] = item.text.split('/')
+      elif item.tag == prefix + 'creator':
+        data['creators[0]'] = find_or_create_actor(item.text)
 
     # Default values
     data['levelOfDescription'] = SERIES_ID
