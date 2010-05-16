@@ -45,6 +45,7 @@ URL_CREATE_ISAD = URL_BASE + '/;create/isad'
 URL_CREATE_DO = URL_BASE + '/;digitalobject/create'
 URL_CREATE_ISAAR = URL_BASE + '/;create/isaar'
 URL_AUTOCOMPLETE_ACTOR = URL_BASE + '/;actor/autocomplete'
+URL_SEARCH_INFORMATION_OBJECT = URL_BASE + '/;search/index'
 
 # Some static values
 ROOT_ID = '/1;isad'
@@ -80,9 +81,23 @@ def get_id_from_url(url):
   path = urlparse.urlparse(url).path
   return re.search(r'\d+', path).group()
 
+def find_information_object(name):
+  # Search for information object
+  data = { 'query': name }
+  response = urllib2.urlopen(URL_SEARCH_INFORMATION_OBJECT, urllib.urlencode(data))
+
+  regex = re.compile(r'<div class=\"section\">\s+<div class=\"clearfix search-results odd\">\s+<h2><a href=\"(.*?)\"', re.DOTALL)
+  robj = regex.search(response.read())
+
+  if robj is None:
+    return ROOT_ID;
+  else:
+    return robj.group(1)
+
 def find_or_create_actor(name):
   # Search for actor
   data = { 'query': name }
+  print data
   response = urllib2.urlopen(URL_AUTOCOMPLETE_ACTOR, urllib.urlencode(data))
   content = response.read()
 
@@ -145,13 +160,15 @@ def upload(opts):
     # - identifier
     # - title
     # - levelOfDescription
-    # - creators (Provenance)
+    # - creators (creator)
     # - scopeAndContent (description)
     # - parent (isPartOf)
     # - updateEvents (date)
 
-    # TODO
-    # - parent (item.tag = 'isPartOf'), search?
+    # Default values
+    data['levelOfDescription'] = SERIES_ID
+    data['parent'] = ROOT_ID
+    data['publicationStatus'] = DRAFT_ID
 
     for item in tree.find("dmdSec/mdWrap/xmlData/dublincore"):
       if item.tag == prefix + 'identifier':
@@ -167,11 +184,8 @@ def upload(opts):
         data['updateEvents[new][startDate]'], data['updateEvents[new][endDate]'] = item.text.split('/')
       elif item.tag == prefix + 'creator':
         data['creators[0]'] = find_or_create_actor(item.text)
-
-    # Default values
-    data['levelOfDescription'] = SERIES_ID
-    data['parent'] = ROOT_ID
-    data['publicationStatus'] = DRAFT_ID
+      elif item.tag == prefix + 'isPartOf':
+        data['parent'] = find_information_object(item.text)
 
     # Create information object
     response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
