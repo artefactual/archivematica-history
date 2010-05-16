@@ -76,18 +76,28 @@ def createDigiprovMD(uuid, filename) :
     #print DetoxDic[filename] + "\t RENAMED: \t" + filename
     originalName = newChild(objects, "originalName", DetoxDic[filename])
 
-def createFileSec(path, parentBranch, indent):
-  pathSTR = string.replace(path.__str__(), "/tmp/" + sys.argv[2] + "/" + sys.argv[3], "objects", 1)
-  pathSTR = string.replace(pathSTR, "/tmp/" + sys.argv[2], sys.argv[3] + "-" + sys.argv[2] , 1)
+def createFileSec(path, parentBranch, structMapParent):
+  pathSTR = path.__str__()
+  if pathSTR == "/tmp/" + sys.argv[2] + "/" + sys.argv[3]:
+    pathSTR = "objects"
+  #pathSTR = string.replace(path.__str__(), "/tmp/" + sys.argv[2] + "/" + sys.argv[3], "objects", 1)
+  if pathSTR == "/tmp/" + sys.argv[2]:
+    pathSTR = sys.argv[3] + "-" + sys.argv[2]
+    structMapParent.set("DMDID", "SIP-description")
   filename = os.path.basename(pathSTR)
   parentBranch.set("ID", filename)
+  structMapParent.set("LABEL", filename)
+  structMapParent.set("TYPE", "directory")
 
   for item in os.listdir(path):
     itempath = os.path.join(path, item)
     if os.path.isdir(itempath):
       currentBranch = newChild(parentBranch, "fileGrp")
       currentBranch.set("USE", "directory")
-      createFileSec(os.path.join(path, item), currentBranch, indent+1)    
+      # structMap directory
+      div = newChild(structMapParent, "div")
+
+      createFileSec(os.path.join(path, item), currentBranch, div)    
     elif os.path.isfile(itempath):
       myuuid = uuid.uuid4()
       createDigiprovMD(myuuid.__str__(), itempath)
@@ -102,6 +112,11 @@ def createFileSec(path, parentBranch, indent):
       Flocat.set("xlink:href", pathSTR + "/" + filename)
       Flocat.set("locType", "other")
       Flocat.set("otherLocType", "system")
+
+      # structMap file
+      div = newChild(structMapParent, "div")
+      fptr = newChild(div, "fptr")
+      fptr.set("FILEID","file-" + myuuid.__str__())
       
 if __name__ == '__main__':
 
@@ -120,7 +135,8 @@ if __name__ == '__main__':
   root = tree.getroot()
 
   amdSec = newChild(root, "amdSec")
-
+  structMap = newChild(root, "structMap")
+  structMapDiv = newChild(structMap, "div")
 
   fileSec = etree.Element("fileSec")
   fileSec.text = "\n\t\t"
@@ -134,7 +150,7 @@ if __name__ == '__main__':
   sipFileGrp.set("USE", "Objects package")
   fileSec.append(sipFileGrp)
 	
-  createFileSec(path, sipFileGrp, 2)
+  createFileSec(path, sipFileGrp, structMapDiv)
   
   tree.write(sys.argv[1]+"/METS.xml")
 	
