@@ -117,6 +117,38 @@ def createFileSec(path, parentBranch, structMapParent):
       div = newChild(structMapParent, "div")
       fptr = newChild(div, "fptr")
       fptr.set("FILEID","file-" + myuuid.__str__())
+
+def tabify(root, last, indent):
+
+  if last and last.text == "":
+    i = 0
+    last.text = "\n"
+    while i < indent:
+      last.text= last.text + "\t"
+      i += 1
+  if last:
+    i = 0
+    last.tail = "\n"
+    while i < indent:
+      last.tail= last.tail + "\t"
+      i += 1    
+  previous = root
+  for element in root:
+      previous = tabify(element,previous,indent+1)
+
+  if previous and previous != root:
+    i = 0
+    previous.tail = "\n"
+    while i < indent:
+      previous.tail= previous.tail + "\t"
+      i += 1
+    if previous.text == "":
+      i = 0
+      previous.text = "\n\t"
+      while i < indent:
+        previous.text= previous.text + "\t"
+        i += 1
+  return root
       
 if __name__ == '__main__':
 
@@ -139,19 +171,19 @@ if __name__ == '__main__':
   structMapDiv = newChild(structMap, "div")
 
   fileSec = etree.Element("fileSec")
-  fileSec.text = "\n\t\t"
   fileSec.tail = "\n"
   root.append(fileSec)
 
   sipFileGrp = etree.Element("fileGrp")
-  sipFileGrp.text = "\n\t\t\t"
   sipFileGrp.tail = "\n"
   sipFileGrp.set("ID", sys.argv[2].__str__())
   sipFileGrp.set("USE", "Objects package")
   fileSec.append(sipFileGrp)
 	
   createFileSec(path, sipFileGrp, structMapDiv)
-  
+
+  #tabify(root, root, 0)
+
   tree.write(sys.argv[1]+"/METS.xml")
 	
   # Restore original path
