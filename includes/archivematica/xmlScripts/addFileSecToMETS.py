@@ -29,6 +29,7 @@ import string
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 
 DetoxDic={}
+amdSec=[]
 
 def loadDetoxDic():
   detox_fh = open(sys.argv[1]+"/filenameCleanup.log", "r")
@@ -56,8 +57,24 @@ def newChild(parent, tag, text=None, tailText=None):
 
 
 def createDigiprovMD(uuid, filename) :
+  digiprovMD = newChild(amdSec, "digiprovMD")
+  digiprovMD.set("ID", os.path.basename(filename) + "-" + uuid)
+  mdWrap = newChild(digiprovMD,"mdWrap")
+  mdWrap.set("MDTYPE", "PREMIS")
+  xmlData = newChild(mdWrap, "xmlData")
+  premis = newChild(xmlData, "premis")
+  premis.set("xmlns", "info:lc/xmlns/premis-v2")
+  premis.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+  premis.set("version", "2.0")
+  premis.set("xsi:schemaLocation", "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd")
+  objects = newChild(premis, "object")
+  objects.set("xsi:type", "file")
+  objectIdentifier = newChild(objects, "objectIdentifier")
+  objectIdentifierType = newChild(objectIdentifier, "objectIdentifierType", "UUID")
+  objectIdentifierValue = newChild(objectIdentifier, "objectIdentifierValue", uuid)
   if filename in DetoxDic:
-    print DetoxDic[filename] + "\t RENAMED: \t" + filename
+    #print DetoxDic[filename] + "\t RENAMED: \t" + filename
+    originalName = newChild(objects, "originalName", DetoxDic[filename])
 
 def createFileSec(path, parentBranch, indent):
   pathSTR = string.replace(path.__str__(), "/tmp/" + sys.argv[2] + "/" + sys.argv[3], "objects", 1)
@@ -73,7 +90,7 @@ def createFileSec(path, parentBranch, indent):
       createFileSec(os.path.join(path, item), currentBranch, indent+1)    
     elif os.path.isfile(itempath):
       myuuid = uuid.uuid4()
-      createDigiprovMD(myuuid, itempath)
+      createDigiprovMD(myuuid.__str__(), itempath)
       fileI = newChild(parentBranch, "file")
       filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
       #filename = replace /tmp/"UUID" with /objects/
@@ -101,6 +118,8 @@ if __name__ == '__main__':
 
   tree = etree.parse(sys.argv[1]+"/METS.xml")
   root = tree.getroot()
+
+  amdSec = newChild(root, "amdSec")
 
 
   fileSec = etree.Element("fileSec")
