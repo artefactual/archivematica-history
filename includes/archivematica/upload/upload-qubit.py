@@ -51,6 +51,7 @@ URL_SEARCH_INFORMATION_OBJECT = URL_BASE + '/;search/index'
 # Some static values
 ROOT_ID = '/1;isad'
 SERIES_ID = '/187;term'
+ITEM_ID = '/190;term'
 DRAFT_ID = 159
 CREATION_ID = 111
 
@@ -223,7 +224,7 @@ def upload(opts):
   else:
 
     # Create information object
-    data = { 'title' : opts['title'], 'parent' : ROOT_ID }
+    data = { 'title' : opts['title'], 'levelOfDescription': ITEM_ID, 'parent' : ROOT_ID }
     response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
 
     # Get information object id
