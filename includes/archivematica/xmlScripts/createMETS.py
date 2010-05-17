@@ -30,6 +30,7 @@ from xml.sax.saxutils import quoteattr as xml_quoteattr
 from datetime import datetime
 
 DetoxDic={}
+UUIDsDic={}
 amdSec=[]
 
 def loadDetoxDic():
@@ -45,6 +46,20 @@ def loadDetoxDic():
       oldfile = os.path.basename(oldfile)
       DetoxDic[newfile] = oldfile
     line = detox_fh.readline()
+
+def loadFileUUIDsDic():
+  FileUUIDs_fh = open(sys.argv[1]+"/FileUUIDs.log", "r")
+ 
+  line = FileUUIDs_fh.readline()
+  while line:
+    detoxfiles = line.split(" -> ",1)
+    if len(detoxfiles) > 1 :
+      fileUUID = detoxfiles[0]
+      fileName = detoxfiles[1]
+      fileName = string.replace(fileName, "\n", "", 1)
+      UUIDsDic[fileName] = fileUUID
+    line = FileUUIDs_fh.readline()
+
 
 def newChild(parent, tag, text=None, tailText=None):
   child = etree.Element(tag)
@@ -89,7 +104,7 @@ def createDigiprovMD(uuid, filename) :
   fits.set("version", "0.3.2")
   fits.set("xsi:schemaLocation", "http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd")
   
-  fitsTree = etree.parse(sys.argv[1]+"/FITS-"+ os.path.basename(filename)+".xml")
+  fitsTree = etree.parse(sys.argv[1]+"/FITS-"+ UUIDsDic[filename] + "-" + os.path.basename(filename)+".xml")
   fitsRoot = fitsTree.getroot()
   fits.append(fitsRoot)
 
@@ -117,7 +132,11 @@ def createFileSec(path, parentBranch, structMapParent):
 
       createFileSec(os.path.join(path, item), currentBranch, div)    
     elif os.path.isfile(itempath):
-      myuuid = uuid.uuid4()
+      #myuuid = uuid.uuid4()
+      if itempath in UUIDsDic:
+        myuuid = UUIDsDic[itempath]
+      else:
+        print "Error - Log has no UUID for file: " + itempath
       createDigiprovMD(myuuid.__str__(), itempath)
       fileI = newChild(parentBranch, "file")
       fileI.set("xmlns:xlink", "http://www.w3.org/1999/xlink")
@@ -187,6 +206,7 @@ if __name__ == '__main__':
   path = os.getcwd()
 
   loadDetoxDic()
+  loadFileUUIDsDic()
 
   amdSec = newChild(root, "amdSec")
   structMap = newChild(root, "structMap")
