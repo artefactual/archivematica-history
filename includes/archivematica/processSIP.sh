@@ -30,9 +30,11 @@ do
     chmod 700 "$FILE"		
 
     # Create SIP uuid
-    UUID=`uuid`
+    UUID=`uuid -v 4`
 
     BASENAME=`basename "$FILE"`
+
+    echo "$UUID -> $BASENAME"
 
     DISPLAY=:0.0 /usr/bin/notify-send "Quarantine completed" "Preparing $BASENAME for appraisal"
     # Create Log directories and move SIP to /tmp for processing
@@ -75,7 +77,9 @@ do
     find /tmp/$UUID/ -type f -print| while read NEWDOCS
       do
         chmod 700 $NEWDOCS
-        /opt/archivematica/runFITS.sh  $NEWDOCS $UUID
+        FileUUID=`uuid -v 4`
+        /opt/archivematica/runFITS.sh  $NEWDOCS $UUID $FileUUID
+        echo "$FileUUID -> $NEWDOCS" >> ~/ingestLogs/$UUID/FileUUIDs.log
         echo "`date +%F" "%T` `basename $NEWDOCS`" >> ~/ingestLogs/$UUID/FITS.log
       done
 
