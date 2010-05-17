@@ -63,15 +63,6 @@ do
     # Move DublinCore.xml to logs directory
     mv "/tmp/$UUID/$BASENAME/DublinCore.xml" "/home/demo/ingestLogs/$UUID/dublincore.xml"
 
-    # Create METS.XML
-    tmpDir=`pwd`
-    cd "/home/demo/ingestLogs/$UUID"
-    /opt/archivematica/xmlScripts/createMETS.py
-     cd $tmpDir
-
-    # Insert DublinCore.XML into METS.XML
-    /opt/archivematica/xmlScripts/addDublinCoreToMETS.py /home/demo/ingestLogs/$UUID /home/demo/ingestLogs/$UUID
-
     # Extract all of the .zip .rar etc.
     DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting packages (.zip, .rar, etc.) found in $BASENAME"
     python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
@@ -87,11 +78,6 @@ do
 
     # add cleaned file structure to SIP.xml
     /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
-
-    # Add fileSec to METS.XML
-    #NOTE the detoxed name of FILE needs to be sent to this script $3
-    /opt/archivematica/xmlScripts/addFileSecToMETS.py "/home/demo/ingestLogs/$UUID" $UUID `ls /tmp/$UUID`
-
 
     # Scan SIP for virri
     DISPLAY=:0.0 /usr/bin/notify-send "Virus scan" "Checking for viruses in $BASENAME"
@@ -110,6 +96,13 @@ do
         /opt/archivematica/runFITS.sh  $NEWDOCS $UUID
         echo "`date +%F" "%T` `basename $NEWDOCS`" >> ~/ingestLogs/$UUID/FITS.log
       done
+
+    # Create METS.XML
+    # NOTE: the detoxed name of FILE needs to be sent to this script $3
+    /opt/archivematica/xmlScripts/createMETS.py "/home/demo/ingestLogs/$UUID" $UUID `ls /tmp/$UUID`
+
+    # Insert DublinCore.XML into METS.XML
+    /opt/archivematica/xmlScripts/addDublinCoreToMETS.py /home/demo/ingestLogs/$UUID /home/demo/ingestLogs/$UUID
     
     mkdir /home/demo/4-appraiseSIP/$cleanName-$UUID    
 
