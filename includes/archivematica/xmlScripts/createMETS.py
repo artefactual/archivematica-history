@@ -30,6 +30,7 @@ root.set("xmlns:mets", "http://www.loc.gov/METS/")
 root.set("xmlns:premis", "info:lc/xmlns/premis-v2")
 root.set("xmlns:dcterms", "http://purl.org/dc/terms/")
 root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+root.set("xmlns:xlink", "http://TODO.REPLACE.THIS.com")
 root.set("xsi:schemaLocation", "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd")
 
 tree = etree.ElementTree(root)

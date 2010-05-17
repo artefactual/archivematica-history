@@ -58,7 +58,7 @@ def newChild(parent, tag, text=None, tailText=None):
 
 def createDigiprovMD(uuid, filename) :
   digiprovMD = newChild(amdSec, "digiprovMD")
-  digiprovMD.set("ID", os.path.basename(filename) + "-" + uuid)
+  digiprovMD.set("ID", "digiprovMD" + "-" + uuid)
   mdWrap = newChild(digiprovMD,"mdWrap")
   mdWrap.set("MDTYPE", "PREMIS")
   xmlData = newChild(mdWrap, "xmlData")
