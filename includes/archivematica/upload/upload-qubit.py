@@ -25,6 +25,7 @@
 
 
 import cookielib
+import shutil
 import optparse
 import os.path
 import re
@@ -39,7 +40,7 @@ from poster.encode import multipart_encode
 from poster.streaminghttp import StreamingHTTPHandler, StreamingHTTPRedirectHandler, StreamingHTTPSHandler
 
 # This is for ICA-AtoM 1.0.9 URL schema
-URL_BASE = 'http://localhost/index.php'
+URL_BASE = 'http://localhost:8080/~jesus/qubit/index.php'
 URL_LOGIN = URL_BASE + '/;user/login'
 URL_CREATE_ISAD = URL_BASE + '/;create/isad'
 URL_CREATE_DO = URL_BASE + '/;digitalobject/create'
@@ -214,6 +215,10 @@ def upload(opts):
       request = urllib2.Request(URL_CREATE_DO, data, headers)
       response = urllib2.urlopen(request)
 
+    if opts['remove']:
+      shutil.rmtree(opts['file'])
+
+
   # Is a file?
   else:
 
@@ -241,6 +246,9 @@ def upload(opts):
     if opts['debug']:
       print 'New information object URL: ' + response.url
 
+    if opts['remove']:
+      os.remove(opts['file'])
+
 # Main program
 if __name__ == '__main__':
   try:
@@ -261,6 +269,11 @@ if __name__ == '__main__':
     digitalobject.add_option('-u', '--url', dest='url', metavar='URL', help='URL')
 
     parser.add_option_group(digitalobject)
+
+    misc = optparse.OptionGroup(parser, 'Miscelaneous options')
+    misc.add_option('-r', '--remove', dest='remove', action='store_true', help='remove file/directory after successful upload')
+
+    parser.add_option_group(misc)
 
     (opts, args) = parser.parse_args()
 
@@ -284,6 +297,7 @@ if __name__ == '__main__':
       'title' : opts.title,
       'file' : opts.file,
       'url' : opts.url,
+      'remove' : opts.remove,
       'debug' : opts.debug
       })
 
