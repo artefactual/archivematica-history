@@ -79,6 +79,23 @@ def createDigiprovMD(uuid, filename) :
     #print DetoxDic[filename] + "\t RENAMED: \t" + filename
     originalName = newChild(objects, "originalName", DetoxDic[filename])
 
+  #Load Fits
+  mdWrap = newChild(digiprovMD,"mdWrap")
+  mdWrap.set("MDTYPE", "FITS")
+  xmlData = newChild(mdWrap, "xmlData")
+  premis = newChild(xmlData, "premis")
+  premis.set("xmlns", "info:lc/xmlns/premis-v2")
+  premis.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+  premis.set("version", "2.0")
+  premis.set("xsi:schemaLocation", "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd")
+  objects = newChild(premis, "object")
+  objects.set("xsi:type", "FITS")
+  
+  fitsTree = etree.parse(sys.argv[1]+"/FITS-"+ os.path.basename(filename)+".xml")
+  fits = fitsTree.getroot()
+  objects.append(fits)
+
+
 def createFileSec(path, parentBranch, structMapParent):
   pathSTR = path.__str__()
   if pathSTR == "/tmp/" + sys.argv[2] + "/" + sys.argv[3]:
