@@ -41,17 +41,6 @@ do
     mv "$FILE" /tmp/$UUID/.
     chmod 700 -R /tmp/$UUID/
 
-    # If SIP.xml does not exist then create initial structure 
-    if [ ! -f "/tmp/$UUID/$BASENAME/SIP.xml" ]
-    then
-      tmpDir=`pwd`
-      cd "/tmp/$UUID/$BASENAME"
-      /opt/archivematica/SIPxmlModifiers/CreateSipAndAddDublinCoreStructure.py
-      cd $tmpDir	
-    fi
-    # Move SIP.xml to logs directory
-    mv "/tmp/$UUID/$BASENAME/SIP.xml" "/home/demo/ingestLogs/$UUID/SIP.xml"
-
     # If DublinCore.xml does not exist then create initial structure 
     if [ ! -f "/tmp/$UUID/$BASENAME/DublinCore.xml" ]
     then
@@ -67,17 +56,10 @@ do
     DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting packages (.zip, .rar, etc.) found in $BASENAME"
     python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
 
-    # Add initial file structure to SIP.xml 
-    /opt/archivematica/SIPxmlModifiers/addFileStructureToSIP.py "/home/demo/ingestLogs/$UUID" $UUID
-    /opt/archivematica/SIPxmlModifiers/addUUIDasDCidentifier.py "/home/demo/ingestLogs/$UUID" $UUID
-
     # Clean filenames
     DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up illegal file name characters found in $BASENAME"
     detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/filenameCleanup.log
     cleanName=`ls /tmp/$UUID`
-
-    # add cleaned file structure to SIP.xml
-    /opt/archivematica/SIPxmlModifiers/addDetoxLogToSIP.py "/home/demo/ingestLogs/$UUID" "$FILE"
 
     # Scan SIP for virri
     DISPLAY=:0.0 /usr/bin/notify-send "Virus scan" "Checking for viruses in $BASENAME"
@@ -108,7 +90,6 @@ do
 
     # Copy logs directory to SIP
     cp -a /home/demo/ingestLogs/$UUID /home/demo/4-appraiseSIP/$cleanName-$UUID/logs
-    mv /home/demo/4-appraiseSIP/$cleanName-$UUID/logs/SIP.xml /home/demo/4-appraiseSIP/$cleanName-$UUID/
     mv /home/demo/4-appraiseSIP/$cleanName-$UUID/logs/METS.xml /home/demo/4-appraiseSIP/$cleanName-$UUID/
 
     # Move processed SIP to 4-appraiseSIP and notify user of completion

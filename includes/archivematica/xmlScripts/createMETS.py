@@ -83,17 +83,15 @@ def createDigiprovMD(uuid, filename) :
   mdWrap = newChild(digiprovMD,"mdWrap")
   mdWrap.set("MDTYPE", "FITS")
   xmlData = newChild(mdWrap, "xmlData")
-  premis = newChild(xmlData, "premis")
-  premis.set("xmlns", "info:lc/xmlns/premis-v2")
-  premis.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-  premis.set("version", "2.0")
-  premis.set("xsi:schemaLocation", "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd")
-  objects = newChild(premis, "object")
-  objects.set("xsi:type", "FITS")
+  fits = newChild(xmlData, "fits")
+  fits.set("xmlns", "http://hul.harvard.edu/ois/xml/ns/fits/fits_output")
+  fits.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+  fits.set("version", "0.3.2")
+  fits.set("xsi:schemaLocation", "http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd")
   
   fitsTree = etree.parse(sys.argv[1]+"/FITS-"+ os.path.basename(filename)+".xml")
-  fits = fitsTree.getroot()
-  objects.append(fits)
+  fitsRoot = fitsTree.getroot()
+  fits.append(fitsRoot)
 
 
 def createFileSec(path, parentBranch, structMapParent):
