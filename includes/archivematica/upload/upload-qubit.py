@@ -40,7 +40,7 @@ from poster.encode import multipart_encode
 from poster.streaminghttp import StreamingHTTPHandler, StreamingHTTPRedirectHandler, StreamingHTTPSHandler
 
 # This is for ICA-AtoM 1.0.9 URL schema
-URL_BASE = 'http://localhost/index.php'
+URL_BASE = 'http://localhost:8080/~jesus/qubit/index.php'
 URL_LOGIN = URL_BASE + '/;user/login'
 URL_CREATE_ISAD = URL_BASE + '/;create/isad'
 URL_CREATE_DO = URL_BASE + '/;digitalobject/create'
@@ -99,7 +99,7 @@ def find_information_object(name):
 def find_or_create_actor(name):
   # Search for actor
   data = { 'query': name }
-  print data
+
   response = urllib2.urlopen(URL_AUTOCOMPLETE_ACTOR, urllib.urlencode(data))
   content = response.read()
 
@@ -173,6 +173,8 @@ def upload(opts):
     data['publicationStatus'] = DRAFT_ID
 
     for item in tree.find("dmdSec/mdWrap/xmlData/dublincore"):
+      if len(item.text.strip()) == 0:
+        continue
       if item.tag == prefix + 'identifier':
         data['identifier'] = item.text
       elif item.tag == prefix + 'title':
@@ -182,8 +184,10 @@ def upload(opts):
       elif item.tag == prefix + 'date':
         data['updateEvents[new][typeId]'] = CREATION_ID
         data['updateEvents[new][dateDisplay]'] = ''
-        start_date, end_date = item.text.split('/')
-        data['updateEvents[new][startDate]'], data['updateEvents[new][endDate]'] = item.text.split('/')
+        if -1 < item.text.find('/'):
+          data['updateEvents[new][startDate]'], data['updateEvents[new][endDate]'] = item.text.split('/')
+        else:
+          data['updateEvents[new][startDate]'] = item.text
       elif item.tag == prefix + 'creator':
         data['creators[0]'] = find_or_create_actor(item.text)
       elif item.tag == prefix + 'isPartOf':
