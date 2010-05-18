@@ -104,7 +104,7 @@ def createDigiprovMD(uuid, filename) :
   fits.set("version", "0.3.2")
   fits.set("xsi:schemaLocation", "http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd")
   
-  fitsTree = etree.parse(sys.argv[1]+"/FITS-"+ UUIDsDic[filename] + "-" + os.path.basename(filename)+".xml")
+  fitsTree = etree.parse(sys.argv[1]+"/FITS-"+ uuid + "-" + os.path.basename(filename)+".xml")
   fitsRoot = fitsTree.getroot()
   fits.append(fitsRoot)
 
@@ -133,16 +133,18 @@ def createFileSec(path, parentBranch, structMapParent):
       createFileSec(os.path.join(path, item), currentBranch, div)    
     elif os.path.isfile(itempath):
       #myuuid = uuid.uuid4()
-      if itempath in UUIDsDic:
-        myuuid = UUIDsDic[itempath]
+      myuuid=""
+      pathSTR = string.replace(itempath.__str__(),"/tmp/" + sys.argv[2] + "/" + sys.argv[3], "objects", 1)
+      if pathSTR in UUIDsDic:
+        myuuid = UUIDsDic[pathSTR]
       else:
-        print "Error - Log has no UUID for file: " + itempath
-      createDigiprovMD(myuuid.__str__(), itempath)
+        print "Error - Log has no UUID for file: " + pathSTR + "{" + path.__str__() + "}"
+      createDigiprovMD(myuuid, itempath)
       fileI = newChild(parentBranch, "file")
       fileI.set("xmlns:xlink", "http://www.w3.org/1999/xlink")
       filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
       #filename = replace /tmp/"UUID" with /objects/
-      pathSTR = string.replace(path.__str__(),"/tmp/"+ sys.argv[2] + "/" + sys.argv[3], "objects", 1)
+
       
       fileI.set("ID", "file-" + myuuid.__str__())
 

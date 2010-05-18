@@ -79,13 +79,13 @@ do
         chmod 700 $NEWDOCS
         FileUUID=`uuid -v 4`
         /opt/archivematica/runFITS.sh  $NEWDOCS $UUID $FileUUID
-        echo "$FileUUID -> $NEWDOCS" >> ~/ingestLogs/$UUID/FileUUIDs.log
+        echo "$FileUUID -> `/opt/archivematica/xmlScripts/fileUUID.py "/tmp/$UUID/$cleanName" "$NEWDOCS"`" >> ~/ingestLogs/$UUID/FileUUIDs.log
         echo "`date +%F" "%T` `basename $NEWDOCS`" >> ~/ingestLogs/$UUID/FITS.log
       done
 
     # Create METS.XML
     # NOTE: the detoxed name of FILE needs to be sent to this script $3
-    /opt/archivematica/xmlScripts/createMETS.py "/home/demo/ingestLogs/$UUID" $UUID `ls /tmp/$UUID`
+    /opt/archivematica/xmlScripts/createMETS.py "/home/demo/ingestLogs/$UUID" $UUID $cleanName
 
     # Insert DublinCore.XML into METS.XML
     /opt/archivematica/xmlScripts/addDublinCoreToMETS.py /home/demo/ingestLogs/$UUID /home/demo/ingestLogs/$UUID
