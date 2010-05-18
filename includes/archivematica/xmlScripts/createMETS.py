@@ -76,7 +76,7 @@ def newChild(parent, tag, text=None, tailText=None):
 
 def createDigiprovMD(uuid, filename) :
   digiprovMD = newChild(amdSec, "digiprovMD")
-  digiprovMD.set("ID", "digiprov" + "-" + uuid)
+  digiprovMD.set("ID", "digiprov-"+ os.path.basename(filename) + "-" + uuid)
   mdWrap = newChild(digiprovMD,"mdWrap")
   mdWrap.set("MDTYPE", "PREMIS")
   xmlData = newChild(mdWrap, "xmlData")
@@ -145,8 +145,8 @@ def createFileSec(path, parentBranch, structMapParent):
       filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
       #filename = replace /tmp/"UUID" with /objects/
 
-      
-      fileI.set("ID", "file-" + myuuid.__str__())
+      fileI.set("ID", "file-" + item.__str__() + "-"  + myuuid.__str__())
+      fileI.set("ADMID", "digiprov-" + item.__str__() + "-"  + myuuid.__str__())      
 
       Flocat = newChild(fileI, "Flocat")
       Flocat.set("xlink:href", pathSTR + "/" + filename)
@@ -156,7 +156,7 @@ def createFileSec(path, parentBranch, structMapParent):
       # structMap file
       div = newChild(structMapParent, "div")
       fptr = newChild(div, "fptr")
-      fptr.set("FILEID","file-" + myuuid.__str__())
+      fptr.set("FILEID","file-" + item.__str__() + "-" + myuuid.__str__())
 
 def tabify(root, last, indent):
 
