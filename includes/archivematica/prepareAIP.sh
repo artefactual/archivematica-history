@@ -20,6 +20,7 @@
 # @subpackage Ingest
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
+MD5FILE="AIP.MD5.log"
 
 #move sip to /tmp
 mv /home/demo/5-prepareAIP/$2 /tmp/$2
@@ -36,9 +37,16 @@ DISPLAY=:0.0 /usr/bin/notify-send "Normalizing" "Converting files in $2 to prese
 #read folder structure and run normalize.py on files
   find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} "$UUID" "/tmp/$2/objects" "/tmp/$UUID/objects/" \; -print >>/tmp/$2/logs/normalization.log 2>&1 
 
+tmpDir=`pwd`
+cd "/tmp/$2/objects"
+md5deep -rl "." > "$MD5FILE"
+mv "./$MD5FILE" /tmp/$2/logs/
+cd $tmpDir  
+
 #use baggit to create AIP
 DISPLAY=:0.0 /usr/bin/notify-send "Preparing AIP" "Creating Bagit package for $2"
 /opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
+
 
 cp /tmp/$2/METS.xml /tmp/$UUID
 mv /tmp/$UUID /home/demo/8-reviewDIP/$2
