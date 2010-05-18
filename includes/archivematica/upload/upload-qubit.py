@@ -126,15 +126,18 @@ def find_or_create_actor(name):
   regex = re.compile(r'<div class=\"result-count\">(.*?)</div>', re.DOTALL)
   robj = regex.search(content)
 
-  if robj.group(1).strip() == 'No results':
-    # Create a new actor
-    data = { 'authorizedFormOfName': name }
-    response = urllib2.urlopen(URL_CREATE_ISAAR, urllib.urlencode(data))
-    return response.url
+  if robj is None:
+    return None
   else:
-    regex = re.compile(r'<tbody>\s+<tr class=\"odd\">\s+<td>\s+<a href=\"(.*?)\"', re.DOTALL)
-    robj = regex.search(content)
-    return robj.group(1)
+    if robj.group(1).strip() == 'No results':
+      # Create a new actor
+      data = { 'authorizedFormOfName': name }
+      response = urllib2.urlopen(URL_CREATE_ISAAR, urllib.urlencode(data))
+      return response.url
+    else:
+      regex = re.compile(r'<tbody>\s+<tr class=\"odd\">\s+<td>\s+<a href=\"(.*?)\"', re.DOTALL)
+      robj = regex.search(content)
+      return robj.group(1)
 
 def upload(opts):
   # Check if file exists
@@ -193,7 +196,8 @@ def upload(opts):
     data['publicationStatus'] = DRAFT_ID
 
     for item in tree.find("dmdSec/mdWrap/xmlData/dublincore"):
-      if item.text is not None and len(item.text.strip()) == 0:
+      if item.text is None or len(item.text.strip()) == 0:
+        print "Ignorando " + item.tag
         continue
       if item.tag == prefix + 'identifier':
         data['identifier'] = item.text
