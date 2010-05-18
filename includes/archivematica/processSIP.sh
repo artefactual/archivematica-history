@@ -43,6 +43,17 @@ do
     mv "$FILE" /tmp/$UUID/.
     chmod 700 -R /tmp/$UUID/
 
+    # If DublinCore.xml does not exist then create it
+    if [ ! -f "/tmp/$UUID/$BASENAME/DublinCore.xml" ]
+    then
+      tmpDir=`pwd`
+      cd "/tmp/$UUID/$BASENAME"
+      /opt/archivematica/xmlScripts/createDublinCore.py
+      cd $tmpDir	
+    fi
+    # Move DublinCore.xml to logs directory
+    mv "/tmp/$UUID/$BASENAME/DublinCore.xml" "/home/demo/ingestLogs/$UUID/dublincore.xml"
+
     # If MD5 checksum does not exist then create it
     if [ ! -f "/tmp/$UUID/$BASENAME/$MD5FILE" ]    
     then
@@ -55,20 +66,6 @@ do
 #      Todo: implement checking md5 when processing sip
     fi
     mv "/tmp/$UUID/$BASENAME/$MD5FILE" "/home/demo/ingestLogs/$UUID/$MD5FILE"
-    
-    
-    
-    
-    # If DublinCore.xml does not exist then create it
-    if [ ! -f "/tmp/$UUID/$BASENAME/DublinCore.xml" ]
-    then
-      tmpDir=`pwd`
-      cd "/tmp/$UUID/$BASENAME"
-      /opt/archivematica/xmlScripts/createDublinCore.py
-      cd $tmpDir	
-    fi
-    # Move DublinCore.xml to logs directory
-    mv "/tmp/$UUID/$BASENAME/DublinCore.xml" "/home/demo/ingestLogs/$UUID/dublincore.xml"
 
     # Extract all of the .zip .rar etc.
     DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting packages (.zip, .rar, etc.) found in $BASENAME"
