@@ -40,7 +40,7 @@ DISPLAY=:0.0 /usr/bin/notify-send "Normalizing" "Converting files in $2 to prese
 DISPLAY=:0.0 /usr/bin/notify-send "Preparing AIP" "Creating Bagit package for $2"
 /opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
 
-cp ~/ingestLogs/$UUID/METS.xml /tmp/$UUID
+cp /tmp/$2/METS.xml /tmp/$UUID
 mv /tmp/$UUID /home/demo/8-reviewDIP/$2
 
 #cleanup
