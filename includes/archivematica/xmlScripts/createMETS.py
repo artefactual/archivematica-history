@@ -211,8 +211,6 @@ if __name__ == '__main__':
   loadFileUUIDsDic()
 
   amdSec = newChild(root, "amdSec")
-  structMap = newChild(root, "structMap")
-  structMapDiv = newChild(structMap, "div")
 
   fileSec = etree.Element("fileSec")
   fileSec.tail = "\n"
@@ -223,6 +221,9 @@ if __name__ == '__main__':
   sipFileGrp.set("ID", sys.argv[2].__str__())
   sipFileGrp.set("USE", "Objects package")
   fileSec.append(sipFileGrp)
+
+  structMap = newChild(root, "structMap")
+  structMapDiv = newChild(structMap, "div")
 	
   createFileSec(path, sipFileGrp, structMapDiv)
 

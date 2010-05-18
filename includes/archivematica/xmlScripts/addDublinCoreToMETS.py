@@ -35,7 +35,9 @@ def newChild(parent, tag, text=None, tailText=None):
 def loadDublin(root, dublincore):      
 #  dtree = etree.parse("/home/demo/ingestLogs/" + sys.argv[2] + "/DublinCore.xml")
 #  droot = dtree.getroot()
-  child = newChild(root,  "dmdSec")
+#  child = newChild(root,  "dmdSec")
+  child = etree.Element("dmdSec")
+  root.insert(0, child)
   child.set("ID", "SIP-description")
   child = newChild(child, "mdWrap")
   child = newChild(child, "xmlData")
