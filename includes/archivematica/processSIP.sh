@@ -103,7 +103,7 @@ do
     /opt/archivematica/xmlScripts/createMETS.py "/home/demo/ingestLogs/$UUID" $UUID $cleanName
 
     # Insert DublinCore.XML into METS.XML
-    /opt/archivematica/xmlScripts/addDublinCoreToMETS.py /home/demo/ingestLogs/$UUID /home/demo/ingestLogs/$UUID
+    #/opt/archivematica/xmlScripts/addDublinCoreToMETS.py /home/demo/ingestLogs/$UUID /home/demo/ingestLogs/$UUID
     
     mkdir /home/demo/4-appraiseSIP/$cleanName-$UUID    
 
