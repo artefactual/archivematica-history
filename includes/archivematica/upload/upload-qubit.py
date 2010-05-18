@@ -39,6 +39,11 @@ import xml.etree.ElementTree as etree
 from poster.encode import multipart_encode
 from poster.streaminghttp import StreamingHTTPHandler, StreamingHTTPRedirectHandler, StreamingHTTPSHandler
 
+import pygtk
+pygtk.require('2.0')
+import gtk
+
+
 # This is for ICA-AtoM 1.0.9 URL schema
 URL_BASE = 'http://localhost/index.php'
 URL_LOGIN = URL_BASE + '/;user/login'
@@ -78,6 +83,22 @@ class FileNotFound(Exception):
 
 class URLNotAccessible(Exception):
   pass
+
+def gtk_exit(message):
+  dialog = gtk.MessageDialog(
+    type = gtk.MESSAGE_ERROR,
+    buttons = gtk.BUTTONS_OK,
+    message_format = message)
+
+  dialog.set_title('upload-qubit.py error')
+  dialog.connect('response', lambda dialog, response: dialog_response(dialog, message))
+  dialog.run()
+
+  gtk.main()
+
+def dialog_response(dialog, message):
+  dialog.destroy()
+  sys.exit(message)
 
 def get_id_from_url(url):
   path = urlparse.urlparse(url).path
@@ -307,13 +328,13 @@ if __name__ == '__main__':
       })
 
   except KeyboardInterrupt:
-    sys.exit('ERROR: Interrupted by user')
+    gtk_exit('ERROR: Interrupted by user')
 
   except urllib2.HTTPError, err:
-    sys.exit('ERROR: The server couldn\'t fulfill the request. Error code: %s.' % err.code) 
+    gtk_exit('ERROR: The server couldn\'t fulfill the request. Error code: %s.' % err.code) 
 
   except urllib2.URLError, err:
-    sys.exit('ERROR: Failed trying to reach the server. Reason: %s.' % err.reason)
+    gtk_exit('ERROR: Failed trying to reach the server. Reason: %s.' % err.reason)
 
-  # except Exception, err:
-  #  sys.exit('ERROR: %s' % err)
+  except Exception, err:
+    gtk_exit('ERROR: %s' % err)
