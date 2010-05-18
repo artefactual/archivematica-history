@@ -21,6 +21,7 @@
 # @version svn: $Id$
 
 #!/usr/bin/python
+from fileUUID import getUUIDOfFile
 import os.path
 import os
 import sys
@@ -28,6 +29,7 @@ import logging
 import subprocess
 import shlex
 import xml.etree.cElementTree as etree
+
 
 #CONFIGURE THE FOLLOWING DIRECTORIES
 accessFileDirectory = ""
@@ -50,7 +52,9 @@ defaultCommand = "echo No default normalization tool defined."
 
 #this script is passed fileIn, uuid
 fileIn = sys.argv[1]
-accesspath = sys.argv[2]
+sipUUID = sys.argv[2]
+unrelativePath = sys.argv[3]
+accesspath = sys.argv[4]
 
 #get file name and extension
 s = fileIn
@@ -69,7 +73,7 @@ fileExtension = s[x2mod:sLen]
 fileDirectory = s[:x1]
 fileFullName = fileDirectory + fileTitle + "." + fileExtension
 
-print >>sys.stderr, "\nNORMALIZING: " + fileTitle + "." + fileExtension + " {" + fileFullName  + "}"
+print >>sys.stderr, "\nNORMALIZING: " + fileTitle + "." + fileExtension + " {" + getUUIDOfFile(sipUUID, unrelativePath, fileFullName)  + "}"
 
 def findDirectory(root, tag=None, text=None):
   ret = []
