@@ -30,15 +30,17 @@ position=$length-36
 UUID=${2:$position}
 
 mkdir /tmp/$UUID
+mkdir /tmp/$UUID/objects
 
 DISPLAY=:0.0 /usr/bin/notify-send "Normalizing" "Converting files in $2 to preservation and access formats"
 #read folder structure and run normalize.py on files
-  find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} /tmp/$UUID/ \; -print >>/tmp/$2/logs/normalization.log 2>&1 
+  find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} /tmp/$UUID/objects \; -print >>/tmp/$2/logs/normalization.log 2>&1 
 
 #use baggit to create AIP
 DISPLAY=:0.0 /usr/bin/notify-send "Preparing AIP" "Creating Bagit package for $2"
 /opt/externals/bagit/bin/bag create /home/demo/6-reviewAIP/$2.zip /tmp/$2/* --writer zip
 
+cp ~/ingestLogs/$UUID/METS.xml /tmp/$UUID
 mv /tmp/$UUID /home/demo/8-reviewDIP/$2
 
 #cleanup
