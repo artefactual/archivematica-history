@@ -55,9 +55,16 @@ def getUUIDOfFile( sipUUID, basepath, fullFileName):
    
 if __name__ == '__main__':
   function =  sys.argv[1]
+
   if function == "Logline" :
     basepath = sys.argv[2]
     fullFileName = sys.argv[3]
     filename = string.replace( fullFileName, basepath, "objects", 1 )    
     print filename
+
+  elif function == "getFileUUID":
+    sipUUID = sys.argv[2]
+    basepath = sys.argv[3]
+    fullFileName = sys.argv[4]
+    print getUUIDOfFile( sipUUID, basepath, fullFileName)
 
