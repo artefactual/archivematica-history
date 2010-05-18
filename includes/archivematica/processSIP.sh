@@ -79,7 +79,7 @@ do
         chmod 700 $NEWDOCS
         FileUUID=`uuid -v 4`
         /opt/archivematica/runFITS.sh  $NEWDOCS $UUID $FileUUID
-        echo "$FileUUID -> `/opt/archivematica/xmlScripts/fileUUID.py "/tmp/$UUID/$cleanName" "$NEWDOCS"`" >> ~/ingestLogs/$UUID/FileUUIDs.log
+        echo "$FileUUID -> `/opt/archivematica/fileUUID.py "Logline" "/tmp/$UUID/$cleanName" "$NEWDOCS"`" >> ~/ingestLogs/$UUID/FileUUIDs.log
         echo "`date +%F" "%T` `basename $NEWDOCS`" >> ~/ingestLogs/$UUID/FITS.log
       done
 

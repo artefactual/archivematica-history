@@ -28,7 +28,7 @@ import string
 UUIDsDic={}
 
 def loadFileUUIDsDic(sipUUID):
-  FileUUIDs_fh = open("~/ingestLogs/" + uuid +"/FileUUIDs.log", "r")
+  FileUUIDs_fh = open("/home/demo/ingestLogs/" + sipUUID +"/FileUUIDs.log", "r")
   line = FileUUIDs_fh.readline()
   while line:
     detoxfiles = line.split(" -> ",1)
@@ -40,7 +40,7 @@ def loadFileUUIDsDic(sipUUID):
     line = FileUUIDs_fh.readline()
   return UUIDsDic
 
-def getUUIDofFile( sipUUID, basepath, fullFileName):
+def getUUIDOfFile( sipUUID, basepath, fullFileName):
   if not UUIDsDic:
     loadFileUUIDsDic(sipUUID)
   if not UUIDsDic:
@@ -50,12 +50,14 @@ def getUUIDofFile( sipUUID, basepath, fullFileName):
   if filename in UUIDsDic:
     return UUIDsDic[filename]
   else :
-    return ""
+    return "UUID not found for: " + filename
 
    
 if __name__ == '__main__':
-  basepath = sys.argv[1]
-  fullFileName = sys.argv[2]
-  filename = string.replace( fullFileName, basepath, "objects", 1 )    
-  print filename
+  function =  sys.argv[1]
+  if function == "Logline" :
+    basepath = sys.argv[2]
+    fullFileName = sys.argv[3]
+    filename = string.replace( fullFileName, basepath, "objects", 1 )    
+    print filename
 
