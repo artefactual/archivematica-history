@@ -21,7 +21,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @author Peter Van Garderen <peter@artefactual.com>
 # @version svn: $Id$
-
+MD5FILE="MD5checksum.txt"
 
 find ~/3-quarantineSIP/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
 #find ~/3-quarantineSIP/* -maxdepth 0 -perm 0000 -print| while read FILE
@@ -43,7 +43,23 @@ do
     mv "$FILE" /tmp/$UUID/.
     chmod 700 -R /tmp/$UUID/
 
-    # If DublinCore.xml does not exist then create initial structure 
+    # If MD5 checksum does not exist then create it
+    if [ ! -f "/tmp/$UUID/$BASENAME/$MD5FILE" ]    
+    then
+      tmpDir=`pwd`
+      cd "/tmp/$UUID/$BASENAME"
+      md5deep -rl "." > "$MD5FILE"
+      cd $tmpDir      
+
+#    else
+#      Todo: implement checking md5 when processing sip
+    fi
+    mv "/tmp/$UUID/$BASENAME/$MD5FILE" "/home/demo/ingestLogs/$UUID/$MD5FILE"
+    
+    
+    
+    
+    # If DublinCore.xml does not exist then create it
     if [ ! -f "/tmp/$UUID/$BASENAME/DublinCore.xml" ]
     then
       tmpDir=`pwd`
