@@ -40,7 +40,7 @@ from poster.encode import multipart_encode
 from poster.streaminghttp import StreamingHTTPHandler, StreamingHTTPRedirectHandler, StreamingHTTPSHandler
 
 # This is for ICA-AtoM 1.0.9 URL schema
-URL_BASE = 'http://localhost:8080/~jesus/qubit/index.php'
+URL_BASE = 'http://localhost/index.php'
 URL_LOGIN = URL_BASE + '/;user/login'
 URL_CREATE_ISAD = URL_BASE + '/;create/isad'
 URL_CREATE_DO = URL_BASE + '/;digitalobject/create'
