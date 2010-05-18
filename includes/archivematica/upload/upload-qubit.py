@@ -43,7 +43,6 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 
-
 # This is for ICA-AtoM 1.0.9 URL schema
 URL_BASE = 'http://localhost/index.php'
 URL_LOGIN = URL_BASE + '/;user/login'
@@ -194,7 +193,7 @@ def upload(opts):
     data['publicationStatus'] = DRAFT_ID
 
     for item in tree.find("dmdSec/mdWrap/xmlData/dublincore"):
-      if len(item.text.strip()) == 0:
+      if item.text is not None and len(item.text.strip()) == 0:
         continue
       if item.tag == prefix + 'identifier':
         data['identifier'] = item.text
