@@ -61,11 +61,11 @@ do
       cd "/tmp/$UUID/$BASENAME"
       md5deep -rl "." > "$MD5FILE"
       cd $tmpDir      
-
-#    else
-#      Todo: implement checking md5 when processing sip
     fi
     mv "/tmp/$UUID/$BASENAME/$MD5FILE" "/home/demo/ingestLogs/$UUID/$MD5FILE"
+
+    #Check MD5s
+    /opt/archivematica/checkMD5NoGUI.sh "/tmp/$UUID/$BASENAME/" "/home/demo/ingestLogs/$UUID/$MD5FILE" "/home/demo/ingestLogs/$UUID/$MD5FILE"processSIP_check.log
 
     # Extract all of the .zip .rar etc.
     DISPLAY=:0.0 /usr/bin/notify-send "Opening packages" "Extracting packages (.zip, .rar, etc.) found in $BASENAME"
