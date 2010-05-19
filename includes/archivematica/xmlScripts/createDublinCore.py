@@ -301,4 +301,4 @@ dcBibliographicCitation.tail = "\n\t\t"
 dublinCore.append(dcBibliographicCitation)
 
 tree = etree.ElementTree(dublinCore)
-tree.write("DublinCore.xml")
+tree.write("dublincore.xml")
