@@ -2,6 +2,6 @@
   <inherit></inherit>
   <accessFormat>PDF</accessFormat>
   <preservationFormat></preservationFormat>
-  <accessConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</accessConversionCommand>
+  <accessConversionCommand>%unoconvPath% -v --server localhost -f %accessFormat% %fileFullName%</accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
 </extention>
