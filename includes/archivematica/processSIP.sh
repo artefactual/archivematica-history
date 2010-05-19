@@ -44,7 +44,7 @@ do
     chmod 700 -R /tmp/$UUID/
 
     # If DublinCore.xml does not exist then create it
-    if [ ! -f "/tmp/$UUID/$BASENAME/DublinCore.xml" ]
+    if [ ! -f "/tmp/$UUID/$BASENAME/dublincore.xml" ]
     then
       tmpDir=`pwd`
       cd "/tmp/$UUID/$BASENAME"
@@ -52,7 +52,7 @@ do
       cd $tmpDir	
     fi
     # Move DublinCore.xml to logs directory
-    mv "/tmp/$UUID/$BASENAME/DublinCore.xml" "/home/demo/ingestLogs/$UUID/dublincore.xml"
+    mv "/tmp/$UUID/$BASENAME/dublincore.xml" "/home/demo/ingestLogs/$UUID/dublincore.xml"
 
     # If MD5 checksum does not exist then create it
     if [ ! -f "/tmp/$UUID/$BASENAME/$MD5FILE" ]    
@@ -103,7 +103,7 @@ do
     /opt/archivematica/xmlScripts/createMETS.py "/home/demo/ingestLogs/$UUID" $UUID $cleanName
 
     # Insert DublinCore.XML into METS.XML
-    #/opt/archivematica/xmlScripts/addDublinCoreToMETS.py /home/demo/ingestLogs/$UUID /home/demo/ingestLogs/$UUID
+    /opt/archivematica/xmlScripts/addDublinCoreToMETS.py /home/demo/ingestLogs/$UUID /home/demo/ingestLogs/$UUID
     
     mkdir /home/demo/4-appraiseSIP/$cleanName-$UUID    
 
