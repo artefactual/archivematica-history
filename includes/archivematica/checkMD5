@@ -13,9 +13,9 @@ integrityReport=`zenity --entry --title="Check MD5" --entry-text "integrity.repo
 md5Digest=`zenity --file-selection --title="Select list of Checksums"`
 
 #check for passing checksums
-md5deep -r -m $md5Digest "$*" > $passTmp
+md5deep -r -m $md5Digest . > $passTmp
 #check for failing checksums
-md5deep -r -x $md5Digest "$*" > $failTmp
+md5deep -r -x $md5Digest . > $failTmp
 
 #Count number of Passed/Failed
 numberPass=`wc -l $passTmp| cut -d" " -f1`
