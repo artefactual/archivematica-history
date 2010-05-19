@@ -35,7 +35,7 @@ mkdir /tmp/$UUID/objects
 
 DISPLAY=:0.0 /usr/bin/notify-send "Normalizing" "Converting files in $2 to preservation and access formats"
 #read folder structure and run normalize.py on files
-  find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} "$UUID" "/tmp/$2/objects" "/tmp/$UUID/objects/" \; -print >>/tmp/$2/logs/normalization.log 2>&1 
+  find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} "$UUID" "/tmp/$2/objects" "/tmp/$UUID/objects/" \; >>/tmp/$2/logs/normalization.log 2>&1 
 
 tmpDir=`pwd`
 cd "/tmp/$2/objects"
