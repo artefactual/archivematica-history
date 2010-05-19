@@ -16,5 +16,7 @@ j6059_02.wma "Juno Riff" taken from http://www.loopasonic.com/users.htm (downloa
 MakeUp.mov http://h10025.www1.hp.com/ewfrf/wc/document?docname=lpg40911&lc=en&cc=us&product=81685&dlc=
 
 OfficeDocsSIP
-All files created by Artefactual Systems staff except Data without meaning.pdf, which was taken from http://www.ijdc.net/index.php/ijdc/article/view/110/87
+All files created by Artefactual Systems staff, except Data without meaning.pdf, which was taken from http://www.ijdc.net/index.php/ijdc/article/view/110/87
+and samples-final.zip, which was taken from http://openxmldeveloper.org/articles/SampleDocsAugust2007.aspx
+
 
