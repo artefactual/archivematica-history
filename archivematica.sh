@@ -46,6 +46,9 @@ chroot $1 mkdir /var/1-receiveSIP
 chroot $1 ln -s /var/7-storeAIP/ /home/demo
 chroot $1 ln -s /var/1-receiveSIP/ /home/demo
 svn export includes/sampledata $1/home/demo/testFiles
+svn export includes/sampledata/imagesSIP $1/var/1-receiveSIP/imagesSIP
+svn export includes/sampledata/MultiMediaSIP $1/var/1-receiveSIP/MultiMediaSIP
+svn export includes/sampledata/OfficeDocsSIP $1/var/1-receiveSIP/OfficeDocsSIP
 svn export includes/externals $1/opt/externals
 svn export includes/archivematica $1/opt/archivematica
 svn export includes/.mozilla $1/home/demo/.mozilla
