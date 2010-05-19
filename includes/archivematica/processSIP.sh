@@ -24,7 +24,7 @@
 MD5FILE="MD5checksum.txt"
 
 find ~/3-quarantineSIP/* -maxdepth 0 -amin +1 -perm 0000 -print| while read FILE
-#find ~/3-quarantineSIP/* -maxdepth 0 -perm 0000 -print| while read FILE
+
 do
   if [ -d "$FILE" ]; then
     chmod 700 "$FILE"		
@@ -72,7 +72,7 @@ do
     python /opt/externals/easy-extract/easy_extract.py /tmp/$UUID/ -w -f -r -n 2>&1 >> /home/demo/ingestLogs/$UUID/extraction.log
 
     # Clean filenames
-    DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up illegal file name characters found in $BASENAME"
+    DISPLAY=:0.0 /usr/bin/notify-send "Cleaning file names" "Cleaning up prohibited file name characters found in $BASENAME"
     detox -rv /tmp/$UUID >> /home/demo/ingestLogs/$UUID/filenameCleanup.log
     cleanName=`ls /tmp/$UUID`
 
