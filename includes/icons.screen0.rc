@@ -1,26 +1,22 @@
 [Jhove]
 row=2
-col=1
+col=0
 
 [Droid]
-row=2
+row=3
 col=0
 
 [WinFF]
-row=3
+row=2
 col=1
 
-[NLNZ-metadata-extractor]
+[Terminal]
 row=3
-col=0
+col=1
 
 [ICA-Atom]
 row=2
 col=2
-
-[Docs]
-row=2
-col=9
 
 [DCB]
 row=3
@@ -30,6 +26,6 @@ col=2
 row=2
 col=8
 
-[Terminal]
-row=4
-col=0
+[Docs]
+row=2
+col=9
