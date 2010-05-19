@@ -20,7 +20,7 @@
 # @subpackage Ingest
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
-MD5FILE="AIP.MD5.log"
+MD5FILE="AIP.MD5checksum.txt"
 
 #move sip to /tmp
 mv /home/demo/5-prepareAIP/$2 /tmp/$2
