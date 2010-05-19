@@ -93,7 +93,7 @@ cp includes/archivematica-xubuntu-steel.png $1/usr/share/xfce4/backdrops/xubuntu
 cp includes/ica-atom.desktop $1/home/demo/Desktop
 cp includes/droid.desktop $1/home/demo/Desktop
 cp includes/jhove.desktop $1/home/demo/Desktop
-cp includes/NLNZ-metadata-extractor.desktop $1/home/demo/Desktop
+#cp includes/NLNZ-metadata-extractor.desktop $1/home/demo/Desktop
 #cp includes/xena.desktop $1/home/demo/Desktop
 #cp includes/view.desktop $1/home/demo/Desktop
 cp includes/dcb.desktop $1/home/demo/Desktop
