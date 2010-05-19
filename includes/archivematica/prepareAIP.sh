@@ -21,6 +21,7 @@
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
 MD5FILE="AIP.MD5checksum.txt"
+MD5SIPFILE="MD5checksum.txt"
 
 #move sip to /tmp
 mv /home/demo/5-prepareAIP/$2 /tmp/$2
@@ -37,11 +38,16 @@ DISPLAY=:0.0 /usr/bin/notify-send "Normalizing" "Converting files in $2 to prese
 #read folder structure and run normalize.py on files
   find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} "$UUID" "/tmp/$2/objects" "/tmp/$UUID/objects/" \; >>/tmp/$2/logs/normalization.log 2>&1 
 
+#Check MD5s
+/opt/archivematica/checkMD5NoGUI.sh "/tmp/$2/objects" "/home/demo/ingestLogs/$UUID/$MD5SIPFILE" "/tmp/$2/logs/$MD5SIPFILE"prepareAIP_check.log >~/tempjosephcheckingbad.txt 2>&1
+
 tmpDir=`pwd`
 cd "/tmp/$2/objects"
 md5deep -rl "." > "$MD5FILE"
 mv "./$MD5FILE" /tmp/$2/logs/
 cd $tmpDir  
+
+
 
 #use baggit to create AIP
 DISPLAY=:0.0 /usr/bin/notify-send "Preparing AIP" "Creating Bagit package for $2"
