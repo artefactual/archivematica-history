@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no" ?>
+<TRIM version="6.2.2.8598" licenseNumber="210091" id="DA" dataset="PubRecs" date="Tuesday, May 11, 2010 at 11:17:12 AM" user="McLellan, Evelyn">
+<Record uri="169501">
+  <ArchivePermDate propId="188">Permanent Archive : 12/1/2007, based on Schedule 'EV0.0.A' applied to this Record (01-0500-10-AG00000)</ArchivePermDate>
+  <RetSchedule uri="64" type="Schedule">
+  <ActiveFrom propId="2021">8/19/2008</ActiveFrom>
+  <ActiveTo propId="2022"/>
+  <AgencySpecific propId="2005">Yes</AgencySpecific>
+  <Name propId="2001">EV0.0.A</Name>
+  <Notes propId="2003">No longer required for business purposes</Notes>
+  <RetainPermanent propId="2007">Must Not Destroy</RetainPermanent>
+  <Notes propId="1911">Records documenting rules and procedures for developing, authoring and approving corporate policies.</Notes>
+  <Title propId="2002">EV+0/0/A</Title>
+  <DateCreated propId="5">7/21/2009 at 3:39 PM</DateCreated>
+  <DateReg propId="6">7/21/2009 at 3:40 PM</DateReg>
+  <DestructionDate propId="117">From Container: Destroy : Never., based on Schedule 'EV0.0.A' applied to this Record (01-0500-10-AG00000).</DestructionDate>
+  <LastActionDate propId="21">5/11/2010 at 11:17 AM</LastActionDate>
+  <Unit uri="10154" type="Location" propId="218">Information Management Division</Unit>
+  </RetSchedule>
+    <ContentsOf>
+        <Record uri="160675">
+          <Title propId="3">Syllabus FINAL</Title>
+          <DateCreated propId="5">7/21/2008 at 3:09 PM</DateCreated>
+          <LastActionDate propId="21">12/04/2008 at 11:30 AM</LastActionDate>
+          <Name propId="150">McLellan, Evelyn</Name>
+          <RecLocType propId="151">Created By</RecLocType>
+        </Record>
+        <Record uri="168574">
+          <Title propId="3">Data without meaning</Title>
+          <DateCreated propId="5">7/16/2008 at 3:09 PM</DateCreated>
+          <LastActionDate propId="21">1/12/2010 at 11:17 AM</LastActionDate>
+          <Name propId="150">Knight, Gareth</Name>
+          <RecLocType propId="151">Created By</RecLocType>
+          <Name propId="150">Pennock, Maureen</Name>
+          <RecLocType propId="151">Created By</RecLocType>
+        </Record>
+        <Record uri="186759">
+          <Title propId="3">[padiforum-l]_FW:_job_vacancy</Title>
+          <DateCreated propId="5">04/26/2010 at 17:06 PM</DateCreated>
+          <LastActionDate propId="21">5/7/2010 at 02:42 PM</LastActionDate>
+          <Name propId="150">Dent, Arthur</Name>
+          <RecLocType propId="151">Created By</RecLocType>
+        </Record>
+        <Record uri="968574">
+          <Title propId="3">PPT_test</Title>
+          <DateCreated propId="5">3/16/2010 at 1:08 PM</DateCreated>
+          <LastActionDate propId="21">5/7/2010 at 2:43 PM</LastActionDate>
+          <Name propId="150">McLellan, Evelyn</Name>
+          <RecLocType propId="151">Created By</RecLocType>
+        <Record uri="276854">
+        </Record>
+          <Title propId="3">sample</Title>
+          <DateCreated propId="5">5/10/2010 at 11:13 AM</DateCreated>
+          <LastActionDate propId="21">5/10/2010 at 3:17 AM</LastActionDate>
+          <Name propId="150">McLellan, Evelyn</Name>
+          <RecLocType propId="151">Created By</RecLocType>
+        </Record>
+        <Record uri="343578">
+          <Title propId="3">Members_Master2009</Title>
+          <DateCreated propId="5">7/21/2009 at 3:09 PM</DateCreated>
+          <LastActionDate propId="21">5/10/2010 at 4:09 PM</LastActionDate>
+          <Name propId="150">McLellan, Evelyn</Name>
+          <RecLocType propId="151">Created By</RecLocType>
+        </Record>
+    </ContentsOf>
+</Record>
+</TRIM>
