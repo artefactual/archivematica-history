@@ -205,6 +205,14 @@ def upload(opts):
         data['title'] = item.text
       elif item.tag == prefix + 'description':
         data['scopeAndContent'] = item.text
+      elif item.tag == prefix + 'format':
+        data['extentAndMedium'] = item.text
+      elif item.tag == prefix + 'accrualMethod':
+        data['acquisition'] = item.text
+      elif item.tag == prefix + 'accrualPeriodicity':
+        data['accruals'] = item.text
+      elif item.tag == prefix + 'rights':
+        data['accessConditions'] = item.text
       elif item.tag == prefix + 'date':
         data['updateEvents[new][typeId]'] = CREATION_ID
         data['updateEvents[new][dateDisplay]'] = ''
