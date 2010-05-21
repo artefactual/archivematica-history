@@ -39,7 +39,7 @@ DISPLAY=:0.0 /usr/bin/notify-send "Normalizing" "Converting files in $2 to prese
   find /tmp/$2/objects -type f -exec python /opt/archivematica/normalize.py {} "$UUID" "/tmp/$2/objects" "/tmp/$UUID/objects/" \; >>/tmp/$2/logs/normalization.log 2>&1 
 
 #Check MD5s
-/opt/archivematica/checkMD5NoGUI.sh "/tmp/$2/objects" "/home/demo/ingestLogs/$UUID/$MD5SIPFILE" "/tmp/$2/logs/$MD5SIPFILE"prepareAIP_check.log >~/tempjosephcheckingbad.txt 2>&1
+/opt/archivematica/checkMD5NoGUI.sh "/tmp/$2/objects" "/home/demo/ingestLogs/$UUID/$MD5SIPFILE" "/tmp/$2/logs/$MD5SIPFILE"prepareAIP_check.log 
 
 tmpDir=`pwd`
 cd "/tmp/$2/objects"
