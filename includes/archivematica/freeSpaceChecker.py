@@ -45,6 +45,14 @@ if __name__ == '__main__':
     else:
       print "false"
 
+  elif "checkCurrentSpace":
+    #drive = sys.argv[2]
+    drive = "/"
+    hd=os.statvfs(drive)
+    freeSpace = (hd.f_bsize * hd.f_bavail)  
+    print freeSpace.__str__() + " Bytes"
+
+
   else:
     print "Usage Error"
 
