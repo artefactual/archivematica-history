@@ -45,7 +45,7 @@ if __name__ == '__main__':
     else:
       print "false"
 
-  elif "checkCurrentSpace":
+  elif function == "checkCurrentSpace":
     #drive = sys.argv[2]
     drive = "/"
     hd=os.statvfs(drive)

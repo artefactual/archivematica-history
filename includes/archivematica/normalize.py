@@ -22,6 +22,7 @@
 
 #!/usr/bin/python
 from fileUUID import getUUIDOfFile
+from freeSpaceChecker import checkSpace
 import os.path
 import os
 import sys
@@ -29,6 +30,10 @@ import logging
 import subprocess
 import shlex
 import xml.etree.cElementTree as etree
+
+#Delete the normalized file if free space below x number of bytes
+spaceThreshold="10240"
+
 
 
 #CONFIGURE THE FOLLOWING DIRECTORIES
@@ -213,6 +218,17 @@ if len(accessConversionCommand) > 0 :
         print >>sys.stderr, "Already in access format. No need to normalize."
       if accessConversionCommand[index]:
         result = executeCommand(accessConversionCommand[index])
+        
+        #is the destination folder out of space (also may cause a normalization error).
+        if checkSpace(accesspath, spaceThreshold):
+          Format="NONE"
+          if (accessFormat[0].upper() == Format or accessFormat[0].upper() == fileExtension.upper()):
+            if accesspath != fileDirectory:
+              os.remove(accesspath + fileTitle + "." + fileExtension)
+          else:
+            os.remove(accesspath + fileTitle + "." + accessFormat[0].lower())
+          print >>sys.stderr, "ERROR: Archivematica detected low space on the access normalization destination drive, and removed the normalized file. This should be considered a hard drive space error."
+      
       else:
         print >>sys.stderr, "Skipping Access Normalization: No command"
         accessConversionCommand[index] = "cp %fileFullName% %accessFileDirectory%."
@@ -240,6 +256,9 @@ if len(preservationConversionCommand) > 0:
         print >>sys.stderr, "Skipping Preservation Normalization: No command"
         result = 0 
       index += 1
+
+      #fileDirectory will need to change eventually to something directly related to normalization path.
+      
     if result:
       print >>sys.stderr, "!!! PRESERVATION NORMALIZATION FAILED !!!"
 else:
