@@ -1,0 +1,7 @@
+<formatPolicy>
+  <inherit></inherit>
+  <accessFormat></accessFormat>
+  <preservationFormat>ODS</preservationFormat>
+  <accessConversionCommand></accessConversionCommand>
+  <preservationConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</preservationConversionCommand>
+</formatPolicy>
