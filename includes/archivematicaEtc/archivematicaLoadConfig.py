@@ -52,8 +52,6 @@ def loadConfig(configFile="/etc/archivematica/archivematicaConfig.conf"):
   while line:
     #remove comments
     line = line.split("#",1)[0]    
-    print "line: \"" + line + "\""
-    print "valide line: " + validLine(line).__str__()
     if validLine(line):
       varline = line.split("=",1)
       var = varline[0]
