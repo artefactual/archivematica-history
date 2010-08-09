@@ -1,0 +1,8 @@
+<formatPolicy>
+  <inherit></inherit>
+  <accessFormat>JPG</accessFormat>
+  <preservationFormat>TIF</preservationFormat>
+  <accessConversionCommand>%convertPath% %fileFullName% %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
+  <preservationConversionCommand>%convertPath% %fileFullName% +compress %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
+  <preservationConversionCommand>%xenaPath%</preservationConversionCommand>
+</formatPolicy>
