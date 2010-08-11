@@ -1,7 +1,0 @@
-#!/bin/bash
-#Creates MD5 checksum
-#needs to be run from within the SIP folder
-NOW=`date +%F`
-#listName=`zenity --entry --title="Create MD5" --entry-text "My.MD5.$NOW.txt" --text="Name of MD5 report"`
-listName="MD5checksum.txt"
-md5deep -rl "." | tee >(zenity --progress --pulsate) > $listName

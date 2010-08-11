@@ -1,7 +1,0 @@
-<formatPolicy>
-  <inherit></inherit>
-  <accessFormat>PDF</accessFormat>
-  <preservationFormat>ODT</preservationFormat>
-  <accessConversionCommand>/opt/archivematica/normalizationScripts/unoconv.sh %accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%</accessConversionCommand>
-  <preservationConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</preservationConversionCommand>
-</formatPolicy>
