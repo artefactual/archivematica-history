@@ -39,6 +39,15 @@ chroot $1 rm -rf /home/demo/Public
 chroot $1 rm -rf /home/demo/Templates
 chroot $1 rm -rf /home/demo/Videos
 
+#Install archivematica
+svn export includes/archivematicaUsrBin $1/usr/bin/temp/
+mv $1/usr/bin/temp/* $1/usr/bin/
+rm -r $1/usr/bin/temp/*
+svn export includes/archivematicaEtc $1/etc/archivematica
+svn export includes/archivematicaUsrShare $1/usr/share/
+svn export includes/archivematicaUsrBin $1/home/demo/USRBIN
+
+
 #Install externals/archivematica
 chroot $1 mkdir -p /home/demo/Desktop
 chroot $1 mkdir /var/7-storeAIP
@@ -50,7 +59,6 @@ svn export includes/sampledata/ImagesSIP $1/var/1-receiveSIP/ImagesSIP
 svn export includes/sampledata/MultimediaSIP $1/var/1-receiveSIP/MultimediaSIP
 svn export includes/sampledata/OfficeDocsSIP $1/var/1-receiveSIP/OfficeDocsSIP
 svn export includes/externals $1/opt/externals
-svn export includes/archivematica $1/opt/archivematica
 svn export includes/.mozilla $1/home/demo/.mozilla
 svn export includes/xenaconfig $1/home/demo/.java
 svn export includes/Docs $1/home/demo/Docs

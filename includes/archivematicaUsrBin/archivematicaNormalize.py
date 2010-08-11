@@ -21,8 +21,8 @@
 # @version svn: $Id$
 
 #!/usr/bin/python
-from fileUUID import getUUIDOfFile
-from freeSpaceChecker import checkSpace
+from archivematicaFileUUID import getUUIDOfFile
+from archivematicaFreeSpaceChecker import checkSpace
 import os.path
 import os
 import sys
