@@ -1,1 +1,1 @@
-* * * * * flock -xn /var/lock/processSIP.lock /usr/bin/archivematicaProcessSIP.sh
+* * * * * flock -xn /var/lock/processSIP.lock /usr/bin/archivematicaProcessSip.sh
