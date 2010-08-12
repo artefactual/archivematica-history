@@ -23,9 +23,10 @@
 #!/usr/bin/python
 from archivematicaFileUUID import getUUIDOfFile
 from archivematicaFreeSpaceChecker import checkSpace
+from archivematicaLoadConfig import loadConfig
+import sys
 import os.path
 import os
-import sys
 import logging
 import subprocess
 import shlex
@@ -33,8 +34,7 @@ import xml.etree.cElementTree as etree
 
 #Delete the normalized file if free space below x number of bytes
 spaceThreshold="10240"
-
-
+archivmaticaVars=loadConfig()
 
 #CONFIGURE THE FOLLOWING DIRECTORIES
 accessFileDirectory = ""
@@ -43,14 +43,13 @@ failedConversionsDirectory = "/home/demo/SIPerrors/normalizationErrors/"
 
 #CONFIGURE THE FOLLOWING APPLICATION PATHS
 #formatPoliciesPath = "/mnt/userver910/archivematica2/includes/archivematica/formatPolicies"
-formatPoliciesPath = "/opt/archivematica/formatPolicies"
-convertPath = "/usr/bin/convert " #Images
-ffmpegPath = "/usr/bin/ffmpeg " #Audio
-theoraPath = "/usr/bin/ffmpeg2theora "
-unoconvPath = "/usr/bin/unoconv "
-xenaPath = "java -jar /opt/externals/xena/xena.jar -f %fileFullName% -o %fileDirectory% -p /opt/externals/xena/plugins/" #Xena
-#...Path = "" #Video
-#...Path = "" #...
+formatPoliciesPath = archivmaticaVars["formatPoliciesPath"]
+convertPath = archivmaticaVars["convertPath"]
+ffmpegPath = archivmaticaVars["ffmpegPath"]
+theoraPath = archivmaticaVars["theoraPath"]
+unoconvPath = archivmaticaVars["unoconvPath"]
+xenaPath = archivmaticaVars["xenaPath"]
+normalizationScriptsDir = archivmaticaVars["normalizationScriptsDir"]
 
 #SET THE DEFAULT COMMAND
 defaultCommand = "echo No default normalization tool defined."
@@ -139,6 +138,7 @@ def executeCommand(command):
   "%preservationFileDirectory%": fileDirectory, \
   "%fileDirectory%": fileDirectory,\
   "%fileTitle%": fileTitle, \
+  "%normalizationScriptsDir%": normalizationScriptsDir, \
   "%accessFormat%": accessFormat[0].lower(), \
   "%preservationFormat%": preservationFormat[0].lower() }
   

@@ -2,6 +2,6 @@
   <inherit></inherit>
   <accessFormat>PDF</accessFormat>
   <preservationFormat></preservationFormat>
-  <accessConversionCommand>/opt/archivematica/normalizationScripts/unoconv.sh %accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%</accessConversionCommand>
+  <accessConversionCommand>%normalizationScriptsDir%unoconv.sh %accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%</accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
 </extention>
