@@ -9,58 +9,81 @@
 #
 # Archivematica is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+# along with Archivematica.    If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-List of clients
-List of jobs to queue
-List of active jobs [UUID, folder to move when done.]
+import os
+from archivematicaLoadConfig import loadConfig
+from modules.modules import modulesClass
 
-def loadFolderWatchLlist()
-  Loads a config file with:
-     folders and the associated next command to run 
-     folder to move the files to while they will be operated on
-     folder to move to when all tasks are completed
-     whether it's a task for each file/file&folder/One task for the entire SIP
-     specifies if the user needs to approve the next command, or if it's automatic.
-  note: will need some watch folder functionality
 
-def  MCPclient()
-    request info:
-      give info
-    approveJob:
-      add job to que
-      
-def clientConnect(client UUID, client nice name, connect back info)
-  getIP/connection info
-  connect back to client.(to issues commands to client)
-  return configDic
-  #connection terminates
-  
-def processQue
-  While(1):
-    take que task
-    send task to available client, with taskCompleted() ret, and JobUUID., relative path the files can be found (relative to shared folder.
+archivmaticaVars = loadConfig("/home/joseph/sharedOnUServer/to build/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
+
+#List of clients
+#List of jobs to queue
+#List of active jobs [UUID, folder to move when done.]
+
+def loadFolderWatchLlist():
+    configs = []
+    configFiles = []
+    for dirs, subDirs, files in os.walk(archivmaticaVars["moduleConfigDir"]):
+        configFiles = files
+        break
+    #print configFiles
+    for configFile in configFiles:
+        if configFile.endswith(".xml"):
+            configs.append(modulesClass(archivmaticaVars["moduleConfigDir"], configFile))
+    for config in configs:
+        print " "
+        print config.__str__()
+        
     
+#    Loads a config file with:
+#         folders and the associated next command to run 
+#         folder to move the files to while they will be operated on
+#         folder to move to when all tasks are completed
+#         whether it's a task for each file/file&folder/One task for the entire SIP
+#         specifies if the user needs to approve the next command, or if it's automatic.
+#    note: will need some watch folder functionality
+
+"""
+def MCPclient()
+        request info:
+            give info
+        approveJob:
+            add job to que
+            
+def clientConnect(client UUID, client nice name, connect back info)
+    getIP/connection info
+    connect back to client.(to issues commands to client)
+    return configDic
+    #connection terminates
+    
+def processQue
+    While(1):
+        take que task
+        send task to available client, with taskCompleted() ret, and JobUUID., relative path the files can be found (relative to shared folder.
+        
 def taskCompleted(jobUUID):
-  make note in the logs
-  if the 
+    make note in the logs
+    if the 
 
-
+"""
 
 if __name__ == '__main__':
-  folderWatchList = loadFolderWatchLlist()
-  Start listening for client connections (new thread) 
-  Start listening for MCPclient Connections.
-  
-  JOB UUID - operating on the entire SIP folder
-  Task - A job can contain many tasks- a task is per file
-  
+
+    folderWatchList = loadFolderWatchLlist()
+#    Start listening for client connections (new thread) 
+#    Start listening for MCPclient Connections.
+    
+#    JOB UUID - operating on the entire SIP folder
+#    Task - A job can contain many tasks- a task is per file
+    

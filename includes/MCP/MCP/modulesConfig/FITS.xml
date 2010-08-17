@@ -1,0 +1,58 @@
+<module>
+    <identifier>FITS 1.0</identifier>
+    <requiresUserApproval>Yes/No</requiresUserApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
+    
+    <directories>
+        <watchFolder> </watchFolder>
+        <processingFolder> </processingFolder>
+        <successFolder> </successFolder>
+        <failureFolder> </failureFolder>
+    </directories>
+
+    <commands>    
+        <exeCommand> 
+            <command>
+                <skip>Yes/No</skip>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <notification> </notification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>
+        </exeCommand>
+        
+        <verificationCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes/No</skip>
+                <notification> </notification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>            
+        </verificationCommand>
+        
+        <cleanupSuccessfulCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes/No</skip>
+                <notification> </notification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>            
+        </cleanupSuccessfulCommand>
+        
+        <cleanupUnsuccessfulCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes/No</skip>
+                <notification> </notification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>              
+        </cleanupUnsuccessfulCommand>                  
+    </commands>  
+</module>
