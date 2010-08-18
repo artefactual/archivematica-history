@@ -23,6 +23,7 @@
   #Replace replacement strings
 
 import sys
+import xml.etree.ElementTree as etree
 
 class commandsClass():
     descriptionWhileExecuting = ""
@@ -43,14 +44,14 @@ class commandsClass():
 
     def __init__(self, xml):
         self.descriptionWhileExecuting = self.getTagged(xml, "descriptionWhileExecuting")[0].text
-        self.skip = self.getTagged(root, "skip")[0].text.lower() != "no"
-        self.notification = self.getTagged(root, "notification")[0].text
-        self.execute = self.getTagged(root, "execute")[0].text
-        self.arguments = self.getTagged(root, "arguments")[0].text
-        self.executeOnEachFile = self.getTagged(root, "executeOnEachFile")[0].text.lower() != "no"
+        self.skip = self.getTagged(xml, "skip")[0].text.lower() != "no"
+        self.notification = self.getTagged(xml, "notification")[0].text
+        self.execute = self.getTagged(xml, "execute")[0].text
+        self.arguments = self.getTagged(xml, "arguments")[0].text
+        self.executeOnEachFile = self.getTagged(xml, "executeOnEachFile")[0].text.lower() != "no"
         
     def __str__(self):
-        ret = "xml: \n" + self.xml.__str__() 
+        ret = self.descriptionWhileExecuting
         return ret
 
 

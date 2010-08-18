@@ -48,12 +48,13 @@ class modulesClass():
             if element.tag == tag:
                 ret.append(element)
         if len(ret) != 1 :
-            print "error in config file"
+            print "error in config file: " + self.fileName
         return ret
 
-    def __init__(self, directory, fileName):
+    def __init__(self, directory, fileName): 
         self.fileName = fileName
         self.fileName = directory + "/" + fileName
+        
         
         tree = etree.parse( self.fileName )
         root = tree.getroot()
@@ -69,10 +70,11 @@ class modulesClass():
         self.failureFolder = self.getTagged(directories, "failureFolder")[0].text
         
         commands = self.getTagged(root, "commands")[0]
-        self.exeCommand = commandsClass(self.getTagged(commands, "exeCommand")[0])
-        self.verificationCommand = commandsClass(self.getTagged(commands, "verificationCommand")[0])
-        self.cleanupSuccessfulCommand = commandsClass(self.getTagged(commands, "cleanupSuccessfulCommand")[0])
-        self.cleanupUnsuccessfulCommand = commandsClass(self.getTagged(commands, "cleanupUnsuccessfulCommand")[0])
+        self.exeCommand = commandsClass(self.getTagged(self.getTagged(commands, "exeCommand")[0], "command")[0])
+        self.verificationCommand = commandsClass(self.getTagged(self.getTagged(commands, "verificationCommand")[0], "command")[0])
+        self.cleanupSuccessfulCommand = commandsClass(self.getTagged(self.getTagged(commands, "cleanupSuccessfulCommand")[0], "command")[0])
+        self.cleanupUnsuccessfulCommand = commandsClass(self.getTagged(self.getTagged(commands, "cleanupUnsuccessfulCommand")[0], "command")[0])
+
             
         
     def __str__(self):
