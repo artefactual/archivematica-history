@@ -23,37 +23,51 @@
 import os
 from archivematicaLoadConfig import loadConfig
 from modules.modules import modulesClass
-
+import pyinotify
+from pyinotify import WatchManager, Notifier, ThreadedNotifier, EventsCodes, ProcessEvent
 
 archivmaticaVars = loadConfig("/home/joseph/sharedOnUServer/to build/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
+mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
+configs = []
+
+class watchFolder(ProcessEvent):
+    config = None
+    def __init__(self, config):
+        self.config = config
+    def process_IN_CREATE(self, event):
+        print "Warning: %s was created. Was something copied into this folder?" %  os.path.join(event.path, event.name)
+        
+    def process_IN_MOVED_TO(self, event):
+        print " moved to: %s" %  os.path.join(event.path, event.name)
+        print self.config.identifier
+
+
 
 #List of clients
 #List of jobs to queue
 #List of active jobs [UUID, folder to move when done.]
-
-def loadFolderWatchLlist():
-    configs = []
+  
+def loadConfigs():
     configFiles = []
     for dirs, subDirs, files in os.walk(archivmaticaVars["moduleConfigDir"]):
         configFiles = files
         break
-    #print configFiles
+
     for configFile in configFiles:
         if configFile.endswith(".xml"):
             configs.append(modulesClass(archivmaticaVars["moduleConfigDir"], configFile))
-    for config in configs:
-        print " "
-        print config.exeCommand
-        print config.__str__()
-        
+       
+    #need to implement check for duplicate watch folders.
     
-#    Loads a config file with:
-#         folders and the associated next command to run 
-#         folder to move the files to while they will be operated on
-#         folder to move to when all tasks are completed
-#         whether it's a task for each file/file&folder/One task for the entire SIP
-#         specifies if the user needs to approve the next command, or if it's automatic.
-#    note: will need some watch folder functionality
+    return configs
+        
+def loadFolderWatchLlist(configs):
+    for config in configs:
+        wm = WatchManager()
+        notifier = ThreadedNotifier(wm, watchFolder(config))
+        wdd = wm.add_watch(config.watchFolder, mask, rec=False)
+        notifier.start()
+
 
 """
 def MCPclient()
@@ -80,8 +94,8 @@ def taskCompleted(jobUUID):
 """
 
 if __name__ == '__main__':
-
-    folderWatchList = loadFolderWatchLlist()
+    configs = loadConfigs()
+    folderWatchList = loadFolderWatchLlist(configs)
 #    Start listening for client connections (new thread) 
 #    Start listening for MCPclient Connections.
     
