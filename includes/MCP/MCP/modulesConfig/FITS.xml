@@ -4,7 +4,7 @@
     <descriptionForApproval>None Needed </descriptionForApproval>
     
     <directories>
-        <watchFolder> </watchFolder>
+        <watchFolder>/tmp/</watchFolder>
         <processingFolder> </processingFolder>
         <successFolder> </successFolder>
         <failureFolder> </failureFolder>

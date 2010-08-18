@@ -1,10 +1,10 @@
 <module>
-    <identifier>FITS 1.0</identifier>
+    <identifier>sample 1.0</identifier>
     <requiresUserApproval>Yes/No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     
     <directories>
-        <watchFolder> </watchFolder>
+        <watchFolder>/tmp/watched</watchFolder>
         <processingFolder> </processingFolder>
         <successFolder> </successFolder>
         <failureFolder> </failureFolder>
