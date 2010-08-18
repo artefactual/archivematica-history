@@ -43,6 +43,7 @@ def loadFolderWatchLlist():
             configs.append(modulesClass(archivmaticaVars["moduleConfigDir"], configFile))
     for config in configs:
         print " "
+        print config.exeCommand
         print config.__str__()
         
     

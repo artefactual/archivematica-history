@@ -1,7 +1,7 @@
 <module>
-    <identifier> </identifier>
+    <identifier>FITS 1.0</identifier>
     <requiresUserApproval>Yes/No</requiresUserApproval>
-    <descriptionForApproval> </descriptionForApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
     
     <directories>
         <watchFolder> </watchFolder>

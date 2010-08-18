@@ -14,7 +14,7 @@
         <exeCommand> 
             <command>
                 <skip>Yes/No</skip>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <descriptionWhileExecuting> test</descriptionWhileExecuting>
                 <notification> </notification>
                 <execute> </execute>
                 <arguments> </arguments>
