@@ -29,6 +29,27 @@ from pyinotify import WatchManager, Notifier, ThreadedNotifier, EventsCodes, Pro
 archivmaticaVars = loadConfig("/home/joseph/sharedOnUServer/to build/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
 mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
 configs = []
+#List of clients
+#List of jobs to queue
+#List of active jobs [UUID, folder to move when done.]
+
+jobsAwaitingApproval = []
+jobsQueue = []
+
+def checkJobQueue():
+    print "CHECING JOB QUEUE:"
+    for job in jobsQueue:
+        print "  " + job.config.identifier + "\t" + job.folder.__str__() + "\t" + job.step
+
+class Job:
+    def __init__(self, config, folder, step="exeCommand"):
+        #    self.UUID = UUID()
+        self.config = config
+        self.step = step
+        self.folder = folder
+    
+
+    
 
 class watchFolder(ProcessEvent):
     config = None
@@ -37,16 +58,20 @@ class watchFolder(ProcessEvent):
     def process_IN_CREATE(self, event):
         print "Warning: %s was created. Was something copied into this folder?" %  os.path.join(event.path, event.name)
         
-    def process_IN_MOVED_TO(self, event):
-        print " moved to: %s" %  os.path.join(event.path, event.name)
-        print self.config.identifier
+    def process_IN_MOVED_TO(self, event):      
+        job = Job(self.config, os.path.join(event.path, event.name))
+        if self.config.requiresUserApproval:
+            #print "need to get user approval"
+            jobsAwaitingApproval.append(job)
+        else:
+            jobsQueue.append(job)
+            checkJobQueue()
+
+            
+          
 
 
 
-#List of clients
-#List of jobs to queue
-#List of active jobs [UUID, folder to move when done.]
-  
 def loadConfigs():
     configFiles = []
     for dirs, subDirs, files in os.walk(archivmaticaVars["moduleConfigDir"]):
