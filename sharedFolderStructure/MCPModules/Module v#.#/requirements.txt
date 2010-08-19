@@ -1,0 +1,2 @@
+Lists off the requirements for this module.
+eg. Fits V4.2 must be installed on the client machine.
