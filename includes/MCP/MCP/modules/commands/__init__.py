@@ -9,21 +9,17 @@
 #
 # Archivematica is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+# along with Archivematica.    If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#!!! this is a list of supported commands, not modules
 
-#Commands
-#the version numbers are versions of the protocol, not versions of the programs themselves.
-echo_v1.0="/bin/echo"
-FITS_v0.0="/bin/echo"
-normalize_v0.0="/bin/echo"
+"""Archivematica Modules Command Manager"""
+VERSION = '0.1.0'

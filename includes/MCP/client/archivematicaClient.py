@@ -28,7 +28,7 @@ from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
 
-archivmaticaVars = loadConfig("/home/joseph/sharedOnUServer/to build/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
+archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
 supportedModules = loadConfig(archivmaticaVars["archivematicaClientModules"])
 protocols = loadConfig(archivmaticaVars["archivematicaProtocol"])
 

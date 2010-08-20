@@ -21,9 +21,9 @@
 # @version svn: $Id$
 
 import os
+import pyinotify
 from archivematicaLoadConfig import loadConfig
 from modules.modules import modulesClass
-import pyinotify
 from pyinotify import WatchManager
 from pyinotify import Notifier
 from pyinotify import ThreadedNotifier
@@ -36,30 +36,87 @@ from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
 
-archivmaticaVars = loadConfig("/home/joseph/sharedOnUServer/to build/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
-mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
+archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
+#depends on OS whether you need one line or other. I think Events.Codes is older.
+#mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
+mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
 configs = []
 jobsAwaitingApproval = []
-jobsQueue = []
+jobsQueue = [] #jobs shouldn't remain here long (a few seconds max) before they are turned into tasks
 jobsBeingProcessed = []
+tasksQueue = []
+tasksLock =  = threading.Lock()
 movingFolderLock = threading.Lock()
+jobCompletedLock = threading.Lock()
+
+def taskCompleted():
+    print "not implemented"
+    #lock to ensure not marking a job completed before it's fully created
+    jobCompletedLock.acquire()
+    
+    jobCompletedLock.release()
+
+def taskCompletedParser():
+    print "not impletmented"
 
 def checkJobQueue():
     print "CHECING JOB QUEUE:"
     for job in jobsQueue:
         print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.folder.__str__() + "\t" + job.step
+        #lock it so it's not flagged as completed before it's fully created.
+        job.createTasksForCurrentStep()  
+
 
 def assignTasks():
     print "not implemented yet"
     #compare tasks with nodes available.
         #if tasks can process node, proceed to do so.
 
+def processTaskQueue():
+    tasksLock.aquire()
+        for task in tasksQueue:
+            print "not implemented yet"
+    tasksLock.release()    
+    
+
+class Task():
+    def __init__(job, target, command):
+        self.UUID = uuid.uuid4()
+        self.job = job
+        self.command = command
+        self.parameters = parameters
+        self.description = command.descriptionWhileExecuting
+        self.target = target
+        
+        commandReplacementDic = { \
+        "%jobUUID%": job.UUID.__str__(), \
+        "%taskUUID%": self.UUID.__str__(), \
+        "%relativeLocation%": = "%sharedPath%%processingFolder%" + job.UUID.__str__() + "/", \
+        "%processingFolder%":= job.config.processingFolder.replace(archivmaticaVars["sharedFolder"], "") \
+        }
+        
+        #for each key replace all instances of the key in the command string
+        for key in commandReplacementDic.iterkeys():
+          #self.command = self.command.replace(key, replacementDic[key])
+          self.description = self.description.replace(key, replacementDic[key])
+
 class Job:
     def __init__(self, config, folder, step="exeCommand"):
+        self.combinedRet = 0
         self.UUID = uuid.uuid4()
         self.config = config
         self.step = step
         self.folder = folder
+        
+        replacementDic = { \
+        "%watchedFoldersPath%": archivmaticaVars["watchedFoldersPath"], \
+        "%processingFolder%": archivmaticaVars["processingFolder"] \ 
+        }
+      
+        #for each key replace all instances of the key in the strings
+        for key in replacementDic.iterkeys():
+          self.folder = self.folder.replace(key, replacementDic[key])
+          self.config.processingFolder = self.config.processingFolder.replace(key, replacementDic[key])
         
     def queueJobStep(self):
         print "run Job"
@@ -76,7 +133,72 @@ class Job:
             jobsBeingProcessed.remove(self)
         else:
             print "Queue Next step"
-            
+    
+    def createTasksForCurrentStep(self):
+        if self.step == "exeCommand":
+            if not self.job.config.exeCommand.skip:
+                tasks = createTasksForStep(self, self.job.config.exeCommand)
+                tasksLock.aquire()
+                for task in tasks:
+                    print "append tasks to queue"
+                tasksLock.release()
+                processTaskQueue()
+            else:
+                self.step = "verificationCommand"
+                createTasksForCurrentStep(self)
+        elif job.step == "verificationCommand":
+            if not self.job.config.verificationCommand.skip:
+                tasks = createTasksForStep(self, self.job.config.verificationCommand)
+                tasksLock.aquire()
+                for task in tasks:
+                    print "append tasks to queue"
+                tasksLock.release()
+                processTaskQueue()
+            else:
+                if job.:
+                    self.step = "cleanupUnsuccessfulCommand"
+                else:
+                    self.step = "cleanupSuccessfulCommand"
+                createTasksForCurrentStep(self)
+        elif job.step == "cleanupSuccessfulCommand":
+            if not self.job.config.cleanupSuccessfulCommand.skip:
+                tasks = createTasksForStep(self, self.job.config.cleanupSuccessfulCommand)
+                tasksLock.aquire()
+                for task in tasks:
+                    print "append tasks to queue"
+                tasksLock.release()
+                processTaskQueue()
+            else:
+                print "NOT IMPLEMENTED YET - job done()"
+        elif job.step == "cleanupUnsuccessfulCommand":
+            if not self.job.config.cleanupUnsuccessfulCommand.skip:
+                tasks = createTasksForStep(self, self.job.config.cleanupUnsuccessfulCommand)
+                tasksLock.aquire()
+                for task in tasks:
+                    print "append tasks to queue"
+                tasksLock.release()
+                processTaskQueue()
+            else:
+                print "NOT IMPLEMENTED YET - job done()"
+
+    def createTasksForStep(self, command):
+        ret = []
+        if command.executeOnEachFile:
+            #for every file in the folder, recursively, create a new task.
+        else:
+            #create one new task
+            task = Task(self, self.folder, self.command)
+        return ret
+    
+    def completed(self):
+        jobsBeingProcessed.remove(self)
+        if self.combinedRet:
+            print "move it to error folder"
+        else:
+            print "move to completed folder"
+        
+        
+
 
 class watchFolder(ProcessEvent):
     config = None
