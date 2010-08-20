@@ -42,6 +42,6 @@ def doTask(task - parameters) #called from server
 if __name__ == '__main__':
   connect to server
   send client info
-  wait for server to connect
+
   
   
