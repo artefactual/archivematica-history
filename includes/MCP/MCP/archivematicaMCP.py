@@ -130,10 +130,10 @@ class archivematicaMCPServerProtocol(LineReceiver):
         self.write(line)
 
     def connectionMade(self):
-        self.write("hello, client!")
+        self.write("hello, client!\r\n")
     
     def write(self,line):
-        self.transport.write(line)
+        self.transport.write(line + "\r\n")
         print "wrote: " + line.__str__()
 
 def archivematicaMCPServerListen():

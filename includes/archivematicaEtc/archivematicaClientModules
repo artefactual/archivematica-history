@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/python
+
 # This file is part of Archivematica.
 #
 # Archivematica is free software: you can redistribute it and/or modify
@@ -14,18 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
-
 # @package Archivematica
-# @subpackage Configuration
+# @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-delimiter="<!&\delimiter/&!>" #seperates Values when transported from client to server
-
-#TO CLIENT
-addToServerConf="addToServerConf" #To load server configs into the client  --NOT USED/NEEDED (everything can happen on server side)
-performTask="performTask" #to tell the client to perform a task
-
-#TO SERVER
-addToListTaskHandler="addToListTaskHandler" #inform the server the client is capable of running a certain type of task
-taskCompleted="taskCompleted" #inform the server a task is completed
+#Commands
+#the version numbers are versions of the protocol, not versions of the programs themselves.
+echo_v1.0="/bin/echo"
+FITS_v0.0="/bin/echo"
+normalize_v0.0="/bin/echo"
