@@ -47,20 +47,18 @@ jobsBeingProcessed = []
 tasksQueue = []
 tasksLock =  = threading.Lock()
 movingFolderLock = threading.Lock()
-jobCompletedLock = threading.Lock()
+factory = protocol.ServerFactory()
 
 def taskCompleted():
     print "not implemented"
     #lock to ensure not marking a job completed before it's fully created
-    jobCompletedLock.acquire()
-    
-    jobCompletedLock.release()
+
 
 def taskCompletedParser():
     print "not impletmented"
 
 def checkJobQueue():
-    print "CHECING JOB QUEUE:"
+    print "CHECKING JOB QUEUE:"
     for job in jobsQueue:
         print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.folder.__str__() + "\t" + job.step
         #lock it so it's not flagged as completed before it's fully created.
@@ -185,9 +183,21 @@ class Job:
         ret = []
         if command.executeOnEachFile:
             #for every file in the folder, recursively, create a new task.
+            if os.path.isdir(self.folder):
+                for f in os.listdir(self.folder):
+                    if os.path.isfile(os.path.join(self.folder, f)):
+                        ret.append(Task(self, os.path.join(self.folder, f), command))
+            else:
+                print "error: tried to process file, not folder." + self.folder.__str__()
+                jobsQueue.remove(self)
+                
         else:
-            #create one new task
-            task = Task(self, self.folder, self.command)
+            if os.path.isdir(self.folder):
+                ret.append(Task(self, self.folder, command))
+            else:
+                print "error: tried to process file, not folder." + self.folder.__str__()
+                jobsQueue.remove(self)            
+
         return ret
     
     def completed(self):
@@ -245,6 +255,8 @@ def loadFolderWatchLlist(configs):
 
 class archivematicaMCPServerProtocol(LineReceiver):
     """This is just about the simplest possible protocol"""
+    maxThreads = 0
+    clientName = ""
     
     def lineReceived(self, line):
         "As soon as any data is received, write it back."
@@ -253,14 +265,19 @@ class archivematicaMCPServerProtocol(LineReceiver):
 
     def connectionMade(self):
         self.write("hello, client!\r\n")
-    
+        self.factory.clients.append(self)
+        
+    def connectionLost(self, reason):
+        print "Lost a client!"
+        self.factory.clients.remove(self)
+        
     def write(self,line):
         self.transport.write(line + "\r\n")
         print "wrote: " + line.__str__()
 
 def archivematicaMCPServerListen():
-    factory = protocol.ServerFactory()
     factory.protocol = archivematicaMCPServerProtocol
+    factory.clients = []
     reactor.listenTCP(string.atoi(archivmaticaVars["MCPArchivematicaServerPort"]),factory)
     reactor.run()
 

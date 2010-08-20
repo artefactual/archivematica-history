@@ -29,3 +29,5 @@ performTask="performTask" #to tell the client to perform a task
 #TO SERVER
 addToListTaskHandler="addToListTaskHandler" #inform the server the client is capable of running a certain type of task
 taskCompleted="taskCompleted" #inform the server a task is completed
+maxTasks="2" #tell the server how many threads this client will run
+setName="Archivematica Client"
