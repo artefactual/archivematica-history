@@ -1,0 +1,24 @@
+create folder structure:
+
+watchFolders
+    Scan with AV
+        Clam AV
+    identify file type
+        FITS
+    normalize
+MCPModules
+    Fits v1.0
+        serverFolder
+        clientFolder
+        README.txt
+        Requirements.txt
+archivematicaConfigs - link to /etc/archivematica/
+
+Quarantine lock will need to be released by the dashboard. - as a system automated time approval.
+
+
+Include:
+sudo apt-get install python-twisted
+sudo apt-get install python-pyinotify
+
+
