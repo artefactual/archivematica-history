@@ -4,7 +4,7 @@
     <descriptionForApproval>None Needed </descriptionForApproval>
     
     <directories>
-        <watchFolder>/tmp/watched</watchFolder>
+        <watchFolder>/tmp/</watchFolder>
         <processingFolder> </processingFolder>
         <successFolder> </successFolder>
         <failureFolder> </failureFolder>
@@ -13,8 +13,12 @@
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes/No</skip>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>No</skip>
+                <identifier>echo_v1.0</identifier>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <notification> </notification>
                 <execute> </execute>
                 <arguments> </arguments>
@@ -26,6 +30,10 @@
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes/No</skip>
+                <identifier></identifier>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
                 <notification> </notification>
                 <execute> </execute>
                 <arguments> </arguments>
@@ -37,6 +45,10 @@
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes/No</skip>
+                <identifier></identifier>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
                 <notification> </notification>
                 <execute> </execute>
                 <arguments> </arguments>
@@ -46,8 +58,12 @@
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes/No</skip>
+                <identifier></identifier>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <notification> </notification>
                 <execute> </execute>
                 <arguments> </arguments>

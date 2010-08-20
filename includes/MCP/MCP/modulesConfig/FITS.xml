@@ -2,10 +2,13 @@
     <identifier>FITS 1.0</identifier>
     <requiresUserApproval>Yes/No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
+    <notificationStarted></notificationStarted>
+    <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
+    <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
         <watchFolder>/tmp/</watchFolder>
-        <processingFolder> </processingFolder>
+        <processingFolder>%processingFolder%</processingFolder>
         <successFolder> </successFolder>
         <failureFolder> </failureFolder>
     </directories>
@@ -14,8 +17,12 @@
         <exeCommand> 
             <command>
                 <skip>Yes/No</skip>
+                <identifier></identifier>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
                 <descriptionWhileExecuting> test</descriptionWhileExecuting>
-                <notification> </notification>
+                <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
@@ -26,7 +33,11 @@
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes/No</skip>
-                <notification> </notification>
+                <identifier></identifier>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
@@ -37,7 +48,11 @@
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes/No</skip>
-                <notification> </notification>
+                <identifier></identifier>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
@@ -46,9 +61,13 @@
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes/No</skip>
-                <notification> </notification>
+                <identifier></identifier>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>

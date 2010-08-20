@@ -20,6 +20,8 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+#!!! this is a list of supported commands, not modules
+
 #Commands
 #the version numbers are versions of the protocol, not versions of the programs themselves.
 echo_v1.0="/bin/echo"

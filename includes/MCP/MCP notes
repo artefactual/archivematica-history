@@ -21,9 +21,15 @@ Include:
 sudo apt-get install python-twisted
 sudo apt-get install python-pyinotify
 
+stdout and stderr should be relative to folder path /objects/
+^disable "../" on client side <evil people>
+
 FAQ
 why not just allow the server to run whatever command it wants on the clients?
 Security. 
 The client needs to maintain a list of functions it can do, so we aren't really losing anything by ensuring that the server informs the client to do something on the list.
+
+Your protocol is kinda ugly and relies on \r\n.
+Yes. You're perfectly welcome to fix it.
 
 
