@@ -27,6 +27,8 @@ def validLine(line):
     return False
   elif line.isspace():
     return False
+  elif len(line.split("=",1)) != 2:
+    return False
   else:
     return True
     
@@ -58,7 +60,7 @@ def loadConfig(configFile="/etc/archivematica/archivematicaConfig.conf"):
       varValue = varline[1]
       varValue = varValue.replace( "\n", "", 1)
       varValue = checkForVars(varsDic, var, varValue)  
-      varValue = varValue.replace("\"", "")
+      varValue = varValue.split("\"")[1]
       varsDic[var] = varValue
     line = configFile_fh.readline()
 

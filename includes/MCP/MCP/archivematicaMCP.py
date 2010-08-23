@@ -33,10 +33,14 @@ import uuid
 import threading
 import string
 from twisted.internet import reactor
-from twisted.internet import protocol
+from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 
 archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
+
+#protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
+protocol = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaProtocol")
+
 #depends on OS whether you need one line or other. I think Events.Codes is older.
 #mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
 mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
@@ -45,9 +49,9 @@ jobsAwaitingApproval = []
 jobsQueue = [] #jobs shouldn't remain here long (a few seconds max) before they are turned into tasks
 jobsBeingProcessed = []
 tasksQueue = []
-tasksLock =  = threading.Lock()
+tasksLock = threading.Lock()
 movingFolderLock = threading.Lock()
-factory = protocol.ServerFactory()
+factory = twistedProtocol.ServerFactory()
 
 def taskCompleted():
     print "not implemented"
@@ -72,8 +76,8 @@ def assignTasks():
 
 def processTaskQueue():
     tasksLock.aquire()
-        for task in tasksQueue:
-            print "not implemented yet"
+    for task in tasksQueue:
+        print "not implemented yet"
     tasksLock.release()    
     
 
@@ -89,8 +93,8 @@ class Task():
         commandReplacementDic = { \
         "%jobUUID%": job.UUID.__str__(), \
         "%taskUUID%": self.UUID.__str__(), \
-        "%relativeLocation%": = "%sharedPath%%processingFolder%" + job.UUID.__str__() + "/", \
-        "%processingFolder%":= job.config.processingFolder.replace(archivmaticaVars["sharedFolder"], "") \
+        "%relativeLocation%": "%sharedPath%%processingFolder%" + job.UUID.__str__() + "/", \
+        "%processingFolder%": job.config.processingFolder.replace(archivmaticaVars["sharedFolder"], "")\
         }
         
         #for each key replace all instances of the key in the command string
@@ -108,7 +112,7 @@ class Job:
         
         replacementDic = { \
         "%watchedFoldersPath%": archivmaticaVars["watchedFoldersPath"], \
-        "%processingFolder%": archivmaticaVars["processingFolder"] \ 
+        "%processingFolder%": archivmaticaVars["processingFolder"] \
         }
       
         #for each key replace all instances of the key in the strings
@@ -153,7 +157,7 @@ class Job:
                 tasksLock.release()
                 processTaskQueue()
             else:
-                if job.:
+                if self.combinedRet:
                     self.step = "cleanupUnsuccessfulCommand"
                 else:
                     self.step = "cleanupSuccessfulCommand"
@@ -256,11 +260,21 @@ def loadFolderWatchLlist(configs):
 class archivematicaMCPServerProtocol(LineReceiver):
     """This is just about the simplest possible protocol"""
     maxThreads = 0
+    currentThreads = 0
     clientName = ""
-    
+    supportedCommands = []
+
+    def badProtocol(self, command):
+        """The client sent a command this server cannot interpret."""
+        print "read(bad protocol): " + command.__str__()
+   
     def lineReceived(self, line):
         "As soon as any data is received, write it back."
-        print "read: " + line.__str__()
+        command = line.split(protocol["delimiter"])
+        if len(command):
+            self.protocolDic.get(command[0], archivematicaMCPServerProtocol.badProtocol)(self, command)
+        else:
+            badProtocol(self, command)    
         self.write(line)
 
     def connectionMade(self):
@@ -274,6 +288,43 @@ class archivematicaMCPServerProtocol(LineReceiver):
     def write(self,line):
         self.transport.write(line + "\r\n")
         print "wrote: " + line.__str__()
+    
+    def addToListTaskHandler(self, command):
+        """inform the server the client is capable of running a certain type of task"""
+        if len(command) == 2:
+            self.supportedCommands.append(command[1])
+        else:
+            badProtocol(self, command)
+    
+    def taskCompleted(self, command):
+        """inform the server a task is completed""" 
+        print "read: " + command.__str__()
+    
+    def maxTasks(self, command):
+        """#tell the server how many threads this client will run""" 
+        if len(command) == 2:
+            #this may require further checking. So people don't try "TWO" instead of 2
+            #self.maxThreads = int(command[1])
+            print "setting max threads to: "
+            print string.atoi(command[1])
+            self.maxThreads = string.atoi(command[1])
+        else:
+            badProtocol(self, command)
+    
+    def setName(self, command):
+        """set the associated computer name with the connection"""
+        if len(command) == 2:
+            self.clientname=command[1]
+        else:
+            badProtocol(self, command)
+        
+    protocolDic = {
+    protocol["addToListTaskHandler"]:addToListTaskHandler,
+    protocol["taskCompleted"]:taskCompleted,
+    protocol["maxTasks"]:maxTasks,
+    protocol["setName"]:setName
+    }
+
 
 def archivematicaMCPServerListen():
     factory.protocol = archivematicaMCPServerProtocol
