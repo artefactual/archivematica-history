@@ -1,4 +1,4 @@
-#!/bin/bash
+0ol#!/bin/bash
 # This file is part of Archivematica.
 #
 # Archivematica is free software: you can redistribute it and/or modify
@@ -29,5 +29,5 @@ performTask="performTask" #to tell the client to perform a task
 #TO SERVER
 addToListTaskHandler="addToListTaskHandler" #inform the server the client is capable of running a certain type of task
 taskCompleted="taskCompleted" #inform the server a task is completed
-maxTasks="2" #tell the server how many threads this client will run
-setName="Archivematica Client"
+maxTasks="setMaxTasks" #tell the server how many threads this client will run
+setName="setName"

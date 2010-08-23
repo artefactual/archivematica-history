@@ -25,12 +25,12 @@ import shlex
 import subprocess
 from archivematicaLoadConfig import loadConfig
 from twisted.internet import reactor
-from twisted.internet import protocol
+from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 
 archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
 supportedModules = loadConfig(archivmaticaVars["archivematicaClientModules"])
-protocols = loadConfig(archivmaticaVars["archivematicaProtocol"])
+protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
 
 def executeCommand(command,sInput="", sOutput="", sError="" ):
   #Replace replacement strings
@@ -87,18 +87,22 @@ class archivematicaMCPClientProtocol(LineReceiver):
 
     def connectionMade(self):
         for module in supportedModules:
-            self.transport.write(protocols["addToListTaskHandler"] + protocols["delimiter"] + module + "\r\n")
-    
+            self.write(protocol["addToListTaskHandler"] + protocol["delimiter"] + module)
+        self.write(protocol["maxTasks"] + protocol["delimiter"] + archivmaticaVars["maxThreads"])
+        self.write(protocol["setName"] + protocol["delimiter"] + archivmaticaVars["clientName"])
     def lineReceived(self, line):
         "As soon as any data is received, write it back."
         print "read: " + line.__str__()
-
+    
+    def write(self, line):
+        self.transport.write( line + "\r\n")
+        print "wrote: " + line.__str__()
     
     def clientConnectionLost(self, connector, reason):
         print "Connection lost - goodbye!"
         reactor.stop()
 
-class archivematicaMCPClientProtocolFactory(protocol.ClientFactory):
+class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
     protocol = archivematicaMCPClientProtocol
 
     def clientConnectionFailed(self, connector, reason):
