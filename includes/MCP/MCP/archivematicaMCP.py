@@ -49,9 +49,11 @@ jobsAwaitingApproval = []
 jobsQueue = [] #jobs shouldn't remain here long (a few seconds max) before they are turned into tasks
 jobsBeingProcessed = []
 tasksQueue = []
+tasksBeingProcessed = []
 tasksLock = threading.Lock()
 movingFolderLock = threading.Lock()
 factory = twistedProtocol.ServerFactory()
+
 
 def taskCompleted():
     print "not implemented"
@@ -77,7 +79,19 @@ def assignTasks():
 def processTaskQueue():
     tasksLock.aquire()
     for task in tasksQueue:
-        print "not implemented yet"
+        for client in factory.clients:
+            client.clientLock.aquire()
+            if client.currentThreads < client.maxthreads:
+                tasksQueue.remove(task)
+                send = task.UUID.__str__() + protocol["delimiter"] \
+                + task.command + protocol["delimiter"] \
+                + task.parameters + protocol["delimiter"] \
+                + task.target
+                client.write(send)
+                tasksBeingProcessed.append(task)
+            client.clientLock.release()
+                
+            
     tasksLock.release()    
     
 
@@ -258,11 +272,12 @@ def loadFolderWatchLlist(configs):
         notifier.start()
 
 class archivematicaMCPServerProtocol(LineReceiver):
-    """This is just about the simplest possible protocol"""
+    """This is the archivematica protocol implemented"""
     maxThreads = 0
     currentThreads = 0
     clientName = ""
     supportedCommands = []
+    clientLock = threading.Lock()
 
     def badProtocol(self, command):
         """The client sent a command this server cannot interpret."""

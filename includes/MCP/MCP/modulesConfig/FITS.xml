@@ -16,15 +16,15 @@
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes/No</skip>
-                <identifier></identifier>
+                <skip>No</skip>
+                <identifier>echo_v1.0</identifier>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting> test</descriptionWhileExecuting>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
+                <execute>echo_v1.0</execute>
+                <arguments> hello world </arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>
         </exeCommand>
