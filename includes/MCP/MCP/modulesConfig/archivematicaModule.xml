@@ -1,11 +1,14 @@
 <module>
-    <identifier>sample 1.0</identifier>
-    <requiresUserApproval>Yes/No</requiresUserApproval>
+    <identifier>FITS 1.0</identifier>
+    <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
+    <notificationStarted></notificationStarted>
+    <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
+    <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
         <watchFolder>/tmp/</watchFolder>
-        <processingFolder> </processingFolder>
+        <processingFolder>%processingFolder%</processingFolder>
         <successFolder> </successFolder>
         <failureFolder> </failureFolder>
     </directories>
@@ -19,9 +22,9 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
-                <notification> </notification>
-                <execute> </execute>
-                <arguments> </arguments>
+                <failureNotification> </failureNotification>
+                <execute>echo_v1.0</execute>
+                <arguments> hello world </arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>
         </exeCommand>
@@ -34,7 +37,7 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <notification> </notification>
+                <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
@@ -49,7 +52,7 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <notification> </notification>
+                <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
@@ -64,7 +67,7 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <notification> </notification>
+                <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>

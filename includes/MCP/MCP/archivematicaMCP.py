@@ -69,24 +69,22 @@ def checkJobQueue():
         print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.folder.__str__() + "\t" + job.step
         #lock it so it's not flagged as completed before it's fully created.
         job.createTasksForCurrentStep()  
-
-
-def assignTasks():
-    print "not implemented yet"
-    #compare tasks with nodes available.
-        #if tasks can process node, proceed to do so.
+    processTaskQueue()
 
 def processTaskQueue():
-    tasksLock.aquire()
+    tasksLock.acquire()
     for task in tasksQueue:
         for client in factory.clients:
-            client.clientLock.aquire()
-            if client.currentThreads < client.maxthreads:
+            client.clientLock.acquire()
+            if client.currentThreads < client.maxThreads:
                 tasksQueue.remove(task)
-                send = task.UUID.__str__() + protocol["delimiter"] \
-                + task.command + protocol["delimiter"] \
-                + task.parameters + protocol["delimiter"] \
-                + task.target
+                send = task.UUID.__str__() + protocol["delimiter"] 
+                send += task.standardIn.__str__() + protocol["delimiter"] 
+                send += task.standardOut.__str__() + protocol["delimiter"] 
+                send += task.standardError.__str__() + protocol["delimiter"] 
+                send += task.execute.__str__() + protocol["delimiter"] 
+                send += task.arguments.__str__() + protocol["delimiter"] 
+                send += task.target.__str__()
                 client.write(send)
                 tasksBeingProcessed.append(task)
             client.clientLock.release()
@@ -96,25 +94,42 @@ def processTaskQueue():
     
 
 class Task():
-    def __init__(job, target, command):
+    def __init__(self, job, target, command):
         self.UUID = uuid.uuid4()
         self.job = job
         self.command = command
-        self.parameters = parameters
+        self.execute = command.execute
+        self.arguments = command.arguments
         self.description = command.descriptionWhileExecuting
         self.target = target
+        self.standardIn = command.standardIn
+        self.standardOut = command.standardOut
+        self.standardError = command.standardError
+        
         
         commandReplacementDic = { \
         "%jobUUID%": job.UUID.__str__(), \
         "%taskUUID%": self.UUID.__str__(), \
-        "%relativeLocation%": "%sharedPath%%processingFolder%" + job.UUID.__str__() + "/", \
+        "%relativeLocation%": target.replace(job.config.watchFolder, "%relativeSIPLocation%"), \
+        "%relativeSIPLocation%": "%sharedPath%%processingFolder%" + job.UUID.__str__() + "/", \
         "%processingFolder%": job.config.processingFolder.replace(archivmaticaVars["sharedFolder"], "")\
+        
         }
         
         #for each key replace all instances of the key in the command string
         for key in commandReplacementDic.iterkeys():
-          #self.command = self.command.replace(key, replacementDic[key])
-          self.description = self.description.replace(key, replacementDic[key])
+            if self.description:
+                self.description = self.description.replace(key, commandReplacementDic[key])
+            if self.execute:
+                self.execute = self.execute.replace(key, commandReplacementDic[key])
+            if self.arguments:
+                self.arguments = self.arguments.replace(key, commandReplacementDic[key])
+            if self.standardIn:
+                self.standardIn = self.standardIn.replace(key, commandReplacementDic[key])
+            if self.standardOut:
+                self.standardOut = self.standardOut.replace(key, commandReplacementDic[key])
+            if self.standardError:
+                self.standardError = self.standardError.replace(key, commandReplacementDic[key])
 
 class Job:
     def __init__(self, config, folder, step="exeCommand"):
@@ -149,53 +164,6 @@ class Job:
             jobsBeingProcessed.remove(self)
         else:
             print "Queue Next step"
-    
-    def createTasksForCurrentStep(self):
-        if self.step == "exeCommand":
-            if not self.job.config.exeCommand.skip:
-                tasks = createTasksForStep(self, self.job.config.exeCommand)
-                tasksLock.aquire()
-                for task in tasks:
-                    print "append tasks to queue"
-                tasksLock.release()
-                processTaskQueue()
-            else:
-                self.step = "verificationCommand"
-                createTasksForCurrentStep(self)
-        elif job.step == "verificationCommand":
-            if not self.job.config.verificationCommand.skip:
-                tasks = createTasksForStep(self, self.job.config.verificationCommand)
-                tasksLock.aquire()
-                for task in tasks:
-                    print "append tasks to queue"
-                tasksLock.release()
-                processTaskQueue()
-            else:
-                if self.combinedRet:
-                    self.step = "cleanupUnsuccessfulCommand"
-                else:
-                    self.step = "cleanupSuccessfulCommand"
-                createTasksForCurrentStep(self)
-        elif job.step == "cleanupSuccessfulCommand":
-            if not self.job.config.cleanupSuccessfulCommand.skip:
-                tasks = createTasksForStep(self, self.job.config.cleanupSuccessfulCommand)
-                tasksLock.aquire()
-                for task in tasks:
-                    print "append tasks to queue"
-                tasksLock.release()
-                processTaskQueue()
-            else:
-                print "NOT IMPLEMENTED YET - job done()"
-        elif job.step == "cleanupUnsuccessfulCommand":
-            if not self.job.config.cleanupUnsuccessfulCommand.skip:
-                tasks = createTasksForStep(self, self.job.config.cleanupUnsuccessfulCommand)
-                tasksLock.aquire()
-                for task in tasks:
-                    print "append tasks to queue"
-                tasksLock.release()
-                processTaskQueue()
-            else:
-                print "NOT IMPLEMENTED YET - job done()"
 
     def createTasksForStep(self, command):
         ret = []
@@ -204,7 +172,8 @@ class Job:
             if os.path.isdir(self.folder):
                 for f in os.listdir(self.folder):
                     if os.path.isfile(os.path.join(self.folder, f)):
-                        ret.append(Task(self, os.path.join(self.folder, f), command))
+                        task = Task(self, os.path.join(self.folder, f).__str__(), command)
+                        ret.append(task)
             else:
                 print "error: tried to process file, not folder." + self.folder.__str__()
                 jobsQueue.remove(self)
@@ -217,7 +186,56 @@ class Job:
                 jobsQueue.remove(self)            
 
         return ret
-    
+            
+    def createTasksForCurrentStep(self):
+        if self.step == "exeCommand":
+            if not self.config.exeCommand.skip:
+                tasks = self.createTasksForStep(self.config.exeCommand)
+                tasksLock.acquire()
+                for task in tasks:
+                    tasksQueue.append(task)
+                tasksLock.release()
+                processTaskQueue()
+            else:
+                self.step = "verificationCommand"
+                createTasksForCurrentStep(self)
+        elif job.step == "verificationCommand":
+            if not self.config.verificationCommand.skip:
+                tasks = createTasksForStep(self, self.config.verificationCommand)
+                tasksLock.acquire()
+                for task in tasks:
+                    tasksQueue.append(task)
+                tasksLock.release()
+                processTaskQueue()
+            else:
+                if self.combinedRet:
+                    self.step = "cleanupUnsuccessfulCommand"
+                else:
+                    self.step = "cleanupSuccessfulCommand"
+                createTasksForCurrentStep(self)
+        elif job.step == "cleanupSuccessfulCommand":
+            if not self.config.cleanupSuccessfulCommand.skip:
+                tasks = createTasksForStep(self, self.config.cleanupSuccessfulCommand)
+                tasksLock.acquire()
+                for task in tasks:
+                    tasksQueue.append(task)
+                tasksLock.release()
+                processTaskQueue()
+            else:
+                print "NOT IMPLEMENTED YET - job done()"
+        elif job.step == "cleanupUnsuccessfulCommand":
+            if not self.config.cleanupUnsuccessfulCommand.skip:
+                tasks = createTasksForStep(self, self.config.cleanupUnsuccessfulCommand)
+                tasksLock.acquire()
+                for task in tasks:
+                    tasksQueue.append(task)
+                tasksLock.release()
+                processTaskQueue()
+            else:
+                print "NOT IMPLEMENTED YET - job done()"
+        else:
+            print "Job in bad step: " + self.step.__str__()
+
     def completed(self):
         jobsBeingProcessed.remove(self)
         if self.combinedRet:
@@ -285,24 +303,32 @@ class archivematicaMCPServerProtocol(LineReceiver):
    
     def lineReceived(self, line):
         "As soon as any data is received, write it back."
+        print "lineReceived -_- "
+        print self
         command = line.split(protocol["delimiter"])
         if len(command):
             self.protocolDic.get(command[0], archivematicaMCPServerProtocol.badProtocol)(self, command)
         else:
-            badProtocol(self, command)    
-        self.write(line)
+            badProtocol(self, command)
 
     def connectionMade(self):
-        self.write("hello, client!\r\n")
+        self.write("hello, client!")
+        print "connection made  -_-  " 
+        print self
         self.factory.clients.append(self)
         
     def connectionLost(self, reason):
-        print "Lost a client!"
+        print "Lost client: " + self.clientName
         self.factory.clients.remove(self)
         
     def write(self,line):
+        print "writing Something -_- "
+        print line
+        print self
         self.transport.write(line + "\r\n")
         print "wrote: " + line.__str__()
+        tmpret = self.transport.write("wrote Something" + "\r\n")
+        print tmpret
     
     def addToListTaskHandler(self, command):
         """inform the server the client is capable of running a certain type of task"""
@@ -320,8 +346,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
         if len(command) == 2:
             #this may require further checking. So people don't try "TWO" instead of 2
             #self.maxThreads = int(command[1])
-            print "setting max threads to: "
-            print string.atoi(command[1])
+            print self.clientName + "-setting max threads to: " + command[1]
             self.maxThreads = string.atoi(command[1])
         else:
             badProtocol(self, command)
@@ -329,6 +354,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
     def setName(self, command):
         """set the associated computer name with the connection"""
         if len(command) == 2:
+            print "setting client name to: " + command[1]
             self.clientname=command[1]
         else:
             badProtocol(self, command)

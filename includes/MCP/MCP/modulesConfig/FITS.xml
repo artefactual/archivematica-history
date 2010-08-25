@@ -1,6 +1,6 @@
 <module>
     <identifier>FITS 1.0</identifier>
-    <requiresUserApproval>Yes/No</requiresUserApproval>
+    <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>

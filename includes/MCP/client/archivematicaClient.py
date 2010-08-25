@@ -23,6 +23,7 @@
 import sys
 import shlex
 import subprocess
+import time
 from archivematicaLoadConfig import loadConfig
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
@@ -86,10 +87,10 @@ class archivematicaMCPClientProtocol(LineReceiver):
     """This is just about the simplest possible protocol"""
 
     def connectionMade(self):
+        self.write(protocol["setName"] + protocol["delimiter"] + archivmaticaVars["clientName"])
         for module in supportedModules:
             self.write(protocol["addToListTaskHandler"] + protocol["delimiter"] + module)
         self.write(protocol["maxTasks"] + protocol["delimiter"] + archivmaticaVars["maxThreads"])
-        self.write(protocol["setName"] + protocol["delimiter"] + archivmaticaVars["clientName"])
     def lineReceived(self, line):
         "As soon as any data is received, write it back."
         print "read: " + line.__str__()
@@ -117,8 +118,11 @@ class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
 # this only runs if the module was *not* imported
 if __name__ == '__main__':
     f = archivematicaMCPClientProtocolFactory()
-    reactor.connectTCP("localhost", 8002, f)
+    t = reactor.connectTCP("localhost", 8002, f)
     reactor.run()
-
+    print "above is a blocking call. This is never executed."
+    while True:
+        time.sleep(2)
+        f.protocol.write("Keep alive!")
   
   
