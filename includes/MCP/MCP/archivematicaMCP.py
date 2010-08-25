@@ -355,7 +355,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
         """set the associated computer name with the connection"""
         if len(command) == 2:
             print "setting client name to: " + command[1]
-            self.clientname=command[1]
+            self.clientName=command[1]
         else:
             badProtocol(self, command)
         
