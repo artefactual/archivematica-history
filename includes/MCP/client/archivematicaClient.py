@@ -33,40 +33,26 @@ archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematica
 supportedModules = loadConfig(archivmaticaVars["archivematicaClientModules"])
 protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
 
-def executeCommand(command,sInput="", sOutput="", sError="" ):
-  #Replace replacement strings
-    """  replacementDic = { \
-      "%convertPath%": convertPath, \
-      "%ffmpegPath%": ffmpegPath, \
-      "%theoraPath%": theoraPath, \
-      "%unoconvPath%": unoconvPath, \
-      "%xenaPath%": xenaPath, \
-      "%fileExtension%": fileExtension, \
-      "%fileFullName%": fileFullName, \
-      "%accessFileDirectory%": accesspath, \
-      "%preservationFileDirectory%": fileDirectory, \
-      "%fileDirectory%": fileDirectory,\
-      "%fileTitle%": fileTitle, \
-      "%normalizationScriptsDir%": normalizationScriptsDir, \
-      "%accessFormat%": accessFormat[0].lower(), \
-      "%preservationFormat%": preservationFormat[0].lower() }
-      
-      #for each key replace all instances of the key in the command string
-      for key in replacementDic.iterkeys():
+def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "", arguments = ""):
+    #Replace replacement strings
+    command = supportedModules[execute] + " " + arguments
+    replacementDic = { 
+    "NEED TO FILL THIS DIC":"TO DO"
+    }  
+    #for each key replace all instances of the key in the command string
+    for key in replacementDic.iterkeys():
         command = command.replace ( key, replacementDic[key] )
-    """
-
+    
     #execute command
     try:
       if command != []:
         print >>sys.stderr, "processing: " + command.__str__()
         #retcode = subprocess.call( shlex.split(command) )
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print p.pid
         p.wait()
-        ret = p.communicate(input=None)
+        output = p.communicate(input=sInput)
         print "returned:"
-        print ret
+        print output
         retcode = p.returncode
         
         #it executes check for errors
@@ -91,9 +77,6 @@ class archivematicaMCPClientProtocol(LineReceiver):
         for module in supportedModules:
             self.write(protocol["addToListTaskHandler"] + protocol["delimiter"] + module)
         self.write(protocol["maxTasks"] + protocol["delimiter"] + archivmaticaVars["maxThreads"])
-    def lineReceived(self, line):
-        "As soon as any data is received, write it back."
-        print "read: " + line.__str__()
     
     def write(self, line):
         self.transport.write( line + "\r\n")
@@ -102,6 +85,31 @@ class archivematicaMCPClientProtocol(LineReceiver):
     def clientConnectionLost(self, connector, reason):
         print "Connection lost - goodbye!"
         reactor.stop()
+        
+    def badProtocol(self, command):
+        """The client sent a command this server cannot interpret."""
+        print "read(bad protocol): " + command.__str__()
+   
+    def lineReceived(self, line):
+        "As soon as any data is received, write it back."
+        print "lineReceived -_- "
+        print self
+        command = line.split(protocol["delimiter"])
+        if len(command):
+            self.protocolDic.get(command[0], archivematicaMCPClientProtocol.badProtocol)(self, command)
+        else:
+            badProtocol(self, command)
+    
+    def performTask(self, command):
+        if len(command) == 7:
+            executeCommand(command[1], command[2], command[3], command[4], command[5], command[6])
+        else:
+            badProtocol(self, command)
+    
+
+    protocolDic = {
+    protocol["performTask"]:performTask
+    }
 
 class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
     protocol = archivematicaMCPClientProtocol
@@ -120,9 +128,6 @@ if __name__ == '__main__':
     f = archivematicaMCPClientProtocolFactory()
     t = reactor.connectTCP("localhost", 8002, f)
     reactor.run()
-    print "above is a blocking call. This is never executed."
-    while True:
-        time.sleep(2)
-        f.protocol.write("Keep alive!")
+    print "above is a blocking call. This is executed once client disconnects"
   
   

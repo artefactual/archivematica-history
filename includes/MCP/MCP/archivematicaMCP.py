@@ -42,8 +42,8 @@ archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematica
 protocol = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaProtocol")
 
 #depends on OS whether you need one line or other. I think Events.Codes is older.
-#mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
-mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
+mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
+#mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
 configs = []
 jobsAwaitingApproval = []
 jobsQueue = [] #jobs shouldn't remain here long (a few seconds max) before they are turned into tasks
@@ -78,14 +78,23 @@ def processTaskQueue():
             client.clientLock.acquire()
             if client.currentThreads < client.maxThreads:
                 tasksQueue.remove(task)
-                send = task.UUID.__str__() + protocol["delimiter"] 
-                send += task.standardIn.__str__() + protocol["delimiter"] 
-                send += task.standardOut.__str__() + protocol["delimiter"] 
-                send += task.standardError.__str__() + protocol["delimiter"] 
-                send += task.execute.__str__() + protocol["delimiter"] 
-                send += task.arguments.__str__() + protocol["delimiter"] 
-                send += task.target.__str__()
-                client.write(send)
+                send = protocol["performTask"]
+                send += protocol["delimiter"] 
+                send += task.UUID.__str__() 
+                send += protocol["delimiter"] 
+                if task.standardIn:
+                    send += task.standardIn.__str__() 
+                send += protocol["delimiter"] 
+                if task.standardOut:
+                    send += task.standardOut.__str__()
+                send += protocol["delimiter"] 
+                if task.standardError:
+                    send += task.standardError.__str__() 
+                send += protocol["delimiter"]  
+                send += task.execute.__str__()
+                send += protocol["delimiter"]  
+                send += task.arguments.__str__() 
+                reactor.callFromThread(client.write, send)
                 tasksBeingProcessed.append(task)
             client.clientLock.release()
                 
@@ -322,13 +331,8 @@ class archivematicaMCPServerProtocol(LineReceiver):
         self.factory.clients.remove(self)
         
     def write(self,line):
-        print "writing Something -_- "
-        print line
-        print self
         self.transport.write(line + "\r\n")
-        print "wrote: " + line.__str__()
-        tmpret = self.transport.write("wrote Something" + "\r\n")
-        print tmpret
+        print "\twrote: " + line.__str__()
     
     def addToListTaskHandler(self, command):
         """inform the server the client is capable of running a certain type of task"""
@@ -339,7 +343,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
     
     def taskCompleted(self, command):
         """inform the server a task is completed""" 
-        print "read: " + command.__str__()
+        print "\tread: " + command.__str__()
     
     def maxTasks(self, command):
         """#tell the server how many threads this client will run""" 
