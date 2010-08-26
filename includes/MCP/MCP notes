@@ -33,3 +33,18 @@ Your protocol is kinda ugly and relies on \r\n.
 Yes. You're perfectly welcome to fix it.
 
 
+
+
+TODO:
+%% replacement dics
+no ../ in output files
+output to output files
+no `command` in arguments - use a script
+no && or || in arguments - use a script
+change tasksLock to be job.jobLock()?
+load the folders that are in the watched folders when MCP loads.
+add filter to commands (so they only operate on a folder (subfolders y/n), and extentions .doc .log .etc. [for cleanup purposes]
+
+
+
+
