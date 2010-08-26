@@ -35,7 +35,7 @@ protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
 
 def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "", arguments = ""):
     #Replace replacement strings
-    command = supportedModules[execute] + " " + arguments
+    command = supportedModules[execute] 
     replacementDic = { 
     "NEED TO FILL THIS DIC":"TO DO"
     }  
@@ -45,7 +45,8 @@ def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "
     
     #execute command
     try:
-      if command != []:
+      if execute != "" and command != "":
+        command += " " + arguments
         print >>sys.stderr, "processing: " + command.__str__()
         #retcode = subprocess.call( shlex.split(command) )
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -58,11 +59,12 @@ def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "
         #it executes check for errors
         if retcode != 0:
           print >>sys.stderr, "error code:" + retcode.__str__()
+          return retcode
         else:
           print >>sys.stderr, "processing completed"
           return 0
       else:
-        print >>sys.stderr, "no conversion for type: " 
+        print >>sys.stderr, "server tried to run a blank command: " 
         return 1
     #catch OS errors
     except OSError, ose:
@@ -92,19 +94,32 @@ class archivematicaMCPClientProtocol(LineReceiver):
    
     def lineReceived(self, line):
         "As soon as any data is received, write it back."
-        print "lineReceived -_- "
-        print self
         command = line.split(protocol["delimiter"])
         if len(command):
             self.protocolDic.get(command[0], archivematicaMCPClientProtocol.badProtocol)(self, command)
         else:
             badProtocol(self, command)
+
+    def sendTaskResult(self, command, result):
+        if len(command) > 1:
+            send = protocol["taskCompleted"]
+            send += protocol["delimiter"]
+            send += command[1]
+            send += protocol["delimiter"]
+            send += result.__str__()
+            self.write(send)
+        else:
+            print >>sys.stderr, "this should never be executed."   
     
     def performTask(self, command):
         if len(command) == 7:
-            executeCommand(command[1], command[2], command[3], command[4], command[5], command[6])
+            ret = executeCommand(command[1], command[2], command[3], command[4], command[5], command[6])
+            self.sendTaskResult(command, ret)
         else:
             badProtocol(self, command)
+            self.sendTaskResult(command, 1)
+            
+       
     
 
     protocolDic = {

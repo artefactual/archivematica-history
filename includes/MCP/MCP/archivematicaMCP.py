@@ -32,6 +32,7 @@ from pyinotify import ProcessEvent
 import uuid
 import threading
 import string
+import math
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
@@ -46,7 +47,7 @@ mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
 #mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
 configs = []
 jobsAwaitingApproval = []
-jobsQueue = [] #jobs shouldn't remain here long (a few seconds max) before they are turned into tasks
+jobsQueue = [] #jobs shouldn't remain here long (a few seconds max) before they are turned into tasks (jobs being processed)
 jobsBeingProcessed = []
 tasksQueue = []
 tasksBeingProcessed = []
@@ -78,6 +79,7 @@ def processTaskQueue():
             client.clientLock.acquire()
             if client.currentThreads < client.maxThreads:
                 tasksQueue.remove(task)
+                tasksBeingProcessed.append(task)
                 send = protocol["performTask"]
                 send += protocol["delimiter"] 
                 send += task.UUID.__str__() 
@@ -95,12 +97,9 @@ def processTaskQueue():
                 send += protocol["delimiter"]  
                 send += task.arguments.__str__() 
                 reactor.callFromThread(client.write, send)
-                tasksBeingProcessed.append(task)
             client.clientLock.release()
-                
-            
     tasksLock.release()    
-    
+   
 
 class Task():
     def __init__(self, job, target, command):
@@ -139,6 +138,24 @@ class Task():
                 self.standardOut = self.standardOut.replace(key, commandReplacementDic[key])
             if self.standardError:
                 self.standardError = self.standardError.replace(key, commandReplacementDic[key])
+
+    def completed(self, returned):
+        tasksLock.acquire()
+        jobStepDone = True
+        tasksBeingProcessed.remove(self)
+        for task in tasksQueue:
+            if task.job.UUID == self.job.UUID:
+                jobStepDone = False
+                break
+        if jobStepDone:
+            for task in tasksBeingProcessed:
+                if task.job.UUID == self.job.UUID:
+                    jobStepDone = False
+                    break
+        self.job.combinedRet += math.fabs(returned)
+        tasksLock.release()
+        if jobStepDone:
+            self.job.jobStepCompleted()
 
 class Job:
     def __init__(self, config, folder, step="exeCommand"):
@@ -312,8 +329,6 @@ class archivematicaMCPServerProtocol(LineReceiver):
    
     def lineReceived(self, line):
         "As soon as any data is received, write it back."
-        print "lineReceived -_- "
-        print self
         command = line.split(protocol["delimiter"])
         if len(command):
             self.protocolDic.get(command[0], archivematicaMCPServerProtocol.badProtocol)(self, command)
@@ -343,7 +358,24 @@ class archivematicaMCPServerProtocol(LineReceiver):
     
     def taskCompleted(self, command):
         """inform the server a task is completed""" 
-        print "\tread: " + command.__str__()
+        if len(command) == 3:
+            self.currentThreads = self.currentThreads - 1
+            
+            #might be a potential DOS attack.
+            ret = string.atoi(command[2])
+            
+            taskUUID=command[1]
+            theTask = None
+            for task in tasksBeingProcessed:
+                if task.UUID.__str__() == taskUUID:
+                    theTask = task
+                    break
+            if theTask:
+                theTask.completed(ret)
+            else:
+                self.badProtocol(command)
+        else:
+            self.badProtocol(command)
     
     def maxTasks(self, command):
         """#tell the server how many threads this client will run""" 
