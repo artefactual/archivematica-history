@@ -174,10 +174,7 @@ class Job:
         for key in replacementDic.iterkeys():
           self.folder = self.folder.replace(key, replacementDic[key])
           self.config.processingFolder = self.config.processingFolder.replace(key, replacementDic[key])
-        
-    def queueJobStep(self):
-        print "run Job"
-    
+   
     def jobStepCompleted(self):
         #if last step completed
         if False:
@@ -195,11 +192,27 @@ class Job:
         ret = []
         if command.executeOnEachFile:
             #for every file in the folder, recursively, create a new task.
-            if os.path.isdir(self.folder):
+            directory = self.folder
+            if command.filterDir:
+                directory += command.filterSubDir
+            if os.path.isdir(directory):
                 for f in os.listdir(self.folder):
-                    if os.path.isfile(os.path.join(self.folder, f)):
-                        task = Task(self, os.path.join(self.folder, f).__str__(), command)
-                        ret.append(task)
+                    if command.filterFileEnd or command.filterFileStart:
+                        if os.path.isfile(os.path.join(self.folder, f)):
+                            if filterFileEnd and filterFileStart \
+                            and f.__str__().endswith(filterFileEnd) \
+                            and f.__str__().startswith(filterFileStart):
+                                task = Task(self, os.path.join(self.folder, f).__str__(), command)
+                                ret.append(task)
+                            elif filterFileEnd and f.__str__().endswith(filterFileEnd):
+                                task = Task(self, os.path.join(self.folder, f).__str__(), command)
+                                ret.append(task)
+                            elif filterFileStart and f.__str__().startswith(filterFileStart):
+                                task = Task(self, os.path.join(self.folder, f).__str__(), command)
+                                ret.append(task)
+                    else:
+                        if os.path.isfile(os.path.join(self.folder, f)):
+                            task = Task(self, os.path.join(self.folder, f).__str__(), command)
             else:
                 print "error: tried to process file, not folder." + self.folder.__str__()
                 jobsQueue.remove(self)
@@ -316,7 +329,7 @@ def loadFolderWatchLlist(configs):
         notifier.start()
 
 class archivematicaMCPServerProtocol(LineReceiver):
-    """This is the archivematica protocol implemented"""
+    """This is the MCP protocol implemented"""
     maxThreads = 0
     currentThreads = 0
     clientName = ""

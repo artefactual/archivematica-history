@@ -1,5 +1,5 @@
 <module>
-    <identifier>FITS 1.0</identifier>
+    <filterFileEnd>echo_1.0</filterFileEnd>
     <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
@@ -17,7 +17,9 @@
         <exeCommand> 
             <command>
                 <skip>No</skip>
-                <identifier>echo_v1.0</identifier>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
@@ -33,7 +35,9 @@
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes/No</skip>
-                <identifier></identifier>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
@@ -48,7 +52,9 @@
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes/No</skip>
-                <identifier></identifier>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
@@ -62,7 +68,9 @@
         <cleanupUnsuccessfulCommand>
             <command>
                 <skip>Yes/No</skip>
-                <identifier></identifier>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>

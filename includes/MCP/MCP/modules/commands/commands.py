@@ -53,6 +53,8 @@ class commandsClass():
         self.execute = self.getTagged(xml, "execute")[0].text
         self.arguments = self.getTagged(xml, "arguments")[0].text
         self.executeOnEachFile = self.getTagged(xml, "executeOnEachFile")[0].text.lower() != "no"
+        self.filterFileStart = self.getTagged(xml, "filterFileStart")[0].text
+        self.filterFileEnd = self.getTagged(xml, "filterFileEnd")[0].text
         
     def __str__(self):
         ret = self.descriptionWhileExecuting

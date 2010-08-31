@@ -44,6 +44,8 @@ no && or || in arguments - use a script
 change tasksLock to be job.jobLock()?
 load the folders that are in the watched folders when MCP loads.
 add filter to commands (so they only operate on a folder (subfolders y/n), and extentions .doc .log .etc. [for cleanup purposes]
+remove identifier from commands - use exec to identify.
+
 
 
 
