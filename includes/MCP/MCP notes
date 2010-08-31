@@ -46,6 +46,33 @@ load the folders that are in the watched folders when MCP loads.
 add filter to commands (so they only operate on a folder (subfolders y/n), and extentions .doc .log .etc. [for cleanup purposes]
 remove identifier from commands - use exec to identify.
 
+add logging of task started/stopped:
+client
+command
+startTime
+endTime
+exitCode
+fileUUID
+SIPUUID
+relativeFilePath (/objects/...)
+
+add logging of 
+user approved?
+client connected/disconnected.
+
+Note: no clean way to disconnect atm.
+
+add create a copy of original sip
+restore copy of original sip - in dashboard.
+delete copy made.
+
+log set name.
+
+add does file exist (ret 0/1)
+
+add digiatally sign files?
+
+
 
 
 
