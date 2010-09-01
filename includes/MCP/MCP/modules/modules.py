@@ -26,7 +26,6 @@ import xml.etree.ElementTree as etree
 
 class modulesClass():
     #Vars
-    identifier = ""
     requiresUserApproval = False
     descriptionForApproval = ""
     
@@ -59,7 +58,6 @@ class modulesClass():
         tree = etree.parse( self.fileName )
         root = tree.getroot()
         
-        self.identifier = self.getTagged(root, "identifier")[0].text
         self.requiresUserApproval = self.getTagged(root, "requiresUserApproval")[0].text.lower() == "yes"
         self.descriptionForApproval = self.getTagged(root, "descriptionForApproval")[0].text
         
@@ -78,7 +76,6 @@ class modulesClass():
             
         
     def __str__(self):
-        ret = "Identifier: " + self.identifier +\
-         "\nDescription for Approval: " + self.descriptionForApproval +\
+        ret = "Description for Approval: " + self.descriptionForApproval +\
          "\nRequires User Approval: " + self.requiresUserApproval.__str__()
         return ret

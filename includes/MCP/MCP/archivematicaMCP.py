@@ -39,12 +39,12 @@ from twisted.protocols.basic import LineReceiver
 
 archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
 
-#protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
-protocol = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaProtocol")
+protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
+#protocol = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaProtocol")
 
 #depends on OS whether you need one line or other. I think Events.Codes is older.
-mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
-#mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
+#mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
+mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
 configs = []
 jobsAwaitingApproval = []
 jobsQueue = [] #jobs shouldn't remain here long (a few seconds max) before they are turned into tasks (jobs being processed)
@@ -65,10 +65,12 @@ def taskCompletedParser():
     print "not impletmented"
 
 def checkJobQueue():
-    print "CHECKING JOB QUEUE:"
     for job in jobsQueue:
-        print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.folder.__str__() + "\t" + job.step
-        #lock it so it's not flagged as completed before it's fully created.
+        #print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.folder.__str__() + "\t" + job.step
+        folder = job.config.processingFolder + "/" + job.UUID.__str__() + "/"
+        print "moving: " + job.folder + "\t to: \t" + folder
+        os.makedirs(folder, mode=0777)
+        os.rename(job.folder, folder)
         job.createTasksForCurrentStep()  
     processTaskQueue()
 
@@ -190,40 +192,41 @@ class Job:
 
     def createTasksForStep(self, command):
         ret = []
+        directory = self.config.processingFolder + "/" + self.UUID.__str__() + "/"
+        if command.filterDir:
+            directory += command.filterSubDir   
         if command.executeOnEachFile:
             #for every file in the folder, recursively, create a new task.
-            directory = self.folder
-            if command.filterDir:
-                directory += command.filterSubDir
+            print "Creating tasks for directory: " + directory
             if os.path.isdir(directory):
-                for f in os.listdir(self.folder):
+                for f in os.listdir(directory):
                     if command.filterFileEnd or command.filterFileStart:
-                        if os.path.isfile(os.path.join(self.folder, f)):
+                        if os.path.isfile(os.path.join(directory, f)):
                             if filterFileEnd and filterFileStart \
                             and f.__str__().endswith(filterFileEnd) \
                             and f.__str__().startswith(filterFileStart):
-                                task = Task(self, os.path.join(self.folder, f).__str__(), command)
+                                task = Task(self, os.path.join(directory, f).__str__(), command)
                                 ret.append(task)
                             elif filterFileEnd and f.__str__().endswith(filterFileEnd):
-                                task = Task(self, os.path.join(self.folder, f).__str__(), command)
+                                task = Task(self, os.path.join(directory, f).__str__(), command)
                                 ret.append(task)
                             elif filterFileStart and f.__str__().startswith(filterFileStart):
-                                task = Task(self, os.path.join(self.folder, f).__str__(), command)
+                                task = Task(self, os.path.join(directory, f).__str__(), command)
                                 ret.append(task)
                     else:
-                        if os.path.isfile(os.path.join(self.folder, f)):
-                            task = Task(self, os.path.join(self.folder, f).__str__(), command)
+                        if os.path.isfile(os.path.join(directory, f)):
+                            task = Task(self, os.path.join(directory, f).__str__(), command)
+                            ret.append(task)
             else:
                 print "error: tried to process file, not folder." + self.folder.__str__()
                 jobsQueue.remove(self)
                 
         else:
-            if os.path.isdir(self.folder):
-                ret.append(Task(self, self.folder, command))
+            if os.path.isdir(directory):
+                ret.append(Task(self, directory, command))
             else:
                 print "error: tried to process file, not folder." + self.folder.__str__()
-                jobsQueue.remove(self)            
-
+                jobsQueue.remove(self)
         return ret
             
     def createTasksForCurrentStep(self):

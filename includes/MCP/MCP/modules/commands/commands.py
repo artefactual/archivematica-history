@@ -44,7 +44,6 @@ class commandsClass():
 
     def __init__(self, xml):
         self.descriptionWhileExecuting = self.getTagged(xml, "descriptionWhileExecuting")[0].text
-        self.identifier = self.getTagged(xml, "identifier")[0].text
         self.standardIn = self.getTagged(xml, "standardIn")[0].text
         self.standardOut = self.getTagged(xml, "standardOut")[0].text
         self.standardError = self.getTagged(xml, "standardError")[0].text
@@ -55,6 +54,7 @@ class commandsClass():
         self.executeOnEachFile = self.getTagged(xml, "executeOnEachFile")[0].text.lower() != "no"
         self.filterFileStart = self.getTagged(xml, "filterFileStart")[0].text
         self.filterFileEnd = self.getTagged(xml, "filterFileEnd")[0].text
+        self.filterDir = self.getTagged(xml, "filterSubDir")[0].text
         
     def __str__(self):
         ret = self.descriptionWhileExecuting
