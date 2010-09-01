@@ -119,9 +119,6 @@ class archivematicaMCPClientProtocol(LineReceiver):
             badProtocol(self, command)
             self.sendTaskResult(command, 1)
             
-       
-    
-
     protocolDic = {
     protocol["performTask"]:performTask
     }
