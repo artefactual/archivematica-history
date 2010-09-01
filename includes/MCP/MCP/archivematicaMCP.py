@@ -33,6 +33,7 @@ import uuid
 import threading
 import string
 import math
+import time
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
@@ -54,24 +55,20 @@ tasksBeingProcessed = []
 tasksLock = threading.Lock()
 movingFolderLock = threading.Lock()
 factory = twistedProtocol.ServerFactory()
-
-
-def taskCompleted():
-    print "not implemented"
-    #lock to ensure not marking a job completed before it's fully created
-
-
-def taskCompletedParser():
-    print "not impletmented"
+jobsLock =  threading.Lock()
 
 def checkJobQueue():
+    jobsLock.acquire()
     for job in jobsQueue:
         #print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.folder.__str__() + "\t" + job.step
         folder = job.config.processingFolder + "/" + job.UUID.__str__() + "/"
         print "moving: " + job.folder + "\t to: \t" + folder
         os.makedirs(folder, mode=0777)
-        os.rename(job.folder, folder)
-        job.createTasksForCurrentStep()  
+        os.rename(job.folder, folder + job.folder.split("/")[-1])
+        job.createTasksForCurrentStep() 
+        jobsQueue.remove(job)
+        jobsBeingProcessed.append(job) 
+    jobsLock.release()
     processTaskQueue()
 
 def processTaskQueue():
@@ -179,54 +176,85 @@ class Job:
    
     def jobStepCompleted(self):
         #if last step completed
-        if False:
+        if self.step == "cleanupSuccessfulCommand"\
+        or self.step == "cleanupUnsuccessfulCommand":
+            #time.sleep(5) - attempt to fix Resource busy
             #lock to ensure it doesn't start processing the next step, before the entire folder is moved.
             movingFolderLock.acquire()
             #move folder to next location, depending on fail status
-            
+            destination = ""
+            if self.step == "cleanupSuccessfulCommand":
+                destination = self.config.successFolder
+            else: #"cleanupUnsuccessfulCommand"
+                destination = self.config.failureFolder
+            folder = self.config.processingFolder + "/" + self.UUID.__str__() + "/"
+            for f in os.listdir(folder):
+                os.rename( os.path.join(folder, f), os.path.join(destination, f) )
+            os.rmdir(folder)
             movingFolderLock.release()
             #remove this job from the jobsQueue
             jobsBeingProcessed.remove(self)
+            #TODO - Log
+        elif self.step == "exeCommand":
+            self.step = "verificationCommand"
+            self.createTasksForCurrentStep()
+            processTaskQueue()
+        elif self.step == "verificationCommand":
+            if self.combinedRet:
+                self.step = "cleanupUnsuccessfulCommand"
+            else:
+                self.step = "cleanupSuccessfulCommand"
+            self.createTasksForCurrentStep()
+            processTaskQueue()
         else:
-            print "Queue Next step"
-
+            print "MCP error: Job in bad step: " + job.step.__str__()
+            
     def createTasksForStep(self, command):
         ret = []
         directory = self.config.processingFolder + "/" + self.UUID.__str__() + "/"
         if command.filterDir:
             directory += command.filterSubDir   
         if command.executeOnEachFile:
-            #for every file in the folder, recursively, create a new task.
-            print "Creating tasks for directory: " + directory
-            if os.path.isdir(directory):
-                for f in os.listdir(directory):
-                    if command.filterFileEnd or command.filterFileStart:
-                        if os.path.isfile(os.path.join(directory, f)):
-                            if filterFileEnd and filterFileStart \
-                            and f.__str__().endswith(filterFileEnd) \
-                            and f.__str__().startswith(filterFileStart):
-                                task = Task(self, os.path.join(directory, f).__str__(), command)
-                                ret.append(task)
-                            elif filterFileEnd and f.__str__().endswith(filterFileEnd):
-                                task = Task(self, os.path.join(directory, f).__str__(), command)
-                                ret.append(task)
-                            elif filterFileStart and f.__str__().startswith(filterFileStart):
-                                task = Task(self, os.path.join(directory, f).__str__(), command)
-                                ret.append(task)
-                    else:
-                        if os.path.isfile(os.path.join(directory, f)):
-                            task = Task(self, os.path.join(directory, f).__str__(), command)
-                            ret.append(task)
-            else:
-                print "error: tried to process file, not folder." + self.folder.__str__()
-                jobsQueue.remove(self)
-                
+            ret = self.createTasksForStepInDirectory(command, directory)
         else:
             if os.path.isdir(directory):
                 ret.append(Task(self, directory, command))
             else:
                 print "error: tried to process file, not folder." + self.folder.__str__()
                 jobsQueue.remove(self)
+        return ret
+    
+    def createTasksForStepInDirectory(self, command, directory):
+        """for every file in the folder, recursively, create a new task."""
+        ret = []
+        print "Creating tasks for directory: " + directory
+        if os.path.isdir(directory):
+            for f in os.listdir(directory):
+                print f
+                if os.path.isdir(os.path.join(directory, f)):
+                    sub = self.createTasksForStepInDirectory(command, os.path.join(directory, f))
+                    for task in sub:
+                        ret.append(task)
+                if command.filterFileEnd or command.filterFileStart:
+                    if os.path.isfile(os.path.join(directory, f)):
+                        if filterFileEnd and filterFileStart \
+                        and f.__str__().endswith(filterFileEnd) \
+                        and f.__str__().startswith(filterFileStart):
+                            task = Task(self, os.path.join(directory, f).__str__(), command)
+                            ret.append(task)
+                        elif filterFileEnd and f.__str__().endswith(filterFileEnd):
+                            task = Task(self, os.path.join(directory, f).__str__(), command)
+                            ret.append(task)
+                        elif filterFileStart and f.__str__().startswith(filterFileStart):
+                            task = Task(self, os.path.join(directory, f).__str__(), command)
+                            ret.append(task)
+                else:
+                    if os.path.isfile(os.path.join(directory, f)):
+                        task = Task(self, os.path.join(directory, f).__str__(), command)
+                        ret.append(task)
+        else:
+            print "error: tried to process file, not folder." + self.folder.__str__()
+            jobsQueue.remove(self)
         return ret
             
     def createTasksForCurrentStep(self):
@@ -241,9 +269,9 @@ class Job:
             else:
                 self.step = "verificationCommand"
                 createTasksForCurrentStep(self)
-        elif job.step == "verificationCommand":
+        elif self.step == "verificationCommand":
             if not self.config.verificationCommand.skip:
-                tasks = createTasksForStep(self, self.config.verificationCommand)
+                tasks = self.createTasksForStep(self.config.verificationCommand)
                 tasksLock.acquire()
                 for task in tasks:
                     tasksQueue.append(task)
@@ -254,39 +282,29 @@ class Job:
                     self.step = "cleanupUnsuccessfulCommand"
                 else:
                     self.step = "cleanupSuccessfulCommand"
-                createTasksForCurrentStep(self)
-        elif job.step == "cleanupSuccessfulCommand":
+                self.createTasksForCurrentStep()
+        elif self.step == "cleanupSuccessfulCommand":
             if not self.config.cleanupSuccessfulCommand.skip:
-                tasks = createTasksForStep(self, self.config.cleanupSuccessfulCommand)
+                tasks = self.createTasksForStep(self.config.cleanupSuccessfulCommand)
                 tasksLock.acquire()
                 for task in tasks:
                     tasksQueue.append(task)
                 tasksLock.release()
                 processTaskQueue()
             else:
-                print "NOT IMPLEMENTED YET - job done()"
-        elif job.step == "cleanupUnsuccessfulCommand":
+                self.jobStepCompleted()
+        elif self.step == "cleanupUnsuccessfulCommand":
             if not self.config.cleanupUnsuccessfulCommand.skip:
-                tasks = createTasksForStep(self, self.config.cleanupUnsuccessfulCommand)
+                tasks = self.createTasksForStep(self.config.cleanupUnsuccessfulCommand)
                 tasksLock.acquire()
                 for task in tasks:
                     tasksQueue.append(task)
                 tasksLock.release()
                 processTaskQueue()
             else:
-                print "NOT IMPLEMENTED YET - job done()"
+                self.jobStepCompleted()
         else:
             print "Job in bad step: " + self.step.__str__()
-
-    def completed(self):
-        jobsBeingProcessed.remove(self)
-        if self.combinedRet:
-            print "move it to error folder"
-        else:
-            print "move to completed folder"
-        
-        
-
 
 class watchFolder(ProcessEvent):
     config = None
@@ -353,8 +371,6 @@ class archivematicaMCPServerProtocol(LineReceiver):
 
     def connectionMade(self):
         self.write("hello, client!")
-        print "connection made  -_-  " 
-        print self
         self.factory.clients.append(self)
         
     def connectionLost(self, reason):
