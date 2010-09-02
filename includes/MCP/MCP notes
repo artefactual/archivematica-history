@@ -1,25 +1,42 @@
-create folder structure:
 
+Notes to get started:
+install the dependancies. & python
+edit the client and server to load local archivematica config file.
+edit the archivematica config file locations to represent where they are located on your machine (replace /home/joseph/archivematica...)
+
+to use the sample config:
+create /tmp/tmp/ /tmp/tmp2/ /tmp/tmp3/
+run the server(MCP)
+run the client 
+Move a folder, containing files to the /tmp/tmp directory, and you should see a hello world for each of the files.
+
+The server may have a problem with watch folder .IN_CREATED 
+if it does, switch the commented line, and it should work.
+
+errors in moving the folder tend to crash the server (no try catch implemented yet)
+
+
+
+I was thinking of the following folder structure for watched folders:
 watchFolders
     Scan with AV
         Clam AV
     identify file type
         FITS
     normalize
-MCPModules
-    Fits v1.0
-        serverFolder
-        clientFolder
-        README.txt
-        Requirements.txt
-archivematicaConfigs - link to /etc/archivematica/
+
+shared folder: 
+  archivematicaConfigs - link to /etc/archivematica/
+  /.processing/
 
 Quarantine lock will need to be released by the dashboard. - as a system automated time approval.
 
 
-Include:
+dependancies:
 sudo apt-get install python-twisted
 sudo apt-get install python-pyinotify
+archivematica Load Config
+
 
 stdout and stderr should be relative to folder path /objects/
 ^disable "../" on client side <evil people>
