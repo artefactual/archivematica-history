@@ -15,6 +15,25 @@
 # You should have received a copy of the GNU General Public License
 # along with Archivematica.    If not, see <http://www.gnu.org/licenses/>.
 
+# --- This is the MCP (master control program) ---
+# The intention of this program is to provide a cetralized automated distributed system for performing an arbitrary set of tasks on a directory.
+# Distributed in that the work can be performed on more than one physical computer symultaineously.
+# Centralized in that there is one centre point for configuring flow through the system.
+# Automated in that the tasks performed will be based on the config files and istantiated for each of the targets.
+#
+# It loads configurations from the XML files.
+# These files contain:
+# -The associated watch directory
+# -A set of commands to run on the files within that directory.
+# -The place to move the folder to once it has been processed.
+#
+# When a directory is placed within a a watch directory, it generates an event.
+# The event creates an associated Job.
+# The job is an instance of one of the config files (depending on which watch directory geneated the event).
+# The job will have a number of steps, for each of the commands.
+# The commands will be istanciated into tasks for each of the files within the watch folder of the event, or just one task for the folder (depending on the config).
+
+
 # @package Archivematica
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
@@ -58,6 +77,7 @@ factory = twistedProtocol.ServerFactory()
 jobsLock =  threading.Lock()
 
 def checkJobQueue():
+    """Creates Tasks for new auto approved jobs, or just approved jobs."""
     jobsLock.acquire()
     for job in jobsQueue:
         #print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.folder.__str__() + "\t" + job.step
@@ -72,6 +92,7 @@ def checkJobQueue():
     processTaskQueue()
 
 def processTaskQueue():
+    """Attempts to assign tasks to clients."""
     tasksLock.acquire()
     for task in tasksQueue:
         for client in factory.clients:
@@ -101,6 +122,7 @@ def processTaskQueue():
    
 
 class Task():
+    """A task is an instance of a command, operating on an entire folder, or a single file."""
     def __init__(self, job, target, command):
         self.UUID = uuid.uuid4()
         self.job = job
@@ -139,6 +161,7 @@ class Task():
                 self.standardError = self.standardError.replace(key, commandReplacementDic[key])
 
     def completed(self, returned):
+    """When a task is completed, check to see if it was the last task for the job to be completed (job completed)."""
         tasksLock.acquire()
         jobStepDone = True
         tasksBeingProcessed.remove(self)
@@ -157,6 +180,7 @@ class Task():
             self.job.jobStepCompleted()
 
 class Job:
+    """A job is an instance of a file in a watch folder (from a config file)."""
     def __init__(self, config, folder, step="exeCommand"):
         self.combinedRet = 0
         self.UUID = uuid.uuid4()
@@ -175,6 +199,7 @@ class Job:
           self.config.processingFolder = self.config.processingFolder.replace(key, replacementDic[key])
    
     def jobStepCompleted(self):
+    """When a job step is completed, move to the next step, or if the job is completed, move everthing in the folder to the output folder. """
         #if last step completed
         if self.step == "cleanupSuccessfulCommand"\
         or self.step == "cleanupUnsuccessfulCommand":
@@ -210,6 +235,7 @@ class Job:
             print "MCP error: Job in bad step: " + job.step.__str__()
             
     def createTasksForStep(self, command):
+        """Creates the tasks for the given command"""
         ret = []
         directory = self.config.processingFolder + "/" + self.UUID.__str__() + "/"
         if command.filterDir:
@@ -258,6 +284,8 @@ class Job:
         return ret
             
     def createTasksForCurrentStep(self):
+        """Determin the current step, and if it is to be skipped. 
+        If it's not to be skipped, create the tasks for it, append them to the queue and process the queue"""
         if self.step == "exeCommand":
             if not self.config.exeCommand.skip:
                 tasks = self.createTasksForStep(self.config.exeCommand)
@@ -307,13 +335,16 @@ class Job:
             print "Job in bad step: " + self.step.__str__()
 
 class watchFolder(ProcessEvent):
+    """Determin which action to take based on the watch folder. """
     config = None
     def __init__(self, config):
         self.config = config
     def process_IN_CREATE(self, event):
+    """ Traditionally, archivematica does not support copying to watch folders."""
         print "Warning: %s was created. Was something copied into this folder?" %  os.path.join(event.path, event.name)
         
     def process_IN_MOVED_TO(self, event):  
+        """Create a Job based on what was moved into the folder and process it."""
         #ensure no folders are in the process of moving. (so none will be in the middle of moving INTO this folder)
         movingFolderLock.acquire()
         movingFolderLock.release()    
@@ -329,6 +360,7 @@ class watchFolder(ProcessEvent):
             checkJobQueue()
 
 def loadConfigs():
+    """Loads the XML config files, with the folders to watch, and the associated commmands"""
     configFiles = []
     for dirs, subDirs, files in os.walk(archivmaticaVars["moduleConfigDir"]):
         configFiles = files
@@ -343,6 +375,7 @@ def loadConfigs():
     return configs
         
 def loadFolderWatchLlist(configs):
+    """Start watching all the watch folders defined in the configs. """
     for config in configs:
         wm = WatchManager()
         notifier = ThreadedNotifier(wm, watchFolder(config))
@@ -426,7 +459,8 @@ class archivematicaMCPServerProtocol(LineReceiver):
             self.clientName=command[1]
         else:
             badProtocol(self, command)
-        
+
+    #associate the protocol with the associated funciton.        
     protocolDic = {
     protocol["addToListTaskHandler"]:addToListTaskHandler,
     protocol["taskCompleted"]:taskCompleted,
@@ -436,6 +470,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
 
 
 def archivematicaMCPServerListen():
+    """ Start listening for archivematica clients to connect."""
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
     reactor.listenTCP(string.atoi(archivmaticaVars["MCPArchivematicaServerPort"]),factory)
