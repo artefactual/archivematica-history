@@ -7,10 +7,10 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchFolder>/tmp/tmp</watchFolder>
-        <processingFolder>%processingFolder%</processingFolder>
-        <successFolder>/tmp/tmp2/</successFolder>
-        <failureFolder>/tmp/tmp3/</failureFolder>
+        <watchDirectory>/tmp/tmp</watchDirectory>
+        <processingDirectory>%processingDirectory%</processingDirectory>
+        <successDirectory>/tmp/tmp2/</successDirectory>
+        <failureDirectory>/tmp/tmp3/</failureDirectory>
     </directories>
 
     <commands>    

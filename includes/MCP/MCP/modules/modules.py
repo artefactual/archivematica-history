@@ -36,10 +36,10 @@ class modulesClass():
     cleanupUnsuccessfulCommand = None
     
     #Directories
-    watchFolder = ""
-    processingFolder = ""
-    successFolder = ""
-    failureFolder = ""
+    watchDirectory = ""
+    processingDirectory = ""
+    successDirectory = ""
+    failureDirectory = ""
     
     def getTagged(self, root, tag):
         ret = []
@@ -62,10 +62,10 @@ class modulesClass():
         self.descriptionForApproval = self.getTagged(root, "descriptionForApproval")[0].text
         
         directories = self.getTagged(root, "directories")[0]
-        self.watchFolder = self.getTagged(directories, "watchFolder")[0].text
-        self.processingFolder = self.getTagged(directories, "processingFolder")[0].text
-        self.successFolder = self.getTagged(directories, "successFolder")[0].text
-        self.failureFolder = self.getTagged(directories, "failureFolder")[0].text
+        self.watchDirectory = self.getTagged(directories, "watchDirectory")[0].text
+        self.processingDirectory = self.getTagged(directories, "processingDirectory")[0].text
+        self.successDirectory = self.getTagged(directories, "successDirectory")[0].text
+        self.failureDirectory = self.getTagged(directories, "failureDirectory")[0].text
         
         commands = self.getTagged(root, "commands")[0]
         self.exeCommand = commandsClass(self.getTagged(self.getTagged(commands, "exeCommand")[0], "command")[0])

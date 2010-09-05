@@ -25,13 +25,13 @@
 # These files contain:
 # -The associated watch directory
 # -A set of commands to run on the files within that directory.
-# -The place to move the folder to once it has been processed.
+# -The place to move the directory to once it has been processed.
 #
 # When a directory is placed within a a watch directory, it generates an event.
 # The event creates an associated Job.
 # The job is an instance of one of the config files (depending on which watch directory geneated the event).
 # The job will have a number of steps, for each of the commands.
-# The commands will be istanciated into tasks for each of the files within the watch folder of the event, or just one task for the folder (depending on the config).
+# The commands will be istanciated into tasks for each of the files within the watch directory of the event, or just one task for the directory (depending on the config).
 
 
 # @package Archivematica
@@ -72,7 +72,7 @@ jobsBeingProcessed = []
 tasksQueue = []
 tasksBeingProcessed = []
 tasksLock = threading.Lock()
-movingFolderLock = threading.Lock()
+movingDirectoryLock = threading.Lock()
 factory = twistedProtocol.ServerFactory()
 jobsLock =  threading.Lock()
 
@@ -80,11 +80,11 @@ def checkJobQueue():
     """Creates Tasks for new auto approved jobs, or just approved jobs."""
     jobsLock.acquire()
     for job in jobsQueue:
-        #print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.folder.__str__() + "\t" + job.step
-        folder = job.config.processingFolder + "/" + job.UUID.__str__() + "/"
-        print "moving: " + job.folder + "\t to: \t" + folder
-        os.makedirs(folder, mode=0777)
-        os.rename(job.folder, folder + job.folder.split("/")[-1])
+        #print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.directory.__str__() + "\t" + job.step
+        directory = job.config.processingDirectory + "/" + job.UUID.__str__() + "/"
+        print "moving: " + job.directory + "\t to: \t" + directory
+        os.makedirs(directory, mode=0777)
+        os.rename(job.directory, directory + job.directory.split("/")[-1])
         job.createTasksForCurrentStep() 
         jobsQueue.remove(job)
         jobsBeingProcessed.append(job) 
@@ -122,7 +122,7 @@ def processTaskQueue():
    
 
 class Task():
-    """A task is an instance of a command, operating on an entire folder, or a single file."""
+    """A task is an instance of a command, operating on an entire directory, or a single file."""
     def __init__(self, job, target, command):
         self.UUID = uuid.uuid4()
         self.job = job
@@ -139,9 +139,9 @@ class Task():
         commandReplacementDic = { \
         "%jobUUID%": job.UUID.__str__(), \
         "%taskUUID%": self.UUID.__str__(), \
-        "%relativeLocation%": target.replace(job.config.watchFolder, "%relativeSIPLocation%"), \
-        "%relativeSIPLocation%": "%sharedPath%%processingFolder%" + job.UUID.__str__() + "/", \
-        "%processingFolder%": job.config.processingFolder.replace(archivmaticaVars["sharedFolder"], "")\
+        "%relativeLocation%": target.replace(job.config.watchDirectory, "%relativeSIPLocation%"), \
+        "%relativeSIPLocation%": "%sharedPath%%processingDirectory%" + job.UUID.__str__() + "/", \
+        "%processingDirectory%": job.config.processingDirectory.replace(archivmaticaVars["sharedDirectory"], "")\
         
         }
         
@@ -161,7 +161,7 @@ class Task():
                 self.standardError = self.standardError.replace(key, commandReplacementDic[key])
 
     def completed(self, returned):
-    """When a task is completed, check to see if it was the last task for the job to be completed (job completed)."""
+        """When a task is completed, check to see if it was the last task for the job to be completed (job completed)."""
         tasksLock.acquire()
         jobStepDone = True
         tasksBeingProcessed.remove(self)
@@ -180,43 +180,43 @@ class Task():
             self.job.jobStepCompleted()
 
 class Job:
-    """A job is an instance of a file in a watch folder (from a config file)."""
-    def __init__(self, config, folder, step="exeCommand"):
+    """A job is an instance of a file in a watch directory (from a config file)."""
+    def __init__(self, config, directory, step="exeCommand"):
         self.combinedRet = 0
         self.UUID = uuid.uuid4()
         self.config = config
         self.step = step
-        self.folder = folder
+        self.directory = directory
         
         replacementDic = { \
-        "%watchedFoldersPath%": archivmaticaVars["watchedFoldersPath"], \
-        "%processingFolder%": archivmaticaVars["processingFolder"] \
+        "%watchedDirectorysPath%": archivmaticaVars["watchedDirectorysPath"], \
+        "%processingDirectory%": archivmaticaVars["processingDirectory"] \
         }
       
         #for each key replace all instances of the key in the strings
         for key in replacementDic.iterkeys():
-          self.folder = self.folder.replace(key, replacementDic[key])
-          self.config.processingFolder = self.config.processingFolder.replace(key, replacementDic[key])
+          self.directory = self.directory.replace(key, replacementDic[key])
+          self.config.processingDirectory = self.config.processingDirectory.replace(key, replacementDic[key])
    
     def jobStepCompleted(self):
-    """When a job step is completed, move to the next step, or if the job is completed, move everthing in the folder to the output folder. """
+        """When a job step is completed, move to the next step, or if the job is completed, move everthing in the directory to the output directory. """
         #if last step completed
         if self.step == "cleanupSuccessfulCommand"\
         or self.step == "cleanupUnsuccessfulCommand":
             #time.sleep(5) - attempt to fix Resource busy
-            #lock to ensure it doesn't start processing the next step, before the entire folder is moved.
-            movingFolderLock.acquire()
-            #move folder to next location, depending on fail status
+            #lock to ensure it doesn't start processing the next step, before the entire directory is moved.
+            movingDirectoryLock.acquire()
+            #move directory to next location, depending on fail status
             destination = ""
             if self.step == "cleanupSuccessfulCommand":
-                destination = self.config.successFolder
+                destination = self.config.successDirectory
             else: #"cleanupUnsuccessfulCommand"
-                destination = self.config.failureFolder
-            folder = self.config.processingFolder + "/" + self.UUID.__str__() + "/"
-            for f in os.listdir(folder):
-                os.rename( os.path.join(folder, f), os.path.join(destination, f) )
-            os.rmdir(folder)
-            movingFolderLock.release()
+                destination = self.config.failureDirectory
+            directory = self.config.processingDirectory + "/" + self.UUID.__str__() + "/"
+            for f in os.listdir(directory):
+                os.rename( os.path.join(directory, f), os.path.join(destination, f) )
+            os.rmdir(directory)
+            movingDirectoryLock.release()
             #remove this job from the jobsQueue
             jobsBeingProcessed.remove(self)
             #TODO - Log
@@ -237,7 +237,7 @@ class Job:
     def createTasksForStep(self, command):
         """Creates the tasks for the given command"""
         ret = []
-        directory = self.config.processingFolder + "/" + self.UUID.__str__() + "/"
+        directory = self.config.processingDirectory + "/" + self.UUID.__str__() + "/"
         if command.filterDir:
             directory += command.filterSubDir   
         if command.executeOnEachFile:
@@ -246,12 +246,12 @@ class Job:
             if os.path.isdir(directory):
                 ret.append(Task(self, directory, command))
             else:
-                print "error: tried to process file, not folder." + self.folder.__str__()
+                print "error: tried to process file, not directory." + self.directory.__str__()
                 jobsQueue.remove(self)
         return ret
     
     def createTasksForStepInDirectory(self, command, directory):
-        """for every file in the folder, recursively, create a new task."""
+        """for every file in the directory, recursively, create a new task."""
         ret = []
         print "Creating tasks for directory: " + directory
         if os.path.isdir(directory):
@@ -279,7 +279,7 @@ class Job:
                         task = Task(self, os.path.join(directory, f).__str__(), command)
                         ret.append(task)
         else:
-            print "error: tried to process file, not folder." + self.folder.__str__()
+            print "error: tried to process file, not directory." + self.directory.__str__()
             jobsQueue.remove(self)
         return ret
             
@@ -334,20 +334,20 @@ class Job:
         else:
             print "Job in bad step: " + self.step.__str__()
 
-class watchFolder(ProcessEvent):
-    """Determin which action to take based on the watch folder. """
+class watchDirectory(ProcessEvent):
+    """Determin which action to take based on the watch directory. """
     config = None
     def __init__(self, config):
         self.config = config
     def process_IN_CREATE(self, event):
-    """ Traditionally, archivematica does not support copying to watch folders."""
-        print "Warning: %s was created. Was something copied into this folder?" %  os.path.join(event.path, event.name)
+        """ Traditionally, archivematica does not support copying to watch directorys."""
+        print "Warning: %s was created. Was something copied into this directory?" %  os.path.join(event.path, event.name)
         
     def process_IN_MOVED_TO(self, event):  
-        """Create a Job based on what was moved into the folder and process it."""
-        #ensure no folders are in the process of moving. (so none will be in the middle of moving INTO this folder)
-        movingFolderLock.acquire()
-        movingFolderLock.release()    
+        """Create a Job based on what was moved into the directory and process it."""
+        #ensure no directorys are in the process of moving. (so none will be in the middle of moving INTO this directory)
+        movingDirectoryLock.acquire()
+        movingDirectoryLock.release()    
         
         job = Job(self.config, os.path.join(event.path, event.name))
         if self.config.requiresUserApproval:
@@ -360,7 +360,7 @@ class watchFolder(ProcessEvent):
             checkJobQueue()
 
 def loadConfigs():
-    """Loads the XML config files, with the folders to watch, and the associated commmands"""
+    """Loads the XML config files, with the directorys to watch, and the associated commmands"""
     configFiles = []
     for dirs, subDirs, files in os.walk(archivmaticaVars["moduleConfigDir"]):
         configFiles = files
@@ -370,16 +370,16 @@ def loadConfigs():
         if configFile.endswith(".xml"):
             configs.append(modulesClass(archivmaticaVars["moduleConfigDir"], configFile))
        
-    #need to implement check for duplicate watch folders.
+    #need to implement check for duplicate watch directorys.
     
     return configs
         
-def loadFolderWatchLlist(configs):
-    """Start watching all the watch folders defined in the configs. """
+def loadDirectoryWatchLlist(configs):
+    """Start watching all the watch directorys defined in the configs. """
     for config in configs:
         wm = WatchManager()
-        notifier = ThreadedNotifier(wm, watchFolder(config))
-        wdd = wm.add_watch(config.watchFolder, mask, rec=False)
+        notifier = ThreadedNotifier(wm, watchDirectory(config))
+        wdd = wm.add_watch(config.watchDirectory, mask, rec=False)
         notifier.start()
 
 class archivematicaMCPServerProtocol(LineReceiver):
@@ -479,7 +479,7 @@ def archivematicaMCPServerListen():
 
 if __name__ == '__main__':
     configs = loadConfigs()
-    folderWatchList = loadFolderWatchLlist(configs)
+    directoryWatchList = loadDirectoryWatchLlist(configs)
     archivematicaMCPServerListen()
 #    Start listening for client connections (new thread) 
 #    Start listening for MCPclient Connections.
