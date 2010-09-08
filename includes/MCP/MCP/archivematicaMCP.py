@@ -41,6 +41,7 @@
 
 import os
 import pyinotify
+from archivematicaReplacementDics import replacementDics 
 from archivematicaLoadConfig import loadConfig
 from modules.modules import modulesClass
 from pyinotify import WatchManager
@@ -57,14 +58,15 @@ from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 
-archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
 
-protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
-#protocol = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaProtocol")
+archivematicaVars = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
+
+protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
+archivematicaRD = replacementDics(archivematicaVars)
 
 #depends on OS whether you need one line or other. I think Events.Codes is older.
-#mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
-mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
+mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
+#mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
 configs = []
 jobsAwaitingApproval = []
 jobsQueue = [] #jobs shouldn't remain here long (a few seconds max) before they are turned into tasks (jobs being processed)
@@ -136,14 +138,7 @@ class Task():
         self.standardError = command.standardError
         
         
-        commandReplacementDic = { \
-        "%jobUUID%": job.UUID.__str__(), \
-        "%taskUUID%": self.UUID.__str__(), \
-        "%relativeLocation%": target.replace(job.config.watchDirectory, "%relativeSIPLocation%"), \
-        "%relativeSIPLocation%": "%sharedPath%%processingDirectory%" + job.UUID.__str__() + "/", \
-        "%processingDirectory%": job.config.processingDirectory.replace(archivmaticaVars["sharedDirectory"], "")\
-        
-        }
+        commandReplacementDic = archivematicaRD.commandReplacementDic(self, job, target, command)
         
         #for each key replace all instances of the key in the command string
         for key in commandReplacementDic.iterkeys():
@@ -188,10 +183,7 @@ class Job:
         self.step = step
         self.directory = directory
         
-        replacementDic = { \
-        "%watchedDirectorysPath%": archivmaticaVars["watchedDirectorysPath"], \
-        "%processingDirectory%": archivmaticaVars["processingDirectory"] \
-        }
+        replacementDic = archivematicaRD.jobReplacementDic(self, config, directory, step)
       
         #for each key replace all instances of the key in the strings
         for key in replacementDic.iterkeys():
@@ -362,13 +354,13 @@ class watchDirectory(ProcessEvent):
 def loadConfigs():
     """Loads the XML config files, with the directorys to watch, and the associated commmands"""
     configFiles = []
-    for dirs, subDirs, files in os.walk(archivmaticaVars["moduleConfigDir"]):
+    for dirs, subDirs, files in os.walk(archivematicaVars["moduleConfigDir"]):
         configFiles = files
         break
 
     for configFile in configFiles:
         if configFile.endswith(".xml"):
-            configs.append(modulesClass(archivmaticaVars["moduleConfigDir"], configFile))
+            configs.append(modulesClass(archivematicaVars["moduleConfigDir"], configFile))
        
     #need to implement check for duplicate watch directorys.
     
@@ -473,7 +465,7 @@ def archivematicaMCPServerListen():
     """ Start listening for archivematica clients to connect."""
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
-    reactor.listenTCP(string.atoi(archivmaticaVars["MCPArchivematicaServerPort"]),factory)
+    reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory)
     reactor.run()
 
 
