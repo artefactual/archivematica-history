@@ -33,6 +33,17 @@ archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematica
 supportedModules = loadConfig(archivmaticaVars["archivematicaClientModules"])
 protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
 
+def writeToFile(output, fileName):
+    if fileName:
+        try:
+            f = open(fileName, 'a')
+            f.write(output.__str__())
+            f.close()
+        except OSError, ose:
+            print >>sys.stderr, "output Error", ose
+    else:
+        print "No output file specified"
+
 def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "", arguments = ""):
     #Replace replacement strings
     command = supportedModules[execute] 
@@ -54,6 +65,10 @@ def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "
         output = p.communicate(input=sInput)
         print "returned:"
         print output
+        
+        writeToFile(output[0], sOutput)
+        writeToFile(output[1], sError)
+        
         retcode = p.returncode
         
         #it executes check for errors
