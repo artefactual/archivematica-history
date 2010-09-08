@@ -21,7 +21,7 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
+                <standardOut>/tmp/tempOutput.txt</standardOut>
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
