@@ -1,0 +1,84 @@
+<module>
+    <requiresUserApproval>No</requiresUserApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
+    <notificationStarted></notificationStarted>
+    <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
+    <notificationCompletedWithErrors></notificationCompletedWithErrors>
+    
+    <directories>
+        <watchDirectory>%watchDirectoryPath%checkForViruses/clamAV</watchDirectory>
+        <processingDirectory>%processingDirectory%</processingDirectory>
+        <successDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%checkForViruses/clamAVFoundVirus</failureDirectory>
+    </directories>
+
+    <commands>    
+        <exeCommand> 
+            <command>
+                <skip>No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute>echo_v1.0</execute>
+                <arguments> hello world </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>
+        </exeCommand>
+        
+        <verificationCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes/No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>            
+        </verificationCommand>
+        
+        <cleanupSuccessfulCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes/No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>            
+        </cleanupSuccessfulCommand>
+        
+        <cleanupUnsuccessfulCommand>
+            <command>
+                <skip>Yes/No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>              
+        </cleanupUnsuccessfulCommand>                  
+    </commands>  
+</module>
