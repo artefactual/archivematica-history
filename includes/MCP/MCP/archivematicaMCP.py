@@ -59,7 +59,7 @@ from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 
 
-archivematicaVars = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
+archivematicaVars = loadConfig()
 
 protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
 archivematicaRD = replacementDics(archivematicaVars)
@@ -87,9 +87,10 @@ def checkJobQueue():
         print "moving: " + job.directory + "\t to: \t" + directory
         os.makedirs(directory, mode=0777)
         os.rename(job.directory, directory + job.directory.split("/")[-1])
-        job.createTasksForCurrentStep() 
+        tasksCreated = job.createTasksForCurrentStep() 
         jobsQueue.remove(job)
-        jobsBeingProcessed.append(job) 
+        if tasksCreated:
+            jobsBeingProcessed.append(job) 
     jobsLock.release()
     processTaskQueue()
 
@@ -187,8 +188,11 @@ class Job:
       
         #for each key replace all instances of the key in the strings
         for key in replacementDic.iterkeys():
-          self.directory = self.directory.replace(key, replacementDic[key])
-          self.config.processingDirectory = self.config.processingDirectory.replace(key, replacementDic[key])
+            self.directory = self.directory.replace(key, replacementDic[key])
+            self.config.processingDirectory = self.config.processingDirectory.replace(key, replacementDic[key])
+            self.config.successDirectory = self.config.successDirectory.replace(key, replacementDic[key])
+            self.config.failureDirectory = self.config.failureDirectory.replace(key, replacementDic[key])
+
    
     def jobStepCompleted(self):
         """When a job step is completed, move to the next step, or if the job is completed, move everthing in the directory to the output directory. """
@@ -206,12 +210,20 @@ class Job:
                 destination = self.config.failureDirectory
             directory = self.config.processingDirectory + "/" + self.UUID.__str__() + "/"
             for f in os.listdir(directory):
+                print "rename: " + os.path.join(directory, f) + " TO: " + os.path.join(destination, f)
                 os.rename( os.path.join(directory, f), os.path.join(destination, f) )
             os.rmdir(directory)
             movingDirectoryLock.release()
+            
             #remove this job from the jobsQueue
-            jobsBeingProcessed.remove(self)
+            for job in jobsBeingProcessed:
+                if job == self:
+                    jobsBeingProcessed.remove(self)
+                    break
+
+            
             #TODO - Log
+            
         elif self.step == "exeCommand":
             self.step = "verificationCommand"
             self.createTasksForCurrentStep()
@@ -286,9 +298,10 @@ class Job:
                     tasksQueue.append(task)
                 tasksLock.release()
                 processTaskQueue()
+                return tasks
             else:
                 self.step = "verificationCommand"
-                createTasksForCurrentStep(self)
+                return self.createTasksForCurrentStep()
         elif self.step == "verificationCommand":
             if not self.config.verificationCommand.skip:
                 tasks = self.createTasksForStep(self.config.verificationCommand)
@@ -297,12 +310,13 @@ class Job:
                     tasksQueue.append(task)
                 tasksLock.release()
                 processTaskQueue()
+                return tasks
             else:
                 if self.combinedRet:
                     self.step = "cleanupUnsuccessfulCommand"
                 else:
                     self.step = "cleanupSuccessfulCommand"
-                self.createTasksForCurrentStep()
+                return self.createTasksForCurrentStep()
         elif self.step == "cleanupSuccessfulCommand":
             if not self.config.cleanupSuccessfulCommand.skip:
                 tasks = self.createTasksForStep(self.config.cleanupSuccessfulCommand)
@@ -311,8 +325,10 @@ class Job:
                     tasksQueue.append(task)
                 tasksLock.release()
                 processTaskQueue()
+                return tasks
             else:
                 self.jobStepCompleted()
+                return []
         elif self.step == "cleanupUnsuccessfulCommand":
             if not self.config.cleanupUnsuccessfulCommand.skip:
                 tasks = self.createTasksForStep(self.config.cleanupUnsuccessfulCommand)
@@ -321,10 +337,13 @@ class Job:
                     tasksQueue.append(task)
                 tasksLock.release()
                 processTaskQueue()
+                return tasks
             else:
                 self.jobStepCompleted()
+                return []
         else:
             print "Job in bad step: " + self.step.__str__()
+            return []
 
 class watchDirectory(ProcessEvent):
     """Determin which action to take based on the watch directory. """
@@ -368,8 +387,12 @@ def loadConfigs():
         
 def loadDirectoryWatchLlist(configs):
     """Start watching all the watch directorys defined in the configs. """
+    replacementDic = archivematicaRD.watchFolderRepacementDic()
     for config in configs:
         wm = WatchManager()
+                #for each key replace all instances of the key in the strings
+        for key in replacementDic.iterkeys():
+          config.watchDirectory = config.watchDirectory.replace(key, replacementDic[key])
         notifier = ThreadedNotifier(wm, watchDirectory(config))
         wdd = wm.add_watch(config.watchDirectory, mask, rec=False)
         notifier.start()
