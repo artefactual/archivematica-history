@@ -57,8 +57,15 @@ class replacementDics:
         return ret
 
     def jobReplacementDic(self, job, config, directory, step):       
-        ret = replacementDic = { \
-        "%watchedDirectorysPath%": self.archivematicaVars["watchedDirectorysPath"], \
+        ret ={ \
+        "%watchDirectoryPath%": self.archivematicaVars["watchDirectoryPath"], \
         "%processingDirectory%": self.archivematicaVars["processingDirectory"] \
         }
         return ret
+        
+    def watchFolderRepacementDic(self):
+        ret ={ \
+        "%watchDirectoryPath%": self.archivematicaVars["watchDirectoryPath"], \
+        }
+        return ret
+    
