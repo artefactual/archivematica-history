@@ -42,10 +42,20 @@ chroot $1 rm -rf /home/demo/Videos
 #Install archivematica
 svn export includes/archivematicaUsrBin $1/usr/bin/temp/
 mv $1/usr/bin/temp/* $1/usr/bin/
-rm -r $1/usr/bin/temp/*
+rm -r $1/usr/bin/temp
+
+svn export includes/MCP/client $1/usr/bin/temp/
+mv $1/usr/bin/temp/* $1/usr/bin/
+rm -r $1/usr/bin/temp
+
+svn export includes/MCP/MCP $1/usr/bin/temp/
+mv $1/usr/bin/temp/* $1/usr/bin/
+rm -r $1/usr/bin/temp
+
 svn export includes/archivematicaEtc $1/etc/archivematica
 svn export includes/archivematicaUsrShare $1/usr/share/
-svn export includes/archivematicaUsrBin $1/home/demo/USRBIN
+svn export sharedFolderStructure $1/home/demo/sharedFolders
+
 
 
 #Install externals/archivematica
