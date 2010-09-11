@@ -48,9 +48,15 @@ svn export includes/MCP/client $1/usr/bin/temp/
 mv $1/usr/bin/temp/* $1/usr/bin/
 rm -r $1/usr/bin/temp
 
-svn export includes/MCP/MCP $1/usr/bin/temp/
+svn export includes/MCP/bin $1/usr/bin/temp/
 mv $1/usr/bin/temp/* $1/usr/bin/
 rm -r $1/usr/bin/temp
+
+svn export includes/MCP/mcpModules $1/usr/share/archivematica/mcpModules
+
+ln -s $1/usr/share/archivematica/mcpModules $1/usr/lib/pymodules/python2.6/.
+
+chroot $1 update-python-modules
 
 svn export includes/archivematicaEtc $1/etc/archivematica
 svn export includes/archivematicaUsrShare $1/usr/share/
