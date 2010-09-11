@@ -43,7 +43,7 @@ import os
 import pyinotify
 from archivematicaReplacementDics import replacementDics 
 from archivematicaLoadConfig import loadConfig
-from modules.modules import modulesClass
+from mcpModules.modules import modulesClass
 from pyinotify import WatchManager
 from pyinotify import Notifier
 from pyinotify import ThreadedNotifier
