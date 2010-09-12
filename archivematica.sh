@@ -52,18 +52,18 @@ svn export includes/MCP/MCP/bin $1/usr/bin/temp/
 mv $1/usr/bin/temp/* $1/usr/bin/
 rm -r $1/usr/bin/temp
 
+svn export includes/archivematicaEtc $1/etc/archivematica
+svn export includes/archivematicaUsrShare $1/usr/share/
+svn export sharedFolderStructure $1/home/demo/sharedFolders
+
+mkdir $1/usr/share/archivematica/
+
 svn export includes/MCP/MCP/mcpModules $1/usr/share/archivematica/mcpModules
 svn export includes/archivematicaUsrShare/normalizationScripts $1/usr/share/archivematica/normalizationScripts
 
 ln -s $1/usr/share/archivematica/mcpModules $1/usr/lib/pymodules/python2.6/.
 
 chroot $1 update-python-modules
-
-svn export includes/archivematicaEtc $1/etc/archivematica
-svn export includes/archivematicaUsrShare $1/usr/share/
-svn export sharedFolderStructure $1/home/demo/sharedFolders
-
-
 
 #Install externals/archivematica
 chroot $1 mkdir -p /home/demo/Desktop
