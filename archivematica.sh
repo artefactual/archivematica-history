@@ -61,7 +61,7 @@ mkdir $1/usr/share/archivematica/
 svn export includes/MCP/MCP/mcpModules $1/usr/share/archivematica/mcpModules
 svn export includes/archivematicaUsrShare/normalizationScripts $1/usr/share/archivematica/normalizationScripts
 
-ln -s $1/usr/share/archivematica/mcpModules $1/usr/lib/pymodules/python2.6/.
+chroot $1 ln -s /usr/share/archivematica/mcpModules /usr/lib/pymodules/python2.6/.
 
 chroot $1 update-python-modules
 
