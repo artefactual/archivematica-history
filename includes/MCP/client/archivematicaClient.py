@@ -29,12 +29,13 @@ from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 
-archivmaticaVars = loadConfig("/home/joseph/archivematica/includes/archivematicaEtc/archivematicaConfig.conf")
+archivmaticaVars = loadConfig()
 supportedModules = loadConfig(archivmaticaVars["archivematicaClientModules"])
 protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
 
 def writeToFile(output, fileName):
     if fileName:
+        print "writing to: " + fileName
         try:
             f = open(fileName, 'a')
             f.write(output.__str__())
@@ -48,12 +49,14 @@ def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "
     #Replace replacement strings
     command = supportedModules[execute] 
     replacementDic = { 
-    "NEED TO FILL THIS DIC":"TO DO"
+        "%sharedPath%":archivmaticaVars["sharedDirectory"]
     }  
     #for each key replace all instances of the key in the command string
     for key in replacementDic.iterkeys():
         command = command.replace ( key, replacementDic[key] )
-    
+        sInput = sInput.replace ( key, replacementDic[key] )
+        sOutput = sOutput.replace ( key, replacementDic[key] )
+        sError = sError.replace ( key, replacementDic[key] )
     #execute command
     try:
       if execute != "" and command != "":

@@ -83,7 +83,7 @@ def checkJobQueue():
     jobsLock.acquire()
     for job in jobsQueue:
         #print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.directory.__str__() + "\t" + job.step
-        directory = job.config.processingDirectory + "/" + job.UUID.__str__() + "/"
+        directory = job.config.processingDirectory + job.UUID.__str__() + "/"
         print "moving: " + job.directory + "\t to: \t" + directory
         os.makedirs(directory, mode=0777)
         os.rename(job.directory, directory + job.directory.split("/")[-1])
@@ -101,25 +101,28 @@ def processTaskQueue():
         for client in factory.clients:
             client.clientLock.acquire()
             if client.currentThreads < client.maxThreads:
-                tasksQueue.remove(task)
-                tasksBeingProcessed.append(task)
-                send = protocol["performTask"]
-                send += protocol["delimiter"] 
-                send += task.UUID.__str__() 
-                send += protocol["delimiter"] 
-                if task.standardIn:
-                    send += task.standardIn.__str__() 
-                send += protocol["delimiter"] 
-                if task.standardOut:
-                    send += task.standardOut.__str__()
-                send += protocol["delimiter"] 
-                if task.standardError:
-                    send += task.standardError.__str__() 
-                send += protocol["delimiter"]  
-                send += task.execute.__str__()
-                send += protocol["delimiter"]  
-                send += task.arguments.__str__() 
-                reactor.callFromThread(client.write, send)
+                for supportedCommand in client.supportedCommands:
+                    if supportedCommand == task.execute:
+		                tasksQueue.remove(task)
+		                tasksBeingProcessed.append(task)
+		                send = protocol["performTask"]
+		                send += protocol["delimiter"] 
+		                send += task.UUID.__str__() 
+		                send += protocol["delimiter"] 
+		                if task.standardIn:
+		                    send += task.standardIn.__str__() 
+		                send += protocol["delimiter"] 
+		                if task.standardOut:
+		                    send += task.standardOut.__str__()
+		                send += protocol["delimiter"] 
+		                if task.standardError:
+		                    send += task.standardError.__str__() 
+		                send += protocol["delimiter"]  
+		                send += task.execute.__str__()
+		                send += protocol["delimiter"]  
+		                send += task.arguments.__str__() 
+		                reactor.callFromThread(client.write, send)
+		                break
             client.clientLock.release()
     tasksLock.release()    
    
@@ -241,7 +244,7 @@ class Job:
     def createTasksForStep(self, command):
         """Creates the tasks for the given command"""
         ret = []
-        directory = self.config.processingDirectory + "/" + self.UUID.__str__() + "/"
+        directory = self.config.processingDirectory + self.UUID.__str__() + "/" + os.path.basename(self.directory) + "/"
         if command.filterDir:
             directory += command.filterSubDir   
         if command.executeOnEachFile:
