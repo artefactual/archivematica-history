@@ -21,13 +21,13 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%relativeLocation%logs/extraction.log</standardOut>
+                <standardError>%relativeLocation%logs/extraction.log</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>easyExtract_v0.0</execute>
-                <arguments> hello world </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <arguments>"%relativeLocation%" -w -f -r -n</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
