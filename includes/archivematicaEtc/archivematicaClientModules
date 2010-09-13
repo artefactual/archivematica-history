@@ -27,3 +27,4 @@
 echo_v1.0="/bin/echo"
 FITS_v0.0="/bin/echo"
 normalize_v0.0="/bin/echo"
+easyExtract_v0.0="python /opt/externals/easy-extract/easy_extract.py"
