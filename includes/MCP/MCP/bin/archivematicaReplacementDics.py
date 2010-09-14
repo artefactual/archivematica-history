@@ -39,7 +39,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 import os
-from archivematicaFileUUID import getUUIDOfFile
+from archivematicaMCPFileUUID import getUUIDOfFile
 
 class replacementDics:
     def __init__(self, archivematicaVars):
