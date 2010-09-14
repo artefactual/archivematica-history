@@ -211,7 +211,7 @@ class Job:
                 destination = self.config.successDirectory
             else: #"cleanupUnsuccessfulCommand"
                 destination = self.config.failureDirectory
-            directory = self.config.processingDirectory + "/" + self.UUID.__str__() + "/"
+            directory = self.config.processingDirectory + self.UUID.__str__() + "/"
             for f in os.listdir(directory):
                 print "rename: " + os.path.join(directory, f) + " TO: " + os.path.join(destination, f)
                 os.rename( os.path.join(directory, f), os.path.join(destination, f) )
@@ -455,6 +455,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
                     break
             if theTask:
                 theTask.completed(ret)
+                print "task completed: " + theTask.UUID.__str__()
             else:
                 self.badProtocol(command)
         else:
@@ -493,7 +494,7 @@ def archivematicaMCPServerListen():
     factory.clients = []
     reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory)
     reactor.run()
-
+    print "The reactor stopped!!!"
 
 if __name__ == '__main__':
     configs = loadConfigs()

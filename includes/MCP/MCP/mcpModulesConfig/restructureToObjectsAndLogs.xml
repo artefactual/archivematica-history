@@ -1,5 +1,4 @@
 <module>
-
     <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
@@ -7,13 +6,13 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%structureFolder/objectsAndLogs/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%createOrMoveAndCheckMD5/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
-    <commands>
+    <commands>    
         <exeCommand> 
             <command>
                 <skip>No</skip>
@@ -21,12 +20,12 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%filenameCleanup.log</standardOut>
-                <standardError>%SIPLogsDirectory%filenameCleanup.log</standardError>
+                <standardOut></standardOut>
+                <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>detox_v0.0</execute>
-                <arguments>-rv %relativeLocation%</arguments>
+                <execute>restructureToObjectsAndLogs_v0.0</execute>
+                <arguments>"%relativeLocation%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>

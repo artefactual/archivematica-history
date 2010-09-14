@@ -38,18 +38,22 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-
-def hello():
-    print world
+import os
+from archivematicaFileUUID import getUUIDOfFile
 
 class replacementDics:
     def __init__(self, archivematicaVars):
         self.archivematicaVars = archivematicaVars
         
     def commandReplacementDic(self, task, job, target, command):
+        sipDir = job.config.processingDirectory + job.UUID.__str__() + "/" + os.path.basename(job.directory) + "/"
         ret = { \
         "%jobUUID%": job.UUID.__str__(), \
         "%taskUUID%": task.UUID.__str__(), \
+        "%SIPLogsDirectory%": "%SIPDirectory%logs/", \
+        "%SIPObjectsDirectory%": "%SIPDirectory%objects/", \
+        "%SIPDirectory%": sipDir.replace(self.archivematicaVars["sharedDirectory"], "%sharedPath%"), \
+        "%fileUUID%": getUUIDOfFile( sipDir + "logs/" +  self.archivematicaVars["fileUUIDSHumanReadable"], sipDir + "objects/" , target ), \
         "%relativeLocation%": target.replace(job.config.watchDirectory, "%relativeDirectoryLocation%"), \
         "%relativeDirectoryLocation%": "%sharedPath%%processingDirectory%" + job.UUID.__str__() + "/", \
         "%processingDirectory%": job.config.processingDirectory.replace(self.archivematicaVars["sharedDirectory"], "")\

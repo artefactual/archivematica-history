@@ -6,10 +6,10 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>/tmp/tmp/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%unquarantine/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%extractPackages/easyExtract</successDirectory>
-        <failureDirectory>%watchDirectoryPath%extractPackages/easyExtract</failureDirectory>
+        <successDirectory>%watchDirectoryPath%structureFolder/objectsAndLogs/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
@@ -20,13 +20,13 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>/tmp/tempOutput.txt</standardOut>
+                <standardOut></standardOut>
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>setFilePermission_v0.0</execute>
-                <arguments> 550 ?</arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <arguments> 700 "%relativeLocation%"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
         

@@ -21,12 +21,12 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%fileUUIDS.txt</standardOut>
+                <standardError>%SIPLogsDirectory%fileUUIDS.txt</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>UUID4_v0.0</execute>
-                <arguments> </arguments>
+                <arguments> "%relativeLocation%" "%SIPobjectsDirectory%"</arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>
         </exeCommand>

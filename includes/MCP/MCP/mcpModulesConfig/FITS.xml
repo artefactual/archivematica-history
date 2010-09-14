@@ -1,5 +1,4 @@
 <module>
-
     <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
@@ -19,22 +18,22 @@
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
+                <filterSubDir>objects/</filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%FITS-%fileUUID%.xml</standardOut>
+                <standardError>%SIPLogsDirectory%</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>FITS_v0.0</execute>
-                <arguments> hello world </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <arguments>-i %relativeLocation%</arguments>
+                <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -51,7 +50,7 @@
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -67,7 +66,7 @@
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>

@@ -10,7 +10,7 @@
         <watchDirectory>%watchDirectoryPath%acquireSIP</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%quarantine</successDirectory>
-        <failureDirectory>/tmp/NOTUSED</failureDirectory>
+        <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
     <commands>    

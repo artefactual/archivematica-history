@@ -9,7 +9,7 @@
         <watchDirectory>%watchDirectoryPath%quarantine</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%unquarantine</successDirectory>
-        <failureDirectory>%watchDirectoryPath%virusDetected</failureDirectory>
+        <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
     <commands>    
@@ -25,15 +25,15 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>setFilePermission_v0.0</execute>
-                <arguments> 000 </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <arguments> 000 "%relativeLocation%"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -50,7 +50,7 @@
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -66,7 +66,7 @@
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
