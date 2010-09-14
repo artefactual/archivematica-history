@@ -24,7 +24,13 @@
 
 #Commands
 #the version numbers are versions of the protocol, not versions of the programs themselves.
-echo_v1.0="/bin/echo"
-FITS_v0.0="/bin/echo"
-normalize_v0.0="/bin/echo"
-easyExtract_v0.0="python /opt/externals/easy-extract/easy_extract.py"
+echo_v1.0="/bin/echo "
+FITS_v0.0="/opt/externals/fits/fits.sh "
+normalize_v0.0="/bin/echo "
+easyExtract_v0.0="python /opt/externals/easy-extract/easy_extract.py "
+setFilePermission_v0.0="chmod "
+restructureToObjectsAndLogs_v0.0="%clientScriptsDirectory%restructureToObjectsAndLogs.sh "
+createOrMoveAndCheckMD5_v0.0="%clientScriptsDirectory%createOrMoveAndCheckMD5.sh "
+createOrMoveDC_v0.0="%clientScriptsDirectory%createOrMoveDC.sh "
+clamscan_v0.0="clamscan "
+detox_v0.0="detox "
