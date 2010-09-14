@@ -49,7 +49,8 @@ def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "
     #Replace replacement strings
     command = supportedModules[execute] 
     replacementDic = { 
-        "%sharedPath%":archivmaticaVars["sharedDirectory"]
+        "%sharedPath%":archivmaticaVars["sharedDirectory"], \
+        "%clientScriptsDirectory%":archivmaticaVars["clientScriptsDirectory"]
     }  
     #for each key replace all instances of the key in the command string
     for key in replacementDic.iterkeys():

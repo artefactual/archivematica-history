@@ -13,7 +13,7 @@
         <failureDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</failureDirectory>
     </directories>
 
-    <commands>    
+    <commands>
         <exeCommand> 
             <command>
                 <skip>No</skip>
@@ -21,20 +21,20 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%filenameCleanup.log</standardOut>
+                <standardError>%SIPLogsDirectory%filenameCleanup.log</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>detox_v0.0</execute>
-                <arguments> hello world </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <arguments>-rv %relativeLocation%</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -51,7 +51,7 @@
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -67,7 +67,7 @@
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>

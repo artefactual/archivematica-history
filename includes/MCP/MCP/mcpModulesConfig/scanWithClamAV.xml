@@ -12,7 +12,7 @@
         <failureDirectory>%watchDirectoryPath%checkForViruses/clamAVFoundVirus</failureDirectory>
     </directories>
 
-    <commands>    
+    <commands>
         <exeCommand> 
             <command>
                 <skip>No</skip>
@@ -20,20 +20,20 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%clamAVScan.txt</standardOut>
+                <standardError>%SIPLogsDirectory%clamAVScan.txt</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>echo_v1.0</execute>
-                <arguments> hello world </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>clamscan_v0.0</execute>
+                <arguments>%relativeLocation%</arguments>
+                <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -50,7 +50,7 @@
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -66,7 +66,7 @@
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
