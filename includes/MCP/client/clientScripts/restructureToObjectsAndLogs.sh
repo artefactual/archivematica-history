@@ -22,8 +22,8 @@
 
 target=$1
 UUID=`uuid -v 4`
-targetBasename=`basename target`
-targetDirname=`dirname target`
+targetBasename=`basename "$target"`
+targetDirname=`dirname "$target"`
 newDir="${targetDirname}/${targetBasename}-${UUID}/"
 mkdir "${newDir}"
 mv "${target}" "${newDir}objects/"

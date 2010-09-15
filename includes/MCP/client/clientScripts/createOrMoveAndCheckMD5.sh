@@ -19,20 +19,22 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+source /etc/archivematica/archivematicaConfig.conf
+
 target="$1"
 MD5FILE="$2"
 UUID=`uuid -v 4`
-targetBasename=`basename target`
-targetDirname=`dirname target`
+targetBasename=`basename "$target"`
+targetDirname=`dirname "$target"`
 
-if [ -f "${target}/objects/$MD5FILE" ]; then
-    mv "${target}/objects/$MD5FILE" "${target}logs/${MD5FILE}"
+if [ -f "${target}objects/$MD5FILE" ]; then
+    mv "${target}objects/$MD5FILE" "${target}logs/${MD5FILE}"
 else
     tmpDir=`pwd`
     cd "${target}objects/"
     md5deep -rl "." > "${target}logs/${MD5FILE}"
     cd $tmpDir
 fi
-"$checkMD5NoGui" "${target}objects/" "${target}logs/${MD5FILE}" "${MD5FILE}processSIP_check.log"
+"$checkMD5NoGui" "${target}objects/" "${target}logs/${MD5FILE}" "${target}logs/${MD5FILE}-Check-`date`"
 
 

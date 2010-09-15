@@ -6,16 +6,16 @@ failTmp=/tmp/fail-$UUID
 passTmp=/tmp/pass-$UUID
 reportTmp=/tmp/report-$UUID
 
-checkFolder=$1
-md5Digest=$2
-integrityReport=$3
+checkFolder="$1"
+md5Digest="$2"
+integrityReport="$3"
 
 tmpDir=`pwd`
 cd "$checkFolder"
 #check for passing checksums
-md5deep -r -m $md5Digest . > $passTmp
+md5deep -r -m "$md5Digest" . > $passTmp
 #check for failing checksums
-md5deep -r -x $md5Digest . > $failTmp
+md5deep -r -x "$md5Digest" . > $failTmp
 cd $tmpDir      
 
 
@@ -37,7 +37,7 @@ echo " " >> $reportTmp
 echo $numberFail "items failed integrity checking" >> $reportTmp
 
 #copy pasta
-cp $reportTmp $integrityReport
+cp $reportTmp "$integrityReport"
 
 #display report
 #if [$numberFail != 0]

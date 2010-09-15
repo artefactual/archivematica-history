@@ -98,6 +98,7 @@ def processTaskQueue():
     """Attempts to assign tasks to clients."""
     tasksLock.acquire()
     for task in tasksQueue:
+        taskAssigned = False
         for client in factory.clients:
             client.clientLock.acquire()
             if client.currentThreads < client.maxThreads:
@@ -122,11 +123,16 @@ def processTaskQueue():
 		                send += protocol["delimiter"]  
 		                send += task.arguments.__str__() 
 		                reactor.callFromThread(client.write, send)
-		                break
+		                client.currentThreads += 1
+		                taskAssigned = True
+		                print "assigned task: " + task.UUID.__str__()
+		                print "client threads: " + client.currentThreads.__str__()
+		                break 
             client.clientLock.release()
+            if taskAssigned:
+                break #break up to next task
     tasksLock.release()    
    
-
 class Task():
     """A task is an instance of a command, operating on an entire directory, or a single file."""
     def __init__(self, job, target, command):
@@ -175,8 +181,12 @@ class Task():
                     break
         self.job.combinedRet += math.fabs(returned)
         tasksLock.release()
+        
         if jobStepDone:
+            print "Job step done"
             self.job.jobStepCompleted()
+        else:
+            print "More tasks to be processed for Job"
 
 class Job:
     """A job is an instance of a file in a watch directory (from a config file)."""
@@ -246,7 +256,7 @@ class Job:
         ret = []
         directory = self.config.processingDirectory + self.UUID.__str__() + "/" + os.path.basename(self.directory) + "/"
         if command.filterDir:
-            directory += command.filterSubDir   
+            directory += command.filterDir   
         if command.executeOnEachFile:
             ret = self.createTasksForStepInDirectory(command, directory)
         else:
@@ -260,10 +270,10 @@ class Job:
     def createTasksForStepInDirectory(self, command, directory):
         """for every file in the directory, recursively, create a new task."""
         ret = []
-        print "Creating tasks for directory: " + directory
+        #print "Creating tasks for directory: " + directory
         if os.path.isdir(directory):
             for f in os.listdir(directory):
-                print f
+                #print f
                 if os.path.isdir(os.path.join(directory, f)):
                     sub = self.createTasksForStepInDirectory(command, os.path.join(directory, f))
                     for task in sub:
@@ -454,10 +464,12 @@ class archivematicaMCPServerProtocol(LineReceiver):
                     theTask = task
                     break
             if theTask:
-                theTask.completed(ret)
                 print "task completed: " + theTask.UUID.__str__()
+                print "current threads on client: " + self.currentThreads.__str__()
+                theTask.completed(ret)
             else:
                 self.badProtocol(command)
+            processTaskQueue()
         else:
             self.badProtocol(command)
     

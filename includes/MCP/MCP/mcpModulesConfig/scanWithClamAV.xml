@@ -25,7 +25,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>clamscan_v0.0</execute>
-                <arguments>%relativeLocation%</arguments>
+                <arguments>"%relativeLocation%"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>

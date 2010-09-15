@@ -7,8 +7,8 @@
     
     <directories>
         <watchDirectory>%watchDirectoryPath%createOrMoveDC/</watchDirectory>
-        <processingDirectory>%processingDirectory%extractPackages/easyExtract/</processingDirectory>
-        <successDirectory></successDirectory>
+        <processingDirectory>%processingDirectory%</processingDirectory>
+        <successDirectory>%watchDirectoryPath%extractPackages/easyExtract/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
@@ -25,7 +25,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>createOrMoveDC_v0.0</execute>
-                <arguments>%relativeLocation%</arguments>
+                <arguments>"%relativeLocation%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>

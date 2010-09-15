@@ -19,14 +19,16 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-target=$1
-DublinCore=$2
-UUID=`uuid -v 4`
-targetBasename = basename target
-targetDirname = dirname target
+source /etc/archivematica/archivematicaConfig.conf
 
-if [ -f "${target}/objects/$DublinCore" ] ; then
-    mv "${target}/objects/$DublinCore" "${target}logs/${DublinCore}"
+target="$1"
+DublinCore="$2"
+UUID=`uuid -v 4`
+targetBasename = basename "$target"
+targetDirname = dirname "$target"
+
+if [ -f "${target}objects/$DublinCore" ] ; then
+    mv "${target}objects/$DublinCore" "${target}logs/${DublinCore}"
 else
     tmpDir=`pwd`
     cd "${target}logs/"

@@ -25,7 +25,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>createOrMoveAndCheckMD5_v0.0</execute>
-                <arguments>%relativeLocation%</arguments>
+                <arguments>"%relativeLocation%"  "%MD5FileName%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>

@@ -46,17 +46,24 @@ class replacementDics:
         self.archivematicaVars = archivematicaVars
         
     def commandReplacementDic(self, task, job, target, command):
+        
+        #Pre do some variables, that other variables rely on, because dictionarys don't maintain order
         sipDir = job.config.processingDirectory + job.UUID.__str__() + "/" + os.path.basename(job.directory) + "/"
+        SIPDirectory = sipDir.replace(self.archivematicaVars["sharedDirectory"], "%sharedPath%")
+        processingDirectory = job.config.processingDirectory.replace(self.archivematicaVars["sharedDirectory"], "")
+        relativeDirectoryLocation = "%sharedPath%" + processingDirectory + job.UUID.__str__() + "/"
+        
         ret = { \
         "%jobUUID%": job.UUID.__str__(), \
         "%taskUUID%": task.UUID.__str__(), \
-        "%SIPLogsDirectory%": "%SIPDirectory%logs/", \
-        "%SIPObjectsDirectory%": "%SIPDirectory%objects/", \
-        "%SIPDirectory%": sipDir.replace(self.archivematicaVars["sharedDirectory"], "%sharedPath%"), \
-        "%fileUUID%": getUUIDOfFile( sipDir + "logs/" +  self.archivematicaVars["fileUUIDSHumanReadable"], sipDir + "objects/" , target ), \
-        "%relativeLocation%": target.replace(job.config.watchDirectory, "%relativeDirectoryLocation%"), \
-        "%relativeDirectoryLocation%": "%sharedPath%%processingDirectory%" + job.UUID.__str__() + "/", \
-        "%processingDirectory%": job.config.processingDirectory.replace(self.archivematicaVars["sharedDirectory"], "")\
+        "%SIPLogsDirectory%": SIPDirectory + "logs/", \
+        "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
+        "%SIPDirectory%": SIPDirectory, \
+        "%fileUUID%": getUUIDOfFile( sipDir + "logs/" +  self.archivematicaVars["fileUUIDSHumanReadable"], sipDir + "objects/", target ), \
+        "%relativeLocation%": target.replace(job.config.watchDirectory, relativeDirectoryLocation), \
+        "%relativeDirectoryLocation%": relativeDirectoryLocation, \
+        "%processingDirectory%": processingDirectory, \
+        "%MD5FileName%":self.archivematicaVars["MD5FileName"] \
         }
         return ret
 

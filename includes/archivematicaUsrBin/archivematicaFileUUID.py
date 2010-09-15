@@ -59,7 +59,7 @@ if __name__ == '__main__':
   if function == "Logline" :
     basepath = sys.argv[2]
     fullFileName = sys.argv[3]
-    filename = string.replace( fullFileName, basepath, "objects", 1 )    
+    filename = string.replace( fullFileName, basepath, "objects/", 1 )    
     print filename
 
   elif function == "getFileUUID":

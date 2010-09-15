@@ -55,6 +55,7 @@ def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "
     #for each key replace all instances of the key in the command string
     for key in replacementDic.iterkeys():
         command = command.replace ( key, replacementDic[key] )
+        arguments = arguments.replace ( key, replacementDic[key] )
         sInput = sInput.replace ( key, replacementDic[key] )
         sOutput = sOutput.replace ( key, replacementDic[key] )
         sError = sError.replace ( key, replacementDic[key] )
