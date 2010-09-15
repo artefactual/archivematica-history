@@ -1,4 +1,5 @@
 
+
 Notes to get started:
 install the dependancies. & python
 edit the client and server to load local archivematica config file.
@@ -90,6 +91,10 @@ add does file exist (ret 0/1)
 add digiatally sign files?
 spelling of archivematicaVars
 
+
+MD5 checks need to return number of fails
+
+return error code when client fails to write to file
 
 
 

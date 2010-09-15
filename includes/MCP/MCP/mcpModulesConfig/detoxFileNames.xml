@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>detox_v0.0</execute>
-                <arguments>-rv %relativeLocation%</arguments>
+                <arguments>-rv "%relativeLocation%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>

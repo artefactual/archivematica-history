@@ -25,9 +25,8 @@ import os
 import sys
 import string
 
-UUIDsDic={}
-
 def loadFileUUIDsDic(sipUUIDfile):
+  UUIDsDic = {}
   if os.path.isfile(sipUUIDfile):
     FileUUIDs_fh = open(sipUUIDfile, "r")
     line = FileUUIDs_fh.readline()
@@ -40,16 +39,15 @@ def loadFileUUIDsDic(sipUUIDfile):
         UUIDsDic[fileName] = fileUUID
       line = FileUUIDs_fh.readline()
   else:
-    UUIDsDic = ""
+    UUIDsDic = {}
   return UUIDsDic
 
 def getUUIDOfFile( sipUUIDfile, basepath, fullFileName):
-  UUIDsDic = ""
-  loadFileUUIDsDic(sipUUIDfile)
+  UUIDsDic = loadFileUUIDsDic(sipUUIDfile)
   if not UUIDsDic:
     return ""
   
-  filename = string.replace( fullFileName, basepath, "objects", 1 )    
+  filename = string.replace( fullFileName, basepath, "objects/", 1 )    
   if filename in UUIDsDic:
     return UUIDsDic[filename]
   else :

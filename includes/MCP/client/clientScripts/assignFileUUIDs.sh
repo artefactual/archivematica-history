@@ -24,5 +24,5 @@ source /etc/archivematica/archivematicaConfig.conf
 target=$1
 objectsDir=$2
 fileUUID=`uuid -v 4`
-echo "$FileUUID -> `"$fileUUIDPY" "Logline" "${target}" "${objectsDir}"`"
+echo "$fileUUID -> `"$fileUUIDPY" "Logline" "${objectsDir}" "${target}"`"
 
