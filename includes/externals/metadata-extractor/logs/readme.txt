@@ -1,1 +1,0 @@
-This file is a placeholder to force the creation of empty directories in a ZIP/TAR file.
