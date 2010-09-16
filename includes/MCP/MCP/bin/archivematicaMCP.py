@@ -77,6 +77,7 @@ tasksLock = threading.Lock()
 movingDirectoryLock = threading.Lock()
 factory = twistedProtocol.ServerFactory()
 jobsLock =  threading.Lock()
+watchedDirectories = []
 
 def checkJobQueue():
     """Creates Tasks for new auto approved jobs, or just approved jobs."""
@@ -84,7 +85,9 @@ def checkJobQueue():
     for job in jobsQueue:
         #print "  " + job.UUID.__str__() + "\t" + job.config.identifier + "\t" + job.directory.__str__() + "\t" + job.step
         directory = job.config.processingDirectory + job.UUID.__str__() + "/"
-        print "moving: " + job.directory + "\t to: \t" + directory
+        print
+        print "job UUID: " + job.UUID.__str__()
+        print "moving: " + job.directory + "\t to: \t" + directory + job.directory.split("/")[-1]
         os.makedirs(directory, mode=0777)
         os.rename(job.directory, directory + job.directory.split("/")[-1])
         tasksCreated = job.createTasksForCurrentStep() 
@@ -403,12 +406,20 @@ def loadDirectoryWatchLlist(configs):
     replacementDic = archivematicaRD.watchFolderRepacementDic()
     for config in configs:
         wm = WatchManager()
+        preExisting = False
                 #for each key replace all instances of the key in the strings
         for key in replacementDic.iterkeys():
           config.watchDirectory = config.watchDirectory.replace(key, replacementDic[key])
-        notifier = ThreadedNotifier(wm, watchDirectory(config))
-        wdd = wm.add_watch(config.watchDirectory, mask, rec=False)
-        notifier.start()
+        for wd in watchedDirectories:
+            if wd == config.watchDirectory:
+                preExisting = True
+        if not preExisting:
+            watchedDirectories.append(config.watchDirectory)
+            notifier = ThreadedNotifier(wm, watchDirectory(config))
+            wdd = wm.add_watch(config.watchDirectory, mask, rec=False)
+            notifier.start()            
+        else:
+            print "Tried to watch a directory that is already being watched: " + config.watchDirectory
 
 class archivematicaMCPServerProtocol(LineReceiver):
     """This is the MCP protocol implemented"""
