@@ -20,12 +20,12 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir>objects/</filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%FITS-%fileUUID%.xml</standardOut>
+                <standardOut>%SIPLogsDirectory%FITS-%fileUUID%error.txt</standardOut>
                 <standardError>%SIPLogsDirectory%FITS-%fileUUID%error.txt</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>FITS_v0.0</execute>
-                <arguments>-i "%relativeLocation%"</arguments>
+                <arguments>-i "%relativeLocation%" -o "%SIPLogsDirectory%FITS-%fileUUID%.xml"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>

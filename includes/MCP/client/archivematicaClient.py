@@ -34,7 +34,7 @@ supportedModules = loadConfig(archivmaticaVars["archivematicaClientModules"])
 protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
 
 def writeToFile(output, fileName):
-    if fileName:
+    if fileName and output:
         print "writing to: " + fileName
         try:
             f = open(fileName, 'a')
@@ -66,6 +66,7 @@ def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "
         print >>sys.stderr, "processing: " + command.__str__()
         #retcode = subprocess.call( shlex.split(command) )
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	
         p.wait()
         output = p.communicate(input=sInput)
         print "returned:"
