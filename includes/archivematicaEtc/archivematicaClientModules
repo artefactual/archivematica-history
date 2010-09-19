@@ -39,4 +39,4 @@ clamscan_v0.0="echo " #faster for testing
 detox_v0.0="detox "
 UUID4_v0.0="%clientScriptsDirectory%assignFileUUIDs.sh "
 createMETS_v0.0="${usrBin}archivematicaCreateMETS.py "
-
+addDCTOMETS_v0.0="${usrBin}archivematicaAddDublinCoreToMETS.py "
