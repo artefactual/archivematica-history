@@ -9,7 +9,7 @@
         <watchDirectory>%watchDirectoryPath%identifyFileFormat/FITS/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%compileMetadata/METS/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%identifyFileFormat/failure</failureDirectory>
+        <failureDirectory>%watchDirectoryPath%failure/</failureDirectory>
     </directories>
 
     <commands>    

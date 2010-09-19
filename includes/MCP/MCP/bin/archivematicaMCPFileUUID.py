@@ -45,6 +45,7 @@ def loadFileUUIDsDic(sipUUIDfile):
 def getUUIDOfFile( sipUUIDfile, basepath, fullFileName):
   UUIDsDic = loadFileUUIDsDic(sipUUIDfile)
   if not UUIDsDic:
+    print "UUID DIC FAILED TO LOADD!!!!!!!!!!: " + sipUUIDfile
     return ""
   
   filename = string.replace( fullFileName, basepath, "objects/", 1 )    

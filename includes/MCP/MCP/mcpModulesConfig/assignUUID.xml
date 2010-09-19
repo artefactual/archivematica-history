@@ -21,8 +21,8 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir>objects</filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%fileUUIDS.txt</standardOut>
-                <standardError>%SIPLogsDirectory%fileUUIDS.txt</standardError>
+                <standardOut>%SIPLogsDirectory%FileUUIDs.log</standardOut>
+                <standardError>%SIPLogsDirectory%FileUUIDs.log</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>UUID4_v0.0</execute>
