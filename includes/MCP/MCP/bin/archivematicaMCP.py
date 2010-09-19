@@ -405,7 +405,6 @@ def loadDirectoryWatchLlist(configs):
     """Start watching all the watch directorys defined in the configs. """
     replacementDic = archivematicaRD.watchFolderRepacementDic()
     for config in configs:
-        wm = WatchManager()
         preExisting = False
                 #for each key replace all instances of the key in the strings
         for key in replacementDic.iterkeys():
@@ -414,6 +413,7 @@ def loadDirectoryWatchLlist(configs):
             if wd == config.watchDirectory:
                 preExisting = True
         if not preExisting:
+            wm = WatchManager()
             watchedDirectories.append(config.watchDirectory)
             notifier = ThreadedNotifier(wm, watchDirectory(config))
             wdd = wm.add_watch(config.watchDirectory, mask, rec=False)

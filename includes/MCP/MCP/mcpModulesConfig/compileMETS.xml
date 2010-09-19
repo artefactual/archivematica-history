@@ -8,8 +8,8 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%compileMetadata/METS</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%appraiseSIP</successDirectory>
-        <failureDirectory>/tmp/tmp3/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%addDCToMETS/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
@@ -20,13 +20,13 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>/tmp/tempOutput.txt</standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%createMets.txt</standardOut>
+                <standardError>%SIPLogsDirectory%createMets.txt</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>echo_v1.0</execute>
-                <arguments> hello world </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>createMETS_v0.0</execute>
+                <arguments>"%SIPLogsDirectory%" "%SIPUUID%" "%SIPName%" "%SIPDirectory%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         

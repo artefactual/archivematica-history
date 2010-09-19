@@ -6,10 +6,10 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%identifyFileFormat/FITS/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%addDCToMETS</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%compileMetadata/METS/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failure/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%appraiseSIP/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
@@ -18,22 +18,22 @@
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir>objects/</filterSubDir>
+                <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%FITS-%fileUUID%error.txt</standardOut>
-                <standardError>%SIPLogsDirectory%FITS-%fileUUID%error.txt</standardError>
+                <standardOut>/tmp/tempOutput.txt</standardOut>
+                <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>FITS_v0.0</execute>
-                <arguments>-i "%relativeLocation%" -o "%SIPLogsDirectory%FITS-%fileUUID%.xml"</arguments>
-                <executeOnEachFile>yes</executeOnEachFile>
+                <execute>echo_v1.0</execute>
+                <arguments> ECHO addDCToMETS SIP </arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes</skip>
+                <skip>Yes/No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -50,7 +50,7 @@
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes</skip>
+                <skip>Yes/No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -66,7 +66,7 @@
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <skip>Yes</skip>
+                <skip>Yes/No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>

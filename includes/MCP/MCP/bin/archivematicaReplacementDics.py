@@ -41,6 +41,15 @@
 import os
 from archivematicaMCPFileUUID import getUUIDOfFile
 
+def getSIPUUIDFromLog(sipDir):
+    try:
+        fh = open(sipDir + "logs/" + "SIP-UUID.txt")
+        line = fh.readline()
+        return line.strip()
+    except IOError, ose:
+        return ""
+    
+
 class replacementDics:
     def __init__(self, archivematicaVars):
         self.archivematicaVars = archivematicaVars
@@ -52,6 +61,8 @@ class replacementDics:
         SIPDirectory = sipDir.replace(self.archivematicaVars["sharedDirectory"], "%sharedPath%")
         processingDirectory = job.config.processingDirectory.replace(self.archivematicaVars["sharedDirectory"], "")
         relativeDirectoryLocation = "%sharedPath%" + processingDirectory + job.UUID.__str__() + "/"
+        SIPUUID = getSIPUUIDFromLog(sipDir)
+        SIPName = os.path.basename(job.directory).replace("-" + SIPUUID, "")
         
         ret = { \
         "%jobUUID%": job.UUID.__str__(), \
@@ -63,7 +74,9 @@ class replacementDics:
         "%relativeLocation%": target.replace(job.config.watchDirectory, relativeDirectoryLocation), \
         "%relativeDirectoryLocation%": relativeDirectoryLocation, \
         "%processingDirectory%": processingDirectory, \
-        "%MD5FileName%":self.archivematicaVars["MD5FileName"] \
+        "%MD5FileName%":self.archivematicaVars["MD5FileName"], \
+        "%SIPUUID%":SIPUUID, \
+        "%SIPName%":SIPName \
         }
         return ret
 
