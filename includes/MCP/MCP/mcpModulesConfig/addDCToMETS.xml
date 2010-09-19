@@ -20,12 +20,12 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>/tmp/tempOutput.txt</standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%addDCTOMETS.log</standardOut>
+                <standardError>%SIPLogsDirectory%addDCTOMETS.log</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>echo_v1.0</execute>
-                <arguments> ECHO addDCToMETS SIP </arguments>
+                <execute>addDCTOMETS_v0.0</execute>
+                <arguments>"%SIPDirectory%" "%SIPLogsDirectory%"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
