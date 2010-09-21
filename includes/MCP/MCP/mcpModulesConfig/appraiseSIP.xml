@@ -8,8 +8,8 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%appraiseSIP</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%normalize</successDirectory>
-        <failureDirectory>%watchDirectoryPath%normalize</failureDirectory>
+        <successDirectory>%watchDirectoryPath%structureFolder/createDIPDirectory/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    

@@ -60,7 +60,8 @@ class replacementDics:
         sipDir = job.config.processingDirectory + job.UUID.__str__() + "/" + os.path.basename(job.directory) + "/"
         SIPDirectory = sipDir.replace(self.archivematicaVars["sharedDirectory"], "%sharedPath%")
         processingDirectory = job.config.processingDirectory.replace(self.archivematicaVars["sharedDirectory"], "")
-        relativeDirectoryLocation = "%sharedPath%" + processingDirectory + job.UUID.__str__() + "/"
+        relativeDirectoryLocationNoTrailingSlash = "%sharedPath%" + processingDirectory + job.UUID.__str__()
+        relativeDirectoryLocation = relativeDirectoryLocationNoTrailingSlash + "/"
         SIPUUID = getSIPUUIDFromLog(sipDir)
         SIPName = os.path.basename(job.directory).replace("-" + SIPUUID, "")
         
@@ -73,6 +74,7 @@ class replacementDics:
         "%fileUUID%": getUUIDOfFile( sipDir + "logs/" +  self.archivematicaVars["fileUUIDSHumanReadable"], sipDir + "objects/", target ), \
         "%relativeLocation%": target.replace(job.config.watchDirectory, relativeDirectoryLocation), \
         "%relativeDirectoryLocation%": relativeDirectoryLocation, \
+        "%relativeDirectoryLocationNoTrailingSlash%":relativeDirectoryLocationNoTrailingSlash, \
         "%processingDirectory%": processingDirectory, \
         "%MD5FileName%":self.archivematicaVars["MD5FileName"], \
         "%SIPUUID%":SIPUUID, \

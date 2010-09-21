@@ -134,6 +134,7 @@ def processTaskQueue():
             client.clientLock.release()
             if taskAssigned:
                 break #break up to next task
+        print "No client currently available to run: " + task.execute
     tasksLock.release()    
    
 class Task():
@@ -186,7 +187,7 @@ class Task():
         tasksLock.release()
         
         if jobStepDone:
-            print "Job step done"
+            print "Job step done: " + self.job.step
             self.job.jobStepCompleted()
         else:
             print "More tasks to be processed for Job"
@@ -263,11 +264,7 @@ class Job:
         if command.executeOnEachFile:
             ret = self.createTasksForStepInDirectory(command, directory)
         else:
-            if os.path.isdir(directory):
-                ret.append(Task(self, directory, command))
-            else:
-                print "error: tried to process file, not directory." + self.directory.__str__()
-                jobsQueue.remove(self)
+            ret.append(Task(self, directory, command))
         return ret
     
     def createTasksForStepInDirectory(self, command, directory):
@@ -300,7 +297,6 @@ class Job:
                         ret.append(task)
         else:
             print "error: tried to process file, not directory." + self.directory.__str__()
-            jobsQueue.remove(self)
         return ret
             
     def createTasksForCurrentStep(self):
@@ -420,6 +416,9 @@ def loadDirectoryWatchLlist(configs):
             notifier.start()            
         else:
             print "Tried to watch a directory that is already being watched: " + config.watchDirectory
+    print "Watching the following directories:"
+    for wd in watchedDirectories:
+        print "\t" + wd
 
 class archivematicaMCPServerProtocol(LineReceiver):
     """This is the MCP protocol implemented"""
@@ -444,6 +443,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
     def connectionMade(self):
         self.write("hello, client!")
         self.factory.clients.append(self)
+        processTaskQueue()
         
     def connectionLost(self, reason):
         print "Lost client: " + self.clientName
