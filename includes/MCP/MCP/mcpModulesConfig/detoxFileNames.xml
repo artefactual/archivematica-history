@@ -56,8 +56,8 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>%relativeDirectoryLocation%DETOXMOVEerror.log</standardOut>
-                <standardError>%relativeDirectoryLocation%DETOXMOVEerror.log</standardError>
+                <standardOut></standardOut>
+                <standardError></standardError>
                 <failureNotification> </failureNotification>
                 <execute>moveDetoxLogToDetoxedDirectory_v0.0</execute>
                 <arguments>"%relativeDirectoryLocation%filenameCleanup.log" "%SIPDirectory%"</arguments>

@@ -1,5 +1,5 @@
 <module>
-    <requiresUserApproval>Yes</requiresUserApproval>
+    <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
@@ -20,13 +20,13 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>/tmp/tempOutput.txt</standardOut>
+                <standardOut></standardOut>
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>echo_v1.0</execute>
-                <arguments> hello world </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>move_v0.0</execute>
+                <arguments>"%SIPDirectory%DIP" "/home/demo/sharedFolders/watchedFolders/uploadDIP/%SIPName%-%SIPUUID%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         

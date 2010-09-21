@@ -1,6 +1,6 @@
 <module>
 
-    <requiresUserApproval>No</requiresUserApproval>
+    <requiresUserApproval>Yes</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
@@ -25,7 +25,7 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>createChecksum_v0.0</execute>
+                <execute>uploadDip_v?.?</execute>
                 <arguments> hello world </arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>
