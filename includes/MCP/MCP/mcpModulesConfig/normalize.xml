@@ -8,8 +8,8 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%normalize</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>/tmp/tmp2/</successDirectory>
-        <failureDirectory>/tmp/tmp3/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%createAIPChecksum/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
@@ -18,15 +18,15 @@
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
+                <filterSubDir>objects/</filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%normalizationLog.txt</standardOut>
+                <standardError>%SIPLogsDirectory%normalizationLog.txt</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>normalize_v0.0</execute>
-                <arguments> hello world </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <arguments>"%relativeLocation%" "%fileUUID%" "%SIPLogsDirectory%DIP/"</arguments>
+                <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>
         

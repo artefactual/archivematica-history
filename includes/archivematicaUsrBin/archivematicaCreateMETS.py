@@ -41,7 +41,7 @@ processingDIR = sys.argv[4]
 
 
 def loadDetoxDic():
-    detox_fh = open(logsDIR+"/filenameCleanup.log", "r")
+    detox_fh = open(logsDIR+"filenameCleanup.log", "r")
  
     line = detox_fh.readline()
     while line:
@@ -55,7 +55,7 @@ def loadDetoxDic():
         line = detox_fh.readline()
 
 def loadFileUUIDsDic():
-    FileUUIDs_fh = open(logsDIR+"/FileUUIDs.log", "r")
+    FileUUIDs_fh = open(logsDIR+"FileUUIDs.log", "r")
  
     line = FileUUIDs_fh.readline()
     while line:

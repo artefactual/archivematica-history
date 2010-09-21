@@ -1,16 +1,15 @@
 <module>
-    <filterFileEnd>echo_1.0</filterFileEnd>
-    <requiresUserApproval>No</requiresUserApproval>
+    <requiresUserApproval>Yes</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>/tmp/tmp</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%structureFolder/separateDIP</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>/tmp/tmp2/</successDirectory>
-        <failureDirectory>/tmp/tmp3/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%storeAIP</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    

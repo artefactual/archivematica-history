@@ -56,9 +56,8 @@ defaultCommand = "echo No default normalization tool defined."
 
 #this script is passed fileIn, uuid
 fileIn = sys.argv[1]
-sipUUID = sys.argv[2]
-unrelativePath = sys.argv[3]
-accesspath = sys.argv[4]
+fileUUID = sys.argv[2]
+accesspath = sys.argv[3]
 
 #get file name and extension
 s = fileIn
@@ -77,7 +76,7 @@ fileExtension = s[x2mod:sLen]
 fileDirectory = s[:x1]
 fileFullName = fileDirectory + fileTitle + "." + fileExtension
 
-print >>sys.stderr, "\nNORMALIZING: " + fileTitle + "." + fileExtension + " {" + getUUIDOfFile(sipUUID, unrelativePath, fileFullName)  + "}"
+print >>sys.stderr, "\nNORMALIZING: " + fileTitle + "." + fileExtension + " {" + fileUUID + "}"
 
 def findDirectory(root, tag=None, text=None):
   ret = []
@@ -237,7 +236,7 @@ if len(accessConversionCommand) > 0 :
     if result:
       print >>sys.stderr, "!!! ACCESS NORMALIZATION FAILED !!!"
 else:
-  accessConversionCommand.append("cp %fileFullName% %accessFileDirectory%.")
+  accessConversionCommand.append("cp \"%fileFullName%\" \"%accessFileDirectory%.\"")
   executeCommand(accessConversionCommand[0])
   print >>sys.stderr, "No access normalization performed."
 
