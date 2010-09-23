@@ -42,6 +42,7 @@
 import os
 import pyinotify
 from archivematicaReplacementDics import replacementDics 
+from MCPloggingSQL import *
 from archivematicaLoadConfig import loadConfig
 from mcpModules.modules import modulesClass
 from pyinotify import WatchManager
@@ -128,6 +129,7 @@ def processTaskQueue():
 		                reactor.callFromThread(client.write, send)
 		                client.currentThreads += 1
 		                taskAssigned = True
+		                logTaskAssigned(task, client)
 		                print "assigned task: " + task.UUID.__str__()
 		                print "client threads: " + client.currentThreads.__str__()
 		                break 
@@ -169,6 +171,8 @@ class Task():
             if self.standardError:
                 self.standardError = self.standardError.replace(key, commandReplacementDic[key])
 
+        logTaskCreated(self, commandReplacementDic)
+
     def completed(self, returned):
         """When a task is completed, check to see if it was the last task for the job to be completed (job completed)."""
         tasksLock.acquire()
@@ -184,7 +188,8 @@ class Task():
                     jobStepDone = False
                     break
         self.job.combinedRet += math.fabs(returned)
-        tasksLock.release()
+        logTaskCompleted(self, returned)
+        tasksLock.release() 
         
         if jobStepDone:
             print "Job step done: " + self.job.step
@@ -443,7 +448,6 @@ class archivematicaMCPServerProtocol(LineReceiver):
     def connectionMade(self):
         self.write("hello, client!")
         self.factory.clients.append(self)
-        processTaskQueue()
         
     def connectionLost(self, reason):
         print "Lost client: " + self.clientName
@@ -457,6 +461,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
         """inform the server the client is capable of running a certain type of task"""
         if len(command) == 2:
             self.supportedCommands.append(command[1])
+            processTaskQueue()
         else:
             badProtocol(self, command)
     
