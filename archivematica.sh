@@ -61,6 +61,8 @@ svn export includes/archivematicaUsrShare/normalizationScripts $1/usr/share/arch
 
 chroot $1 ln -s /usr/share/archivematica/mcpModules /usr/lib/pymodules/python2.6/.
 
+adduser --home /dev/null --shell /bin/false --no-create-home --disabled-login archivematica
+
 chroot $1 update-python-modules
 
 #Install externals/archivematica
