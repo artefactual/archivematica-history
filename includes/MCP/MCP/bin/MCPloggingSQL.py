@@ -40,11 +40,12 @@
 # @version svn: $Id$
 
 import _mysql
-import uuid
+import os
+from archivematicaReplacementDics import getSIPUUIDFromLog
 
 #sudo apt-get install python-mysqldb
 
-db=_mysql.connect(host="localhost", db="MCP")
+db=_mysql.connect(host="localhost", db="MCP", user="demo", passwd="demo")
 
 #user approved?
 #client connected/disconnected.
@@ -55,12 +56,12 @@ def logTaskCreated(task, replacementDic):
     fileUUID = replacementDic["%fileUUID%"]
     taskexec = task.execute
     arguments = task.arguments
+    fileName = os.path.basename(replacementDic["%relativeLocation%"])
     
     separator = "', '"
     
-    db.query("""INSERT INTO taskCreated (taskUUID, jobUUID, fileUUID, exec, arguments)
-    VALUES ( '""" + taskUUID.__str__() + separator + jobUUID.__str__() + separator + fileUUID.__str__() + separator + taskexec + separator + arguments + "' )" )
-
+    db.query("""INSERT INTO taskCreated (taskUUID, jobUUID, fileUUID, fileName, exec, arguments)
+    VALUES ( '""" + taskUUID.__str__() + separator + jobUUID.__str__() + separator + fileUUID.__str__() + separator + fileName + separator + taskexec + separator + arguments + "' )" )
 
 def logTaskAssigned(task, client):
     taskUUID = task.UUID
@@ -82,12 +83,15 @@ def logTaskCompleted(task, retValue):
 
 
 def logJobCreated(job):
-    print "not implemented yet"
-    #SIPUUID    VARCHAR(50)
+    separator = "', '"
+    db.query("""INSERT INTO jobCreated (jobUUID, directory, SIPUUID)
+    VALUES ( '""" + job.UUID.__str__() + separator + job.directory + separator + getSIPUUIDFromLog(job.directory) + "' )" )
+
 
 def logJobStepCompleted(job):
-    print "not implemented yet"
-
+    separator = "', '"
+    db.query("""INSERT INTO jobStepCompleted (jobUUID, step)
+    VALUES ( '""" + job.UUID.__str__() + separator + job.step + "' )" )
 
 if __name__ == '__main__':
     """Insert test data & print it"""
