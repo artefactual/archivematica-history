@@ -214,10 +214,12 @@ class Job:
             self.config.processingDirectory = self.config.processingDirectory.replace(key, replacementDic[key])
             self.config.successDirectory = self.config.successDirectory.replace(key, replacementDic[key])
             self.config.failureDirectory = self.config.failureDirectory.replace(key, replacementDic[key])
+        logJobCreated(self)
 
    
     def jobStepCompleted(self):
         """When a job step is completed, move to the next step, or if the job is completed, move everthing in the directory to the output directory. """
+        logJobStepCompleted(self)
         #if last step completed
         if self.step == "cleanupSuccessfulCommand"\
         or self.step == "cleanupUnsuccessfulCommand":
