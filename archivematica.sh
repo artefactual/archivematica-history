@@ -54,8 +54,9 @@ svn export includes/archivematicaEtc $1/etc/archivematica
 svn export includes/archivematicaUsrShare $1/usr/share/
 svn export sharedFolderStructure $1/home/demo/sharedFolders
 
-mkdir $1/usr/share/archivematica/
+svn export includes/MCP/MCP/mcpModulesConfig $1/etc/archivematica/mcpModulesConfig/
 
+mkdir $1/usr/share/archivematica/
 svn export includes/MCP/MCP/mcpModules $1/usr/share/archivematica/mcpModules
 svn export includes/archivematicaUsrShare/normalizationScripts $1/usr/share/archivematica/normalizationScripts
 
@@ -105,7 +106,7 @@ chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 #chroot $1 ln -s /var/1-receiveSIP/ /home/demo
 
 #where should these exports go?
-#svn export includes/sampledata $1/home/demo/testFiles
+svn export includes/sampledata $1/home/demo/testFiles
 #svn export includes/sampledata/ImagesSIP $1/var/1-receiveSIP/ImagesSIP
 #svn export includes/sampledata/MultimediaSIP $1/var/1-receiveSIP/MultimediaSIP
 #svn export includes/sampledata/OfficeDocsSIP $1/var/1-receiveSIP/OfficeDocsSIP

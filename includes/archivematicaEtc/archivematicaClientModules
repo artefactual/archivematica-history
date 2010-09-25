@@ -22,8 +22,6 @@
 
 #!!! this is a list of supported commands, not modules
 
-usrBin="/home/demo/archivematica/includes/archivematicaUsrBin/"
-
 #Commands
 #the version numbers are versions of the protocol, not versions of the programs themselves.
 echo_v1.0="/bin/echo "
@@ -33,13 +31,13 @@ setFilePermission_v0.0="chmod "
 restructureToObjectsAndLogs_v0.0="%clientScriptsDirectory%restructureToObjectsAndLogs.sh "
 createOrMoveAndCheckMD5_v0.0="%clientScriptsDirectory%createOrMoveAndCheckMD5.sh "
 createOrMoveDC_v0.0="%clientScriptsDirectory%createOrMoveDC.sh "
-#clamscan_v0.0="clamscan "
-clamscan_v0.0="echo " #faster for testing
+clamscan_v0.0="clamscan "
+#clamscan_v0.0="echo " #faster for testing
 detox_v0.0="detox "
 UUID4_v0.0="%clientScriptsDirectory%assignFileUUIDs.sh "
-createMETS_v0.0="${usrBin}archivematicaCreateMETS.py "
-addDCTOMETS_v0.0="${usrBin}archivematicaAddDublinCoreToMETS.py "
-normalize_v0.0="${usrBin}archivematicaNormalize.py "
+createMETS_v0.0="/usr/bin/archivematicaCreateMETS.py "
+addDCTOMETS_v0.0="/usr/bin/archivematicaAddDublinCoreToMETS.py "
+normalize_v0.0="/usr/bin/archivematicaNormalize.py "
 createDirectory_v0.0="mkdir "
 copy_v0.0="cp "
 move_v0.0="mv "
