@@ -22,7 +22,7 @@
 # @version svn: $Id$
 
 
-#Prepare Ubuntu
+#Clean up sources.list remove proxy addresses
 chmod -R 777 $/etc/apt/sources.list
 cp /etc/apt/sources.list $1/etc/apt/sources.list.bak
 sed -i -e "s/# deb/deb/g" $1/etc/apt/sources.list
@@ -30,6 +30,8 @@ sed -i -e "s/localhost:9999/archive.ubuntu.com/g" $1/etc/apt/sources.list
 sed -i -e "s/127.0.0.1:9999/archive.ubuntu.com/g" $1/etc/apt/sources.list
 echo "deb http://archive.ubuntu.com/ubuntu/ karmic-proposed main restricted universe multiverse" >> $1/etc/apt/sources.list
 chroot $1 aptitude update
+
+#Remove ubuntu home folder skeleton
 chroot $1 rm -rf /home/demo/Documents
 chroot $1 rm -rf /home/demo/Music
 chroot $1 rm -rf /home/demo/Pictures
@@ -162,16 +164,23 @@ chroot $1 chown -R demo:demo /opt/externals
 chroot $1 chown -R demo:demo /var/1-receiveSIP
 chroot $1 chown -R demo:demo /var/7-storeAIP
 
-#Begin Qubit Configuration
+#Create MySQL databases 
 chroot $1 /etc/init.d/mysql start
 chroot $1 mysqladmin create qubit
 chroot $1 mysqladmin create icaatom
 chroot $1 mysqladmin create dcb
 chroot $1 mysqladmin create dashboard
+
+#configure apache/php
 cp includes/php.ini $1/etc/php5/cli
 cp includes/php.ini $1/etc/php5/apache2
 cp includes/apache.default $1/etc/apache2/sites-available/default
+chroot $1 sh -c 'echo EnableSendfile Off >> /etc/apache2/apache2.conf'
+chroot $1 a2enmod rewrite
 chroot $1 apache2ctl restart
+
+
+#download and export web tools
 svn checkout http://qubit-toolkit.googlecode.com/svn/branches/ica-atom  ica-atom-svn
 svn checkout http://qubit-toolkit.googlecode.com/svn/branches/dcb  dcb-svn
 svn checkout http://qubit-toolkit.googlecode.com/svn/trunk  qubit-svn
@@ -179,8 +188,6 @@ svn export ica-atom-svn $1/var/www/ica-atom
 svn export dcb-svn $1/var/www/dcb
 svn export qubit-svn $1/var/www/qubit
 cp includes/dashboard $1/var/www/dashboard
-chroot $1 sh -c 'echo EnableSendfile Off >> /etc/apache2/apache2.conf'
-chroot $1 a2enmod rewrite
 
 #fix ownership of web apps
 chroot $1 chown -R www-data:www-data /var/www/ica-atom
