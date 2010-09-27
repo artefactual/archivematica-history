@@ -25,7 +25,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>createOrMoveDC_v0.0</execute>
-                <arguments>"%relativeLocation%"</arguments>
+                <arguments>"%relativeLocation%" dublincore.xml</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>

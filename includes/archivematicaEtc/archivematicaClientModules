@@ -25,8 +25,8 @@
 #Commands
 #the version numbers are versions of the protocol, not versions of the programs themselves.
 echo_v1.0="/bin/echo "
-FITS_v0.0="/opt/externals/fits/fits.sh "
-easyExtract_v0.0="python /opt/externals/easy-extract/easy_extract.py "
+FITS_v0.0="fits.sh "
+easyExtract_v0.0="/usr/share/easy_extract/easy_extract.py "
 setFilePermission_v0.0="chmod "
 restructureToObjectsAndLogs_v0.0="%clientScriptsDirectory%restructureToObjectsAndLogs.sh "
 createOrMoveAndCheckMD5_v0.0="%clientScriptsDirectory%createOrMoveAndCheckMD5.sh "
@@ -41,5 +41,5 @@ normalize_v0.0="/usr/bin/archivematicaNormalize.py "
 createDirectory_v0.0="mkdir "
 copy_v0.0="cp "
 move_v0.0="mv "
-bagit_v0.0="/opt/externals/bagit/bin/bag "
+bagit_v0.0="/usr/share/bagit/bin/bag "
 moveDetoxLogToDetoxedDirectory_v0.0="%clientScriptsDirectory%moveDetoxLogToDetoxedDirectory.py"
