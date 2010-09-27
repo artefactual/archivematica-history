@@ -55,6 +55,7 @@ rm -r $1/usr/bin/temp
 svn export includes/archivematicaEtc $1/etc/archivematica
 svn export includes/archivematicaUsrShare $1/usr/share/
 svn export sharedFolderStructure $1/home/demo/sharedFolders
+svn export postBuildScripts $1/home/demo/postBuildScripts
 
 svn export includes/MCP/MCP/mcpModulesConfig $1/etc/archivematica/mcpModulesConfig/
 
