@@ -27,7 +27,7 @@
 echo_v1.0="/bin/echo "
 FITS_v0.0="fits.sh "
 easyExtract_v0.0="/usr/share/easy_extract/easy_extract.py "
-setFilePermission_v0.0="chmod "
+setFilePermission_v0.0="%clientScriptsDirectory%quarantineSIP.sh "
 restructureToObjectsAndLogs_v0.0="%clientScriptsDirectory%restructureToObjectsAndLogs.sh "
 createOrMoveAndCheckMD5_v0.0="%clientScriptsDirectory%createOrMoveAndCheckMD5.sh "
 createOrMoveDC_v0.0="%clientScriptsDirectory%createOrMoveDC.sh "
