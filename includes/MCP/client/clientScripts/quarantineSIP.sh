@@ -20,5 +20,5 @@
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
 
-chown -R archivematica:archivematica $1
-chmod -R 000 $1
+chown -R archivematica:archivematica $2
+chmod -R $1 $2
