@@ -1,4 +1,4 @@
-0ol#!/bin/bash
+#!/bin/bash
 # This file is part of Archivematica.
 #
 # Archivematica is free software: you can redistribute it and/or modify
@@ -31,3 +31,5 @@ addToListTaskHandler="addToListTaskHandler" #inform the server the client is cap
 taskCompleted="taskCompleted" #inform the server a task is completed
 maxTasks="setMaxTasks" #tell the server how many threads this client will run
 setName="setName"
+requestLockForWrite="requestLockForWrite"
+unlockForWrite="unlockForWrite"

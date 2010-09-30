@@ -48,6 +48,7 @@ class commandsClass():
         self.standardOut = self.getTagged(xml, "standardOut")[0].text
         self.standardError = self.getTagged(xml, "standardError")[0].text
         self.skip = self.getTagged(xml, "skip")[0].text.lower() != "no"
+        self.requiresOutputLock = self.getTagged(xml, "requiresOutputLock")[0].text.lower()
         self.failureNotification = self.getTagged(xml, "failureNotification")[0].text
         self.execute = self.getTagged(xml, "execute")[0].text
         self.arguments = self.getTagged(xml, "arguments")[0].text

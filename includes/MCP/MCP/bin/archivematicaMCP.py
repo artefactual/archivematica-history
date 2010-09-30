@@ -77,7 +77,7 @@ tasksBeingProcessed = []
 tasksLock = threading.Lock()
 movingDirectoryLock = threading.Lock()
 factory = twistedProtocol.ServerFactory()
-jobsLock =  threading.Lock()
+jobsLock = threading.Lock()
 watchedDirectories = []
 
 def checkJobQueue():
@@ -114,6 +114,8 @@ def processTaskQueue():
 		                send += protocol["delimiter"] 
 		                send += task.UUID.__str__() 
 		                send += protocol["delimiter"] 
+		                send += task.command.requiresOutputLock.__str__()
+		                send += protocol["delimiter"]  
 		                if task.standardIn:
 		                    send += task.standardIn.__str__() 
 		                send += protocol["delimiter"] 
@@ -126,7 +128,7 @@ def processTaskQueue():
 		                send += task.execute.__str__()
 		                send += protocol["delimiter"]  
 		                send += task.arguments.__str__() 
-		                reactor.callFromThread(client.write, send)
+		                client.write(send)
 		                client.currentThreads += 1
 		                taskAssigned = True
 		                logTaskAssigned(task, client)
@@ -178,6 +180,9 @@ class Task():
         tasksLock.acquire()
         jobStepDone = True
         tasksBeingProcessed.remove(self)
+        if self.command.requiresOutputLock == "yes":
+            self.job.writeLock.release()
+        
         for task in tasksQueue:
             if task.job.UUID == self.job.UUID:
                 jobStepDone = False
@@ -205,6 +210,7 @@ class Job:
         self.config = config
         self.step = step
         self.directory = directory
+        self.writeLock = threading.Lock()
         
         replacementDic = archivematicaRD.jobReplacementDic(self, config, directory, step)
       
@@ -434,6 +440,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
     clientName = ""
     supportedCommands = []
     clientLock = threading.Lock()
+    sendLock = threading.Lock()
 
     def badProtocol(self, command):
         """The client sent a command this server cannot interpret."""
@@ -443,7 +450,9 @@ class archivematicaMCPServerProtocol(LineReceiver):
         "As soon as any data is received, write it back."
         command = line.split(protocol["delimiter"])
         if len(command):
-            self.protocolDic.get(command[0], archivematicaMCPServerProtocol.badProtocol)(self, command)
+            t = threading.Thread(target=self.protocolDic.get(command[0], archivematicaMCPServerProtocol.badProtocol),\
+            args=(self, command, ))
+            t.start()
         else:
             badProtocol(self, command)
 
@@ -455,8 +464,10 @@ class archivematicaMCPServerProtocol(LineReceiver):
         print "Lost client: " + self.clientName
         self.factory.clients.remove(self)
         
-    def write(self,line):
-        self.transport.write(line + "\r\n")
+    def write(self,line):      
+        self.sendLock.acquire() 
+        reactor.callFromThread(self.transport.write, line + "\r\n")
+        self.sendLock.release()
         print "\twrote: " + line.__str__()
     
     def addToListTaskHandler(self, command):
@@ -508,13 +519,37 @@ class archivematicaMCPServerProtocol(LineReceiver):
             self.clientName=command[1]
         else:
             badProtocol(self, command)
+    
+    def requestLockForWrite(self, command):
+        """Get the write lock for the job"""
+        if len(command) == 2:
+            taskUUID=command[1]
+            theTask = None
+            for task in tasksBeingProcessed:
+                if task.UUID.__str__() == taskUUID:
+                    theTask = task
+                    break
+            if theTask:
+                print "Requested write lock for: " + command[1]
+                theTask.job.writeLock.acquire()
+                self.unlockForWrite(theTask.UUID)
+            else:
+                self.badProtocol(command)
+
+    def unlockForWrite(self, taskUUID):
+        send = protocol["unlockForWrite"]
+        send += protocol["delimiter"]
+        send += taskUUID.__str__()
+        self.write(send)
+    
 
     #associate the protocol with the associated funciton.        
     protocolDic = {
     protocol["addToListTaskHandler"]:addToListTaskHandler,
     protocol["taskCompleted"]:taskCompleted,
     protocol["maxTasks"]:maxTasks,
-    protocol["setName"]:setName
+    protocol["setName"]:setName,
+    protocol["requestLockForWrite"]:requestLockForWrite
     }
 
 

@@ -20,6 +20,7 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
@@ -38,6 +39,7 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
@@ -55,6 +57,7 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
@@ -71,6 +74,7 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
