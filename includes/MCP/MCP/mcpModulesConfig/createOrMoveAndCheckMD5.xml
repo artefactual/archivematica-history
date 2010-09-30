@@ -22,6 +22,7 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>createOrMoveAndCheckMD5_v0.0</execute>
@@ -40,6 +41,7 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
@@ -57,6 +59,7 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
@@ -73,6 +76,7 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute> </execute>

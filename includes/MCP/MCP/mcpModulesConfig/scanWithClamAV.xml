@@ -19,6 +19,7 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
+                <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut>%SIPLogsDirectory%clamAVScan.txt</standardOut>
                 <standardError>%SIPLogsDirectory%clamAVScan.txt</standardError>
@@ -37,6 +38,7 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
@@ -54,6 +56,7 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
@@ -70,6 +73,7 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>

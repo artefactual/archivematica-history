@@ -24,6 +24,7 @@ import sys
 import shlex
 import subprocess
 import time
+import threading
 from archivematicaLoadConfig import loadConfig
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
@@ -32,6 +33,7 @@ from twisted.protocols.basic import LineReceiver
 archivmaticaVars = loadConfig()
 supportedModules = loadConfig(archivmaticaVars["archivematicaClientModules"])
 protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
+waitingForOutputLock = {}
 
 def writeToFile(output, fileName):
     if fileName and output:
@@ -44,9 +46,15 @@ def writeToFile(output, fileName):
             print >>sys.stderr, "output Error", ose
     else:
         print "No output file specified"
+        
+def writeUnlocked(data):
+    writeToFile(data[2], data[0])
+    writeToFile(data[3], data[1])
+    return data[4]
 
-def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "", arguments = ""):
+def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
     #Replace replacement strings
+    requestLock = requiresOutputLock == "yes"
     command = supportedModules[execute] 
     replacementDic = { 
         "%sharedPath%":archivmaticaVars["sharedDirectory"], \
@@ -69,14 +77,20 @@ def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "
 	
         p.wait()
         output = p.communicate(input=sInput)
-        print "returned:"
-        print output
-        
-        writeToFile(output[0], sOutput)
-        writeToFile(output[1], sError)
-        
+
         retcode = p.returncode
-        
+
+        print "returned: " + retcode.__str__()
+        print output
+                
+        if requestLock:
+            op = sOutput, sError, output[0], output[1], retcode
+            waitingForOutputLock[taskUUID] = op
+            serverConnection.requestLock(taskUUID)
+        else:
+            writeToFile(output[0], sOutput)
+            writeToFile(output[1], sError)
+
         #it executes check for errors
         if retcode != 0:
           print >>sys.stderr, "error code:" + retcode.__str__()
@@ -93,17 +107,20 @@ def executeCommand(taskUUID, sInput = "", sOutput = "", sError = "", execute = "
       return 1
 
 class archivematicaMCPClientProtocol(LineReceiver):
-    """This is just about the simplest possible protocol"""
-
+    """Archivematica Client Protocol"""
+    sendLock = threading.Lock()
+    
     def connectionMade(self):
         self.write(protocol["setName"] + protocol["delimiter"] + archivmaticaVars["clientName"])
         for module in supportedModules:
             self.write(protocol["addToListTaskHandler"] + protocol["delimiter"] + module)
         self.write(protocol["maxTasks"] + protocol["delimiter"] + archivmaticaVars["maxThreads"])
     
-    def write(self, line):
-        self.transport.write( line + "\r\n")
-        print "wrote: " + line.__str__()
+    def write(self,line):
+        self.sendLock.acquire() 
+        reactor.callFromThread(self.transport.write, line + "\r\n")
+        self.sendLock.release()
+        print "\twrote: " + line.__str__()
     
     def clientConnectionLost(self, connector, reason):
         print "Connection lost - goodbye!"
@@ -117,7 +134,9 @@ class archivematicaMCPClientProtocol(LineReceiver):
         "As soon as any data is received, write it back."
         command = line.split(protocol["delimiter"])
         if len(command):
-            self.protocolDic.get(command[0], archivematicaMCPClientProtocol.badProtocol)(self, command)
+            t = threading.Thread(target=self.protocolDic.get(command[0], archivematicaMCPClientProtocol.badProtocol),\
+            args=(self, command, ))
+            t.start()
         else:
             badProtocol(self, command)
 
@@ -133,15 +152,31 @@ class archivematicaMCPClientProtocol(LineReceiver):
             print >>sys.stderr, "this should never be executed."   
     
     def performTask(self, command):
-        if len(command) == 7:
-            ret = executeCommand(command[1], command[2], command[3], command[4], command[5], command[6])
-            self.sendTaskResult(command, ret)
+        if len(command) == 8:
+            ret = executeCommand(command[1], command[2], command[3], command[4], command[5], command[6], command[7], self)
+            if command[1] not in waitingForOutputLock:
+                self.sendTaskResult(command, ret)
         else:
             badProtocol(self, command)
             self.sendTaskResult(command, 1)
-            
+
+    def requestLock(self, taskUUID):
+        send = protocol["requestLockForWrite"]
+        send += protocol["delimiter"]
+        send += taskUUID
+        self.write(send)
+    
+    def unlockForWrite(self, command):
+        if len(command) == 2 and command[1] in waitingForOutputLock:
+            ret = writeUnlocked(waitingForOutputLock[command[1]])
+            del waitingForOutputLock[command[1]]
+            self.sendTaskResult(command, ret)
+        else:
+            badProtocol(self, command)
+    
     protocolDic = {
-    protocol["performTask"]:performTask
+    protocol["performTask"]:performTask, \
+    protocol["unlockForWrite"]:unlockForWrite
     }
 
 class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
@@ -155,8 +190,6 @@ class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
         print "Connection lost - goodbye!"
         reactor.stop()
 
-
-# this only runs if the module was *not* imported
 if __name__ == '__main__':
     f = archivematicaMCPClientProtocolFactory()
     t = reactor.connectTCP("localhost", 8002, f)
