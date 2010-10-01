@@ -44,7 +44,11 @@ def loadDetoxDic(sfile):
         
 if __name__ == '__main__':
     loadDetoxDic(DetoxFile)
-    destDir = DetoxDic[originalSIPName] + "/logs/" + os.path.basename(DetoxFile)
+    destDir = ""
+    if originalSIPName in DetoxDic:
+        destDir = DetoxDic[originalSIPName] + "/logs/" + os.path.basename(DetoxFile)
+    else:
+        destDir = originalSIPName + "/logs/" + os.path.basename(DetoxFile)
     print "moving: " + DetoxFile + " TO: " + destDir
     os.rename(DetoxFile, destDir)
 

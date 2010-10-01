@@ -17,8 +17,8 @@
 
 # @package Archivematica
 # @subpackage Ingest
-# @author Austin Trask <austin@artefactual.com>
+# @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+source /etc/archivematica/archivematicaConfig.conf
 
-chown -R archivematica:archivematica "$2"
-chmod -R "$1" "$2"
+sudo -u archivematica archivematicaMCP.py
