@@ -19,7 +19,7 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir>objects/</filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
+                <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut>%SIPLogsDirectory%normalizationLog.txt</standardOut>
                 <standardError>%SIPLogsDirectory%normalizationLog.txt</standardError>
