@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>setFilePermission_v0.0</execute>
-                <arguments> 000 "%relativeLocation%"</arguments>
+                <arguments> 200 "%relativeLocation%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
@@ -61,8 +61,8 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
+                <execute>setFileOwner_v0.0</execute>
+                <arguments>archivematica:archivematica "%relativeLocation%"</arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>            
         </cleanupSuccessfulCommand>
