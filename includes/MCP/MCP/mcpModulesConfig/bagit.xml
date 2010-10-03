@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%createPackage/bagit/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%structureFolder/cleanupAIPPostBagit</successDirectory>
+        <successDirectory>%watchDirectoryPath%structureFolder/separateDIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 

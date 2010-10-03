@@ -430,8 +430,10 @@ def loadDirectoryWatchLlist(configs):
         else:
             print "Tried to watch a directory that is already being watched: " + config.watchDirectory
     print "Watching the following directories:"
+    watchedDirectories.sort()
     for wd in watchedDirectories:
-        print "\t" + wd
+        print wd
+        
 
 class archivematicaMCPServerProtocol(LineReceiver):
     """This is the MCP protocol implemented"""
@@ -509,6 +511,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
             #self.maxThreads = int(command[1])
             print self.clientName + "-setting max threads to: " + command[1]
             self.maxThreads = string.atoi(command[1])
+            processTaskQueue()
         else:
             badProtocol(self, command)
     

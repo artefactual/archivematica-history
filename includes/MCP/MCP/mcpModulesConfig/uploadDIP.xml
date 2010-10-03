@@ -1,16 +1,15 @@
 <module>
-
-    <requiresUserApproval>Yes</requiresUserApproval>
+    <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%createChecksum/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%uploadDIP</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>/tmp/tmp2/</successDirectory>
-        <failureDirectory>/tmp/tmp3/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%uploadedDIPs</successDirectory>
+        <failureDirectory>/%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
     <commands>    
@@ -26,9 +25,9 @@
                 <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>uploadDip_v?.?</execute>
-                <arguments> hello world </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>upload-qubit.py_v0.0</execute>
+                <arguments> -e demo@example.com -p demo -t "%SIPName%-%SIPUUID%" -f "%SIPDirectory%" --display=:0</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
