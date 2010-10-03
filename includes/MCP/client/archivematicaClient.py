@@ -45,7 +45,7 @@ def writeToFile(output, fileName):
         except OSError, ose:
             print >>sys.stderr, "output Error", ose
     else:
-        print "No output file specified"
+        print "No output or file specified"
         
 def writeUnlocked(data):
     writeToFile(data[2], data[0])

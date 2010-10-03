@@ -6,9 +6,9 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%structureFolder/separateDIP</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%structureFolder/separateDIP/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%storeAIP</successDirectory>
+        <successDirectory>%watchDirectoryPath%structureFolder/cleanupAIPPostBagit</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 

@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%structureFolder/cleanupAIPPostBagit</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%structureFolder/separateDIP</successDirectory>
+        <successDirectory>%watchDirectoryPath%storeAIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 

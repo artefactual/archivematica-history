@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%normalize</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%normalize/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%createAIPChecksum/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>

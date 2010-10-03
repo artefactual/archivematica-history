@@ -47,6 +47,7 @@ def getSIPUUIDFromLog(sipDir):
         line = fh.readline()
         return line.strip()
     except IOError, ose:
+        print "no UUID for: " + sipDir + "logs/" + "SIP-UUID.txt"
         return ""
     
 
@@ -57,13 +58,14 @@ class replacementDics:
     def commandReplacementDic(self, task, job, target, command):
         
         #Pre do some variables, that other variables rely on, because dictionarys don't maintain order
-        sipDir = job.config.processingDirectory + job.UUID.__str__() + "/" + os.path.basename(job.directory) + "/"
+        sipDir = job.config.processingDirectory.__str__() + job.UUID.__str__() + "/" + os.path.basename(job.directory).__str__() + "/"
+        SIPUUID = getSIPUUIDFromLog(sipDir)
+        SIPName = os.path.basename(job.directory).replace("-" + SIPUUID, "")
         SIPDirectory = sipDir.replace(self.archivematicaVars["sharedDirectory"], "%sharedPath%")
         processingDirectory = job.config.processingDirectory.replace(self.archivematicaVars["sharedDirectory"], "")
         relativeDirectoryLocationNoTrailingSlash = "%sharedPath%" + processingDirectory + job.UUID.__str__()
         relativeDirectoryLocation = relativeDirectoryLocationNoTrailingSlash + "/"
-        SIPUUID = getSIPUUIDFromLog(sipDir)
-        SIPName = os.path.basename(job.directory).replace("-" + SIPUUID, "")
+        
         
         ret = { \
         "%jobUUID%": job.UUID.__str__(), \

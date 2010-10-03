@@ -46,3 +46,5 @@ move_v0.0="mv "
 remove_v0.0="rm "
 bagit_v0.0="/usr/share/bagit/bin/bag "
 moveDetoxLogToDetoxedDirectory_v0.0="%clientScriptsDirectory%moveDetoxLogToDetoxedDirectory.py"
+upload-qubit.py_v0.0="/usr/share/upload-qubit/upload-qubit.py "
+

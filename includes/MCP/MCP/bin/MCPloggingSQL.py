@@ -85,7 +85,7 @@ def logTaskCompleted(task, retValue):
 def logJobCreated(job):
     separator = "', '"
     db.query("""INSERT INTO jobCreated (jobUUID, directory, SIPUUID)
-    VALUES ( '""" + job.UUID.__str__() + separator + job.directory + separator + getSIPUUIDFromLog(job.directory) + "' )" )
+    VALUES ( '""" + job.UUID.__str__() + separator + job.directory + separator + getSIPUUIDFromLog(job.directory + "/") + "' )" )
 
 
 def logJobStepCompleted(job):
