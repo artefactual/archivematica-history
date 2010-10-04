@@ -41,11 +41,19 @@
 
 import _mysql
 import os
+import threading
 from archivematicaReplacementDics import getSIPUUIDFromLog
 
 #sudo apt-get install python-mysqldb
-
+sqlLoggingLock = threading.Lock()
 db=_mysql.connect(host="localhost", db="MCP", user="demo", passwd="demo")
+
+
+def runSQL( sql ):
+    sqlLoggingLock.acquire()
+    db.query( sql )
+    sqlLoggingLock.release()
+
 
 #user approved?
 #client connected/disconnected.
@@ -60,7 +68,7 @@ def logTaskCreated(task, replacementDic):
     
     separator = "', '"
     
-    db.query("""INSERT INTO taskCreated (taskUUID, jobUUID, fileUUID, fileName, exec, arguments)
+    runSQL("""INSERT INTO taskCreated (taskUUID, jobUUID, fileUUID, fileName, exec, arguments)
     VALUES ( '""" + taskUUID.__str__() + separator + jobUUID.__str__() + separator + fileUUID.__str__() + separator + fileName + separator + taskexec + separator + arguments + "' )" )
 
 def logTaskAssigned(task, client):
@@ -69,7 +77,7 @@ def logTaskAssigned(task, client):
     
     separator = "', '"
 
-    db.query("""INSERT INTO taskAssigned (taskUUID, client)
+    runSQL("""INSERT INTO taskAssigned (taskUUID, client)
     VALUES ( '""" + taskUUID.__str__() + separator + client + "' )" )
 
 def logTaskCompleted(task, retValue):
@@ -78,19 +86,19 @@ def logTaskCompleted(task, retValue):
     
     separator = "', '"
     
-    db.query("""INSERT INTO taskCompleted (taskUUID, exitCode)
+    runSQL("""INSERT INTO taskCompleted (taskUUID, exitCode)
     VALUES ( '""" + taskUUID.__str__() + separator + exitCode.__str__() + "' )" )
 
 
 def logJobCreated(job):
     separator = "', '"
-    db.query("""INSERT INTO jobCreated (jobUUID, directory, SIPUUID)
+    runSQL("""INSERT INTO jobCreated (jobUUID, directory, SIPUUID)
     VALUES ( '""" + job.UUID.__str__() + separator + job.directory + separator + getSIPUUIDFromLog(job.directory + "/") + "' )" )
 
 
 def logJobStepCompleted(job):
     separator = "', '"
-    db.query("""INSERT INTO jobStepCompleted (jobUUID, step)
+    runSQL("""INSERT INTO jobStepCompleted (jobUUID, step)
     VALUES ( '""" + job.UUID.__str__() + separator + job.step + "' )" )
 
 if __name__ == '__main__':
@@ -107,31 +115,31 @@ if __name__ == '__main__':
     
     separator = "', '"
     
-    db.query("""INSERT INTO taskCreated (taskUUID, jobUUID, fileUUID, exec, arguments)
+    runSQL("""INSERT INTO taskCreated (taskUUID, jobUUID, fileUUID, exec, arguments)
     VALUES ( '""" + taskUUID.__str__() + separator + jobUUID.__str__() + separator + fileUUID.__str__() + separator + taskexec + separator + arguments + "' )" )
 
-    db.query("""INSERT INTO taskAssigned (taskUUID, client)
+    runSQL("""INSERT INTO taskAssigned (taskUUID, client)
     VALUES ( '""" + taskUUID.__str__() + separator + client + "' )" )
 
-    db.query("""INSERT INTO taskCompleted (taskUUID, exitCode)
+    runSQL("""INSERT INTO taskCompleted (taskUUID, exitCode)
     VALUES ( '""" + taskUUID.__str__() + separator + exitCode.__str__() + "' )" )
 
     
-    db.query("""SELECT * FROM taskAssigned""")
+    runSQL("""SELECT * FROM taskAssigned""")
     r=db.store_result()
     o = r.fetch_row()
     while o:
         print o
         o = r.fetch_row()
 
-    db.query("""SELECT * FROM taskCreated""")
+    runSQL("""SELECT * FROM taskCreated""")
     r=db.store_result()
     o = r.fetch_row()
     while o:
         print o
         o = r.fetch_row()
         
-    db.query("""SELECT * FROM taskCompleted""")
+    runSQL("""SELECT * FROM taskCompleted""")
     r=db.store_result()
     o = r.fetch_row()
     while o:
