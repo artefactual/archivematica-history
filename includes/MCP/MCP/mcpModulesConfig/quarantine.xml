@@ -25,7 +25,7 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>setFilePermission_v0.0</execute>
+                <execute>setSIPQuarantine_v0.0</execute>
                 <arguments> 200 "%relativeLocation%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
