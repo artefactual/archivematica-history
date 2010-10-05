@@ -55,6 +55,8 @@ import threading
 import string
 import math
 import time
+import subprocess
+import shlex
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
@@ -80,6 +82,12 @@ factory = twistedProtocol.ServerFactory()
 jobsLock = threading.Lock()
 watchedDirectories = []
 
+def renameAsSudo(source, destination):
+        commandString = "sudo mv \"" + source + "\"   \"" + destination + "\""
+        p = subprocess.Popen(shlex.split(commandString))
+        p.wait()
+	
+
 def checkJobQueue():
     """Creates Tasks for new auto approved jobs, or just approved jobs."""
     jobsLock.acquire()
@@ -90,7 +98,7 @@ def checkJobQueue():
         print "job UUID: " + job.UUID.__str__()
         print "moving: " + job.directory + "\t to: \t" + directory + job.directory.split("/")[-1]
         os.makedirs(directory, mode=0777)
-        os.rename(job.directory, directory + job.directory.split("/")[-1])
+        renameAsSudo(job.directory, directory + job.directory.split("/")[-1])
         tasksCreated = job.createTasksForCurrentStep() 
         jobsQueue.remove(job)
         if tasksCreated:
@@ -241,7 +249,7 @@ class Job:
             directory = self.config.processingDirectory + self.UUID.__str__() + "/"
             for f in os.listdir(directory):
                 print "rename: " + os.path.join(directory, f) + " TO: " + os.path.join(destination, f)
-                os.rename( os.path.join(directory, f), os.path.join(destination, f) )
+                renameAsSudo( os.path.join(directory, f), os.path.join(destination, f) )
             os.rmdir(directory)
             movingDirectoryLock.release()
             
