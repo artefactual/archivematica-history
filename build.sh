@@ -1,5 +1,6 @@
 #!/bin/sh
 #This script  will be modified to allow user to select the type of vm to build.
+rootSize="8000"
 cat << !
 Build Archivematica VM
 1. KVM
@@ -19,5 +20,11 @@ q) exit ;;
 *) echo "\"$choice\" is not valid "; sleep 2 ;;
 esac
 
-sudo vmbuilder "$vmType" ubuntu -c archivematica.cfg -d "archivematicaBuild-`date +"%Y.%m.%d %k.%M"`" --rootsize 8000
+thisDate=`date +"%Y.%m.%d_%k.%M"`
 
+sudo vmbuilder "$vmType" ubuntu \
+-c archivematica.cfg \
+-d "archivematicaBuild-${thisDate}" \
+--rootsize ${rootSize} \
+--execscript "`pwd`/archivematica.sh" \
+--hostname "Archivematica${thisDate}"
