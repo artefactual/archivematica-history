@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>setFilePermission_v0.0</execute>
-                <arguments> 700 "%relativeLocation%"</arguments>
+                <arguments>-R 700 "%relativeLocation%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
