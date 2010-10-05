@@ -70,6 +70,9 @@ chroot $1 chown -R archivematica:archivematica /home/demo/sharedFolders
 
 chroot $1 update-python-modules
 
+#Configure sudoers for mcp and client
+echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown" >> $1/etc/sudoers
+
 #Install externals/archivematica
 chroot $1 mkdir -p /home/demo/Desktop
 svn export includes/.mozilla $1/home/demo/.mozilla
