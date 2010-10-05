@@ -78,6 +78,7 @@ chroot $1 mkdir -p /home/demo/Desktop
 svn export includes/.mozilla $1/home/demo/.mozilla
 svn export includes/xenaconfig $1/home/demo/.java
 svn export includes/Docs $1/home/demo/Docs
+svn export enviromentConfigFiles/exports $1/etc/exports
 chroot $1 ln -s /home/demo/Docs /home/demo/Desktop
 
 #cron and incron no longer needed with MCP
