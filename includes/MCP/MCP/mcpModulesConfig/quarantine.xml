@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>setSIPQuarantine_v0.0</execute>
-                <arguments> 200 "%relativeLocation%"</arguments>
+                <arguments> 700 "%relativeLocation%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
