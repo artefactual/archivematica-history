@@ -51,8 +51,8 @@
         
         <cleanupSuccessfulCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -61,9 +61,9 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>setFilePermission_v0.0</execute>
+                <arguments>-R 770 "%relativeLocation%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>            
         </cleanupSuccessfulCommand>
         
