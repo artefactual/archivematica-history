@@ -68,7 +68,6 @@ chroot $1 ln -s /usr/share/archivematica/mcpModules /usr/lib/pymodules/python2.6
 #Create archivematica User for daemons, add demo user to group
 chroot $1 adduser --home /dev/null --shell /bin/false --no-create-home --disabled-login archivematica
 chroot $1 chown -R archivematica:archivematica /home/demo/sharedFolders
-chroot $1 useradd -G archivematica demo 
 
 chroot $1 update-python-modules
 
