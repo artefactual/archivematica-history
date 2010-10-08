@@ -66,7 +66,7 @@ svn export includes/archivematicaUsrShare/normalizationScripts $1/usr/share/arch
 chroot $1 ln -s /usr/share/archivematica/mcpModules /usr/lib/pymodules/python2.6/.
 
 #Create archivematica User for daemons, add demo user to group
-chroot $1 adduser --home /dev/null --shell /bin/false --no-create-home --disabled-login archivematica
+chroot $1 adduser --uid 333 --gid 333 --home /dev/null --shell /bin/false --no-create-home --disabled-login archivematica
 chroot $1 chown -R archivematica:archivematica /home/demo/sharedFolders
 
 chroot $1 update-python-modules
