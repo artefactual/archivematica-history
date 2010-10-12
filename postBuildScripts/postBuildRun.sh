@@ -8,6 +8,8 @@ sudo chmod 444 -R ~/.config/xfce4/panel
 sudo chmod 770 -R  ~/sharedFolders/
 sudo chown -R archivematica:archivematica ~/sharedFolders/
 sudo chmod -R g+s ~/sharedFolders/
+echo "Disabling Screen Saver (Better for VM's)"
+gconftool-2 -s /apps/gnome-screensaver/idle_activation_enabled --type=bool false
 sudo gpasswd -a demo archivematica
 echo "PLEASE LOG OUT TO ENABLE NEW GROUP SETTINGS"
-
+sleep 3
