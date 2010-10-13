@@ -21,10 +21,13 @@
 # @version svn: $Id$
 
 delimiter="<!&\delimiter/&!>" #seperates Values when transported from client to server
+keepAlivePause="600" #seconds to pause between sending Keep alives
+
 
 #TO CLIENT
 addToServerConf="addToServerConf" #To load server configs into the client  --NOT USED/NEEDED (everything can happen on server side)
 performTask="performTask" #to tell the client to perform a task
+keepAlive="keepAlive" #keeps idle connection open
 
 #TO SERVER
 addToListTaskHandler="addToListTaskHandler" #inform the server the client is capable of running a certain type of task
