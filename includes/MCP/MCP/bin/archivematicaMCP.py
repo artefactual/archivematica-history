@@ -82,11 +82,29 @@ factory = twistedProtocol.ServerFactory()
 jobsLock = threading.Lock()
 watchedDirectories = []
 
+def temporaryApproveAllJobsInQueue():
+    while 1:
+        time.sleep(120)
+        print "Approving All Jobs"
+        for job in jobsAwaitingApproval:
+            approveJob(job.UUID.__str__())
+    
+
 def renameAsSudo(source, destination):
         commandString = "sudo mv \"" + source + "\"   \"" + destination + "\""
         p = subprocess.Popen(shlex.split(commandString))
         p.wait()
-	
+
+def approveJob(jobUUID):
+    theJob = None
+    for job in jobsAwaitingApproval:
+        if job.UUID.__str__() == jobUUID:
+            theJob = job
+            break
+    if theJob:
+        print "job approved: " + theJob.UUID.__str__()
+        theJob.approve()
+
 
 def checkJobQueue():
     """Creates Tasks for new auto approved jobs, or just approved jobs."""
@@ -230,7 +248,14 @@ class Job:
             self.config.failureDirectory = self.config.failureDirectory.replace(key, replacementDic[key])
         logJobCreated(self)
 
-   
+    def approve(self):
+        jobsLock.acquire()
+        if self in jobsAwaitingApproval:
+            jobsAwaitingApproval.remove(self)
+        jobsQueue.append(self)
+        jobsLock.release()
+        checkJobQueue()
+
     def jobStepCompleted(self):
         """When a job step is completed, move to the next step, or if the job is completed, move everthing in the directory to the output directory. """
         logJobStepCompleted(self)
@@ -588,6 +613,8 @@ def archivematicaMCPServerListen():
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
     reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory)
+    t = threading.Thread(target=temporaryApproveAllJobsInQueue)
+    t.start()
     reactor.run()
     print "The reactor stopped!!!"
 
