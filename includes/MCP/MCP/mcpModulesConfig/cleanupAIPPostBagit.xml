@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%structureFolder/cleanupAIPPostBagit</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%structureDirectory/cleanupAIPPostBagit/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%storeAIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>

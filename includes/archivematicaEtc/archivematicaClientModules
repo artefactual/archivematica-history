@@ -24,7 +24,7 @@
 
 #Commands
 #the version numbers are versions of the protocol, not versions of the programs themselves.
-echo_v1.0="/bin/echo "
+echo_v0.0="/bin/echo "
 FITS_v0.0="fits.sh "
 easyExtract_v0.0="/usr/share/easy_extract/easy_extract.py "
 setSIPQuarantine_v0.0="%clientScriptsDirectory%quarantineSIP.sh "
@@ -47,4 +47,5 @@ remove_v0.0="rm "
 bagit_v0.0="/usr/share/bagit/bin/bag "
 moveDetoxLogToDetoxedDirectory_v0.0="%clientScriptsDirectory%moveDetoxLogToDetoxedDirectory.py"
 upload-qubit.py_v0.0="/usr/share/upload-qubit/upload-qubit.py "
+storeAIP_v0.0="%clientScriptsDirectory%storeAIP.sh "
 

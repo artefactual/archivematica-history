@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%structureFolder/copyMETSToDIP/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%structureDirectory/copyMETSToDIP/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%createPackage/bagit/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>

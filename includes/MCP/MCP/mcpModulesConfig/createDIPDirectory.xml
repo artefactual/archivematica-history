@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%structureFolder/createDIPDirectory/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%structureDirectory/createDIPDirectory/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%normalize</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
