@@ -1,26 +1,19 @@
 
 
-CREATE TABLE taskCreated (
+CREATE TABLE Tasks (
 taskUUID        VARCHAR(50) PRIMARY KEY,
 jobUUID         VARCHAR(50),
 createdTime     TIMESTAMP(8) DEFAULT NOW(),
 fileUUID        VARCHAR(50),
 fileName        VARCHAR(100),
 exec            VARCHAR(50),
-arguments       VARCHAR(1000)
-);
-
-CREATE TABLE taskAssigned (
-taskUUID        VARCHAR(50) PRIMARY KEY,
-startTime       TIMESTAMP(8) DEFAULT NOW(),
-client          VARCHAR(50)
-);
-
-CREATE TABLE taskCompleted (
-taskUUID        VARCHAR(50) PRIMARY KEY,
-endTime         TIMESTAMP(8) DEFAULT NOW(),
+arguments       VARCHAR(1000),
+startTime       TIMESTAMP(8),
+client          VARCHAR(50),
+endTime         TIMESTAMP(8),
 exitCode        BIGINT
 );
+
 
 CREATE TABLE jobCreated(
 jobUUID         VARCHAR(50) PRIMARY KEY,

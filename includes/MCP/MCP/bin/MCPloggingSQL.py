@@ -59,35 +59,34 @@ def runSQL( sql ):
 #client connected/disconnected.
 
 def logTaskCreated(task, replacementDic):
-    taskUUID = task.UUID
-    jobUUID = task.job.UUID 
-    fileUUID = replacementDic["%fileUUID%"]
+    taskUUID = task.UUID.__str__()
+    jobUUID = task.job.UUID.__str__()
+    fileUUID = replacementDic["%fileUUID%"].__str__()
     taskexec = task.execute
     arguments = task.arguments
     fileName = os.path.basename(replacementDic["%relativeLocation%"])
     
     separator = "', '"
     
-    runSQL("""INSERT INTO taskCreated (taskUUID, jobUUID, fileUUID, fileName, exec, arguments)
-    VALUES ( '""" + taskUUID.__str__() + separator + jobUUID.__str__() + separator + fileUUID.__str__() + separator + fileName + separator + taskexec + separator + arguments + "' )" )
+    runSQL("""INSERT INTO Tasks (taskUUID, jobUUID, fileUUID, fileName, exec, arguments)
+    VALUES ( '""" + taskUUID + separator + jobUUID + separator + fileUUID + separator + fileName + separator + taskexec + separator + arguments + "' )" )
 
 def logTaskAssigned(task, client):
-    taskUUID = task.UUID
+    taskUUID = task.UUID.__str__()
     client = client.clientName
     
-    separator = "', '"
+    runSQL("UPDATE Tasks " + \
+    "SET startTime=NOW(), client='" + client + "' " + \
+    "WHERE taskUUID='" + taskUUID + "'" )
 
-    runSQL("""INSERT INTO taskAssigned (taskUUID, client)
-    VALUES ( '""" + taskUUID.__str__() + separator + client + "' )" )
 
 def logTaskCompleted(task, retValue):
-    taskUUID = task.UUID
-    exitCode = retValue
+    taskUUID = task.UUID.__str__()
+    exitCode = retValue.__str__()
     
-    separator = "', '"
-    
-    runSQL("""INSERT INTO taskCompleted (taskUUID, exitCode)
-    VALUES ( '""" + taskUUID.__str__() + separator + exitCode.__str__() + "' )" )
+    runSQL("UPDATE Tasks " + \
+    "SET endTime=NOW(), exitCode='" + exitCode +  "' " + \
+    "WHERE taskUUID='" + taskUUID + "'" )
 
 
 def logJobCreated(job):
