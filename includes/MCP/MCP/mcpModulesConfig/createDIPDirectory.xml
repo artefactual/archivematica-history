@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>createDirectory_v0.0</execute>
-                <arguments>"%SIPDirectory%DIP/"</arguments>
+                <arguments>"%SIPDirectory%DIP/" "%SIPDirectory%DIP/objects/"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
