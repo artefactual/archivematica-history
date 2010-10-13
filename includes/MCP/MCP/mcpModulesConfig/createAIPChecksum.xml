@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%createAIPChecksum/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%structureFolder/copyMETSToDIP</successDirectory>
+        <successDirectory>%watchDirectoryPath%structureDirectory/copyMETSToDIP</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 

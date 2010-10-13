@@ -8,8 +8,8 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%storeAIP</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>/tmp/tmp2/</successDirectory>
-        <failureDirectory>/tmp/tmp3/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%failed/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
@@ -25,8 +25,8 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>storeAIP_v?.?</execute>
-                <arguments> hello world </arguments>
+                <execute>storeAIP_v0.0</execute>
+                <arguments>"%SIPDirectory%" "%AIPsStore%"</arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>
         </exeCommand>

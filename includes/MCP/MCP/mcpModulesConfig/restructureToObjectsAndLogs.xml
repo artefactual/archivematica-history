@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%structureFolder/objectsAndLogs/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%structureDirectory/objectsAndLogs/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%createOrMoveAndCheckMD5/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>

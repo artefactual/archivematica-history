@@ -79,6 +79,7 @@ class replacementDics:
         "%relativeDirectoryLocationNoTrailingSlash%":relativeDirectoryLocationNoTrailingSlash, \
         "%processingDirectory%": processingDirectory, \
         "%MD5FileName%":self.archivematicaVars["MD5FileName"], \
+        "%AIPsStore%":self.archivematicaVars["AIPsStore"], \
         "%SIPUUID%":SIPUUID, \
         "%SIPName%":SIPName \
         }

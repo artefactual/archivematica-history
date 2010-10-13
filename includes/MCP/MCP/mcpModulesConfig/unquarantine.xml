@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%unquarantine/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%structureFolder/objectsAndLogs/</successDirectory>
+        <successDirectory>%watchDirectoryPath%structureDirectory/objectsAndLogs/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
