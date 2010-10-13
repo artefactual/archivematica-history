@@ -20,11 +20,11 @@ q) exit ;;
 *) echo "\"$choice\" is not valid "; sleep 2 ;;
 esac
 
-thisDate=`date +"%Y%m%d-%k%M"`
+svnRev=`svn info . |grep '^Revision: '|sed 's/Revision: //g'`
 
 sudo vmbuilder "$vmType" ubuntu \
 -c archivematica.cfg \
--d "archivematicaBuild-${thisDate}" \
+-d "archivematicaBuild-${svnRev}" \
 --rootsize ${rootSize} \
 --execscript "`pwd`/archivematica.sh" \
---hostname "Archivematica${thisDate}"
+--hostname "Archivematica-${svnRev}"
