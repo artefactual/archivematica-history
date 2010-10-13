@@ -44,13 +44,21 @@ def writeToFile(output, fileName):
             f.close()
         except OSError, ose:
             print >>sys.stderr, "output Error", ose
+            return -2
+        except IOError as (errno, strerror):
+            print "I/O error({0}): {1}".format(errno, strerror)
+            return -3
     else:
         print "No output or file specified"
+    return 0
         
 def writeUnlocked(data):
-    writeToFile(data[2], data[0])
-    writeToFile(data[3], data[1])
-    return data[4]
+    a = writeToFile(data[2], data[0])
+    b = writeToFile(data[3], data[1])
+    if data[4]:
+        return data[4]
+    else:
+        return a + b
 
 def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
     #Replace replacement strings
@@ -70,6 +78,8 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
     #execute command
     try:
       if execute != "" and command != "":
+        a = 0
+        b = 0
         command += " " + arguments
         print >>sys.stderr, "processing: " + command.__str__()
         #retcode = subprocess.call( shlex.split(command) )
@@ -88,8 +98,8 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
             waitingForOutputLock[taskUUID] = op
             serverConnection.requestLock(taskUUID)
         else:
-            writeToFile(output[0], sOutput)
-            writeToFile(output[1], sError)
+            a = writeToFile(output[0], sOutput)
+            b = writeToFile(output[1], sError)
 
         #it executes check for errors
         if retcode != 0:
@@ -97,7 +107,7 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
           return retcode
         else:
           print >>sys.stderr, "processing completed"
-          return 0
+          return a + b
       else:
         print >>sys.stderr, "server tried to run a blank command: " 
         return 1
