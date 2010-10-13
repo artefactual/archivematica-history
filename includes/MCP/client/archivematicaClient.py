@@ -173,10 +173,17 @@ class archivematicaMCPClientProtocol(LineReceiver):
             self.sendTaskResult(command, ret)
         else:
             badProtocol(self, command)
-    
+
+    def keepAlive(self, command):    
+        if len(command) == 1:
+            print "Got keep alive. Keeping connection open."
+        else:
+            badProtocol(self, command)
+
     protocolDic = {
     protocol["performTask"]:performTask, \
-    protocol["unlockForWrite"]:unlockForWrite
+    protocol["unlockForWrite"]:unlockForWrite, \
+    protocol["keepAlive"]:keepAlive
     }
 
 class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):

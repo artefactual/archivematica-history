@@ -451,6 +451,8 @@ class archivematicaMCPServerProtocol(LineReceiver):
     supportedCommands = []
     clientLock = threading.Lock()
     sendLock = threading.Lock()
+    keepAliveLock = threading.Lock()
+    channelOpen = False
 
     def badProtocol(self, command):
         """The client sent a command this server cannot interpret."""
@@ -468,10 +470,27 @@ class archivematicaMCPServerProtocol(LineReceiver):
 
     def connectionMade(self):
         self.write("hello, client!")
+        self.channelOpen = True
+        t = threading.Thread(target=self.keepAlive)
+        t.start()
         self.factory.clients.append(self)
+
+    def keepAlive(self):
+        while 1:
+            self.keepAliveLock.acquire()
+            if self.channelOpen:
+                self.write(protocol["keepAlive"])
+                self.keepAliveLock.release()
+                time.sleep(string.atoi(protocol["keepAlivePause"])) 
+            else:
+                self.keepAliveLock.release()
+                break
         
     def connectionLost(self, reason):
         print "Lost client: " + self.clientName
+        self.keepAliveLock.acquire()
+        self.channelOpen = False
+        self.keepAliveLock.release()
         self.factory.clients.remove(self)
         
     def write(self,line):      
