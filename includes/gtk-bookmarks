@@ -1,9 +1,7 @@
-file:///home/demo/1-receiveSIP
-file:///home/demo/2-reviewSIP
-file:///home/demo/3-quarantineSIP
-file:///home/demo/4-appraiseSIP
-file:///home/demo/5-prepareAIP
-file:///home/demo/6-reviewAIP
-file:///home/demo/7-storeAIP
-file:///home/demo/8-reviewDIP
-file:///home/demo/9-uploadDIP
+file:///home/demo/sharedDirectory/watchedDirectories/acquireSIP
+file:///home/demo/sharedDirectory/watchedDirectories/appraiseSIP
+file:///home/demo/sharedDirectory/watchedDirectories/uploadDIP
+file:///home/demo/sharedDirectory/watchedDirectories/uploadedDIPs
+file:///home/demo/sharedDirectory/watchedDirectories/storeAIP 
+file:///home/demo/sharedDirectory/AIPStorage
+file:///home/demo/sharedDirectory/watchedDirectories/failed
