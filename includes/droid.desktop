@@ -1,8 +1,9 @@
 [Desktop Entry]
-Encoding=UTF-8
-Version=1.0
 Type=Application
+Name=DROID
+GenericName=Digital Record Object Identificatio
+Exec=/usr/bin/droid-gui.sh
+Icon=droid-icon
 Terminal=false
-Exec=rundroid.sh
-Name=Droid
-Icon=gnome-panel-launcher
+Categories=Utility;
+
