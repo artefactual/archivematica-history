@@ -2,16 +2,10 @@ NameVirtualHost *
 <VirtualHost *>
 	ServerAdmin webmaster@localhost
 	
-	DocumentRoot /var/www/ica-atom
+	DocumentRoot /var/www
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
-	</Directory>
-	<Directory /var/www/ica-atom/>
-		Options Indexes FollowSymLinks MultiViews
-		AllowOverride All
-		Order allow,deny
-		allow from all
 	</Directory>
 
 	ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
@@ -47,12 +41,19 @@ NameVirtualHost *
         Allow from all
     </Directory>
 
-    Alias /dashboard "/var/www/dashboard/web"
-    <Directory "/var/www/dashboard/web">
-        Options Indexes MultiViews FollowSymLinks
-        AllowOverride None
-        Order allow,deny
-        Allow from all
+    Alias /ica-atom "/var/www/ica-atom/"
+    <Directory /var/www/ica-atom/>
+	Options Indexes FollowSymLinks MultiViews
+	AllowOverride All
+	Order allow,deny
+	allow from all
     </Directory>
 
+    <Location "/">
+        SetHandler python-program
+        PythonHandler django.core.handlers.modpython
+        PythonDebug On
+        PythonPath "['/usr/share/doc/python-django-doc'] + sys.path"
+        SetEnv DJANGO_SETTINGS_MODULE examples.settings
+    </Location>
 </VirtualHost>
