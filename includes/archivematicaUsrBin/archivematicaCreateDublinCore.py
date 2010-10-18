@@ -20,285 +20,302 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-import xml.etree.ElementTree as etree
+from archivematicaLoadConfig import loadConfig
+import lxml.etree as etree
 from datetime import datetime
 
-dublinCore = etree.Element("dublincore")
-dublinCore.text = "\n\t\t"
-dublinCore.tail = "\n"
-dublinCore.set("xmlns:dcterms", "http://purl.org/dc/terms/")
-dublinCore.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-dublinCore.set("xsi:schemaLocation", "http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd")
+#archivmaticaVars=loadConfig()
+#NSMAP = archivmaticaVars["NSMAP"]
+dctermsNS = "http://purl.org/dc/terms/"
+xsiNS = "http://www.w3.org/2001/XMLSchema-instance"
+dcterms = "{" + dctermsNS + "}"
+xsi = "{" + xsiNS + "}"
 
-dcTitle = etree.Element("dcterms:title")
+NSMAP = { "dcterms" : dctermsNS, "xsi" : xsiNS}
+dublinCore = etree.Element( "dublincore", \
+    nsmap = NSMAP, \
+    attrib = { "{" + xsiNS + "}schemaLocation" : "http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" }) 
+
+
+#dublinCore = etree.Element("dublincore")
+dublinCore.text = "\n\t"
+dublinCore.tail = "\n"
+#dublinCore.set("xmlns:dcterms", "http://purl.org/dc/terms/")
+#dublinCore.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+#dublinCore.set("xsi:schemaLocation", "http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd")
+
+
+
+dcTitle = etree.Element(dcterms + "title", nsmap=NSMAP) 
 dcTitle.text = " "
-dcTitle.tail = "\n\t\t"
+dcTitle.tail = "\n\t"
 dublinCore.append(dcTitle)
 
-dcCreator = etree.Element("dcterms:creator")
+dcCreator = etree.Element(dcterms + "creator", nsmap=NSMAP) 
 dcCreator.text = " "
-dcCreator.tail = "\n\t\t"
+dcCreator.tail = "\n\t"
 dublinCore.append(dcCreator)
 
-dcSubject = etree.Element("dcterms:subject")
+dcSubject = etree.Element(dcterms + "subject", nsmap=NSMAP) 
 dcSubject.text = " "
-dcSubject.tail = "\n\t\t"
+dcSubject.tail = "\n\t"
 dublinCore.append(dcSubject)
 
-dcDescription = etree.Element("dcterms:description")
+dcDescription = etree.Element(dcterms + "description", nsmap=NSMAP) 
 dcDescription.text = " "
-dcDescription.tail = "\n\t\t"
+dcDescription.tail = "\n\t"
 dublinCore.append(dcDescription)
 
-dcPublisher = etree.Element("dcterms:publisher")
+dcPublisher = etree.Element(dcterms + "publisher", nsmap=NSMAP) 
 dcPublisher.text = " "
-dcPublisher.tail = "\n\t\t"
+dcPublisher.tail = "\n\t"
 dublinCore.append(dcPublisher)
 
-dcContributor = etree.Element("dcterms:contributor")
+dcContributor = etree.Element(dcterms + "contributor", nsmap=NSMAP) 
 dcContributor.text = " "
-dcContributor.tail = "\n\t\t"
+dcContributor.tail = "\n\t"
 dublinCore.append(dcContributor)
 
-dcDate = etree.Element("dcterms:date")
+dcDate = etree.Element(dcterms + "date", nsmap=NSMAP) 
 dcDate.text = " "
-dcDate.tail = "\n\t\t"
+dcDate.tail = "\n\t"
 dublinCore.append(dcDate)
 
-dcType = etree.Element("dcterms:type")
+dcType = etree.Element(dcterms + "type", nsmap=NSMAP) 
 dcType.text = " "
-dcType.tail = "\n\t\t"
+dcType.tail = "\n\t"
 dublinCore.append(dcType)
 
-dcFormat = etree.Element("dcterms:format")
+dcFormat = etree.Element(dcterms + "format", nsmap=NSMAP) 
 dcFormat.text = " "
-dcFormat.tail = "\n\t\t"
+dcFormat.tail = "\n\t"
 dublinCore.append(dcFormat)
 
-dcIdentifier = etree.Element("dcterms:identifier")
+dcIdentifier = etree.Element(dcterms + "identifier", nsmap=NSMAP) 
 dcIdentifier.text = " "
-dcIdentifier.tail = "\n\t\t"
+dcIdentifier.tail = "\n\t"
 dublinCore.append(dcIdentifier)
 
-dcSource = etree.Element("dcterms:source")
+dcSource = etree.Element(dcterms + "source", nsmap=NSMAP) 
 dcSource.text = " "
-dcSource.tail = "\n\t\t"
+dcSource.tail = "\n\t"
 dublinCore.append(dcSource)
 
-dcLanguage = etree.Element("dcterms:language")
+dcLanguage = etree.Element(dcterms + "language", nsmap=NSMAP) 
 dcLanguage.text = " "
-dcLanguage.tail = "\n\t\t"
+dcLanguage.tail = "\n\t"
 dublinCore.append(dcLanguage)
 
-dcRelation = etree.Element("dcterms:relation")
+dcRelation = etree.Element(dcterms + "relation", nsmap=NSMAP) 
 dcRelation.text = " "
-dcRelation.tail = "\n\t\t"
+dcRelation.tail = "\n\t"
 dublinCore.append(dcRelation)
 
-dcCoverage = etree.Element("dcterms:coverage")
+dcCoverage = etree.Element(dcterms + "coverage", nsmap=NSMAP) 
 dcCoverage.text = " "
-dcCoverage.tail = "\n\t\t"
+dcCoverage.tail = "\n\t"
 dublinCore.append(dcCoverage)
 
-dcRights = etree.Element("dcterms:rights")
+dcRights = etree.Element(dcterms + "rights", nsmap=NSMAP) 
 dcRights.text = " "
-dcRights.tail = "\n\t\t"
+dcRights.tail = "\n\t"
 dublinCore.append(dcRights)
 
-dcAlternative = etree.Element("dcterms:alternative")
+dcAlternative = etree.Element(dcterms + "alternative", nsmap=NSMAP) 
 dcAlternative.text = " "
-dcAlternative.tail = "\n\t\t"
+dcAlternative.tail = "\n\t"
 dublinCore.append(dcAlternative)
 
-dcTOC = etree.Element("dcterms:tableOfContents")
+dcTOC = etree.Element(dcterms + "tableOfContents", nsmap=NSMAP) 
 dcTOC.text = " "
-dcTOC.tail = "\n\t\t"
+dcTOC.tail = "\n\t"
 dublinCore.append(dcTOC)
 
-dcAbstract = etree.Element("dcterms:abstract")
+dcAbstract = etree.Element(dcterms + "abstract", nsmap=NSMAP) 
 dcAbstract.text = " "
-dcAbstract.tail = "\n\t\t"
+dcAbstract.tail = "\n\t"
 dublinCore.append(dcAbstract)
 
-dcCreated = etree.Element("dcterms:created")
+dcCreated = etree.Element(dcterms + "created", nsmap=NSMAP) 
 dcCreated.text = " "
-dcCreated.tail = "\n\t\t"
+dcCreated.tail = "\n\t"
 dublinCore.append(dcCreated)
 
-dcValid = etree.Element("dcterms:valid")
+dcValid = etree.Element(dcterms + "valid", nsmap=NSMAP) 
 dcValid.text = " "
-dcValid.tail = "\n\t\t"
+dcValid.tail = "\n\t"
 dublinCore.append(dcValid)
 
-dcAvailable = etree.Element("dcterms:available")
+dcAvailable = etree.Element(dcterms + "available", nsmap=NSMAP) 
 dcAvailable.text = " "
-dcAvailable.tail = "\n\t\t"
+dcAvailable.tail = "\n\t"
 dublinCore.append(dcAvailable)
 
-dcIssued = etree.Element("dcterms:issued")
+dcIssued = etree.Element(dcterms + "issued", nsmap=NSMAP) 
 dcIssued.text = " "
-dcIssued.tail = "\n\t\t"
+dcIssued.tail = "\n\t"
 dublinCore.append(dcIssued)
 
-dcModified = etree.Element("dcterms:modified")
+dcModified = etree.Element(dcterms + "modified", nsmap=NSMAP) 
 dcModified.text = " "
-dcModified.tail = "\n\t\t"
+dcModified.tail = "\n\t"
 dublinCore.append(dcModified)
 
-dcDateAccepted = etree.Element("dcterms:dateAccepted")
+dcDateAccepted = etree.Element(dcterms + "dateAccepted", nsmap=NSMAP) 
 dcDateAccepted.text = " "
-dcDateAccepted.tail = "\n\t\t"
+dcDateAccepted.tail = "\n\t"
 dublinCore.append(dcDateAccepted)
 
-dcDateCopyrighted = etree.Element("dcterms:dateCopyrighted")
+dcDateCopyrighted = etree.Element(dcterms + "dateCopyrighted", nsmap=NSMAP) 
 dcDateCopyrighted.text = " "
-dcDateCopyrighted.tail = "\n\t\t"
+dcDateCopyrighted.tail = "\n\t"
 dublinCore.append(dcDateCopyrighted)
 
-dcDateSubmitted = etree.Element("dcterms:dateSubmitted")
+dcDateSubmitted = etree.Element(dcterms + "dateSubmitted", nsmap=NSMAP) 
 dcDateSubmitted.text = " "
-dcDateSubmitted.tail = "\n\t\t"
+dcDateSubmitted.tail = "\n\t"
 dublinCore.append(dcDateSubmitted)
 
-dcExtent = etree.Element("dcterms:extent")
+dcExtent = etree.Element(dcterms + "extent", nsmap=NSMAP) 
 dcExtent.text = " "
-dcExtent.tail = "\n\t\t"
+dcExtent.tail = "\n\t"
 dublinCore.append(dcExtent)
 
-dcMedium = etree.Element("dcterms:medium")
+dcMedium = etree.Element(dcterms + "medium", nsmap=NSMAP) 
 dcMedium.text = " "
-dcMedium.tail = "\n\t\t"
+dcMedium.tail = "\n\t"
 dublinCore.append(dcMedium)
 
-dcIsVersionOf = etree.Element("dcterms:isVersionOf")
+dcIsVersionOf = etree.Element(dcterms + "isVersionOf", nsmap=NSMAP) 
 dcIsVersionOf.text = " "
-dcIsVersionOf.tail = "\n\t\t"
+dcIsVersionOf.tail = "\n\t"
 dublinCore.append(dcIsVersionOf)
 
-dcHasVersion = etree.Element("dcterms:hasVersion")
+dcHasVersion = etree.Element(dcterms + "hasVersion", nsmap=NSMAP) 
 dcHasVersion.text = " "
-dcHasVersion.tail = "\n\t\t"
+dcHasVersion.tail = "\n\t"
 dublinCore.append(dcHasVersion)
 
-dcIsReplacedBy = etree.Element("dcterms:isReplacedBy")
+dcIsReplacedBy = etree.Element(dcterms + "isReplacedBy", nsmap=NSMAP) 
 dcIsReplacedBy.text = " "
-dcIsReplacedBy.tail = "\n\t\t"
+dcIsReplacedBy.tail = "\n\t"
 dublinCore.append(dcIsReplacedBy)
 
-dcReplaces = etree.Element("dcterms:replaces")
+dcReplaces = etree.Element(dcterms + "replaces", nsmap=NSMAP) 
 dcReplaces.text = " "
-dcReplaces.tail = "\n\t\t"
+dcReplaces.tail = "\n\t"
 dublinCore.append(dcReplaces)
 
-dcIsRequiredBy = etree.Element("dcterms:isRequiredBy")
+dcIsRequiredBy = etree.Element(dcterms + "isRequiredBy", nsmap=NSMAP) 
 dcIsRequiredBy.text = " "
-dcIsRequiredBy.tail = "\n\t\t"
+dcIsRequiredBy.tail = "\n\t"
 dublinCore.append(dcIsRequiredBy)
 
-dcRequires = etree.Element("dcterms:requires")
+dcRequires = etree.Element(dcterms + "requires", nsmap=NSMAP) 
 dcRequires.text = " "
-dcRequires.tail = "\n\t\t"
+dcRequires.tail = "\n\t"
 dublinCore.append(dcRequires)
 
-dcIsPartOf = etree.Element("dcterms:isPartOf")
+dcIsPartOf = etree.Element(dcterms + "isPartOf", nsmap=NSMAP) 
 dcIsPartOf.text = " "
-dcIsPartOf.tail = "\n\t\t"
+dcIsPartOf.tail = "\n\t"
 dublinCore.append(dcIsPartOf)
 
-dcHasPart = etree.Element("dcterms:hasPart")
+dcHasPart = etree.Element(dcterms + "hasPart", nsmap=NSMAP) 
 dcHasPart.text = " "
-dcHasPart.tail = "\n\t\t"
+dcHasPart.tail = "\n\t"
 dublinCore.append(dcHasPart)
 
-dcIsReferencedBy = etree.Element("dcterms:isReferencedBy")
+dcIsReferencedBy = etree.Element(dcterms + "isReferencedBy", nsmap=NSMAP) 
 dcIsReferencedBy.text = " "
-dcIsReferencedBy.tail = "\n\t\t"
+dcIsReferencedBy.tail = "\n\t"
 dublinCore.append(dcIsReferencedBy)
 
-dcReferences = etree.Element("dcterms:references")
+dcReferences = etree.Element(dcterms + "references", nsmap=NSMAP) 
 dcReferences.text = " "
-dcReferences.tail = "\n\t\t"
+dcReferences.tail = "\n\t"
 dublinCore.append(dcReferences)
 
-dcIsFormatOf = etree.Element("dcterms:isFormatOf")
+dcIsFormatOf = etree.Element(dcterms + "isFormatOf", nsmap=NSMAP) 
 dcIsFormatOf.text = " "
-dcIsFormatOf.tail = "\n\t\t"
+dcIsFormatOf.tail = "\n\t"
 dublinCore.append(dcIsFormatOf)
 
-dcConformsTo = etree.Element("dcterms:conformsTo")
+dcConformsTo = etree.Element(dcterms + "conformsTo", nsmap=NSMAP) 
 dcConformsTo.text = " "
-dcConformsTo.tail = "\n\t\t"
+dcConformsTo.tail = "\n\t"
 dublinCore.append(dcConformsTo)
 
-dcSpatial = etree.Element("dcterms:spatial")
+dcSpatial = etree.Element(dcterms + "spatial", nsmap=NSMAP) 
 dcSpatial.text = " "
-dcSpatial.tail = "\n\t\t"
+dcSpatial.tail = "\n\t"
 dublinCore.append(dcSpatial)
 
-dcTemporal = etree.Element("dcterms:temporal")
+dcTemporal = etree.Element(dcterms + "temporal", nsmap=NSMAP) 
 dcTemporal.text = " "
-dcTemporal.tail = "\n\t\t"
+dcTemporal.tail = "\n\t"
 dublinCore.append(dcTemporal)
 
-dcAudience = etree.Element("dcterms:audience")
+dcAudience = etree.Element(dcterms + "audience", nsmap=NSMAP) 
 dcAudience.text = " "
-dcAudience.tail = "\n\t\t"
+dcAudience.tail = "\n\t"
 dublinCore.append(dcAudience)
 
-dcAccrualMethod = etree.Element("dcterms:accrualMethod")
+dcAccrualMethod = etree.Element(dcterms + "accrualMethod", nsmap=NSMAP) 
 dcAccrualMethod.text = " "
-dcAccrualMethod.tail = "\n\t\t"
+dcAccrualMethod.tail = "\n\t"
 dublinCore.append(dcAccrualMethod)
 
-dcAccrualPeriodicity = etree.Element("dcterms:accrualPeriodicity")
+dcAccrualPeriodicity = etree.Element(dcterms + "accrualPeriodicity", nsmap=NSMAP) 
 dcAccrualPeriodicity.text = " "
-dcAccrualPeriodicity.tail = "\n\t\t"
+dcAccrualPeriodicity.tail = "\n\t"
 dublinCore.append(dcAccrualPeriodicity)
 
-dcAccrualPolicy = etree.Element("dcterms:accrualPolicy")
+dcAccrualPolicy = etree.Element(dcterms + "accrualPolicy", nsmap=NSMAP) 
 dcAccrualPolicy.text = " "
-dcAccrualPolicy.tail = "\n\t\t"
+dcAccrualPolicy.tail = "\n\t"
 dublinCore.append(dcAccrualPolicy)
 
-dcInstructionalMethod = etree.Element("dcterms:instructionalMethod")
+dcInstructionalMethod = etree.Element(dcterms + "instructionalMethod", nsmap=NSMAP) 
 dcInstructionalMethod.text = " "
-dcInstructionalMethod.tail = "\n\t\t"
+dcInstructionalMethod.tail = "\n\t"
 dublinCore.append(dcInstructionalMethod)
 
-dcProvenance = etree.Element("dcterms:Provenance")
+dcProvenance = etree.Element(dcterms + "Provenance", nsmap=NSMAP) 
 dcProvenance.text = " "
-dcProvenance.tail = "\n\t\t"
+dcProvenance.tail = "\n\t"
 dublinCore.append(dcProvenance)
 
-dcRightsHolder = etree.Element("dcterms:rightsHolder")
+dcRightsHolder = etree.Element(dcterms + "rightsHolder", nsmap=NSMAP) 
 dcRightsHolder.text = " "
-dcRightsHolder.tail = "\n\t\t"
+dcRightsHolder.tail = "\n\t"
 dublinCore.append(dcRightsHolder)
 
-dcMediator = etree.Element("dcterms:mediator")
+dcMediator = etree.Element(dcterms + "mediator", nsmap=NSMAP) 
 dcMediator.text = " "
-dcMediator.tail = "\n\t\t"
+dcMediator.tail = "\n\t"
 dublinCore.append(dcMediator)
 
-dcEducationLevel = etree.Element("dcterms:educationLevel")
+dcEducationLevel = etree.Element(dcterms + "educationLevel", nsmap=NSMAP) 
 dcEducationLevel.text = " "
-dcEducationLevel.tail = "\n\t\t"
+dcEducationLevel.tail = "\n\t"
 dublinCore.append(dcEducationLevel)
 
-dcAccessRights = etree.Element("dcterms:accessRights")
+dcAccessRights = etree.Element(dcterms + "accessRights", nsmap=NSMAP) 
 dcAccessRights.text = " "
-dcAccessRights.tail = "\n\t\t"
+dcAccessRights.tail = "\n\t"
 dublinCore.append(dcAccessRights)
 
-dcLicense = etree.Element("dcterms:license")
+dcLicense = etree.Element(dcterms + "license", nsmap=NSMAP) 
 dcLicense.text = " "
-dcLicense.tail = "\n\t\t"
+dcLicense.tail = "\n\t"
 dublinCore.append(dcLicense)
 
-dcBibliographicCitation = etree.Element("dcterms:bibliographicCitation")
+dcBibliographicCitation = etree.Element(dcterms + "bibliographicCitation", nsmap=NSMAP) 
 dcBibliographicCitation.text = " "
-dcBibliographicCitation.tail = "\n\t\t"
+dcBibliographicCitation.tail = "\n"
 dublinCore.append(dcBibliographicCitation)
 
 tree = etree.ElementTree(dublinCore)
-tree.write("dublincore.xml")
+tree.write("dublincore.xml") 
+print(etree.tostring(dublinCore, pretty_print=True))
