@@ -42,7 +42,7 @@
 import os
 import pyinotify
 from archivematicaReplacementDics import replacementDics 
-from MCPloggingSQL import *
+from MCPlogging import *
 from archivematicaLoadConfig import loadConfig
 from mcpModules.modules import modulesClass
 from pyinotify import WatchManager
