@@ -58,7 +58,7 @@ def runSQL( sql ):
 #user approved?
 #client connected/disconnected.
 
-def logTaskCreated(task, replacementDic):
+def logTaskCreatedSQL(task, replacementDic):
     taskUUID = task.UUID.__str__()
     jobUUID = task.job.UUID.__str__()
     fileUUID = replacementDic["%fileUUID%"].__str__()
@@ -71,7 +71,7 @@ def logTaskCreated(task, replacementDic):
     runSQL("""INSERT INTO Tasks (taskUUID, jobUUID, fileUUID, fileName, exec, arguments)
     VALUES ( '""" + taskUUID + separator + jobUUID + separator + fileUUID + separator + fileName + separator + taskexec + separator + arguments + "' )" )
 
-def logTaskAssigned(task, client):
+def logTaskAssignedSQL(task, client):
     taskUUID = task.UUID.__str__()
     client = client.clientName
     
@@ -80,7 +80,7 @@ def logTaskAssigned(task, client):
     "WHERE taskUUID='" + taskUUID + "'" )
 
 
-def logTaskCompleted(task, retValue):
+def logTaskCompletedSQL(task, retValue):
     taskUUID = task.UUID.__str__()
     exitCode = retValue.__str__()
     
@@ -89,13 +89,13 @@ def logTaskCompleted(task, retValue):
     "WHERE taskUUID='" + taskUUID + "'" )
 
 
-def logJobCreated(job):
+def logJobCreatedSQL(job):
     separator = "', '"
     runSQL("""INSERT INTO jobCreated (jobUUID, directory, SIPUUID)
     VALUES ( '""" + job.UUID.__str__() + separator + job.directory + separator + getSIPUUIDFromLog(job.directory + "/") + "' )" )
 
 
-def logJobStepCompleted(job):
+def logJobStepCompletedSQL(job):
     separator = "', '"
     runSQL("""INSERT INTO jobStepCompleted (jobUUID, step)
     VALUES ( '""" + job.UUID.__str__() + separator + job.step + "' )" )
