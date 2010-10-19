@@ -1,6 +1,7 @@
 echo "The default password is demo"
-./postBuildRunAssistScripts/preMCPLogging.sh
-./postBuildRunAssistScripts/installLXML.sh
+cd postBuildRunAssistScripts
+./preMCPLogging.sh
+./installLXML.sh
 sudo mysqladmin create ica-atom
 sudo mysqladmin create dcb
 sudo mysqladmin create qubit
@@ -12,5 +13,7 @@ sudo chmod -R g+s ~/sharedDirectory/
 echo "Disabling Screen Saver (Better for VM's)"
 sudo aptitude remove xscreensaver
 sudo gpasswd -a demo archivematica
-echo "PLEASE REBOOT TO ENABLE NEW GROUP SETTINGS"
+echo " "
+echo "===PLEASE REBOOT TO ENABLE NEW GROUP SETTINGS==="
+echo " "
 sleep 3
