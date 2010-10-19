@@ -18,42 +18,30 @@
 # @package Archivematica
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
-# @author Peter Van Garderen <peter@artefactual.com>
 # @version svn: $Id$
 
-import os
-import sys
-import lxml.etree as etree
 
-def newChild(parent, tag, text=None, tailText=None):
-  child = etree.Element(tag)
-  parent.append(child)
-  child.text = text
-  child.tail = tailText
-  return child
-      
-def loadDublin(root, dublincore):      
-#  dtree = etree.parse("/home/demo/ingestLogs/" + sys.argv[2] + "/DublinCore.xml")
-#  droot = dtree.getroot()
-#  child = newChild(root,  "dmdSec")
-  child = etree.Element("dmdSec")
-  root.insert(0, child)
-  child.set("ID", "SIP-description")
-  child = newChild(child, "mdWrap")
-  child = newChild(child, "xmlData")
-  child.append(dublincore)
+dctermsNS = "http://purl.org/dc/terms/"
+xsiNS = "http://www.w3.org/2001/XMLSchema-instance"
+metsNS = "http://www.loc.gov/METS/"
+premisNS = "info:lc/xmlns/premis-v2"
+dctermsNS = "http://purl.org/dc/terms/"
+fitsNS = "http://hul.harvard.edu/ois/xml/ns/fits/fits_output"
+xlinkNS = "http://www.w3.org/1999/xlink"
 
-if __name__ == '__main__':
-  if not os.path.isfile(sys.argv[1]+"/METS.xml"):
-    print("Archivematica error - METS.xml doesn't exist")
 
-  tree = etree.parse(sys.argv[1]+"/METS.xml")
-  root = tree.getroot()
+dctermsBNS = "{" + dctermsNS + "}"
+xsiBNS = "{" + xsiNS + "}"
+metsBNS = "{" + metsNS + "}"
+premisBNS = "{" + premisNS + "}"
+dctermsBNS = "{" + dctermsNS + "}"
+fitsBNS = "{" + fitsNS + "}"
+xlinkBNS = "{" + xlinkNS + "}"
 
-  dtree = etree.parse(sys.argv[2]+"/dublincore.xml")
-  dublincore = dtree.getroot()
-
-  loadDublin(root, dublincore)
-  
-  tree.write(sys.argv[1]+"/METS.xml")
+NSMAP = { "dcterms" : dctermsNS, \
+"xsi" : xsiNS, \
+"mets" : metsNS, \
+"premis" : premisNS, \
+"dcterms" : dctermsNS, \
+"xlink": xlinkNS }
 
