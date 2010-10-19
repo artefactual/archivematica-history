@@ -23,28 +23,13 @@
 from archivematicaLoadConfig import loadConfig
 import lxml.etree as etree
 from datetime import datetime
+from archivematicaXMLNamesSpace import *
 
-#archivmaticaVars=loadConfig()
-#NSMAP = archivmaticaVars["NSMAP"]
-dctermsNS = "http://purl.org/dc/terms/"
-xsiNS = "http://www.w3.org/2001/XMLSchema-instance"
-dcterms = "{" + dctermsNS + "}"
-xsi = "{" + xsiNS + "}"
-
-NSMAP = { "dcterms" : dctermsNS, "xsi" : xsiNS}
 dublinCore = etree.Element( "dublincore", \
     nsmap = NSMAP, \
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" }) 
-
-
-#dublinCore = etree.Element("dublincore")
 dublinCore.text = "\n\t"
 dublinCore.tail = "\n"
-#dublinCore.set("xmlns:dcterms", "http://purl.org/dc/terms/")
-#dublinCore.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-#dublinCore.set("xsi:schemaLocation", "http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd")
-
-
 
 dcTitle = etree.Element(dcterms + "title", nsmap=NSMAP) 
 dcTitle.text = " "
