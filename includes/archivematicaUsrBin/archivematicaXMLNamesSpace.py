@@ -18,13 +18,42 @@
 # @package Archivematica
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
+# @author Peter Van Garderen <peter@artefactual.com>
 # @version svn: $Id$
 
+import os
+import sys
+import lxml.etree as etree
 
-dctermsNS = "http://purl.org/dc/terms/"
-xsiNS = "http://www.w3.org/2001/XMLSchema-instance"
-dcterms = "{" + dctermsNS + "}"
-xsi = "{" + xsiNS + "}"
+def newChild(parent, tag, text=None, tailText=None):
+  child = etree.Element(tag)
+  parent.append(child)
+  child.text = text
+  child.tail = tailText
+  return child
+      
+def loadDublin(root, dublincore):      
+#  dtree = etree.parse("/home/demo/ingestLogs/" + sys.argv[2] + "/DublinCore.xml")
+#  droot = dtree.getroot()
+#  child = newChild(root,  "dmdSec")
+  child = etree.Element("dmdSec")
+  root.insert(0, child)
+  child.set("ID", "SIP-description")
+  child = newChild(child, "mdWrap")
+  child = newChild(child, "xmlData")
+  child.append(dublincore)
 
-NSMAP = { "dcterms" : dctermsNS, "xsi" : xsiNS}
+if __name__ == '__main__':
+  if not os.path.isfile(sys.argv[1]+"/METS.xml"):
+    print("Archivematica error - METS.xml doesn't exist")
+
+  tree = etree.parse(sys.argv[1]+"/METS.xml")
+  root = tree.getroot()
+
+  dtree = etree.parse(sys.argv[2]+"/dublincore.xml")
+  dublincore = dtree.getroot()
+
+  loadDublin(root, dublincore)
+  
+  tree.write(sys.argv[1]+"/METS.xml")
 
