@@ -23,7 +23,7 @@
 
 import os
 import sys
-import xml.etree.cElementTree as etree
+import lxml.etree as etree
 
 def newChild(parent, tag, text=None, tailText=None):
   child = etree.Element(tag)

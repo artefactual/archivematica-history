@@ -21,10 +21,11 @@
 # @author Peter Van Garderen <peter@artefactual.com>
 # @version svn: $Id$
 
+from archivematicaXMLNamesSpace import *
 import os
 import uuid
 import sys
-import xml.etree.cElementTree as etree
+import lxml.etree as etree
 import string
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 from datetime import datetime
@@ -80,20 +81,18 @@ def newChild(parent, tag, text=None, tailText=None):
         child.tail = "\n"     
     return child
 
-
 def createDigiprovMD(uuid, filename) :
     digiprovMD = newChild(amdSec, "digiprovMD")
     digiprovMD.set("ID", "digiprov-"+ os.path.basename(filename) + "-" + uuid)
     mdWrap = newChild(digiprovMD,"mdWrap")
     mdWrap.set("MDTYPE", "PREMIS")
     xmlData = newChild(mdWrap, "xmlData")
-    premis = newChild(xmlData, "premis")
-    premis.set("xmlns", "info:lc/xmlns/premis-v2")
-    premis.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    premis = etree.SubElement( xmlData, premisBNS + "premis", nsmap=NSMAP, \
+        attrib = { "{" + xsiNS + "}schemaLocation" : "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" })
     premis.set("version", "2.0")
-    premis.set("xsi:schemaLocation", "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd")
+    
     objects = newChild(premis, "object")
-    objects.set("xsi:type", "file")
+    objects.set(xsiBNS + "type", "file")#error
     objectIdentifier = newChild(objects, "objectIdentifier")
     objectIdentifierType = newChild(objectIdentifier, "objectIdentifierType", "UUID")
     objectIdentifierValue = newChild(objectIdentifier, "objectIdentifierValue", uuid)
@@ -105,11 +104,10 @@ def createDigiprovMD(uuid, filename) :
     mdWrap = newChild(digiprovMD,"mdWrap")
     mdWrap.set("MDTYPE", "FITS")
     xmlData = newChild(mdWrap, "xmlData")
-    fits = newChild(xmlData, "fits")
-    fits.set("xmlns", "http://hul.harvard.edu/ois/xml/ns/fits/fits_output")
-    fits.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    #fits = newChild(xmlData, "fits")
+    fits = etree.SubElement( xmlData, "fits", nsmap=NSMAP, \
+        attrib = { "{" + xsiNS + "}schemaLocation" : "http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd" })
     fits.set("version", "0.3.2")
-    fits.set("xsi:schemaLocation", "http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd")
     
     fitsTree = etree.parse(logsDIR+"FITS-" + uuid + ".xml")
     fitsRoot = fitsTree.getroot()
@@ -158,8 +156,8 @@ def createFileSec(path, parentBranch, structMapParent):
                 else:
                     print "Error - Log has no UUID for file: " + pathSTR + "{" + path.__str__() + "}"
                 createDigiprovMD(myuuid, itempath)
-                fileI = newChild(parentBranch, "file")
-                fileI.set("xmlns:xlink", "http://www.w3.org/1999/xlink")
+                fileI = etree.SubElement( parentBranch, xlinkBNS + "fits", nsmap=NSMAP)
+
                 filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
                 #filename = replace /tmp/"UUID" with /objects/
 
@@ -167,7 +165,7 @@ def createFileSec(path, parentBranch, structMapParent):
                 fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())            
 
                 Flocat = newChild(fileI, "Flocat")
-                Flocat.set("xlink:href", pathSTR + "/" + filename)
+                Flocat.set(xlinkBNS + "href", pathSTR + "/" + filename)
                 Flocat.set("locType", "other")
                 Flocat.set("otherLocType", "system")
 
@@ -177,14 +175,9 @@ def createFileSec(path, parentBranch, structMapParent):
                 fptr.set("FILEID","file-" + item.__str__() + "-" + myuuid.__str__())
          
 if __name__ == '__main__':
-    root = etree.Element("mets")
-    root.text = "\n\t"
-    root.set("xmlns:mets", "http://www.loc.gov/METS/")
-    root.set("xmlns:premis", "info:lc/xmlns/premis-v2")
-    root.set("xmlns:dcterms", "http://purl.org/dc/terms/")
-    root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-#    root.set("xmlns:xlink", "http://www.w3.org/1999/xlink")
-    root.set("xsi:schemaLocation", "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd")
+    root = etree.Element( "mets", \
+    nsmap = NSMAP, \
+    attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
 
     #cd /tmp/$UUID; 
     opath = os.getcwd()
