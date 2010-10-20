@@ -1,7 +1,6 @@
 echo "The default password is demo"
 cd postBuildRunAssistScripts
 ./preMCPLogging.sh
-./installLXML.sh
 sudo mysqladmin create ica-atom
 sudo mysqladmin create dcb
 sudo mysqladmin create qubit
