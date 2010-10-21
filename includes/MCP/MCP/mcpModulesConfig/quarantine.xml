@@ -21,8 +21,8 @@
                 <filterSubDir></filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPDirectory%quarantine</standardOut>
+                <standardError>%SIPDirectory%quarantine</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>setSIPQuarantine_v0.0</execute>
@@ -57,12 +57,12 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
-                <standardIn></standardIn>
-                <standardOut></standardOut>
+                <standardIn>%SIPDirectory%ArchivematicaQuarantineEvent.xml</standardIn>
+                <standardOut>%SIPDirectory%ArchivematicaQuarantineEvent.xml</standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute>setFileOwner_v0.0</execute>
-                <arguments>archivematica:archivematica "%relativeLocation%"</arguments>
+                <execute>createXMLEventQuarantine_v0.0</execute>
+                <arguments>"%taskUUID%" "%date%"</arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>            
         </cleanupSuccessfulCommand>
