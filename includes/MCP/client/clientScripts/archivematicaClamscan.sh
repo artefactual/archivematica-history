@@ -20,19 +20,18 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-target=$1
-UUID=`uuid -v 4`
-targetBasename=`basename "$target"`
-targetDirname=`dirname "$target"`
-newDir="${targetDirname}/${targetBasename}-${UUID}/"
-mkdir "${newDir}"
-mv "${target}" "${newDir}objects/"
-mkdir "${newDir}logs"
-mkdir "${newDir}logs/SIPEvents"
-mkdir "${newDir}logs/FILEEvents"
-echo $UUID > "${newDir}logs/SIP-UUID.txt"
-mv "${newDir}objects/ArchivematicaQuarantineEvent.xml" "${newDir}logs/SIPEvents/."
-mv "${newDir}objects/ArchivematicaUnquarantineEvent.xml" "${newDir}logs/SIPEvents/."
+source /etc/archivematica/archivematicaConfig.conf
+
+target="$1"
+eIDValue="$2"
+eDate="$3"
+
+clamscanResultShouldBe="Infected files: 0"
+
+clamscanVersion=`clamscan -V`
+clamscanResult=`clamscan "$target" | grep "Infected files"`
+
+${clientScriptsDirectory}createXMLEventClamscan.py "$eIDValue" "$eDate" "$clamscanVersion" "$clamscanResult " "$clamscanResultShouldBe "
 
 
 

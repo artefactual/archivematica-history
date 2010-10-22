@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 
 # This file is part of Archivematica.
 #
@@ -19,20 +19,21 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+import sys
+import lxml.etree as etree
+from createXmlEventsAssist import createEvent 
+from createXmlEventsAssist import createOutcomeInformation
+from createXmlEventsAssist import createLinkingAgentIdentifier
 
-target=$1
-UUID=`uuid -v 4`
-targetBasename=`basename "$target"`
-targetDirname=`dirname "$target"`
-newDir="${targetDirname}/${targetBasename}-${UUID}/"
-mkdir "${newDir}"
-mv "${target}" "${newDir}objects/"
-mkdir "${newDir}logs"
-mkdir "${newDir}logs/SIPEvents"
-mkdir "${newDir}logs/FILEEvents"
-echo $UUID > "${newDir}logs/SIP-UUID.txt"
-mv "${newDir}objects/ArchivematicaQuarantineEvent.xml" "${newDir}logs/SIPEvents/."
-mv "${newDir}objects/ArchivematicaUnquarantineEvent.xml" "${newDir}logs/SIPEvents/."
+
+#etree.Element("root", interesting="totally")
+#SubElement(root, "child").text = "Child 1"
 
 
 
+if __name__ == '__main__':
+    """This prints the contents for an Archivematica Unquarantine Event xml file"""
+    eIDValue = sys.argv[1]
+    date = sys.argv[2]
+    event = createEvent( eIDValue, "restructureToObjectsAndLog", eventDateTime=date)
+    print etree.tostring(event, pretty_print=True)

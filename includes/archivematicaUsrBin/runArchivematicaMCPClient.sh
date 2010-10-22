@@ -19,6 +19,7 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-source /etc/archivematica/archivematicaConfig.conf
 
-sudo -u archivematica archivematicaMCP.py
+#source /etc/archivematica/archivematicaConfig.conf
+sudo -u archivematica archivematicaClient.py
+#archivematicaClient.py

@@ -52,18 +52,18 @@
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPDirectory%ArchivematicaUnquarantineEvent.xml</standardOut>
+                <standardError>%SIPDirectory%ArchivematicaUnquarantineEvent.xml</standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>createXMLEventUnquarantine_v0.0</execute>
+                <arguments>"%taskUUID%" "%date%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>            
         </cleanupSuccessfulCommand>
         
