@@ -28,6 +28,11 @@ newDir="${targetDirname}/${targetBasename}-${UUID}/"
 mkdir "${newDir}"
 mv "${target}" "${newDir}objects/"
 mkdir "${newDir}logs"
+mkdir "${newDir}logs/SIPEvents"
+mkdir "${newDir}logs/FILEEvents"
 echo $UUID > "${newDir}logs/SIP-UUID.txt"
+mv "${newDir}objects/ArchivematicaQuarantineEvent.xml" "${newDir}logs/SIPEvents/."
+mv "${newDir}objects/ArchivematicaUnquarantineEvent.xml" "${newDir}logs/SIPEvents/."
+
 
 

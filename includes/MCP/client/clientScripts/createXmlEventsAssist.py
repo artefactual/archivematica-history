@@ -47,10 +47,12 @@ linkingAgentIdentifier = None):
     etree.SubElement(eventIdentifier, "eventIdentifierValue").text = eIDValue
     etree.SubElement(ret, "eventType").text = eType
     etree.SubElement(ret, "eventDateTime").text = eventDateTime
-    if eventDetail:
+    if eventDetail != None:
         ret.append(eventDetail)
     else:
         etree.SubElement(ret, "eventDetail")
+    if eOutcomeInformation != None:
+        ret.append(eOutcomeInformation)
     if not linkingAgentIdentifier:
         linkingAgentIdentifier = createLinkingAgentIdentifier()
     ret.append(linkingAgentIdentifier)

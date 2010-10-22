@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 
 # This file is part of Archivematica.
 #
@@ -19,6 +19,21 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-source /etc/archivematica/archivematicaConfig.conf
-#sudo -u archivematica archivematicaClient.py
-archivematicaClient.py
+import sys
+import lxml.etree as etree
+from createXmlEventsAssist import createEvent 
+from createXmlEventsAssist import createOutcomeInformation
+from createXmlEventsAssist import createLinkingAgentIdentifier
+
+
+#etree.Element("root", interesting="totally")
+#SubElement(root, "child").text = "Child 1"
+
+
+
+if __name__ == '__main__':
+    """This prints the contents for an Archivematica Unquarantine Event xml file"""
+    eIDValue = sys.argv[1]
+    date = sys.argv[2]
+    event = createEvent( eIDValue, "unquarantine", eventDateTime=date)
+    print etree.tostring(event, pretty_print=True)

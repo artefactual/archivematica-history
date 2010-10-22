@@ -60,11 +60,12 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
-            </command>            
+            </command>             
         </cleanupSuccessfulCommand>
         
         <cleanupUnsuccessfulCommand>
