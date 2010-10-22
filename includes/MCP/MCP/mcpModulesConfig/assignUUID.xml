@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>UUID4_v0.0</execute>
-                <arguments> "%relativeLocation%" "%SIPObjectsDirectory%"</arguments>
+                <arguments> "%relativeLocation%" "%SIPObjectsDirectory%" "%taskUUID%" "%date%" "%SIPLogsDirectory%"FILEEvents/</arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>
         </exeCommand>

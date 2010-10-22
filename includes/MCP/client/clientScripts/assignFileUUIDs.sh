@@ -21,8 +21,19 @@
 # @version svn: $Id$
 source /etc/archivematica/archivematicaConfig.conf
 
-target=$1
-objectsDir=$2
-fileUUID=`uuid -v 4`
+target="$1"
+objectsDir="$2"
+eIDValue="$3"
+eDate="$4"
+eventDirectory="$5"
+
+
+uuidVersion="4"
+fileUUID=`uuid -v ${uuidVersion}`
 echo "$fileUUID -> `"$fileUUIDPY" "Logline" "${objectsDir}" "${target}"`"
+
+#eIDValue="$fileUUID"
+${clientScriptsDirectory}createXMLEventAssignUUID.py "$eIDValue" "$eDate" "$uuidVersion" "$fileUUID" > "${eventDirectory}ArchivematicaAssignUUID_${fileUUID}_Event.xml"
+
+exit $?
 
