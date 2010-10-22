@@ -32,8 +32,8 @@ from createXmlEventsAssist import createLinkingAgentIdentifier
 
 
 if __name__ == '__main__':
+    """This creates an Archivematica Quarantine Event xml file"""
     eIDValue = sys.argv[1]
     date = sys.argv[2]
-    print "This creates an Archivematica Quarantine Event xml file"
     event = createEvent( eIDValue, "quarantine", eventDateTime=date)
     print etree.tostring(event, pretty_print=True)
