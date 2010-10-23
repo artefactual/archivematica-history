@@ -31,13 +31,13 @@ sed -i -e "s/127.0.0.1:9999/archive.ubuntu.com/g" $1/etc/apt/sources.list
 echo "deb http://archive.ubuntu.com/ubuntu/ karmic-proposed main restricted universe multiverse" >> $1/etc/apt/sources.list
 chroot $1 aptitude update
 
-#Remove ubuntu home folder skeleton
-chroot $1 rm -rf /home/demo/Documents
-chroot $1 rm -rf /home/demo/Music
-chroot $1 rm -rf /home/demo/Pictures
-chroot $1 rm -rf /home/demo/Public
-chroot $1 rm -rf /home/demo/Templates
-chroot $1 rm -rf /home/demo/Videos
+#this may no longer be necessary due to user-dirs config
+#chroot $1 rm -rf /home/demo/Documents
+#chroot $1 rm -rf /home/demo/Music
+#chroot $1 rm -rf /home/demo/Pictures
+#chroot $1 rm -rf /home/demo/Public
+#chroot $1 rm -rf /home/demo/Templates
+#chroot $1 rm -rf /home/demo/Videos
 
 #Install archivematica
 svn export includes/archivematicaUsrBin $1/usr/bin/temp/
@@ -68,6 +68,7 @@ chroot $1 ln -s /usr/share/archivematica/mcpModules /usr/lib/pymodules/python2.6
 #Create archivematica User for daemons, add demo user to group
 chroot $1 adduser --uid 333 --group --system --no-create-home --disabled-login archivematica
 chroot $1 chown -R archivematica:archivematica /home/demo/sharedFolders
+chroot $1 sudo gpasswd -a demo archivematica
 
 chroot $1 update-python-modules
 
@@ -77,7 +78,7 @@ echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod" >> $1/etc/sudoer
 #Install externals/archivematica
 chroot $1 mkdir -p /home/demo/Desktop
 svn export includes/.mozilla $1/home/demo/.mozilla
-svn export includes/xenaconfig $1/home/demo/.java
+#svn export includes/xenaconfig $1/home/demo/.java
 svn export includes/Docs $1/home/demo/Docs
 svn export enviromentConfigFiles/exports $1/etc/exports
 chroot $1 ln -s /home/demo/Docs /home/demo/Desktop
@@ -94,7 +95,7 @@ cp -rf includes/unoconv-listen $1/etc/init.d/unoconv-listen
 chroot $1 chmod +x /etc/init.d/unoconv-listen
 chroot $1 /usr/sbin/update-rc.d unoconv-listen defaults
 chroot $1 chmod -R 770 /home/demo/.mozilla
-chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
+#chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 
 #Should we link these to the new shared folder structure?
 #chroot $1 mkdir /home/demo/2-reviewSIP
@@ -128,23 +129,23 @@ chroot $1 mkdir -p /home/demo/.config/xfce4/desktop
 chroot $1 mkdir -p /home/demo/.config/xfce4/panel
 
 #add archivematica/dashboard icons
-cp includes/dashboard-desktop-icon.png $1/usr/share/icons
-cp includes/dcb-desktop-icon.png $1/usr/share/icons
-cp includes/ica-atom-desktop-icon.png $1/usr/share/icons
-cp includes/archivematica-xubuntu-steel.png $1/usr/share/xfce4/backdrops/xubuntu-karmic.png
-cp includes/ica-atom.desktop $1/home/demo/Desktop
-cp includes/droid.desktop $1/home/demo/Desktop
-cp includes/jhove.desktop $1/home/demo/Desktop
-cp includes/dcb.desktop $1/home/demo/Desktop
+cp includes/desktopShortcuts/dashboard-desktop-icon.png $1/usr/share/icons
+cp includes/desktopShortcuts/dcb-desktop-icon.png $1/usr/share/icons
+cp includes/desktopShortcuts/ica-atom-desktop-icon.png $1/usr/share/icons
+cp includes/desktopShortcuts/archivematica-xubuntu-steel.png $1/usr/share/xfce4/backdrops/xubuntu-karmic.png
+cp includes/desktopShortcuts/ica-atom.desktop $1/home/demo/Desktop
+#cp includes/droid.desktop $1/home/demo/Desktop
+#cp includes/jhove.desktop $1/home/demo/Desktop
+cp includes/desktopShortcuts/dcb.desktop $1/home/demo/Desktop
 #cp includes/dashboard.desktop $1/home/demo/Desktop
-cp includes/WinFF.desktop $1/home/demo/Desktop
-cp includes/Terminal.desktop $1/home/demo/Desktop
+#cp includes/WinFF.desktop $1/home/demo/Desktop
+cp includes/desktopShortcuts/Terminal.desktop $1/home/demo/Desktop
 
 #add launcher scripts
-cp includes/runica-atom.sh $1/usr/bin
-cp includes/rundcb.sh $1/usr/bin
-cp includes/rundashboard.sh $1/usr/bin
-cp includes/runjhove.sh $1/usr/bin
+cp includes/desktopShortcuts/runica-atom.sh $1/usr/bin
+cp includes/desktopShortcuts/rundcb.sh $1/usr/bin
+cp includes/desktopShortcuts/rundashboard.sh $1/usr/bin
+cp includes/desktopShortcuts/runjhove.sh $1/usr/bin
 
 #these are now created by their debian packages
 #cp includes/runxena.sh $1/usr/bin
@@ -153,23 +154,23 @@ cp includes/runjhove.sh $1/usr/bin
 
 #xfce4 configuration
 cp includes/panel/* $1/home/demo/.config/xfce4/panel
-cp includes/xfce4-desktop.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
-cp includes/xfce4-session.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
-cp includes/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
-cp includes/user-dirs.defaults $1/etc/xdg
-cp includes/uca.xml $1/home/demo/.config/Thunar
-cp includes/thunarrc $1/home/demo/.config/Thunar
-cp includes/thunar.desktop $1/home/demo/.config/autostart
-cp includes/gtk-bookmarks $1/home/demo/.gtk-bookmarks
-cp includes/gdm.custom.conf $1/etc/gdm/custom.conf
+cp includes/xfceCustomization/xfce4-desktop.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
+cp includes/xfceCustomization/xfce4-session.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
+cp includes/xfceCustomization/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
+cp includes/xfceCustomization/user-dirs.defaults $1/etc/xdg
+cp includes/xfceCustomization/uca.xml $1/home/demo/.config/Thunar
+cp includes/xfceCustomization/thunarrc $1/home/demo/.config/Thunar
+cp includes/xfceCustomization/thunar.desktop $1/home/demo/.config/autostart
+cp includes/xfceCustomization/gtk-bookmarks $1/home/demo/.gtk-bookmarks
+cp includes/xfceCustomization/gdm.custom.conf $1/etc/gdm/custom.conf
 
 #fix permissions 
 chroot $1 chmod 444 /home/demo/.config/xfce4/panel
 chroot $1 chown -R demo:demo /home/demo
 chroot $1 chown -R demo:demo /home/demo/.mozilla
-chroot $1 chown -R demo:demo /opt/externals
-chroot $1 chown -R demo:demo /var/1-receiveSIP
-chroot $1 chown -R demo:demo /var/7-storeAIP
+#chroot $1 chown -R demo:demo /opt/externals
+#chroot $1 chown -R demo:demo /var/1-receiveSIP
+#chroot $1 chown -R demo:demo /var/7-storeAIP
 
 #Create MySQL databases 
 chroot $1 /etc/init.d/mysql start
