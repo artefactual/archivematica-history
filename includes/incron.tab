@@ -1,3 +1,0 @@
-/home/demo/3-quarantineSIP IN_MOVED_TO /usr/bin/archivematicaSnipemod.sh $#
-/home/demo/5-prepareAIP IN_MOVED_TO /usr/bin/archivematicaPrepareAIP.sh $@ $#
-/home/demo/9-uploadDIP IN_MOVED_TO /usr/bin/upload/Upload-qubit.py --remove -e demo@example.com -p demo -t $# -f $@/$# --display=:0

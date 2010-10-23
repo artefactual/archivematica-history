@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=JhoveView
-GenericName=JSTOR/Harvard Object Validation Environment
-Exec=/usr/bin/jhoveview
-Icon=jhove-icon
-Terminal=false
-Categories=Utility;
