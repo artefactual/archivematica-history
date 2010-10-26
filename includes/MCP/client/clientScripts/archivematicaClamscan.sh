@@ -25,13 +25,16 @@ source /etc/archivematica/archivematicaConfig.conf
 target="$1"
 eIDValue="$2"
 eDate="$3"
+fileUUID="$4"
+logsDir="$5"
 
 clamscanResultShouldBe="Infected files: 0"
 
 clamscanVersion=`clamscan -V`
 clamscanResult=`clamscan "$target" | grep "Infected files"`
 
-${clientScriptsDirectory}createXMLEventClamscan.py "$eIDValue" "$eDate" "$clamscanVersion" "$clamscanResult " "$clamscanResultShouldBe "
+${clientScriptsDirectory}createXMLEventClamscan.py "$eIDValue" "$eDate" "$clamscanVersion" "$clamscanResult " "$clamscanResultShouldBe " "$fileUUID" "$logsDir"
 
+exit $?
 
 

@@ -24,6 +24,7 @@ import lxml.etree as etree
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
+from archivematicaFunctions import appendEventToFile
 
 
 #etree.Element("root", interesting="totally")
@@ -36,8 +37,12 @@ if __name__ == '__main__':
     vers = sys.argv[3]
     outcome = sys.argv[4]
     expectedOutcome = sys.argv[5]
+    fileUUID = sys.argv[6]
+    logsDir = sys.argv[7] 
     version = vers.split("/", 1)[0]
     virusDefs = vers.split("/", 1)[0]
+    failed = False
+    
     eventDetailText = "program=\"Clam AV\"; version=\"" + version + "\"; virusDefinitions=\"" + virusDefs + "\""
     
     eventOutcome = None
@@ -45,6 +50,9 @@ if __name__ == '__main__':
         eventOutcome = createOutcomeInformation( eventOutcomeDetailNote = "Pass")
     else:
         eventOutcome = createOutcomeInformation( eventOutcomeDetailNote = "Fail")
+        Failed = True
     
     event = createEvent( eIDValue, "virus check", eventDateTime=date, eventDetailText=eventDetailText, eOutcomeInformation=eventOutcome)
-    print etree.tostring(event, pretty_print=True)
+    #print etree.tostring(event, pretty_print=True)
+    appendEventToFile(logsDir, fileUUID, event)
+    quit(failed)

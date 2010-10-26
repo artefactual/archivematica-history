@@ -22,8 +22,8 @@
                 <filterSubDir></filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>%relativeDirectoryLocation%filenameCleanup.log</standardOut>
-                <standardError>%relativeDirectoryLocation%filenameCleanup.log</standardError>
+                <standardOut>%SIPLogsDirectory%filenameCleanup.log</standardOut>
+                <standardError>%SIPLogsDirectory%filenameCleanup.log</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>detox_v0.0</execute>

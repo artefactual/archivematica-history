@@ -36,7 +36,7 @@ def appendEventToFile(SIPLogsDirectory, fileUUID, eventXML):
     tree = etree.parse( xmlFile )
     root = tree.getroot()
 
-    events = getTagged(root, "events")
+    events = getTagged(root, "events")[0]
     events.append(eventXML)
     
     tree = etree.ElementTree(root)
@@ -46,11 +46,13 @@ def archivematicaRenameFile(SIPLogsDirectory, fileUUID, newName, eventXML):
     xmlFile = SIPLogsDirectory + "fileMeta/" + fileUUID + ".xml"
     tree = etree.parse( xmlFile )
     root = tree.getroot()
-    xmlFileName = getTagged(root, "currentFileName")
+    xmlFileName = getTagged(root, "currentFileName")[0]
     xmlFileName.text = newName
 
-    events = getTagged(root, "events")
+    events = getTagged(root, "events")[0]
     events.append(eventXML)
+    
+    print etree.tostring(root, pretty_print=True)
     
     tree = etree.ElementTree(root)
     tree.write(xmlFile)

@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>archivematicaClamscan_v0.0</execute>
-                <arguments>"%relativeLocation%"</arguments>
+                <arguments>"%relativeLocation%" "%taskUUID%" "%date%" "%fileUUID%" "%SIPLogsDirectory%"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>

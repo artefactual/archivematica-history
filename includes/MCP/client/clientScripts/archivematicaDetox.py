@@ -22,6 +22,7 @@
 import sys
 import shlex
 import subprocess
+import os
 from archivematicaFunctions import archivematicaRenameFile
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
@@ -51,7 +52,7 @@ if __name__ == '__main__':
 
     loadFileUUIDsDic(logsDir)
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
-    command = "detox " + objectsDirectory
+    command = "detox -rv \"" + objectsDirectory + "\""
     lines = []
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -59,12 +60,14 @@ if __name__ == '__main__':
         p.wait()
         output = p.communicate()
         retcode = p.returncode
+        
+        #print output
 
         #it executes check for errors
         if retcode != 0:
             print >>sys.stderr, "error code:" + retcode.__str__()
             print output[1]# sError
-            quit(1)
+            quit(retcode)
         lines = output[0].split("\n")
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose
@@ -73,15 +76,15 @@ if __name__ == '__main__':
     for line in lines:
         detoxfiles = line.split(" -> ")
         if len(detoxfiles) > 1 :
-            oldfile = detoxfiles[0]
+            oldfile = detoxfiles[0].split('\n',1)[0]
             newfile = detoxfiles[1]
-            if os.isfile(newfile):
-                oldfile = oldfile.replace(objectsDirectory, "objects/", 1)
-                newfile = newfile.replace(objectsDirectory, "objects/", 1)
+            if os.path.isfile(newfile):
+                oldfile = oldfile.replace(objectsDirectory, "objects", 1)
+                newfile = newfile.replace(objectsDirectory, "objects", 1)
                 fileUUID = UUIDsDic[oldfile]
                 
                 eIDValue = "detox-" + fileUUID
                 createOutcomeInformation( eventOutcomeDetailNote = newfile)
                 event = createEvent( eIDValue, "name cleanup", eventDateTime=date)
-                archivematicaRenameFile(fileUUID, newfile, event, logsDir)
-        
+                archivematicaRenameFile(logsDir, fileUUID, newfile, event)
+
