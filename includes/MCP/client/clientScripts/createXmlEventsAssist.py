@@ -38,7 +38,7 @@ def createOutcomeInformation( eventOutcomeDetailNote = None):
 
 def createEvent( eIDValue, eType, eIDType="Archivematica ID", \
 eventDateTime = "now", \
-eventDetail = None, \
+eventDetailText = "", \
 eOutcomeInformation = createOutcomeInformation(), \
 linkingAgentIdentifier = None):
     ret = etree.Element("event")
@@ -47,10 +47,8 @@ linkingAgentIdentifier = None):
     etree.SubElement(eventIdentifier, "eventIdentifierValue").text = eIDValue
     etree.SubElement(ret, "eventType").text = eType
     etree.SubElement(ret, "eventDateTime").text = eventDateTime
-    if eventDetail != None:
-        ret.append(eventDetail)
-    else:
-        etree.SubElement(ret, "eventDetail")
+    eDetail = etree.SubElement(ret, "eventDetail")
+    eDetail.text = eventDetailText
     if eOutcomeInformation != None:
         ret.append(eOutcomeInformation)
     if not linkingAgentIdentifier:

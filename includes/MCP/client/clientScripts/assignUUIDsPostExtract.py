@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 
 # This file is part of Archivematica.
 #
@@ -20,20 +20,20 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-target=$1
-UUID=`uuid -v 4`
-targetBasename=`basename "$target"`
-targetDirname=`dirname "$target"`
-newDir="${targetDirname}/${targetBasename}-${UUID}/"
-mkdir "${newDir}"
-mv "${target}" "${newDir}objects/"
-mkdir "${newDir}logs"
-mkdir "${newDir}logs/SIPEvents"
-mkdir "${newDir}logs/FILEEvents"
-mkdir "${newDir}logs/fileMeta"
-echo $UUID > "${newDir}logs/SIP-UUID.txt"
-mv "${newDir}objects/ArchivematicaQuarantineEvent.xml" "${newDir}logs/SIPEvents/."
-mv "${newDir}objects/ArchivematicaUnquarantineEvent.xml" "${newDir}logs/SIPEvents/."
+from fileAddedToSIP import addFileToSIP
+import sys
 
-
-
+if __name__ == '__main__':
+    """This creates an Archivematica Quarantine Event xml file"""
+    objectsDirectory = sys.argv[1]
+    logsDirectory = sys.argv[2]
+    filePath = sys.argv[3]
+    fileUUID = sys.argv[4]
+    eIDValue = sys.argv[5]
+    date = sys.argv[6]
+    taskUUID = sys.argv[7]
+    
+    fileUUIDNotFound = "No UUID for file:"
+   
+    if fileUUIDNotFound in fileUUID:
+        addFileToSIP( objectsDirectory, logsDirectory, filePath, taskUUID, eIDValue, date )

@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%checkForViruses/clamAV</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%checkForViruses/clamAV/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
@@ -18,10 +18,10 @@
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
+                <filterSubDir>objects</filterSubDir>
                 <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%FILEEvents/ArchivematicaClamAVScan-fileUUID-%taskUUID%-Event.xml</standardOut>
+                <standardOut>%SIPLogsDirectory%FILEEvents/ArchivematicaClamAVScan-%fileUUID%-Event.xml</standardOut>
                 <standardError>%SIPLogsDirectory%clamAVScan.txt</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>

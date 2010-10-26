@@ -22,8 +22,37 @@
 # @version svn: $Id$
 
 import os
+import lxml.etree as etree
 import sys
+import threading
 import string
+
+lockDicsLock = threading.Lock()
+sipUUIDFileLocksCount = {} 
+sipUUIDFileLocks = {}
+
+def releaseSIPUUIDFileLock(sipUUIDfile):
+    lockDicsLock.acquire()
+    sipUUIDFileLocksCount[sipUUIDfile] -= 1
+    if sipUUIDFileLocksCount[sipUUIDfile] == 0:
+        #remove the locks from the system to prevent memory leak.
+        print "actually removing lock: " + sipUUIDfile
+        del sipUUIDFileLocksCount[sipUUIDfile]
+        del sipUUIDFileLocks[sipUUIDfile]
+    lockDicsLock.release()
+
+def acquireSIPUUIDFileLock(sipUUIDfile):
+    lockDicsLock.acquire()
+    if sipUUIDfile in sipUUIDFileLocksCount:
+        sipUUIDFileLocksCount[sipUUIDfile] += 1
+    else:
+        sipUUIDFileLocksCount[sipUUIDfile] = 1
+        sipUUIDFileLocks[sipUUIDfile] = threading.Lock()
+    lockDicsLock.release()
+    if sipUUIDfile in sipUUIDFileLocks:
+        sipUUIDFileLocks[sipUUIDfile].acquire()
+    else:
+        print "Software logic error. This should not happen."
 
 def loadFileUUIDsDic(sipUUIDfile):
   UUIDsDic = {}
@@ -31,10 +60,10 @@ def loadFileUUIDsDic(sipUUIDfile):
     FileUUIDs_fh = open(sipUUIDfile, "r")
     line = FileUUIDs_fh.readline()
     while line:
-      detoxfiles = line.split(" -> ",1)
-      if len(detoxfiles) > 1 :
-        fileUUID = detoxfiles[0]
-        fileName = detoxfiles[1]
+      theFileLine = line.split(" -> ",1)
+      if len(theFileLine) > 1 :
+        fileUUID = theFileLine[0]
+        fileName = theFileLine[1]
         fileName = string.replace(fileName, "\n", "", 1)
         UUIDsDic[fileName] = fileUUID
       line = FileUUIDs_fh.readline()
@@ -42,17 +71,67 @@ def loadFileUUIDsDic(sipUUIDfile):
     UUIDsDic = {}
   return UUIDsDic
 
-def getUUIDOfFile( sipUUIDfile, basepath, fullFileName):
-  UUIDsDic = loadFileUUIDsDic(sipUUIDfile)
-  if not UUIDsDic:
-    print "No UUID DIC: " + sipUUIDfile
-    return ""
-  
+def getTagged(root, tag):
+    ret = []
+    for element in root:
+        if element.tag == tag:
+            ret.append(element)
+            return ret #only return the first encounter
+    return ret  
+    
+def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory):
+    ret = "No UUID for file: " + filename
+    #for every file in the fileUUIDxmlFilesDirectory:
+    configFiles = []
+    try:
+        for dirs, subDirs, files in os.walk(fileUUIDxmlFilesDirectory):
+            configFiles = files
+            break
+
+        for configFile in configFiles:
+            if configFile.endswith(".xml"):
+                try:
+                    print "opening: " + configFile
+                    tree = etree.parse(fileUUIDxmlFilesDirectory + configFile )
+                    root = tree.getroot()
+                    xmlFileName = getTagged(root, "currentFileName")[0]
+                    uuid = getTagged(root, "fileUUID")[0]
+                    if xmlFileName.text == filename:
+                        ret = uuid.text
+                        try:
+                            acquireSIPUUIDFileLock(sipUUIDfile)
+                            f = open(sipUUIDfile, 'a')
+                            f.write(uuid.text + " -> " + filename + "\n")
+                            f.close()
+                        except OSError, ose:
+                            print >>sys.stderr, "output Error", ose
+                            return -2
+                        except IOError as (errno, strerror):
+                            print "I/O error({0}): {1}".format(errno, strerror)
+                        except:
+                            print "debug except 1"
+                        print "releasing Lock"
+                        releaseSIPUUIDFileLock(sipUUIDfile)
+                        return ret
+                except Exception as inst:
+                    print "debug except 2"
+                    print type(inst)     # the exception instance
+                    print inst.args      # arguments stored in .args
+                    print inst           # __str__ allows args to printed directly
+                    continue
+    except:
+        print "debug except 3"
+        ret = ret
+    return ret
+    
+
+def getUUIDOfFile(sipUUIDfile, basepath, fullFileName, fileUUIDxmlFilesDirectory):
+  UUIDsDic = loadFileUUIDsDic(sipUUIDfile)  
   filename = string.replace( fullFileName, basepath, "objects/", 1 )    
-  if filename in UUIDsDic:
+  if UUIDsDic and filename in UUIDsDic:
     return UUIDsDic[filename]
   else :
-    return "UUID not found for: " + filename
+    return findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory)
 
    
 if __name__ == '__main__':
@@ -65,8 +144,9 @@ if __name__ == '__main__':
     print filename
 
   elif function == "getFileUUID":
-    sipUUID = sys.argv[2]
+    sipUUIDfile = sys.argv[2]
     basepath = sys.argv[3]
     fullFileName = sys.argv[4]
-    print getUUIDOfFile( sipUUID, basepath, fullFileName)
+    fileUUIDxmlFilesDirectory = sys.argv[5]
+    print getUUIDOfFile( sipUUIDfile, basepath, fullFileName, fileUUIDxmlFilesDirectory)
 

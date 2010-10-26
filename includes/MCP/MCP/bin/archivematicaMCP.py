@@ -83,7 +83,7 @@ jobsLock = threading.Lock()
 watchedDirectories = []
 
 def temporaryApproveAllJobsInQueue():
-    while 1:
+    while 0:
         time.sleep(120)
         print "Approving All Jobs"
         for job in jobsAwaitingApproval:

@@ -9,7 +9,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</successDirectory>
+        <successDirectory>%watchDirectoryPath%identifyFileFormat/FITS/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
@@ -27,7 +27,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>detox_v0.0</execute>
-                <arguments>-rv "%relativeDirectoryLocationNoTrailingSlash%"</arguments>
+                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
@@ -53,7 +53,7 @@
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>no</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>

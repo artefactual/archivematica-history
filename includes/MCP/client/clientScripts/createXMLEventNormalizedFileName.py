@@ -24,21 +24,58 @@ import lxml.etree as etree
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
+import os
+import sys
+import string
+
+from datetime import datetime
+
+DetoxDic={}
+UUIDsDic={}
 
 
-#etree.Element("root", interesting="totally")
-#SubElement(root, "child").text = "Child 1"
+
+def loadDetoxDic():
+    detox_fh = open(logsDIR+"filenameCleanup.log", "r")
+ 
+    line = detox_fh.readline()
+    while line:
+        detoxfiles = line.split(" -> ")
+        if len(detoxfiles) > 1 :
+            oldfile = detoxfiles[0]
+            newfile = detoxfiles[1]
+            newfile = string.replace(newfile, "\n", "", 1)
+            oldfile = os.path.basename(oldfile)
+            DetoxDic[newfile] = oldfile
+        line = detox_fh.readline()
+
+def loadFileUUIDsDic():
+    FileUUIDs_fh = open(logsDIR+"FileUUIDs.log", "r")
+ 
+    line = FileUUIDs_fh.readline()
+    while line:
+        detoxfiles = line.split(" -> ",1)
+        if len(detoxfiles) > 1 :
+            fileUUID = detoxfiles[0]
+            fileName = detoxfiles[1]
+            fileName = string.replace(fileName, "\n", "", 1)
+            UUIDsDic[fileName] = fileUUID
+        line = FileUUIDs_fh.readline()import os
 
 if __name__ == '__main__':
     """This prints the contents for an Archivematica Clamscan Event xml file"""
     eIDValue = sys.argv[1]
     date = sys.argv[2]
-    vers = sys.argv[3]
+    logsDIR = sys.argv[1]
+
+    
     outcome = sys.argv[4]
     expectedOutcome = sys.argv[5]
     version = vers.split("/", 1)[0]
     virusDefs = vers.split("/", 1)[0]
     eventDetailText = "program=\"Clam AV\"; version=\"" + version + "\"; virusDefinitions=\"" + virusDefs + "\""
+    eventDetail = etree.Element("eventDetail")
+    eventDetail.text = eventDetailText
     
     eventOutcome = None
     if outcome.strip() == expectedOutcome.strip():
@@ -46,5 +83,5 @@ if __name__ == '__main__':
     else:
         eventOutcome = createOutcomeInformation( eventOutcomeDetailNote = "Fail")
     
-    event = createEvent( eIDValue, "virus check", eventDateTime=date, eventDetailText=eventDetailText, eOutcomeInformation=eventOutcome)
+    event = createEvent( eIDValue, "virus check", eventDateTime=date, eventDetail=eventDetail, eOutcomeInformation=eventOutcome)
     print etree.tostring(event, pretty_print=True)
