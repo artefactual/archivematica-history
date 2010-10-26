@@ -73,7 +73,7 @@ class replacementDics:
         "%SIPLogsDirectory%": SIPDirectory + "logs/", \
         "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
         "%SIPDirectory%": SIPDirectory, \
-        "%fileUUID%": getUUIDOfFile( sipDir + "logs/" +  self.archivematicaVars["fileUUIDSHumanReadable"], sipDir + "objects/", target ), \
+        "%fileUUID%": getUUIDOfFile( sipDir + "logs/" +  self.archivematicaVars["fileUUIDSHumanReadable"], sipDir + "objects/", target,  sipDir + "logs/fileMeta/" ), \
         "%relativeLocation%": target.replace(job.config.watchDirectory, relativeDirectoryLocation), \
         "%relativeDirectoryLocation%": relativeDirectoryLocation, \
         "%relativeDirectoryLocationNoTrailingSlash%":relativeDirectoryLocationNoTrailingSlash, \

@@ -35,18 +35,18 @@
         <verificationCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
+                <filterSubDir>objects</filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%extractedFileIDassignment.log</standardOut>
+                <standardError>%SIPLogsDirectory%extractedFileIDassignment.log</standardError>
                 <requiresOutputLock>No</requiresOutputLock>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>UUID4PostExtract_v0.0</execute>
+                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%fileUUID%" "ingest file - extracted" "%date%" "%taskUUID%"</arguments>
+                <executeOnEachFile>yes</executeOnEachFile>
             </command>            
         </verificationCommand>
         

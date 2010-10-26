@@ -8,8 +8,8 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%identifyFileFormat/FITS/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%identifyFileFormat/FITS/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%extractPackages/easyExtract/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
     <commands>    
@@ -21,13 +21,13 @@
                 <filterSubDir>objects</filterSubDir>
                 <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%FileUUIDs.log</standardOut>
-                <standardError>%SIPLogsDirectory%FileUUIDs.log</standardError>
+                <standardOut>%SIPLogsDirectory%assignFileUUIDs.log</standardOut>
+                <standardError>%SIPLogsDirectory%assignFileUUIDs.log</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>UUID4_v0.0</execute>
-                <arguments> "%relativeLocation%" "%SIPObjectsDirectory%" "%taskUUID%" "%date%" "%SIPLogsDirectory%"FILEEvents/</arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>addFiles_v0.0</execute>
+                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%taskUUID%" "ingest file - extracted" "%date%"</arguments>
+                <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>
         

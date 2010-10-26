@@ -39,8 +39,6 @@ if __name__ == '__main__':
     version = vers.split("/", 1)[0]
     virusDefs = vers.split("/", 1)[0]
     eventDetailText = "program=\"Clam AV\"; version=\"" + version + "\"; virusDefinitions=\"" + virusDefs + "\""
-    eventDetail = etree.Element("eventDetail")
-    eventDetail.text = eventDetailText
     
     eventOutcome = None
     if outcome.strip() == expectedOutcome.strip():
@@ -48,5 +46,5 @@ if __name__ == '__main__':
     else:
         eventOutcome = createOutcomeInformation( eventOutcomeDetailNote = "Fail")
     
-    event = createEvent( eIDValue, "virus check", eventDateTime=date, eventDetail=eventDetail, eOutcomeInformation=eventOutcome)
+    event = createEvent( eIDValue, "virus check", eventDateTime=date, eventDetailText=eventDetailText, eOutcomeInformation=eventOutcome)
     print etree.tostring(event, pretty_print=True)

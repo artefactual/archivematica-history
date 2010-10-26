@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%createOrMoveDC/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%extractPackages/easyExtract/</successDirectory>
+        <successDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
