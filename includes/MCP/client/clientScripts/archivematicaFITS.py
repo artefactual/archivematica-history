@@ -21,24 +21,54 @@
 # @version svn: $Id$
 import sys
 import shlex
+import lxml.etree as etree
+import uuid
 import subprocess
+import os
+from archivematicaFunctions import getTagged
+from createXmlEventsAssist import createEvent 
+from createXmlEventsAssist import createOutcomeInformation
+from createXmlEventsAssist import createLinkingAgentIdentifier
 
-DetoxDic={}
-UUIDsDic={}
+def includeFits(fits, xmlFile, date, eventUUID):
 
+    eventDetailText = "program=\"File Identification Toolset\""
+    
+    ##eventOutcome = createOutcomeInformation( eventOutcomeDetailNote = uuid)
+    #TO DO... Gleam the event outcome information from the output
+    event = createEvent( eventUUID, "FITS", eventDateTime=date, eventDetailText=eventDetailText)
+
+    
+    tree = etree.parse( xmlFile )
+    root = tree.getroot()
+
+    events = getTagged(root, "events")[0]
+    events.append(event)
+    
+    objectCharacteristics = getTagged(getTagged(root, "object")[0], "objectCharacteristics")[0]
+    objectCharacteristicsExtension = etree.SubElement(objectCharacteristics, "objectCharacteristicsExtension")
+    objectCharacteristicsExtension.append(fits)
+    
+    tree = etree.ElementTree(root)
+    tree.write(xmlFile)
 
 if __name__ == '__main__':
     """This prints the contents for an Archivematica Clamscan Event xml file"""
-    objectsDirectory = sys.argv[1]
-
+    target = sys.argv[1]
+    XMLfile = sys.argv[2]
+    date = sys.argv[3]
+    eventUUID = sys.argv[4]
+    
+    tempFile="/tmp/" + uuid.uuid4().__str__()
+    
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
-    command = "./createXMLEventUnquarantine.py one " + objectsDirectory
+    command = "fits.sh -i \"" + target + "\""# -o \"" + tempFile + "\"" 
+    #print "command: " + command
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	
         p.wait()
         output = p.communicate()
-
         retcode = p.returncode
 
         #it executes check for errors
@@ -46,11 +76,16 @@ if __name__ == '__main__':
             print >>sys.stderr, "error code:" + retcode.__str__()
             print output[1]# sError
             #return retcode
+            quit(retcode)
         
-        print output[0]# sOutput  
+        #tree = etree.parse(tempFile)
+        #fits = tree.getroot()
+        #os.remove(tempFile)
+        fits = etree.XML(output[0])
+        includeFits(fits, XMLfile, date, eventUUID)
     
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose
         #return 1
-        
+        exit(1)
         

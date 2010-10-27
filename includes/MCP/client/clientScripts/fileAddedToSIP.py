@@ -95,7 +95,6 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     #print >>sys.stderr, "fileUUID -> relativeFilePath"
     tree = etree.ElementTree(root)
     outputFile = logsDirectory + "fileMeta/" + fileUUID + ".xml"
-    print "outputFile: " + outputFile
     tree.write(outputFile)
 
 if __name__ == '__main__':

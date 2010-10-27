@@ -52,7 +52,7 @@ def archivematicaRenameFile(SIPLogsDirectory, fileUUID, newName, eventXML):
     events = getTagged(root, "events")[0]
     events.append(eventXML)
     
-    print etree.tostring(root, pretty_print=True)
+    #print etree.tostring(root, pretty_print=True)
     
     tree = etree.ElementTree(root)
     tree.write(xmlFile)
