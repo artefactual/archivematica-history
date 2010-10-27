@@ -22,6 +22,7 @@
 import sys
 import uuid
 import hashlib
+import os
 import lxml.etree as etree
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
@@ -47,12 +48,13 @@ def md5_for_file(fileName, block_size=2**20):
     return md5.hexdigest()
 
 
-def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date ):
+def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, objects="objects/" ):
     """This creates an Archivematica Quarantine Event xml file"""
-    relativeFilePath = filePath.replace(objectsDirectory, "objects/", 1)
+    relativeFilePath = filePath.replace(objectsDirectory, objects, 1)
         
-    #generate MD5
+    #Gather File Info
     md5Checksum = md5_for_file(filePath)
+    fileSize = os.path.getsize(filePath).__str__()
     
     #create Event to explain file origin.   
     eIDValue = "ingested-" + fileUUID
@@ -66,8 +68,26 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     etree.SubElement(root, "originalFileName").text = relativeFilePath
     etree.SubElement(root, "currentFileName").text = relativeFilePath
     etree.SubElement(root, "fileUUID").text = fileUUID
-    etree.SubElement(root, "checksum").text = md5Checksum
+    #etree.SubElement(root, "checksum").text = md5Checksum
 
+
+    fileObject = etree.SubElement(root, "object")
+    objectIdentifier = etree.SubElement(fileObject, "objectIdentifier")
+    etree.SubElement(objectIdentifier, "objectIdentifierType").text = "UUID"
+    etree.SubElement(objectIdentifier, "objectIdentifierValue").text = fileUUID
+    etree.SubElement(fileObject, "objectCategory").text = "file"
+
+    objectCharacteristics = etree.SubElement(fileObject, "objectCharacteristics")
+    etree.SubElement(objectCharacteristics, "compositionLevel").text = "0"
+    
+    fixity = etree.SubElement(objectCharacteristics, "fixity")
+    etree.SubElement(fixity, "messageDigestAlgorithm").text = "MD5"
+    etree.SubElement(fixity, "messageDigest").text = md5Checksum
+    etree.SubElement(fixity, "messageDigestOriginator").text = "Your Organizational Name Here"
+
+    etree.SubElement(objectCharacteristics, "size").text = fileSize
+    
+    etree.SubElement(fileObject, "originalName").text = relativeFilePath
     
     events = etree.SubElement(root, "events")
     events.append(ingestEvent)
