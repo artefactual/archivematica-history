@@ -1,0 +1,7 @@
+<formatPolicy>
+  <inherit></inherit>
+  <accessFormat>JPG</accessFormat>
+  <preservationFormat>PNG</preservationFormat>
+  <accessConversionCommand>%convertPath% %fileFullName% %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
+  <preservationConversionCommand></preservationConversionCommand>
+</formatPolicy>

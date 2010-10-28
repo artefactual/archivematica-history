@@ -1,0 +1,88 @@
+<module>
+    <requiresUserApproval>No</requiresUserApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
+    <notificationStarted></notificationStarted>
+    <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
+    <notificationCompletedWithErrors></notificationCompletedWithErrors>
+    
+    <directories>
+        <watchDirectory>%watchDirectoryPath%uploadDIP</watchDirectory>
+        <processingDirectory>%processingDirectory%</processingDirectory>
+        <successDirectory>%watchDirectoryPath%uploadedDIPs</successDirectory>
+        <failureDirectory>/%watchDirectoryPath%failed</failureDirectory>
+    </directories>
+
+    <commands>    
+        <exeCommand> 
+            <command>
+                <skip>No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <standardIn></standardIn>
+                <standardOut>%SIPDirectory%error.log</standardOut>
+                <standardError>%SIPDirectory%standardOut.log</standardError>
+                <requiresOutputLock>No</requiresOutputLock>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute>upload-qubit.py_v0.0</execute>
+                <arguments> -e demo@example.com -p demo -t "%SIPName%-%SIPUUID%" -f "%SIPDirectory%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
+            </command>
+        </exeCommand>
+        
+        <verificationCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes/No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>            
+        </verificationCommand>
+        
+        <cleanupSuccessfulCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes/No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>            
+        </cleanupSuccessfulCommand>
+        
+        <cleanupUnsuccessfulCommand>
+            <command>
+                <skip>Yes/No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>              
+        </cleanupUnsuccessfulCommand>                  
+    </commands>  
+</module>

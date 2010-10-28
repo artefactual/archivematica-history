@@ -1,0 +1,7 @@
+<extention>
+  <inherit></inherit>
+  <accessFormat>PDF</accessFormat>
+  <preservationFormat>ODP</preservationFormat>
+  <accessConversionCommand>%normalizationScriptsDir%unoconv.sh %accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%</accessConversionCommand>
+  <preservationConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</preservationConversionCommand>
+</extention>
