@@ -1,4 +1,0 @@
-This folder contains the archivematica MCPclient. 
-
-The archivematica MCPclient gets information on the status of jobs from the MCP, and can tell the MCP to proceed to the next step.
-
