@@ -1,0 +1,5 @@
+4fb9e7dec0bb49bd9d413d9d7984f8b3  ./dublincore.xml
+a7b46ec57ca0fb29300f12508d6f2499  ./Project.zip
+013bfabcd56252498fb9193c7a8a9d73  ./[datavibe-l]_FW__job_vacancy.rtf
+dac77e9f91ae164e8fd63c9fb4a40464  ./MS-OfficeOpenXML-samples.zip
+68fe72324d08d817e387aedba6e0069c  ./article.pdf
