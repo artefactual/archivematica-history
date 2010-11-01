@@ -1,0 +1,38 @@
+#!/bin/bash
+# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# @package Archivematica
+# @subpackage Configuration
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+delimiter="<!&\delimiter/&!>" #seperates Values when transported from client to server
+keepAlivePause="600" #seconds to pause between sending Keep alives
+
+
+#TO CLIENT
+addToServerConf="addToServerConf" #To load server configs into the client  --NOT USED/NEEDED (everything can happen on server side)
+performTask="performTask" #to tell the client to perform a task
+keepAlive="keepAlive" #keeps idle connection open
+
+#TO SERVER
+addToListTaskHandler="addToListTaskHandler" #inform the server the client is capable of running a certain type of task
+taskCompleted="taskCompleted" #inform the server a task is completed
+maxTasks="setMaxTasks" #tell the server how many threads this client will run
+setName="setName"
+requestLockForWrite="requestLockForWrite"
+unlockForWrite="unlockForWrite"
