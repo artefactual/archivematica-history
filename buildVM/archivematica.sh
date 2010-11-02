@@ -24,7 +24,6 @@
 
 srcDirecotory="../src/"
 
-startDirectory="`pwd`"
 echo $startDirectory
 
 cd includes
