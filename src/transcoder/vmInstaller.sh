@@ -22,9 +22,9 @@
 
 etc="$1/etc/archivematicaTranscoder/"
 bin="$1/usr/bin/"
-lib="$1/usr/local/lib/archivematica/"
-var="$1/usr/local/var/archivematica/"
-share="$1/usr/local/share/"
+lib="$1/usr/lib/archivematica/"
+var="$1/usr/var/archivematica/"
+share="$1/usr/share/"
 
 cp ./bin/* "${bin}."
 

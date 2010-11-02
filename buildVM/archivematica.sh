@@ -23,13 +23,15 @@
 # @version svn: $Id$
 
 srcDirecotory="../src/"
-lib="$1/usr/local/lib/archivematica/"
-var="$1/usr/local/var/archivematica/"
+lib="$1/usr/lib/archivematica/"
+var="$1/usr/var/archivematica/"
 
 mkdir $lib
 mkdir $var
 
 echo Start Directory: $startDirectory  1>&2
+
+chroot $1 /etc/init.d/mysql start
 
 cd includes
 ./vmInstaller-dcb.sh "$1"
