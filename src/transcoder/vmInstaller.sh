@@ -20,10 +20,10 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-etc="$1/etc/archivematicaMCPClient/"
+etc="$1/etc/archivematicaTranscoder/"
 bin="$1/usr/bin/"
-lib="$1/usr/local/lib/"
-var="$1/usr/local/var/"
+lib="$1/usr/local/lib/archivematica/"
+var="$1/usr/local/var/archivematica/"
 share="$1/usr/local/share/"
 
 cp ./bin/* "${bin}."
@@ -32,7 +32,7 @@ cp -r ./etc "${etc}"
 
 cp *.py "${lib}" #I'm not sure this is the right location.
 
-cp -r ./share "${share}"
+cp -r ./share "${share}transcoder"
 
 
 

@@ -23,6 +23,11 @@
 # @version svn: $Id$
 
 srcDirecotory="../src/"
+lib="$1/usr/local/lib/archivematica/"
+var="$1/usr/local/var/archivematica/"
+
+mkdir $lib
+mkdir $var
 
 echo Start Directory: $startDirectory  1>&2
 

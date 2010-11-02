@@ -22,8 +22,8 @@
 
 etc="$1/etc/archivematicaMCPClient/"
 bin="$1/usr/bin/"
-lib="$1/usr/local/lib/"
-var="$1/usr/local/var/"
+lib="$1/usr/local/lib/archivematica/"
+var="$1/usr/local/var/archivematica/"
 
 cp *.py "${lib}" #I'm not sure this is the right location.
 
