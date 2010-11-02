@@ -25,12 +25,12 @@ bin="$1/usr/bin/"
 lib="$1/usr/local/lib/"
 var="$1/usr/local/var/"
 
-cp runArchivematicaClient.sh "${bin}"
+cp ./runArchivematicaClient.sh "${bin}"
 
-cp etc "${etc}"
+cp -r ./etc "${etc}"
 
 cp *.py "${lib}" #I'm not sure this is the right location.
-cp mcpModules "${lib}"
+cp -r ./mcpModules "${lib}"
 
-cp clientScripts "${lib}" #I'm not sure this is the right location.
+cp -r ./clientScripts "${lib}" #I'm not sure this is the right location.
 

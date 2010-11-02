@@ -26,16 +26,13 @@ lib="$1/usr/local/lib/"
 var="$1/usr/local/var/"
 share="$1/usr/local/share/"
 
-cp runArchivematicaTranscoder.sh "${bin}"
+cp ./bin/* "${bin}."
 
-cp etc "${etc}"
+cp -r ./etc "${etc}"
 
 cp *.py "${lib}" #I'm not sure this is the right location.
-cp mcpModules "${lib}"
 
-cp clientScripts "${lib}" #I'm not sure this is the right location.
-
-cp share "${share}"
+cp -r ./share "${share}"
 
 
 

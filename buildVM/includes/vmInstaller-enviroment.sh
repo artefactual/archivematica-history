@@ -44,19 +44,19 @@ echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod" >> $1/etc/sudoer
 
 #Install externals/archivematica
 chroot $1 mkdir -p /home/demo/Desktop
-svn export includes/.mozilla $1/home/demo/.mozilla
-svn export includes/Docs $1/home/demo/Docs
+svn export ./.mozilla $1/home/demo/.mozilla
+svn export ./Docs $1/home/demo/Docs
 svn export enviromentConfigFiles/exports $1/etc/exports
 chroot $1 ln -s /home/demo/Docs /home/demo/Desktop
 
 #setup unonconv service
-cp -rf includes/unoconv-listen $1/etc/init.d/unoconv-listen
+cp -rf ./unoconv-listen $1/etc/init.d/unoconv-listen
 chroot $1 chmod +x /etc/init.d/unoconv-listen
 chroot $1 /usr/sbin/update-rc.d unoconv-listen defaults
 chroot $1 chmod -R 770 /home/demo/.mozilla
 #chroot $1 mkdir -p /home/demo/.gnome2/nautilus-scripts
 
-svn export includes/sampledata $1/home/demo/testFiles
+svn export ./sampledata $1/home/demo/testFiles
 
 #XFCE configuration
 chroot $1 mkdir /home/demo/.config
@@ -66,35 +66,35 @@ chroot $1 mkdir -p /home/demo/.config/xfce4/desktop
 chroot $1 mkdir -p /home/demo/.config/xfce4/panel
 
 #add archivematica/dashboard icons
-cp includes/desktopShortcuts/dashboard-desktop-icon.png $1/usr/share/icons
-cp includes/desktopShortcuts/dcb-desktop-icon.png $1/usr/share/icons
-cp includes/desktopShortcuts/ica-atom-desktop-icon.png $1/usr/share/icons
-cp includes/desktopShortcuts/archivematica-xubuntu-steel.png $1/usr/share/xfce4/backdrops/xubuntu-karmic.png
-cp includes/desktopShortcuts/ica-atom.desktop $1/home/demo/Desktop
-#cp includes/droid.desktop $1/home/demo/Desktop
-#cp includes/jhove.desktop $1/home/demo/Desktop
-cp includes/desktopShortcuts/dcb.desktop $1/home/demo/Desktop
-#cp includes/dashboard.desktop $1/home/demo/Desktop
-#cp includes/WinFF.desktop $1/home/demo/Desktop
-cp includes/desktopShortcuts/Terminal.desktop $1/home/demo/Desktop
+cp ./desktopShortcuts/dashboard-desktop-icon.png $1/usr/share/icons
+cp ./desktopShortcuts/dcb-desktop-icon.png $1/usr/share/icons
+cp ./desktopShortcuts/ica-atom-desktop-icon.png $1/usr/share/icons
+cp ./desktopShortcuts/archivematica-xubuntu-steel.png $1/usr/share/xfce4/backdrops/xubuntu-karmic.png
+cp ./desktopShortcuts/ica-atom.desktop $1/home/demo/Desktop
+#cp ./droid.desktop $1/home/demo/Desktop
+#cp ./jhove.desktop $1/home/demo/Desktop
+cp ./desktopShortcuts/dcb.desktop $1/home/demo/Desktop
+#cp ./dashboard.desktop $1/home/demo/Desktop
+#cp ./WinFF.desktop $1/home/demo/Desktop
+cp ./desktopShortcuts/Terminal.desktop $1/home/demo/Desktop
 
 #add launcher scripts
-cp includes/desktopShortcuts/runica-atom.sh $1/usr/bin
-cp includes/desktopShortcuts/rundcb.sh $1/usr/bin
-cp includes/desktopShortcuts/rundashboard.sh $1/usr/bin
-cp includes/desktopShortcuts/runjhove.sh $1/usr/bin
+cp ./desktopShortcuts/runica-atom.sh $1/usr/bin
+cp ./desktopShortcuts/rundcb.sh $1/usr/bin
+cp ./desktopShortcuts/rundashboard.sh $1/usr/bin
+cp ./desktopShortcuts/runjhove.sh $1/usr/bin
 
 #xfce4 configuration
-cp includes/panel/* $1/home/demo/.config/xfce4/panel
-cp includes/xfceCustomization/xfce4-desktop.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
-cp includes/xfceCustomization/xfce4-session.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
-cp includes/xfceCustomization/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
-cp includes/xfceCustomization/user-dirs.defaults $1/etc/xdg
-cp includes/xfceCustomization/uca.xml $1/home/demo/.config/Thunar
-cp includes/xfceCustomization/thunarrc $1/home/demo/.config/Thunar
-cp includes/xfceCustomization/thunar.desktop $1/home/demo/.config/autostart
-cp includes/xfceCustomization/gtk-bookmarks $1/home/demo/.gtk-bookmarks
-cp includes/xfceCustomization/gdm.custom.conf $1/etc/gdm/custom.conf
+cp ./panel/* $1/home/demo/.config/xfce4/panel
+cp ./xfceCustomization/xfce4-desktop.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
+cp ./xfceCustomization/xfce4-session.xml $1/etc/xdg/xubuntu/xfce4/xfconf/xfce-perchannel-xml
+cp ./xfceCustomization/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
+cp ./xfceCustomization/user-dirs.defaults $1/etc/xdg
+cp ./xfceCustomization/uca.xml $1/home/demo/.config/Thunar
+cp ./xfceCustomization/thunarrc $1/home/demo/.config/Thunar
+cp ./xfceCustomization/thunar.desktop $1/home/demo/.config/autostart
+cp ./xfceCustomization/gtk-bookmarks $1/home/demo/.gtk-bookmarks
+cp ./xfceCustomization/gdm.custom.conf $1/etc/gdm/custom.conf
 
 #fix permissions 
 chroot $1 chmod 444 /home/demo/.config/xfce4/panel
