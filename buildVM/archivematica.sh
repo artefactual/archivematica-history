@@ -24,7 +24,7 @@
 
 srcDirecotory="../src/"
 
-echo $startDirectory
+echo Start Directory: $startDirectory  1>&2
 
 cd includes
 ./vmInstaller-dcb.sh "$1"
@@ -35,27 +35,27 @@ cd includes
 
 cd "$startDirectory"
 cd "${srcDirecotory}dashboard"
-echo `pwd`
+echo `pwd` 1>&2
 ./vmInstaller.sh "$1"
 
 cd "$startDirectory"
 cd "${srcDirecotory}loadConfig"
-echo `pwd`
+echo `pwd` 1>&2
 ./vmInstaller.sh "$1"
 
 cd "$startDirectory"
 cd "${srcDirecotory}MCPServer"
-echo `pwd`
+echo `pwd` 1>&2
 ./vmInstaller.sh "$1"
 
 cd "$startDirectory"
 cd "${srcDirecotory}MCPClient"
-echo `pwd`
+echo `pwd` 1>&2
 ./vmInstaller.sh "$1"
 
 cd "$startDirectory"
 cd "${srcDirecotory}transcoder"
-echo `pwd`
+echo `pwd` 1>&2
 ./vmInstaller.sh "$1"
 
 
