@@ -23,9 +23,9 @@
 # @version svn: $Id$
 
 #add archivematica/dashboard icons
-cp includes/desktopShortcuts/dashboard-desktop-icon.png $1/usr/share/icons
+#cp includes/desktopShortcuts/dashboard-desktop-icon.png $1/usr/share/icons
 #cp includes/dashboard.desktop $1/home/demo/Desktop
-cp includes/desktopShortcuts/rundashboard.sh $1/usr/bin
+#cp ../buildVM/includes/desktopShortcuts/rundashboard.sh $1/usr/bin
 
 chroot $1 mysqladmin create dashboard
 svn export src $1/var/www/dashboard

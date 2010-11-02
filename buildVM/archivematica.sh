@@ -25,32 +25,38 @@
 srcDirecotory="../src/"
 
 startDirectory="`pwd`"
+echo $startDirectory
+
 cd includes
-./vminstaller.sh
-vminstaller-dcb.sh
-vminstaller-enviroment.sh
-vminstaller-ica-atom.sh
-vminstaller-qubit.sh
+./vmInstaller-dcb.sh "$1"
+./vmInstaller-enviroment.sh "$1"
+./vmInstaller-ica-atom.sh "$1"
+./vmInstaller-qubit.sh "$1"
 
 
-cd "$startDIrectory"
+cd "$startDirectory"
 cd "${srcDirecotory}dashboard"
-./vminstaller.sh
+echo `pwd`
+./vmInstaller.sh "$1"
 
-cd "$startDIrectory"
+cd "$startDirectory"
 cd "${srcDirecotory}loadConfig"
-./vminstaller.sh
+echo `pwd`
+./vmInstaller.sh "$1"
 
-cd "$startDIrectory"
+cd "$startDirectory"
 cd "${srcDirecotory}MCPServer"
-./vminstaller.sh
+echo `pwd`
+./vmInstaller.sh "$1"
 
-cd "$startDIrectory"
+cd "$startDirectory"
 cd "${srcDirecotory}MCPClient"
-./vminstaller.sh
+echo `pwd`
+./vmInstaller.sh "$1"
 
-cd "$startDIrectory"
+cd "$startDirectory"
 cd "${srcDirecotory}transcoder"
-./vminstaller.sh
+echo `pwd`
+./vmInstaller.sh "$1"
 
 

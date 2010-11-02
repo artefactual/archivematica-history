@@ -25,15 +25,15 @@ bin="$1/usr/bin/"
 lib="$1/usr/local/lib/"
 var="$1/usr/local/var/"
 
-cp runArchivematicaMCPServer.sh "${bin}"
+cp ./runArchivematicaMCPServer.sh "${bin}"
 
-cp etc "${etc}"
+cp -r ./etc "${etc}"
 
-cp *.py "${lib}" #I'm not sure this is the proper location.
-cp mcpModules "${lib}."
+cp ./*.py "${lib}" #I'm not sure this is the proper location.
+cp -r ./mcpModules "${lib}."
 #chroot $1 ln -s "${lib}mcpModules" /usr/lib/pymodules/python2.6/.
 
-cp sharedDirectoryStructure "${var}"
+cp -r ./sharedDirectoryStructure "${var}"
 #Should we link these to the new shared folder structure?
 #chroot $1 mkdir /home/demo/2-reviewSIP
 #chroot $1 mkdir /home/demo/3-quarantineSIP
