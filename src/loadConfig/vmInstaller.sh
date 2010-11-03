@@ -20,7 +20,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-etc="$1/etc/archivematicaMCPClient/"
+etc="$1/etc/*/"
 bin="$1/usr/bin/"
 lib="$1/usr/lib/archivematica/"
 var="$1/usr/var/archivematica/"

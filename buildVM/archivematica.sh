@@ -29,6 +29,7 @@ var="$1/usr/var/archivematica/"
 mkdir $lib
 mkdir $var
 
+startDirectory="`pwd`"
 echo Start Directory: $startDirectory  1>&2
 
 chroot $1 /etc/init.d/mysql start
