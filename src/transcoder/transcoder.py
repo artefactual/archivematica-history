@@ -39,7 +39,6 @@ archivmaticaVars=loadConfig()
 #CONFIGURE THE FOLLOWING DIRECTORIES
 accessFileDirectory = ""
 fileDirectory = ""
-failedConversionsDirectory = "/home/demo/SIPerrors/normalizationErrors/"
 
 #CONFIGURE THE FOLLOWING APPLICATION PATHS
 #formatPoliciesPath = "/mnt/userver910/archivematica2/includes/archivematica/formatPolicies"
@@ -58,6 +57,21 @@ defaultCommand = "echo No default normalization tool defined."
 fileIn = sys.argv[1]
 fileUUID = sys.argv[2]
 accesspath = sys.argv[3]
+xmlStuff = sys.argv[4] #yes/no
+edate = sys.argv[5]
+eid = sys.argv[6]
+objectsPath = sys.argv[7]
+logsPath = sys.argv[8]
+
+def xmlNormalize(fileUUID=fileUUID, objectsPath=objectsPath, outputFileUUID, outputFileName, eventUUID=eid, edate=edate):
+    #Create Normalization event in the original xml document.
+    #Create new document using the add file script
+    xmlCreateFileAssociation(fileUUID=fileUUID, objectsPath=objectsPath, outputFileUUID, outputFileName, eventUUID=eid, edate=edate):
+    
+def xmlCreateFileAssociation(fileUUID=fileUUID, objectsPath=objectsPath, outputFileUUID, outputFileName, eventUUID=eid, edate=edate):
+    #open the newly created document and add association
+    #open the original document, and create the associated entry.
+    
 
 #get file name and extension
 s = fileIn
