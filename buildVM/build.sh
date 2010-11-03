@@ -20,8 +20,6 @@ q) exit ;;
 *) echo "\"$choice\" is not valid "; sleep 2 ;;
 esac
 
-startDirectory="`pwd`"
-
 svnRev=`svn info . |grep '^Revision: '|sed 's/Revision: //g'`
 
 sudo vmbuilder "$vmType" ubuntu \
