@@ -57,6 +57,7 @@ chroot "$1" chmod -R 770 /home/demo/.mozilla
 #chroot "$1" mkdir -p /home/demo/.gnome2/nautilus-scripts
 
 svn export ./sampledata $1/home/demo/testFiles
+svn export ./postBuildScripts $1/home/demo/postBuildScripts
 
 #XFCE configuration
 chroot "$1" mkdir /home/demo/.config
