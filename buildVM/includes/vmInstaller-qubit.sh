@@ -22,9 +22,6 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#Create MySQL database
-chroot $1 mysqladmin create qubit
-
 #download and export
 svn checkout http://qubit-toolkit.googlecode.com/svn/trunk  qubit-svn
 svn export qubit-svn $1/var/www/qubit

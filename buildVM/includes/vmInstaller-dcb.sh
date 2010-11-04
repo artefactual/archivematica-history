@@ -22,9 +22,6 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#Create MySQL databases 
-chroot $1 mysqladmin create dcb
-
 #download and export
 svn checkout http://qubit-toolkit.googlecode.com/svn/branches/dcb  dcb-svn
 svn export dcb-svn $1/var/www/dcb
