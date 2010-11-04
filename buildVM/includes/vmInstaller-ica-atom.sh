@@ -22,9 +22,6 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#Create MySQL database
-chroot $1 mysqladmin create icaatom
-
 #download and export
 svn checkout http://qubit-toolkit.googlecode.com/svn/branches/ica-atom  ica-atom-svn
 svn export ica-atom-svn $1/var/www/ica-atom
