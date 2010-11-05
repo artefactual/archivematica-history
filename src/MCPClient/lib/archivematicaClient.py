@@ -29,8 +29,9 @@ from archivematicaLoadConfig import loadConfig
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
+from socket import gethostname
 
-archivmaticaVars = loadConfig()
+archivmaticaVars = loadConfig("/etc/archivematicaMCPClient/clientConfig.conf")
 supportedModules = loadConfig(archivmaticaVars["archivematicaClientModules"])
 protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
 waitingForOutputLock = {}
@@ -65,7 +66,7 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
     requestLock = requiresOutputLock == "yes"
     command = supportedModules[execute] 
     replacementDic = { 
-        "%sharedPath%":archivmaticaVars["sharedDirectory"], \
+        "%sharedPath%":archivmaticaVars["sharedDirectoryMounted"], \
         "%clientScriptsDirectory%":archivmaticaVars["clientScriptsDirectory"]
     }  
     #for each key replace all instances of the key in the command string
@@ -121,7 +122,7 @@ class archivematicaMCPClientProtocol(LineReceiver):
     sendLock = threading.Lock()
     
     def connectionMade(self):
-        self.write(protocol["setName"] + protocol["delimiter"] + archivmaticaVars["clientName"])
+        self.write(protocol["setName"] + protocol["delimiter"] + gethostname())
         for module in supportedModules:
             self.write(protocol["addToListTaskHandler"] + protocol["delimiter"] + module)
         self.write(protocol["maxTasks"] + protocol["delimiter"] + archivmaticaVars["maxThreads"])

@@ -1,3 +1,4 @@
+cd ../
 svnDir="`pwd`/"
 sudo ln -s "${svnDir}src/MCPServer/etc" "/etc/archivematicaMCPServer"
 sudo ln -s "${svnDir}src/MCPClient/etc" "/etc/archivematicaMCPClient"
@@ -19,4 +20,7 @@ sudo ln "${svnDir}src/loadConfig/lib/archivematicaLoadConfig.py" "/usr/lib/trans
 
 sudo mkdir /var/archivematica/
 sudo ln -s "${svnDir}src/MCPServer/sharedDirectoryStructure" "/var/archivematica/sharedDirectory"
+sudo chown -R archivematica:archivematica "/var/archivematica/sharedDirectory"
+sudo chmod -R g+s "/var/archivematica/sharedDirectory"
+
 
