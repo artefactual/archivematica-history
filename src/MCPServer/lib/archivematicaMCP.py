@@ -62,7 +62,7 @@ from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 
 
-archivematicaVars = loadConfig()
+archivematicaVars = loadConfig("/etc/archivematicaMCPServer/serverConfig.conf")
 
 protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
 archivematicaRD = replacementDics(archivematicaVars)
