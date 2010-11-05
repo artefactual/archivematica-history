@@ -23,14 +23,13 @@
 etc="$1/etc/archivematicaMCPServer/"
 bin="$1/usr/bin/"
 lib="$1/usr/lib/archivematica/"
-var="$1/usr/var/archivematica/"
+var="$1/var/archivematica/"
 
 cp ./runArchivematicaMCPServer.sh "${bin}"
 
 cp -r ./etc "${etc}"
 
-cp ./*.py "${lib}" #I'm not sure this is the proper location.
-cp -r ./mcpModules "${lib}."
+cp -r ./lib "${lib}" #I'm not sure this is the proper location.
 #chroot $1 ln -s "${lib}mcpModules" /usr/lib/pymodules/python2.6/.
 
 cp -r ./sharedDirectoryStructure "${var}"
