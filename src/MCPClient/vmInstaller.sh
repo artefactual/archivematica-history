@@ -23,13 +23,12 @@
 etc="$1/etc/archivematicaMCPClient/"
 bin="$1/usr/bin/"
 lib="$1/usr/lib/archivematica/"
-var="$1/usr/var/archivematica/"
+var="$1/var/archivematica/"
 
 cp ./runArchivematicaMCPClient.sh "${bin}"
 
 cp -r ./etc "${etc}"
 
-cp *.py "${lib}" #I'm not sure this is the right location.
+cp -r ./lib "${lib}"
 
-cp -r ./clientScripts "${lib}" #I'm not sure this is the right location.
 

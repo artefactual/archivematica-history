@@ -24,7 +24,7 @@
 
 srcDirecotory="../src/"
 lib="$1/usr/lib/archivematica/"
-var="$1/usr/var/archivematica/"
+var="$1/var/archivematica/"
 
 mkdir $lib
 mkdir $var
