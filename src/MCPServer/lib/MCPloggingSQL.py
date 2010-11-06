@@ -42,7 +42,7 @@
 import _mysql
 import os
 import threading
-from archivematicaReplacementDics import getSIPUUIDFromLog
+from archivematicaReplacementDics import getSIPUUID
 
 #sudo apt-get install python-mysqldb
 sqlLoggingLock = threading.Lock()
@@ -92,7 +92,7 @@ def logTaskCompletedSQL(task, retValue):
 def logJobCreatedSQL(job):
     separator = "', '"
     runSQL("""INSERT INTO jobCreated (jobUUID, directory, SIPUUID)
-    VALUES ( '""" + job.UUID.__str__() + separator + job.directory + separator + getSIPUUIDFromLog(job.directory + "/") + "' )" )
+    VALUES ( '""" + job.UUID.__str__() + separator + job.directory + separator + getSIPUUID(job.directory + "/") + "' )" )
 
 
 def logJobStepCompletedSQL(job):

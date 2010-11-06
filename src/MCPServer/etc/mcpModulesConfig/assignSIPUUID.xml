@@ -7,16 +7,16 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%acquireSIP</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%assignSIPUUID/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%assignSIPUUID/</successDirectory>
+        <successDirectory>%watchDirectoryPath%quarantine</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -26,9 +26,9 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute></execute>
-                <arguments></arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>assignSIPUUID_v0.0</execute>
+                <arguments>"%SIPDirectory%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
