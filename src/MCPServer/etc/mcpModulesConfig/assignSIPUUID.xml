@@ -9,7 +9,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%assignSIPUUID/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%quarantine</successDirectory>
+        <successDirectory>%watchDirectoryPath%verifySIPCompliance</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
