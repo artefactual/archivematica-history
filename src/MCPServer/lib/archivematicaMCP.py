@@ -96,14 +96,6 @@ def getJobsAwaitingApproval():
     #return etree.tostring(ret, encoding=unicode, method='text')
     return etree.tostring(ret, pretty_print=True)
 
-def temporaryApproveAllJobsInQueue():
-    while 0:
-        time.sleep(120)
-        print "Approving All Jobs"
-        for job in jobsAwaitingApproval:
-            approveJob(job.UUID.__str__())
-    
-
 def renameAsSudo(source, destination):
         commandString = "sudo mv \"" + source + "\"   \"" + destination + "\""
         p = subprocess.Popen(shlex.split(commandString))
@@ -118,6 +110,7 @@ def approveJob(jobUUID):
     if theJob:
         print "job approved: " + theJob.UUID.__str__()
         theJob.approve()
+    return "Approving Job" + jobUUID
 
 
 def checkJobQueue():
@@ -635,9 +628,6 @@ def archivematicaMCPServerListen():
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
     reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory)
-    t = threading.Thread(target=temporaryApproveAllJobsInQueue)
-    t.start()
-    
     reactor.run()
 
     
@@ -647,6 +637,7 @@ def startXMLRPCServer():
     server = SimpleXMLRPCServer(("localhost", 8000))
     print "XML RPC Listening on port 8000..."
     server.register_function(getJobsAwaitingApproval)
+    server.register_function(approveJob)
     t = threading.Thread(target=server.serve_forever)
     t.start()
 
