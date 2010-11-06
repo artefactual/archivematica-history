@@ -1,1 +1,4 @@
-archivematicaRunFITS.sh /usr/bin
+bin/* /usr/bin/
+etc/* /etc/archivematicaTranscoder/
+lib/* /usr/lib/archivematica/
+share/* /usr/share/transcoder/
