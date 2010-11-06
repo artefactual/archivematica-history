@@ -1,1 +1,5 @@
-archivematicaRunFITS.sh /usr/bin
+runArchivematicaMCPServer.sh /usr/bin/
+etc/* /etc/archivematicaMCPServer/
+lib/* /usr/share/pyshared/archivematica/
+sharedDirectoryStructure/* /var/archivematica/
+
