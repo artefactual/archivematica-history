@@ -35,7 +35,7 @@
 
 
 # @package Archivematica
-# @subpackage Ingest
+# @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
@@ -60,7 +60,8 @@ import shlex
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
-
+import xmlrpclib
+from SimpleXMLRPCServer import SimpleXMLRPCServer
 
 archivematicaVars = loadConfig("/etc/archivematicaMCPServer/serverConfig.conf")
 
@@ -81,6 +82,13 @@ movingDirectoryLock = threading.Lock()
 factory = twistedProtocol.ServerFactory()
 jobsLock = threading.Lock()
 watchedDirectories = []
+
+def is_even():
+    if len(jobsAwaitingApproval):
+        return jobsAwaitingApproval[0]
+    else:
+        return []
+
 
 def temporaryApproveAllJobsInQueue():
     while 0:
@@ -615,13 +623,24 @@ def archivematicaMCPServerListen():
     reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory)
     t = threading.Thread(target=temporaryApproveAllJobsInQueue)
     t.start()
+    
     reactor.run()
-    print "The reactor stopped!!!"
+
+    
+    
+
+def startXMLRPCServer():
+    server = SimpleXMLRPCServer(("localhost", 8000))
+    print "XML RPC Listening on port 8000..."
+    server.register_function(is_even, "is_even")
+    t = threading.Thread(target=server.serve_forever)
+    t.start()
 
 if __name__ == '__main__':
     configs = loadConfigs()
     directoryWatchList = loadDirectoryWatchLlist(configs)
+    startXMLRPCServer()
     archivematicaMCPServerListen()
-#    Start listening for client connections (new thread) 
-#    Start listening for MCPclient Connections.
+    print "Done Load"
+
 
