@@ -54,9 +54,11 @@ import uuid
 import threading
 import string
 import math
+import copy
 import time
 import subprocess
 import shlex
+import lxml.etree as etree
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
@@ -83,12 +85,16 @@ factory = twistedProtocol.ServerFactory()
 jobsLock = threading.Lock()
 watchedDirectories = []
 
-def is_even():
-    if len(jobsAwaitingApproval):
-        return jobsAwaitingApproval[0]
-    else:
-        return []
 
+def getJobsAwaitingApproval():
+    jobsLock.acquire()
+    ret = etree.Element("JobsAwaitingApproval")
+    for job in jobsAwaitingApproval:
+        ret.append(job.xmlify())
+    jobsLock.release()
+    #print etree.tostring(ret, encoding=unicode, method='text')
+    #return etree.tostring(ret, encoding=unicode, method='text')
+    return etree.tostring(ret, pretty_print=True)
 
 def temporaryApproveAllJobsInQueue():
     while 0:
@@ -241,7 +247,7 @@ class Job:
     def __init__(self, config, directory, step="exeCommand"):
         self.combinedRet = 0
         self.UUID = uuid.uuid4()
-        self.config = config
+        self.config = copy.deepcopy(config)
         self.step = step
         self.directory = directory
         self.writeLock = threading.Lock()
@@ -254,7 +260,15 @@ class Job:
             self.config.processingDirectory = self.config.processingDirectory.replace(key, replacementDic[key])
             self.config.successDirectory = self.config.successDirectory.replace(key, replacementDic[key])
             self.config.failureDirectory = self.config.failureDirectory.replace(key, replacementDic[key])
+            self.config.descriptionForApproval = self.config.descriptionForApproval.replace(key, replacementDic[key])
         logJobCreated(self)
+    
+    def xmlify(self):
+        ret = etree.Element("Job")
+        etree.SubElement(ret, "UUID").text = self.UUID.__str__()
+        etree.SubElement(ret, "directory").text = self.directory
+        etree.SubElement(ret, "descriptionForApproval").text = self.config.descriptionForApproval
+        return ret
 
     def approve(self):
         jobsLock.acquire()
@@ -632,7 +646,7 @@ def archivematicaMCPServerListen():
 def startXMLRPCServer():
     server = SimpleXMLRPCServer(("localhost", 8000))
     print "XML RPC Listening on port 8000..."
-    server.register_function(is_even, "is_even")
+    server.register_function(getJobsAwaitingApproval)
     t = threading.Thread(target=server.serve_forever)
     t.start()
 

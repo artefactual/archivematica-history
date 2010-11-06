@@ -40,8 +40,10 @@
 # @version svn: $Id$
 
 import xmlrpclib
+import lxml.etree as etree
 proxy = xmlrpclib.ServerProxy("http://localhost:8000/")
-ret = proxy.is_even()
+ret = proxy.getJobsAwaitingApproval()
 print ret
-if len(ret):
-    print ret[0]
+#tree = etree.parse(StringIO(ret))
+#print(etree.tostring(tree.getroot()))
+
