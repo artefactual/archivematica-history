@@ -1,6 +1,6 @@
 <module>
     <requiresUserApproval>Yes</requiresUserApproval>
-    <descriptionForApproval>None Needed </descriptionForApproval>
+    <descriptionForApproval>Unquarantine SIP</descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
