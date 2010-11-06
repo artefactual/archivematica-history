@@ -42,7 +42,7 @@
 import os
 import threading
 import syslog
-from archivematicaReplacementDics import getSIPUUIDFromLog
+from archivematicaReplacementDics import getSIPUUID
 
 syslogLoggingLock = threading.Lock()
 syslog.openlog("Archivematica MCP",syslog.LOG_PID)
@@ -78,7 +78,7 @@ def logTaskCompletedSyslog(task, retValue):
     runSyslog("Task Completed: " + taskUUID + separator + exitCode)
 
 def logJobCreatedSyslog(job):
-    runSyslog("Job Created: " + job.UUID.__str__() + separator + job.directory + separator + getSIPUUIDFromLog(job.directory + "/") )
+    runSyslog("Job Created: " + job.UUID.__str__() + separator + job.directory + separator + getSIPUUID(job.directory + "/") )
 
 
 def logJobStepCompletedSyslog(job):

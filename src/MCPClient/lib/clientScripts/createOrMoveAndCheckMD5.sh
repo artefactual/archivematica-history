@@ -19,6 +19,17 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+
+echo "THIS SCRIPT REQUIRES MODIFICATIONS"
+exit 0
+
+
+
+
+
+
+
+
 source /etc/archivematica/archivematicaConfig.conf
 
 target="$1"
