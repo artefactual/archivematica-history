@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%checkForViruses/clamAV/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</successDirectory>
+        <successDirectory>%watchDirectoryPath%identifyFileFormat/FITS/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 

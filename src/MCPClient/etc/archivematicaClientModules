@@ -26,7 +26,7 @@
 #the version numbers are versions of the protocol, not versions of the programs themselves.
 echo_v0.0="/bin/echo "
 FITS_v0.0="%clientScriptsDirectory%archivematicaFITS.py "
-easyExtract_v0.0="/usr/share/easy_extract/easy_extract.py "
+easyExtract_v0.0="easy-extract "
 setSIPQuarantine_v0.0="%clientScriptsDirectory%quarantineSIP.sh "
 createXMLEventQuarantine_v0.0="%clientScriptsDirectory%createXMLEventQuarantine.py "
 createXMLEventUnquarantine_v0.0="%clientScriptsDirectory%createXMLEventUnquarantine.py "

@@ -1,34 +1,34 @@
 <module>
-
-    <requiresUserApproval>No</requiresUserApproval>
+    
+    <requiresUserApproval>Yes</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%reviewSIP</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%checkForViruses/clamAV/</successDirectory>
+        <successDirectory>%watchDirectoryPath%quarantine/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
-    <commands>
+    <commands>    
         <exeCommand> 
             <command>
-                <skip>No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%filenameCleanup.log</standardOut>
-                <standardError>%SIPLogsDirectory%filenameCleanup.log</standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>detox_v0.0</execute>
-                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%"</arguments>
-                <executeOnEachFile>no</executeOnEachFile>
+                <execute></execute>
+                <arguments></arguments>
+                <executeOnEachFile> </executeOnEachFile>
             </command>
         </exeCommand>
         
@@ -62,9 +62,9 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute>moveDetoxLogToDetoxedDirectory_v0.0</execute>
-                <arguments>"%relativeDirectoryLocation%filenameCleanup.log" "%SIPDirectory%"</arguments>
-                <executeOnEachFile>No</executeOnEachFile>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
             </command>            
         </cleanupSuccessfulCommand>
         

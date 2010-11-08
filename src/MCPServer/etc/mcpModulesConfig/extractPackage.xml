@@ -9,7 +9,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%extractPackages/easyExtract/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%checkForViruses/clamAV/</successDirectory>
+        <successDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
