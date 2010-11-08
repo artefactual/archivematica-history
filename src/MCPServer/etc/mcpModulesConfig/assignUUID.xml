@@ -1,5 +1,5 @@
 <module>
-    <requiresUserApproval>Yes</requiresUserApproval>
+    <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%extractPackages/easyExtract/</successDirectory>
+        <successDirectory>%watchDirectoryPath%verifyChecksum</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 

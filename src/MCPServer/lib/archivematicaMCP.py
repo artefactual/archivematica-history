@@ -134,6 +134,7 @@ def checkJobQueue():
 def processTaskQueue():
     """Attempts to assign tasks to clients."""
     tasksLock.acquire()
+    print "Processing Tasks Queue {" + len(tasksBeingProcessed).__str__() + "/"+ len(tasksQueue).__str__() + "}..."
     for task in tasksQueue:
         taskAssigned = False
         for client in factory.clients:
@@ -166,12 +167,13 @@ def processTaskQueue():
 		                taskAssigned = True
 		                logTaskAssigned(task, client)
 		                print "assigned task: " + task.UUID.__str__()
-		                print "client threads: " + client.currentThreads.__str__()
+		                print "client threads{" + client.clientName + "}: " + client.currentThreads.__str__()
 		                break 
             client.clientLock.release()
             if taskAssigned:
                 break #break up to next task
-        print "No client currently available to run: " + task.execute
+            else:
+                print "\tNo client currently available to run: " + task.execute + " {" + task.UUID.__str__() + "}" 
     tasksLock.release()    
    
 class Task():
@@ -214,6 +216,7 @@ class Task():
         jobStepDone = True
         tasksBeingProcessed.remove(self)
         if self.command.requiresOutputLock == "yes":
+            print "Clearing output lock for job {" + self.job.UUID.__str__() + "}" 
             self.job.writeLock.release()
         
         for task in tasksQueue:
@@ -562,7 +565,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
                     theTask = task
                     break
             if theTask:
-                print "task completed: " + theTask.UUID.__str__()
+                print "task completed: {" + ret.__str__() + "}" + theTask.UUID.__str__()
                 print "current threads on client: " + self.currentThreads.__str__()
                 theTask.completed(ret)
             else:
@@ -600,7 +603,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
                     theTask = task
                     break
             if theTask:
-                print "Requested write lock for: " + command[1]
+                print "Requested write lock for job {" + theTask.job.UUID.__str__() + "} " + command[1]
                 theTask.job.writeLock.acquire()
                 self.unlockForWrite(theTask.UUID)
             else:

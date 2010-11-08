@@ -9,7 +9,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%identifyFileFormat/FITS/</successDirectory>
+        <successDirectory>%watchDirectoryPath%checkForViruses/clamAV/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 

@@ -20,7 +20,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-source /etc/archivematica/archivematicaConfig.conf
+#source /etc/archivematica/archivematicaConfig.conf
 
 target="$1"
 eIDValue="$2"
@@ -33,7 +33,7 @@ clamscanResultShouldBe="Infected files: 0"
 clamscanVersion=`clamscan -V`
 clamscanResult=`clamscan "$target" | grep "Infected files"`
 
-${clientScriptsDirectory}createXMLEventClamscan.py "$eIDValue" "$eDate" "$clamscanVersion" "$clamscanResult " "$clamscanResultShouldBe " "$fileUUID" "$logsDir"
+`dirname "$0"`/createXMLEventClamscan.py "$eIDValue" "$eDate" "$clamscanVersion" "$clamscanResult " "$clamscanResultShouldBe " "$fileUUID" "$logsDir"
 
 exit $?
 

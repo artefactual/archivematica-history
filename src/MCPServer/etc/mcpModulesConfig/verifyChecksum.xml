@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%verifyChecksum</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>/tmp/tmp2/</successDirectory>
+        <successDirectory>%watchDirectoryPath%reviewSIP</successDirectory>
         <failureDirectory>/tmp/tmp3/</failureDirectory>
     </directories>
 
@@ -25,7 +25,7 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>echo_v1.0</execute>
+                <execute>echo_v0.0</execute>
                 <arguments> hello world </arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>

@@ -165,8 +165,11 @@ class archivematicaMCPClientProtocol(LineReceiver):
     def performTask(self, command):
         if len(command) == 8:
             ret = executeCommand(command[1], command[2], command[3], command[4], command[5], command[6], command[7], self)
+            print "returned: {" + command[1] + "}" + ret.__str__()
             if command[1] not in waitingForOutputLock:
                 self.sendTaskResult(command, ret)
+            else:
+                print command[1] + "{" + ret.__str__() + "} is waiting for lock output."
         else:
             badProtocol(self, command)
             self.sendTaskResult(command, 1)
