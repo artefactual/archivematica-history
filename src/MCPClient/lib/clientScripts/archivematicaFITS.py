@@ -53,7 +53,7 @@ def includeFits(fits, xmlFile, date, eventUUID):
     tree.write(xmlFile)
 
 if __name__ == '__main__':
-    """This prints the contents for an Archivematica Clamscan Event xml file"""
+    
     target = sys.argv[1]
     XMLfile = sys.argv[2]
     date = sys.argv[3]
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     tempFile="/tmp/" + uuid.uuid4().__str__()
     
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
-    command = "fits.sh -i \"" + target + "\""# -o \"" + tempFile + "\"" 
+    command = "fits.sh -i \"" + target + "\" -o \"" + tempFile + "\"" 
     #print "command: " + command
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -78,10 +78,10 @@ if __name__ == '__main__':
             #return retcode
             quit(retcode)
         
-        #tree = etree.parse(tempFile)
-        #fits = tree.getroot()
-        #os.remove(tempFile)
-        fits = etree.XML(output[0])
+        tree = etree.parse(tempFile)
+        fits = tree.getroot()
+        os.remove(tempFile)
+        #fits = etree.XML(output[0])
         includeFits(fits, XMLfile, date, eventUUID)
     
     except OSError, ose:
