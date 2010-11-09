@@ -1,33 +1,33 @@
 <module>
     
-    <requiresUserApproval>Yes</requiresUserApproval>
+    <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%reviewSIP</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIP/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIP/</successDirectory>
+        <successDirectory>%watchDirectoryPath%quarantine/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
+                <filterSubDir>logs/fileMeta/</filterSubDir>
+                <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%removedFilesPostReview.log</standardOut>
+                <standardError>%SIPLogsDirectory%removedFilesPostReview.log</standardError>
                 <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute></execute>
-                <arguments></arguments>
+                <execute>scanForRemovedFiles_v0.0</execute>
+                <arguments>"%SIPObjectsDirectory%" "%relativeLocation%" "Appraise SIP for Submission" "%date%" "%taskUUID%"</arguments>
                 <executeOnEachFile> </executeOnEachFile>
             </command>
         </exeCommand>

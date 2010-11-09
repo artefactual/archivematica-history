@@ -21,6 +21,7 @@
 # @version svn: $Id$
 
 import lxml.etree as etree
+import os
 
 
 def getTagged(root, tag):
@@ -57,5 +58,23 @@ def archivematicaRenameFile(SIPLogsDirectory, fileUUID, newName, eventXML):
     tree = etree.ElementTree(root)
     tree.write(xmlFile)
     
+    
+def fileNoLongerExists(root, objectsDir):
+    """Returns 0 if not deleted, 1 if deleted, -1 if deleted, but already an event to indicated it has been removed"""
+    events = getTagged(root, "events")[0]
+    
+    for event in events:
+        etype = getTagged(event, "<eventType>")
+        if len(etype) and etype[0].text == "fileRemoved":
+            return -1
+    
+    currentName = getTagged(root, "currentFileName")[0].text
+    
+    currentName2 = currentName.replace("objects", objectsDir, 1)
+    if os.path.isfile(currentName2):
+        return 0
+    else:
+        print currentName
+        return 1
     
 
