@@ -56,5 +56,6 @@ upload-qubit.py_v0.0="/usr/share/upload-qubit/upload-qubit.py "
 storeAIP_v0.0="%clientScriptsDirectory%storeAIP.sh "
 assignSIPUUID_v0.0="%clientScriptsDirectory%assignSIPUUID.sh "
 verifySIPCompliance_v0.0="%clientScriptsDirectory%verifySIPCompliance.py "
+scanForRemovedFiles_v0.0="%clientScriptsDirectory%scanForRemovedFiles.py "
 
 

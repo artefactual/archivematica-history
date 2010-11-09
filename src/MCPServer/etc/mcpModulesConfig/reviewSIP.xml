@@ -9,7 +9,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%reviewSIP</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%quarantine/</successDirectory>
+        <successDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
