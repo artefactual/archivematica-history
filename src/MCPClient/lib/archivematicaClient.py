@@ -25,15 +25,16 @@ import shlex
 import subprocess
 import time
 import threading
+import string
 from archivematicaLoadConfig import loadConfig
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 from socket import gethostname
 
-archivmaticaVars = loadConfig("/etc/archivematicaMCPClient/clientConfig.conf")
-supportedModules = loadConfig(archivmaticaVars["archivematicaClientModules"])
-protocol = loadConfig(archivmaticaVars["archivematicaProtocol"])
+archivematicaVars = loadConfig("/etc/archivematicaMCPClient/clientConfig.conf")
+supportedModules = loadConfig(archivematicaVars["archivematicaClientModules"])
+protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
 waitingForOutputLock = {}
 
 def writeToFile(output, fileName):
@@ -66,8 +67,8 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
     requestLock = requiresOutputLock == "yes"
     command = supportedModules[execute] 
     replacementDic = { 
-        "%sharedPath%":archivmaticaVars["sharedDirectoryMounted"], \
-        "%clientScriptsDirectory%":archivmaticaVars["clientScriptsDirectory"]
+        "%sharedPath%":archivematicaVars["sharedDirectoryMounted"], \
+        "%clientScriptsDirectory%":archivematicaVars["clientScriptsDirectory"]
     }  
     #for each key replace all instances of the key in the command string
     for key in replacementDic.iterkeys():
@@ -134,7 +135,7 @@ class archivematicaMCPClientProtocol(LineReceiver):
         self.write(protocol["setName"] + protocol["delimiter"] + gethostname())
         for module in supportedModules:
             self.write(protocol["addToListTaskHandler"] + protocol["delimiter"] + module)
-        self.write(protocol["maxTasks"] + protocol["delimiter"] + archivmaticaVars["maxThreads"])
+        self.write(protocol["maxTasks"] + protocol["delimiter"] + archivematicaVars["maxThreads"])
     
     def write(self,line):
         self.sendLock.acquire() 
@@ -222,7 +223,8 @@ class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
 
 if __name__ == '__main__':
     f = archivematicaMCPClientProtocolFactory()
-    t = reactor.connectTCP("localhost", 8002, f)
+    t = reactor.connectTCP(archivematicaVars["MCPArchivematicaServer"], string.atoi(archivematicaVars["MCPArchivematicaServerPort"]), f)
+    print "Connecting To: " + archivematicaVars["MCPArchivematicaServer"] + ":" + archivematicaVars["MCPArchivematicaServerPort"]
     reactor.run()
     print "above is a blocking call. This is executed once client disconnects"
   

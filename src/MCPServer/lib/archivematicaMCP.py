@@ -291,7 +291,7 @@ class Job:
                 destination = self.config.failureDirectory
             directory = self.config.processingDirectory + self.UUID.__str__() + "/"
             for f in os.listdir(directory):
-                print "rename: " + os.path.join(directory, f) + " TO: " + os.path.join(destination, f)
+                print "rename: " + os.path.join(directory, f) + "{" + self.directory + "} TO: " + os.path.join(destination, f)
                 renameAsSudo( os.path.join(directory, f), os.path.join(destination, f) )
             os.rmdir(directory)
             movingDirectoryLock.release()
@@ -427,12 +427,12 @@ class watchDirectory(ProcessEvent):
     def __init__(self, config):
         self.config = config
     def process_IN_CREATE(self, event):
-        """ Traditionally, archivematica does not support copying to watch directorys."""
+        """ Traditionally, archivematica does not support copying to watch directories."""
         print "Warning: %s was created. Was something copied into this directory?" %  os.path.join(event.path, event.name)
         
     def process_IN_MOVED_TO(self, event):  
         """Create a Job based on what was moved into the directory and process it."""
-        #ensure no directorys are in the process of moving. (so none will be in the middle of moving INTO this directory)
+        #ensure no directories are in the process of moving. (so none will be in the middle of moving INTO this directory)
         movingDirectoryLock.acquire()
         movingDirectoryLock.release()    
         
@@ -447,7 +447,7 @@ class watchDirectory(ProcessEvent):
             checkJobQueue()
 
 def loadConfigs():
-    """Loads the XML config files, with the directorys to watch, and the associated commmands"""
+    """Loads the XML config files, with the directories to watch, and the associated commmands"""
     configFiles = []
     for dirs, subDirs, files in os.walk(archivematicaVars["moduleConfigDir"]):
         configFiles = files
@@ -457,12 +457,12 @@ def loadConfigs():
         if configFile.endswith(".xml"):
             configs.append(modulesClass(archivematicaVars["moduleConfigDir"], configFile))
        
-    #need to implement check for duplicate watch directorys.
+    #need to implement check for duplicate watch directories.
     
     return configs
         
 def loadDirectoryWatchLlist(configs):
-    """Start watching all the watch directorys defined in the configs. """
+    """Start watching all the watch directories defined in the configs. """
     replacementDic = archivematicaRD.watchFolderRepacementDic()
     for config in configs:
         preExisting = False
@@ -630,15 +630,16 @@ def archivematicaMCPServerListen():
     """ Start listening for archivematica clients to connect."""
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
-    reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory)
+    reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory, interface=archivematicaVars["MCPArchivematicaServerInterface"])
+    print "MCP Listening on: " + archivematicaVars["MCPArchivematicaServerInterface"] + ":" + archivematicaVars["MCPArchivematicaServerPort"] 
     reactor.run()
 
     
     
 
 def startXMLRPCServer():
-    server = SimpleXMLRPCServer(("localhost", 8000))
-    print "XML RPC Listening on port 8000..."
+    server = SimpleXMLRPCServer( (archivematicaVars["MCPArchivematicaXMLClients"], string.atoi(archivematicaVars["MCPArchivematicaXMLPort"])))
+    print "XML RPC Listening: " + archivematicaVars["MCPArchivematicaXMLClients"] + ":" + archivematicaVars["MCPArchivematicaXMLPort"] 
     server.register_function(getJobsAwaitingApproval)
     server.register_function(approveJob)
     t = threading.Thread(target=server.serve_forever)
