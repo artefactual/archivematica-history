@@ -7,7 +7,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIP/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIPForSubmission/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%quarantine/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
@@ -22,8 +22,8 @@
                 <filterSubDir>logs/fileMeta/</filterSubDir>
                 <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%removedFilesPostReview.log</standardOut>
-                <standardError>%SIPLogsDirectory%removedFilesPostReview.log</standardError>
+                <standardOut>%SIPLogsDirectory%removedFilesAppraiseSIPForSubmission.log</standardOut>
+                <standardError>%SIPLogsDirectory%removedFilesAppraiseSIPForSubmission.log</standardError>
                 <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>scanForRemovedFiles_v0.0</execute>

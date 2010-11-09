@@ -22,14 +22,14 @@
 
 import lxml.etree as etree
 import os
-
+import sys
 
 def getTagged(root, tag):
     ret = []
     for element in root:
         if element.tag == tag:
             ret.append(element)
-            return ret #only return the first encounter
+            #return ret #only return the first encounter
     return ret  
     
 def appendEventToFile(SIPLogsDirectory, fileUUID, eventXML):
@@ -63,10 +63,12 @@ def fileNoLongerExists(root, objectsDir):
     """Returns 0 if not deleted, 1 if deleted, -1 if deleted, but already an event to indicated it has been removed"""
     events = getTagged(root, "events")[0]
     
-    for event in events:
-        etype = getTagged(event, "<eventType>")
+    for event in getTagged(events, "event"):
+        #print >>sys.stderr , "event"
+        etype = getTagged(event, "eventType")
         if len(etype) and etype[0].text == "fileRemoved":
-            return -1
+                #print >>sys.stderr , "file already removed"
+                return -1
     
     currentName = getTagged(root, "currentFileName")[0].text
     

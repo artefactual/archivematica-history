@@ -1,4 +1,5 @@
 <module>
+    
     <requiresUserApproval>No</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
@@ -6,9 +7,9 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIPForPreservation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%verifyChecksum</successDirectory>
+        <successDirectory>%watchDirectoryPath%structureDirectory/createDIPDirectory/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
@@ -18,16 +19,16 @@
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir>objects</filterSubDir>
+                <filterSubDir>logs/fileMeta/</filterSubDir>
                 <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%FileUUIDs.log</standardOut>
-                <standardError>%SIPLogsDirectory%FileUUIDsError.log</standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <standardOut>%SIPLogsDirectory%removedFilesAppraiseSIPForPreservation.log</standardOut>
+                <standardError>%SIPLogsDirectory%removedFilesAppraiseSIPForPreservation.log</standardError>
+                <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>addFiles_v0.0</execute>
-                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%taskUUID%" "ingest file - extracted" "%date%"</arguments>
-                <executeOnEachFile>yes</executeOnEachFile>
+                <execute>scanForRemovedFiles_v0.0</execute>
+                <arguments>"%SIPObjectsDirectory%" "%relativeLocation%" "Appraise SIP for Preservation" "%date%" "%taskUUID%"</arguments>
+                <executeOnEachFile> </executeOnEachFile>
             </command>
         </exeCommand>
         

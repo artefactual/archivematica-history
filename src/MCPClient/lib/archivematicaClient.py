@@ -114,8 +114,17 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
         return 1
     #catch OS errors
     except OSError, ose:
-      print >>sys.stderr, "Execution failed:", ose
-      return 1
+        print >>sys.stderr, "Execution failed:", ose
+        output = ["Config Error!", ose.__str__() ]
+        retcode = 1
+        if requestLock:
+            op = sOutput, sError, output[0], output[1], retcode
+            waitingForOutputLock[taskUUID] = op
+            serverConnection.requestLock(taskUUID)
+        else:
+            a = writeToFile(output[0], sOutput)
+            b = writeToFile(output[1], sError)
+        return retcode
 
 class archivematicaMCPClientProtocol(LineReceiver):
     """Archivematica Client Protocol"""
