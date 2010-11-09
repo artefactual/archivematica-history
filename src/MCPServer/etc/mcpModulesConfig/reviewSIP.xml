@@ -9,7 +9,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%reviewSIP</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIP/</successDirectory>
+        <successDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIPForSubmission/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
@@ -28,7 +28,7 @@
                 <failureNotification> </failureNotification>
                 <execute></execute>
                 <arguments></arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         

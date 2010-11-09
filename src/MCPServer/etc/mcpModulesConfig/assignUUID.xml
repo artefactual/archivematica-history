@@ -21,8 +21,8 @@
                 <filterSubDir>objects</filterSubDir>
                 <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%assignFileUUIDs.log</standardOut>
-                <standardError>%SIPLogsDirectory%assignFileUUIDs.log</standardError>
+                <standardOut>%SIPLogsDirectory%FileUUIDs.log</standardOut>
+                <standardError>%SIPLogsDirectory%FileUUIDsError.log</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>addFiles_v0.0</execute>

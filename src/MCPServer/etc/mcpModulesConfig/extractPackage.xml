@@ -40,8 +40,8 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir>objects</filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%extractedFileIDassignment.log</standardOut>
-                <standardError>%SIPLogsDirectory%extractedFileIDassignment.log</standardError>
+                <standardOut>%SIPLogsDirectory%FileUUIDs.log</standardOut>
+                <standardError>%SIPLogsDirectory%FileUUIDsError.log</standardError>
                 <requiresOutputLock>No</requiresOutputLock>
                 <failureNotification> </failureNotification>
                 <execute>UUID4PostExtract_v0.0</execute>

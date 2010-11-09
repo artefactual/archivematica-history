@@ -51,6 +51,7 @@ def md5_for_file(fileName, block_size=2**20):
 def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, objects="objects/" ):
     """This creates an Archivematica Quarantine Event xml file"""
     relativeFilePath = filePath.replace(objectsDirectory, objects, 1)
+    print fileUUID + " -> " + relativeFilePath 
         
     #Gather File Info
     md5Checksum = md5_for_file(filePath)
