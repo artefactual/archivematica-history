@@ -1,7 +1,7 @@
 cd ../
 svnDir="`pwd`/"
-sudo ln -s "${svnDir}src/MCPServer/etc" "/etc/archivematicaMCPServer"
-sudo ln -s "${svnDir}src/MCPClient/etc" "/etc/archivematicaMCPClient"
+sudo ln -s "${svnDir}src/MCPServer/etc" "/etc/archivematica/MCPServer"
+sudo ln -s "${svnDir}src/MCPClient/etc" "/etc/archivematica/MCPClient"
 sudo ln -s "${svnDir}src/transcoder/etc" "/etc/transcoder"
 
 lib="/usr/lib/archivematica"
