@@ -1,0 +1,4 @@
+bin/* /usr/bin/
+etc/* /etc/transcoder/
+lib/* /usr/lib/transcoder/
+share/* /usr/share/transcoder/
