@@ -1,18 +1,25 @@
 cd ../
 svnDir="`pwd`/"
-sudo ln -s "${svnDir}src/MCPServer/etc" "/etc/archivematica/MCPServer"
-sudo ln -s "${svnDir}src/MCPClient/etc" "/etc/archivematica/MCPClient"
-sudo ln -s "${svnDir}src/transcoder/etc" "/etc/transcoder"
 
 lib="/usr/lib/archivematica"
 sudo mkdir $lib
+etc="/etc/archivematica"
+sudo mkdir $etc
+
+sudo ln -s "${svnDir}src/MCPServer/etc" "${etc}/MCPServer"
+sudo ln -s "${svnDir}src/MCPClient/etc" "${etc}/MCPClient"
+sudo ln -s "${svnDir}src/transcoder/etc" "/etc/transcoder"
+
 
 sudo ln -s "${svnDir}src/MCPServer/lib/" "${lib}/MCPServer"
 sudo ln -s "${svnDir}src/MCPClient/lib/" "${lib}/MCPClient"
 sudo ln -s "${svnDir}src/transcoder/lib/" "/usr/lib/transcoder"
+sudo ln -s "${svnDir}src/easy-extract/lib/" "/usr/lib/easy-extract"
 
 sudo ln "${svnDir}src/MCPServer/runArchivematicaMCPServer.sh" "/usr/bin/"
 sudo ln "${svnDir}src/MCPClient/runArchivematicaMCPClient.sh" "/usr/bin/"
+sudo ln "${svnDir}src/easy-extract/bin/easy-extract" "/usr/bin/"
+sudo ln "${svnDir}src/transcoder/bin/transcoder" "/usr/bin/"
 
 sudo ln "${svnDir}src/loadConfig/lib/archivematicaLoadConfig.py" "${lib}/MCPServer"
 sudo ln "${svnDir}src/loadConfig/lib/archivematicaLoadConfig.py" "${lib}/MCPClient"

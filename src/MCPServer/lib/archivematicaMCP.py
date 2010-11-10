@@ -65,7 +65,7 @@ from twisted.protocols.basic import LineReceiver
 import xmlrpclib
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 
-archivematicaVars = loadConfig("/etc/archivematicaMCPServer/serverConfig.conf")
+archivematicaVars = loadConfig("/etc/archivematica/MCPServer/serverConfig.conf")
 
 protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
 archivematicaRD = replacementDics(archivematicaVars)

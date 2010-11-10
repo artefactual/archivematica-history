@@ -21,5 +21,5 @@
 # @version svn: $Id$
 
 #source /etc/archivematica/archivematicaConfig.conf
-sudo -u archivematica /usr/lib/archivematica/archivematicaClient.py
+sudo -u archivematica /usr/lib/archivematica/MCPClient/archivematicaClient.py
 
