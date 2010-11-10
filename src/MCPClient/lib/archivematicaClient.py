@@ -32,7 +32,7 @@ from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 from socket import gethostname
 
-archivematicaVars = loadConfig("/etc/archivematicaMCPClient/clientConfig.conf")
+archivematicaVars = loadConfig("/etc/archivematica/MCPClient/clientConfig.conf")
 supportedModules = loadConfig(archivematicaVars["archivematicaClientModules"])
 protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
 waitingForOutputLock = {}

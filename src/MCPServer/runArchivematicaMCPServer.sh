@@ -22,5 +22,5 @@
 
 #source /etc/archivematica/archivematicaConfig.conf
 
-sudo -u archivematica /usr/lib/archivematica/archivematicaMCP.py
+sudo -u archivematica /usr/lib/archivematica/MCPServer/archivematicaMCP.py
 
