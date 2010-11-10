@@ -1,0 +1,14 @@
+Source: easy-extract
+Section: utils
+Priority: extra
+Maintainer: Austin Trask <austin@artefactual.com>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.8.3
+Homepage: http://archivematica.org
+
+Package: easy-extract
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python 
+Description: easy-extract for Archivematica
+  Enter long description
+  
