@@ -23,6 +23,7 @@
 #import xml.etree.cElementTree as etree  
 from commands.commands import commandsClass
 import xml.etree.ElementTree as etree
+import os
 
 class modulesClass():
     #Vars
@@ -54,7 +55,7 @@ class modulesClass():
         self.fileName = fileName
         self.fileName = directory + "/" + fileName
         
-        
+        self.type = os.path.basename(fileName).split(".xml")[0] 
         tree = etree.parse( self.fileName )
         root = tree.getroot()
         

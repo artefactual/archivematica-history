@@ -15,14 +15,16 @@ exitCode        BIGINT
 );
 
 
-CREATE TABLE jobCreated(
+CREATE TABLE Jobs (
 jobUUID         VARCHAR(50) PRIMARY KEY,
+jobType         VARCHAR(250),
 createdTime     TIMESTAMP(8) DEFAULT NOW(),
 directory       VARCHAR(250),
-SIPUUID         VARCHAR(50)
+SIPUUID         VARCHAR(50),
+currentStep     VARCHAR(50)
 );
 
-CREATE TABLE jobStepCompleted(
+CREATE TABLE jobStepCompleted (
 pk              BIGINT PRIMARY KEY AUTO_INCREMENT,
 jobUUID         VARCHAR(50),
 completedTime   TIMESTAMP(8) DEFAULT NOW(),

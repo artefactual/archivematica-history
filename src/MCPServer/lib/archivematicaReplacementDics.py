@@ -41,13 +41,28 @@
 import os
 from archivematicaMCPFileUUID import getUUIDOfFile
 
+def isUUID(uuid):
+    split = uuid.split("-")
+    if len(split) != 5 \
+    or len(split[0]) != 8 \
+    or len(split[1]) != 4 \
+    or len(split[2]) != 4 \
+    or len(split[3]) != 4 \
+    or len(split[4]) != 12 :
+        return False
+    return True
+    
+
 def getSIPUUID(sipDir):
     uuidLen = 36
     sip = os.path.basename(sipDir)
     if len(sip) > uuidLen:
-        return sip[-uuidLen:]
+        if isUUID(sip[-uuidLen:]):
+            return sip[-uuidLen:]
+        else:
+            return "None1"
     else:
-        return "None" 
+        return "None2" 
     
 
 class replacementDics:

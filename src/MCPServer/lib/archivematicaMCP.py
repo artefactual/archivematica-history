@@ -128,6 +128,9 @@ def checkJobQueue():
         jobsQueue.remove(job)
         if tasksCreated:
             jobsBeingProcessed.append(job) 
+        else:
+            job.step = "completedSuccessfully"
+            logJobStepChanged(job)
     jobsLock.release()
     processTaskQueue()
 
@@ -249,6 +252,9 @@ class Job:
         self.writeLock = threading.Lock()
         
         replacementDic = archivematicaRD.jobReplacementDic(self, config, directory, step)
+        
+        if self.config.requiresUserApproval:
+            self.step="requiresAprroval"
       
         #for each key replace all instances of the key in the strings
         for key in replacementDic.iterkeys():
@@ -268,6 +274,7 @@ class Job:
 
     def approve(self):
         jobsLock.acquire()
+        self.step = "exeCommand"
         if self in jobsAwaitingApproval:
             jobsAwaitingApproval.remove(self)
         jobsQueue.append(self)
@@ -286,9 +293,11 @@ class Job:
             #move directory to next location, depending on fail status
             destination = ""
             if self.step == "cleanupSuccessfulCommand":
+                self.step="completedSuccessfully"
                 destination = self.config.successDirectory
             else: #"cleanupUnsuccessfulCommand"
                 destination = self.config.failureDirectory
+                self.step="completedUnsuccessfully"
             directory = self.config.processingDirectory + self.UUID.__str__() + "/"
             for f in os.listdir(directory):
                 print "rename: " + os.path.join(directory, f) + "{" + self.directory + "} TO: " + os.path.join(destination, f)
@@ -318,6 +327,8 @@ class Job:
             processTaskQueue()
         else:
             print "MCP error: Job in bad step: " + job.step.__str__()
+        
+        logJobStepChanged(self)
             
     def createTasksForStep(self, command):
         """Creates the tasks for the given command"""
