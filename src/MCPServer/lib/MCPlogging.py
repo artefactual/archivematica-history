@@ -62,6 +62,8 @@ def logJobStepCompleted(job):
     logJobStepCompletedSyslog(job)
     logJobStepCompletedSQL(job)
 
+def logJobStepChanged(job):
+    logJobStepChangedSQL(job)
 
     
 

@@ -91,63 +91,23 @@ def logTaskCompletedSQL(task, retValue):
 
 def logJobCreatedSQL(job):
     separator = "', '"
-    runSQL("""INSERT INTO jobCreated (jobUUID, directory, SIPUUID)
-    VALUES ( '""" + job.UUID.__str__() + separator + job.directory + separator + getSIPUUID(job.directory + "/") + "' )" )
+    runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep)
+    VALUES ( '""" + job.UUID.__str__() + separator + job.config.type + separator \
+    + job.directory + separator + getSIPUUID(job.directory) + \
+    separator + job.step + "' )" )
 
 
 def logJobStepCompletedSQL(job):
     separator = "', '"
     runSQL("""INSERT INTO jobStepCompleted (jobUUID, step)
     VALUES ( '""" + job.UUID.__str__() + separator + job.step + "' )" )
-
-if __name__ == '__main__':
-    """Insert test data & print it"""
-    taskUUID = uuid.uuid4()
-    jobUUID = uuid.uuid4()
-    fileUUID = "Test fileUUID"
-    taskexec = "Test taskexec"
-    arguments = "Test arguments"
-
-    client = "Test client"
-
-    exitCode = 0
+  
+def logJobStepChangedSQL(job):
+    jobUUUID = job.UUID.__str__()
     
-    separator = "', '"
-    
-    runSQL("""INSERT INTO taskCreated (taskUUID, jobUUID, fileUUID, exec, arguments)
-    VALUES ( '""" + taskUUID.__str__() + separator + jobUUID.__str__() + separator + fileUUID.__str__() + separator + taskexec + separator + arguments + "' )" )
-
-    runSQL("""INSERT INTO taskAssigned (taskUUID, client)
-    VALUES ( '""" + taskUUID.__str__() + separator + client + "' )" )
-
-    runSQL("""INSERT INTO taskCompleted (taskUUID, exitCode)
-    VALUES ( '""" + taskUUID.__str__() + separator + exitCode.__str__() + "' )" )
-
-    
-    runSQL("""SELECT * FROM taskAssigned""")
-    r=db.store_result()
-    o = r.fetch_row()
-    while o:
-        print o
-        o = r.fetch_row()
-
-    runSQL("""SELECT * FROM taskCreated""")
-    r=db.store_result()
-    o = r.fetch_row()
-    while o:
-        print o
-        o = r.fetch_row()
-        
-    runSQL("""SELECT * FROM taskCompleted""")
-    r=db.store_result()
-    o = r.fetch_row()
-    while o:
-        print o
-        o = r.fetch_row()
-
-
-    
-    
+    runSQL("UPDATE Jobs " + \
+    "SET currentStep='" + job.step +  "' " + \
+    "WHERE jobUUID='" + jobUUUID + "'" )        
 
 
     
