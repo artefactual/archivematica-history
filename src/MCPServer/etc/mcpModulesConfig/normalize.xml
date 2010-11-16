@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%normalize/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%createAIPChecksum/</successDirectory>
+        <successDirectory>%watchDirectoryPath%compileMetadata/METS/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
