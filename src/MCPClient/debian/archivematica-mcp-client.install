@@ -1,6 +1,5 @@
 runArchivematicaMCPClient.sh /usr/bin/
 etc/* /etc/archivematica/MCPClient/
-lib/* /usr/share/pyshared/archivematica/
 lib/* /usr/lib/archivematica/MCPClient/
 
 
