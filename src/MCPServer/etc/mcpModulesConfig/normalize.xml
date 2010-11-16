@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>normalize_v0.0</execute>
-                <arguments>"%relativeLocation%" "%fileUUID%" "%SIPDirectory%DIP/objects/"</arguments>
+                <arguments>"%relativeLocation%" "%fileUUID%" "%SIPDirectory%DIP/objects/" "yes" "%date%" "%taskUUID%" "%SIPObjectsDirectory%" "%SIPLogsDirectory%"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>
