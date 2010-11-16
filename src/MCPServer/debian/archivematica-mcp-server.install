@@ -1,6 +1,5 @@
 runArchivematicaMCPServer.sh /usr/bin/
 etc/* /etc/archivematica/MCPServer/
-lib/* /usr/share/pyshared/archivematica/
-lib/* /usr/lib/archivematica/
+lib/* /usr/lib/archivematica/MCPServer/
 sharedDirectoryStructure/* /var/archivematica/
 
