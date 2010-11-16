@@ -6,14 +6,32 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%compileMetadata/METS</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%compileMetadata/METS/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%addDCToMETS/</successDirectory>
+        <successDirectory>%watchDirectoryPath%createAIPChecksum/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir>objects/</filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut>%SIPLogsDirectory%filesWithoutUUIDs.txt</standardOut>
+                <standardError>%SIPLogsDirectory%filesWithoutUUIDs.txt</standardError>
+                <failureNotification> </failureNotification>
+                <execute>verifyFileHasUUID_v0.0</execute>
+                <arguments>"%fileUUID%" "%relativeLocation%" "%SIPObjectsDirectory"</arguments>
+                <executeOnEachFile>yes</executeOnEachFile>
+            </command>
+        </exeCommand>
+        
+        <verificationCommand>
             <command>
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
@@ -28,25 +46,7 @@
                 <execute>createMETS_v0.0</execute>
                 <arguments>"%SIPLogsDirectory%" "%SIPUUID%" "%SIPName%" "%SIPDirectory%"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
-            </command>
-        </exeCommand>
-        
-        <verificationCommand>
-            <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
-                <filterFileEnd></filterFileEnd>
-                <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
-                <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
-                <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>            
+            </command>              
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
@@ -64,7 +64,7 @@
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
-            </command>            
+            </command>          
         </cleanupSuccessfulCommand>
         
         <cleanupUnsuccessfulCommand>

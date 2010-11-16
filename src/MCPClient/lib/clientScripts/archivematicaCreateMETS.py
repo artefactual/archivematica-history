@@ -22,6 +22,7 @@
 # @version svn: $Id$
 
 from archivematicaXMLNamesSpace import *
+from archivematicaFunctions import getTagged
 import os
 import uuid
 import sys
@@ -30,7 +31,6 @@ import string
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 from datetime import datetime
 
-DetoxDic={}
 UUIDsDic={}
 amdSec=[]
 
@@ -40,20 +40,6 @@ SIPName = sys.argv[3]
 processingDIR = sys.argv[4]
 
 
-
-def loadDetoxDic():
-    detox_fh = open(logsDIR+"filenameCleanup.log", "r")
- 
-    line = detox_fh.readline()
-    while line:
-        detoxfiles = line.split(" -> ")
-        if len(detoxfiles) > 1 :
-            oldfile = detoxfiles[0]
-            newfile = detoxfiles[1]
-            newfile = string.replace(newfile, "\n", "", 1)
-            oldfile = os.path.basename(oldfile)
-            DetoxDic[newfile] = oldfile
-        line = detox_fh.readline()
 
 def loadFileUUIDsDic():
     FileUUIDs_fh = open(logsDIR+"FileUUIDs.log", "r")
@@ -91,28 +77,48 @@ def createDigiprovMD(uuid, filename) :
         attrib = { "{" + xsiNS + "}schemaLocation" : "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" })
     premis.set("version", "2.0")
     
-    objects = newChild(premis, "object")
-    objects.set(xsiBNS + "type", "file")#error
-    objectIdentifier = newChild(objects, "objectIdentifier")
-    objectIdentifierType = newChild(objectIdentifier, "objectIdentifierType", "UUID")
-    objectIdentifierValue = newChild(objectIdentifier, "objectIdentifierValue", uuid)
-    if filename in DetoxDic:
-        #print DetoxDic[filename] + "\t RENAMED: \t" + filename
-        originalName = newChild(objects, "originalName", DetoxDic[filename])
+    fileMeta = etree.parse(logsDIR + "fileMeta/" + uuid + ".xml").getroot()
+    object = getTagged(fileMeta, "object")[0]
+    events = getTagged(fileMeta, "events")[0]
+    
+    premis.append(object)
+    premis.append(events)
+    
+#    objects = newChild(premis, "object")
+#    objects.set(xsiBNS + "type", "file")
+#    objectIdentifier = newChild(objects, "objectIdentifier")
+#    objectIdentifierType = newChild(objectIdentifier, "objectIdentifierType", "UUID")
+#    objectIdentifierValue = newChild(objectIdentifier, "objectIdentifierValue", uuid)
+#    if filename in DetoxDic:
+#        #print DetoxDic[filename] + "\t RENAMED: \t" + filename
+#        originalName = newChild(objects, "originalName", DetoxDic[filename])
 
     #Load Fits
-    mdWrap = newChild(digiprovMD,"mdWrap")
-    mdWrap.set("MDTYPE", "FITS")
-    xmlData = newChild(mdWrap, "xmlData")
+    #mdWrap = newChild(digiprovMD,"mdWrap")
+    #mdWrap.set("MDTYPE", "FITS")
+    #xmlData = newChild(mdWrap, "xmlData")
     #fits = newChild(xmlData, "fits")
-    fits = etree.SubElement( xmlData, "fits", nsmap=NSMAP, \
-        attrib = { "{" + xsiNS + "}schemaLocation" : "http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd" })
-    fits.set("version", "0.3.2")
+#    fits = etree.SubElement( xmlData, "fits", nsmap=NSMAP, \
+#        attrib = { "{" + xsiNS + "}schemaLocation" : "http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd" })
+#    fits.set("version", "0.3.2")
     
-    fitsTree = etree.parse(logsDIR+"FITS-" + uuid + ".xml")
-    fitsRoot = fitsTree.getroot()
-    fits.append(fitsRoot)
+#    fitsTree = etree.parse(logsDIR+"FITS-" + uuid + ".xml")
+#    fitsRoot = fitsTree.getroot()
+#    fits.append(fitsRoot)
 
+def getRelativePath(itempath, processingDIR):
+    """
+    Instead of pathSTR = itempath.replace(processingDIR + "objects", "objects", 1)
+    This was implemented to avoid problems while developing where the symbolic link would resolve while traversing the sip, and cause problems for the replacement.
+    /var/archivematica/sharedDirectory/.currentlyProcessing/801e1ffe-6dfd-46cc-822b-e890ed26477b/backup-678a0680-f1be-11df-b321-001b2429801e/
+    Error - Log has no UUID for file: /home/joseph/archivematica/src/MCPServer/sharedDirectoryStructure/.currentlyProcessing/801e1ffe-6dfd-46cc-822b-e890ed26477b/backup-678a0680-f1be-11df-b321-001b2429801e/DIP/objects/Archivematica_architecture_7May2010.jpg{/home/joseph/archivematica/src/MCPServer/sharedDirectoryStructure/.currentlyProcessing/801e1ffe-6dfd-46cc-822b-e890ed26477b/backup-678a0680-f1be-11df-b321-001b2429801e/DIP/objects}
+    """
+    ret = itempath.split(os.path.basename(os.path.dirname(processingDIR)), 1)
+    if len(ret) != 2:
+        
+        print "error: " + ret.__str__()
+        quit(3)
+    return ret[1].replace("/", "", 1)
 
 #Do /SIP-UUID/
 #Force only /SIP-UUID/objects
@@ -122,7 +128,8 @@ def createFileSec(path, parentBranch, structMapParent):
     if pathSTR == processingDIR + "objects/": #IF it's it's the SIP folder, it's OBJECTS
         pathSTR = "objects"
     #pathSTR = string.replace(path.__str__(), "/tmp/" + sys.argv[2] + "/" + sys.argv[3], "objects", 1)
-    if pathSTR + "/" == processingDIR: #if it's the very first run through (recursive function)
+    #if pathSTR + "/" == processingDIR: #if it's the very first run through (recursive function)
+    if os.path.basename(pathSTR) == os.path.basename(os.path.dirname(processingDIR)): #if it's the very first run through (recursive function)
         pathSTR = sys.argv[3] + "-" + sys.argv[2]
         structMapParent.set("DMDID", "SIP-description")
         
@@ -150,7 +157,8 @@ def createFileSec(path, parentBranch, structMapParent):
             elif os.path.isfile(itempath):
                 #myuuid = uuid.uuid4()
                 myuuid=""
-                pathSTR = itempath.replace(processingDIR + "objects", "objects", 1)
+                #pathSTR = itempath.replace(processingDIR + "objects", "objects", 1)
+                pathSTR = getRelativePath(itempath, processingDIR)
                 if pathSTR in UUIDsDic:
                     myuuid = UUIDsDic[pathSTR]
                 else:
@@ -165,7 +173,7 @@ def createFileSec(path, parentBranch, structMapParent):
                 fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())            
 
                 Flocat = newChild(fileI, "Flocat")
-                Flocat.set(xlinkBNS + "href", pathSTR + "/" + filename)
+                Flocat.set(xlinkBNS + "href", pathSTR )
                 Flocat.set("locType", "other")
                 Flocat.set("otherLocType", "system")
 
@@ -184,7 +192,6 @@ if __name__ == '__main__':
     os.chdir(processingDIR)
     path = os.getcwd()
 
-    loadDetoxDic()
     loadFileUUIDsDic()
 
     amdSec = newChild(root, "amdSec")
