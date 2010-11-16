@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>move_v0.0</execute>
-                <arguments>"%SIPDirectory%DIP" "/home/demo/sharedDirectory/watchedDirectories/uploadDIP/%SIPName%-%SIPUUID%"</arguments>
+                <arguments>"%SIPDirectory%DIP" "%sharedPath%/watchedDirectories/uploadDIP/%SIPName%-%SIPUUID%"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
