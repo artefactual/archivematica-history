@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%createOrMoveDC/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</successDirectory>
+        <successDirectory>%watchDirectoryPath%extractPackages/easyExtract/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
@@ -22,7 +22,7 @@
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
-                <standardError></standardError>
+                <standardError>%SIPLogsDirectory%createDC.log</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>createOrMoveDC_v0.0</execute>
