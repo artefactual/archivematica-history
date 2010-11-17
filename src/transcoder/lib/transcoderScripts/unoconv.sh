@@ -17,23 +17,8 @@
 
 
 # @package Archivematica
-# @subpackage Transcoder
+# @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-formatPoliciesPath="/etc/transcoder/archivematicaFormatPolicies/"
-transcoderScriptsDir="/usr/lib/transcoder/transcoderScripts/"
-
-#normalize scripts
-convertPath="/usr/bin/convert " #Images
-ffmpegPath="/usr/bin/ffmpeg " #Audio
-theoraPath="/usr/bin/ffmpeg2theora "
-unoconvPath="/usr/bin/unoconv "
-
-#File Names
-DublinCore="dublincore.xml"
-MD5FileName="MD5checksum.txt"
-fileUUIDSHumanReadable="FileUUIDs.log"
-
-
-
+/usr/bin/unoconv -v --server localhost -f $1 $2 && mv $3 $4
