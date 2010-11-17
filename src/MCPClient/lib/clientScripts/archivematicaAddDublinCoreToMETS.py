@@ -55,5 +55,6 @@ if __name__ == '__main__':
 
   loadDublin(root, dublincore)
   
-  tree.write(sys.argv[1]+"/METS.xml")
+  tree = etree.ElementTree(root)
+  tree.write(sys.argv[1]+"/METS.xml", pretty_print=True)
 

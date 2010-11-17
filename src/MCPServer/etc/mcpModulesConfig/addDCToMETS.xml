@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%addDCToMETS</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%appraiseSIP/</successDirectory>
+        <successDirectory>%watchDirectoryPath%createAIPChecksum/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>addDCTOMETS_v0.0</execute>
-                <arguments>"%SIPDirectory%" "%SIPLogsDirectory%"</arguments>
+                <arguments>"%SIPDirectory%" "%SIPDirectory%metadata/"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
