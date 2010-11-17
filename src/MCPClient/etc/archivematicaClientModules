@@ -40,6 +40,7 @@ clamscan_v0.0="clamscan "
 archivematicaClamscan_v0.0="%clientScriptsDirectory%archivematicaClamscan.sh"
 #clamscan_v0.0="echo " #faster for testing
 detox_v0.0="%clientScriptsDirectory%archivematicaDetox.py "
+detoxSIP_v0.0="%clientScriptsDirectory%archivematicaDetoxSIPDirectoryName.py "
 UUID4_v0.0="%clientScriptsDirectory%assignFileUUIDs.sh "
 addFiles_v0.0="%clientScriptsDirectory%fileAddedToSIP.py "
 UUID4PostExtract_v0.0="%clientScriptsDirectory%assignUUIDsPostExtract.py "
