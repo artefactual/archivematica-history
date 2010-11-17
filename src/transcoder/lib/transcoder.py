@@ -58,7 +58,7 @@ ffmpegPath = archivmaticaVars["ffmpegPath"]
 theoraPath = archivmaticaVars["theoraPath"]
 unoconvPath = archivmaticaVars["unoconvPath"]
 #xenaPath = archivmaticaVars["xenaPath"]
-normalizationScriptsDir = archivmaticaVars["normalizationScriptsDir"]
+transcoderScriptsDir = archivmaticaVars["transcoderScriptsDir"]
 
 #SET THE DEFAULT COMMAND
 defaultCommand = "echo No default normalization tool defined."
@@ -208,7 +208,8 @@ def executeCommand(command, newUUID=""):
     "%preservationFileDirectory%": fileDirectory + newUUID, \
     "%fileDirectory%": fileDirectory,\
     "%fileTitle%": fileTitle, \
-    "%normalizationScriptsDir%": normalizationScriptsDir, \
+    "%normalizationScriptsDir%": transcoderScriptsDir, \
+    "%transcoderScriptsDir%": transcoderScriptsDir, \
     "%accessFormat%": accessFormat[0].lower(), \
     "%preservationFormat%": preservationFormat[0].lower() }
     
