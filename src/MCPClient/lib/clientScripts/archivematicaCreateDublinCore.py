@@ -20,7 +20,6 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-from archivematicaLoadConfig import loadConfig
 import lxml.etree as etree
 from datetime import datetime
 from archivematicaXMLNamesSpace import *

@@ -19,20 +19,18 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-source /etc/archivematica/archivematicaConfig.conf
+
 
 target="$1"
 DublinCore="$2"
 UUID=`uuid -v 4`
-targetBasename = basename "$target"
-targetDirname = dirname "$target"
 
-if [ -f "${target}objects/$DublinCore" ] ; then
-    mv "${target}objects/$DublinCore" "${target}logs/${DublinCore}"
+if [ -f "${target}metadata/$DublinCore" ] ; then
+    echo DublinCore already exists
 else
     tmpDir=`pwd`
-    cd "${target}logs/"
-    "$createDublinCore"
+    cd "${target}metadata/"
+    "`dirname "$0"`/archivematicaCreateDublinCore.py"
     cd $tmpDir
 fi
 
