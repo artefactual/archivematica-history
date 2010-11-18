@@ -40,6 +40,8 @@
 # @version svn: $Id$
 import os
 from archivematicaMCPFileUUID import getUUIDOfFile
+from datetime import datetime
+
 
 def isUUID(uuid):
     split = uuid.split("-")
@@ -63,7 +65,17 @@ def getSIPUUID(sipDir):
             return "None1"
     else:
         return "None2" 
-    
+
+def getDate():    
+    utc = True
+    d = None
+    if utc:
+        #UTC DATE
+        d = datetime.utcnow()
+    else:
+        #Computer clock date
+        d = datetime.now()
+    return d.isoformat('T')
 
 class replacementDics:
     def __init__(self, archivematicaVars):
@@ -95,7 +107,8 @@ class replacementDics:
         "%MD5FileName%":self.archivematicaVars["MD5FileName"], \
         "%AIPsStore%":self.archivematicaVars["AIPsStore"], \
         "%SIPUUID%":SIPUUID, \
-        "%SIPName%":SIPName \
+        "%SIPName%":SIPName, \
+        "%date%": getDate() \
         }
         return ret
 
