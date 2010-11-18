@@ -55,7 +55,7 @@ def isUUID(uuid):
 
 def getSIPUUID(sipDir):
     uuidLen = 36
-    sip = os.path.basename(sipDir)
+    sip = os.path.basename(os.path.dirname(sipDir))
     if len(sip) > uuidLen:
         if isUUID(sip[-uuidLen:]):
             return sip[-uuidLen:]

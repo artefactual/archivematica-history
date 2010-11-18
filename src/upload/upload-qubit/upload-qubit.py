@@ -23,6 +23,11 @@
 # @author Jesus Garcia Crespo <jesus@artefactual.com>
 # @version svn: $Id$
 
+# Edit
+# Modified  gtk_exit to exitError(message) & output to std error instead of displaying a message.
+# Modified  URL_Base to'http://localhost/ica-atom/index.php'
+# @author: Joseph Perry <joseph@artefactual.com>
+
 
 import cookielib
 import shutil
@@ -41,10 +46,9 @@ from poster.streaminghttp import StreamingHTTPHandler, StreamingHTTPRedirectHand
 
 import pygtk
 pygtk.require('2.0')
-import gtk
 
 # This is for ICA-AtoM 1.0.9 URL schema
-URL_BASE = 'http://localhost/index.php'
+URL_BASE = 'http://localhost/ica-atom/index.php'
 URL_LOGIN = URL_BASE + '/;user/login'
 URL_CREATE_ISAD = URL_BASE + '/;create/isad'
 URL_CREATE_DO = URL_BASE + '/;digitalobject/create'
@@ -83,27 +87,17 @@ class FileNotFound(Exception):
 class URLNotAccessible(Exception):
   pass
 
-def gtk_exit(message):
-  dialog = gtk.MessageDialog(
-    type = gtk.MESSAGE_ERROR,
-    buttons = gtk.BUTTONS_OK,
-    message_format = message)
-
-  dialog.set_title('upload-qubit.py error')
-  dialog.connect('response', lambda dialog, response: dialog_response(dialog, message))
-  dialog.run()
-
-  gtk.main()
-
-def dialog_response(dialog, message):
-  dialog.destroy()
-  sys.exit(message)
-
+def exitError(message):
+    print >>sys.stderr, 'upload-qubit.py error: ' + message.__str__()
+    quit(1)
+    
 def get_id_from_url(url):
+  print "get_id_from_url: ", url
   path = urlparse.urlparse(url).path
   return re.search(r'\d+', path).group()
 
 def find_information_object(name):
+  print "find_information_object: ", name
   # Search for information object
   data = { 'query': name }
   response = urllib2.urlopen(URL_SEARCH_INFORMATION_OBJECT, urllib.urlencode(data))
@@ -117,6 +111,7 @@ def find_information_object(name):
     return robj.group(1)
 
 def find_or_create_actor(name):
+  print "find_or_create_actor: ", name
   # Search for actor
   data = { 'query': name }
 
@@ -140,6 +135,7 @@ def find_or_create_actor(name):
       return robj.group(1)
 
 def upload(opts):
+  print "upload: ", opts
   # Check if file exists
   if opts['file'] and os.path.exists(opts['file']) is False:
     raise FileNotFound('File/directory "%s" not found' % opts['file'])
@@ -197,7 +193,7 @@ def upload(opts):
 
     for item in tree.find("dmdSec/mdWrap/xmlData/dublincore"):
       if item.text is None or len(item.text.strip()) == 0:
-        print "Ignorando " + item.tag
+        print "Ignoring Empty: " + item.tag
         continue
       if item.tag == prefix + 'identifier':
         data['identifier'] = item.text
@@ -226,9 +222,11 @@ def upload(opts):
         data['parent'] = find_information_object(item.text)
 
     # Create information object
+    print "Create information object{", URL_CREATE_ISAD, data, "}"
     response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
 
     # Get information object id
+    print "Get information object id"
     parent_id = get_id_from_url(response.url)
 
     # Print information object id
@@ -339,14 +337,14 @@ if __name__ == '__main__':
       })
 
   except KeyboardInterrupt:
-    gtk_exit('ERROR: Interrupted by user')
+    exitError('ERROR: Interrupted by user')
 
   except urllib2.HTTPError, err:
-    gtk_exit('ERROR: The server couldn\'t fulfill the request. Error code: %s.' % err.code) 
+    exitError('ERROR: The server couldn\'t fulfill the request. Error code: %s.' % err.code) 
 
   except urllib2.URLError, err:
-    gtk_exit('ERROR: Failed trying to reach the server. Reason: %s.' % err.reason)
+    exitError('ERROR: Failed trying to reach the server. Reason: %s.' % err.reason)
 
   except Exception, err:
-    gtk_exit('ERROR: %s' % err)
+    exitError('ERROR: %s' % err)
 
