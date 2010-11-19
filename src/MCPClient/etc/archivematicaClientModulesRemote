@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+# @package Archivematica
+# @subpackage Ingest
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+#!!! this is a list of supported commands, not modules
+
+#Commands
+#the version numbers are versions of the protocol, not versions of the programs themselves.
+echo_v0.0="/bin/echo "
+FITS_v0.0="%clientScriptsDirectory%archivematicaFITS.py "
+easyExtract_v0.0="easy-extract "
+setSIPQuarantine_v0.0="%clientScriptsDirectory%quarantineSIP.sh "
+createXMLEventQuarantine_v0.0="%clientScriptsDirectory%createXMLEventQuarantine.py "
+createXMLEventUnquarantine_v0.0="%clientScriptsDirectory%createXMLEventUnquarantine.py "
+createXMLEventRestructureToObjectsAndLog_v0.0="%clientScriptsDirectory%createXMLEventRestructureToObjectsAndLog.py "
+setFileOwner_v0.0="echo NOT IMPLEMENTED YET - chown "
+setFilePermission_v0.0="chmod "
+restructureToObjectsAndLogs_v0.0="%clientScriptsDirectory%restructureToObjectsAndLogs.sh "
+createOrMoveAndCheckMD5_v0.0="%clientScriptsDirectory%createOrMoveAndCheckMD5.sh "
+createOrMoveDC_v0.0="%clientScriptsDirectory%createOrMoveDC.sh "
+clamscan_v0.0="clamscan "
+archivematicaClamscan_v0.0="%clientScriptsDirectory%archivematicaClamscan.sh"
+#clamscan_v0.0="echo " #faster for testing
+detox_v0.0="%clientScriptsDirectory%archivematicaDetox.py "
+detoxSIP_v0.0="%clientScriptsDirectory%archivematicaDetoxSIPDirectoryName.py "
+UUID4_v0.0="%clientScriptsDirectory%assignFileUUIDs.sh "
+addFiles_v0.0="%clientScriptsDirectory%fileAddedToSIP.py "
+UUID4PostExtract_v0.0="%clientScriptsDirectory%assignUUIDsPostExtract.py "
+createMETS_v0.0="%clientScriptsDirectory%archivematicaCreateMETS.py "
+addDCTOMETS_v0.0="%clientScriptsDirectory%archivematicaAddDublinCoreToMETS.py "
+normalize_v0.0="/usr/lib/transcoder/transcoder.py "
+createDirectory_v0.0="mkdir "
+copy_v0.0="cp "
+move_v0.0="mv "
+remove_v0.0="rm "
+bagit_v0.0="/usr/share/bagit/bin/bag "
+moveDetoxLogToDetoxedDirectory_v0.0="%clientScriptsDirectory%moveDetoxLogToDetoxedDirectory.py"
+#upload-qubit.py_v0.0="/usr/lib/archivematica/upload/upload-qubit/upload-qubit.py "
+#storeAIP_v0.0="%clientScriptsDirectory%storeAIP.sh "
+assignSIPUUID_v0.0="%clientScriptsDirectory%assignSIPUUID.sh "
+verifySIPCompliance_v0.0="%clientScriptsDirectory%verifySIPCompliance.py "
+scanForRemovedFiles_v0.0="%clientScriptsDirectory%scanForRemovedFiles.py "
+verifyFileHasUUID_v0.0="%clientScriptsDirectory%verifyFileHasUUID.py "
+
+
