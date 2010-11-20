@@ -1,0 +1,3 @@
+upload-qubit.py /usr/bin/
+share/poster/* /usr/share/pyshared/poster/  
+share/python-poster.public /usr/share/python-support/
