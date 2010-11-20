@@ -27,6 +27,9 @@ import sys
 def getTagged(root, tag):
     ret = []
     for element in root:
+        #print element.tag 
+        #print tag
+        #print element.tag == tag
         if element.tag == tag:
             ret.append(element)
             #return ret #only return the first encounter
