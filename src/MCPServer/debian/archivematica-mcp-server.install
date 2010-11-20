@@ -2,4 +2,4 @@ runArchivematicaMCPServer.sh /usr/bin/
 etc/* /etc/archivematica/MCPServer/
 lib/* /usr/lib/archivematica/MCPServer/
 sharedDirectoryStructure/* /var/archivematica/
-
+init/* /etc/init/
