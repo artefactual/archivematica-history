@@ -23,24 +23,14 @@
 # @version svn: $Id$
 
 
-#Clean up sources.list remove proxy addresses
-chmod -R 777 "$1/etc/apt/sources.list"
-cp /etc/apt/sources.list $1/etc/apt/sources.list.bak
-sed -i -e "s/# deb/deb/g" "$1/etc/apt/sources.list"
-sed -i -e "s/localhost:9999/archive.ubuntu.com/g" "$1/etc/apt/sources.list"
-sed -i -e "s/127.0.0.1:9999/archive.ubuntu.com/g" "$1/etc/apt/sources.list"
-echo "deb http://archive.ubuntu.com/ubuntu/ karmic-proposed main restricted universe multiverse" >> $1/etc/apt/sources.list
-chroot "$1" aptitude update
-
-
 #Create archivematica User for daemons, add demo user to group
 ##!!!Some of this belongs in the installer for the MCP client & server
-chroot "$1" adduser --uid 333 --group --system --no-create-home --disabled-login archivematica
-chroot "$1" sudo gpasswd -a demo archivematica
-chroot "$1" update-python-modules
+#chroot "$1" adduser --uid 333 --group --system --no-create-home --disabled-login archivematica
+#chroot "$1" sudo gpasswd -a demo archivematica
+#chroot "$1" update-python-modules
 
 #Configure sudoers for mcp and client
-echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod" >> $1/etc/sudoers
+#echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod" >> $1/etc/sudoers
 
 #Install externals/archivematica
 chroot "$1" mkdir -p /home/demo/Desktop
