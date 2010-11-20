@@ -29,9 +29,9 @@ def createLinkingAgentIdentifier(IDType="preservation system", IDValue="Archivem
     etree.SubElement(ret, "linkingAgentIdentifierValue").text = IDValue
     return ret
 
-def createOutcomeInformation( eventOutcomeDetailNote = None):
+def createOutcomeInformation( eventOutcomeDetailNote = None, eventOutcomeText = None):
     ret = etree.Element("eventOutcomeInformation")
-    etree.SubElement(ret, "eventOutcome")
+    etree.SubElement(ret, "eventOutcome").text = eventOutcomeText
     eventOutcomeDetail = etree.SubElement(ret, "eventOutcomeDetail")
     etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = eventOutcomeDetailNote
     return ret

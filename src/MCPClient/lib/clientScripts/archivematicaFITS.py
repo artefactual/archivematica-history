@@ -30,20 +30,49 @@ from createXmlEventsAssist import createEvent
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
 
-def includeFits(fits, xmlFile, date, eventUUID):
-
-    eventDetailText = "program=\"File Identification Toolset\""
+def formatIdentificationFITSAssist(fits):
+    prefix = "{http://www.nationalarchives.gov.uk/pronom/FileCollection}"
+    formatIdentification = None
     
+    tools = getTagged(getTagged(fits, "toolOutput")[0], "tool")
+    for tool in tools:
+        if tool.get("name") == "Droid":
+            formatIdentification = tool
+            break
+    #<eventDetail>program="DROID"; version="3.0"</eventDetail>
+    eventDetailText =   "program=\"" + formatIdentification.get("name") \
+                        + "\"; version=\"" + formatIdentification.get("version") + "\""
+                        
+    #<eventOutcome>positive</eventOutcome>
+    
+    fileCollection = getTagged(formatIdentification, prefix + "FileCollection")[0] 
+    IdentificationFile = getTagged(fileCollection, prefix + "IdentificationFile")[0]
+    eventOutcomeText =  IdentificationFile.get( "IdentQuality")
+    
+    #<eventOutcomeDetailNote>fmt/116</eventOutcomeDetailNote>
+    eventOutcomeDetailNote = getTagged(getTagged(IdentificationFile, prefix + "FileFormatHit")[0], prefix + "PUID")[0].text
+    
+    return tuple([eventDetailText, eventOutcomeText, eventOutcomeDetailNote]) #tuple([1, 2, 3]) returns (1, 2, 3).
+
+
+def includeFits(fits, xmlFile, date, eventUUID):
     ##eventOutcome = createOutcomeInformation( eventOutcomeDetailNote = uuid)
     #TO DO... Gleam the event outcome information from the output
-    event = createEvent( eventUUID, "FITS", eventDateTime=date, eventDetailText=eventDetailText)
-
+    
+    #print etree.tostring(fits, pretty_print=True)
+    
+    eventDetailText, eventOutcomeText, eventOutcomeDetailNote = formatIdentificationFITSAssist(fits)
+    outcomeInformation = createOutcomeInformation( eventOutcomeDetailNote, eventOutcomeText)
+    formatIdentificationEvent = createEvent( eventUUID, "format identification", \
+                                             eventDateTime=date, \
+                                             eventDetailText=eventDetailText, \
+                                             eOutcomeInformation=outcomeInformation)
     
     tree = etree.parse( xmlFile )
     root = tree.getroot()
 
     events = getTagged(root, "events")[0]
-    events.append(event)
+    events.append(formatIdentificationEvent)
     
     objectCharacteristics = getTagged(getTagged(root, "object")[0], "objectCharacteristics")[0]
     objectCharacteristicsExtension = etree.SubElement(objectCharacteristics, "objectCharacteristicsExtension")
