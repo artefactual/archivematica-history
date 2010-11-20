@@ -41,29 +41,29 @@ cd includes
 ./vmInstaller-qubit.sh "$1"
 
 
-cd "$startDirectory"
-cd "${srcDirecotory}dashboard"
-echo `pwd` 1>&2
-./vmInstaller.sh "$1"
+#cd "$startDirectory"
+#cd "${srcDirecotory}dashboard"
+#echo `pwd` 1>&2
+#./vmInstaller.sh "$1"
 
-cd "$startDirectory"
-cd "${srcDirecotory}loadConfig"
-echo `pwd` 1>&2
-./vmInstaller.sh "$1"
+#cd "$startDirectory"
+#cd "${srcDirecotory}loadConfig"
+#echo `pwd` 1>&2
+#./vmInstaller.sh "$1"
 
-cd "$startDirectory"
-cd "${srcDirecotory}MCPServer"
-echo `pwd` 1>&2
-./vmInstaller.sh "$1"
+#cd "$startDirectory"
+#cd "${srcDirecotory}MCPServer"
+#echo `pwd` 1>&2
+#./vmInstaller.sh "$1"
 
-cd "$startDirectory"
-cd "${srcDirecotory}MCPClient"
-echo `pwd` 1>&2
-./vmInstaller.sh "$1"
+#cd "$startDirectory"
+#cd "${srcDirecotory}MCPClient"
+#echo `pwd` 1>&2
+#./vmInstaller.sh "$1"
 
-cd "$startDirectory"
-cd "${srcDirecotory}transcoder"
-echo `pwd` 1>&2
-./vmInstaller.sh "$1"
+#cd "$startDirectory"
+#cd "${srcDirecotory}transcoder"
+#echo `pwd` 1>&2
+#./vmInstaller.sh "$1"
 
 
