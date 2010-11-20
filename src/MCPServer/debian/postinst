@@ -1,0 +1,6 @@
+#!/bin/sh
+
+adduser --uid 333 --group --system --no-create-home --disabled-login archivematica
+chown -R archivematica:archivematica "/var/archivematica/sharedDirectory"
+chmod -R g+s "/var/archivematica/sharedDirectory"
+echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod" >> /etc/sudoers
