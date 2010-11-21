@@ -3,3 +3,4 @@ etc/* /etc/archivematica/MCPServer/
 lib/* /usr/lib/archivematica/MCPServer/
 sharedDirectoryStructure/* /var/archivematica/sharedDirectory/
 init/* /etc/init/
+share/* /usr/share/archivematica/
