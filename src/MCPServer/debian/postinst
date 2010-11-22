@@ -4,9 +4,9 @@ set -e
 
 . /usr/share/debconf/confmodule
 . /usr/share/dbconfig-common/dpkg/postinst 
-dbc_dbfile_perms="0660"
-dbc_dbuser=demo
+
 dbc_dbname=MCP
+dbc_dbuser=demo
 
 dbc_go archivematica-mcp-server $@
 
