@@ -1,5 +1,15 @@
 #!/bin/sh
 
+set -e
+
+. /usr/share/debconf/confmodule
+. /usr/share/dbconfig-common/dpkg/postinst 
+dbc_dbfile_perms="0660"
+dbc_dbuser=demo
+dbc_dbname=MCP
+
+dbc_go archivematica-mcp-server $@
+
 adduser --uid 333 --group --system --no-create-home --disabled-login archivematica
 chown -R archivematica:archivematica "/var/archivematica/sharedDirectory"
 chmod -R g+s "/var/archivematica/sharedDirectory"
