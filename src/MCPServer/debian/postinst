@@ -11,7 +11,7 @@ dbc_dbuser=demo
 dbc_go archivematica-mcp-server $@
 
 adduser --uid 333 --group --system --no-create-home --disabled-login archivematica
-chown -R archivematica:archivematica "/var/archivematica/sharedDirectory"
-chmod -R g+s "/var/archivematica/sharedDirectory"
-chmod -R 770 "/var/archivematica/"
+chown -R archivematica:archivematica "/var/archivematica/"
+chmod -R g+s "/var/archivematica/"
+chmod -R 775 "/var/archivematica/"
 echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod" >> /etc/sudoers
