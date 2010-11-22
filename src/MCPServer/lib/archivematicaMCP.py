@@ -136,14 +136,17 @@ def checkJobQueue():
 
 def processTaskQueue():
     """Attempts to assign tasks to clients."""
+    print "Processing Tasks Queue {" + len(tasksBeingProcessed).__str__() + "/"+ len(tasksQueue).__str__() + "/" + \
+    (len(tasksBeingProcessed) + len(tasksQueue)).__str__() + "}..."
     tasksLock.acquire()
-    print "Processing Tasks Queue {" + len(tasksBeingProcessed).__str__() + "/"+ len(tasksQueue).__str__() + "}..."
     for task in tasksQueue:
         taskAssigned = False
         for client in factory.clients:
+            #print client.clientName, client.supportedCommands
             client.clientLock.acquire()
             if client.currentThreads < client.maxThreads:
                 for supportedCommand in client.supportedCommands:
+                    #print client.clientName, supportedCommand, task.execute, supportedCommand == task.execute  
                     if supportedCommand == task.execute:
 		                tasksQueue.remove(task)
 		                tasksBeingProcessed.append(task)
@@ -176,7 +179,7 @@ def processTaskQueue():
             if taskAssigned:
                 break #break up to next task
             else:
-                print "\tNo client currently available to run: " + task.execute + " {" + task.UUID.__str__() + "}" 
+                print "\tNo client currently available to run: " + task.execute + " {" + task.UUID.__str__() + "}"
     tasksLock.release()    
    
 class Task():
@@ -499,15 +502,17 @@ def loadDirectoryWatchLlist(configs):
 
 class archivematicaMCPServerProtocol(LineReceiver):
     """This is the MCP protocol implemented"""
-    maxThreads = 0
-    currentThreads = 0
-    clientName = ""
-    supportedCommands = []
-    clientLock = threading.Lock()
-    sendLock = threading.Lock()
-    keepAliveLock = threading.Lock()
-    channelOpen = False
-
+  
+    def __init__(self):
+        self.channelOpen = False
+        self.maxThreads = 0
+        self.currentThreads = 0
+        self.clientName = ""
+        self.supportedCommands = []
+        self.clientLock = threading.Lock()
+        self.sendLock = threading.Lock()
+        self.keepAliveLock = threading.Lock()
+    
     def badProtocol(self, command):
         """The client sent a command this server cannot interpret."""
         print "read(bad protocol): " + command.__str__()
