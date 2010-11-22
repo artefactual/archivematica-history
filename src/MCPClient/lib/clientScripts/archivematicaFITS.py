@@ -30,6 +30,45 @@ from createXmlEventsAssist import createEvent
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
 
+
+
+def formatValidationFITSAssist(fits):
+    prefix = ""
+    formatValidation = None
+    
+    tools = getTagged(getTagged(fits, "toolOutput")[0], "tool")
+    for tool in tools:
+        if tool.get("name") == "Jhove":
+            formatValidation = tool
+            break
+    
+    repInfo = getTagged(formatValidation, "repInfo")[0]
+    
+    #<eventDetail>program="DROID"; version="3.0"</eventDetail>
+    eventDetailText =   "program=\"" + formatValidation.get("name") \
+                        + "\"; version=\"" + formatValidation.get("version") + "\""
+                        
+
+    #<status>Well-Formed and valid</status>
+    status = getTagged( repInfo, prefix + "status")[0].text
+    eventOutcomeText = "fail"
+    if status == "Well-Formed and valid":
+        eventOutcomeText = "pass"
+        
+    #<eventOutcomeDetailNote> format="Windows Bitmap"; version="3.0"; result="Well-formed and valid" </eventOutcomeDetailNote>
+    format = getTagged(repInfo, prefix + "format")[0].text
+    versionXML = getTagged(repInfo, prefix + "version")
+    version = "" 
+    if len(versionXML):
+        version = versionXML[0].text  
+    eventOutcomeDetailNote = "format=\"" + format
+    if version:
+        eventOutcomeDetailNote += "\"; version=\"" + version
+    eventOutcomeDetailNote += "\"; result=\"" + status + "\"" 
+    
+    return tuple([eventDetailText, eventOutcomeText, eventOutcomeDetailNote]) #tuple([1, 2, 3]) returns (1, 2, 3).    
+    
+
 def formatIdentificationFITSAssist(fits):
     prefix = "{http://www.nationalarchives.gov.uk/pronom/FileCollection}"
     formatIdentification = None
@@ -68,11 +107,19 @@ def includeFits(fits, xmlFile, date, eventUUID):
                                              eventDetailText=eventDetailText, \
                                              eOutcomeInformation=outcomeInformation)
     
+    eventDetailText, eventOutcomeText, eventOutcomeDetailNote = formatValidationFITSAssist(fits)
+    outcomeInformation = createOutcomeInformation( eventOutcomeDetailNote, eventOutcomeText)
+    formatValidationEvent = createEvent( eventUUID, "format validation", \
+                                             eventDateTime=date, \
+                                             eventDetailText=eventDetailText, \
+                                             eOutcomeInformation=outcomeInformation)
+    
     tree = etree.parse( xmlFile )
     root = tree.getroot()
 
     events = getTagged(root, "events")[0]
     events.append(formatIdentificationEvent)
+    events.append(formatValidationEvent)
     
     objectCharacteristics = getTagged(getTagged(root, "object")[0], "objectCharacteristics")[0]
     objectCharacteristicsExtension = etree.SubElement(objectCharacteristics, "objectCharacteristicsExtension")
