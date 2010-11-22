@@ -1,6 +1,17 @@
 #!/bin/sh
 # config maintainer script for archivematica-mcp-server
-     
+
+databaseName="MCP"
+username="demo"
+password="demo"
+
+start mysql
+
+mysqladmin create "$databaseName"
+
+mysql --execute="CREATE USER '${username}'@'localhost' IDENTIFIED BY '${password}'"
+mysql --execute="GRANT SELECT, UPDATE, INSERT ON ${databaseName}.* TO '${username}'@'localhost'"
+
 # source debconf stuff
 . /usr/share/debconf/confmodule
 # source dbconfig-common shell library, and call the hook function
