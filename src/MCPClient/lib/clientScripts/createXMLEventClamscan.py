@@ -47,9 +47,9 @@ if __name__ == '__main__':
     
     eventOutcome = None
     if outcome.strip() == expectedOutcome.strip():
-        eventOutcome = createOutcomeInformation( eventOutcomeDetailNote = "Pass")
+        eventOutcome = createOutcomeInformation( eventOutcomeText = "Pass")
     else:
-        eventOutcome = createOutcomeInformation( eventOutcomeDetailNote = "Fail")
+        eventOutcome = createOutcomeInformation( eventOutcomeText = "Fail")
         Failed = True
     
     event = createEvent( eIDValue, "virus check", eventDateTime=date, eventDetailText=eventDetailText, eOutcomeInformation=eventOutcome)

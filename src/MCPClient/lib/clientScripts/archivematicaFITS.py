@@ -25,6 +25,7 @@ import lxml.etree as etree
 import uuid
 import subprocess
 import os
+import uuid
 from archivematicaFunctions import getTagged
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
@@ -106,10 +107,10 @@ def includeFits(fits, xmlFile, date, eventUUID):
                                              eventDateTime=date, \
                                              eventDetailText=eventDetailText, \
                                              eOutcomeInformation=outcomeInformation)
-    
+    newFileUUID = uuid.uuid4().__str__()
     eventDetailText, eventOutcomeText, eventOutcomeDetailNote = formatValidationFITSAssist(fits)
     outcomeInformation = createOutcomeInformation( eventOutcomeDetailNote, eventOutcomeText)
-    formatValidationEvent = createEvent( eventUUID, "format validation", \
+    formatValidationEvent = createEvent( newFileUUID, "format validation", \
                                              eventDateTime=date, \
                                              eventDetailText=eventDetailText, \
                                              eOutcomeInformation=outcomeInformation)
