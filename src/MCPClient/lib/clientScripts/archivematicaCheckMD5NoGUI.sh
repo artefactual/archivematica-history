@@ -15,7 +15,7 @@ cd "$checkFolder"
 #check for passing checksums
 md5deep -r -m "$md5Digest" . > $passTmp
 #check for failing checksums
-md5deep -r -x "$md5Digest" . > $failTmp
+md5deep -r -n -m "$md5Digest" . > $failTmp
 cd $tmpDir      
 
 
@@ -45,3 +45,5 @@ cp $reportTmp "$integrityReport"
 
 #cleanup
 rm $failTmp $passTmp $reportTmp
+
+exit $numberFail

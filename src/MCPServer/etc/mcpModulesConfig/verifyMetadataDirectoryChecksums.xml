@@ -6,9 +6,9 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%createOrMoveAndCheckMD5/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%verifyChecksum</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%createOrMoveDC/</successDirectory>
+        <successDirectory>%watchDirectoryPath%reviewSIP</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
@@ -20,13 +20,13 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%VerifyChecksums.log</standardOut>
+                <standardError>%SIPLogsDirectory%VerifyChecksums.log</standardError>
                 <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>createOrMoveAndCheckMD5_v0.0</execute>
-                <arguments>"%relativeLocation%"  "%MD5FileName%"</arguments>
+                <arguments>"%relativeLocation%"  "%checksumsNoExtention%" "%date%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
