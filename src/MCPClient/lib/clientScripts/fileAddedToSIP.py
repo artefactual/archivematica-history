@@ -24,6 +24,7 @@ import uuid
 import hashlib
 import os
 import lxml.etree as etree
+import uuid
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
@@ -57,12 +58,13 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     fileSize = os.path.getsize(filePath).__str__()
     
     #create Event to explain file origin.   
-    eIDValue = "ingested-" + fileUUID
-    ingestEvent = createEvent(eIDValue, "ingest", eventDateTime=date, eventDetailText=relativeFilePath)
+    eIDValue = fileUUID
+    ingestEvent = createEvent(eIDValue, "receive SIP", eventDateTime=date, eventDetailText=relativeFilePath)
     
-    eIDValue = "checksumed-" + fileUUID
+    newFileUUID = uuid.uuid4().__str__()
+    eIDValue = newFileUUID
     eOutcomeInformation = createOutcomeInformation(md5Checksum.__str__())
-    checksumEvent = createEvent( eIDValue, "Archivematica checksum created", eventDateTime=date, eOutcomeInformation=eOutcomeInformation)
+    checksumEvent = createEvent( eIDValue, "message digest calculation", eventDateTime=date, eOutcomeInformation=eOutcomeInformation)
     
     root = etree.Element("file")
     etree.SubElement(root, "originalFileName").text = relativeFilePath
@@ -75,7 +77,7 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     objectIdentifier = etree.SubElement(fileObject, "objectIdentifier")
     etree.SubElement(objectIdentifier, "objectIdentifierType").text = "UUID"
     etree.SubElement(objectIdentifier, "objectIdentifierValue").text = fileUUID
-    etree.SubElement(fileObject, "objectCategory").text = "file"
+    #etree.SubElement(fileObject, "objectCategory").text = "file"
 
     objectCharacteristics = etree.SubElement(fileObject, "objectCharacteristics")
     etree.SubElement(objectCharacteristics, "compositionLevel").text = "0"
@@ -83,7 +85,7 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     fixity = etree.SubElement(objectCharacteristics, "fixity")
     etree.SubElement(fixity, "messageDigestAlgorithm").text = "MD5"
     etree.SubElement(fixity, "messageDigest").text = md5Checksum
-    etree.SubElement(fixity, "messageDigestOriginator").text = "Your Organizational Name Here"
+    #etree.SubElement(fixity, "messageDigestOriginator").text = "Your Organizational Name Here"
 
     etree.SubElement(objectCharacteristics, "size").text = fileSize
     

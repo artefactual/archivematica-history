@@ -36,7 +36,7 @@ def createOutcomeInformation( eventOutcomeDetailNote = None, eventOutcomeText = 
     etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = eventOutcomeDetailNote
     return ret
 
-def createEvent( eIDValue, eType, eIDType="Archivematica ID", \
+def createEvent( eIDValue, eType, eIDType="UUID", \
 eventDateTime = "now", \
 eventDetailText = "", \
 eOutcomeInformation = createOutcomeInformation(), \
