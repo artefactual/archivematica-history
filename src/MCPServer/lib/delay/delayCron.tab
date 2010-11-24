@@ -1,0 +1,3 @@
+#sudo crontab -e
+#add this line
+* * * * * flock -xn /var/lock/quarantine.lock /usr/lib/archivematica/MCPServer/delay/delay.sh 1 "/var/archivematica/sharedDirectory/watchedDirectories/quarantined" "/var/archivematica/sharedDirectory/watchedDirectories/unquarantine/." 
