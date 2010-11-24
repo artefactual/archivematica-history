@@ -280,6 +280,7 @@ class Job:
 
     def approve(self):
         jobsLock.acquire()
+        logJobStepCompleted(self)
         self.step = "exeCommand"
         if self in jobsAwaitingApproval:
             jobsAwaitingApproval.remove(self)
