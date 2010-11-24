@@ -27,7 +27,7 @@
                 <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>assignSIPUUID_v0.0</execute>
-                <arguments>"%SIPDirectory%"</arguments>
+                <arguments>"%SIPDirectory%" "%date%"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>

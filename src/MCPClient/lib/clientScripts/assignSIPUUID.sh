@@ -21,12 +21,15 @@
 # @version svn: $Id$
 
 target="$1"
+date="$2"
 uuidVersion="4"
 SIPUUID=`uuid -v ${uuidVersion}`
 
 sudo chown -R archivematica:archivematica "${target}" 
 chmod -R "770" "${target}"
-
+if [ -d "${target}logs/" ]; then
+	echo ${date} > "${target}logs/injestedDateTime.log"
+fi
 mv "${target}" "`dirname "${target}"`/`basename "${target}"`-${SIPUUID}"
 
 exit $? 
