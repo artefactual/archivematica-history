@@ -34,7 +34,8 @@ def getTagged(root, tag):
             ret.append(element)
             #return ret #only return the first encounter
     return ret  
-    
+
+  
 def appendEventToFile(SIPLogsDirectory, fileUUID, eventXML):
     xmlFile = SIPLogsDirectory + "fileMeta/" + fileUUID + ".xml"
     tree = etree.parse( xmlFile )
