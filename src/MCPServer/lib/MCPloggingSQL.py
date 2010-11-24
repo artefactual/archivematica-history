@@ -42,7 +42,13 @@
 import _mysql
 import os
 import threading
+from datetime import datetime
 from archivematicaReplacementDics import getSIPUUID
+
+def getUTCDate():    
+    d = datetime.utcnow()
+    return d.isoformat('T')
+
 
 #sudo apt-get install python-mysqldb
 sqlLoggingLock = threading.Lock()
@@ -68,15 +74,21 @@ def logTaskCreatedSQL(task, replacementDic):
     
     separator = "', '"
     
-    runSQL("""INSERT INTO Tasks (taskUUID, jobUUID, fileUUID, fileName, exec, arguments)
-    VALUES ( '""" + taskUUID + separator + jobUUID + separator + fileUUID + separator + fileName + separator + taskexec + separator + arguments + "' )" )
+    runSQL("""INSERT INTO Tasks (taskUUID, jobUUID, fileUUID, fileName, exec, arguments, createdTime)
+    VALUES ( '"""   + taskUUID + separator \
+                    + jobUUID + separator \
+                    + fileUUID + separator \
+                    + fileName + separator \
+                    + taskexec + separator \
+                    + arguments + separator \
+                    + getUTCDate() + "' )" )
 
 def logTaskAssignedSQL(task, client):
     taskUUID = task.UUID.__str__()
     client = client.clientName
     
     runSQL("UPDATE Tasks " + \
-    "SET startTime=NOW(), client='" + client + "' " + \
+    "SET startTime='" + task.assignedDate + "', client='" + client + "' " + \
     "WHERE taskUUID='" + taskUUID + "'" )
 
 
@@ -85,22 +97,22 @@ def logTaskCompletedSQL(task, retValue):
     exitCode = retValue.__str__()
     
     runSQL("UPDATE Tasks " + \
-    "SET endTime=NOW(), exitCode='" + exitCode +  "' " + \
+    "SET endTime='" + getUTCDate() +"', exitCode='" + exitCode +  "' " + \
     "WHERE taskUUID='" + taskUUID + "'" )
 
 
 def logJobCreatedSQL(job):
     separator = "', '"
-    runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep)
+    runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime)
     VALUES ( '""" + job.UUID.__str__() + separator + job.config.type + separator \
     + job.directory + separator + getSIPUUID(job.directory) + \
-    separator + job.step + "' )" )
+    separator + job.step + separator + getUTCDate() + "' )" )
 
 
 def logJobStepCompletedSQL(job):
     separator = "', '"
-    runSQL("""INSERT INTO jobStepCompleted (jobUUID, step)
-    VALUES ( '""" + job.UUID.__str__() + separator + job.step + "' )" )
+    runSQL("""INSERT INTO jobStepCompleted (jobUUID, step, completedTime)
+    VALUES ( '""" + job.UUID.__str__() + separator + job.step + separator + getUTCDate() + "' )" )
   
 def logJobStepChangedSQL(job):
     jobUUUID = job.UUID.__str__()

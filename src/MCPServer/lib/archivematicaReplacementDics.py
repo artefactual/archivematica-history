@@ -40,7 +40,7 @@
 # @version svn: $Id$
 import os
 from archivematicaMCPFileUUID import getUUIDOfFile
-from datetime import datetime
+
 
 
 def isUUID(uuid):
@@ -57,25 +57,18 @@ def isUUID(uuid):
 
 def getSIPUUID(sipDir):
     uuidLen = 36
-    sip = os.path.basename(os.path.dirname(sipDir))
+    sip = ""
+    if sipDir.endswith("/"):
+        sip = os.path.basename(os.path.dirname(sipDir))
+    else:
+        sip = os.path.basename(sipDir)
     if len(sip) > uuidLen:
         if isUUID(sip[-uuidLen:]):
             return sip[-uuidLen:]
         else:
-            return "None1"
+            return "None"
     else:
-        return "None2" 
-
-def getDate():    
-    utc = True
-    d = None
-    if utc:
-        #UTC DATE
-        d = datetime.utcnow()
-    else:
-        #Computer clock date
-        d = datetime.now()
-    return d.isoformat('T')
+        return "None" 
 
 class replacementDics:
     def __init__(self, archivematicaVars):
@@ -108,7 +101,6 @@ class replacementDics:
         "%AIPsStore%":self.archivematicaVars["AIPsStore"], \
         "%SIPUUID%":SIPUUID, \
         "%SIPName%":SIPName, \
-        "%date%": getDate() \
         }
         return ret
 
