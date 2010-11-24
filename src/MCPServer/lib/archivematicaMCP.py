@@ -43,6 +43,7 @@ import os
 import pyinotify
 from archivematicaReplacementDics import replacementDics 
 from MCPlogging import *
+from MCPloggingSQL import getUTCDate
 from archivematicaLoadConfig import loadConfig
 from mcpModules.modules import modulesClass
 from pyinotify import WatchManager
@@ -148,33 +149,35 @@ def processTaskQueue():
                 for supportedCommand in client.supportedCommands:
                     #print client.clientName, supportedCommand, task.execute, supportedCommand == task.execute  
                     if supportedCommand == task.execute:
-		                tasksQueue.remove(task)
-		                tasksBeingProcessed.append(task)
-		                send = protocol["performTask"]
-		                send += protocol["delimiter"] 
-		                send += task.UUID.__str__() 
-		                send += protocol["delimiter"] 
-		                send += task.command.requiresOutputLock.__str__()
-		                send += protocol["delimiter"]  
-		                if task.standardIn:
-		                    send += task.standardIn.__str__() 
-		                send += protocol["delimiter"] 
-		                if task.standardOut:
-		                    send += task.standardOut.__str__()
-		                send += protocol["delimiter"] 
-		                if task.standardError:
-		                    send += task.standardError.__str__() 
-		                send += protocol["delimiter"]  
-		                send += task.execute.__str__()
-		                send += protocol["delimiter"]  
-		                send += task.arguments.__str__() 
-		                client.write(send)
-		                client.currentThreads += 1
-		                taskAssigned = True
-		                logTaskAssigned(task, client)
-		                print "assigned task: " + task.UUID.__str__()
-		                print "client threads{" + client.clientName + "}: " + client.currentThreads.__str__()
-		                break 
+                        tasksQueue.remove(task)
+                        task.assignedDate=getUTCDate()
+                        task.arguments = task.arguments.__str__().replace("%date%", task.assignedDate)
+                        tasksBeingProcessed.append(task)
+                        send = protocol["performTask"]
+                        send += protocol["delimiter"] 
+                        send += task.UUID.__str__() 
+                        send += protocol["delimiter"] 
+                        send += task.command.requiresOutputLock.__str__()
+                        send += protocol["delimiter"]  
+                        if task.standardIn:
+                            send += task.standardIn.__str__() 
+                        send += protocol["delimiter"] 
+                        if task.standardOut:
+                            send += task.standardOut.__str__()
+                        send += protocol["delimiter"] 
+                        if task.standardError:
+                            send += task.standardError.__str__() 
+                        send += protocol["delimiter"]  
+                        send += task.execute.__str__()
+                        send += protocol["delimiter"]  
+                        send += task.arguments.__str__()
+                        client.write(send)
+                        client.currentThreads += 1
+                        taskAssigned = True
+                        logTaskAssigned(task, client)
+                        print "assigned task: " + task.UUID.__str__()
+                        print "client threads{" + client.clientName + "}: " + client.currentThreads.__str__()
+                        break 
             client.clientLock.release()
             if taskAssigned:
                 break #break up to next task
