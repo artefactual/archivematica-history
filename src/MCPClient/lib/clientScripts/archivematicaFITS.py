@@ -109,7 +109,13 @@ def formatIdentificationFITSAssist(fits):
     eventOutcomeText =  IdentificationFile.get( "IdentQuality")
     
     #<eventOutcomeDetailNote>fmt/116</eventOutcomeDetailNote>
-    eventOutcomeDetailNote = getTagged(getTagged(IdentificationFile, prefix + "FileFormatHit")[0], prefix + "PUID")[0].text
+    #<FileFormatHit />
+    fileFormatHit = getTagged(IdentificationFile, prefix + "FileFormatHit")
+    eventOutcomeDetailNote = ""
+    if len(fileFormatHit[0]):
+        eventOutcomeDetailNote = getTagged(fileFormatHit[0], prefix + "PUID")[0].text
+    else:
+        eventOutcomeDetailNote = "No Matching Format Found"
     
     return tuple([eventDetailText, eventOutcomeText, eventOutcomeDetailNote]) #tuple([1, 2, 3]) returns (1, 2, 3).
 
