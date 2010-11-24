@@ -33,6 +33,24 @@
         </exeCommand>
         
         <verificationCommand>
+			<command>
+				<descriptionWhileExecuting> </descriptionWhileExecuting>
+				<skip>No</skip>
+				<filterFileEnd></filterFileEnd>
+				<filterFileStart></filterFileStart>
+				<filterSubDir></filterSubDir>
+				<standardIn></standardIn>
+				<standardOut></standardOut>
+				<standardError></standardError>
+				<requiresOutputLock>No</requiresOutputLock>
+				<failureNotification> </failureNotification>
+				<execute>setFilePermission_v0.0</execute>
+				<arguments>-R 777 "%relativeLocation%"</arguments>
+		        <executeOnEachFile>No</executeOnEachFile>
+			</command>  
+        </verificationCommand>
+        
+        <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>No</skip>
@@ -47,25 +65,7 @@
                 <execute>UUID4PostExtract_v0.0</execute>
                 <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%fileUUID%" "ingest file - extracted" "%date%" "%taskUUID%"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
-            </command>            
-        </verificationCommand>
-        
-        <cleanupSuccessfulCommand>
-            <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes</skip>
-                <filterFileEnd></filterFileEnd>
-                <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
-                <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
-                <requiresOutputLock>No</requiresOutputLock>
-                <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>            
+            </command>          
         </cleanupSuccessfulCommand>
         
         <cleanupUnsuccessfulCommand>
