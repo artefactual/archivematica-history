@@ -24,6 +24,9 @@ target="$1"
 uuidVersion="4"
 SIPUUID=`uuid -v ${uuidVersion}`
 
+sudo chown -R archivematica:archivematica "${target}" 
+chmod -R "770" "${target}"
+
 mv "${target}" "`dirname "${target}"`/`basename "${target}"`-${SIPUUID}"
 
 exit $? 
