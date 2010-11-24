@@ -31,6 +31,25 @@ from createXmlEventsAssist import createEvent
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
 
+excludeJhoveProperties = True
+
+def excludeJhoveProperties(fits):
+    """Exclude <properties> from <fits><toolOutput><tool name="Jhove" version="1.5"><repInfo> because that field contains unnecessary excess data and the key data are covered by output from other FITS tools."""
+    prefix = ""
+    formatValidation = None
+    
+    tools = getTagged(getTagged(fits, "toolOutput")[0], "tool")
+    for tool in tools:
+        if tool.get("name") == "Jhove":
+            formatValidation = tool
+            break
+    
+    repInfo = getTagged(formatValidation, "repInfo")[0]   
+    properties = getTagged(repInfo, "properties")
+
+    if len(properties):
+        repInfo.remove(properties[0])
+    return fits
 
 
 def formatValidationFITSAssist(fits):
@@ -159,6 +178,8 @@ if __name__ == '__main__':
         fits = tree.getroot()
         os.remove(tempFile)
         #fits = etree.XML(output[0])
+        if excludeJhoveProperties:
+            fits = excludeJhoveProperties(fits)
         includeFits(fits, XMLfile, date, eventUUID)
     
     except OSError, ose:
