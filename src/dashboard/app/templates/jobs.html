@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block subtitle %}Jobs{% endblock %}
+
+{% block content %}
+
+  <!-- item.arguments -->
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if objects.has_previous %}
+        (<a href="{% url dashboard.views.jobs objects.previous_page_number %}">previous</a>)
+      {% endif %}
+
+      <span class="current">Page {{ objects.number }} of {{ objects.paginator.num_pages }}</span>
+
+      {% if objects.has_next %}
+        (<a href="{% url dashboard.views.jobs objects.next_page_number %}">next</a>)
+      {% endif %}
+    </span>
+  </div>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Task UUID</th>
+        <th>Job UUID</th>
+        <th>Created time</th>
+        <th>File UUID</th>
+        <th>File name</th>
+        <th>Exec field</th>
+        <th>Start time</th>
+        <th>Client</th>
+        <th>End time</th>
+        <th>Exit code</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in objects.object_list %}
+        <tr class="{% cycle 'odd' 'even' %}">
+          <td>{{ item.taskuuid }}</td>
+          <td>{{ item.jobuuid }}</td>
+          <td>{{ item.createdtime }}</td>
+          <td>{{ item.fileuuid }}</td>
+          <td>{{ item.filename }}</td>
+          <td>{{ item.exec_field }}</td>
+          <td>{{ item.starttime }}</td>
+          <td>{{ item.client }}</td>
+          <td>{{ item.endtime }}</td>
+          <td>{{ item.exitcode }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if objects.has_previous %}
+        (<a href="{% url dashboard.views.jobs objects.previous_page_number %}">previous</a>)
+      {% endif %}
+
+      <span class="current">Page {{ objects.number }} of {{ objects.paginator.num_pages }}</span>
+
+      {% if objects.has_next %}
+        (<a href="{% url dashboard.views.jobs objects.next_page_number %}">next</a>)
+      {% endif %}
+    </span>
+  </div>
+
+{% endblock %}

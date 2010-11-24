@@ -1,0 +1,15 @@
+body {
+  margin: 20px;
+}
+
+div.pagination {
+  text-align: left;
+  background-color: #eee;
+  border: 1px solid Black;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+table th {
+  background-color: #eee;
+}
