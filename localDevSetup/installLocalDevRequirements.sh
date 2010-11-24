@@ -7,7 +7,3 @@ sudo apt-get install libapache2-mod-python python-django python-django-doc pytho
 #deb-src http://ppa.launchpad.net/austin-arcintel/archivematica/ubuntu lucid main 
 sudo apt-get update
 sudo apt-get install bagit droid fits jhove xena 
-
-
-
-
