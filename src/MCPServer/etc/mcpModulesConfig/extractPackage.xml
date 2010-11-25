@@ -63,7 +63,7 @@
                 <requiresOutputLock>No</requiresOutputLock>
                 <failureNotification> </failureNotification>
                 <execute>UUID4PostExtract_v0.0</execute>
-                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%fileUUID%" "file created - extracted" "%date%" "%taskUUID%"</arguments>
+                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%fileUUID%" "extracted" "%date%" "%taskUUID%"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
             </command>          
         </cleanupSuccessfulCommand>

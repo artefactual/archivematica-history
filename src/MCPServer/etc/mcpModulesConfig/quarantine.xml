@@ -22,7 +22,7 @@
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut>%SIPDirectory%quarantine</standardOut>
-                <standardError>%SIPDirectory%quarantine</standardError>
+                <standardError>%file created - extractedSIPDirectory%quarantine</standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>setSIPQuarantine_v0.0</execute>
@@ -32,6 +32,24 @@
         </exeCommand>
         
         <verificationCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>no</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir>logs/fileMeta/</filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut>%SIPLogsDirectory%ArchivematicaQuarantineEvent.xml</standardOut>
+                <standardError>%SIPLogsDirectory%ArchivematicaQuarantineEvent.xml</standardError>
+                <failureNotification> </failureNotification>
+                <execute>createXMLEventQuarantine_v0.0</execute>
+                <arguments>"%taskUUID%" "%jobCreatedDate%" "%relativeLocation%"</arguments>
+                <executeOnEachFile>Yes</executeOnEachFile>
+            </command>            
+        </verificationCommand>
+        
+        <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes</skip>
@@ -46,25 +64,7 @@
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
-            </command>            
-        </verificationCommand>
-        
-        <cleanupSuccessfulCommand>
-            <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>yes</skip>
-                <filterFileEnd></filterFileEnd>
-                <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
-                <standardIn></standardIn>
-                <standardOut>%SIPDirectory%ArchivematicaQuarantineEvent.xml</standardOut>
-                <standardError>%SIPDirectory%ArchivematicaQuarantineEvent.xml</standardError>
-                <failureNotification> </failureNotification>
-                <execute>createXMLEventQuarantine_v0.0</execute>
-                <arguments>"%taskUUID%" "%date%"</arguments>
-                <executeOnEachFile>No</executeOnEachFile>
-            </command>            
+            </command>  
         </cleanupSuccessfulCommand>
         
         <cleanupUnsuccessfulCommand>

@@ -38,6 +38,9 @@ def getTagged(root, tag):
   
 def appendEventToFile(SIPLogsDirectory, fileUUID, eventXML):
     xmlFile = SIPLogsDirectory + "fileMeta/" + fileUUID + ".xml"
+    appendEventToFile2(xmlFile, eventXML)
+
+def appendEventToFile2(xmlFile, eventXML):
     tree = etree.parse( xmlFile )
     root = tree.getroot()
 

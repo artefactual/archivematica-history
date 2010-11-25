@@ -102,8 +102,8 @@ def xmlNormalize(outputFileUUID, outputFileName, command, fileUUID=fileUUID, obj
     appendEventToFile(logsPath, fileUUID, eventXML)
     
     #Create new document using the add file script
-    addFileToSIP( objectsPath, logsPath, outputFileName, outputFileUUID, "file created - Normalized", edate, edate)
-    #addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, objects="objects/" ):
+    addFileToSIP( objectsPath, logsPath, outputFileName, outputFileUUID, "creation", edate, edate)
+    
     
     
     xmlCreateFileAssociation(outputFileUUID, outputFileName)
