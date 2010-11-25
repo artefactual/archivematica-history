@@ -96,7 +96,7 @@ def xmlNormalize(outputFileUUID, outputFileName, command, fileUUID=fileUUID, obj
     #Create Normalization event in the original xml document.
     eventDetailText =  "program=\"" + command.split(" ", 1)[0] + "\"; command=\"" + command + "\""  
     eventXML = createEvent( eventUUID, "Normalization", \
-                            eventDetailText, \
+                            eventDetailText=eventDetailText, \
                             eOutcomeInformation = createOutcomeInformation(os.path.basename(outputFileName)), \
                             eventDateTime = edate)
     appendEventToFile(logsPath, fileUUID, eventXML)
