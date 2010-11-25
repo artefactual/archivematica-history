@@ -152,6 +152,7 @@ def processTaskQueue():
                         tasksQueue.remove(task)
                         task.assignedDate=getUTCDate()
                         task.arguments = task.arguments.__str__().replace("%date%", task.assignedDate)
+                        task.arguments = task.arguments.__str__().replace("%jobCreatedDate%", task.job.createdDate)
                         tasksBeingProcessed.append(task)
                         send = protocol["performTask"]
                         send += protocol["delimiter"] 
@@ -256,6 +257,7 @@ class Job:
         self.step = step
         self.directory = directory
         self.writeLock = threading.Lock()
+        self.createdDate=getUTCDate()
         
         replacementDic = archivematicaRD.jobReplacementDic(self, config, directory, step)
         
