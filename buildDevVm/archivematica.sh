@@ -55,7 +55,7 @@ chroot $1 echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod" >> /et
 
 
 
-chroot $1 svn co http://amos.artefactual.com/svn/archivematica/trunk /home/demo/src
+chroot $1 svn co http://archivematica.googlecode.com/svn/trunk/ /home/demo/trunk/src
 chroot $1 mkdir /etc/archivematica
 chroot $1 mkdir /usr/lib/archivematica
 
