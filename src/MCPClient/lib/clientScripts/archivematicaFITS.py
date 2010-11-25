@@ -32,7 +32,7 @@ from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
 
 excludeJhoveProperties = True
-format = etree.Element("format")
+formats = []
 
 def excludeJhoveProperties(fits):
     """Exclude <properties> from <fits><toolOutput><tool name="Jhove" version="1.5"><repInfo> because that field contains unnecessary excess data and the key data are covered by output from other FITS tools."""
@@ -111,29 +111,32 @@ def formatIdentificationFITSAssist(fits):
     
     #<eventOutcomeDetailNote>fmt/116</eventOutcomeDetailNote>
     #<FileFormatHit />
-    fileFormatHit = getTagged(IdentificationFile, prefix + "FileFormatHit")[0]
+    fileFormatHits = getTagged(IdentificationFile, prefix + "FileFormatHit")
+    eventOutcomeDetailNotes = []
     eventOutcomeDetailNote = ""
-    if len(fileFormatHit):
-        eventOutcomeDetailNote = getTagged(fileFormatHit, prefix + "PUID")[0].text
-        
-        formatDesignation = etree.SubElement(format, "formatDesignation")
-        formatName = getTagged(fileFormatHit, prefix + "Name")
-        formatVersion = getTagged(fileFormatHit, prefix + "Version")
-        if len(formatName):
-            etree.SubElement(formatDesignation, "formatName").text = formatName[0].text
-        if len(formatVersion):
-            etree.SubElement(formatDesignation, "formatVersion").text = formatVersion[0].text
-        formatRegistry = etree.SubElement(format, "formatRegistry")
-        
-        PUID = getTagged(fileFormatHit, prefix + "PUID")
-        if len(PUID):
-            etree.SubElement(formatRegistry, "formatRegistryName").text = "PRONOM"
-            etree.SubElement(formatRegistry, "formatRegistryKey").text = PUID[0].text
+    for fileFormatHit in fileFormatHits:   
+        if len(fileFormatHit):
+            format = etree.Element("format")
+            eventOutcomeDetailNote = getTagged(fileFormatHit, prefix + "PUID")[0].text
             
-    else:
-        eventOutcomeDetailNote = "No Matching Format Found"
-    
-    return tuple([eventDetailText, eventOutcomeText, eventOutcomeDetailNote]) #tuple([1, 2, 3]) returns (1, 2, 3).
+            formatDesignation = etree.SubElement(format, "formatDesignation")
+            formatName = getTagged(fileFormatHit, prefix + "Name")
+            formatVersion = getTagged(fileFormatHit, prefix + "Version")
+            if len(formatName):
+                etree.SubElement(formatDesignation, "formatName").text = formatName[0].text
+            if len(formatVersion):
+                etree.SubElement(formatDesignation, "formatVersion").text = formatVersion[0].text
+            formatRegistry = etree.SubElement(format, "formatRegistry")
+            
+            PUID = getTagged(fileFormatHit, prefix + "PUID")
+            if len(PUID):
+                etree.SubElement(formatRegistry, "formatRegistryName").text = "PRONOM"
+                etree.SubElement(formatRegistry, "formatRegistryKey").text = PUID[0].text
+            formats.append(format)    
+        else:
+            eventOutcomeDetailNote = "No Matching Format Found"
+        eventOutcomeDetailNotes.append(eventOutcomeDetailNote)
+    return tuple([eventDetailText, eventOutcomeText, eventOutcomeDetailNotes]) #tuple([1, 2, 3]) returns (1, 2, 3).
 
 
 def includeFits(fits, xmlFile, date, eventUUID):
@@ -142,12 +145,21 @@ def includeFits(fits, xmlFile, date, eventUUID):
     
     #print etree.tostring(fits, pretty_print=True)
     
-    eventDetailText, eventOutcomeText, eventOutcomeDetailNote = formatIdentificationFITSAssist(fits)
-    outcomeInformation = createOutcomeInformation( eventOutcomeDetailNote, eventOutcomeText)
+    eventDetailText, eventOutcomeText, eventOutcomeDetailNotes = formatIdentificationFITSAssist(fits)
+    outcomeInformation = createOutcomeInformation( "To be removed", eventOutcomeText)
     formatIdentificationEvent = createEvent( eventUUID, "format identification", \
                                              eventDateTime=date, \
                                              eventDetailText=eventDetailText, \
                                              eOutcomeInformation=outcomeInformation)
+    
+    eventOutcomeInformation = getTagged(formatIdentificationEvent, "eventOutcomeInformation")[0]
+    eventOutcomeDetail = getTagged(eventOutcomeInformation, "eventOutcomeDetail")[0]
+    eventOutcomeInformation.remove(eventOutcomeDetail)
+    
+    for eventOutcomeDetailNote in eventOutcomeDetailNotes:
+        eventOutcomeDetail = etree.SubElement(eventOutcomeInformation, "eventOutcomeDetail")
+        etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = eventOutcomeDetailNote
+        
     newFileUUID = uuid.uuid4().__str__()
     eventDetailText, eventOutcomeText, eventOutcomeDetailNote = formatValidationFITSAssist(fits)
     outcomeInformation = createOutcomeInformation( eventOutcomeDetailNote, eventOutcomeText)
@@ -158,14 +170,14 @@ def includeFits(fits, xmlFile, date, eventUUID):
     
     tree = etree.parse( xmlFile )
     root = tree.getroot()
-    
-    getTagged(root, "object")[0].append(format)
-    
+       
     events = getTagged(root, "events")[0]
     events.append(formatIdentificationEvent)
     events.append(formatValidationEvent)
     
     objectCharacteristics = getTagged(getTagged(root, "object")[0], "objectCharacteristics")[0]
+    for format in formats:
+        objectCharacteristics.append(format)
     objectCharacteristicsExtension = etree.SubElement(objectCharacteristics, "objectCharacteristicsExtension")
     objectCharacteristicsExtension.append(fits)
     
