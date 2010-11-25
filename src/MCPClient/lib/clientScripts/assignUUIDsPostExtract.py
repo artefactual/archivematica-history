@@ -36,4 +36,4 @@ if __name__ == '__main__':
     fileUUIDNotFound = "No UUID for file:"
    
     if fileUUIDNotFound in fileUUID:
-        addFileToSIP( objectsDirectory, logsDirectory, filePath, taskUUID, eIDValue, date )
+        addFileToSIP( objectsDirectory, logsDirectory, filePath, taskUUID, eIDValue, date, date)
