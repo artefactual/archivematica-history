@@ -24,7 +24,7 @@ import lxml.etree as etree
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
-
+from archivematicaFunctions import appendEventToFile2
 
 #etree.Element("root", interesting="totally")
 #SubElement(root, "child").text = "Child 1"
@@ -35,5 +35,8 @@ if __name__ == '__main__':
     """This prints the contents for an Archivematica Unquarantine Event xml file"""
     eIDValue = sys.argv[1]
     date = sys.argv[2]
+    xmlFile = sys.argv[3]
+    
     event = createEvent( eIDValue, "unquarantine", eventDateTime=date)
-    print etree.tostring(event, pretty_print=True)
+    appendEventToFile2(xmlFile, event)
+    #print etree.tostring(event, pretty_print=True)
