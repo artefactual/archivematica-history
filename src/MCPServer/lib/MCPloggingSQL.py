@@ -106,7 +106,7 @@ def logJobCreatedSQL(job):
     runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime)
     VALUES ( '""" + job.UUID.__str__() + separator + job.config.type + separator \
     + job.directory + separator + getSIPUUID(job.directory) + \
-    separator + job.step + separator + getUTCDate() + "' )" )
+    separator + job.step + separator + job.createdDate + "' )" )
 
 
 def logJobStepCompletedSQL(job):
