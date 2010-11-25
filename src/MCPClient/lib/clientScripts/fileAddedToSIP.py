@@ -49,17 +49,21 @@ def md5_for_file(fileName, block_size=2**20):
     return md5.hexdigest()
 
 
-def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, objects="objects/" ):
+def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, addedDate, objects="objects/" ):
     relativeFilePath = filePath.replace(objectsDirectory, objects, 1)
     print fileUUID + " -> " + relativeFilePath 
+    
+    #if it's a file, the content of that file is the desired date.
+    if os.path.isfile(addedDate):
+        f = open(addedDate, 'r')
+        addedDate = f.read()
         
     #Gather File Info
     md5Checksum = md5_for_file(filePath)
     fileSize = os.path.getsize(filePath).__str__()
     
     #create Event to explain file origin.   
-    eIDValue = fileUUID
-    ingestEvent = createEvent(eIDValue, "receive SIP", eventDateTime=date, eventDetailText=relativeFilePath)
+    ingestEvent = createEvent(fileUUID, eIDValue, eventDateTime=addedDate, eventDetailText=relativeFilePath)
     
     newFileUUID = uuid.uuid4().__str__()
     eIDValue = newFileUUID
@@ -106,5 +110,6 @@ if __name__ == '__main__':
     fileUUID = sys.argv[4]
     eIDValue = sys.argv[5]
     date = sys.argv[6]
+    addedDate = sys.argv[7]
     
-    addFileToSIP(objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date)
+    addFileToSIP(objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, addedDate)
