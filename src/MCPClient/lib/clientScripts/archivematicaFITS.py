@@ -32,6 +32,7 @@ from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
 
 excludeJhoveProperties = True
+format = etree.Element("format")
 
 def excludeJhoveProperties(fits):
     """Exclude <properties> from <fits><toolOutput><tool name="Jhove" version="1.5"><repInfo> because that field contains unnecessary excess data and the key data are covered by output from other FITS tools."""
@@ -110,10 +111,25 @@ def formatIdentificationFITSAssist(fits):
     
     #<eventOutcomeDetailNote>fmt/116</eventOutcomeDetailNote>
     #<FileFormatHit />
-    fileFormatHit = getTagged(IdentificationFile, prefix + "FileFormatHit")
+    fileFormatHit = getTagged(IdentificationFile, prefix + "FileFormatHit")[0]
     eventOutcomeDetailNote = ""
-    if len(fileFormatHit[0]):
-        eventOutcomeDetailNote = getTagged(fileFormatHit[0], prefix + "PUID")[0].text
+    if len(fileFormatHit):
+        eventOutcomeDetailNote = getTagged(fileFormatHit, prefix + "PUID")[0].text
+        
+        formatDesignation = etree.SubElement(format, "formatDesignation")
+        formatName = getTagged(fileFormatHit, prefix + "Name")
+        formatVersion = getTagged(fileFormatHit, prefix + "Version")
+        if len(formatName):
+            etree.SubElement(formatDesignation, "formatName").text = formatName[0].text
+        if len(formatVersion):
+            etree.SubElement(formatDesignation, "formatVersion").text = formatVersion[0].text
+        formatRegistry = etree.SubElement(format, "formatRegistry")
+        
+        PUID = getTagged(fileFormatHit, prefix + "PUID")
+        if len(PUID):
+            etree.SubElement(formatRegistry, "formatRegistryName").text = "PRONOM"
+            etree.SubElement(formatRegistry, "formatRegistryKey").text = PUID[0].text
+            
     else:
         eventOutcomeDetailNote = "No Matching Format Found"
     
@@ -142,7 +158,9 @@ def includeFits(fits, xmlFile, date, eventUUID):
     
     tree = etree.parse( xmlFile )
     root = tree.getroot()
-
+    
+    getTagged(root, "object")[0].append(format)
+    
     events = getTagged(root, "events")[0]
     events.append(formatIdentificationEvent)
     events.append(formatValidationEvent)
@@ -150,6 +168,8 @@ def includeFits(fits, xmlFile, date, eventUUID):
     objectCharacteristics = getTagged(getTagged(root, "object")[0], "objectCharacteristics")[0]
     objectCharacteristicsExtension = etree.SubElement(objectCharacteristics, "objectCharacteristicsExtension")
     objectCharacteristicsExtension.append(fits)
+    
+    
     
     tree = etree.ElementTree(root)
     tree.write(xmlFile)
