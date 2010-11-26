@@ -30,6 +30,8 @@ import lxml.etree as etree
 import string
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 from datetime import datetime
+from createXmlEventsAssist import createArchivematicaAgent 
+from createXmlEventsAssist import createOrganizationAgent
 
 UUIDsDic={}
 amdSec=[]
@@ -83,6 +85,9 @@ def createDigiprovMD(uuid, filename) :
     
     premis.append(object)
     premis.append(events)
+    premis.append(createArchivematicaAgent())
+    premis.append(createOrganizationAgent())
+    
     
 #    objects = newChild(premis, "object")
 #    objects.set(xsiBNS + "type", "file")

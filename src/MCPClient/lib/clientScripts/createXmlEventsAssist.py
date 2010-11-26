@@ -23,11 +23,48 @@
 import lxml.etree as etree
 
 
-def createLinkingAgentIdentifier(IDType="preservation system", IDValue="Archivematica-0.7"):
+
+yourAgentIdentifierType="repository code"
+yourAgentIdentifierValue="ORG"
+yourAgentName="Your Organization Name Here"
+yourAgentType="organization"
+
+organizationEvents = ["receive SIP", "SIP review", "appraise SIP"]
+
+def createLinkingAgentIdentifierAssist(linkingAgentIdentifierType, linkingAgentIdentifierValue):
     ret = etree.Element("linkingAgentIdentifier")
-    etree.SubElement(ret, "linkingAgentIdentifierType").text = IDType
-    etree.SubElement(ret, "linkingAgentIdentifierValue").text = IDValue
+    etree.SubElement(ret, "linkingAgentIdentifierType").text = linkingAgentIdentifierType
+    etree.SubElement(ret, "linkingAgentIdentifierValue").text = linkingAgentIdentifierValue
     return ret
+
+def createArchivematicaLinkingAgentIdentifier():
+    return createLinkingAgentIdentifierAssist("preservation system", "Archivematica-0.7")
+
+def createOrgLinkingAgentIdentifier():
+    return createLinkingAgentIdentifierAssist(yourAgentIdentifierType, yourAgentIdentifierValue)
+
+def createAgent(agentIdentifierType, agentIdentifierValue, agentName, agentType):
+    ret = etree.Element("agent")
+    agentIdentifier = etree.SubElement( ret, "agentIdentifier")
+    etree.SubElement( agentIdentifier, "agentIdentifierType").text = agentIdentifierType
+    etree.SubElement( agentIdentifier, "agentIdentifierValue").text = agentIdentifierValue
+    etree.SubElement( ret, "agentName").text = agentName
+    etree.SubElement( ret, "agentType").text = agentType
+    return ret
+
+
+def createArchivematicaAgent():
+    return createAgent("preservation system", "Archivematica-0.7", "Archivematica", "software")
+    
+def createOrganizationAgent():
+    return createAgent(yourAgentIdentifierType, yourAgentIdentifierValue, yourAgentName, yourAgentType)
+
+def createLinkingAgentIdentifier(eType):
+    if eType in organizationEvents:
+        return createOrgLinkingAgentIdentifier()
+    else:
+        return createArchivematicaLinkingAgentIdentifier()
+    
 
 def createOutcomeInformation( eventOutcomeDetailNote = None, eventOutcomeText = None):
     ret = etree.Element("eventOutcomeInformation")
@@ -52,7 +89,7 @@ linkingAgentIdentifier = None):
     if eOutcomeInformation != None:
         ret.append(eOutcomeInformation)
     if not linkingAgentIdentifier:
-        linkingAgentIdentifier = createLinkingAgentIdentifier()
+        linkingAgentIdentifier = createLinkingAgentIdentifier(eType)
     ret.append(linkingAgentIdentifier)
     return ret
 
