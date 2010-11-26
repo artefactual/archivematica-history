@@ -109,7 +109,7 @@ def xmlNormalize(outputFileUUID, outputFileName, command, fileUUID=fileUUID, obj
     xmlCreateFileAssociation(outputFileUUID, outputFileName)
     
 def xmlCreateFileAssociation(outputFileUUID, outputFileName, fileUUID=fileUUID, objectsPath=objectsPath, eventUUID=eid, edate=edate, logsPath=logsPath):
-    print >>sys.stderr, "adding linking information"
+    #print >>sys.stderr, "adding linking information"
     originalFileXML = etree.parse( logsPath + "fileMeta/" + fileUUID + ".xml" ).getroot()
     outputFileXML = etree.parse( logsPath + "fileMeta/" + outputFileUUID + ".xml" ).getroot()
 
@@ -125,9 +125,6 @@ def xmlCreateFileAssociation(outputFileUUID, outputFileName, fileUUID=fileUUID, 
     relationship = xmlCreateRelationship("derivation", "has source", relatedObjectIdentifierValue=fileUUID, relatedEventIdentifierValue=eventUUID)
     object = getTagged(outputFileXML, "object")[0]
     object.append(relationship)
-    
-    
-    
 
     etree.ElementTree(originalFileXML).write(logsPath + "fileMeta/" + fileUUID + ".xml")
     etree.ElementTree(outputFileXML).write(logsPath + "fileMeta/" + outputFileUUID + ".xml")
