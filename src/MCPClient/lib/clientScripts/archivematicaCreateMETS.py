@@ -85,8 +85,9 @@ def createDigiprovMD(uuid, filename) :
     
     premis.append(object)
     premis.append(events)
-    premis.append(createArchivematicaAgent())
-    premis.append(createOrganizationAgent())
+    agents = etree.SubElement(premis, "agents")
+    agents.append(createArchivematicaAgent())
+    agents.append(createOrganizationAgent())
     
     
 #    objects = newChild(premis, "object")
