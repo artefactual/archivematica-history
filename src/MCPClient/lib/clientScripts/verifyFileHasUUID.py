@@ -39,9 +39,10 @@ def isUUID(uuid):
 def verifyFileHasUUID(uuid, filePath):
     uuid = uuid.__str__()
     if isUUID(uuid):
-        print uuid + " -> " + filePath
+        #print uuid + " -> " + filePath
+        uuid = uuid #no-op
     else:
-        rint >>sys.stderr, "No UUID -> " + filePath
+        print >>sys.stderr, "No UUID -> " + filePath
         quit(-1)
 
 

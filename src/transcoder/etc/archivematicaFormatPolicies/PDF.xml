@@ -1,0 +1,7 @@
+<formatPolicy>
+  <inherit></inherit>
+  <accessFormat>pdf</accessFormat>
+  <preservationFormat>a.pdf</preservationFormat>
+  <accessConversionCommand></accessConversionCommand>
+  <preservationConversionCommand>gs -dPDFA -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=%preservationFileDirectory%%fileTitle%.%preservationFormat% %fileFullName%</preservationConversionCommand>
+</formatPolicy>
