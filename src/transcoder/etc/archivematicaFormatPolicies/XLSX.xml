@@ -1,7 +1,7 @@
 <formatPolicy>
   <inherit></inherit>
-  <accessFormat>PDF</accessFormat>
+  <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
-  <accessConversionCommand>%normalizationScriptsDir%unoconv.sh %accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%</accessConversionCommand>
+  <accessConversionCommand></accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
 </extention>
