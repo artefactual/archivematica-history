@@ -7,9 +7,9 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%assignSIPUUID/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%createSIPBackup/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%createSIPBackup/</successDirectory>
+        <successDirectory>%watchDirectoryPath%verifySIPCompliance</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
@@ -26,8 +26,8 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>assignSIPUUID_v0.0</execute>
-                <arguments>"%SIPDirectory%" "%jobCreatedDate%"</arguments>
+                <execute>copy_v0.0</execute>
+                <arguments>-R "%SIPDirectory%" "%sharedPath%SIPbackups/."</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
