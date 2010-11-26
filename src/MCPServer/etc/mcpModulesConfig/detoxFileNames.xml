@@ -27,7 +27,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>detox_v0.0</execute>
-                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%"</arguments>
+                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%" "%taskUUID%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
