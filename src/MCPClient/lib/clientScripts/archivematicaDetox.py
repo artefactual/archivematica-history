@@ -49,11 +49,14 @@ if __name__ == '__main__':
     objectsDirectory = sys.argv[1]
     logsDir =  sys.argv[2]
     date = sys.argv[3]
+    taskUUID = sys.argv[4]
 
     loadFileUUIDsDic(logsDir)
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
     command = "detox -rv \"" + objectsDirectory + "\""
     lines = []
+    commandVersion = "detox -V"
+    version = ""
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	
@@ -69,10 +72,25 @@ if __name__ == '__main__':
             print output[1]# sError
             quit(retcode)
         lines = output[0].split("\n")
+        
+        #GET VERSION
+        p = subprocess.Popen(shlex.split(commandVersion), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+        p.wait()
+        output = p.communicate()
+        retcode = p.returncode
+        
+        #it executes check for errors
+        if retcode != 0:
+            print >>sys.stderr, "Error getting version; error code:" + retcode.__str__()
+            print output[1]# sError
+            quit(retcode)
+        version = output[0].replace("detox ", "", 1)
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose
         quit(2)
 
+    eventDetailText= "program=\"detox\"; version=\"" + version + "\""
     for line in lines:
         detoxfiles = line.split(" -> ")
         if len(detoxfiles) > 1 :
@@ -83,8 +101,10 @@ if __name__ == '__main__':
                 newfile = newfile.replace(objectsDirectory, "objects", 1)
                 fileUUID = UUIDsDic[oldfile]
                 
-                eIDValue = "detox-" + fileUUID
-                createOutcomeInformation( eventOutcomeDetailNote = newfile)
-                event = createEvent( eIDValue, "name cleanup", eventDateTime=date)
+                eventOutcomeDetailNote = "Original name=\"" + oldfile + "\"; cleaned up name=\"" + newfile + "\""
+                
+                event = createEvent( taskUUID, "name cleanup", eventDateTime=date, eventDetailText=eventDetailText, \
+                                     eOutcomeInformation=createOutcomeInformation(eventOutcomeDetailNote=eventOutcomeDetailNote, 
+                                                                                  eventOutcomeText="prohibited characters removed")) 
                 archivematicaRenameFile(logsDir, fileUUID, newfile, event)
 

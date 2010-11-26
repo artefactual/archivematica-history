@@ -95,7 +95,7 @@ def xmlCreateRelationship(relationshipType, relationshipSubType, relatedObjectId
 def xmlNormalize(outputFileUUID, outputFileName, command, fileUUID=fileUUID, objectsPath=objectsPath, eventUUID=eid, edate=edate, logsPath=logsPath):
     #Create Normalization event in the original xml document.
     eventDetailText =  "program=\"" + command.split(" ", 1)[0] + "\"; command=\"" + command + "\""  
-    eventXML = createEvent( eventUUID, "Normalization", \
+    eventXML = createEvent( eventUUID, "normalization", \
                             eventDetailText=eventDetailText, \
                             eOutcomeInformation = createOutcomeInformation(os.path.basename(outputFileName)), \
                             eventDateTime = edate)
