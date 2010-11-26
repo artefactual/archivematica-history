@@ -29,7 +29,6 @@ from createXmlEventsAssist import createEvent
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
 
-
 #etree.Element("root", interesting="totally")
 #SubElement(root, "child").text = "Child 1"
 
@@ -68,7 +67,9 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     newFileUUID = uuid.uuid4().__str__()
     eIDValue = newFileUUID
     eOutcomeInformation = createOutcomeInformation(md5Checksum.__str__())
-    checksumEvent = createEvent( eIDValue, "message digest calculation", eventDateTime=date, eOutcomeInformation=eOutcomeInformation)
+    eventDetailText = "program=\"python\"; module = \"hashlib.md5\" ; file=\"" + hashlib.__file__.__str__() + "\""
+    
+    checksumEvent = createEvent( eIDValue, "message digest calculation", eventDetailText=eventDetailText, eventDateTime=date, eOutcomeInformation=eOutcomeInformation)
     
     root = etree.Element("file")
     etree.SubElement(root, "originalFileName").text = relativeFilePath
