@@ -1,7 +1,7 @@
 <formatPolicy>
-  <inherit>VECTOR</inherit>
-  <accessFormat></accessFormat>
-  <preservationFormat></preservationFormat>
-  <accessConversionCommand></accessConversionCommand>
-  <preservationConversionCommand></preservationConversionCommand>
+  <inherit></inherit>
+  <accessFormat>PDF</accessFormat>
+  <preservationFormat>1.SVG</preservationFormat>
+  <accessConversionCommand>ps2pdf -dEPSCrop -dPDFA %fileFullName% %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
+  <preservationConversionCommand>inkscape %fileFullName% --export-plain-svg=%preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
 </formatPolicy>

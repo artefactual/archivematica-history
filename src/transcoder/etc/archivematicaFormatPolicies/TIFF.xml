@@ -1,5 +1,5 @@
 <formatPolicy>
-  <inherit>IMAGE</inherit>
+  <inherit>TIF</inherit>
   <accessFormat></accessFormat>
   <preservationFormat></preservationFormat>
   <accessConversionCommand></accessConversionCommand>
