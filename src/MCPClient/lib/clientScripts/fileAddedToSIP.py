@@ -29,12 +29,6 @@ from createXmlEventsAssist import createEvent
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
 
-#etree.Element("root", interesting="totally")
-#SubElement(root, "child").text = "Child 1"
-
-#<arguments> "%relativeLocation%" "%fileUUID%" "%taskUUID%" "%date%" "%SIPLogsDirectory%"FILEEvents/</arguments>
-
-
 #Borrowed from http://stackoverflow.com/questions/1131220/get-md5-hash-of-a-files-without-open-it-in-python
 def md5_for_file(fileName, block_size=2**20):   
     f = open(fileName)
@@ -67,7 +61,7 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     newFileUUID = uuid.uuid4().__str__()
     eIDValue = newFileUUID
     eOutcomeInformation = createOutcomeInformation(md5Checksum.__str__())
-    eventDetailText = "program=\"python\"; module = \"hashlib.md5\" ; file=\"" + hashlib.__file__.__str__() + "\""
+    eventDetailText = "program=\"python\"; module=\"hashlib.md5()\" ; file=\"" + hashlib.__file__.__str__() + "\""
     
     checksumEvent = createEvent( eIDValue, "message digest calculation", eventDetailText=eventDetailText, eventDateTime=date, eOutcomeInformation=eOutcomeInformation)
     
@@ -82,7 +76,7 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     objectIdentifier = etree.SubElement(fileObject, "objectIdentifier")
     etree.SubElement(objectIdentifier, "objectIdentifierType").text = "UUID"
     etree.SubElement(objectIdentifier, "objectIdentifierValue").text = fileUUID
-    #etree.SubElement(fileObject, "objectCategory").text = "file"
+    etree.SubElement(fileObject, "objectCategory").text = "file"
 
     objectCharacteristics = etree.SubElement(fileObject, "objectCharacteristics")
     etree.SubElement(objectCharacteristics, "compositionLevel").text = "0"
