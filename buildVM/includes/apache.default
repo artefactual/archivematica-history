@@ -52,12 +52,20 @@ NameVirtualHost *
     allow from all
   </Directory>
 
-  <Location "/">
-    SetHandler python-program
-    PythonHandler django.core.handlers.modpython
-    PythonDebug On
-    PythonPath "['/usr/share/doc/python-django-doc'] + sys.path"
-    SetEnv DJANGO_SETTINGS_MODULE examples.settings
-  </Location>
+  # Serve static files from Dashboard
+  Alias /media "/var/www/dashboard/media/"
+  <Directory "/var/www/dashboard/media/">
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+
+  # Django with mod_wsgi
+  # http://code.google.com/p/modwsgi/wiki/IntegrationWithDjango
+  WSGIScriptAlias / /var/www/dashboard/apache/django.wsgi
+  <Directory "/var/www/dashboard/apache/">
+    Order allow,deny
+    Allow from all
+  </Directory>
 
 </VirtualHost>
