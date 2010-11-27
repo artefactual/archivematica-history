@@ -45,11 +45,11 @@ NameVirtualHost *
   </Directory>
 
   Alias /ica-atom "/var/www/ica-atom/"
-  <Directory /var/www/ica-atom/>
+  <Directory "/var/www/ica-atom/">
     Options Indexes FollowSymLinks MultiViews
     AllowOverride All
     Order allow,deny
-    allow from all
+    Allow from all
   </Directory>
 
   # Serve static files from Dashboard
