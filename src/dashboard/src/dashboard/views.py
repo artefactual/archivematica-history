@@ -3,7 +3,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 
-from app.dashboard.models import Task
+from dashboard.dashboard.models import Task
 
 def index(request):
 
