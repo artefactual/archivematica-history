@@ -9,6 +9,7 @@
   <div class="pagination">
     <span class="step-links">
       {% if objects.has_previous %}
+        (<a href="{% url dashboard.views.jobs 1 %}">first</a>)
         (<a href="{% url dashboard.views.jobs objects.previous_page_number %}">previous</a>)
       {% endif %}
 
@@ -16,6 +17,7 @@
 
       {% if objects.has_next %}
         (<a href="{% url dashboard.views.jobs objects.next_page_number %}">next</a>)
+        (<a href="{% url dashboard.views.jobs objects.paginator.num_pages %}">last</a>)
       {% endif %}
     </span>
   </div>
@@ -56,6 +58,7 @@
   <div class="pagination">
     <span class="step-links">
       {% if objects.has_previous %}
+        (<a href="{% url dashboard.views.jobs 1 %}">first</a>)
         (<a href="{% url dashboard.views.jobs objects.previous_page_number %}">previous</a>)
       {% endif %}
 
@@ -63,6 +66,7 @@
 
       {% if objects.has_next %}
         (<a href="{% url dashboard.views.jobs objects.next_page_number %}">next</a>)
+        (<a href="{% url dashboard.views.jobs objects.paginator.num_pages %}">last</a>)
       {% endif %}
     </span>
   </div>
