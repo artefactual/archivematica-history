@@ -15,22 +15,19 @@ def approve_job(request):
 
 def jobs_awaiting_approval(request):
 
+  from django.conf import settings
   from dashboard.contrib.mcp.client import MCPClient
   from lxml import etree
 
-  client = MCPClient()
+  client = MCPClient(settings.MCP_SERVER[0], settings.MCP_SERVER[1])
 
   jobs = etree.XML(client.get_jobs_awaiting_approval())
 
   if 0 < len(jobs):
-
     response = ''
-
     for job in etree.XML(jobs):
       response += etree.tostring(job, pretty_print = True)
-
   else:
-
     response = 'There are not jobs awaiting for approval.'
 
   return HttpResponse(response, mimetype = 'text/plain')

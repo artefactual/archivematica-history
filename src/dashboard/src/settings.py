@@ -4,7 +4,7 @@ BASE_PATH = os.path.dirname(__file__)
 
 # Django settings for app project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -92,3 +92,5 @@ INSTALLED_APPS = (
   'dashboard',
 
 )
+
+MCP_SERVER = ('127.0.0.1', 8000)
