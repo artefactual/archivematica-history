@@ -1,13 +1,21 @@
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseServerError, HttpResponseRedirect
 
 from dashboard.dashboard.models import Task, Job
 
 def client(request):
 
   return render_to_response('client.html')
+
+def approve_job(request):
+
+  return HttpResponse('', mimetype = 'text/plain')
+
+def jobs_awaiting_approval(request):
+
+  return HttpResponse('', mimetype = 'text/plain')
 
 def index(request):
 
