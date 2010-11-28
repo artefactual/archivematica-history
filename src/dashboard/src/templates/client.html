@@ -4,6 +4,34 @@
 {% block h1 %}XML-RPC client{% endblock %}
 {% block page_id %}client{% endblock %}
 
-{% block content %}
+{% block js %}
+  <script type="text/javascript">
 
+    $(document).ready(function()
+      {
+        $('#content').html('<strong>Loading...</strong>');
+
+        $.ajax({
+          cache: false,
+          complete: function(data) { },
+          error: function()
+            {
+              alert("error");
+            },
+          type: 'GET',
+          success: function(data)
+            {
+              $('#content').text(data);
+            },
+          url: '/mcp/jobs-awaiting-approval/'
+        });
+      });
+
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div>
+    <p>This page requires a javascript capable browser.</p>
+  </div>
 {% endblock %}
