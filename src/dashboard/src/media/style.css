@@ -29,6 +29,7 @@ div#menu {
 
 div#menu ul {
   font-weight: bold;
+  text-shadow: #000000 1px 1px 1px;
   color: #fff;
   margin: 0;
   padding: 5px 0px;
@@ -43,6 +44,7 @@ div#menu ul li a {
   padding: 5px 10px 5px 10px;
   color: #fff;
   text-decoration: none;
+  background-color: #42769e;
   border-right: 1px solid #fff;
 }
 
@@ -50,3 +52,7 @@ div#menu ul li a:hover {
   background-color: #4388a7;
   color: #fff;
 }
+
+#page-client #menu .client a { background-color: #a40000; }
+#page-jobs #menu .jobs a { background-color: #a40000; }
+#page-tasks #menu .tasks a { background-color: #a40000; }
