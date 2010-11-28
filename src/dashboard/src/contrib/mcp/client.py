@@ -1,9 +1,8 @@
-import os
 from xmlrpclib import ServerProxy, Error
 
 class MCPClient:
 
-  def __init__(self, host = 'localhost', port = '8000'):
+  def __init__(self, host = 'localhost', port = 8000):
     self.url = 'http://%s:%d' % (host, port)
     self.server = ServerProxy(self.url)
 
