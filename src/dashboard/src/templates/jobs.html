@@ -25,31 +25,23 @@
   <table border="1">
     <thead>
       <tr>
-        <th>Task UUID</th>
         <th>Job UUID</th>
+        <th>Job type</th>
         <th>Created time</th>
-        <th>File UUID</th>
-        <th>File name</th>
-        <th>Exec field</th>
-        <th>Start time</th>
-        <th>Client</th>
-        <th>End time</th>
-        <th>Exit code</th>
+        <th>Directory</th>
+        <th>SIP UUID</th>
+        <th>Current step</th>
       </tr>
     </thead>
     <tbody>
       {% for item in objects.object_list %}
         <tr class="{% cycle 'odd' 'even' %}">
-          <td>{{ item.taskuuid }}</td>
           <td>{{ item.jobuuid }}</td>
+          <td>{{ item.jobtype }}</td>
           <td>{{ item.createdtime }}</td>
-          <td>{{ item.fileuuid }}</td>
-          <td>{{ item.filename }}</td>
-          <td>{{ item.exec_field }}</td>
-          <td>{{ item.starttime }}</td>
-          <td>{{ item.client }}</td>
-          <td>{{ item.endtime }}</td>
-          <td>{{ item.exitcode }}</td>
+          <td>{{ item.directory }}</td>
+          <td>{{ item.sipuuid }}</td>
+          <td>{{ item.currentstep }}</td>
         </tr>
       {% endfor %}
     </tbody>
