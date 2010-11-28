@@ -7,24 +7,58 @@
 {% block js %}
   <script type="text/javascript">
 
+    var client = {
+      steps: 5,
+      getJobsAwaitingApproval: function()
+        {
+          if (client.step < client.steps - 1)
+          {
+            client.step++;
+
+            $('#loading').html('<strong>Loading... next try in ' + (client.steps - client.step) + 's.</strong>');
+
+            return;
+          }
+          else
+          {
+            client.step = 0;
+          }
+
+          $('#loading').html('<strong>Loading... next try in ' + (client.steps - client.step) + 's.</strong>');
+
+          $.ajax({
+            cache: false,
+            complete: function()
+              {
+                client.intervalID = window.setInterval(this.getJobsAwaitingApproval, 1000);
+              },
+            context: this,
+            error: function()
+              {
+                $('#result').html("Error.");
+              },
+            type: 'GET',
+            success: function(data)
+              {
+                var now = new Date();
+
+                $('#last').text('Time: ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds());
+                $('#result').text(data);
+              },
+            url: '/mcp/jobs-awaiting-approval/'
+          });
+        }
+    };
+
     $(document).ready(function()
       {
-        $('#content').html('<strong>Loading...</strong>');
+        $('#content').html(
+          '<div id="last">&nbsp;</div>' +
+          '<div id="result">&nbsp;</div>' +
+          '<div id="loading">&nbsp;</div>');
 
-        $.ajax({
-          cache: false,
-          complete: function(data) { },
-          error: function()
-            {
-              alert("error");
-            },
-          type: 'GET',
-          success: function(data)
-            {
-              $('#content').text(data);
-            },
-          url: '/mcp/jobs-awaiting-approval/'
-        });
+        client.getJobsAwaitingApproval();
+
       });
 
   </script>
