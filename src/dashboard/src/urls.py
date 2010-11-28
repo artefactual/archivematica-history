@@ -27,4 +27,7 @@ urlpatterns = patterns('',
 
   (r'client/$', dashboard.views.client),
 
+  (r'mcp/jobs-awaiting-approval/$', dashboard.views.jobs_awaiting_approval),
+  (r'mcp/approve-job/$', dashboard.views.approve_job),
+
 )
