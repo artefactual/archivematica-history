@@ -5,13 +5,22 @@ body {
 div.pagination {
   text-align: left;
   background-color: #eee;
-  border: 1px solid Black;
   margin: 10px 0;
   padding: 10px;
 }
 
 table th {
   background-color: #eee;
+}
+
+div#header {
+  background: #fff url(logo.png) no-repeat bottom left;
+  height: 34px;
+  margin: 0 0 10px 0;
+}
+
+div#header h1 {
+  margin-left: 12345px;
 }
 
 div#menu {
