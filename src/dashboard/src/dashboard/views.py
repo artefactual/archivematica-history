@@ -5,6 +5,10 @@ from django.http import HttpResponseRedirect
 
 from dashboard.dashboard.models import Task, Job
 
+def client(request):
+
+  return render_to_response('client.html')
+
 def index(request):
 
   return HttpResponseRedirect(reverse(jobs))
