@@ -1,6 +1,0 @@
-pyversions=2.4-
-
-/usr/lib/pyshared/python2.6/poster/
-/usr/lib/pyshared/python2.6/poster/encode.py
-/usr/lib/pyshared/python2.6/poster/__init__.py
-/usr/lib/pyshared/python2.6/poster/streaminghttp.py
