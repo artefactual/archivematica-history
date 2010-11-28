@@ -25,4 +25,6 @@ urlpatterns = patterns('',
   (r'^tasks/$', dashboard.views.tasks),
   (r'^tasks/page/(?P<page>\d+)/$', dashboard.views.tasks),
 
+  (r'client/$', dashboard.views.client),
+
 )
