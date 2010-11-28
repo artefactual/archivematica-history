@@ -6,7 +6,7 @@ sudo mysqladmin create dcb
 sudo mysqladmin create qubit
 sudo mysqladmin create dashboard
 
-
+sudo aptitude install archivematica-shotgun
 
 #xfce4 configuration
 cp ./xfceCustomization/gtk-bookmarks /home/demo/.gtk-bookmarks
