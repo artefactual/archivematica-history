@@ -38,12 +38,12 @@ svn export ./.mozilla $1/home/demo/.mozilla
 svn export ./Docs $1/home/demo/Docs
 svn export enviromentConfigFiles/exports $1/etc/exports
 chroot "$1" ln -s /home/demo/Docs /home/demo/Desktop
+chroot "$1" chmod -R 770 /home/demo/.mozilla
 
 #setup unonconv service
-cp -rf ./unoconv-listen $1/etc/init.d/unoconv-listen
-chroot "$1" chmod +x /etc/init.d/unoconv-listen
-chroot "$1" /usr/sbin/update-rc.d unoconv-listen defaults
-chroot "$1" chmod -R 770 /home/demo/.mozilla
+#cp -rf ./unoconv-listen $1/etc/init.d/unoconv-listen
+#chroot "$1" chmod +x /etc/init.d/unoconv-listen
+#chroot "$1" /usr/sbin/update-rc.d unoconv-listen defaults
 #chroot "$1" mkdir -p /home/demo/.gnome2/nautilus-scripts
 
 svn export ./sampledata $1/home/demo/testFiles
@@ -76,16 +76,16 @@ cp ./desktopShortcuts/rundashboard.sh $1/usr/bin
 #cp ./desktopShortcuts/runjhove.sh $1/usr/bin
 
 #xfce4 configuration
-cp ./panel/* $1/home/demo/.config/xfce4/panel
-cp ./xfceCustomization/xfce4-desktop.xml $1/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
-cp ./xfceCustomization/xfce4-session.xml $1/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
-cp ./xfceCustomization/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
-cp ./xfceCustomization/user-dirs.defaults $1/etc/xdg
-cp ./xfceCustomization/uca.xml $1/home/demo/.config/Thunar
-cp ./xfceCustomization/thunarrc $1/home/demo/.config/Thunar
-cp ./xfceCustomization/thunar.desktop $1/home/demo/.config/autostart
-cp ./xfceCustomization/gtk-bookmarks $1/home/demo/.gtk-bookmarks
-cp ./xfceCustomization/gdm.custom.conf $1/etc/gdm/custom.conf
+#cp ./panel/* $1/home/demo/.config/xfce4/panel
+#cp ./xfceCustomization/xfce4-desktop.xml $1/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
+#cp ./xfceCustomization/xfce4-session.xml $1/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
+#cp ./xfceCustomization/icons.screen0.rc $1/home/demo/.config/xfce4/desktop
+#cp ./xfceCustomization/user-dirs.defaults $1/etc/xdg
+#cp ./xfceCustomization/uca.xml $1/home/demo/.config/Thunar
+#cp ./xfceCustomization/thunarrc $1/home/demo/.config/Thunar
+#cp ./xfceCustomization/thunar.desktop $1/home/demo/.config/autostart
+#cp ./xfceCustomization/gtk-bookmarks $1/home/demo/.gtk-bookmarks
+#cp ./xfceCustomization/gdm.custom.conf $1/etc/gdm/custom.conf
 
 #fix permissions 
 chroot "$1" chmod 444 /home/demo/.config/xfce4/panel
