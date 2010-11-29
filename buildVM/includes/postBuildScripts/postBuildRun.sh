@@ -12,9 +12,9 @@ sudo aptitude install archivematica-shotgun
 cp ./xfceCustomization/gtk-bookmarks /home/demo/.gtk-bookmarks
 
 #fix permissions 
-chroot "$1" chmod 444 /home/demo/.config/xfce4/panel
-chroot "$1" chown -R demo:demo /home/demo
-chroot "$1" chown -R demo:demo /home/demo/.mozilla
+chmod 444 /home/demo/.config/xfce4/panel
+chown -R demo:demo /home/demo
+chown -R demo:demo /home/demo/.mozilla
 
 sudo chmod 444 -R ~/.config/xfce4/panel
 sudo chmod 770 -R  /var/archivematica/sharedDirectory/
