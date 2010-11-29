@@ -1,2 +1,2 @@
 #!/bin/bash
-find ~/.mozilla -name extensions.cache -exec rm -f {} \; && firefox http://localhost
+find ~/.mozilla -name extensions.cache -exec rm -f {} \; && firefox http://localhost/ica-atom
