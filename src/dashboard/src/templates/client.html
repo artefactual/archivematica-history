@@ -54,22 +54,22 @@
               {
                 $jobs = $(data).find('Job');
 
-                if (0 == $jobs.length)
+                if (0 == $jobs.length || (1 == $jobs.length && 0 == $jobs.eq(0).children().length))
                 {
                   $('#result').html('<p>Empty.</p>');
 
                   return;
                 }
+                
+                $('#result').empty();
 
                 $jobs.each(function (index)
                   {
                     var $this = $(this);
                     var $result = $('#result');
 
-                    $result.empty();
-
                     $result.append(
-                      '<div class="job" index="' + index + '">' +
+                      '<div class="job" uuid="' + $this.children('UUID').text() + '">' +
                       '<p><strong>UUID:</strong> ' + $this.children('UUID').text() + '</p>' +
                       '<p><strong>Directory:</strong> ' + $this.children('Directory').text() + '</p>' +
                       '<p><strong>Description for approval:</strong> ' + $this.children('descriptionForApproval').text() + '</p>' +
@@ -78,7 +78,19 @@
                         {
                           event.preventDefault();
 
-                          alert('Not implemented yet!');
+                          $.ajax({
+                            context: $(this),
+                            data: { uuid: $(this).closest('div.job').attr('uuid') },
+                            type: 'POST',
+                            success: function(data)
+                              {
+                                if (0 < data.length)
+                                {
+                                  this.replaceWith('<p>Approved!</p>');
+                                }
+                              },
+                            url: '/mcp/approve-job/'
+                          });
                         });
                   });
               },
