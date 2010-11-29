@@ -65,7 +65,7 @@ cp ./desktopShortcuts/ica-atom.desktop $1/home/demo/Desktop
 #cp ./droid.desktop $1/home/demo/Desktop
 #cp ./jhove.desktop $1/home/demo/Desktop
 cp ./desktopShortcuts/dcb.desktop $1/home/demo/Desktop
-#cp ./dashboard.desktop $1/home/demo/Desktop
+cp ./dashboard.desktop $1/home/demo/Desktop
 #cp ./WinFF.desktop $1/home/demo/Desktop
 cp ./desktopShortcuts/Terminal.desktop $1/home/demo/Desktop
 
