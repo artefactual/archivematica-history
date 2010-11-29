@@ -8,7 +8,7 @@ Homepage: http://archivematica.org
 
 Package: transcoder
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ffmpeg2theora, libavcodec-unstripped-52,  unoconv, openjdk-6-jre, openoffice.org, openoffice.org-java-common, detox, uuid, clamav, imagemagick 
+Depends: ${shlibs:Depends}, ${misc:Depends}, inkscape, ffmpeg2theora, libavcodec-unstripped-52,  unoconv, openjdk-6-jre, openoffice.org, openoffice.org-java-common, detox, uuid, clamav, imagemagick 
 Description: Transcoder for Archivematica
   Transcoder for Archivematica
   
