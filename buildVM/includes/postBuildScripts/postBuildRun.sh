@@ -8,6 +8,7 @@ sudo mysqladmin create dashboard
 
 sudo aptitude install archivematica-shotgun
 
+sudo cp  apache.default /etc/apache2/sites-available/default
 #xfce4 configuration
 cp ./xfceCustomization/gtk-bookmarks /home/demo/.gtk-bookmarks
 
