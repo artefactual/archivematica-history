@@ -23,7 +23,7 @@
 # @version svn: $Id$
 
 #download and export
-svn checkout http://qubit-toolkit.googlecode.com/svn/trunk  qubit-svn
+svn checkout -r6907 http://qubit-toolkit.googlecode.com/svn/trunk  qubit-svn
 svn export qubit-svn $1/var/www/qubit
 
 #fix ownership

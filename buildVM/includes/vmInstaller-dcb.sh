@@ -23,7 +23,7 @@
 # @version svn: $Id$
 
 #download and export
-svn checkout http://qubit-toolkit.googlecode.com/svn/branches/dcb  dcb-svn
+svn checkout -r6907 http://qubit-toolkit.googlecode.com/svn/branches/dcb/  dcb-svn
 svn export dcb-svn $1/var/www/dcb
 
 #fix ownership
