@@ -23,7 +23,7 @@
 # @version svn: $Id$
 
 #download and export
-svn checkout http://qubit-toolkit.googlecode.com/svn/branches/ica-atom  ica-atom-svn
+svn checkout -r6907 http://qubit-toolkit.googlecode.com/svn/branches/ica-atom/  ica-atom-svn
 svn export ica-atom-svn $1/var/www/ica-atom
 
 #fix ownership
