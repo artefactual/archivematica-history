@@ -26,6 +26,8 @@
     <thead>
       <tr>
         <th>Job UUID</th>
+        <th class="fk">Task(s) (FK)</th>
+        <th class="fk">jobStepCompleted (FK)</th>
         <th>Job type</th>
         <th>Created time</th>
         <th>Directory</th>
@@ -37,6 +39,14 @@
       {% for item in objects.object_list %}
         <tr class="{% cycle 'odd' 'even' %}">
           <td>{{ item.jobuuid }}</td>
+          <td class="fk">
+            <ul>
+              {% for task in item.task_set.all %}
+                <li>{{ task.filename }}</li>
+              {% endfor %}
+            </ul>
+          </td>
+          <td class="fk">&nbsp;</td>
           <td>{{ item.jobtype }}</td>
           <td>{{ item.createdtime }}</td>
           <td>{{ item.directory }}</td>
