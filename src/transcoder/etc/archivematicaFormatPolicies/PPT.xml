@@ -3,5 +3,5 @@
   <accessFormat>PDF</accessFormat>
   <preservationFormat>ODP</preservationFormat>
   <accessConversionCommand>%normalizationScriptsDir%unoconv.sh %accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%</accessConversionCommand>
-  <preservationConversionCommand>%unoconvPath% %preservationFormat% %fileFullName%</preservationConversionCommand>
+  <preservationConversionCommand>%unoconvPath% %preservationFormat% %fileFullName% %fileDirectory%%fileTitle%.%preservationFormat% %preservationFileDirectory%</preservationConversionCommand>
 </formatPolicy>
