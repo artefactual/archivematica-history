@@ -59,3 +59,9 @@ div#menu ul li a:hover {
 
 th.fk { background-color: #ffdda7; }
 td.fk { background-color: #fff7e2; }
+
+div.job { background-color: #eee; margin: 10px 0 0 0; padding: 4px 8px; }
+div.job p { margin-bottom: 4px; }
+div.job div.actions { }
+
+div#loading { margin: 10px auto 0 auto; height: 30px; line-height: 30px; width: 200px; text-align: center; background-color: #fff7e2; border: 1px solid #aaa; border-radius: 8px; -moz-border-radius: 8px; -webkit-border-radius: 8px; box-shadow: 1px 1px 1px #888; -webkit-box-shadow: 1px 1px 1px #888; -moz-box-shadow: 1px 1px 1px #888; }

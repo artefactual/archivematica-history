@@ -1,9 +1,12 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseServerError, HttpResponseRedirect
 
+from dashboard.contrib.mcp.client import MCPClient
 from dashboard.dashboard.models import Task, Job
+from lxml import etree
 
 def client(request):
 
@@ -15,22 +18,17 @@ def approve_job(request):
 
 def jobs_awaiting_approval(request):
 
-  from django.conf import settings
-  from dashboard.contrib.mcp.client import MCPClient
-  from lxml import etree
-
   client = MCPClient(settings.MCP_SERVER[0], settings.MCP_SERVER[1])
 
   jobs = etree.XML(client.get_jobs_awaiting_approval())
 
-  if 0 < len(jobs):
-    response = ''
-    for job in etree.XML(jobs):
-      response += etree.tostring(job, pretty_print = True)
-  else:
-    response = 'There are not jobs awaiting for approval.'
+  response = ''
 
-  return HttpResponse(response, mimetype = 'text/plain')
+  if 0 < len(jobs):
+    for job in jobs:
+      response += etree.tostring(job)
+
+  return HttpResponse(response, mimetype = 'text/xml')
 
 def index(request):
 
