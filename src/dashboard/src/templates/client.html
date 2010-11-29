@@ -9,30 +9,41 @@
 
     var client = {
       steps: 5,
-      getJobsAwaitingApproval: function()
+      getLoadingMessage: function()
         {
-          if (client.step < client.steps - 1)
+          return $('<p>Next try in ' + (client.steps - (client.step ? client.step : 0)) + 's. <a href="#">Reload now</a>.</p>')
+            .find('a').click(function (event)
+              {
+                event.preventDefault();
+                client.getJobsAwaitingApproval(true);
+              }).end();
+        },
+      getJobsAwaitingApproval: function(restart)
+        {
+          if (!restart && client.step < client.steps - 1)
           {
             client.step++;
 
-            $('#loading').html('<strong>Loading... next try in ' + (client.steps - client.step) + 's.</strong>');
+            $('#loading').html(client.getLoadingMessage());
 
             return;
           }
+          // First time this function is called
           else
           {
             client.step = 0;
           }
 
-          $('#loading').html('<strong>Loading... next try in ' + (client.steps - client.step) + 's.</strong>');
+          $('#loading').html(client.getLoadingMessage());
+
+          window.clearInterval(client.intervalID);
 
           $.ajax({
             cache: false,
             complete: function()
               {
-                client.intervalID = window.setInterval(this.getJobsAwaitingApproval, 1000);
+                client.intervalID = window.setInterval(client.getJobsAwaitingApproval, 1000);
               },
-            context: this,
             error: function()
               {
                 $('#result').html("Error.");
@@ -42,7 +53,7 @@
               {
                 var now = new Date();
 
-                $('#last').text('Time: ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds());
+                // $('#last').text('Time: ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds());
                 $('#result').text(data);
               },
             url: '/mcp/jobs-awaiting-approval/'
@@ -53,7 +64,6 @@
     $(document).ready(function()
       {
         $('#content').html(
-          '<div id="last">&nbsp;</div>' +
           '<div id="result">&nbsp;</div>' +
           '<div id="loading">&nbsp;</div>');
 
