@@ -3,5 +3,5 @@
   <accessFormat></accessFormat>
   <preservationFormat>ODS</preservationFormat>
   <accessConversionCommand></accessConversionCommand>
-  <preservationConversionCommand>%unoconvPath% -v --server localhost -f %preservationFormat% %fileFullName%</preservationConversionCommand>
+  <preservationConversionCommand>%unoconvPath% %preservationFormat% %fileFullName%</preservationConversionCommand>
 </formatPolicy>
