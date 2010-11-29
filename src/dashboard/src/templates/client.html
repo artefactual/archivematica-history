@@ -44,17 +44,43 @@
               {
                 client.intervalID = window.setInterval(client.getJobsAwaitingApproval, 1000);
               },
-            error: function()
+            dataType: 'xml',
+            error: function(xhr, text)
               {
-                $('#result').html("Error.");
+                $('#result').html(text);
               },
             type: 'GET',
             success: function(data)
               {
-                var now = new Date();
+                $jobs = $(data).find('Job');
 
-                // $('#last').text('Time: ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds());
-                $('#result').text(data);
+                if (0 == $jobs.length)
+                {
+                  $('#result').html('<p>Empty.</p>');
+
+                  return;
+                }
+
+                $jobs.each(function (index)
+                  {
+                    var $this = $(this);
+                    var $result = $('#result');
+
+                    $result.empty();
+
+                    $result.append(
+                      '<div class="job" index="' + index + '">' +
+                      '<p><strong>UUID:</strong> ' + $this.children('UUID').text() + '</p>' +
+                      '<p><strong>Directory:</strong> ' + $this.children('Directory').text() + '</p>' +
+                      '<p><strong>Description for approval:</strong> ' + $this.children('descriptionForApproval').text() + '</p>' +
+                      '<p><a class="approve" href="#">Approve this job</a></p>' +
+                      '</div>').find('.approve').click(function (event)
+                        {
+                          event.preventDefault();
+
+                          alert('Not implemented yet!');
+                        });
+                  });
               },
             url: '/mcp/jobs-awaiting-approval/'
           });
@@ -64,8 +90,8 @@
     $(document).ready(function()
       {
         $('#content').html(
-          '<div id="result">&nbsp;</div>' +
-          '<div id="loading">&nbsp;</div>');
+          '<div id="loading">&nbsp;</div>' +
+          '<div id="result">&nbsp;</div>');
 
         client.getJobsAwaitingApproval();
 
