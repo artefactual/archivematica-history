@@ -4,4 +4,4 @@
   <preservationFormat></preservationFormat>
   <accessConversionCommand>%normalizationScriptsDir%unoconv.sh %accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%</accessConversionCommand>
   <preservationConversionCommand></preservationConversionCommand>
-</extention>
+</formatPolicy>
