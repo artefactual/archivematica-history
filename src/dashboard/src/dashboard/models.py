@@ -22,7 +22,8 @@ class Job(models.Model):
 
 class Task(models.Model):
   taskuuid = models.CharField(max_length=150, primary_key=True, db_column='taskUUID')
-  jobuuid = models.CharField(max_length=150, db_column='jobUUID', blank=True)
+  # jobuuid = models.CharField(max_length=150, db_column='jobUUID', blank=True)
+  job = models.ForeignKey(Job, db_column='jobuuid', to_field = 'jobuuid')
   createdtime = models.DateTimeField(db_column='createdTime')
   fileuuid = models.CharField(max_length=150, db_column='fileUUID', blank=True)
   filename = models.CharField(max_length=300, db_column='fileName', blank=True)
@@ -38,7 +39,8 @@ class Task(models.Model):
 
 class JobStepCompleted(models.Model):
   pk = models.IntegerField(primary_key=True)
-  jobuuid = models.CharField(max_length=150, db_column='jobUUID', blank=True)
+  # jobuuid = models.CharField(max_length=150, db_column='jobUUID', blank=True)
+  job = models.ForeignKey(Job, db_column='jobuuid', to_field = 'jobuuid')
   completedtime = models.DateTimeField(db_column='completedTime')
   step = models.CharField(max_length=150, blank=True)
 
