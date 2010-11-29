@@ -14,7 +14,17 @@ def client(request):
 
 def approve_job(request):
 
-  return HttpResponse('', mimetype = 'text/plain')
+  result = ''
+
+  if 'uuid' in request.REQUEST:
+
+    client = MCPClient(settings.MCP_SERVER[0], settings.MCP_SERVER[1])
+
+    uuid = request.REQUEST.get('uuid', '')
+
+    result = client.approve_job(uuid)
+
+  return HttpResponse(result, mimetype = 'text/plain')
 
 def jobs_awaiting_approval(request):
 
@@ -27,6 +37,8 @@ def jobs_awaiting_approval(request):
   if 0 < len(jobs):
     for job in jobs:
       response += etree.tostring(job)
+  
+  response = '<Jobs>' + response + '</Jobs>'
 
   return HttpResponse(response, mimetype = 'text/xml')
 
