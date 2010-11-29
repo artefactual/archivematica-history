@@ -5,4 +5,4 @@
   <accessConversionCommand>%ffmpegPath% -i %fileFullName% -ab 192000 %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
   <preservationConversionCommand>%ffmpegPath% -i %fileFullName% %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
   <preservationConversionCommand>%xenaPath%</preservationConversionCommand>
-</extention>
+</formatPolicy>
