@@ -41,10 +41,10 @@ cd includes
 ./vmInstaller-qubit.sh "$1"
 
 
-#cd "$startDirectory"
-#cd "${srcDirecotory}dashboard"
-#echo `pwd` 1>&2
-#./vmInstaller.sh "$1"
+cd "$startDirectory"
+cd "${srcDirecotory}dashboard"
+echo `pwd` 1>&2
+./vmInstaller.sh "$1"
 
 #cd "$startDirectory"
 #cd "${srcDirecotory}loadConfig"
