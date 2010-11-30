@@ -3,5 +3,5 @@
   <accessFormat></accessFormat>
   <preservationFormat>ODS</preservationFormat>
   <accessConversionCommand></accessConversionCommand>
-  <preservationConversionCommand>%unoconvPath% %preservationFormat% %fileFullName% %fileDirectory%%fileTitle%.%preservationFormat% %preservationFileDirectory%</preservationConversionCommand>
+  <preservationConversionCommand>%unoconvPath% %preservationFormat% %fileFullName% %fileDirectory%%fileTitle%.%preservationFormat% %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
 </formatPolicy>
