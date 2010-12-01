@@ -22,8 +22,9 @@
 
 target="$1"
 date="$2"
-uuidVersion="4"
-SIPUUID=`uuid -v ${uuidVersion}`
+SIPUUID="$3"
+#uuidVersion="4"
+#SIPUUID=`uuid -v ${uuidVersion}`
 
 sudo chown -R archivematica:archivematica "${target}" 
 chmod -R "770" "${target}"
