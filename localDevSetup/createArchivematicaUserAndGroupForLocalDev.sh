@@ -6,7 +6,7 @@ read username
 sudo gpasswd -a $username archivematica
 
 #Configure sudoers for mcp and client
-sudo echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod" >> /etc/sudoers
+sudo echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/unoconv" >> /etc/sudoers
 
 
 #TODO
