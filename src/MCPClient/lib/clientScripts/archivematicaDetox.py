@@ -107,4 +107,20 @@ if __name__ == '__main__':
                                      eOutcomeInformation=createOutcomeInformation(eventOutcomeDetailNote=eventOutcomeDetailNote, 
                                                                                   eventOutcomeText="prohibited characters removed")) 
                 archivematicaRenameFile(logsDir, fileUUID, newfile, event)
+            elif os.path.isdir(newfile):
+                oldfile = oldfile.replace(objectsDirectory, "objects", 1)
+                newfile = newfile.replace(objectsDirectory, "objects", 1)
+                #print UUIDsDic.iteritems().__str__()
+                addToUUIDsDic = {}
+                for file, fileUUID in UUIDsDic.iteritems():
+                    if file.startswith(oldfile):               
+                        intermediateFileName = file.replace(oldfile, newfile, 1)
+                        eventOutcomeDetailNote = "Original name=\"" + file + "\"; cleaned up name=\"" + intermediateFileName + "\""
+                        
+                        event = createEvent( taskUUID, "name cleanup", eventDateTime=date, eventDetailText=eventDetailText, \
+                                             eOutcomeInformation=createOutcomeInformation(eventOutcomeDetailNote=eventOutcomeDetailNote, 
+                                                                                          eventOutcomeText="prohibited characters removed")) 
+                        archivematicaRenameFile(logsDir, fileUUID, intermediateFileName, event)
+                        addToUUIDsDic[intermediateFileName] = fileUUID
+                UUIDsDic.update(addToUUIDsDic)
 
