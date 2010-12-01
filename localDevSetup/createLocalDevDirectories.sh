@@ -15,6 +15,9 @@ sudo ln -s "${svnDir}src/MCPServer/lib/" "${lib}/MCPServer"
 sudo ln -s "${svnDir}src/MCPClient/lib/" "${lib}/MCPClient"
 sudo ln -s "${svnDir}src/transcoder/lib/" "/usr/lib/transcoder"
 sudo ln -s "${svnDir}src/easy-extract/lib/" "/usr/lib/easy-extract"
+sudo ln -s "${svnDir}src/dashboard/src/" "/var/www/dashboard"
+
+sudo cp "${svnDir}buildVM/includes/apache.default" "/etc/apache2/sites-available/default"
 
 sudo ln "${svnDir}src/MCPServer/runArchivematicaMCPServer.sh" "/usr/bin/"
 sudo ln "${svnDir}src/MCPClient/runArchivematicaMCPClient.sh" "/usr/bin/"
