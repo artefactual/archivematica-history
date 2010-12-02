@@ -67,11 +67,11 @@ def jobsplus(request, page = 1):
 
 def tasks(request, page = 1):
 
-  objects = Task.objects.all().order_by('-createdtime')
-
-  if 'jobuuid' in request.GET:
-    objects.filter(jobuuid=request.GET.get('jobuuid'))
-    sys.exit()
+  if 'jobuuid' in request.REQUEST:
+    job = Job.objects.get(jobuuid = request.REQUEST.get('jobuuid'))
+    objects = job.task_set.all()
+  else:
+    objects = Task.objects.all().order_by('-createdtime')
 
   paginator = Paginator(objects, 10)
 
