@@ -47,8 +47,8 @@
                     var uuid = $this.children('UUID').text();
                     var $tr = $('tr[uuid=' + uuid + ']');
 
-                    $tr
-                      .css('background-color', '#ffdda7')
+                    $tr.not('.ready')
+                      .addClass('ready')
                       .insertBefore('table tr:eq(1)')
                       .find('p.approval_description').show().children('span').html($this.children('descriptionForApproval').text());
                   
@@ -57,14 +57,16 @@
                         event.preventDefault();
 
                         $.ajax({
-                          context: $(this),
+                          context: $(this).closest('td'),
                           data: { uuid: uuid },
                           type: 'POST',
                           success: function(data)
                             {
                               if (0 < data.length)
                               {
-                                this.replaceWith('<span>Approved!</span>');
+                                this
+                                 .html('<strong>completedSuccessfully</strong>')
+                                 .parent().removeClass('ready');
                               }
                             },
                           url: '/mcp/approve-job/'
@@ -128,6 +130,7 @@
      div.tasks { margin-top: 10px; }
      p.actions a { margin-left: 4px; }
      .hide_in_ajax { display: none; }
+     .ready { background-color: #ffdda7; }
   </style>
 {% endblock %}
 
