@@ -29,7 +29,7 @@
             cache: false,
             complete: function()
               {
-                client.intervalID = window.setInterval(client.getJobsAwaitingApproval, 1000);
+                // client.intervalID = window.setInterval(client.getJobsAwaitingApproval, 1000);
               },
             dataType: 'xml',
             error: function(xhr, text)
@@ -52,7 +52,7 @@
                       .insertBefore('table tr:eq(1)')
                       .find('p.approval_description').show().children('span').html($this.children('descriptionForApproval').text());
                   
-                    $tr.find('p.actions span.hidden').removeClass('hidden').next().show().click(function (event)
+                    $tr.find('p.actions a').show().end().find('a.btn_approve_job').removeClass('hidden').click(function (event)
                       {
                         event.preventDefault();
 
@@ -101,7 +101,8 @@
                       .append(taskrows)
                       .find('table').prepend('<caption>Tasks</caption>').end();
 
-                    $this.closest('tr').find('p.actions').after($box.hide()).next().slideDown('fast', function()
+                    $this.closest('tr').find('div.data').html($box.hide());
+                    $box.slideDown('fast', function()
                       {
                         $this.text('Hide tasks');
                       });
@@ -122,14 +123,15 @@
   <style type="text/css">
     .odd { background-color: #f2f2f2; }
      p { margin: 0px; }
-     p.approval_description, a.btn_approve_job, .hidden { display: none; }
+     p.approval_description, .hidden { display: none; }
      div.tasks { margin-top: 10px; }
+     p.actions a { margin-left: 4px; }
   </style>
 {% endblock %}
 
 {% block content %}
 
-  <table border="1" width="640px" style="margin: 20px auto 0 auto;">
+  <table border="1" width="100%" style="margin: 20px auto 0 auto;">
     <thead>
       <tr>
         <th>Job</th>
@@ -142,15 +144,16 @@
           <td>
             <p><strong>UUID:</strong> {{ item.jobuuid }}</p>
             <p class="approval_description"><strong>Description for approval:</strong>&nbsp;<span class="value" /></p>
+            <p<a class="btn_show_tasks" href="#">Show tasks</a></p>
+            <div class="data"></div>
+          </td>
+          <td width="360px">
+            {{ item.currentstep }}
             <p class="actions">
-              <a class="btn_open_dir" target="_blank" title="{{ item.diretory }}" href="file://{{ item.directory }}">Open directory</a>
-              <span>&nbsp;|&nbsp;</span>
-              <a class="btn_show_tasks" href="#">Show tasks</a>
-              <span class="hidden">&nbsp;|&nbsp;</span>
-              <a class="btn_approve_job" href="#">Approve</a>
+              <a class="hidden btn_open_dir" target="_blank" title="{{ item.diretory }}" href="file://{{ item.directory }}">Open directory</a>
+              <a class="hidden btn_approve_job" href="#">Approve</a>
             </p>
           </td>
-          <td>{{ item.currentstep }}</td>
         </tr>
       {% endfor %}
     </tbody>
