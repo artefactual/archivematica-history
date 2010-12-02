@@ -88,17 +88,23 @@
             
             if ($this.text() == 'Show tasks')
             {
-              $this.text('Hide tasks');
+              $this.text('Loading');
 
               $.ajax({
-                data: { uuid: uuid },
+                data: { jobuuid: $this.closest('tr').attr('uuid') },
                 type: 'GET',
                 success: function(data)
                   {
-                    if (0 < data.length)
-                    {
-                      this.replaceWith('<span>Approved!</span>');
-                    }
+                    var taskrows = $(data).find('table');
+
+                    var $box = $('<div class="tasks" />')
+                      .append(taskrows)
+                      .find('table').prepend('<caption>Tasks</caption>').end();
+
+                    $this.closest('tr').find('p.actions').after($box.hide()).next().slideDown('fast', function()
+                      {
+                        $this.text('Hide tasks');
+                      });
                   },
                 url: '/tasks/'
               });
@@ -106,6 +112,8 @@
             else
             {
               $this.text('Show tasks');
+              
+              $this.closest('tr').find('div.tasks').slideUp('fast');
             }
           });
       });
@@ -115,6 +123,7 @@
     .odd { background-color: #f2f2f2; }
      p { margin: 0px; }
      p.approval_description, a.btn_approve_job, .hidden { display: none; }
+     div.tasks { margin-top: 10px; }
   </style>
 {% endblock %}
 
