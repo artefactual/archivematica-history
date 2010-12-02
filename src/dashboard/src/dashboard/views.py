@@ -59,6 +59,12 @@ def jobs(request, page = 1):
 
   return render_to_response('jobs.html', locals())
 
+def jobsplus(request, page = 1):
+
+  objects = Job.objects.all().order_by('-createdtime')
+
+  return render_to_response('jobsplus.html', locals())
+
 def tasks(request, page = 1):
 
   objects = Task.objects.all().order_by('-createdtime')

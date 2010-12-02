@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block title %}Jobs+{% endblock %}
+{% block h1 %}Jobs+{% endblock %}
+{% block page_id %}jobsplus{% endblock %}
+
+{% block js %}
+  <script type="text/javascript">
+
+    var client = {
+      steps: 5,
+      getJobsAwaitingApproval: function()
+        {
+          if (client.step < client.steps - 1)
+          {
+            client.step++;
+
+            return;
+          }
+          // First time this function is called
+          else
+          {
+            client.step = 0;
+          }
+
+          window.clearInterval(client.intervalID);
+
+          $.ajax({
+            cache: false,
+            complete: function()
+              {
+                client.intervalID = window.setInterval(client.getJobsAwaitingApproval, 1000);
+              },
+            dataType: 'xml',
+            error: function(xhr, text)
+              {
+                $('#result').html(text);
+              },
+            type: 'GET',
+            success: function(data)
+              {
+                $jobs = $(data).find('Job');
+
+                $jobs.each(function (index)
+                  {
+                    var $this = $(this);
+                    var uuid = $this.children('UUID').text();
+
+                    $('tr[uuid=' + uuid + ']')
+                      .css('background-color', '#ffdda7')
+                      .insertBefore('table tr:eq(1)');
+                  });
+              },
+            url: '/mcp/jobs-awaiting-approval/'
+          });
+        }
+    };
+
+    $(document).ready(function()
+      {
+        client.getJobsAwaitingApproval
+
+        
+      });
+
+  </script>
+  <style type="text/css">
+    .odd { background-color: #f2f2f2; }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+  <table border="1" width="640px" style="margin: 20px auto 0 auto;">
+    <thead>
+      <tr>
+        <th>UUID</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in objects %}
+        <tr class="{% cycle 'odd' 'even' %}" uuid="{{ item.jobuuid }}">
+          <td>
+            {{ item.jobuuid }}
+            <p>
+              <a target="_blank" title="{{ item.diretory }}" href="file://{{ item.directory }}">Open directory</a>
+              &nbsp;|&nbsp;
+              <a id="btn_show_tasks" href="#">Show tasks</a>
+            </p>
+          </td>
+          <td>{{ item.currentstep }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
