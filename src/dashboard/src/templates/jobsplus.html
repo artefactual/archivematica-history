@@ -57,6 +57,7 @@
                         event.preventDefault();
 
                         $.ajax({
+                          context: $(this),
                           data: { uuid: uuid },
                           type: 'POST',
                           success: function(data)
