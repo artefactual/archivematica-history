@@ -2,6 +2,6 @@
   <inherit></inherit>
   <accessFormat>PDF</accessFormat>
   <preservationFormat>1.SVG</preservationFormat>
-  <accessConversionCommand>ps2pdf -dEPSCrop -dPDFA %fileFullName% %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
+  <accessConversionCommand>inkscape -z %fileFullName% --export-pdf=%accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
   <preservationConversionCommand>inkscape %fileFullName% --export-plain-svg=%preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
 </formatPolicy>
