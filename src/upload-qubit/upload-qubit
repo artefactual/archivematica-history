@@ -21,5 +21,4 @@
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
 
-#THIS COMMAND MUST BE FIXED!!!
-/usr/share/upload-qubit/upload-qubit.py "$@"
+/usr/lib/archivematica/upload-qubit/upload-qubit.py "$@"
