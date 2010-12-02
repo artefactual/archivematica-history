@@ -71,7 +71,7 @@
                     $result.append(
                       '<div class="job" uuid="' + $this.children('UUID').text() + '">' +
                       '<p><strong>UUID:</strong> ' + $this.children('UUID').text() + '</p>' +
-                      '<p><strong>Directory:</strong> ' + $this.children('Directory').text() + '</p>' +
+                      '<p><strong>Directory:</strong> <a href="file://' + $this.children('Directory').text() + '">' + $this.children('Directory').text() + '</a></p>' +
                       '<p><strong>Description for approval:</strong> ' + $this.children('descriptionForApproval').text() + '</p>' +
                       '<p><a class="approve" href="#">Approve</a></p>' +
                       '</div>').find('.approve').click(function (event)
