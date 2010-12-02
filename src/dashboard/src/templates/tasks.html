@@ -28,7 +28,7 @@
     <thead>
       <tr>
         <th>Task UUID</th>
-        <th class="fk">Job UUID</th>
+        <th class="fk hide_in_ajax">Job UUID</th>
         <th>Created time</th>
         <th>File UUID</th>
         <th>File name</th>
@@ -43,7 +43,7 @@
       {% for item in objects.object_list %}
         <tr class="{% cycle 'odd' 'even' %}">
           <td>{{ item.taskuuid }}</td>
-          <td class="fk">{{ item.job.jobuuid }}</td>
+          <td class="fk hide_in_ajax">{{ item.job.jobuuid }}</td>
           <td>{{ item.createdtime }}</td>
           <td>{{ item.fileuuid }}</td>
           <td>{{ item.filename }}</td>
