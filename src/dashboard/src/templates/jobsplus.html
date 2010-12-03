@@ -11,6 +11,8 @@
 
     $(document).ready(function()
       {
+        updateJobs();
+
         // Show tasks button
         $('a.btn_show_tasks').live('click', function (event)
           {
@@ -71,8 +73,74 @@
               });
       });
 
+    function updateJobs()
+    {
+      $.ajax({
+        cache: false,
+        complete: function()
+          {
+
+          },
+        dataType: 'xml',
+        error: function(xhr, text)
+          {
+            alert("error");
+          },
+        type: 'GET',
+        success: function(data)
+          {
+            $jobs = $(data).find('Job');
+
+            $jobs.each(function (index)
+              {
+                var $this = $(this);
+                var uuid = $this.children('UUID').text();
+                var $trjob = $('tr.job[uuid=' + uuid + ']');
+
+                // Find SIP and move to 
+                var $trsip = $trjob.prevAll('tr.sip:first').addClass('sip-has-jobs-awaiting-approval');
+                var $trjobs = $trsip.nextUntil('tr.sip:first');
+                
+                $trjobs.prependTo('#table-sips tbody');
+                $trsip.prependTo('#table-sips tbody');
+
+                /*
+                $tr.not('.ready')
+                  .addClass('ready')
+                  .insertBefore('table tr:eq(1)')
+                  .find('p.approval_description').show().children('span').html($this.children('descriptionForApproval').text());
+              
+                $tr.find('p.actions a').show().end().find('a.btn_approve_job').removeClass('hidden').click(function (event)
+                  {
+                    event.preventDefault();
+
+                    $.ajax({
+                      context: $(this).closest('td'),
+                      data: { uuid: uuid },
+                      type: 'POST',
+                      success: function(data)
+                        {
+                          if (0 < data.length)
+                          {
+                            this
+                             .html('<strong>completedSuccessfully</strong>')
+                             .parent().removeClass('ready');
+                          }
+                        },
+                      url: '/mcp/approve-job/'
+                    });
+                  });
+                */
+
+              });
+          },
+        url: '/mcp/jobs-awaiting-approval/'
+      });
+    }
+
   </script>
   <style type="text/css">
+  
     .odd { background-color: #f2f2f2; }
      p { margin: 0px; }
      p.approval_description, .hidden { display: none; }
@@ -85,9 +153,13 @@
     tr.sip td { background-color: #ffdda7; padding: 12px 8px; }
     tr.sip-hover td,
     tr.sip-enabled td { background-color: #4388a7; }
+    tr.sip-has-jobs-awaiting-approval td span { background-color: #880000; color: White; }
+
     tr.exitcode-1 td { background-color: #f2beab; }
+
     td.stderror { background-color: #aaa; }
     td.stderror p { color: Red; }
+
   </style>
 {% endblock %}
 
@@ -95,13 +167,13 @@
 
   {% regroup objects by sipuuid as sip_list %}
 
-  <table border="1" width="100%" style="margin: 20px auto 0 auto;">
+  <table id="table-sips" border="1" width="100%" style="margin: 20px auto 0 auto;">
     <thead>
       <th colspan="2">SIP</th>
     </thead>
     <tbody>
       {% for sip in sip_list %}
-        <tr class="sip {% cycle 'odd' 'even' %}">
+        <tr class="sip {% cycle 'odd' 'even' %}" uuid="{{ sip.grouper }}">
           <td colspan="2"><span>SIP</span><strong>{{ sip.grouper }}</strong></td>
         </tr>
         {% for item in sip.list %}
