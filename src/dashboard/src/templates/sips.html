@@ -207,7 +207,6 @@
           <tr class="job {% cycle 'odd' 'even' %}{% ifequal item.currentstep "completedUnsuccessfully" %} unsuccessfully{% endifequal %}" uuid="{{ item.jobuuid }}">
             <td>
               <p class="job_type"><strong>Micro-Service:</strong>&nbsp;<span class="value">{{ item.jobtype|map_known_values }}</span></p>
-              <p><strong>UUID:</strong> {{ item.jobuuid }}</p>
               <p class="approval_description"><strong>Description for approval:</strong>&nbsp;<span class="value" /></p>
               <p><a class="btn_show_tasks" href="#">Show tasks</a></p>
               <div class="data"></div>
