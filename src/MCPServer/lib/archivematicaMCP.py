@@ -264,7 +264,7 @@ class Job:
         replacementDic = archivematicaRD.jobReplacementDic(self, config, directory, step)
         
         if self.config.requiresUserApproval:
-            self.step="requiresAprroval"
+            self.step="requiresApproval"
       
         #for each key replace all instances of the key in the strings
         for key in replacementDic.iterkeys():
