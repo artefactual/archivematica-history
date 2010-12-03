@@ -1,6 +1,11 @@
 from django import template
 register = template.Library()
 
+@register.filter('sort_jobs')
+def sort_jobs(value):
+
+  return sorted(value, key = lambda value: value.currentstep, reverse = True)
+
 @register.filter('has_errors')
 def has_errors(value, sipuuid):
 

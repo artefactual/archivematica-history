@@ -203,7 +203,7 @@
           </td>
           <td>{{ objects|get_first_job:sip.grouper }}</td>
         </tr>
-        {% for item in sip.list %}
+        {% for item in sip.list|sort_jobs %}
           <tr class="job {% cycle 'odd' 'even' %}{% ifequal item.currentstep "completedUnsuccessfully" %} unsuccessfully{% endifequal %}" uuid="{{ item.jobuuid }}">
             <td>
               <p class="job_type"><strong>Micro-Service:</strong>&nbsp;<span class="value">{{ item.jobtype|map_known_values }}</span></p>
