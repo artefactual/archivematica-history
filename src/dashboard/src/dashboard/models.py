@@ -33,6 +33,8 @@ class Task(models.Model):
   client = models.CharField(max_length=150, blank=True)
   endtime = models.DateTimeField(db_column='endTime')
   exitcode = models.IntegerField(null=True, db_column='exitCode', blank=True)
+  stdout = models.TextField(db_column='stdOut', blank=True)
+  stderror = models.TextField(db_column='stdError', blank=True)
 
   class Meta:
     db_table = u'Tasks'
