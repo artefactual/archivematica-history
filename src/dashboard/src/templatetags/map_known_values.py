@@ -5,6 +5,14 @@ register = template.Library()
 def map_known_values(value):
 
   map = {
+
+    # currentStep
+    'completedSuccessfully': 'Completed successfully',
+    'completedUnsuccessfully': 'Completed unsuccessfully',
+    'exeCommand': 'Execute command',
+    'requiresAprroval': 'Requires approval',
+
+    # jobType
     'acquireSIP': 'Acquire SIP',
     'addDCToMETS': 'Add DC to METS',
     'appraiseSIP': 'Appraise SIP',
