@@ -53,10 +53,12 @@ div#menu ul li a:hover {
   color: #fff;
 }
 
+#page-sips #menu .sips a { background-color: #a40000; }
+/*
 #page-client #menu .client a { background-color: #a40000; }
-#page-jobsplus #menu .jobsplus a { background-color: #a40000; }
 #page-jobs #menu .jobs a { background-color: #a40000; }
 #page-tasks #menu .tasks a { background-color: #a40000; }
+*/
 
 th.fk { background-color: #ffdda7; }
 td.fk { background-color: #fff7e2; }

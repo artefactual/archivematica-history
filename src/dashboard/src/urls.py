@@ -22,7 +22,7 @@ urlpatterns = patterns('',
   (r'^jobs/$', dashboard.views.jobs),
   (r'^jobs/page/(?P<page>\d+)/$', dashboard.views.jobs),
 
-  (r'^jobs\+/$', dashboard.views.jobsplus),
+  (r'^sips/$', dashboard.views.sips),
 
   (r'^tasks/$', dashboard.views.tasks),
   (r'^tasks/page/(?P<page>\d+)/$', dashboard.views.tasks),
