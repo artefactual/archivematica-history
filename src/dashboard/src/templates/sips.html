@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% load filters %}
+{% load map_known_values %}
 
 {% block title %}SIPs{% endblock %}
 {% block h1 %}SIPs{% endblock %}
@@ -173,7 +173,6 @@
     /* SIP tag */
     tr.sip td span { padding: 2px 4px 2px 22px; border: 1px solid #666; margin-right: 8px; background: #ffdda7 url(/media/accept.png) no-repeat 3px center; }
     tr.sip-has-jobs-awaiting-approval td span { background-color: #880000; color: White; background-image: url(/media/bell.png); background-color: #880000; }
-    tr.sip-error td span { background-image: url(/media/cancel.png); background-color: #880000; color: White; }
 
     tr.exiterror td { background-color: #f2beab; }
 
@@ -181,7 +180,6 @@
     td.stderror p { color: Red; }
 
     td.col-job-status { vertical-align: top; }
-    tr.unsuccessfully td { background-color: #ffaaaa; }
 
   </style>
 {% endblock %}
@@ -196,7 +194,7 @@
     </thead>
     <tbody>
       {% for sip in sip_list %}
-        <tr class="sip {% cycle 'odd' 'even' %}{% if objects|has_errors:sip.grouper %} sip-error{% endif %}" uuid="{{ sip.grouper }}">
+        <tr class="sip {% cycle 'odd' 'even' %}" uuid="{{ sip.grouper }}">
           <td>
             <span>SIP</span>
             <strong>{{ sip.grouper }}</strong>
@@ -204,10 +202,10 @@
           <td>{{ objects|get_first_job:sip.grouper }}</td>
         </tr>
         {% for item in sip.list %}
-          <tr class="job {% cycle 'odd' 'even' %}{% ifequal item.currentstep "completedUnsuccessfully" %} unsuccessfully{% endifequal %}" uuid="{{ item.jobuuid }}">
+          <tr class="job {% cycle 'odd' 'even' %}" uuid="{{ item.jobuuid }}">
             <td>
-              <p><strong>UUID:</strong> {{ item.jobuuid }}</p>
-              <p class="job_type"><strong>Job type:</strong>&nbsp;<span class="value">{{ item.jobtype|map_known_values }}</span></p>
+              <p class="job_type"><strong>Micro-Service:</strong>&nbsp;<span class="value">{{ item.jobtype|map_known_values }}</span></p>
+              <p><strong>UUID:</strong> {{ item.jobuuid }}</p>       
               <p class="approval_description"><strong>Description for approval:</strong>&nbsp;<span class="value" /></p>
               <p><a class="btn_show_tasks" href="#">Show tasks</a></p>
               <div class="data"></div>
