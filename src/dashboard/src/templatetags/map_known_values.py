@@ -1,6 +1,11 @@
 from django import template
 register = template.Library()
 
+@register.filter('get_first_job')
+def get_first_job(value, sipuuid):
+
+  return value.filter(sipuuid=sipuuid).order_by('createdtime')[0].createdtime
+
 @register.filter('map_known_values')
 def map_known_values(value):
 
