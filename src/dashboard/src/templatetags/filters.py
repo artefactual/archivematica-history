@@ -21,6 +21,7 @@ def map_known_values(value):
     'completedUnsuccessfully': 'Completed unsuccessfully',
     'exeCommand': 'Execute command',
     'requiresAprroval': 'Requires approval',
+    'requiresApproval': 'Requires approval',
 
     # jobType
     'acquireSIP': 'Acquire SIP',
