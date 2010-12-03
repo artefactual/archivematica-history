@@ -101,16 +101,25 @@
                 var $trsip = $trjob.prevAll('tr.sip:first').addClass('sip-has-jobs-awaiting-approval');
                 var $trjobs = $trsip.nextUntil('tr.sip:first');
                 
+                // Prepend rows
                 $trjobs.prependTo('#table-sips tbody');
                 $trsip.prependTo('#table-sips tbody');
-
-                /*
-                $tr.not('.ready')
+                
+                $trjob
+                  // Add ready class
                   .addClass('ready')
-                  .insertBefore('table tr:eq(1)')
-                  .find('p.approval_description').show().children('span').html($this.children('descriptionForApproval').text());
-              
-                $tr.find('p.actions a').show().end().find('a.btn_approve_job').removeClass('hidden').click(function (event)
+                  // Move to top
+                  .insertAfter($trsip)
+                  // Set description for approval
+                  .find('p.approval_description').show().children('span').html($this.children('descriptionForApproval').text())
+                
+                $trjob
+
+                  // Show actions
+                  .find('p.actions a').removeClass('hidden').show()
+                  
+                  // Action 
+                  .parent().find('a.btn_approve_job').click(function (event)
                   {
                     event.preventDefault();
 
@@ -130,7 +139,6 @@
                       url: '/mcp/approve-job/'
                     });
                   });
-                */
 
               });
           },
