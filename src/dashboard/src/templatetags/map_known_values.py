@@ -1,6 +1,11 @@
 from django import template
 register = template.Library()
 
+@register.filter('has_errors')
+def has_errors(value, sipuuid):
+
+  return 0 < value.filter(sipuuid=sipuuid).filter(currentstep='completedUnsuccessfully').count()
+
 @register.filter('get_first_job')
 def get_first_job(value, sipuuid):
 
