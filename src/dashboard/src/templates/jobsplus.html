@@ -63,9 +63,13 @@
                   .nextUntil('tr.sip').toggle()
                   .end().scroll();
               })
-            .hover(function()
+            .mouseover(function ()
               {
-                $(this).toggleClass('sip-hover');
+                $(this).addClass('sip-hover');
+              })
+            .mouseout(function ()
+              {
+                $(this).removeClass('sip-hover');
               })
             .nextUntil('tr.sip').hover(function()
               {
@@ -134,6 +138,11 @@
                             this
                              .html('<strong>Completed successfully</strong>')
                              .parent().removeClass('ready');
+
+                            if (!$trjobs.find('tr.job.ready').length)
+                            {
+                              $trsip.removeClass('sip-has-jobs-awaiting-approval');
+                            }
                           }
                         },
                       url: '/mcp/approve-job/'
