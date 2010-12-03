@@ -223,6 +223,7 @@ def executeCommand(command, newUUID=""):
             #it executes check for errors
             if retcode != 0:
                 print >>sys.stderr, "error code:" + retcode.__str__()
+                quit(retcode)
             else:
                 print >>sys.stderr, "processing completed"
                 return 0
