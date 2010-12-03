@@ -21,5 +21,5 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-sudo /usr/bin/unoconv -v --server localhost -f $1 $2 && mv $3 $4
+flock -x /var/lock/unoconv.lock sudo /usr/bin/unoconv -v --server localhost -f $1 $2 && mv $3 $4
 exit "$?"
