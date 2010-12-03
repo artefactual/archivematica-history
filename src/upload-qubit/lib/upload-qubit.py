@@ -92,12 +92,12 @@ def exitError(message):
     quit(1)
     
 def get_id_from_url(url):
-  print "get_id_from_url: ", url
+  #print "get_id_from_url: ", url
   path = urlparse.urlparse(url).path
   return re.search(r'\d+', path).group()
 
 def find_information_object(name):
-  print "find_information_object: ", name
+  #print "find_information_object: ", name
   # Search for information object
   data = { 'query': name }
   response = urllib2.urlopen(URL_SEARCH_INFORMATION_OBJECT, urllib.urlencode(data))
@@ -111,7 +111,7 @@ def find_information_object(name):
     return robj.group(1)
 
 def find_or_create_actor(name):
-  print "find_or_create_actor: ", name
+  #print "find_or_create_actor: ", name
   # Search for actor
   data = { 'query': name }
 
@@ -135,7 +135,7 @@ def find_or_create_actor(name):
       return robj.group(1)
 
 def upload(opts):
-  print "upload: ", opts
+  #print "upload: ", opts
   # Check if file exists
   if opts['file'] and os.path.exists(opts['file']) is False:
     raise FileNotFound('File/directory "%s" not found' % opts['file'])
@@ -222,11 +222,11 @@ def upload(opts):
         data['parent'] = find_information_object(item.text)
 
     # Create information object
-    print "Create information object{", URL_CREATE_ISAD, data, "}"
+    #print "Create information object{", URL_CREATE_ISAD, data, "}"
     response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
 
     # Get information object id
-    print "Get information object id"
+    #print "Get information object id"
     parent_id = get_id_from_url(response.url)
 
     # Print information object id

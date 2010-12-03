@@ -91,13 +91,31 @@ def logTaskAssignedSQL(task, client):
     "SET startTime='" + task.assignedDate + "', client='" + client + "' " + \
     "WHERE taskUUID='" + taskUUID + "'" )
 
+def sqlEscape(str):
+    str = str.replace("\\", "\\\\") # \\     A backslash ("\") character.
+    #str = str.replace()#\0     An ASCII NUL (0x00) character.
+    str = str.replace("'","\\'")#\'     A single quote ("'") character.
+    str = str.replace("\"", "\\\"")#\"     A double quote (""") character.
+    #str = str.replace()#\b     A backspace character.
+    str = str.replace("\n", "\\r\\n")#\n     A newline (linefeed) character.
+    #str = str.replace()#\r     A carriage return character.
+    str = str.replace("\t", "\\t")#\t     A tab character.
+    #str = str.replace()#\Z     ASCII 26 (Control-Z). See note following the table. 
+    str = str.replace("%", "\\%")#\%     A "%" character. See note following the table.
+    str = str.replace("_", "\\_")#\_ A "_" character. 
+    return str
 
 def logTaskCompletedSQL(task, retValue):
     taskUUID = task.UUID.__str__()
     exitCode = retValue.__str__()
+    stdOut = task.stdOut
+    stdError = task.stdError
+    stdOut = sqlEscape(stdOut)
+    stdError = sqlEscape(stdError)
     
     runSQL("UPDATE Tasks " + \
-    "SET endTime='" + getUTCDate() +"', exitCode='" + exitCode +  "' " + \
+    "SET endTime='" + getUTCDate() +"', exitCode='" + exitCode +  "', " + \
+    "stdOut='" + stdOut + "', stdError='" + stdError + "' "
     "WHERE taskUUID='" + taskUUID + "'" )
 
 

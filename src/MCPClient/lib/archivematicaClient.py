@@ -36,6 +36,7 @@ archivematicaVars = loadConfig("/etc/archivematica/MCPClient/clientConfig.conf")
 supportedModules = loadConfig(archivematicaVars["archivematicaClientModules"])
 protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
 waitingForOutputLock = {}
+waitingForOutputLockLock = threading.Lock()
 
 def writeToFile(output, fileName):
     if fileName and output:
@@ -58,9 +59,12 @@ def writeUnlocked(data):
     a = writeToFile(data[2], data[0])
     b = writeToFile(data[3], data[1])
     if data[4]:
-        return data[4]
+        return data[4], data[2], data[3]
     else:
-        return a + b
+        if a + b :
+            return a + b, data[2], "Failed to write to file\\n" + data[3]
+        else:
+            return a + b, data[2], data[3]
 
 def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
     #Replace replacement strings
@@ -106,13 +110,13 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
         #it executes check for errors
         if retcode != 0:
           print >>sys.stderr, "error code:" + retcode.__str__()
-          return retcode
+          return retcode, output[0], output[1]
         else:
           print >>sys.stderr, "processing completed"
-          return a + b
+          return a + b, output[0], output[1]
       else:
-        print >>sys.stderr, "server tried to run a blank command: " 
-        return 1
+        print >>sys.stderr, "server tried to run a blank command! " 
+        return 1, "", "server tried to run a blank command! "
     #catch OS errors
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose
@@ -120,12 +124,14 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
         retcode = 1
         if requestLock:
             op = sOutput, sError, output[0], output[1], retcode
+            waitingForOutputLockLock.acquire()
             waitingForOutputLock[taskUUID] = op
+            waitingForOutputLockLock.release()
             serverConnection.requestLock(taskUUID)
         else:
             a = writeToFile(output[0], sOutput)
             b = writeToFile(output[1], sError)
-        return retcode
+        return retcode, output[0], output[1]
 
 class archivematicaMCPClientProtocol(LineReceiver):
     """Archivematica Client Protocol"""
@@ -167,7 +173,11 @@ class archivematicaMCPClientProtocol(LineReceiver):
             send += protocol["delimiter"]
             send += command[1]
             send += protocol["delimiter"]
-            send += result.__str__()
+            send += result[0].__str__()
+            send += protocol["delimiter"]
+            send += result[1].__str__()
+            send += protocol["delimiter"]
+            send += result[2].__str__()
             self.write(send)
         else:
             print >>sys.stderr, "this should never be executed."   
@@ -193,7 +203,9 @@ class archivematicaMCPClientProtocol(LineReceiver):
     def unlockForWrite(self, command):
         if len(command) == 2 and command[1] in waitingForOutputLock:
             ret = writeUnlocked(waitingForOutputLock[command[1]])
+            waitingForOutputLockLock.acquire()
             del waitingForOutputLock[command[1]]
+            waitingForOutputLockLock.release()
             self.sendTaskResult(command, ret)
         else:
             badProtocol(self, command)

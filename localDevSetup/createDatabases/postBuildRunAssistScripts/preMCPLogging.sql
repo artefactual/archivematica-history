@@ -11,6 +11,8 @@ arguments       VARCHAR(1000),
 startTime       TIMESTAMP(8),
 client          VARCHAR(50),
 endTime         TIMESTAMP(8),
+stdOut          LONGTEXT,
+stdError        LONGTEXT,
 exitCode        BIGINT
 );
 
