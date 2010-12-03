@@ -132,7 +132,7 @@
                           if (0 < data.length)
                           {
                             this
-                             .html('<strong>completedSuccessfully</strong>')
+                             .html('<strong>Completed successfully</strong>')
                              .parent().removeClass('ready');
                           }
                         },
@@ -157,11 +157,13 @@
      .hide_in_ajax { display: none; }
      .ready { background-color: #ffdda7; }
 
-    tr.sip td span { background-color: White; padding: 2px 4px; border: 1px solid #666; margin-right: 8px; }
     tr.sip td { background-color: #ffdda7; padding: 12px 8px; }
     tr.sip-hover td,
     tr.sip-enabled td { background-color: #4388a7; }
-    tr.sip-has-jobs-awaiting-approval td span { background-color: #880000; color: White; }
+
+    /* SIP tag */
+    tr.sip td span { padding: 2px 4px 2px 22px; border: 1px solid #666; margin-right: 8px; background: #ffdda7 url(/media/accept.png) no-repeat 3px center; }
+    tr.sip-has-jobs-awaiting-approval td span { background-color: #880000; color: White; background-image: url(/media/bell.png); background-color: #880000; }
 
     tr.exitcode-1 td { background-color: #f2beab; }
 
@@ -194,7 +196,7 @@
               <div class="data"></div>
             </td>
             <td width="360px">
-              {{ item.currentstep }}
+              {{ item.currentstep|map_known_values }}
               <p class="actions">
                 <a class="hidden btn_open_dir" target="_blank" title="{{ item.diretory }}" href="file://{{ item.directory }}">Open directory</a>
                 <a class="hidden btn_approve_job" href="#">Approve</a>
