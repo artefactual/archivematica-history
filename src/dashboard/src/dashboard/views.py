@@ -61,7 +61,7 @@ def jobs(request, page = 1):
 
 def jobsplus(request, page = 1):
 
-  objects = Job.objects.all().order_by('-createdtime')
+  objects = Job.objects.all().order_by('sipuuid', '-createdtime')
 
   return render_to_response('jobsplus.html', locals())
 
