@@ -179,6 +179,8 @@
     td.stderror { background-color: #aaa; }
     td.stderror p { color: Red; }
 
+    td.col-job-status { vertical-align: top; }
+
   </style>
 {% endblock %}
 
@@ -204,7 +206,7 @@
               <p><a class="btn_show_tasks" href="#">Show tasks</a></p>
               <div class="data"></div>
             </td>
-            <td width="360px">
+            <td class="col-job-status">
               {{ item.currentstep|map_known_values }}
               <p class="actions">
                 <a class="hidden btn_open_dir" target="_blank" title="{{ item.diretory }}" href="file://{{ item.directory }}">Open directory</a>
