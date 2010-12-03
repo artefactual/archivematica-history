@@ -199,6 +199,8 @@ class Task():
         self.standardIn = command.standardIn
         self.standardOut = command.standardOut
         self.standardError = command.standardError
+        self.stdOut = ""
+        self.stdError = ""
         
         
         commandReplacementDic = archivematicaRD.commandReplacementDic(self, job, target, command)
@@ -574,7 +576,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
     
     def taskCompleted(self, command):
         """inform the server a task is completed""" 
-        if len(command) == 3:
+        if len(command) == 5:
             self.currentThreads = self.currentThreads - 1
             
             #might be a potential DOS attack.
@@ -587,8 +589,10 @@ class archivematicaMCPServerProtocol(LineReceiver):
                     theTask = task
                     break
             if theTask:
-                print "task completed: {" + ret.__str__() + "}" + theTask.UUID.__str__()
+                print "task completed: {" + theTask.UUID.__str__() + "}" + ret.__str__() + "\r\n\t" + command[3] + "\r\n\t" + command[4]  
                 print "current threads on client: " + self.currentThreads.__str__()
+                theTask.stdOut = command[3]
+                theTask.stdError = command[4]
                 theTask.completed(ret)
             else:
                 self.badProtocol(command)
