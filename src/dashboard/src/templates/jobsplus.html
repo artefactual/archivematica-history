@@ -9,82 +9,8 @@
 {% block js %}
   <script type="text/javascript">
 
-    var client = {
-      steps: 5,
-      getJobsAwaitingApproval: function()
-        {
-          if (client.step < client.steps - 1)
-          {
-            client.step++;
-
-            return;
-          }
-          // First time this function is called
-          else
-          {
-            client.step = 0;
-          }
-
-          window.clearInterval(client.intervalID);
-
-          $.ajax({
-            cache: false,
-            complete: function()
-              {
-                // client.intervalID = window.setInterval(client.getJobsAwaitingApproval, 1000);
-              },
-            dataType: 'xml',
-            error: function(xhr, text)
-              {
-                $('#result').html(text);
-              },
-            type: 'GET',
-            success: function(data)
-              {
-                $jobs = $(data).find('Job');
-
-                $jobs.each(function (index)
-                  {
-                    var $this = $(this);
-                    var uuid = $this.children('UUID').text();
-                    var $tr = $('tr[uuid=' + uuid + ']');
-
-                    $tr.not('.ready')
-                      .addClass('ready')
-                      .insertBefore('table tr:eq(1)')
-                      .find('p.approval_description').show().children('span').html($this.children('descriptionForApproval').text());
-                  
-                    $tr.find('p.actions a').show().end().find('a.btn_approve_job').removeClass('hidden').click(function (event)
-                      {
-                        event.preventDefault();
-
-                        $.ajax({
-                          context: $(this).closest('td'),
-                          data: { uuid: uuid },
-                          type: 'POST',
-                          success: function(data)
-                            {
-                              if (0 < data.length)
-                              {
-                                this
-                                 .html('<strong>completedSuccessfully</strong>')
-                                 .parent().removeClass('ready');
-                              }
-                            },
-                          url: '/mcp/approve-job/'
-                        });
-                      });
-                  });
-              },
-            url: '/mcp/jobs-awaiting-approval/'
-          });
-        }
-    };
-
     $(document).ready(function()
       {
-        // client.getJobsAwaitingApproval();
-
         // Show tasks button
         $('a.btn_show_tasks').live('click', function (event)
           {
@@ -159,6 +85,9 @@
     tr.sip td { background-color: #ffdda7; padding: 12px 8px; }
     tr.sip-hover td,
     tr.sip-enabled td { background-color: #4388a7; }
+    tr.exitcode-1 td { background-color: #f2beab; }
+    td.stderror { background-color: #aaa; }
+    td.stderror p { color: Red; }
   </style>
 {% endblock %}
 
