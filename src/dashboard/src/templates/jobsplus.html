@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% load map_known_values %}
+
 {% block title %}Jobs+{% endblock %}
 {% block h1 %}Jobs+{% endblock %}
 {% block page_id %}jobsplus{% endblock %}
@@ -81,8 +83,9 @@
 
     $(document).ready(function()
       {
-        client.getJobsAwaitingApproval();
+        // client.getJobsAwaitingApproval();
 
+        // Show tasks button
         $('a.btn_show_tasks').live('click', function (event)
           {
             event.preventDefault();
@@ -120,6 +123,26 @@
               $this.closest('tr').find('div.tasks').slideUp('fast');
             }
           });
+
+          // SIP and job rows
+          $('tr.job').hide();
+          $('tr.sip')
+            .css('cursor', 'pointer')
+            .click(function()
+              {
+                $(this)
+                  .toggleClass('sip-enabled')
+                  .nextUntil('tr.sip').toggle()
+                  .end().scroll();
+              })
+            .hover(function()
+              {
+                $(this).toggleClass('sip-hover');
+              })
+            .nextUntil('tr.sip').hover(function()
+              {
+                $(this).prevAll('tr.sip:first').toggleClass('sip-hover');
+              });
       });
 
   </script>
@@ -131,35 +154,45 @@
      p.actions a { margin-left: 4px; }
      .hide_in_ajax { display: none; }
      .ready { background-color: #ffdda7; }
+
+    tr.sip td span { background-color: White; padding: 2px 4px; border: 1px solid #666; margin-right: 8px; }
+    tr.sip td { background-color: #ffdda7; padding: 12px 8px; }
+    tr.sip-hover td,
+    tr.sip-enabled td { background-color: #4388a7; }
   </style>
 {% endblock %}
 
 {% block content %}
 
+  {% regroup objects by sipuuid as sip_list %}
+
   <table border="1" width="100%" style="margin: 20px auto 0 auto;">
     <thead>
-      <tr>
-        <th>Job</th>
-        <th>Status</th>
-      </tr>
+      <th colspan="2">SIP</th>
     </thead>
     <tbody>
-      {% for item in objects %}
-        <tr class="{% cycle 'odd' 'even' %}" uuid="{{ item.jobuuid }}">
-          <td>
-            <p><strong>UUID:</strong> {{ item.jobuuid }}</p>
-            <p class="approval_description"><strong>Description for approval:</strong>&nbsp;<span class="value" /></p>
-            <p><a class="btn_show_tasks" href="#">Show tasks</a></p>
-            <div class="data"></div>
-          </td>
-          <td width="360px">
-            {{ item.currentstep }}
-            <p class="actions">
-              <a class="hidden btn_open_dir" target="_blank" title="{{ item.diretory }}" href="file://{{ item.directory }}">Open directory</a>
-              <a class="hidden btn_approve_job" href="#">Approve</a>
-            </p>
-          </td>
+      {% for sip in sip_list %}
+        <tr class="sip {% cycle 'odd' 'even' %}">
+          <td colspan="2"><span>SIP</span><strong>{{ sip.grouper }}</strong></td>
         </tr>
+        {% for item in sip.list %}
+          <tr class="job {% cycle 'odd' 'even' %}" uuid="{{ item.jobuuid }}">
+            <td>
+              <p><strong>UUID:</strong> {{ item.jobuuid }}</p>
+              <p class="job_type"><strong>Job type:</strong>&nbsp;<span class="value">{{ item.jobtype|map_known_values }}</span></p>
+              <p class="approval_description"><strong>Description for approval:</strong>&nbsp;<span class="value" /></p>
+              <p><a class="btn_show_tasks" href="#">Show tasks</a></p>
+              <div class="data"></div>
+            </td>
+            <td width="360px">
+              {{ item.currentstep }}
+              <p class="actions">
+                <a class="hidden btn_open_dir" target="_blank" title="{{ item.diretory }}" href="file://{{ item.directory }}">Open directory</a>
+                <a class="hidden btn_approve_job" href="#">Approve</a>
+              </p>
+            </td>
+          </tr>
+        {% endfor %}
       {% endfor %}
     </tbody>
   </table>
