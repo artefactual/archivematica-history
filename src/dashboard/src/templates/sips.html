@@ -195,7 +195,11 @@
     <tbody>
       {% for sip in sip_list %}
         <tr class="sip {% cycle 'odd' 'even' %}" uuid="{{ sip.grouper }}">
-          <td colspan="2"><span>SIP</span><strong>{{ sip.grouper }}</strong></td>
+          <td>
+            <span>SIP</span>
+            <strong>{{ sip.grouper }}</strong>
+          </td>
+          <td>{{ objects|get_first_job:sip.grouper }}</td>
         </tr>
         {% for item in sip.list %}
           <tr class="job {% cycle 'odd' 'even' %}" uuid="{{ item.jobuuid }}">
