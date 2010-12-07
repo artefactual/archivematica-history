@@ -8,3 +8,11 @@ sudo apt-get install libapache2-mod-wsgi python-django python-django-doc python-
 sudo apt-get update
 
 sudo apt-get install bagit droid fits jhove # xena 
+
+tmp="`pwd`"
+cd ./../buildVM/includes/
+sudo ./vmInstaller-ica-atom.sh /.
+sudo cp  apache.default /etc/apache2/sites-available/default
+sudo /etc/init.d/apache2 restart
+cd "$tmp"
+
