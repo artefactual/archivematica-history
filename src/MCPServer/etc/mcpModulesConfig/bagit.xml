@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%createPackage/bagit/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%structureDirectory/separateDIP/</successDirectory>
+        <successDirectory>%watchDirectoryPath%structureDirectory/generateDIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
@@ -51,8 +51,7 @@
         
         <cleanupSuccessfulCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -60,10 +59,11 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>remove_v0.0</execute>
+                <arguments>-R "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
             </command>            
         </cleanupSuccessfulCommand>
         
