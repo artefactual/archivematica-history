@@ -1,20 +1,12 @@
 from django import template
 register = template.Library()
 
-@register.filter('sort_jobs')
-def sort_jobs(value):
+@register.filter('get_jobs_by_sipuuid')
+def get_jobs_by_sipuuid(value):
 
-  return sorted(value, key = lambda value: value.currentstep, reverse = True)
+  from dashboard.dashboard.models import Job
 
-@register.filter('has_errors')
-def has_errors(value, sipuuid):
-
-  return 0 < value.filter(sipuuid=sipuuid).filter(currentstep='completedUnsuccessfully').count()
-
-@register.filter('get_first_job')
-def get_first_job(value, sipuuid):
-
-  return value.filter(sipuuid=sipuuid).order_by('createdtime')[0].createdtime
+  return Job.objects.all().filter(sipuuid = value).order_by('currentstep')
 
 @register.filter('map_known_values')
 def map_known_values(value):

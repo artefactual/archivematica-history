@@ -52,10 +52,22 @@
             }
           });
 
-          // SIP and job rows
-          $('tr.job').hide();
+          $('tr.job')
+
+            // Hide jobs
+            .hide()
+
+            // Add sip-error class to SIP rows if jobs have errors
+            .filter('.unsuccessfully').each(function()
+              {
+                $(this).prevAll('.sip:first').addClass('sip-error');
+              });
+
+          
           $('tr.sip')
             .css('cursor', 'pointer')
+
+            // Handlers
             .click(function()
               {
                 $(this)
@@ -71,6 +83,8 @@
               {
                 $(this).removeClass('sip-hover');
               })
+
+            // Hover
             .nextUntil('tr.sip').hover(function()
               {
                 $(this).prevAll('tr.sip:first').toggleClass('sip-hover');
@@ -163,7 +177,6 @@
      p.approval_description, .hidden { display: none; }
      div.tasks { margin-top: 10px; }
      p.actions a { margin-left: 4px; }
-     .hide_in_ajax { display: none; }
      .ready { background-color: #ffdda7; }
 
     tr.sip td { background-color: #ffdda7; padding: 12px 8px; }
@@ -188,22 +201,20 @@
 
 {% block content %}
 
-  {% regroup objects by sipuuid as sip_list %}
-
   <table id="table-sips" border="1" width="100%" style="margin: 20px auto 0 auto;">
     <thead>
       <th colspan="2">SIP</th>
     </thead>
     <tbody>
-      {% for sip in sip_list %}
-        <tr class="sip {% cycle 'odd' 'even' %}{% if objects|has_errors:sip.grouper %} sip-error{% endif %}" uuid="{{ sip.grouper }}">
+      {% for sip in objects %}
+        <tr class="sip {% cycle 'odd' 'even' %}" uuid="{{ sip.grouper }}">
           <td>
             <span>SIP</span>
-            <strong>{{ sip.grouper }}</strong>
+            <strong>{{ sip.sipuuid }}</strong>
           </td>
-          <td>{{ objects|get_first_job:sip.grouper }}</td>
+          <td>{{ sip.latest }}</td>
         </tr>
-        {% for item in sip.list|sort_jobs %}
+        {% for item in sip.sipuuid|get_jobs_by_sipuuid %}
           <tr class="job {% cycle 'odd' 'even' %}{% ifequal item.currentstep "completedUnsuccessfully" %} unsuccessfully{% endifequal %}" uuid="{{ item.jobuuid }}">
             <td>
               <p class="job_type"><strong>Micro-Service:</strong>&nbsp;<span class="value">{{ item.jobtype|map_known_values }}</span></p>
