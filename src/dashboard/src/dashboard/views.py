@@ -1,3 +1,4 @@
+from django.db.models import Max
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -7,6 +8,13 @@ from django.http import HttpResponse, HttpResponseServerError, HttpResponseRedir
 from dashboard.contrib.mcp.client import MCPClient
 from dashboard.dashboard.models import Task, Job
 from lxml import etree
+
+def sips(request, page = 1):
+
+  # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
+  objects = Job.objects.values('sipuuid').annotate(latest = Max('createdtime')).order_by('-latest').exclude(sipuuid__icontains = 'None')
+
+  return render_to_response('sips.html', locals())
 
 def client(request):
 
@@ -58,12 +66,6 @@ def jobs(request, page = 1):
     objects = paginator.page(paginator.num_pages)
 
   return render_to_response('jobs.html', locals())
-
-def sips(request, page = 1):
-
-  objects = Job.objects.all().order_by('sipuuid', '-createdtime')
-
-  return render_to_response('sips.html', locals())
 
 def tasks(request, page = 1):
 
