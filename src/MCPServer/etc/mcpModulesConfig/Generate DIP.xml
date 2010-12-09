@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%structureDirectory/cleanupAIPPostBagit/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%structureDirectory/generateDIP/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%storeAIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
@@ -25,9 +25,9 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>remove_v0.0</execute>
-                <arguments>-R "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"</arguments>
-                <executeOnEachFile>no</executeOnEachFile>
+                <execute>move_v0.0</execute>
+                <arguments>"%SIPDirectory%DIP" "%sharedPath%watchedDirectories/uploadDIP/%SIPName%-%SIPUUID%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
