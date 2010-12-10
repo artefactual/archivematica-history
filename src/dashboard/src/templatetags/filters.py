@@ -6,7 +6,18 @@ def get_jobs_by_sipuuid(value):
 
   from dashboard.dashboard.models import Job
 
-  return Job.objects.all().filter(sipuuid = value).order_by('currentstep')
+  jobs = Job.objects.all().filter(sipuuid = value).order_by('-createdtime')
+
+  priorities = {
+    'completedUnsuccessfully': 0,
+    'requiresAprroval': 1,
+    'requiresApproval': 1,
+    'exeCommand': 2,
+    'verificationCommand': 3,
+    'completedSuccessfully': 4,
+  }
+
+  return sorted(jobs, key = lambda job: priorities[job.currentstep])
 
 @register.filter('map_known_values')
 def map_known_values(value):
