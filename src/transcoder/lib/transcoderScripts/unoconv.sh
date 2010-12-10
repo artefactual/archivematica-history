@@ -24,12 +24,7 @@
 ddirname=`dirname $2`
 dbasename=`basename $2`  
 cd "$ddirname"
+cd "`dirname $0`"
 
-function e 	{
-            	sleep 5
-				sudo /usr/bin/unoconv -v --server localhost -f $1 $2
-				return $? 
-    		}
-
-e $1 "$dbasename" && mv $3 $4
+flock -x /var/lock/unoconv.lock -c "./unoconv2.sh $1 $2 $3 $4" 
 exit "$?"
