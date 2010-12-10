@@ -21,5 +21,9 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-flock -x /var/lock/unoconv.lock sudo /usr/bin/unoconv -v --server localhost -f $1 $2 && mv $3 $4
+ddirname=`dirname $2`
+dbasename=`basename $2`  
+cd "$ddirname"
+
+flock -x /var/lock/unoconv.lock "`dirname $0`/unoconv2.sh" $1 "$dbasename" && mv $3 $4
 exit "$?"
