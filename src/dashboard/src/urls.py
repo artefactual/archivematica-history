@@ -5,6 +5,8 @@ import dashboard.views
 # from django.contrib import admin
 # admin.autodiscover()
 
+UUID_REGEX = '[\w]{8}(-[\w]{4}){3}-[\w]{12}'
+
 urlpatterns = patterns('',
 
   # Example:
@@ -21,6 +23,9 @@ urlpatterns = patterns('',
 
   (r'^jobs/$', dashboard.views.jobs),
   (r'^jobs/page/(?P<page>\d+)/$', dashboard.views.jobs),
+
+  (r'^jobs/(?P<jobuuid>' + UUID_REGEX + ')/$', dashboard.views.show_dir),
+  (r'^jobs/(?P<jobuuid>' + UUID_REGEX + ')/(?P<subdir>.*)/$', dashboard.views.show_subdir),
 
   (r'^sips/$', dashboard.views.sips),
 
