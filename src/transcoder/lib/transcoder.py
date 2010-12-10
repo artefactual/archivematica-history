@@ -334,14 +334,21 @@ if len(preservationConversionCommand) > 0:
                 if (preservationFormat[0].upper() == Format or preservationFormat[0].upper() == fileExtension.upper()):
                     if fileDirectory != fileDirectory:#update when not transcoding to file path
                         os.remove(fileDirectory + fileTitle + "." + fileExtension)
+                        quit(3)
                 else:
                     os.remove(fileDirectory + fileTitle + "." + preservationFormat[0].lower())
                     print >>sys.stderr, "ERROR: Archivematica detected low space on the access normalization destination drive, and removed the normalized file. This should be considered a hard drive space error."
                     quit(2)
                     
             #XML
-            if xmlStuff and preservationConversionCommand[index] != defaultCommand:
-                xmlNormalize(outputFileUUID, fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower(), preservationConversionCommand[index]) #    {normalized; not normalized}
+            if  preservationConversionCommand[index] != defaultCommand:
+                if not os.path.isfile(fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower()):
+                    print >>sys.stderr, "Error: the output file does not exist [" + fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower() + "]"
+                    quit(100)
+                else:
+                    print >>sys.stderr, "Verified the output file exists [" + fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower() + "]"
+                if xmlStuff:
+                    xmlNormalize(outputFileUUID, fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower(), preservationConversionCommand[index]) #    {normalized; not normalized}
         else:
             print >>sys.stderr, "Skipping Preservation Normalization: No command"
             result = 0 

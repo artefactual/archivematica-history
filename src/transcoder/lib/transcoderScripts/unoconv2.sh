@@ -24,7 +24,6 @@
 ddirname=`dirname $2`
 dbasename=`basename $2`  
 cd "$ddirname"
-cd "`dirname $0`"
 
-flock -x /var/lock/unoconv.lock -c "./unoconv2.sh $1 $2 $3 $4" 
+sleep 5 && sudo /usr/bin/unoconv -v -f $1 "./$dbasename" && mv $3 $4
 exit "$?"
