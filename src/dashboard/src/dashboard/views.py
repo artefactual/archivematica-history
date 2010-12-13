@@ -11,6 +11,9 @@ from lxml import etree
 
 import os
 
+def index(request):
+  return HttpResponseRedirect(reverse(sips))
+
 def sips(request):
   # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
   objects = Job.objects.values('sipuuid').annotate(latest = Max('createdtime')).order_by('-latest').exclude(sipuuid__icontains = 'None')
@@ -63,9 +66,6 @@ def jobs_awaiting_approval(request):
       response += etree.tostring(job)
   response = '<Jobs>' + response + '</Jobs>'
   return HttpResponse(response, mimetype = 'text/xml')
-
-def index(request):
-  return HttpResponseRedirect(reverse(sips))
 
 def tasks(request, page = 1):
   if 'jobuuid' in request.REQUEST:
