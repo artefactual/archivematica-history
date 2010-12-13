@@ -1,23 +1,9 @@
 from django.conf.urls.defaults import *
 import dashboard.views
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
-
 UUID_REGEX = '[\w]{8}(-[\w]{4}){3}-[\w]{12}'
 
 urlpatterns = patterns('',
-
-  # Example:
-  # (r'^app/', include('app.foo.urls')),
-
-  # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
-  # to INSTALLED_APPS to enable admin documentation:
-  # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-  # Uncomment the next line to enable the admin:
-  # (r'^admin/', include(admin.site.urls)),
 
   (r'^$', dashboard.views.index),
 
