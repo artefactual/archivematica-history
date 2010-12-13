@@ -25,14 +25,14 @@
               $this.text('Loading');
 
               $.ajax({
-                data: { jobuuid: $this.closest('tr').attr('uuid') },
+                dateType: 'html',
                 type: 'GET',
                 success: function(data)
                   {
-                    var taskrows = $(data).find('table');
+                    var $taskrows = $(data).find('tbody');
 
                     var $box = $('<div class="tasks" />')
-                      .append(taskrows)
+                      .append($taskrows)
                       .find('table').prepend('<caption>Tasks</caption>').end();
 
                     $this.closest('tr').find('div.data').html($box.hide());
@@ -41,7 +41,7 @@
                         $this.text('Hide tasks');
                       });
                   },
-                url: '/tasks/'
+                url: '/tasks/' + $this.closest('tr').attr('uuid') + '/'
               });
             }
             else
