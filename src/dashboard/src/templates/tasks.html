@@ -1,83 +1,47 @@
-{% extends "layout.html" %}
-
-{% block title %}Tasks{% endblock %}
-{% block h1 %}Tasks{% endblock %}
-{% block page_id %}tasks{% endblock %}
-
-{% block content %}
-
-  <!-- item.arguments -->
-
-  <div class="pagination">
-    <span class="step-links">
-      {% if objects.has_previous %}
-        (<a href="{% url dashboard.views.tasks 1 %}">first</a>)
-        (<a href="{% url dashboard.views.tasks objects.previous_page_number %}">previous</a>)
-      {% endif %}
-
-      <span class="current">Page {{ objects.number }} of {{ objects.paginator.num_pages }}</span>
-
-      {% if objects.has_next %}
-        (<a href="{% url dashboard.views.tasks objects.next_page_number %}">next</a>)
-        (<a href="{% url dashboard.views.tasks objects.paginator.num_pages %}">last</a>)
-      {% endif %}
-    </span>
-  </div>
-
-  <table border="1">
-    <thead>
-      <tr>
-        <th>Task UUID</th>
-        <th class="fk hide_in_ajax">Job UUID</th>
-        <th>Created time</th>
-        <th>File UUID</th>
-        <th>File name</th>
-        <th>Exec field</th>
-        <th>Start time</th>
-        <th>Client</th>
-        <th>End time</th>
-        <th>Exit code</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in objects.object_list %}
-        <tr class="{% cycle 'odd' 'even' %}{% ifnotequal item.exitcode 0 %} exiterror{% endifnotequal %}">
-          <td>{{ item.taskuuid }}</td>
-          <td class="fk hide_in_ajax">{{ item.job.jobuuid }}</td>
-          <td>{{ item.createdtime }}</td>
-          <td>{{ item.fileuuid }}</td>
-          <td>{{ item.filename }}</td>
-          <td>{{ item.exec_field }}</td>
-          <td>{{ item.starttime }}</td>
-          <td>{{ item.client }}</td>
-          <td>{{ item.endtime }}</td>
-          <td>{{ item.exitcode }}</td>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th>Task UUID</th>
+          <th class="fk hide_in_ajax">Job UUID</th>
+          <th>Created time</th>
+          <th>File UUID</th>
+          <th>File name</th>
+          <th>Exec field</th>
+          <th>Start time</th>
+          <th>Client</th>
+          <th>End time</th>
+          <th>Exit code</th>
         </tr>
-        {% ifnotequal item.exitcode 0 %}
-          {% if item.stderror %}
-            <tr>
-              <td colspan="10" class="stderror"><p>{{ item.stderror }}</p></td>
-            </tr>
-          {% endif %}
-        {% endifnotequal %}
-      {% endfor %}
-    </tbody>
-  </table>
-
-  <div class="pagination">
-    <span class="step-links">
-      {% if objects.has_previous %}
-        (<a href="{% url dashboard.views.tasks 1 %}">first</a>)
-        (<a href="{% url dashboard.views.tasks objects.previous_page_number %}">previous</a>)
-      {% endif %}
-
-      <span class="current">Page {{ objects.number }} of {{ objects.paginator.num_pages }}</span>
-
-      {% if objects.has_next %}
-        (<a href="{% url dashboard.views.tasks objects.next_page_number %}">next</a>)
-        (<a href="{% url dashboard.views.tasks objects.paginator.num_pages %}">last</a>)
-      {% endif %}
-    </span>
-  </div>
-
-{% endblock %}
+      </thead>
+      <tbody>
+        {% for item in objects %}
+          <tr class="{% cycle 'odd' 'even' %}{% ifnotequal item.exitcode 0 %} exiterror{% endifnotequal %}">
+            <td>{{ item.taskuuid }}</td>
+            <td class="fk hide_in_ajax">{{ item.job.jobuuid }}</td>
+            <td>{{ item.createdtime }}</td>
+            <td>{{ item.fileuuid }}</td>
+            <td>{{ item.filename }}</td>
+            <td>{{ item.exec_field }}</td>
+            <td>{{ item.starttime }}</td>
+            <td>{{ item.client }}</td>
+            <td>{{ item.endtime }}</td>
+            <td>{{ item.exitcode }}</td>
+          </tr>
+          {% ifnotequal item.exitcode 0 %}
+            {% if item.stderror %}
+              <tr>
+                <td colspan="10" class="stderror"><p>{{ item.stderror }}</p></td>
+              </tr>
+            {% endif %}
+          {% endifnotequal %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
