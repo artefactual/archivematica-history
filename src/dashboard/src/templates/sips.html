@@ -17,9 +17,9 @@
         $('a.btn_show_tasks').live('click', function (event)
           {
             event.preventDefault();
-            
+
             var $this = $(this);
-            
+
             if ($this.text() == 'Show tasks')
             {
               $this.text('Loading');
@@ -47,7 +47,7 @@
             else
             {
               $this.text('Show tasks');
-              
+
               $this.closest('tr').find('div.tasks').slideUp('fast');
             }
           });
@@ -63,7 +63,7 @@
                 $(this).prevAll('.sip:first').addClass('sip-error');
               });
 
-          
+
           $('tr.sip')
             .css('cursor', 'pointer')
 
@@ -118,11 +118,11 @@
                 // Find SIP and move to 
                 var $trsip = $trjob.prevAll('tr.sip:first').addClass('sip-has-jobs-awaiting-approval');
                 var $trjobs = $trsip.nextUntil('tr.sip:first');
-                
+
                 // Prepend rows
                 $trjobs.prependTo('#table-sips tbody');
                 $trsip.prependTo('#table-sips tbody');
-                
+
                 $trjob
                   // Add ready class
                   .addClass('ready')
@@ -130,13 +130,13 @@
                   .insertAfter($trsip)
                   // Set description for approval
                   .find('p.approval_description').show().children('span').html($this.children('descriptionForApproval').text())
-                
+
                 $trjob
 
                   // Show actions
                   .find('p.actions a').removeClass('hidden').show()
-                  
-                  // Action 
+
+                  // Action
                   .parent().find('a.btn_approve_job').click(function (event)
                   {
                     event.preventDefault();
@@ -171,7 +171,7 @@
 
   </script>
   <style type="text/css">
-  
+
     .odd { background-color: #f2f2f2; }
      p { margin: 0px; }
      p.approval_description, .hidden { display: none; }
