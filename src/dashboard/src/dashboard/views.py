@@ -67,15 +67,6 @@ def jobs_awaiting_approval(request):
 def index(request):
   return HttpResponseRedirect(reverse(sips))
 
-def jobs(request, page = 1):
-  objects = Job.objects.all().order_by('-createdtime')
-  paginator = Paginator(objects, 10)
-  try:
-    objects = paginator.page(page)
-  except (EmptyPage, InvalidPage):
-    objects = paginator.page(paginator.num_pages)
-  return render_to_response('jobs.html', locals())
-
 def tasks(request, page = 1):
   if 'jobuuid' in request.REQUEST:
     job = Job.objects.get(jobuuid = request.REQUEST.get('jobuuid'))
