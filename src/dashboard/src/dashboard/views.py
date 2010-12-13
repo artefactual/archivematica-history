@@ -44,17 +44,7 @@ def show_subdir(request, jobuuid, subdir):
 def client(request):
   return render_to_response('client.html')
 
-def tasks(request, page = 1):
-  if 'jobuuid' in request.REQUEST:
-    job = Job.objects.get(jobuuid = request.REQUEST.get('jobuuid'))
-    objects = job.task_set.all()
-  else:
-    objects = Task.objects.all().order_by('-createdtime')
-  paginator = Paginator(objects, 10)
-
-  try:
-    objects = paginator.page(page)
-  except (EmptyPage, InvalidPage):
-    objects = paginator.page(paginator.num_pages)
-
+def tasks(request, jobuuid):
+  job = Job.objects.get(jobuuid = jobuuid)
+  objects = job.task_set.all().order_by('-createdtime')
   return render_to_response('tasks.html', locals())
