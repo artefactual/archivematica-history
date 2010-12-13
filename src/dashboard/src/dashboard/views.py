@@ -41,9 +41,6 @@ def show_subdir(request, jobuuid, subdir):
       return render_to_response('show_dir.html', locals())
   except Exception: raise Http404
 
-def client(request):
-  return render_to_response('client.html')
-
 def tasks(request, jobuuid):
   job = Job.objects.get(jobuuid = jobuuid)
   objects = job.task_set.all().order_by('-createdtime')
