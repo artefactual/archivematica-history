@@ -1,31 +1,24 @@
 import os
-
 from django import template
 
 register = template.Library()
 
 @register.filter('join_path')
 def join_path(value, path):
-
   return os.path.join(value, path)
 
 @register.filter('is_file')
 def is_file(value, basedir):
-
   return os.path.isfile(os.path.join(basedir, value))
 
 @register.filter('is_dir')
 def is_dir(value, basedir):
-
   return os.path.isdir(os.path.join(basedir, value))
 
 @register.filter('get_jobs_by_sipuuid')
 def get_jobs_by_sipuuid(value):
-
   from dashboard.dashboard.models import Job
-
   jobs = Job.objects.all().filter(sipuuid = value).order_by('-createdtime')
-
   priorities = {
     'completedUnsuccessfully': 0,
     'requiresAprroval': 1,
@@ -34,21 +27,17 @@ def get_jobs_by_sipuuid(value):
     'verificationCommand': 3,
     'completedSuccessfully': 4,
   }
-
   return sorted(jobs, key = lambda job: priorities[job.currentstep])
 
 @register.filter('map_known_values')
 def map_known_values(value):
-
   map = {
-
     # currentStep
     'completedSuccessfully': 'Completed successfully',
     'completedUnsuccessfully': 'Failed',
     'exeCommand': 'Executing',
     'requiresAprroval': 'Requires approval',
     'requiresApproval': 'Requires approval',
-
     # jobType
     'acquireSIP': 'Acquire SIP',
     'addDCToMETS': 'Add DC to METS',
