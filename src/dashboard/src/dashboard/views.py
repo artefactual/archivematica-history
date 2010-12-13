@@ -1,14 +1,9 @@
 from django.db.models import Max
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
-
-from dashboard.contrib.mcp.client import MCPClient
 from dashboard.dashboard.models import Task, Job
-from lxml import etree
-
 import os
 
 def index(request):
@@ -48,24 +43,6 @@ def show_subdir(request, jobuuid, subdir):
 
 def client(request):
   return render_to_response('client.html')
-
-def approve_job(request):
-  result = ''
-  if 'uuid' in request.REQUEST:
-    client = MCPClient(settings.MCP_SERVER[0], settings.MCP_SERVER[1])
-    uuid = request.REQUEST.get('uuid', '')
-    result = client.approve_job(uuid)
-  return HttpResponse(result, mimetype = 'text/plain')
-
-def jobs_awaiting_approval(request):
-  client = MCPClient(settings.MCP_SERVER[0], settings.MCP_SERVER[1])
-  jobs = etree.XML(client.get_jobs_awaiting_approval())
-  response = ''
-  if 0 < len(jobs):
-    for job in jobs:
-      response += etree.tostring(job)
-  response = '<Jobs>' + response + '</Jobs>'
-  return HttpResponse(response, mimetype = 'text/xml')
 
 def tasks(request, page = 1):
   if 'jobuuid' in request.REQUEST:
