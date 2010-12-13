@@ -88,8 +88,9 @@ INSTALLED_APPS = (
   # Uncomment the next line to enable the admin:
   # 'django.contrib.admin',
 
-  # dashboard app
-  'dashboard',
+  # Internal apps
+  'dashboard.dashboard',
+  'dashboard.mcp',
 
 )
 

@@ -15,7 +15,6 @@ urlpatterns = patterns('',
   (r'^tasks/$', dashboard.views.tasks),
   (r'^tasks/page/(?P<page>\d+)/$', dashboard.views.tasks),
 
-  (r'^mcp/jobs-awaiting-approval/$', dashboard.views.jobs_awaiting_approval),
-  (r'^mcp/approve-job/$', dashboard.views.approve_job),
+  (r'^mcp/', include('dashboard.mcp.urls')),
 
 )
