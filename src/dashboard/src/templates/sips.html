@@ -203,15 +203,16 @@
 
   <table id="table-sips" border="1" width="100%" style="margin: 20px auto 0 auto;">
     <thead>
-      <th colspan="2">SIP</th>
+      <th colspan="3">SIP</th>
     </thead>
     <tbody>
       {% for sip in objects %}
         <tr class="sip {% cycle 'odd' 'even' %}" uuid="{{ sip.grouper }}">
           <td>
             <span>SIP</span>
-            <strong>{{ sip.sipuuid }}</strong>
+            <strong>{{ sip.sipuuid|get_directory_by_sipuuid }}</strong>
           </td>
+          <td>{{ sip.sipuuid }}</td>
           <td>{{ sip.latest }}</td>
         </tr>
         {% for item in sip.sipuuid|get_jobs_by_sipuuid %}
@@ -222,7 +223,7 @@
               <p><a class="btn_show_tasks" href="#">Show tasks</a></p>
               <div class="data"></div>
             </td>
-            <td class="col-job-status">
+            <td class="col-job-status" colspan="2">
               {{ item.currentstep|map_known_values }}
               <p class="actions">
                 <a class="hidden btn_open_dir" target="_blank" href="file://{{ item.directory }}">Open dir</a>
