@@ -14,7 +14,7 @@ table th {
 }
 
 div#header {
-  background: #fff url(logo.png) no-repeat bottom left;
+  background: #fff url(../images/logo.png) no-repeat bottom left;
   height: 34px;
   margin: 0 0 10px 0;
 }
