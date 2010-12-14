@@ -21,18 +21,23 @@
 # @version svn: $Id$
 
 target=$1
-UUID=`uuid -v 4`
-targetBasename=`basename "$target"`
-targetDirname=`dirname "$target"`
-newDir="${targetDirname}/${targetBasename}-${UUID}/"
-mkdir "${newDir}"
-mv "${target}" "${newDir}objects/"
-mkdir "${newDir}logs"
-mkdir "${newDir}logs/SIPEvents"
-mkdir "${newDir}logs/fileMeta"
-echo $UUID > "${newDir}logs/SIP-UUID.txt"
-mv "${newDir}objects/ArchivematicaQuarantineEvent.xml" "${newDir}logs/SIPEvents/."
-mv "${newDir}objects/ArchivematicaUnquarantineEvent.xml" "${newDir}logs/SIPEvents/."
+
+if [ -d "$target" ]; then
+	temp="/tmp/`uuid`"
+	targetBasename=`basename "$target"`
+	targetDirname=`dirname "$target"`
+	
+	mv "$target" "$temp"
+	
+	mkdir "$target"
+	mkdir "${target}logs"
+	mkdir "${target}logs/fileMeta"
+	mkdir "${target}metadata"
+	mv "$temp" "${target}objects" 
+else
+	echo Error: Needs SIP directory as argument 1>&2
+	exit 1
+fi 
 
 
 

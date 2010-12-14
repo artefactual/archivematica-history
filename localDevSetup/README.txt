@@ -1,13 +1,3 @@
 
-Order scripts are run in matters:
-
-install
-createArchivematicaUser
-createLocalDevDirectories
-createDatabases
-
-
-At present they are not perfect.
-
-
-
+Please Read
+http://archivematica.org/wiki/index.php?title=Development_environment
