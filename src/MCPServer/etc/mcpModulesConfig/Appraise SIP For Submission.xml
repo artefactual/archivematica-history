@@ -1,41 +1,41 @@
 <module>
-    <filterFileEnd>echo_1.0</filterFileEnd>
-    <requiresUserApproval>No</requiresUserApproval>
-    <descriptionForApproval>None Needed </descriptionForApproval>
+    
+    <requiresUserApproval>Yes</requiresUserApproval>
+    <descriptionForApproval>Check the SIP to make sure it conforms to your Submission Agreement. Delete any files not accepted for ingest.</descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>/tmp/tmp</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%appraiseSIP/submission/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>/tmp/tmp2/</successDirectory>
-        <failureDirectory>/tmp/tmp3/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIPForSubmission/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <skip>No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>/tmp/tempOutput.txt</standardOut>
+                <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>echo_v1.0</execute>
-                <arguments> hello world </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute></execute>
+                <arguments></arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -53,7 +53,7 @@
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -70,7 +70,7 @@
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>

@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%verifyChecksum</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%reviewSIP</successDirectory>
+        <successDirectory>%watchDirectoryPath%prepareForAppraisal/submission/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
