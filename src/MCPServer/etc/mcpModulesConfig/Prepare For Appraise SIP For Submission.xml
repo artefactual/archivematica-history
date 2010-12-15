@@ -25,28 +25,28 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute>setFilePermission_v0.0</execute>
-                <arguments>-R 750 "%relativeLocation%"</arguments>
+                <execute>setDirectoryPermissionsForAppraisal_v0.0</execute>
+                <arguments>"%relativeLocation%"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
-                <skip>No</skip>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir>objects</filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
+                <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <failureNotification> </failureNotification>
-                <execute>setFilePermission_v0.0</execute>
-                <arguments>-R 770 "%relativeLocation%"</arguments>
-                <executeOnEachFile>No</executeOnEachFile>
-            </command>           
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>          
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
