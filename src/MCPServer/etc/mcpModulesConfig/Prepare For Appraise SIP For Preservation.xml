@@ -1,22 +1,22 @@
 <module>
-    
-    <requiresUserApproval>Yes</requiresUserApproval>
-    <descriptionForApproval>Check the SIP to make sure it conforms to your Submission Agreement. Delete any files not accepted for ingest.</descriptionForApproval>
+    <requiresUserApproval>No</requiresUserApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%reviewSIP</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%prepareForAppraisal/preservation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIPForSubmission/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
+        <successDirectory>%watchDirectoryPath%appraiseSIP/preservation/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes</skip>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -24,30 +24,29 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute></execute>
-                <arguments></arguments>
+                <execute>setFilePermission_v0.0</execute>
+                <arguments>-R 750 "%relativeLocation%"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes</skip>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
+                <filterSubDir>objects</filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>            
+                <execute>setFilePermission_v0.0</execute>
+                <arguments>-R 770 "%relativeLocation%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
+            </command>           
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
@@ -57,10 +56,10 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
@@ -74,10 +73,10 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute> </execute>

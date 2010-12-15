@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%appraiseSIP</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%appraiseSIP/preservation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIPForPreservation/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>

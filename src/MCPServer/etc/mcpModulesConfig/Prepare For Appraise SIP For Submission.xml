@@ -6,15 +6,16 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%structureDirectory/objectsAndLogs/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%prepareForAppraisal/submission/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%createOrMoveAndCheckMD5/</successDirectory>
+        <successDirectory>%watchDirectoryPath%appraiseSIP/submission/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
@@ -23,30 +24,29 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>restructureToObjectsAndLogs_v0.0</execute>
-                <arguments>"%relativeLocation%"</arguments>
-                <executeOnEachFile>no</executeOnEachFile>
+                <execute>setFilePermission_v0.0</execute>
+                <arguments>-R 750 "%relativeLocation%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes</skip>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
+                <filterSubDir>objects</filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>            
+                <execute>setFilePermission_v0.0</execute>
+                <arguments>-R 770 "%relativeLocation%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
+            </command>           
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
@@ -56,16 +56,15 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <requiresOutputLock>No</requiresOutputLock>
                 <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
-            </command>             
+            </command>            
         </cleanupSuccessfulCommand>
         
         <cleanupUnsuccessfulCommand>
@@ -74,10 +73,10 @@
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute> </execute>

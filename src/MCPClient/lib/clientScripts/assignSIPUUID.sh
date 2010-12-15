@@ -27,7 +27,7 @@ SIPUUID="$3"
 #SIPUUID=`uuid -v ${uuidVersion}`
 
 sudo chown -R archivematica:archivematica "${target}" 
-chmod -R "770" "${target}"
+chmod -R "740" "${target}"
 if [ -d "${target}logs/" ]; then
 	echo ${date} > "${target}logs/acquiredSIPDateTime.log"
 fi
