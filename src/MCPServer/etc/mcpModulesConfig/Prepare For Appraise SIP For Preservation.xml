@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%prepareForAppraisal/preservation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%appraiseSIP/preservation/</successDirectory>
+        <successDirectory>%watchDirectoryPath%appraiseSIPForPreservation/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
