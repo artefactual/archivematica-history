@@ -25,5 +25,6 @@ ddirname=`dirname $2`
 dbasename=`basename $2`  
 cd "$ddirname"
 
-sleep 5 && sudo /usr/bin/unoconv -v -f $1 "./$dbasename" && mv $3 $4
+unoconv --listener 1>/dev/null 2>&1 &
+sleep 4 && sudo /usr/bin/unoconv -v -f $1 "./$dbasename" && mv $3 $4
 exit "$?"
