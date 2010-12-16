@@ -137,9 +137,9 @@ def checkJobQueue():
 
 def processTaskQueue():
     """Attempts to assign tasks to clients."""
+    tasksLock.acquire()
     print "Processing Tasks Queue {" + len(tasksBeingProcessed).__str__() + "/"+ len(tasksQueue).__str__() + "/" + \
     (len(tasksBeingProcessed) + len(tasksQueue)).__str__() + "}..."
-    tasksLock.acquire()
     for task in tasksQueue:
         taskAssigned = False
         for client in factory.clients:
@@ -226,7 +226,15 @@ class Task():
         """When a task is completed, check to see if it was the last task for the job to be completed (job completed)."""
         tasksLock.acquire()
         jobStepDone = True
-        tasksBeingProcessed.remove(self)
+        if self in tasksBeingProcessed:
+            tasksBeingProcessed.remove(self)
+        else:
+            print "This shouldn't happen"
+            print "Task:", self.UUID
+            print self
+            for task in tasksBeingProcessed:
+                print task, task.UUID
+            
         if self.command.requiresOutputLock == "yes":
             print "Clearing output lock for job {" + self.job.UUID.__str__() + "}" 
             self.job.writeLock.release()
@@ -577,19 +585,23 @@ class archivematicaMCPServerProtocol(LineReceiver):
     def taskCompleted(self, command):
         """inform the server a task is completed""" 
         if len(command) == 5:
-            self.currentThreads = self.currentThreads - 1
             
             #might be a potential DOS attack.
             ret = string.atoi(command[2])
             
             taskUUID=command[1]
             theTask = None
+            tasksLock.acquire()
             for task in tasksBeingProcessed:
                 if task.UUID.__str__() == taskUUID:
                     theTask = task
                     break
+            tasksLock.release()
             if theTask:
-                print "task completed: {" + theTask.UUID.__str__() + "}" + ret.__str__() + "\r\n\t" + command[3] + "\r\n\t" + command[4]  
+                print "task completed: {" + theTask.UUID.__str__() + "}" + ret.__str__() + "\r\n\t" + command[3] + "\r\n\t" + command[4]
+                self.clientLock.acquire()
+                self.currentThreads = self.currentThreads - 1
+                self.clientLock.release()
                 print "current threads on client: " + self.currentThreads.__str__()
                 theTask.stdOut = command[3]
                 theTask.stdError = command[4]
@@ -624,10 +636,12 @@ class archivematicaMCPServerProtocol(LineReceiver):
         if len(command) == 2:
             taskUUID=command[1]
             theTask = None
+            tasksLock.acquire()
             for task in tasksBeingProcessed:
                 if task.UUID.__str__() == taskUUID:
                     theTask = task
                     break
+            tasksLock.release()
             if theTask:
                 print "Requested write lock for job {" + theTask.job.UUID.__str__() + "} " + command[1]
                 theTask.job.writeLock.acquire()

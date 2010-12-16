@@ -26,9 +26,12 @@ target="$1"
 if [ -d "${target}" ]; then
 	sudo chown -R archivematica "${target}"  
 	chmod -R 750 "${target}"
-	chmod -R 770 "${target}objects"
-	chmod 770 "${target}metadata/dublincore.xml"
-	 	
+	if [ -d "${target}objects" ]; then	
+		chmod -R 770 "${target}objects"
+	fi
+	if [ -f "${target}metadata/dublincore.xml" ]; then	
+		chmod -R 770 "${target}metadata/dublincore.xml"
+	fi
 else
   	echo $target does not exist\ 1>&2
   	exit 1 

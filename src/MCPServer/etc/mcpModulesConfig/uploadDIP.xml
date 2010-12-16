@@ -25,27 +25,27 @@
                 <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>upload-qubit.py_v0.0</execute>
-                <arguments> -e demo@example.com -p demo -t "%SIPName%-%SIPUUID%" -f "%SIPDirectory%" </arguments>
+                <execute>backupDIP_v0.0</execute>
+                <arguments>"%SIPDirectory%" "%sharedPath%DIPbackups/"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPDirectory%upload.log</standardOut>
+                <standardError>%SIPDirectory%uploadError.log</standardError>
                 <requiresOutputLock>No</requiresOutputLock>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>upload-qubit.py_v0.0</execute>
+                <arguments> -e demo@example.com -p demo -t "%SIPName%-%SIPUUID%" -f "%SIPDirectory%" </arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>            
         </verificationCommand>
         
