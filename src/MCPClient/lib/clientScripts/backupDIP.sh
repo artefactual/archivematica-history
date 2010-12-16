@@ -20,20 +20,16 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#source /etc/archivematica/archivematicaConfig.conf
+DIP="$1"
+DIPsStore="${2}`basename $1`/"
+uploadedObjects="DIPUploadedFiles.txt"
 
-target="$1"
-if [ -d "${target}" ]; then
-	sudo chown -R archivematica "${target}"  
-	chmod -R 750 "${target}"
-	if [ -d "${target}objects" ]; then	
-		chmod -R 770 "${target}objects"
-	fi
-	if [ -f "${target}metadata/dublincore.xml" ]; then	
-		chmod -R 770 "${target}metadata/dublincore.xml"
-	fi
-else
-  	echo $target does not exist\ 1>&2
-  	exit 1 
-fi
+cd "$DIP"
+ls objects > "$uploadedObjects"
 
+mkdir "${DIPsStore}"
+mv "objectsBackup" "${DIPsStore}."
+chmod -R 750 "$uploadedObjects"
+mv "$uploadedObjects" "${DIPsStore}."
+chmod 770 "${DIPsStore}${uploadedObjects}"
+cp "METS.xml" "${DIPsStore}."

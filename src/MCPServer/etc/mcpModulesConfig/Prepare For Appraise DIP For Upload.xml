@@ -6,9 +6,9 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%structureDirectory/generateDIP/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%prepareForAppraisal/upload/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%storeAIP/</successDirectory>
+        <successDirectory>%watchDirectoryPath%uploadDIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
@@ -23,18 +23,18 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>move_v0.0</execute>
-                <arguments>"%SIPDirectory%DIP" "%sharedPath%watchedDirectories/prepareForAppraisal/upload/%SIPName%-DIP-%SIPUUID%"</arguments>
+                <execute>copy_v0.0</execute>
+                <arguments>-R "%SIPDirectory%objects" "%SIPDirectory%objectsBackup"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -43,23 +43,23 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>            
+                <execute>setDirectoryPermissionsForAppraisal_v0.0</execute>
+                <arguments>"%relativeLocation%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
+            </command>          
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
@@ -69,14 +69,14 @@
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute> </execute>

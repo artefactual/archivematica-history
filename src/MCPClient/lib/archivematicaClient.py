@@ -101,7 +101,9 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
                 
         if requestLock:
             op = sOutput, sError, output[0], output[1], retcode
+            waitingForOutputLockLock.acquire()
             waitingForOutputLock[taskUUID] = op
+            waitingForOutputLockLock.release()
             serverConnection.requestLock(taskUUID)
         else:
             a = writeToFile(output[0], sOutput)
@@ -186,10 +188,13 @@ class archivematicaMCPClientProtocol(LineReceiver):
         if len(command) == 8:
             ret = executeCommand(command[1], command[2], command[3], command[4], command[5], command[6], command[7], self)
             print "returned: {" + command[1] + "}" + ret.__str__()
+            waitingForOutputLockLock.acquire()
             if command[1] not in waitingForOutputLock:
+                waitingForOutputLockLock.release()
                 self.sendTaskResult(command, ret)
             else:
                 print command[1] + "{" + ret.__str__() + "} is waiting for lock output."
+                waitingForOutputLockLock.release()
         else:
             badProtocol(self, command)
             self.sendTaskResult(command, 1)
@@ -202,7 +207,10 @@ class archivematicaMCPClientProtocol(LineReceiver):
     
     def unlockForWrite(self, command):
         if len(command) == 2 and command[1] in waitingForOutputLock:
-            ret = writeUnlocked(waitingForOutputLock[command[1]])
+            waitingForOutputLockLock.acquire()
+            vars = waitingForOutputLock[command[1]]
+            waitingForOutputLockLock.release()
+            ret = writeUnlocked(vars)
             waitingForOutputLockLock.acquire()
             del waitingForOutputLock[command[1]]
             waitingForOutputLockLock.release()
