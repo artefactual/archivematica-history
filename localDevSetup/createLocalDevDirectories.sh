@@ -43,4 +43,4 @@ sudo chmod -R g+s "/var/archivematica/sharedDirectory"
 
 
 sudo chmod -R 777 /var/archivematica/sharedDirectory/
-sudo apachectl restart
+sudo apache2ctl restart
