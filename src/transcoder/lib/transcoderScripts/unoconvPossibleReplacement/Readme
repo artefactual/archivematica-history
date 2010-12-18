@@ -1,0 +1,18 @@
+After numerous problems with unoconv, and generally undefined behavior, I decided to look for some alternatives.
+
+I found these scripts @ http://www.oooninja.com/2008/02/batch-command-line-file-conversion-with.html
+Posted by Andrew Z at Wednesday, February 27, 2008
+
+To run in archivematica... 
+First open the oo port by running the OOconverter.sh
+Then replace the unoconv.sh script in /transcoderScripts/ with this one.
+Also move the DocumentConverter.py to the transcoderScripts directory.
+
+
+After doing some testing I've found that it is subject to the segmentation faults and other problems I've seen with unoconv.
+So these problems would be Open Office related.
+I have not seen, the process hang; which was what was causing the MCP to hang.
+
+
+
+
