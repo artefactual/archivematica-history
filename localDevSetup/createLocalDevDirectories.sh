@@ -1,3 +1,4 @@
+set +e
 origDir="`pwd`/"
 cd ../
 svnDir="`pwd`/"
@@ -43,10 +44,13 @@ sudo chown -R archivematica:archivematica "/var/archivematica/sharedDirectory"
 sudo chmod -R g+s "/var/archivematica/sharedDirectory"
 
 
+echo setting permission on share directories
 sudo chmod -R 777 /var/archivematica/sharedDirectory/
+echo restarting apache
 sudo apache2ctl restart
 
 #Configure sudoers for mcp and client
+echo about to edit sudoers file
 set -e
 cd "$origDir"
 tmp="./sudoers-`uuid`"
