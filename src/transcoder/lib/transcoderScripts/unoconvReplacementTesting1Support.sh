@@ -1,4 +1,5 @@
 #!/bin/bash
+#unoconvReplacementTesting1Support.sh
 
 # This file is part of Archivematica.
 #
@@ -21,17 +22,6 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-ddirname=`dirname $2`
-dbasename=`basename $2`  
-cd "$ddirname"
-#cd "`dirname $0`"
 
-inputFile="$dbasename"
-#outputFile="`dirname $4`/`basename $3`"
-outputFile="$3"
-
-echo converting $inputFile TO: $outputFile
-
-flock -x /var/lock/officeConversion.lock -c "`dirname $0`/unoconvReplacementTesting1Support.sh \"`dirname $0`\" \"${dbasename}\" \"${outputFile}\"" && mv "$3" "$4"
-#flock -x /var/lock/unoconv.lock -c "./unoconv2.sh $1 $2 $3 $4" 
+sudo "$1/DocumentConverter.py" "$2" "$3"
 exit "$?"
