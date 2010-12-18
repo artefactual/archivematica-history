@@ -25,7 +25,7 @@
 echo please enter sudo password if you have not already done so
 sudo echo thanks
 
-op="`netstat -l | grep 2002`"
+op="`netstat -l | grep 8100`"
 if [ -z "$op" ]; then
 	echo starting OpenOffice in listening mode on TCP port 8100.
 
