@@ -17,14 +17,14 @@ def is_dir(value, basedir):
 
 @register.filter('get_directory_by_sipuuid')
 def get_directory_by_sipuuid(value):
-  from dashboard.dashboard.models import Job
+  from dashboard.main.models import Job
   import re
   directory = Job.objects.all().filter(sipuuid = value)[0].directory
   return re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
 
 @register.filter('get_jobs_by_sipuuid')
 def get_jobs_by_sipuuid(value):
-  from dashboard.dashboard.models import Job
+  from dashboard.main.models import Job
   jobs = Job.objects.all().filter(sipuuid = value).order_by('-createdtime')
   priorities = {
     'completedUnsuccessfully': 0,
