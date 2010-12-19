@@ -94,4 +94,4 @@ INSTALLED_APPS = (
 
 )
 
-mCP_SERVER = ('127.0.0.1', 8000)
+MCP_SERVER = ('127.0.0.1', 8000)
