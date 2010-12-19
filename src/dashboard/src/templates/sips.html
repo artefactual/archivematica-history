@@ -75,7 +75,7 @@
               {
                 if ($(event.target).hasClass('btn_remove_sip'))
                 {
-                  alert('Disabled temporary, see issue 295.'); return false;
+                  alert('Feature disabled temporary, see issue 295.'); return false;
 
                   event.preventDefault();
 
@@ -133,7 +133,7 @@
         dataType: 'xml',
         error: function(xhr, text)
           {
-            alert("error");
+            $('#table-sips').before('<p class="error">An error occurred communicationg with MCP. <a href="{% url main.views.sips %}">Reload page.</a></p>');
           },
         type: 'GET',
         success: function(data)
@@ -240,6 +240,8 @@
     td.sip_uuid { font-family: "Courier New", Courier, monospace; width: 310px; font-family: 1em; text-align: center; }
     td.sip_timestamp { width: 130px; text-align: center; }
     td.sip_actions { width: 70px; text-align: center; }
+    
+    p.error { text-align: center; color: Red; margin: 10px 0 0 0; }
 
   </style>
 {% endblock %}
