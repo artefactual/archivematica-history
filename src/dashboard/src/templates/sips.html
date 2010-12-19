@@ -30,7 +30,7 @@
                   {
                     var $taskrows = $(data).find('tbody');
 
-                    var $box = $('<div class="tasks" />')
+                    var $box = $('<table class="tasks" />')
                       .append($taskrows)
                       .find('table').prepend('<caption>Tasks</caption>').end();
 
@@ -171,12 +171,11 @@
   </script>
   <style type="text/css">
 
-    .odd { background-color: #f2f2f2; }
-     p { margin: 0px; }
-     p.approval_description, .hidden { display: none; }
-     div.tasks { margin-top: 10px; }
-     p.actions a { margin-left: 4px; }
-     .ready { background-color: #ffdda7; }
+   .odd { background-color: #f2f2f2; }
+    p { margin: 0px; }
+    p.approval_description, .hidden { display: none; }
+    p.actions a { margin-left: 4px; }
+    .ready { background-color: #ffdda7; }
 
     tr.sip td { background-color: #ffdda7; padding: 12px 8px; }
     tr.sip-hover td,
@@ -194,6 +193,12 @@
 
     td.col-job-status { vertical-align: top; }
     tr.unsuccessfully td { background-color: #ffaaaa; }
+
+    table.tasks { margin-top: 10px; }
+    table.tasks td { background-color: White; }
+    table.tasks tr.exiterror td { background-color: #ffdda7; }
+    table.tasks td.stderror { background-color: #eee; }
+    table.tasks span { font-weight: bold; width: 80px; display: block; float: left; text-align: right; margin-right: 10px; }
 
   </style>
 {% endblock %}
