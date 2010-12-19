@@ -226,7 +226,6 @@
             <td class="col-job-status" colspan="2">
               {{ item.currentstep|map_known_values }}
               <p class="actions">
-                <a class="hidden btn_open_dir" target="_blank" href="file://{{ item.directory }}">Open dir</a>
                 <a class="hidden btn_open_dir" target="_blank" href="{% url dashboard.views.show_dir item.jobuuid %}">Browse dir</a>
                 <a class="hidden btn_approve_job" href="#">Approve</a>
               </p>
