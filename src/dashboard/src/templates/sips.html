@@ -209,7 +209,7 @@
     p.actions a { margin-left: 4px; }
     .ready { background-color: #ffdda7; }
 
-    tr.sip td { background-color: #ffdda7; padding: 12px 8px; }
+    tr.sip td { background-color: #eadecc; padding: 8px; }
     tr.sip-hover td,
     tr.sip-enabled td { background-color: #4388a7; }
 
@@ -217,9 +217,9 @@
     tr.sip td span { padding: 2px 10px 2px 10px; margin-left: -20px; border: 1px solid #666; margin-right: 8px; background: White url(/media/images/accept.png) no-repeat center center; }
     tr.sip-has-jobs-awaiting-approval td span { background-image: url(/media/images/bell.png); }
     tr.sip-error td span { background-image: url(/media/images/cancel.png); }
-
-    tr.sip-has-jobs-awaiting-approval td { background-color: #fcfca6; }
-    tr.sip-error td { background-color: #fcbca6; }
+    tr.sip-enabled td span { background-color: #ccc; }
+    tr.sip-has-jobs-awaiting-approval td { background-color: #ffdda7; }
+    tr.sip-error td { background-color: #FFE4DB; }
     
     tr.exiterror td { background-color: #f2beab; }
 
@@ -236,6 +236,10 @@
     table.tasks span { font-weight: bold; width: 80px; display: block; float: left; text-align: right; margin-right: 10px; }
 
     pre { overflow-x: auto; max-width: 800px; }
+
+    td.sip_uuid { font-family: "Courier New", Courier, monospace; width: 310px; font-family: 1em; text-align: center; }
+    td.sip_timestamp { width: 130px; text-align: center; }
+    td.sip_actions { width: 70px; text-align: center; }
 
   </style>
 {% endblock %}
@@ -255,9 +259,9 @@
             <span>&nbsp;</span>
             <strong>{{ sip.sipuuid|get_directory_by_sipuuid }}</strong>
           </td>
-          <td>{{ sip.sipuuid }}</td>
-          <td>{{ sip.latest }}</td>
-          <td><a class="btn_remove_sip" href="{% url main.views.remove_sip sip.sipuuid %}">Remove</a>
+          <td class="sip_uuid">{{ sip.sipuuid }}</td>
+          <td class="sip_timestamp">{{ sip.latest }}</td>
+          <td class="sip_actions"><a class="btn_remove_sip" href="{% url main.views.remove_sip sip.sipuuid %}">Remove</a>
         </tr>
         {% for item in sip.sipuuid|get_jobs_by_sipuuid %}
           <tr class="job {% cycle 'odd' 'even' %}{% ifequal item.currentstep "completedUnsuccessfully" %} unsuccessfully{% endifequal %}" uuid="{{ item.jobuuid }}">
