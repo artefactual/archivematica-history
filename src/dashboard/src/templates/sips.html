@@ -71,12 +71,40 @@
             .css('cursor', 'pointer')
 
             // Handlers
-            .click(function()
+            .click(function(event)
               {
-                $(this)
-                  .toggleClass('sip-enabled')
-                  .nextUntil('tr.sip').toggle()
-                  .end().scroll();
+                if ($(event.target).hasClass('btn_remove_sip'))
+                {
+                  alert('Disabled temporary, see issue 295.'); return false;
+
+                  event.preventDefault();
+
+                  var $this = $(this);
+                  var href = $(event.target).attr('href');
+
+                  if ($this.hasClass('sip-has-jobs-awaiting-approval'))
+                  {
+                    alert('This job is awaiting approval.')
+                  }
+                  else
+                  {
+                    $.ajax({
+                      type: 'GET',
+                      success: function(data)
+                        {
+
+                        },
+                      url: href
+                    }); 
+                  }
+                }
+                else
+                {
+                  $(this)
+                    .toggleClass('sip-enabled')
+                    .nextUntil('tr.sip').toggle()
+                    .end().scroll();
+                }
               })
             .mouseover(function ()
               {
@@ -210,7 +238,10 @@
 {% block content %}
   <table id="table-sips" border="1" width="100%" style="margin: 20px auto 0 auto;">
     <thead>
-      <th colspan="3">SIP</th>
+      <th>SIP</th>
+      <th>UUID</th>
+      <th>Timestamp</th>
+      <th>Actions</th>
     </thead>
     <tbody>
       {% for sip in objects %}
@@ -221,10 +252,11 @@
           </td>
           <td>{{ sip.sipuuid }}</td>
           <td>{{ sip.latest }}</td>
+          <td><a class="btn_remove_sip" href="{% url dashboard.views.remove_sip sip.sipuuid %}">Remove</a>
         </tr>
         {% for item in sip.sipuuid|get_jobs_by_sipuuid %}
           <tr class="job {% cycle 'odd' 'even' %}{% ifequal item.currentstep "completedUnsuccessfully" %} unsuccessfully{% endifequal %}" uuid="{{ item.jobuuid }}">
-            <td>
+            <td colspan="2">
               <p class="job_type"><strong>Micro-Service:</strong>&nbsp;<span class="value">{{ item.jobtype|map_known_values }}</span></p>
               <p class="approval_description"><strong>Description for approval:</strong>&nbsp;<span class="value" /></p>
               <p><a class="btn_show_tasks" href="#">Show tasks</a></p>

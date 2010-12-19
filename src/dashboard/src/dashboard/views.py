@@ -43,7 +43,15 @@ def show_subdir(request, jobuuid, subdir):
 
 def tasks(request, jobuuid):
   try:
-   job = Job.objects.get(jobuuid = jobuuid)
-   objects = job.task_set.all().order_by('-createdtime')
-   return render_to_response('tasks.html', locals())
+    job = Job.objects.get(jobuuid = jobuuid)
+    objects = job.task_set.all().order_by('-createdtime')
+    return render_to_response('tasks.html', locals())
   except Exception: raise Http404
+
+def remove_sip(request, sipuuid):
+  # jobs = Job.objects.filter(sipuuid = sipuuid)
+  # msg = '%s jobs removed!' % jobs.count()
+  tasks = Task.objects.all()
+  # tasks.delete()
+  msg = tasks.count()
+  return HttpResponse(msg)

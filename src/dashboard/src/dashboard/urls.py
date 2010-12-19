@@ -6,6 +6,7 @@ urlpatterns = patterns('dashboard.dashboard.views',
   (r'jobs/(?P<jobuuid>' + UUID_REGEX + ')/$', 'show_dir'),
   (r'jobs/(?P<jobuuid>' + UUID_REGEX + ')/(?P<subdir>.*)/$', 'show_subdir'),
   (r'sips/$', 'sips'),
+  (r'sips/(?P<sipuuid>' + UUID_REGEX + ')/remove/$', 'remove_sip'),
   (r'tasks/(?P<jobuuid>' + UUID_REGEX + ')/$', 'tasks'),
   (r'', 'index'),
 )
