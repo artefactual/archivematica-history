@@ -34,7 +34,10 @@ def get_jobs_by_sipuuid(value):
     'verificationCommand': 3,
     'completedSuccessfully': 4,
   }
-  return sorted(jobs, key = lambda job: priorities[job.currentstep])
+  def get_priority(job):
+    try: return priorities[job.currentstep]
+    except Exception: return 0
+  return sorted(jobs, key = get_priority)
 
 @register.filter('map_known_values')
 def map_known_values(value):
