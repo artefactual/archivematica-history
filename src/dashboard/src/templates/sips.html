@@ -252,7 +252,7 @@
           </td>
           <td>{{ sip.sipuuid }}</td>
           <td>{{ sip.latest }}</td>
-          <td><a class="btn_remove_sip" href="{% url dashboard.views.remove_sip sip.sipuuid %}">Remove</a>
+          <td><a class="btn_remove_sip" href="{% url main.views.remove_sip sip.sipuuid %}">Remove</a>
         </tr>
         {% for item in sip.sipuuid|get_jobs_by_sipuuid %}
           <tr class="job {% cycle 'odd' 'even' %}{% ifequal item.currentstep "completedUnsuccessfully" %} unsuccessfully{% endifequal %}" uuid="{{ item.jobuuid }}">
@@ -265,7 +265,7 @@
             <td class="col-job-status" colspan="2">
               {{ item.currentstep|map_known_values }}
               <p class="actions">
-                <a class="hidden btn_open_dir" target="_blank" href="{% url dashboard.views.show_dir item.jobuuid %}">Browse directory</a>
+                <a class="hidden btn_open_dir" target="_blank" href="{% url main.views.show_dir item.jobuuid %}">Browse directory</a>
                 <a class="hidden btn_approve_job" href="#">Approve</a>
               </p>
             </td>
