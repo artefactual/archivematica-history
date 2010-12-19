@@ -33,7 +33,7 @@
     
     <hr />
     
-    <p>Contents of <a href="{% url dashboard.views.show_dir job.jobuuid %}">{{ job.directory }}</a></p>
+    <p>Contents of <a href="{% url main.views.show_dir job.jobuuid %}">{{ job.directory }}</a></p>
 
     {% if parent %}
     <h3>{{ parent }}</h3>
@@ -43,10 +43,10 @@
       {% for item in list %}
         {% if item|is_dir:job.directory %}
           {% ifnotequal item '.svn' %}
-            <li><a href="{% url dashboard.views.show_subdir job.jobuuid item %}">{{ item }}/</a></li>
+            <li><a href="{% url main.views.show_subdir job.jobuuid item %}">{{ item }}/</a></li>
           {% endifnotequal %}
         {% else %}
-          <li><a href="{% url dashboard.views.show_subdir job.jobuuid subdir|join_path:item %}">{{ item }}</a></li>
+          <li><a href="{% url main.views.show_subdir job.jobuuid subdir|join_path:item %}">{{ item }}</a></li>
         {% endif %}
       {% empty %}
         Empty.

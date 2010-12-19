@@ -89,9 +89,9 @@ INSTALLED_APPS = (
   # 'django.contrib.admin',
 
   # Internal apps
-  'dashboard.dashboard',
+  'dashboard.main',
   'dashboard.mcp',
 
 )
 
-MCP_SERVER = ('127.0.0.1', 8000)
+mCP_SERVER = ('127.0.0.1', 8000)

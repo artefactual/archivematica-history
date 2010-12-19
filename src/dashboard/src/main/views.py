@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
-from dashboard.dashboard.models import Task, Job
+from dashboard.main.models import Task, Job
 import os
 
 def index(request):
