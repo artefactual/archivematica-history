@@ -29,10 +29,7 @@
                 success: function(data)
                   {
                     var $taskrows = $(data).find('tbody');
-
-                    var $box = $('<table class="tasks" />')
-                      .append($taskrows)
-                      .find('table').prepend('<caption>Tasks</caption>').end();
+                    var $box = $('<table class="tasks" />').append($taskrows);
 
                     $this.closest('tr').find('div.data').html($box.hide());
                     $box.slideDown('fast', function()
@@ -47,7 +44,7 @@
             {
               $this.text('Show tasks');
 
-              $this.closest('tr').find('div.tasks').slideUp('fast');
+              $this.closest('tr').find('table.tasks').slideUp('fast');
             }
           });
 
