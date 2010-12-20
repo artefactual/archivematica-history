@@ -27,7 +27,7 @@
                 <failureNotification> </failureNotification>
                 <execute>storeAIP_v0.0</execute>
                 <arguments>"%SIPDirectory%" "%AIPsStore%"</arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <executeOnEachFile>Yes</executeOnEachFile>
             </command>
         </exeCommand>
         
@@ -46,13 +46,13 @@
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
-            </command>            
+            </command>       
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -61,14 +61,15 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>            
+                <execute>removeWithAstrix_v0.0</execute>
+                <arguments>"%sharedPath%SIPbackups/" "-%SIPUUID%/"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
+            </command>       
         </cleanupSuccessfulCommand>
-        
+       
         <cleanupUnsuccessfulCommand>
-            <command>
+      		<command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>Yes/No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
@@ -77,12 +78,11 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
-            </command>              
+            </command>
         </cleanupUnsuccessfulCommand>                  
     </commands>  
 </module>

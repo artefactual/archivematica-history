@@ -23,3 +23,4 @@
 AIP="$1"
 AIPsStore="$2"
 mv "$AIP" "${AIPsStore}."
+exit $?
