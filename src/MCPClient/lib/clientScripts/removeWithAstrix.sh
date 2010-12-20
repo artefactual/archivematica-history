@@ -19,8 +19,8 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+source /etc/archivematica/archivematicaConfig.conf
 
-AIP="$1"
-AIPsStore="$2"
-mv "$AIP" "${AIPsStore}."
+rm -R "$1"*"$2"
 exit $?
+
