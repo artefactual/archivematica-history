@@ -10,7 +10,7 @@
         <watchDirectory>%watchDirectoryPath%verifySIPCompliance/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%assignIdentifier/UUID4/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failedModule/verifySIPCompliance/</failureDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
