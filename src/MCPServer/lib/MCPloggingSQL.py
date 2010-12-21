@@ -52,7 +52,7 @@ def getUTCDate():
 
 #sudo apt-get install python-mysqldb
 sqlLoggingLock = threading.Lock()
-db=_mysql.connect(host="localhost", db="MCP", user="demo", passwd="demo")
+db=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
 
 
 def runSQL( sql ):

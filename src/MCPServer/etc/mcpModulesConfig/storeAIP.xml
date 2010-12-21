@@ -61,7 +61,7 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute>removeWithAstrisk_v0.0</execute>
+                <execute>removeWithAsterisk_v0.0</execute>
                 <arguments>"%sharedPath%SIPbackups/" "-%SIPUUID%/"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>       
