@@ -35,40 +35,11 @@ from socket import gethostname
 archivematicaVars = loadConfig("/etc/archivematica/MCPClient/clientConfig.conf")
 supportedModules = loadConfig(archivematicaVars["archivematicaClientModules"])
 protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
-waitingForOutputLock = {}
-waitingForOutputLockLock = threading.Lock()
-
-def writeToFile(output, fileName):
-    if fileName and output:
-        print "writing to: " + fileName
-        try:
-            f = open(fileName, 'a')
-            f.write(output.__str__())
-            f.close()
-        except OSError, ose:
-            print >>sys.stderr, "output Error", ose
-            return -2
-        except IOError as (errno, strerror):
-            print "I/O error({0}): {1}".format(errno, strerror)
-            return -3
-    else:
-        print "No output or file specified"
-    return 0
-        
-def writeUnlocked(data):
-    a = writeToFile(data[2], data[0])
-    b = writeToFile(data[3], data[1])
-    if data[4]:
-        return data[4], data[2], data[3]
-    else:
-        if a + b :
-            return a + b, data[2], "Failed to write to file\\n" + data[3]
-        else:
-            return a + b, data[2], data[3]
-
-def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
+       
+def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverConnection = None):
     #Replace replacement strings
-    requestLock = requiresOutputLock == "yes"
+    if execute not in supportedModules:
+        return -5, "", "Tried To Run An Unsupported Command"
     command = supportedModules[execute] 
     replacementDic = { 
         "%sharedPath%":archivematicaVars["sharedDirectoryMounted"], \
@@ -79,15 +50,13 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
         command = command.replace ( key, replacementDic[key] )
         arguments = arguments.replace ( key, replacementDic[key] )
         sInput = sInput.replace ( key, replacementDic[key] )
-        sOutput = sOutput.replace ( key, replacementDic[key] )
-        sError = sError.replace ( key, replacementDic[key] )
     #execute command
     try:
       if execute != "" and command != "":
         a = 0
         b = 0
         command += " " + arguments
-        print >>sys.stderr, "processing: " + command.__str__()
+        print >>sys.stderr, "processing: {" + taskUUID + "}" + command.__str__()
         #retcode = subprocess.call( shlex.split(command) )
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	
@@ -99,23 +68,10 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
         print "returned: " + retcode.__str__()
         print output
                 
-        if requestLock:
-            op = sOutput, sError, output[0], output[1], retcode
-            waitingForOutputLockLock.acquire()
-            waitingForOutputLock[taskUUID] = op
-            waitingForOutputLockLock.release()
-            serverConnection.requestLock(taskUUID)
-        else:
-            a = writeToFile(output[0], sOutput)
-            b = writeToFile(output[1], sError)
-
         #it executes check for errors
-        if retcode != 0:
-          print >>sys.stderr, "error code:" + retcode.__str__()
-          return retcode, output[0], output[1]
-        else:
-          print >>sys.stderr, "processing completed"
-          return a + b, output[0], output[1]
+        
+        return retcode, output[0], output[1]
+        
       else:
         print >>sys.stderr, "server tried to run a blank command! " 
         return 1, "", "server tried to run a blank command! "
@@ -124,15 +80,6 @@ def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "
         print >>sys.stderr, "Execution failed:", ose
         output = ["Config Error!", ose.__str__() ]
         retcode = 1
-        if requestLock:
-            op = sOutput, sError, output[0], output[1], retcode
-            waitingForOutputLockLock.acquire()
-            waitingForOutputLock[taskUUID] = op
-            waitingForOutputLockLock.release()
-            serverConnection.requestLock(taskUUID)
-        else:
-            a = writeToFile(output[0], sOutput)
-            b = writeToFile(output[1], sError)
         return retcode, output[0], output[1]
 
 class archivematicaMCPClientProtocol(LineReceiver):
@@ -185,38 +132,14 @@ class archivematicaMCPClientProtocol(LineReceiver):
             print >>sys.stderr, "this should never be executed."   
     
     def performTask(self, command):
-        if len(command) == 8:
-            ret = executeCommand(command[1], command[2], command[3], command[4], command[5], command[6], command[7], self)
+        if len(command) == 5:
+            ret = executeCommand(command[1], command[2], command[3], command[4], self)
             print "returned: {" + command[1] + "}" + ret.__str__()
-            waitingForOutputLockLock.acquire()
-            if command[1] not in waitingForOutputLock:
-                waitingForOutputLockLock.release()
-                self.sendTaskResult(command, ret)
-            else:
-                print command[1] + "{" + ret.__str__() + "} is waiting for lock output."
-                waitingForOutputLockLock.release()
+            self.sendTaskResult(command, ret)
+                
         else:
             badProtocol(self, command)
             self.sendTaskResult(command, 1)
-
-    def requestLock(self, taskUUID):
-        send = protocol["requestLockForWrite"]
-        send += protocol["delimiter"]
-        send += taskUUID
-        self.write(send)
-    
-    def unlockForWrite(self, command):
-        if len(command) == 2 and command[1] in waitingForOutputLock:
-            waitingForOutputLockLock.acquire()
-            vars = waitingForOutputLock[command[1]]
-            waitingForOutputLockLock.release()
-            ret = writeUnlocked(vars)
-            waitingForOutputLockLock.acquire()
-            del waitingForOutputLock[command[1]]
-            waitingForOutputLockLock.release()
-            self.sendTaskResult(command, ret)
-        else:
-            badProtocol(self, command)
 
     def keepAlive(self, command):    
         if len(command) == 1:
@@ -226,7 +149,6 @@ class archivematicaMCPClientProtocol(LineReceiver):
 
     protocolDic = {
     protocol["performTask"]:performTask, \
-    protocol["unlockForWrite"]:unlockForWrite, \
     protocol["keepAlive"]:keepAlive
     }
 
