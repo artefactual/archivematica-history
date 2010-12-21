@@ -34,6 +34,8 @@ if __name__ == '__main__':
     taskUUID = sys.argv[7]
     
     fileUUIDNotFound = "No UUID for file:"
-   
+    
     if fileUUIDNotFound in fileUUID:
-        addFileToSIP( objectsDirectory, logsDirectory, filePath, taskUUID, eIDValue, date, date)
+        objects = "objects/"
+        relativeFilePath = filePath.replace(objectsDirectory, objects, 1)
+        addFileToSIP( objectsDirectory, logsDirectory, filePath, taskUUID, eIDValue, date, date, eventOutcomeDetailNote="extracted " + relativeFilePath)

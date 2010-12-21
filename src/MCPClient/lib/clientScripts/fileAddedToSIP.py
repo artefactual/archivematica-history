@@ -42,7 +42,7 @@ def md5_for_file(fileName, block_size=2**20):
     return md5.hexdigest()
 
 
-def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, addedDate, objects="objects/" ):
+def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, addedDate, objects="objects/", eventDetailText="", eventOutcomeDetailNote=""):
     relativeFilePath = filePath.replace(objectsDirectory, objects, 1)
     print fileUUID + " -> " + relativeFilePath 
     
@@ -56,7 +56,12 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     fileSize = os.path.getsize(filePath).__str__()
     
     #create Event to explain file origin.   
-    ingestEvent = createEvent(fileUUID, eIDValue, eventDateTime=addedDate, eventDetailText=relativeFilePath)
+    ingestEvent = None
+    if eventDetailText or eventOutcomeDetailNote:
+        oi = createOutcomeInformation( eventOutcomeDetailNote=eventOutcomeDetailNote)
+        ingestEvent = createEvent(fileUUID, eIDValue, eventDateTime=addedDate, eventDetailText=eventDetailText, eOutcomeInformation=oi)
+    else:
+        ingestEvent = createEvent(fileUUID, eIDValue, eventDateTime=addedDate, eventDetailText=relativeFilePath)
     
     newFileUUID = uuid.uuid4().__str__()
     eIDValue = newFileUUID
