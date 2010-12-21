@@ -34,5 +34,4 @@ addToListTaskHandler="addToListTaskHandler" #inform the server the client is cap
 taskCompleted="taskCompleted" #inform the server a task is completed
 maxTasks="setMaxTasks" #tell the server how many threads this client will run
 setName="setName"
-requestLockForWrite="requestLockForWrite"
-unlockForWrite="unlockForWrite"
+

@@ -86,6 +86,23 @@ factory = twistedProtocol.ServerFactory()
 jobsLock = threading.Lock()
 watchedDirectories = []
 
+def writeToFile(output, fileName):
+    if fileName and output:
+        print "writing to: " + fileName
+        try:
+            f = open(fileName, 'a')
+            f.write(output.__str__())
+            f.close()
+        except OSError, ose:
+            print >>sys.stderr, "output Error", ose
+            return -2
+        except IOError as (errno, strerror):
+            print "I/O error({0}): {1}".format(errno, strerror)
+            return -3
+    else:
+        print "No output, or file specified"
+    return 0
+
 
 def getJobsAwaitingApproval():
     jobsLock.acquire()
@@ -156,18 +173,10 @@ def processTaskQueue():
                         tasksBeingProcessed.append(task)
                         send = protocol["performTask"]
                         send += protocol["delimiter"] 
-                        send += task.UUID.__str__() 
-                        send += protocol["delimiter"] 
-                        send += task.command.requiresOutputLock.__str__()
+                        send += task.UUID.__str__()
                         send += protocol["delimiter"]  
                         if task.standardIn:
                             send += task.standardIn.__str__() 
-                        send += protocol["delimiter"] 
-                        if task.standardOut:
-                            send += task.standardOut.__str__()
-                        send += protocol["delimiter"] 
-                        if task.standardError:
-                            send += task.standardError.__str__() 
                         send += protocol["delimiter"]  
                         send += task.execute.__str__()
                         send += protocol["delimiter"]  
@@ -221,9 +230,38 @@ class Task():
                 self.standardError = self.standardError.replace(key, commandReplacementDic[key])
 
         logTaskCreated(self, commandReplacementDic)
+    
+    def writeOutputs(self):
+        requiresOutputLock = self.command.requiresOutputLock.lower() == "yes"
+        
+        if requiresOutputLock:
+            self.job.writeLock.acquire()
+        
+        standardOut = self.standardOut
+        if standardOut:
+            standardOut = standardOut.replace("%sharedPath%", archivematicaVars["sharedDirectory"], 1)
+        standardError = self.standardError
+        if standardError:
+            standardError = standardError.replace("%sharedPath%", archivematicaVars["sharedDirectory"], 1)
+        #output , filename
+        a = writeToFile(self.stdOut, standardOut)
+        b = writeToFile(self.stdError, standardError)
+
+        if requiresOutputLock:
+            self.job.writeLock.release()
+            
+        if a:
+            self.stdError = "Failed to write to file{" + self.standardOut + "}\r\n" + self.stdError
+        if b:
+            self.stdError = "Failed to write to file{" + self.standardError + "}\r\n" + self.stdError
+        if  self.exitCode:
+            return self.exitCode
+        return a + b 
 
     def completed(self, returned):
         """When a task is completed, check to see if it was the last task for the job to be completed (job completed)."""
+        self.exitCode = returned
+        returned = self.writeOutputs()
         tasksLock.acquire()
         jobStepDone = True
         if self in tasksBeingProcessed:
@@ -234,11 +272,7 @@ class Task():
             print self
             for task in tasksBeingProcessed:
                 print task, task.UUID
-            
-        if self.command.requiresOutputLock == "yes":
-            print "Clearing output lock for job {" + self.job.UUID.__str__() + "}" 
-            self.job.writeLock.release()
-        
+      
         for task in tasksQueue:
             if task.job.UUID == self.job.UUID:
                 jobStepDone = False
@@ -630,24 +664,6 @@ class archivematicaMCPServerProtocol(LineReceiver):
             self.clientName=command[1]
         else:
             badProtocol(self, command)
-    
-    def requestLockForWrite(self, command):
-        """Get the write lock for the job"""
-        if len(command) == 2:
-            taskUUID=command[1]
-            theTask = None
-            tasksLock.acquire()
-            for task in tasksBeingProcessed:
-                if task.UUID.__str__() == taskUUID:
-                    theTask = task
-                    break
-            tasksLock.release()
-            if theTask:
-                print "Requested write lock for job {" + theTask.job.UUID.__str__() + "} " + command[1]
-                theTask.job.writeLock.acquire()
-                self.unlockForWrite(theTask.UUID)
-            else:
-                self.badProtocol(command)
 
     def unlockForWrite(self, taskUUID):
         send = protocol["unlockForWrite"]
@@ -662,7 +678,6 @@ class archivematicaMCPServerProtocol(LineReceiver):
     protocol["taskCompleted"]:taskCompleted,
     protocol["maxTasks"]:maxTasks,
     protocol["setName"]:setName,
-    protocol["requestLockForWrite"]:requestLockForWrite
     }
 
 
