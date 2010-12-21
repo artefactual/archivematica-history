@@ -23,5 +23,5 @@
 # @version svn: $Id$
 
 
-sudo "$1/DocumentConverter.py" "$2" "$3"
+sleep 1 && sudo "$1/DocumentConverter.py" "$2" "$3"
 exit "$?"
