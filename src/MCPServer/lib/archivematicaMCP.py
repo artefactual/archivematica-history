@@ -236,7 +236,7 @@ class Task():
     def writeOutputsValidateOutputFile(self, fileName):
         ret = fileName
         if ret:
-            if "%sharedPath%" in ret:
+            if "%sharedPath%" in ret and "../" not in ret:
                 ret = ret.replace("%sharedPath%", archivematicaVars["sharedDirectory"], 1)
             else:
                 ret = "<^Not allowed to write to file^> " + ret
