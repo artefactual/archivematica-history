@@ -21,8 +21,8 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>%relativeLocation%logs/extraction.log</standardOut>
-                <standardError>%relativeLocation%logs/extraction.log</standardError>
+                <standardOut>%SIPLogsDirectory%extraction.log</standardOut>
+                <standardError>%SIPLogsDirectory%extraction.log</standardError>
                 <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
