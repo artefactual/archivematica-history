@@ -7,7 +7,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%acquireSIP</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%receiveSIP</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%assignSIPUUID/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
