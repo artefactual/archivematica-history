@@ -38,6 +38,7 @@ echo $numberFail "items failed integrity checking" >> $reportTmp
 
 #copy pasta
 cp $reportTmp "$integrityReport"
+cat $failTmp 1>&2
 
 #display report
 #if [$numberFail != 0]
