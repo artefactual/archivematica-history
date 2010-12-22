@@ -125,9 +125,11 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory):
     return ret
     
 
-def getUUIDOfFile(sipUUIDfile, basepath, fullFileName, fileUUIDxmlFilesDirectory):
-  UUIDsDic = loadFileUUIDsDic(sipUUIDfile)  
-  filename = string.replace( fullFileName, basepath, "objects/", 1 )    
+def getUUIDOfFile(sipUUIDfile, basepath, fullFileName, fileUUIDxmlFilesDirectory, relativeString="objects/"):
+  UUIDsDic = loadFileUUIDsDic(sipUUIDfile) 
+  if basepath not in fullFileName:
+      return "No UUID for file: " + os.path.basename(fullFileName) 
+  filename = string.replace( fullFileName, basepath, relativeString, 1 )    
   if UUIDsDic and filename in UUIDsDic:
     return UUIDsDic[filename]
   else :
