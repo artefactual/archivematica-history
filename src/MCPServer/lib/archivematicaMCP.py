@@ -89,6 +89,8 @@ watchedDirectories = []
 def writeToFile(output, fileName):
     if fileName and output:
         print "writing to: " + fileName
+        if fileName.startswith("<^Not allowed to write to file^> "):
+            return -1
         try:
             f = open(fileName, 'a')
             f.write(output.__str__())
@@ -231,18 +233,24 @@ class Task():
 
         logTaskCreated(self, commandReplacementDic)
     
+    def writeOutputsValidateOutputFile(self, fileName):
+        ret = fileName
+        if ret:
+            if "%sharedPath%" in ret:
+                ret = ret.replace("%sharedPath%", archivematicaVars["sharedDirectory"], 1)
+            else:
+                ret = "<^Not allowed to write to file^> " + ret
+        return ret
+    
     def writeOutputs(self):
         requiresOutputLock = self.command.requiresOutputLock.lower() == "yes"
         
         if requiresOutputLock:
             self.job.writeLock.acquire()
         
-        standardOut = self.standardOut
-        if standardOut:
-            standardOut = standardOut.replace("%sharedPath%", archivematicaVars["sharedDirectory"], 1)
-        standardError = self.standardError
-        if standardError:
-            standardError = standardError.replace("%sharedPath%", archivematicaVars["sharedDirectory"], 1)
+        standardOut = self.writeOutputsValidateOutputFile(self.standardOut)
+        standardError = self.writeOutputsValidateOutputFile(self.standardError)
+         
         #output , filename
         a = writeToFile(self.stdOut, standardOut)
         b = writeToFile(self.stdError, standardError)
