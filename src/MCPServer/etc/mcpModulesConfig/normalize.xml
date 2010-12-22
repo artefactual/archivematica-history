@@ -9,7 +9,7 @@
         <watchDirectory>%watchDirectoryPath%normalize/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%compileMetadata/METS/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
+        <failureDirectory>%watchDirectoryPath%failedNormalization/</failureDirectory>
     </directories>
 
     <commands>    
