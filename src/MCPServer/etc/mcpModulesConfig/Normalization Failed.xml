@@ -1,34 +1,34 @@
 <module>
-    <requiresUserApproval>No</requiresUserApproval>
+    <requiresUserApproval>Yes</requiresUserApproval>
     <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%normalize/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%failedNormalization/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%compileMetadata/METS/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failedNormalization/</failureDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <skip>No</skip>
+                <skip>Yes/No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir>objects/</filterSubDir>
-                <requiresOutputLock>Yes</requiresOutputLock>
+                <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%normalizationLog.txt</standardOut>
-                <standardError>%SIPLogsDirectory%normalizationLog.txt</standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>normalize_v0.0</execute>
-                <arguments>"%relativeLocation%" "%fileUUID%" "%SIPDirectory%DIP/objects/" "yes" "%date%" "%taskUUID%" "%SIPObjectsDirectory%" "%SIPLogsDirectory%"</arguments>
-                <executeOnEachFile>yes</executeOnEachFile>
-            </command>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>       
         </exeCommand>
         
         <verificationCommand>
