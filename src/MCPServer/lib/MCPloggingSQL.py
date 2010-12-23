@@ -55,9 +55,9 @@ sqlLoggingLock = threading.Lock()
 db=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
 
 
-def runSQL( sql ):
+def runSQL(sql):
     sqlLoggingLock.acquire()
-    db.query( sql )
+    db.query(sql)
     sqlLoggingLock.release()
 
 
@@ -78,9 +78,9 @@ def logTaskCreatedSQL(task, replacementDic):
     VALUES ( '"""   + taskUUID + separator \
                     + jobUUID + separator \
                     + fileUUID + separator \
-                    + fileName + separator \
-                    + taskexec + separator \
-                    + arguments + separator \
+                    + _mysql.escape_string(fileName) + separator \
+                    + _mysql.escape_string(taskexec) + separator \
+                    + _mysql.escape_string(arguments) + separator \
                     + getUTCDate() + "' )" )
 
 def logTaskAssignedSQL(task, client):
@@ -91,39 +91,23 @@ def logTaskAssignedSQL(task, client):
     "SET startTime='" + task.assignedDate + "', client='" + client + "' " + \
     "WHERE taskUUID='" + taskUUID + "'" )
 
-def sqlEscape(str):
-    str = str.replace("\\", "\\\\") # \\     A backslash ("\") character.
-    #str = str.replace()#\0     An ASCII NUL (0x00) character.
-    str = str.replace("'","\\'")#\'     A single quote ("'") character.
-    str = str.replace("\"", "\\\"")#\"     A double quote (""") character.
-    #str = str.replace()#\b     A backspace character.
-    str = str.replace("\n", "\\r\\n")#\n     A newline (linefeed) character.
-    #str = str.replace()#\r     A carriage return character.
-    str = str.replace("\t", "\\t")#\t     A tab character.
-    #str = str.replace()#\Z     ASCII 26 (Control-Z). See note following the table. 
-    str = str.replace("%", "\\%")#\%     A "%" character. See note following the table.
-    str = str.replace("_", "\\_")#\_ A "_" character. 
-    return str
-
 def logTaskCompletedSQL(task, retValue):
     taskUUID = task.UUID.__str__()
     exitCode = retValue.__str__()
     stdOut = task.stdOut
     stdError = task.stdError
-    stdOut = sqlEscape(stdOut)
-    stdError = sqlEscape(stdError)
     
     runSQL("UPDATE Tasks " + \
     "SET endTime='" + getUTCDate() +"', exitCode='" + exitCode +  "', " + \
-    "stdOut='" + stdOut + "', stdError='" + stdError + "' "
+    "stdOut='" + _mysql.escape_string(stdOut) + "', stdError='" + _mysql.escape_string(stdError) + "' "
     "WHERE taskUUID='" + taskUUID + "'" )
 
 
 def logJobCreatedSQL(job):
     separator = "', '"
     runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime)
-    VALUES ( '""" + job.UUID.__str__() + separator + job.config.type + separator \
-    + job.directory + separator + getSIPUUID(job.directory) + \
+    VALUES ( '""" + job.UUID.__str__() + separator + _mysql.escape_string(job.config.type) + separator \
+    + _mysql.escape_string(job.directory) + separator + _mysql.escape_string(getSIPUUID(job.directory)) + \
     separator + job.step + separator + job.createdDate + "' )" )
 
 
