@@ -11,8 +11,10 @@ sudo rm /usr/bin/transcoder
 sudo rm /usr/bin/archivematicaCreateDublincore
 sudo rm /usr/bin/archivematicaCreateMD5
 sudo rm /usr/bin/archivematicaRestructureForCompliance
+sudo rm /usr/bin/sanitizeNames
 
 sudo rm -r /usr/lib/transcoder
+sudo rm -r /usr/lib/sanitizeNames
 sudo rm -r /var/www/dashboard
 sudo rm -r /etc/transcoder
 sudo rm -r /usr/lib/easy-extract

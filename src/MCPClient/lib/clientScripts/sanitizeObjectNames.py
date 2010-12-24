@@ -53,9 +53,9 @@ if __name__ == '__main__':
 
     loadFileUUIDsDic(logsDir)
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
-    command = "detox -rv \"" + objectsDirectory + "\""
+    command = "sanitizeNames \"" + objectsDirectory + "\""
     lines = []
-    commandVersion = "detox -V"
+    commandVersion = "sanitizeNames -V"
     version = ""
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -85,20 +85,19 @@ if __name__ == '__main__':
             print >>sys.stderr, "Error getting version; error code:" + retcode.__str__()
             print output[1]# sError
             quit(retcode)
-        version = output[0].replace("detox ", "", 1)
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose
         quit(2)
 
-    eventDetailText= "program=\"detox\"; version=\"" + version + "\""
+    eventDetailText= "program=\"sanitizeNames\"; version=\"" + version + "\""
     for line in lines:
         detoxfiles = line.split(" -> ")
         if len(detoxfiles) > 1 :
             oldfile = detoxfiles[0].split('\n',1)[0]
             newfile = detoxfiles[1]
             if os.path.isfile(newfile):
-                oldfile = oldfile.replace(objectsDirectory, "objects", 1)
-                newfile = newfile.replace(objectsDirectory, "objects", 1)
+                oldfile = oldfile.replace(objectsDirectory, "objects/", 1)
+                newfile = newfile.replace(objectsDirectory, "objects/", 1)
                 fileUUID = UUIDsDic[oldfile]
                 
                 eventOutcomeDetailNote = "Original name=\"" + oldfile + "\"; cleaned up name=\"" + newfile + "\""
@@ -108,8 +107,8 @@ if __name__ == '__main__':
                                                                                   eventOutcomeText="prohibited characters removed")) 
                 archivematicaRenameFile(logsDir, fileUUID, newfile, event)
             elif os.path.isdir(newfile):
-                oldfile = oldfile.replace(objectsDirectory, "objects", 1)
-                newfile = newfile.replace(objectsDirectory, "objects", 1)
+                oldfile = oldfile.replace(objectsDirectory, "objects/", 1)
+                newfile = newfile.replace(objectsDirectory, "objects/", 1)
                 #print UUIDsDic.iteritems().__str__()
                 addToUUIDsDic = {}
                 for file, fileUUID in UUIDsDic.iteritems():

@@ -54,7 +54,7 @@ if __name__ == '__main__':
     SIPDirectory = sys.argv[1]
     date = sys.argv[2]
 
-    command = "detox -v \"" + SIPDirectory + "\""
+    command = "sanitizeNames \"" + SIPDirectory + "\""
     lines = []
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
