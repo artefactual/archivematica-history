@@ -111,5 +111,7 @@ if __name__ == '__main__':
     eIDValue = sys.argv[5]
     date = sys.argv[6]
     addedDate = sys.argv[7]
+    objects = "objects/"
     
-    addFileToSIP(objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, addedDate)
+    eventOutcomeDetailNote = filePath.replace(objectsDirectory, objects, 1)
+    addFileToSIP(objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, addedDate, eventOutcomeDetailNote=eventOutcomeDetailNote)
