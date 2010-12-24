@@ -1,12 +1,12 @@
 <module>
-    <requiresUserApproval>No</requiresUserApproval>
+    <requiresUserApproval>Yes</requiresUserApproval>
     <descriptionForApproval>Unquarantine SIP</descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%unquarantine/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%quarantined/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%extractPackages/easyExtract/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
