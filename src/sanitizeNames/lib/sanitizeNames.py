@@ -25,7 +25,7 @@ import os
 from shutil import move as rename
 import sys
 
-VERSION = "1.0.$Rev$"
+VERSION = "1.0." +  "$Rev$".replace("$", "").replace("Rev: ","")
 valid = "-_.()" + string.ascii_letters + string.digits
 replacementChar = "_"
 
@@ -73,7 +73,7 @@ def sanitizeRecursively(path):
         print path + " -> " + sanitizedName
     if os.path.isdir(sanitizedName):
         for f in os.listdir(sanitizedName):
-            sanitizeRecursively(path + "/" + f)
+            sanitizeRecursively(sanitizedName + "/" + f)
             
 if __name__ == '__main__':
     if len(sys.argv) != 2:
