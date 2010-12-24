@@ -25,7 +25,7 @@ import os
 from shutil import move as rename
 import sys
 
-VERSION = "1.0." +  "$Rev$".replace("$", "").replace("Rev: ","")
+VERSION = "1.0." +  "$Rev$".replace(" $", "").replace("$Rev: ","")
 valid = "-_.()" + string.ascii_letters + string.digits
 replacementChar = "_"
 

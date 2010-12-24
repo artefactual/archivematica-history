@@ -85,6 +85,7 @@ if __name__ == '__main__':
             print >>sys.stderr, "Error getting version; error code:" + retcode.__str__()
             print output[1]# sError
             quit(retcode)
+        version = output[0].replace("\n", "")
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose
         quit(2)
