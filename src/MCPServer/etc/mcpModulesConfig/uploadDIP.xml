@@ -38,13 +38,13 @@
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <standardIn></standardIn>
-                <standardOut>%SIPDirectory%upload.log</standardOut>
+                <standardOut></standardOut>
                 <standardError>%SIPDirectory%uploadError.log</standardError>
                 <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>upload-qubit.py_v0.0</execute>
-                <arguments> -e demo@example.com -p demo -t "%SIPName%-%SIPUUID%" -f "%SIPDirectory%" </arguments>
+                <execute>upload-qubit_v0.0</execute>
+                <arguments>-r -e demo@example.com -p demo -t "%SIPName%-%SIPUUID%" -f "%SIPDirectory%" </arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>            
         </verificationCommand>
