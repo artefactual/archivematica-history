@@ -53,7 +53,10 @@ def sanitizePath(path):
     else:
         n = 1
         s = sanitizedName
-        fileTitle = s[:s.rfind('.')]
+        index = s.rfind('.')
+        fileTitle = sanitizedName
+        if index != -1:
+            fileTitle = s[:index]
         fileExtension = s.split(".")[-1]
         if fileExtension != sanitizedName:
             fileExtension = "." + fileExtension
