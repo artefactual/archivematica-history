@@ -117,9 +117,9 @@ def getJobsAwaitingApproval():
     return etree.tostring(ret, pretty_print=True)
 
 def renameAsSudo(source, destination):
-        commandString = "sudo mv \"" + source + "\"   \"" + destination + "\""
-        p = subprocess.Popen(shlex.split(commandString))
-        p.wait()
+    commandString = "sudo mv \"" + source + "\"   \"" + destination + "\""
+    p = subprocess.Popen(shlex.split(commandString))
+    p.wait()
 
 def approveJob(jobUUID):
     theJob = None
@@ -128,9 +128,20 @@ def approveJob(jobUUID):
             theJob = job
             break
     if theJob:
-        print "job approved: " + theJob.UUID.__str__()
+        print "Approving Job: " + theJob.UUID.__str__()
         theJob.approve()
-    return "Approving Job" + jobUUID
+    return "Approving Job Failed " + jobUUID
+
+def rejectJob(jobUUID):
+    theJob = None
+    for job in jobsAwaitingApproval:
+        if job.UUID.__str__() == jobUUID:
+            theJob = job
+            break
+    if theJob:
+        print "Rejecting Job: " + theJob.UUID.__str__()
+        theJob.reject()
+    return "Rejecting Job Failed: " + jobUUID
 
 
 def checkJobQueue():
@@ -322,6 +333,7 @@ class Job:
             self.config.processingDirectory = self.config.processingDirectory.replace(key, replacementDic[key])
             self.config.successDirectory = self.config.successDirectory.replace(key, replacementDic[key])
             self.config.failureDirectory = self.config.failureDirectory.replace(key, replacementDic[key])
+            self.config.rejectDirectory = self.config.rejectDirectory.replace(key, replacementDic[key])
             self.config.descriptionForApproval = self.config.descriptionForApproval.replace(key, replacementDic[key])
         logJobCreated(self)
     
@@ -341,6 +353,16 @@ class Job:
         jobsQueue.append(self)
         jobsLock.release()
         checkJobQueue()
+    
+    def reject(self):
+        jobsLock.acquire()
+        logJobStepCompleted(self)
+        self.step = "Rejected"
+        logJobStepChanged(self)
+        if self in jobsAwaitingApproval:
+            jobsAwaitingApproval.remove(self)
+        jobsLock.release()
+        renameAsSudo(self.directory, self.config.rejectDirectory)
 
     def jobStepCompleted(self):
         """When a job step is completed, move to the next step, or if the job is completed, move everthing in the directory to the output directory. """
@@ -705,6 +727,7 @@ def startXMLRPCServer():
     print "XML RPC Listening: " + archivematicaVars["MCPArchivematicaXMLClients"] + ":" + archivematicaVars["MCPArchivematicaXMLPort"] 
     server.register_function(getJobsAwaitingApproval)
     server.register_function(approveJob)
+    server.register_function(rejectJob)
     t = threading.Thread(target=server.serve_forever)
     t.start()
 
