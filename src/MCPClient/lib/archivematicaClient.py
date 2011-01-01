@@ -20,6 +20,12 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+#~DOC~
+#
+# --- This is the MCP Client---
+#It connects to the MCP server, and informs the server of the tasks it can perform.
+#The server can send a command (matching one of the tasks) for the client to perform.
+#The client will perform that task, and return the exit code and output to the server.
 import sys
 import shlex
 import subprocess
@@ -65,7 +71,7 @@ def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverCo
 
         retcode = p.returncode
 
-        print "returned: " + retcode.__str__()
+        print "returned{" + taskUUID.__str__() + "}: " + retcode.__str__()
         print output
                 
         #it executes check for errors
@@ -162,6 +168,7 @@ class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
     def clientConnectionLost(self, connector, reason):
         print "Connection lost - goodbye!"
         reactor.stop()
+
 
 if __name__ == '__main__':
     f = archivematicaMCPClientProtocolFactory()

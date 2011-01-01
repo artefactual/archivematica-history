@@ -15,11 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Archivematica.    If not, see <http://www.gnu.org/licenses/>.
 
+# @package Archivematica
+# @subpackage MCPServer
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+#~DOC~
+#
 # --- This is the MCP (master control program) ---
 # The intention of this program is to provide a cetralized automated distributed system for performing an arbitrary set of tasks on a directory.
-# Distributed in that the work can be performed on more than one physical computer symultaineously.
+# Distributed in that the work can be performed on more than one physical computer simultaneously.
 # Centralized in that there is one centre point for configuring flow through the system.
-# Automated in that the tasks performed will be based on the config files and istantiated for each of the targets.
+# Automated in that the tasks performed will be based on the config files and instantiated for each of the targets.
 #
 # It loads configurations from the XML files.
 # These files contain:
@@ -29,15 +36,12 @@
 #
 # When a directory is placed within a a watch directory, it generates an event.
 # The event creates an associated Job.
-# The job is an instance of one of the config files (depending on which watch directory geneated the event).
+# The job is an instance of one of the config files (depending on which watch directory generated the event).
 # The job will have a number of steps, for each of the commands.
-# The commands will be istanciated into tasks for each of the files within the watch directory of the event, or just one task for the directory (depending on the config).
+# The commands will be instantiated into tasks for each of the files within the watch directory of the event, or just one task for the directory (depending on the config).
 
 
-# @package Archivematica
-# @subpackage MCPServer
-# @author Joseph Perry <joseph@artefactual.com>
-# @version svn: $Id$
+
 
 import os
 import pyinotify
@@ -86,6 +90,10 @@ factory = twistedProtocol.ServerFactory()
 jobsLock = threading.Lock()
 watchedDirectories = []
 
+#Used to write to file
+#@output - the text to append to the file
+#@fileName - The name of the file to create, or append to.
+#@returns - 0 if ok, non zero if error occured.
 def writeToFile(output, fileName):
     if fileName and output:
         print "writing to: " + fileName
@@ -105,8 +113,10 @@ def writeToFile(output, fileName):
         print "No output, or file specified"
     return 0
 
-
+# Used by RPC
+#@returns - string of XML representation of JOBs awaiting approval.
 def getJobsAwaitingApproval():
+    """returns - string of XML representation of JOBs awaiting approval."""
     jobsLock.acquire()
     ret = etree.Element("JobsAwaitingApproval")
     for job in jobsAwaitingApproval:
@@ -116,12 +126,20 @@ def getJobsAwaitingApproval():
     #return etree.tostring(ret, encoding=unicode, method='text')
     return etree.tostring(ret, pretty_print=True)
 
+# Used to move/rename Directories that the archivematica user
+# may or may not have writes to move.
 def renameAsSudo(source, destination):
+    """Used to move/rename Directories that the archivematica user may or may not have writes to move"""
     commandString = "sudo mv \"" + source + "\"   \"" + destination + "\""
     p = subprocess.Popen(shlex.split(commandString))
     p.wait()
 
+# Used by RPC
+#Searches for job with matching UUID in the 
+#jobsAwaitingApproval list, and if found, approves it.
+#@jobUUID - string to match to a job's UUID
 def approveJob(jobUUID):
+    """Approves job with the give string UUID"""
     theJob = None
     for job in jobsAwaitingApproval:
         if job.UUID.__str__() == jobUUID:
@@ -130,9 +148,15 @@ def approveJob(jobUUID):
     if theJob:
         print "Approving Job: " + theJob.UUID.__str__()
         theJob.approve()
+        return "Approving Job: " + theJob.UUID.__str__()
     return "Approving Job Failed " + jobUUID
 
+# Used by RPC
+#Searches for job with matching UUID in the 
+#jobsAwaitingApproval list, and if found, rejects it.
+#@jobUUID - string to match to a job's UUID
 def rejectJob(jobUUID):
+    """Reject job with the give string UUID"""
     theJob = None
     for job in jobsAwaitingApproval:
         if job.UUID.__str__() == jobUUID:
@@ -141,9 +165,12 @@ def rejectJob(jobUUID):
     if theJob:
         print "Rejecting Job: " + theJob.UUID.__str__()
         theJob.reject()
+        return "Rejecting Job: " + theJob.UUID.__str__()
     return "Rejecting Job Failed: " + jobUUID
 
-
+#This is where the Job processing starts.
+#directory is moved to processing directory 
+#tasks are created.
 def checkJobQueue():
     """Creates Tasks for new auto approved jobs, or just approved jobs."""
     jobsLock.acquire()
@@ -165,6 +192,11 @@ def checkJobQueue():
     jobsLock.release()
     processTaskQueue()
 
+#This is where tasks are assigned to clients.
+#Pseudo code
+##For Each Task 
+###IF there is a client available that supports this task
+####Assign it to that client
 def processTaskQueue():
     """Attempts to assign tasks to clients."""
     tasksLock.acquire()
@@ -207,9 +239,20 @@ def processTaskQueue():
             else:
                 print "\tNo client currently available to run: " + task.execute + " {" + task.UUID.__str__() + "}"
     tasksLock.release()    
-   
+
+# ~Class Task~
+#Tasks are what are assigned to clients.
+#They have a zero-many(tasks) TO one(job) relationship
+#This relationship is formed by storing a pointer to it's owning job in its job variable.
+#They use a "replacement dictionary" to define variables for this task.  
+#Variables used for the task are defined in the Job's configuration/module (The xml file)    
 class Task():
     """A task is an instance of a command, operating on an entire directory, or a single file."""
+    
+    #instantiates a task object
+    #@job - The associated job this task belongs to
+    #@target - The file or directory this task is to operate on.
+    #@command - The command this task is to execute
     def __init__(self, job, target, command):
         self.UUID = uuid.uuid4()
         self.job = job
@@ -244,6 +287,9 @@ class Task():
 
         logTaskCreated(self, commandReplacementDic)
     
+    #This function is used to verify that where 
+    #the MCP is writing to is an allowable location
+    #@fileName - full path of file it wants to validate. 
     def writeOutputsValidateOutputFile(self, fileName):
         ret = fileName
         if ret:
@@ -253,7 +299,9 @@ class Task():
                 ret = "<^Not allowed to write to file^> " + ret
         return ret
     
+    #Used to write the output of the commands to the specified files
     def writeOutputs(self):
+        """Used to write the output of the commands to the specified files"""
         requiresOutputLock = self.command.requiresOutputLock.lower() == "yes"
         
         if requiresOutputLock:
@@ -277,6 +325,13 @@ class Task():
             return self.exitCode
         return a + b 
 
+    #Called when Client reports this task is done.
+    #Called from archivematicaMCPServerProtocol class
+    #Pseudo code
+    ##remove from tasks being processed.
+    ##Determine if the Job step is done by seeing if is the last task to execute for that job.
+    ##If the job step is done; let the job know.
+    #@returned - The exit code of the task
     def completed(self, returned):
         """When a task is completed, check to see if it was the last task for the job to be completed (job completed)."""
         self.exitCode = returned
@@ -311,8 +366,16 @@ class Task():
         else:
             print "More tasks to be processed for Job"
 
+# ~Class Task~
+#Tasks are what are assigned to clients.
+#They have a one(job) TO zero-many(tasks) relationship
+#This relationship is maintained by storing a pointer to the job in the task.   
 class Job:
     """A job is an instance of a file in a watch directory (from a config file)."""
+    
+    #instantiates a job object
+    #@config - the config to use against the given directory
+    #@directory - The directory this job operates on.
     def __init__(self, config, directory, step="exeCommand"):
         self.combinedRet = 0
         self.UUID = uuid.uuid4()
@@ -336,7 +399,9 @@ class Job:
             self.config.rejectDirectory = self.config.rejectDirectory.replace(key, replacementDic[key])
             self.config.descriptionForApproval = self.config.descriptionForApproval.replace(key, replacementDic[key])
         logJobCreated(self)
-    
+
+    #used by RPC functions.
+    #@return - an xml represenation of the job    
     def xmlify(self):
         ret = etree.Element("Job")
         etree.SubElement(ret, "UUID").text = self.UUID.__str__()
@@ -344,6 +409,11 @@ class Job:
         etree.SubElement(ret, "descriptionForApproval").text = self.config.descriptionForApproval
         return ret
 
+    #used by RPC functions.
+    #Pseudo code
+    ##remove from jobs awaiting approval
+    ##append to jobsQueue
+    ##Call to process the jobsQueue
     def approve(self):
         jobsLock.acquire()
         logJobStepCompleted(self)
@@ -354,6 +424,10 @@ class Job:
         jobsLock.release()
         checkJobQueue()
     
+    #used by RPC functions.
+    #Pseudo code
+    ##remove from jobs awaiting approval
+    ##Move directory to rejected location
     def reject(self):
         jobsLock.acquire()
         logJobStepCompleted(self)
@@ -364,6 +438,9 @@ class Job:
         jobsLock.release()
         renameAsSudo(self.directory, self.config.rejectDirectory)
 
+    #Called when last task for job is completed.
+    #Advances the job to the next step [if there is one]
+    #If the last step is completed, moves the processed directory to it's output location.
     def jobStepCompleted(self):
         """When a job step is completed, move to the next step, or if the job is completed, move everthing in the directory to the output directory. """
         logJobStepCompleted(self)
@@ -412,7 +489,9 @@ class Job:
             print "MCP error: Job in bad step: " + job.step.__str__()
         
         logJobStepChanged(self)
-            
+    
+    #Creates the task(s) for the given command
+    #@command the command object to base the steps on. See ./mcpModules/commands/commands.py for class source.        
     def createTasksForStep(self, command):
         """Creates the tasks for the given command"""
         ret = []
@@ -425,6 +504,8 @@ class Job:
             ret.append(Task(self, directory, command))
         return ret
     
+    #Creates the task(s) for the given command, for every file in the directory
+    #@command the command object to base the steps on. See ./mcpModules/commands/commands.py for class source.
     def createTasksForStepInDirectory(self, command, directory):
         """for every file in the directory, recursively, create a new task."""
         ret = []
@@ -456,7 +537,8 @@ class Job:
         else:
             print "error: tried to process file, not directory." + self.directory.__str__()
         return ret
-            
+    
+    #@return - returns a list of the tasks created            
     def createTasksForCurrentStep(self):
         """Determin the current step, and if it is to be skipped. 
         If it's not to be skipped, create the tasks for it, append them to the queue and process the queue"""
@@ -515,6 +597,8 @@ class Job:
             print "Job in bad step: " + self.step.__str__()
             return []
 
+#This class holds the relation betwen watched directories, and their configs.
+#This is a one to one relationship.
 class watchDirectory(ProcessEvent):
     """Determin which action to take based on the watch directory. """
     config = None
@@ -522,7 +606,11 @@ class watchDirectory(ProcessEvent):
         self.config = config
     def process_IN_CREATE(self, event):
         """ Traditionally, archivematica does not support copying to watch directories."""
-        print "Warning: %s was created. Was something copied into this directory?" %  os.path.join(event.path, event.name)
+        actOnCopied = False
+        if actOnCopied:
+            self.process_IN_MOVED_TO(event)
+        else:
+            print "Warning: %s was created. Was something copied into this directory?" %  os.path.join(event.path, event.name)
         
     def process_IN_MOVED_TO(self, event):  
         """Create a Job based on what was moved into the directory and process it."""
@@ -541,7 +629,7 @@ class watchDirectory(ProcessEvent):
             checkJobQueue()
 
 def loadConfigs():
-    """Loads the XML config files, with the directories to watch, and the associated commmands"""
+    """Loads the XML config files, with the directories to watch, and the associated commands"""
     configFiles = []
     for dirs, subDirs, files in os.walk(archivematicaVars["moduleConfigDir"]):
         configFiles = files
@@ -550,9 +638,6 @@ def loadConfigs():
     for configFile in configFiles:
         if configFile.endswith(".xml"):
             configs.append(modulesClass(archivematicaVars["moduleConfigDir"], configFile))
-       
-    #need to implement check for duplicate watch directories.
-    
     return configs
         
 def loadDirectoryWatchLlist(configs):
@@ -578,8 +663,13 @@ def loadDirectoryWatchLlist(configs):
     watchedDirectories.sort()
     for wd in watchedDirectories:
         print wd
-        
 
+#This class is a mix of two types of functions.
+#-The functions called by the twisted python framework, 
+#  asyncrounously to handle various events.
+#-The functions to handle MCP processing
+#The "protocolDic" associates the archivematica protocol with corresponding function.
+#ie. if I receive a packet that starts with "taskCompleted", call the task completed function.
 class archivematicaMCPServerProtocol(LineReceiver):
     """This is the MCP protocol implemented"""
   
@@ -608,6 +698,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
             badProtocol(self, command)
 
     def connectionMade(self):
+        """Called when a new client connects"""
         self.write("hello, client!")
         self.channelOpen = True
         t = threading.Thread(target=self.keepAlive)
@@ -633,6 +724,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
         self.factory.clients.remove(self)
         
     def write(self,line):      
+        #Twisted isn't thread safe, use locks.
         self.sendLock.acquire() 
         reactor.callFromThread(self.transport.write, line + "\r\n")
         self.sendLock.release()
@@ -677,10 +769,8 @@ class archivematicaMCPServerProtocol(LineReceiver):
             self.badProtocol(command)
     
     def maxTasks(self, command):
-        """#tell the server how many threads this client will run""" 
+        """tell the server how many threads this client will run""" 
         if len(command) == 2:
-            #this may require further checking. So people don't try "TWO" instead of 2
-            #self.maxThreads = int(command[1])
             print self.clientName + "-setting max threads to: " + command[1]
             self.maxThreads = string.atoi(command[1])
             processTaskQueue()
@@ -695,14 +785,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
         else:
             badProtocol(self, command)
 
-    def unlockForWrite(self, taskUUID):
-        send = protocol["unlockForWrite"]
-        send += protocol["delimiter"]
-        send += taskUUID.__str__()
-        self.write(send)
-    
-
-    #associate the protocol with the associated funciton.        
+    #associate the protocol with the associated function.        
     protocolDic = {
     protocol["addToListTaskHandler"]:addToListTaskHandler,
     protocol["taskCompleted"]:taskCompleted,
@@ -710,19 +793,16 @@ class archivematicaMCPServerProtocol(LineReceiver):
     protocol["setName"]:setName,
     }
 
-
 def archivematicaMCPServerListen():
     """ Start listening for archivematica clients to connect."""
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
     reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory, interface=archivematicaVars["MCPArchivematicaServerInterface"])
     print "MCP Listening on: " + archivematicaVars["MCPArchivematicaServerInterface"] + ":" + archivematicaVars["MCPArchivematicaServerPort"] 
-    reactor.run()
-
-    
-    
+    reactor.run() #Needs to be called from main thread.
 
 def startXMLRPCServer():
+    """Starts the XML RPC server on the port and interface defined in /etc/archivematica/MCPServer/serverConfig.conf"""
     server = SimpleXMLRPCServer( (archivematicaVars["MCPArchivematicaXMLClients"], string.atoi(archivematicaVars["MCPArchivematicaXMLPort"])))
     print "XML RPC Listening: " + archivematicaVars["MCPArchivematicaXMLClients"] + ":" + archivematicaVars["MCPArchivematicaXMLPort"] 
     server.register_function(getJobsAwaitingApproval)
@@ -736,6 +816,3 @@ if __name__ == '__main__':
     directoryWatchList = loadDirectoryWatchLlist(configs)
     startXMLRPCServer()
     archivematicaMCPServerListen()
-    print "Done Load"
-
-
