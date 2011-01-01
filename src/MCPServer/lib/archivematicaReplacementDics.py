@@ -14,26 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Archivematica.    If not, see <http://www.gnu.org/licenses/>.
-
-# --- This is the MCP (master control program) ---
-# The intention of this program is to provide a cetralized automated distributed system for performing an arbitrary set of tasks on a directory.
-# Distributed in that the work can be performed on more than one physical computer symultaineously.
-# Centralized in that there is one centre point for configuring flow through the system.
-# Automated in that the tasks performed will be based on the config files and istantiated for each of the targets.
 #
-# It loads configurations from the XML files.
-# These files contain:
-# -The associated watch directory
-# -A set of commands to run on the files within that directory.
-# -The place to move the directory to once it has been processed.
-#
-# When a directory is placed within a a watch directory, it generates an event.
-# The event creates an associated Job.
-# The job is an instance of one of the config files (depending on which watch directory geneated the event).
-# The job will have a number of steps, for each of the commands.
-# The commands will be istanciated into tasks for each of the files within the watch directory of the event, or just one task for the directory (depending on the config).
-
-
 # @package Archivematica
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
@@ -56,6 +37,7 @@ def isUUID(uuid):
     
 
 def getSIPUUID(sipDir):
+    """Looks at the end of a directory name, to retrieve the UUID on the name"""
     uuidLen = 36
     sip = ""
     if sipDir.endswith("/"):

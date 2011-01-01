@@ -21,6 +21,16 @@
 # @author Peter Van Garderen <peter@artefactual.com>
 # @version svn: $Id$
 
+#~DOC~
+#
+#This file is all in support of one goal:
+#to get the UUID of a file efficiently.
+#Primarily it looks for them in the 'sipUUIDfile' : /logs/fileUUIDs.log
+#Failing that, it checks each of the fileMeta xml files to match the filename on the 'currentFileName' field.
+#In order to do this efficiently and not block the processing of other SIPs, it dynamically creates a lock for each SIP, based on the UUID.
+#
+
+
 import os
 import lxml.etree as etree
 import sys
