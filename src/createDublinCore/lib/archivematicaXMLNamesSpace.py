@@ -1,5 +1,5 @@
-#!/bin/bash
-
+#!/usr/bin/python
+#
 # This file is part of Archivematica.
 #
 # Archivematica is free software: you can redistribute it and/or modify
@@ -21,18 +21,27 @@
 # @version svn: $Id$
 
 
-target="$1"
-DublinCore="$2"
+dctermsNS = "http://purl.org/dc/terms/"
+xsiNS = "http://www.w3.org/2001/XMLSchema-instance"
+metsNS = "http://www.loc.gov/METS/"
+premisNS = "info:lc/xmlns/premis-v2"
+dctermsNS = "http://purl.org/dc/terms/"
+fitsNS = "http://hul.harvard.edu/ois/xml/ns/fits/fits_output"
+xlinkNS = "http://www.w3.org/1999/xlink"
 
-set -e
 
-if [ -f "${target}metadata/$DublinCore" ] ; then
-    echo DublinCore already exists
-else
-    tmpDir=`pwd`
-    cd "${target}metadata/"
-    createDublinCore
-    cd $tmpDir
-fi
+dctermsBNS = "{" + dctermsNS + "}"
+xsiBNS = "{" + xsiNS + "}"
+metsBNS = "{" + metsNS + "}"
+premisBNS = "{" + premisNS + "}"
+dctermsBNS = "{" + dctermsNS + "}"
+fitsBNS = "{" + fitsNS + "}"
+xlinkBNS = "{" + xlinkNS + "}"
 
+NSMAP = { "dcterms" : dctermsNS, \
+"xsi" : xsiNS, \
+"mets" : metsNS, \
+"premis" : premisNS, \
+"dcterms" : dctermsNS, \
+"xlink": xlinkNS }
 
