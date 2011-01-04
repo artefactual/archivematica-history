@@ -23,14 +23,15 @@
 
 target="$1"
 DublinCore="$2"
-UUID=`uuid -v 4`
+
+set -e
 
 if [ -f "${target}metadata/$DublinCore" ] ; then
     echo DublinCore already exists
 else
     tmpDir=`pwd`
     cd "${target}metadata/"
-    "`dirname "$0"`/archivematicaCreateDublinCore.py"
+    createDublinCore
     cd $tmpDir
 fi
 
