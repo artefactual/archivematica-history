@@ -8,7 +8,7 @@ Homepage: http://archivematica.org
 
 Package: sanitize-names
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, python
 Description: sanitize names for Archivematica
   sanitize names for Archivematica
   
