@@ -28,6 +28,6 @@
 #cp ../buildVM/includes/desktopShortcuts/rundashboard.sh $1/usr/bin
 
 chroot $1 mysqladmin create dashboard
-svn export src $1/var/www/dashboard
+svn export src $1/usr/local/share/archivematica-dashboard
 
 
