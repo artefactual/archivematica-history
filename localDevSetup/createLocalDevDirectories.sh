@@ -21,7 +21,7 @@ sudo ln -s "${svnDir}src/upload-qubit/lib/" "${lib}/upload-qubit"
 sudo ln -s "${svnDir}src/transcoder/lib/" "/usr/lib/transcoder"
 sudo ln -s "${svnDir}src/easy-extract/lib/" "/usr/lib/easy-extract"
 sudo ln -s "${svnDir}src/sanitizeNames/lib/" "/usr/lib/sanitizeNames"
-sudo ln -s "${svnDir}src/dashboard/src/" "/var/www/dashboard"
+sudo ln -s "${svnDir}src/dashboard/src/" "/usr/local/share/archivematica-dashboard"
 sudo ln -s "${svnDir}src/createDublinCore/lib/" "/usr/lib/createDublinCore"
 
 sudo cp "${svnDir}buildVM/includes/apache.default" "/etc/apache2/sites-available/default"
