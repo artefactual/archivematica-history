@@ -41,6 +41,7 @@ def md5_for_file(fileName, block_size=2**20):
     #return md5.digest()
     return md5.hexdigest()
 
+#Modification of above borrowed function
 def sha_for_file(fileName, block_size=2**20):   
     f = open(fileName)
     sha = hashlib.sha256()
@@ -49,7 +50,7 @@ def sha_for_file(fileName, block_size=2**20):
         if not data:
             break
         sha.update(data)
-    #return md5.digest()
+    #return sha.digest()
     return sha.hexdigest()
 
 
