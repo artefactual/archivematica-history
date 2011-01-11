@@ -141,6 +141,9 @@ x2mod = x2+1
 #length of s
 sLen = len(s)
 
+if x2 < x1:
+    x2mod = 0
+
 fileTitle = s[x1:x2]
 fileExtension = s[x2mod:sLen]
 fileDirectory = s[:x1]
@@ -276,6 +279,13 @@ else:
         preservationFormat[0] = "NONE"
     
 #file not exist - no preservation format/malformed conf specified for .fileExtension
+
+if not x2mod:
+    print >>sys.stderr, "Skipping Normalization: No extension"
+    accessConversionCommand = "cp " + fileIn + " %accessFileDirectory%."
+    result = executeCommand(accessConversionCommand)
+    quit(result)
+
 
 #if the file is not in access format
 if len(accessConversionCommand) > 0 :
