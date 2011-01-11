@@ -41,6 +41,17 @@ def md5_for_file(fileName, block_size=2**20):
     #return md5.digest()
     return md5.hexdigest()
 
+def sha_for_file(fileName, block_size=2**20):   
+    f = open(fileName)
+    sha = hashlib.sha256()
+    while True:
+        data = f.read(block_size)
+        if not data:
+            break
+        sha.update(data)
+    #return md5.digest()
+    return sha.hexdigest()
+
 
 def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, addedDate, objects="objects/", eventDetailText="", eventOutcomeDetailNote=""):
     relativeFilePath = filePath.replace(objectsDirectory, objects, 1)
@@ -52,7 +63,7 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
         addedDate = f.read()
         
     #Gather File Info
-    md5Checksum = md5_for_file(filePath)
+    checksum = sha_for_file(filePath)
     fileSize = os.path.getsize(filePath).__str__()
     
     #create Event to explain file origin.   
@@ -65,8 +76,8 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     
     newFileUUID = uuid.uuid4().__str__()
     eIDValue = newFileUUID
-    eOutcomeInformation = createOutcomeInformation(md5Checksum.__str__())
-    eventDetailText = "program=\"python\"; module=\"hashlib.md5()\" ; file=\"" + hashlib.__file__.__str__() + "\""
+    eOutcomeInformation = createOutcomeInformation(checksum.__str__())
+    eventDetailText = "program=\"python\"; module=\"hashlib.sha256()\" ; file=\"" + hashlib.__file__.__str__() + "\""
     
     checksumEvent = createEvent( eIDValue, "message digest calculation", eventDetailText=eventDetailText, eventDateTime=date, eOutcomeInformation=eOutcomeInformation)
     
@@ -74,7 +85,7 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     etree.SubElement(root, "originalFileName").text = relativeFilePath
     etree.SubElement(root, "currentFileName").text = relativeFilePath
     etree.SubElement(root, "fileUUID").text = fileUUID
-    #etree.SubElement(root, "checksum").text = md5Checksum
+    
 
 
     fileObject = etree.SubElement(root, "object")
@@ -87,9 +98,8 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
     etree.SubElement(objectCharacteristics, "compositionLevel").text = "0"
     
     fixity = etree.SubElement(objectCharacteristics, "fixity")
-    etree.SubElement(fixity, "messageDigestAlgorithm").text = "MD5"
-    etree.SubElement(fixity, "messageDigest").text = md5Checksum
-    #etree.SubElement(fixity, "messageDigestOriginator").text = "Your Organizational Name Here"
+    etree.SubElement(fixity, "messageDigestAlgorithm").text = "sha256"
+    etree.SubElement(fixity, "messageDigest").text = checksum
 
     etree.SubElement(objectCharacteristics, "size").text = fileSize
     
