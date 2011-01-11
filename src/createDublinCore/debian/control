@@ -1,0 +1,14 @@
+Source: archivematica-createdublincore
+Section: utils
+Priority: extra
+Maintainer: Austin Trask <austin@artefactual.com>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.8.3
+Homepage: http://archivematica.org
+
+Package: archivematica-createdublincore
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-lxml 
+Description: Dublin Core creation tools
+  Dublin Core creation tools for Archivematica
+  
