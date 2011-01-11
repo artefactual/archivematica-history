@@ -8,7 +8,7 @@ Homepage: http://archivematica.org
 
 Package: archivematica-mcp-client
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python-twisted, uuid, clamav, unrar, p7zip-full, nfs-common, python-lxml, fits, bagit, transcoder
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-twisted, uuid, clamav, unrar, p7zip-full, nfs-common, python-lxml, fits, bagit, transcoder, archivematica-createdublincore
 Description: MCP Client for Archivematica
   Enter long description
   
