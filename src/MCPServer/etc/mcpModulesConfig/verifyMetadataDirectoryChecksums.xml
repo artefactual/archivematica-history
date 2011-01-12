@@ -25,8 +25,8 @@
                 <requiresOutputLock>No</requiresOutputLock>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>createOrMoveAndCheckMD5_v0.0</execute>
-                <arguments>"%relativeLocation%"  "%checksumsNoExtention%" "%date%"</arguments>
+                <execute>verifyMD5_v0.0</execute>
+                <arguments>"%relativeLocation%"  "%checksumsNoExtention%" "%date%" "%taskUUID%"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>

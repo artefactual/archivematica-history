@@ -24,6 +24,8 @@
 
 #Commands
 #the version numbers are versions of the protocol, not versions of the programs themselves.
+upload-qubit_v0.0="upload-qubit "
+storeAIP_v0.0="%clientScriptsDirectory%storeAIP.sh "
 echo_v0.0="/bin/echo "
 FITS_v0.0="%clientScriptsDirectory%archivematicaFITS.py "
 easyExtract_v0.0="easy-extract "
@@ -34,7 +36,7 @@ createXMLEventRestructureToObjectsAndLog_v0.0="%clientScriptsDirectory%createXML
 setFileOwner_v0.0="echo NOT IMPLEMENTED YET - chown "
 setFilePermission_v0.0="chmod "
 restructureToObjectsAndLogs_v0.0="%clientScriptsDirectory%restructureToObjectsAndLogs.sh "
-createOrMoveAndCheckMD5_v0.0="%clientScriptsDirectory%createOrMoveAndCheckMD5.sh "
+verifyMD5_v0.0="%clientScriptsDirectory%verifyMD5.sh "
 createOrMoveDC_v0.0="%clientScriptsDirectory%createOrMoveDC.sh "
 archivematicaClamscan_v0.0="%clientScriptsDirectory%archivematicaClamscan.sh"
 sanitizeObjectNames_v0.0="%clientScriptsDirectory%sanitizeObjectNames.py "
@@ -52,8 +54,6 @@ remove_v0.0="rm "
 removeWithAsterisk_v0.0="%clientScriptsDirectory%removeWithAsterisk.sh "
 bagit_v0.0="/usr/share/bagit/bin/bag "
 moveDetoxLogToDetoxedDirectory_v0.0="%clientScriptsDirectory%moveDetoxLogToDetoxedDirectory.py"
-upload-qubit_v0.0="upload-qubit "
-storeAIP_v0.0="%clientScriptsDirectory%storeAIP.sh "
 assignSIPUUID_v0.0="%clientScriptsDirectory%assignSIPUUID.sh "
 verifySIPCompliance_v0.0="%clientScriptsDirectory%verifySIPCompliance.py "
 scanForRemovedFiles_v0.0="%clientScriptsDirectory%scanForRemovedFiles.py "
