@@ -25,16 +25,15 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>bagit_v0.0</execute>
-                <arguments>create "%SIPDirectory%%SIPUUID%.zip" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" --writer zip</arguments>
+                <execute>remove_v0.0</execute>
+                <arguments>-R "%SIPLogsDirectory%fileMeta/" "%SIPLogsDirectory%acquiredSIPDateTime.log" "%SIPLogsDirectory%FileUUIDs.log" "%SIPLogsDirectory%VerifyChecksums.log"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -42,11 +41,12 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>            
+                <execute>bagit_v0.0</execute>
+                <arguments>create "%SIPDirectory%%SIPUUID%.zip" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" --writer zip</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
+            </command>       
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
