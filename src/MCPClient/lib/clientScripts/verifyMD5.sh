@@ -24,12 +24,15 @@ checkMD5NoGui="`dirname $0`/archivematicaCheckMD5NoGUI.sh"
 
 target="$1"
 checksums="$2"
+date="$3"
+eventID="$4"
 MD5FILE="${target}metadata/${checksums}.md5"
 
 ret=0
 
 if [ -f "${MD5FILE}" ]; then
-    "${checkMD5NoGui}" "${target}objects/" "${MD5FILE}" "${target}logs/`basename "${MD5FILE}"`-Check-`date`"
+    "${checkMD5NoGui}" "${target}objects/" "${MD5FILE}" "${target}logs/`basename "${MD5FILE}"`-Check-`date`" && \
+    "`dirname $0`/createXMLeventsMD5Verified.py" "$eventID" "$date" "`md5deep -v`" "md5deep" "${target}"  
     ret+="$?"
 else
     echo "File Does not exist:" "${MD5FILE}"

@@ -22,8 +22,8 @@
 
 #source /etc/archivematica/archivematicaConfig.conf
 
-echo please enter sudo password if you have not already done so
-sudo echo thanks
+echo Please enter sudo password, if you have not already done so.
+sudo echo Thank you.
 
 op="`netstat -l | grep 8100`"
 if [ -z "$op" ]; then
