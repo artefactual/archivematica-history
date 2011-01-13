@@ -1,4 +1,5 @@
 #!/bin/bash
+#unoconvReplacementTesting1Support.sh
 
 # This file is part of Archivematica.
 #
@@ -21,18 +22,9 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-ddirname=`dirname $2`
-dbasename=`basename $2`  
-cd "$ddirname"
-#cd "`dirname $0`"
 
-inputFile="$dbasename"
-#outputFile="`dirname $4`/`basename $3`"
-outputFile="$3"
+#This script is restricted, by flock in unoconvAlternative.sh, to run one at a time.
+#The sleep allows for spacing between DocumentConverter.py Calls.
 
-echo converting $inputFile TO: $outputFile
-echo multithreaded test
-
-flock -x /var/lock/documentConversion.lock -c "\"`dirname $0`/unoconvReplacementTesting1Support.sh\" \"`dirname $0`\" \"${dbasename}\" \"${outputFile}\"" && mv "$3" "$4"
-#flock -x /var/lock/unoconv.lock -c "./unoconv2.sh $1 $2 $3 $4" 
+sleep 1 && sudo "$1/DocumentConverter.py" "$2" "$3"
 exit "$?"

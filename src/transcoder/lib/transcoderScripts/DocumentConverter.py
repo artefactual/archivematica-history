@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#wget http://www.artofsolving.com/files/DocumentConverter.py 
+#sourced by: wget http://www.artofsolving.com/files/DocumentConverter.py 
 #
 # PyODConverter (Python OpenDocument Converter) v1.1 - 2009-11-14
 #

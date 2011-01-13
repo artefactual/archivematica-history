@@ -57,6 +57,7 @@ convertPath = archivmaticaVars["convertPath"]
 ffmpegPath = archivmaticaVars["ffmpegPath"]
 theoraPath = archivmaticaVars["theoraPath"]
 unoconvPath = archivmaticaVars["unoconvPath"]
+unoconvAlternativePath = archivmaticaVars["unoconvAlternativePath"]
 #xenaPath = archivmaticaVars["xenaPath"]
 transcoderScriptsDir = archivmaticaVars["transcoderScriptsDir"]
 
@@ -203,6 +204,7 @@ def executeCommand(command, newUUID=""):
     "%ffmpegPath%": ffmpegPath, \
     "%theoraPath%": theoraPath, \
     "%unoconvPath%": unoconvPath, \
+    "%unoconvAlternativePath%": unoconvAlternativePath, \
     "%fileExtension%": fileExtension, \
     "%fileFullName%": fileFullName, \
     "%accessFileDirectory%": accesspath, \
