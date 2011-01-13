@@ -2,6 +2,6 @@
   <inherit></inherit>
   <accessFormat>PDF</accessFormat>
   <preservationFormat>ODP</preservationFormat>
-  <accessConversionCommand>%normalizationScriptsDir%unoconv.sh %accessFormat% %fileFullName% %fileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%</accessConversionCommand>
-  <preservationConversionCommand>%unoconvPath% %preservationFormat% %fileFullName% %fileDirectory%%fileTitle%.%preservationFormat% %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
+  <accessConversionCommand>%unoconvAlternativePath% %accessFormat% %fileFullName% %fileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%</accessConversionCommand>
+  <preservationConversionCommand>%unoconvAlternativePath% %preservationFormat% %fileFullName% %fileDirectory%%fileTitle%.%preservationFormat% %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
 </formatPolicy>
