@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%addDCToMETS</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%createAIPChecksum/</successDirectory>
+        <successDirectory>%watchDirectoryPath%structureDirectory/copyMETSToDIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 

@@ -8,14 +8,14 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%createAIPChecksum/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%structureDirectory/copyMETSToDIP</successDirectory>
+        <successDirectory>%watchDirectoryPath%createPackage/bagit/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -25,28 +25,28 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>createOrMoveAndCheckMD5_v0.0</execute>
-                <arguments>"%relativeLocation%"  "AIPChecksum.log"</arguments>
+                <execute>remove_v0.0</execute>
+                <arguments>-R "%SIPLogsDirectory%fileMeta/" "%SIPLogsDirectory%acquiredSIPDateTime.log" "%SIPLogsDirectory%FileUUIDs.log" "%SIPLogsDirectory%VerifyChecksums.log"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPDirectory%checksum.sha256</standardOut>
+                <standardError>%SIPDirectory%checksum.sha256</standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>            
+                <execute>sha256deepRelative_v0.0</execute>
+                <arguments>"%SIPDirectory%" -rl METS.xml objects metadata logs</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
+            </command>
         </verificationCommand>
         
         <cleanupSuccessfulCommand>

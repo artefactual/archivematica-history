@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%structureDirectory/copyMETSToDIP/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%createPackage/bagit/</successDirectory>
+        <successDirectory>%watchDirectoryPath%structureDirectory/generateDIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 

@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%storeAIP</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%storeAIP/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%failed/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
