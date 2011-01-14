@@ -8,31 +8,13 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%createPackage/bagit/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%structureDirectory/generateDIP/</successDirectory>
+        <successDirectory>%watchDirectoryPath%storeAIP/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
-            <command>
-                <skip>No</skip>
-                <filterFileEnd></filterFileEnd>
-                <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
-                <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
-                <failureNotification> </failureNotification>
-                <execute>remove_v0.0</execute>
-                <arguments>-R "%SIPLogsDirectory%fileMeta/" "%SIPLogsDirectory%acquiredSIPDateTime.log" "%SIPLogsDirectory%FileUUIDs.log" "%SIPLogsDirectory%VerifyChecksums.log"</arguments>
-                <executeOnEachFile>no</executeOnEachFile>
-            </command>
-        </exeCommand>
-        
-        <verificationCommand>
-            <command>
+        	<command>
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
@@ -44,9 +26,27 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>bagit_v0.0</execute>
-                <arguments>create "%SIPDirectory%%SIPUUID%.zip" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" --writer zip</arguments>
+                <arguments>create "%SIPDirectory%%SIPUUID%.zip" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%checksum.sha256" "%SIPDirectory%metadata/" --writer zip</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
-            </command>       
+            </command>
+        </exeCommand>
+        
+        <verificationCommand>
+        	<command>
+                <skip>Yes/No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>     
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
@@ -62,7 +62,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>remove_v0.0</execute>
-                <arguments>-R "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"</arguments>
+                <arguments>-R "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%checksum.sha256"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>            
         </cleanupSuccessfulCommand>

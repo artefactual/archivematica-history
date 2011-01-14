@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%structureDirectory/generateDIP/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%storeAIP/</successDirectory>
+        <successDirectory>%watchDirectoryPath%createAIPChecksum/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
