@@ -53,17 +53,16 @@ NameVirtualHost *
   </Directory>
 
   # Serve static files from Dashboard
-  Alias /media "/usr/local/share/archivematica-dashboard/media/"
-  <Directory "/usr/local/share/archivematica-dashboard/media/">
+  Alias /media "/usr/local/share/dashboard/media/"
+  <Directory "/usr/local/share/dashboard/media/">
     Order allow,deny
     Allow from all
   </Directory>
 
-
   # Django with mod_wsgi
   # http://code.google.com/p/modwsgi/wiki/IntegrationWithDjango
-  WSGIScriptAlias / /usr/local/share/archivematica-dashboard/apache/django.wsgi
-  <Directory "/usr/local/share/archivematica-dashboard/apache/">
+  WSGIScriptAlias / /usr/local/share/dashboard/apache/django.wsgi
+  <Directory "/usr/local/share/dashboard/apache/">
     Order allow,deny
     Allow from all
   </Directory>

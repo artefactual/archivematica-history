@@ -2,7 +2,7 @@ import os, sys
 import django.core.handlers.wsgi
 
 # Ensure that the path does not get added multiple times
-path = '/var/www'
+path = '/usr/local/share'
 if path not in sys.path:
   sys.path.append(path)
 
