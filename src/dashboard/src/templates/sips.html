@@ -168,32 +168,57 @@
                   .find('p.actions a').removeClass('hidden').show()
 
                   // Action
-                  .parent().find('a.btn_approve_job').click(function (event)
-                  {
-                    event.preventDefault();
+                  .parent()
+                  .find('a.btn_approve_job').click(function (event)
+                    {
+                      event.preventDefault();
 
-                    $.ajax({
-                      context: $(this).closest('td'),
-                      data: { uuid: uuid },
-                      type: 'POST',
-                      success: function(data)
-                        {
-                          if (0 < data.length)
+                      $.ajax({
+                        context: $(this).closest('td'),
+                        data: { uuid: uuid },
+                        type: 'POST',
+                        success: function(data)
                           {
-                            this
-                             .html('<strong>Executing command(s)</strong>')
-                             .parent().removeClass('ready');
-
-                            if (!$trjobs.find('tr.job.ready').length)
+                            if (0 < data.length)
                             {
-                              $trsip.removeClass('sip-has-jobs-awaiting-approval');
-                            }
-                          }
-                        },
-                      url: '/mcp/approve-job/'
-                    });
-                  });
+                              this
+                               .html('<strong>Executing command(s)</strong>')
+                               .parent().removeClass('ready');
 
+                              if (!$trjobs.find('tr.job.ready').length)
+                              {
+                                $trsip.removeClass('sip-has-jobs-awaiting-approval');
+                              }
+                            }
+                          },
+                        url: '/mcp/approve-job/'
+                      });
+                    }).end()
+                  .find('a.btn_reject_job').click(function (event)
+                    {
+                      event.preventDefault(); alert("asdf");
+
+                      $.ajax({
+                        context: $(this).closest('td'),
+                        data: { uuid: uuid },
+                        type: 'POST',
+                        success: function(data)
+                          {
+                            if (0 < data.length)
+                            {
+                              this
+                               .html('<strong>Rejected</strong>')
+                               .parent().removeClass('ready');
+
+                              if (!$trjobs.find('tr.job.ready').length)
+                              {
+                                $trsip.removeClass('sip-has-jobs-awaiting-approval');
+                              }
+                            }
+                          },
+                        url: '/mcp/reject-job/'
+                      });
+                    });
               });
           },
         url: '/mcp/jobs-awaiting-approval/'
@@ -278,6 +303,7 @@
               <p class="actions">
                 <a class="hidden btn_open_dir" target="_blank" href="{% url main.views.show_dir item.jobuuid %}">Browse directory</a>
                 <a class="hidden btn_approve_job" href="#">Approve</a>
+                <a class="hidden btn_reject_job" href="#">Reject</a>
               </p>
             </td>
           </tr>
