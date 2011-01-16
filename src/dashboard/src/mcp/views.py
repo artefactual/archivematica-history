@@ -21,3 +21,11 @@ def jobs_awaiting_approval(request):
       response += etree.tostring(job)
   response = '<Jobs>' + response + '</Jobs>'
   return HttpResponse(response, mimetype = 'text/xml')
+
+def reject_job(request):
+  result = ''
+  if 'uuid' in request.REQUEST:
+    client = MCPClient(settings.MCP_SERVER[0], settings.MCP_SERVER[1])
+    uuid = request.REQUEST.get('uuid', '')
+    result = client.reject_job(uuid)
+  return HttpResponse(result, mimetype = 'text/plain')

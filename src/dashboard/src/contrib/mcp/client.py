@@ -11,3 +11,6 @@ class MCPClient:
 
   def get_jobs_awaiting_approval(self):
     return self.server.getJobsAwaitingApproval()
+
+  def reject_job(self, uuid):
+    return self.server.rejectJob(uuid)
