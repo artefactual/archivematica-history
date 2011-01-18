@@ -1,0 +1,55 @@
+﻿{% extends "layout.html" %}
+{% load filters %}
+
+{% block title %}SIPs{% endblock %}
+{% block h1 %}SIPs{% endblock %}
+{% block page_id %}sips{% endblock %}
+
+{% block js %}
+  <script type="text/javascript" src="/media/js/sips.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function()
+      {
+        var sipmgr = new Dashboard.SipManager();
+        sipmgr.statusDisplay();
+        sipmgr.start();
+      });
+  </script>
+{% endblock %}
+
+{% block css %}
+  <style type="text/css">
+    div.sip {
+      border: 1px solid transparent;
+      text-align: left;
+      padding: 3px 2px;
+      margin: 0 2px -1px 2px;
+      clear: both;
+    }
+
+    .sip-detail-icon {
+      float: left;
+      width: 20px;
+    }
+
+    .sip-detail-uuid {
+      float: left;
+      width: 303px;
+      line-height: 16px;
+      font-family: "Courier New", Courier, "Lucida Console", monospace;
+      font-size: 10pt;
+      padding-top: 1px;
+    }
+
+    .sip-detail-timestamp {
+      float: left;
+      padding-left: 3px;
+      line-height: 16px;
+      font-size: 10pt;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <input id="button" type="button" value="Start" />
+{% endblock %}

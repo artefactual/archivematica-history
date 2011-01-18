@@ -1,24 +1,18 @@
 from django.db.models import Max
+from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from dashboard.main.models import Task, Job
+from django.utils import simplejson
 import os
-
-def index(request):
-  return HttpResponseRedirect(reverse(sips))
-
-def sips(request):
-  # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-  objects = Job.objects.values('sipuuid').annotate(latest = Max('createdtime')).order_by('-latest').exclude(sipuuid__icontains = 'None')
-  return render_to_response('sips.html', locals())
 
 def show_dir(request, jobuuid):
   try:
     job = Job.objects.get(jobuuid = jobuuid)
     list = os.listdir(job.directory)
-    return render_to_response('show_dir.html', locals())
+    return render_to_response('main/show_dir.html', locals())
   except Exception: raise Http404
 
 def show_subdir(request, jobuuid, subdir):
@@ -38,20 +32,17 @@ def show_subdir(request, jobuuid, subdir):
     else:
       parent = path.replace(job.directory, '')
       list = os.listdir(path)
-      return render_to_response('show_dir.html', locals())
+      return render_to_response('main/show_dir.html', locals())
   except Exception: raise Http404
 
-def tasks(request, jobuuid):
-  try:
-    job = Job.objects.get(jobuuid = jobuuid)
-    objects = job.task_set.all().order_by('-createdtime')
-    return render_to_response('tasks.html', locals())
-  except Exception: raise Http404
-
-def remove_sip(request, sipuuid):
-  # jobs = Job.objects.filter(sipuuid = sipuuid)
-  # msg = '%s jobs removed!' % jobs.count()
-  tasks = Task.objects.all()
-  # tasks.delete()
-  msg = tasks.count()
-  return HttpResponse(msg)
+def get_all(request):
+  # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
+  objects = Job.objects.values('sipuuid').annotate(latest = Max('createdtime')).order_by('-latest').exclude(sipuuid__icontains = 'None')
+  def encoder(obj):
+    items = []
+    for item in obj:
+      item['latest'] = item['latest'].strftime('%x %X')
+      items.append(item)
+    return items
+  response = simplejson.JSONEncoder(default=encoder).encode(objects)
+  return HttpResponse(response)
