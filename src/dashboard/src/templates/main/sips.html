@@ -19,9 +19,35 @@
 
 {% block css %}
   <style type="text/css">
-    div.sip {
+
+    #sips-container {
+      background-color: #eee;
+    }
+
+    #sips-header {
+      font-weight: bold;
+      padding: 3px 2px;
+    }
+
+    #sips-header-icon {
+      float: left;
+      width: 20px;
+    }
+
+    #sips-header-uuid {
+      float: left;
+      width: 300px;
+      line-height: 16px;
+    }
+
+    #sips-header-timestamp {
+      float: left;
+      width: 200px;
+      line-height: 16px;
+    }
+
+    .sip {
       border: 1px solid transparent;
-      text-align: left;
       padding: 3px 2px;
       margin: 0 2px -1px 2px;
       clear: both;
@@ -34,7 +60,7 @@
 
     .sip-detail-uuid {
       float: left;
-      width: 303px;
+      width: 300px;
       line-height: 16px;
       font-family: "Courier New", Courier, "Lucida Console", monospace;
       font-size: 10pt;
@@ -43,6 +69,7 @@
 
     .sip-detail-timestamp {
       float: left;
+      width: 200px;
       padding-left: 3px;
       line-height: 16px;
       font-size: 10pt;
@@ -51,5 +78,4 @@
 {% endblock %}
 
 {% block content %}
-  <input id="button" type="button" value="Start" />
 {% endblock %}

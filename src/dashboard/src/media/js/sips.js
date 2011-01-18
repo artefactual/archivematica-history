@@ -109,7 +109,12 @@ Dashboard.SipManager.prototype.add = function(sip)
 
 Dashboard.SipManager.prototype.render = function()
   {
-    var $sipsContainer = $('<div id=\"sips-container\" />').append();
+    var $sipsContainer = $('<div id="sips-container" />').append(
+      '<div id="sips-header">' +
+      '<div id="sips-header-icon">&nbsp;</div>' +
+      '<div id="sips-header-uuid">UUID</div>' +
+      '<div id="sips-header-timestamp">Timestamp</div>' +
+      '</div>');
 
     for (var i in this.sips)
     {
@@ -288,19 +293,17 @@ Dashboard.Sip = function()
   {
     if (1 == arguments.length)
     {
-      this.uuid = arguments[0].sipuuid;
-      this.timestamp = arguments[0].latest;
+      this.uuid = arguments[0].uuid;
+      this.timestamp = arguments[0].timestamp;
     }
   };
 
 Dashboard.Sip.prototype.toHtml = function()
   {
     return '<div class="sip" uuid="' + this.uuid + '">' +
-           '<div style="position: relative;">' +
-           '<div class="sip-detail-icon"></div>' +
+           '<div class="sip-detail-icon">&nbsp;</div>' +
            '<div class="sip-detail-uuid">' + this.uuid + '</div>' +
            '<div class="sip-detail-timestamp">' + this.timestamp + '</div>'
-           '</div>' +
            '</div>';
   };
 
