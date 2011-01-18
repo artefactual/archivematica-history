@@ -112,6 +112,7 @@ Dashboard.SipManager.prototype.render = function()
     var $sipsContainer = $('<div id="sips-container" />').append(
       '<div id="sips-header">' +
       '<div id="sips-header-icon">&nbsp;</div>' +
+      '<div id="sips-header-directory">Directory</div>' +
       '<div id="sips-header-uuid">UUID</div>' +
       '<div id="sips-header-timestamp">Timestamp</div>' +
       '</div>');
@@ -293,6 +294,7 @@ Dashboard.Sip = function()
   {
     if (1 == arguments.length)
     {
+      this.directory = arguments[0].directory;
       this.uuid = arguments[0].uuid;
       this.timestamp = arguments[0].timestamp;
     }
@@ -302,6 +304,7 @@ Dashboard.Sip.prototype.toHtml = function()
   {
     return '<div class="sip" uuid="' + this.uuid + '">' +
            '<div class="sip-detail-icon">&nbsp;</div>' +
+           '<div class="sip-detail-directory">' + this.directory + '</div>' +
            '<div class="sip-detail-uuid">' + this.uuid + '</div>' +
            '<div class="sip-detail-timestamp">' + this.timestamp + '</div>'
            '</div>';
