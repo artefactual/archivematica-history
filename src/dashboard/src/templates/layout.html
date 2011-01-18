@@ -7,9 +7,7 @@
     <link href="/media/css/fonts.css" rel="stylesheet" type="text/css" />
     <link href="/media/css/base.css" rel="stylesheet" type="text/css" />
     <link href="/media/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/media/vendor/colorbox/example1/colorbox.css" rel="stylesheet" type="text/css" />
     <script src="/media/vendor/jquery.js" type="text/javascript"></script>
-    <script src="/media/vendor/colorbox/colorbox/jquery.colorbox-min.js" type="text/javascript"></script>
     {% block js %}{% endblock %}
     {% block css %}{% endblock %}
   </head>
@@ -19,9 +17,9 @@
     </div>
     <div id="menu">
       <ul>
-        <li class="sips"><a href="/sips/">SIPs</a></li>
-        <li class="aips" style="text-decoration: line-through;"><a href="/aips/" onclick="return false;">AIPs</a></li>
-        <li class="dips" style="text-decoration: line-through;"><a href="/dips/" onclick="return false;">DIPs</a></li>
+        <li class="sips"><a href="{% url sips %}">SIPs</a></li>
+        <li class="aips" style="text-decoration: line-through;"><a href="#" onclick="return false;">AIPs</a></li>
+        <li class="dips" style="text-decoration: line-through;"><a href="#" onclick="return false;">DIPs</a></li>
       </ul>
     </div>
     <div id="content">

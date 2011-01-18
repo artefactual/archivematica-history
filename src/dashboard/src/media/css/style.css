@@ -23,11 +23,13 @@ div#header {
 }
 
 div#header h1 {
-  margin-left: 12345px;
+  text-indent: -12345px;
 }
 
 div#menu {
   background-color: #42769e;
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.19, rgb(168,168,168)), color-stop(1, rgb(214,214,214)));
+  background-image: -moz-linear-gradient(center bottom, rgb(168,168,168) 19%, rgb(214,214,214) 100%);
 }
 
 div#menu ul {
@@ -48,11 +50,13 @@ div#menu ul li a {
   color: #fff;
   text-decoration: none;
   background-color: #42769e;
+  
   border-right: 1px solid #fff;
 }
 
 div#menu ul li a:hover {
   background-color: #4388a7;
+  
   color: #fff;
 }
 
