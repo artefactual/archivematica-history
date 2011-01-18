@@ -7,6 +7,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpRespons
 from dashboard.main.models import Task, Job
 from django.utils import simplejson
 import os
+import re
 
 def show_dir(request, jobuuid):
   try:
@@ -37,12 +38,19 @@ def show_subdir(request, jobuuid, subdir):
 
 def get_all(request):
   # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-  objects = Job.objects.values('sipuuid').annotate(latest = Max('createdtime')).order_by('-latest').exclude(sipuuid__icontains = 'None')
+  objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
   def encoder(obj):
     items = []
     for item in obj:
-      item['latest'] = item['latest'].strftime('%x %X')
+      item['directory'] = get_directory_by_sipuuid(item['sipuuid'])
+      item['timestamp'] = item['timestamp'].strftime('%x %X')
+      item['uuid'] = item['sipuuid']
+      del item['sipuuid']
       items.append(item)
     return items
   response = simplejson.JSONEncoder(default=encoder).encode(objects)
-  return HttpResponse(response)
+  return HttpResponse(response, mimetype='application/json')
+
+def get_directory_by_sipuuid(value):
+  directory = Job.objects.filter(sipuuid = value)[0].directory
+  return re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
