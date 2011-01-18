@@ -17,7 +17,7 @@ sudo rm /usr/bin/createDublinCore
 sudo rm -r /usr/lib/transcoder
 sudo rm -r /usr/lib/createDublinCore
 sudo rm -r /usr/lib/sanitizeNames
-sudo rm -r /var/www/dashboard
+sudo rm -r /usr/local/share/dashboard
 sudo rm -r /etc/transcoder
 sudo rm -r /usr/lib/easy-extract
 
