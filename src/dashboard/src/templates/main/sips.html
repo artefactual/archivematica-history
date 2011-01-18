@@ -21,36 +21,21 @@
   <style type="text/css">
 
     #sips-container {
-
+      width: 640px;
     }
 
     #sips-header {
       font-weight: bold;
       padding: 3px 2px;
+      height: 19px;
+      margin-bottom: 7px;
+      background: url(/media/images/dots.gif) repeat-x bottom;
     }
 
-    #sips-header-icon {
-      float: left;
-      width: 20px;
-    }
-
-    #sips-header-directory {
-      float: left;
-      width: 100px;
-      line-height: 16px;
-    }
-
-    #sips-header-uuid {
-      float: left;
-      width: 300px;
-      line-height: 16px;
-    }
-
-    #sips-header-timestamp {
-      float: left;
-      width: 200px;
-      line-height: 16px;
-    }
+    #sips-header-icon { float: left; width: 20px; }
+    #sips-header-directory { float: left; width: 100px; }
+    #sips-header-uuid { float: left; width: 300px; }
+    #sips-header-timestamp { float: left; width: 200px; }
 
     .sip {
       border: 1px solid transparent;
@@ -58,32 +43,10 @@
       clear: both;
     }
 
-    .sip-detail-icon {
-      float: left;
-      width: 20px;
-    }
-
-    .sip-detail-directory {
-      float: left;
-      width: 100px;
-      line-height: 16px;
-      font-size: 10pt;
-    }
-
-    .sip-detail-uuid {
-      float: left;
-      width: 300px;
-      line-height: 16px;
-      font-family: "Courier New", Courier, "Lucida Console", monospace;
-      font-size: 10pt;
-    }
-
-    .sip-detail-timestamp {
-      float: left;
-      width: 200px;
-      line-height: 16px;
-      font-size: 10pt;
-    }
+    .sip-detail-icon { float: left; width: 20px; }
+    .sip-detail-directory { float: left; width: 100px; }
+    .sip-detail-uuid { float: left; width: 300px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
+    .sip-detail-timestamp { float: left; width: 200px; }
   </style>
 {% endblock %}
 

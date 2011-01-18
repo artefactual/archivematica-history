@@ -27,7 +27,7 @@ div#header h1 {
 }
 
 div#menu {
-  background-color: #42769e;
+  background-color: #bbb;
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.19, rgb(168,168,168)), color-stop(1, rgb(214,214,214)));
   background-image: -moz-linear-gradient(center bottom, rgb(168,168,168) 19%, rgb(214,214,214) 100%);
 }
