@@ -1,8 +1,9 @@
+from django.conf import settings
 from xmlrpclib import ServerProxy, Error
 
 class MCPClient:
 
-  def __init__(self, host = 'localhost', port = 8000):
+  def __init__(self, host = settings.MCP_SERVER[0], port = settings.MCP_SERVER[1]):
     self.url = 'http://%s:%d' % (host, port)
     self.server = ServerProxy(self.url)
 
