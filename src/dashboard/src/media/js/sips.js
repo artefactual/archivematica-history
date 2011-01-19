@@ -81,6 +81,10 @@ Dashboard.SipManager = function()
 Dashboard.SipManager.prototype.get = function(system)
   {
     $.ajax({
+      beforeSend: function()
+        {
+          this.$container.append('<div id="sips-loading">Loading...</div>');
+        },
       context: this,
       dataType: 'json',
       success: function(data)
@@ -94,6 +98,11 @@ Dashboard.SipManager.prototype.get = function(system)
           }
 
           this.render();
+
+          setTimeout(function()
+            {
+              $('div#sips-loading').fadeOut('slow', function() { $(this).remove(); } );
+            }, 1000);
 
           this.timerStep(system);
         },
