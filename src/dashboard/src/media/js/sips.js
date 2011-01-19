@@ -3,87 +3,37 @@ var Dashboard = {};
   // Dashboard.IntervalManager
   // Dashboard.SipManager
   
-Dashboard.IntervalManager = function()
-  {
-    this._timeout = 60;
-    if (1 == arguments.length)
-    {
-      this._min = arguments[0] / 1000;
-    }
-    else
-    {
-      this._min = 1;
-    }
-    this._step = 0.25;
-    this._duration = 0;
-    this._count = 0;
-
-    this._interval = this._min;
-  };
-
-Dashboard.IntervalManager.prototype.reset = function()
-  {
-    this._interval = this._min;
-    this._duration = 0;
-    this._count = 0;
-
-    return this.get();
-  };
-
-Dashboard.IntervalManager.prototype.add = function(amt)
-  {
-    this._interval += amt;
-    this._duration += this._interval;    
-    this._count++;  
-  };
-
-Dashboard.IntervalManager.prototype.step = function()
-  {
-    if (this._duration >= this._timeout)
-    {
-      // Timer has reached the _timeout limit
-      return false;
-    }
-
-    var increment = Math.round(this._step * (this._count/20));
-
-    this.add(increment);
-    return this.get();
-  };
-
-Dashboard.IntervalManager.prototype.get = function()
-  {
-    return this._interval * 1000;
-  };
-
 Dashboard.SipManager = function()
   {
     this.$container = $('#content');
     this.sips = [];
 
-    this.interval = 0;
+    this.isActive = false;
+    this.interval = 5000;
     if (1 == arguments.length)
     {
-      this.defaultInterval = arguments[0] * 1000;
+      this.interval = arguments[0] * 1000;
     }
 
-    // Inititalize IntervalManager if present
-    if (Dashboard.IntervalManager)
-    {
-      this.intervalManager = new Dashboard.IntervalManager(this.defaultInterval);
-    }
-
-    // State and timer properties
-    this.isActive = false;
-    this.interval = false;
+    this.loadingWidget = {
+      widget: $('<div id="loading"><div><div><span>Loading...</span></div></div></div>').hide().appendTo(document.body),
+      show: function()
+        {
+          this.widget.show();
+        },
+      hide: function()
+        {
+          this.widget.fadeOut(500);
+        }
+    };
   };
 
-Dashboard.SipManager.prototype.get = function(system)
-  {
+Dashboard.SipManager.prototype.get = function()
+  { 
     $.ajax({
       beforeSend: function()
         {
-          this.$container.append('<div id="sips-loading">Loading...</div>');
+          this.loadingWidget.show();
         },
       context: this,
       dataType: 'json',
@@ -98,13 +48,8 @@ Dashboard.SipManager.prototype.get = function(system)
           }
 
           this.render();
-
-          setTimeout(function()
-            {
-              $('div#sips-loading').fadeOut('slow', function() { $(this).remove(); } );
-            }, 1000);
-
-          this.timerStep(system);
+          this.loadingWidget.hide();
+          this.step();
         },
       type: 'GET',
       url: '/sips/all/',
@@ -142,15 +87,11 @@ Dashboard.SipManager.prototype.render = function()
 Dashboard.SipManager.prototype.start = function()
   {
     this.setActive(true);
-    this.timerStart();
   };
 
 Dashboard.SipManager.prototype.stop = function()
   {
-    if (this.timerStop() === true)
-    {
-      this.setActive(false);
-    }
+    this.setActive(false);
   };
 
 Dashboard.SipManager.prototype.toggle = function()
@@ -165,105 +106,6 @@ Dashboard.SipManager.prototype.toggle = function()
     }
   };
 
-Dashboard.SipManager.prototype.timerStart = function()
-  {
-    if (this.isActive === false)
-    {
-      return false;
-    }
-
-    if (this.intervalManager)
-    {
-      var interval = this.intervalManager.reset();
-      this.timerSet(interval);
-      return true;
-    }
-    else
-    {
-      this.timerSet(this.defaultInterval);
-    }
-
-    return false;
-  };
-
-Dashboard.SipManager.prototype.timerStop = function()
-  {
-    if (this.isActive === false)
-    {
-      return true;
-    }
-
-    if (this.intervalManager)
-    {
-      clearInterval(this.timerID);
-      this.interval = false;
-    }
-
-    return true;
-  };
-
-Dashboard.SipManager.prototype.timerSet = function(interval)
-  {
-    if (this.isActive === false)
-    {
-      return false;
-    }
-
-    var self = this;
-    this.interval = interval;
-    clearInterval(this.timerID);
-
-    this.timerID = setInterval(function()
-      {
-        self.get(true);
-      }, interval);
-
-    return true;
-  };
-
-Dashboard.SipManager.prototype.timerReset = function()
-  {
-    if (this.isActive === false)
-    {
-      return false;
-    }
-
-    if (this.intervalManager)
-    {
-      var interval = this.intervalManager.reset();
-      return this.timerSet(interval);
-    }
-
-    this.timerStart();
-    return false;
-  };
-
-Dashboard.SipManager.prototype.timerStep = function(system)
-  {
-    if (this.isActive === false)
-    {
-      if (system !== true)
-      {
-        return this.start();
-      }
-
-      return false;
-    }
-
-    if (this.intervalManager)
-    {
-      var interval = this.intervalManager.step();
-      if (interval !== false)
-      {
-        return this.timerSet(interval);
-      }
-
-      return this.stop();
-    }
-
-    return false;
-  };
-
 Dashboard.SipManager.prototype.setActive = function(active)
   {
     if (active === true)
@@ -274,8 +116,21 @@ Dashboard.SipManager.prototype.setActive = function(active)
     else if (active === false)
     {
       this.isActive = false;
-      clearInterval(this.timerID);
     }
+  };
+
+Dashboard.SipManager.prototype.step = function()
+  {
+    if (this.isActive === false)
+    {
+      return false;
+    }
+
+    var self = this;
+    setTimeout(function()
+      {
+        self.get();
+      }, this.interval);
   };
 
 Dashboard.Sip = function()
