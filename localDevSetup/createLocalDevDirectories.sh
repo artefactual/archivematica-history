@@ -24,8 +24,6 @@ sudo ln -s "${svnDir}src/sanitizeNames/lib/" "/usr/lib/sanitizeNames"
 sudo ln -s "${svnDir}src/dashboard/src/" "/usr/local/share/dashboard"
 sudo ln -s "${svnDir}src/createDublinCore/lib/" "/usr/lib/createDublinCore"
 
-sudo cp "${svnDir}buildVM/includes/apache.default" "/etc/apache2/sites-available/default"
-
 sudo ln "${svnDir}src/MCPServer/runArchivematicaMCPServer.sh" "/usr/bin/"
 sudo ln "${svnDir}src/MCPClient/runArchivematicaMCPClient.sh" "/usr/bin/"
 #sudo ln "${svnDir}src/SIPCreationTools/bin/archivematicaCreateDublincore" "/usr/bin/"

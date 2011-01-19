@@ -23,5 +23,4 @@ sudo rm -r /usr/lib/easy-extract
 
 sudo rm -r /var/archivematica/
 
-
-
+sudo mv /etc/apache2/sites-available/default{.dist,}
