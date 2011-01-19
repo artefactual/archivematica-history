@@ -64,7 +64,6 @@ Dashboard.SipManager.prototype.init = function()
     this.interval = 0;
     this.defaultInterval = 5000; // Default interval if IntervalManager is not present
     this.$container = $('#content');
-    this.$button = $('#button');
     this.sips = [];
 
     // Inititalize IntervalManager if present
@@ -260,34 +259,13 @@ Dashboard.SipManager.prototype.setActive = function(active)
     if (active === true)
     {
       this.isActive = true;
-      this.$button.val('Stop');
-
       this.get();
     }
     else if (active === false)
     {
       this.isActive = false;
-      this.$button.val('Start');
-
       clearInterval(this.timerID);
     }
-  };
-
-Dashboard.SipManager.prototype.statusDisplay = function()
-  {
-    var self = this;
-
-    this.$button.click(function()
-      {
-        if (self.isActive === true)
-        {
-          self.stop();
-        }
-        else
-        {
-          self.start();
-        }
-      });
   };
 
 Dashboard.Sip = function()
@@ -309,7 +287,3 @@ Dashboard.Sip.prototype.toHtml = function()
            '<div class="sip-detail-timestamp">' + this.timestamp + '</div>'
            '</div>';
   };
-
-
-
-
