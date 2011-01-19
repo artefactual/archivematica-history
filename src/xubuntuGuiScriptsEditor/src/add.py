@@ -1,4 +1,24 @@
 #!/usr/bin/python
+# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+# @package Archivematica
+# @subpackage 
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
 from lxml import etree
 from optparse import OptionParser
 import os
@@ -50,7 +70,35 @@ def add(filePath="~/.config/Thunar/uca.xml", \
     etree.SubElement(action, "video-files").text = videoFiles
     
     print(etree.tostring(root, pretty_print=True))
+    
+    
+def printAction(filePath="~/.config/Thunar/uca.xml", \
+    icon="accessories-calculator", \
+    name="", \
+    command="", \
+    description="", \
+    patterns="*", \
+    directories="", \
+    audioFiles="", \
+    imageFiles="", \
+    otherFiles="", \
+    textFiles="", \
+    videoFiles="" ):
 
+    action = etree.Element("action")
+    etree.SubElement(action, "name").text = name
+    etree.SubElement(action, "command").text = command
+    etree.SubElement(action, "description").text = description
+    etree.SubElement(action, "patterns").text = patterns
+    etree.SubElement(action, "directories").text = directories
+    etree.SubElement(action, "audio-files").text = audioFiles
+    etree.SubElement(action, "image-files").text = imageFiles
+    etree.SubElement(action, "other-files").text = otherFiles
+    etree.SubElement(action, "text-files").text = textFiles
+    etree.SubElement(action, "video-files").text = videoFiles
+    
+    print(etree.tostring(action, pretty_print=True))
+    
 
 if __name__ == "__main__":
     parser = OptionParser()
@@ -104,9 +152,9 @@ if __name__ == "__main__":
 
     
     (options, args) = parser.parse_args()
-    print options
-    print args
-    add(options.filename, \
+    #print options
+    #print args
+    printAction(options.filename, \
         options.icon, \
         options.name, \
         options.command, \
