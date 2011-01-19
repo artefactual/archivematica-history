@@ -95,3 +95,4 @@ INSTALLED_APPS = (
 )
 
 MCP_SERVER = ('127.0.0.1', 8000)
+POLLING_INTERVAL = 5 # Integer seconds

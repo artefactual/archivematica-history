@@ -10,8 +10,7 @@
   <script type="text/javascript">
     $(document).ready(function()
       {
-        var sipmgr = new Dashboard.SipManager();
-        sipmgr.statusDisplay();
+        var sipmgr = new Dashboard.SipManager({{ interval }});
         sipmgr.start();
       });
   </script>
