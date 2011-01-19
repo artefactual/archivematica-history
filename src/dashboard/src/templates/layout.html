@@ -12,18 +12,20 @@
     {% block css %}{% endblock %}
   </head>
   <body id="page-{% block page_id %}default{% endblock %}">
-    <div id="header">
-      <h1>Archivematica Dashboard - {% block h1 %}{% endblock %}</h1>
-    </div>
-    <div id="menu">
-      <ul>
-        <li class="sips"><a href="{% url sips %}">SIPs</a></li>
-        <li class="aips" style="text-decoration: line-through;"><a href="#" onclick="return false;">AIPs</a></li>
-        <li class="dips" style="text-decoration: line-through;"><a href="#" onclick="return false;">DIPs</a></li>
-      </ul>
-    </div>
-    <div id="content">
-      {% block content %}{% endblock %}
+    <div id="main-container">
+      <div id="header">
+        <h1>Archivematica Dashboard - {% block h1 %}{% endblock %}</h1>
+      </div>
+      <div id="menu">
+        <ul>
+          <li class="sips"><a href="{% url sips %}">SIPs</a></li>
+          <li class="aips" style="text-decoration: line-through;"><a href="#" onclick="return false;">AIPs</a></li>
+          <li class="dips" style="text-decoration: line-through;"><a href="#" onclick="return false;">DIPs</a></li>
+        </ul>
+      </div>
+      <div id="content">
+        {% block content %}{% endblock %}
+      </div>
     </div>
   </body>
 </html>
