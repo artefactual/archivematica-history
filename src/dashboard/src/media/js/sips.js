@@ -26,9 +26,38 @@ Dashboard.SipManager = function()
           this.widget.fadeOut(500);
         }
     };
+
+    var self = this;
+    this.$container.delegate('.sip', 'click, hover', function(event)
+      {
+        if ('click' == event.type)
+        {
+          var sip = self.get(this.getAttribute('uuid'));
+          sip.highlight();
+        }
+        else if ('mouseenter' == event.type)
+        {
+          $(this).addClass('sip-hover');
+        }
+        else if ('mouseleave' == event.type)
+        {
+          $(this).removeClass('sip-hover');
+        }
+      });
   };
 
-Dashboard.SipManager.prototype.get = function()
+Dashboard.SipManager.prototype.get = function(uuid)
+  {
+    for (var i in this.sips)
+    {
+      if (uuid == this.sips[i].uuid)
+      {
+        return this.sips[i];
+      }
+    }
+  };
+
+Dashboard.SipManager.prototype.load = function()
   { 
     $.ajax({
       beforeSend: function()
@@ -73,7 +102,7 @@ Dashboard.SipManager.prototype.render = function()
 
     for (var i in this.sips)
     {
-      $sipsContainer.append(this.sips[i].toHtml());
+      $sipsContainer.append(this.sips[i].$object);
     }
 
     if ($('#sips-container').length)
@@ -111,7 +140,7 @@ Dashboard.SipManager.prototype.setActive = function(active)
     if (active === true)
     {
       this.isActive = true;
-      this.get();
+      this.load();
     }
     else if (active === false)
     {
@@ -129,7 +158,7 @@ Dashboard.SipManager.prototype.step = function()
     var self = this;
     setTimeout(function()
       {
-        self.get();
+        self.load();
       }, this.interval);
   };
 
@@ -137,18 +166,38 @@ Dashboard.Sip = function()
   {
     if (1 == arguments.length)
     {
-      this.directory = arguments[0].directory;
-      this.uuid = arguments[0].uuid;
-      this.timestamp = arguments[0].timestamp;
+      var sip = arguments[0];
+      this.directory = sip.directory;
+      this.uuid = sip.uuid;
+      this.timestamp = sip.timestamp;
+      this.status = sip.status;
+
+      this.build();
     }
   };
 
-Dashboard.Sip.prototype.toHtml = function()
+Dashboard.Sip.prototype.getIcon = function(status)
   {
-    return '<div class="sip" uuid="' + this.uuid + '">' +
-           '<div class="sip-detail-icon">&nbsp;</div>' +
-           '<div class="sip-detail-directory">' + this.directory + '</div>' +
-           '<div class="sip-detail-uuid">' + this.uuid + '</div>' +
-           '<div class="sip-detail-timestamp">' + this.timestamp + '</div>'
-           '</div>';
+    switch (status)
+    {
+      case 0:
+        return '/media/images/accept.png';
+      case 1:
+        return '/media/images/bell.png';
+    }
+  };
+
+Dashboard.Sip.prototype.build = function()
+  {
+    this.$object = $('<div class="sip" />').attr({'uuid': this.uuid, 'status': this.status});
+    
+    if (this.status)
+    {
+      this.$object.addClass('sip-highlighted');
+    }
+
+    this.$object.append('<div class="sip-detail sip-detail-icon"><img src="' + this.getIcon(this.status) + '" /></div>');
+    this.$object.append('<div class="sip-detail sip-detail-directory">' + this.directory + '</div>');
+    this.$object.append('<div class="sip-detail sip-detail-uuid">' + this.uuid + '</div>');
+    this.$object.append('<div class="sip-detail sip-detail-timestamp">' + this.timestamp + '</div>');
   };

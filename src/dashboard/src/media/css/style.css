@@ -91,3 +91,51 @@ a:hover { text-decoration: underline; }
 #loading > div > div > span {
   font-weight: bold;
 }
+
+/* SIPs */
+
+#sips-container {
+  margin-top: 10px;
+  width: 660px;
+}
+
+#sips-header {
+  font-weight: bold;
+  padding: 3px 2px;
+  height: 19px;
+  margin-bottom: 7px;
+  background: url(/media/images/dots.gif) repeat-x bottom;
+}
+
+#sips-header-icon { float: left; width: 40px; }
+#sips-header-directory { float: left; width: 100px; }
+#sips-header-uuid { float: left; width: 330px; }
+#sips-header-timestamp { float: left; width: 120px; }
+
+.sip {
+  clear: both;
+  float: left;
+  cursor: pointer;
+  width: 660px;
+  border: 1px solid transparent;
+  padding: 3px 2px;
+}
+
+.sip-highlighted > .sip-detail-directory {
+  color: Red;
+}
+
+.sip-hover {
+  border: 1px solid #bbb;
+  background-color: #eee;
+}
+
+.sip-highlighted.sip-hover {
+  border-color: Red;
+}
+
+.sip-detail { float: left; }
+.sip-detail-icon { width: 40px; text-align: center; }
+.sip-detail-directory { width: 100px; }
+.sip-detail-uuid { width: 330px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
+.sip-detail-timestamp { width: 120px; }
