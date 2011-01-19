@@ -15,15 +15,26 @@ Dashboard.SipManager = function()
       this.interval = arguments[0] * 1000;
     }
 
-    this.loadingWidget = {
-      widget: $('<div id="loading"><div><div><span>Loading...</span></div></div></div>').hide().appendTo(document.body),
-      show: function()
+    this.statusWidget = {
+      widget: $('<div id="status"><div><div><span>&nbsp;</span></div></div></div>').hide().appendTo(document.body),
+      show: function(message, error)
         {
+          this.text(message);
+
+          if (true === error)
+          {
+            this.widget.addClass('status-error');
+          }
+
           this.widget.show();
         },
       hide: function()
         {
-          this.widget.fadeOut(500);
+          this.widget.fadeOut(500).removeClass('status-error');
+        },
+      text: function(message)
+        {
+          this.widget.find('span').html(message);
         }
     };
 
@@ -62,10 +73,30 @@ Dashboard.SipManager.prototype.load = function()
     $.ajax({
       beforeSend: function()
         {
-          this.loadingWidget.show();
+          this.statusWidget.show('Loading...');
         },
       context: this,
       dataType: 'json',
+      error: function()
+        {
+          var self = this;
+          var counter = 0;
+          var timerID = setInterval(function()
+            {
+              var icounter = 5 - counter;
+
+              if (icounter == 0)
+              {
+                clearInterval(timerID);
+                self.start();
+
+                return true;
+              }
+
+              self.statusWidget.show('Error connecting to server... trying again in ' + icounter + 's.', true);
+              counter++;
+            }, 1000);
+        },
       success: function(data)
         {
           this.sips = [];
@@ -77,7 +108,7 @@ Dashboard.SipManager.prototype.load = function()
           }
 
           this.render();
-          this.loadingWidget.hide();
+          this.statusWidget.hide();
           this.step();
         },
       type: 'GET',

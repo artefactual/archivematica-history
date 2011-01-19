@@ -67,9 +67,9 @@ a:hover { text-decoration: underline; }
 
 #page-sips #menu .sips a { background-color: #a40000; }
 
-/* Loading widget */
+/* Status widget */
 
-#loading {
+#status {
   position: absolute;
   left: 0;
   top: 0;
@@ -78,17 +78,24 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 
-#loading > div {
+.status-error > div > div {
+  background-color: #a40000 !important;
+  color: White;
+}
+
+#status > div {
   position: relative;
   display: inline-block;
 }
 
-#loading > div > div {
+#status > div > div {
   background-color: #9fbfd6;
-  padding: 3px 6px;
+  padding: 3px 6px 5px 6px;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
-#loading > div > div > span {
+#status > div > div > span {
   font-weight: bold;
 }
 
