@@ -1,38 +1,43 @@
 body {
-  margin: 20px;
+  
 }
 
+#main-container {
+
+}
+
+#content {
+  margin: 0 20px;
+}
+
+a, a * { cursor: pointer; outline: none; }
 a:link, a:visited, a:focus, a:active { text-decoration: none; color: Blue; }
 a:hover { text-decoration: underline; }
 
-div.pagination {
-  text-align: left;
-  background-color: #eee;
-  margin: 10px 0;
+/* Header */
+
+#header {
+  background: #fff url(../images/logo.png) no-repeat 20px 50%;
+  height: 34px;
+  margin-top: 20px;
   padding: 10px;
 }
 
-table th {
-  background-color: #eee;
-}
-
-div#header {
-  background: #fff url(../images/logo.png) no-repeat bottom left;
-  height: 34px;
-  margin: 0 0 10px 0;
-}
-
-div#header h1 {
+#header h1 {
   text-indent: -12345px;
+  margin: 0;
 }
 
-div#menu {
+/* Menu */
+
+#menu {
   background-color: #bbb;
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.19, rgb(168,168,168)), color-stop(1, rgb(214,214,214)));
   background-image: -moz-linear-gradient(center bottom, rgb(168,168,168) 19%, rgb(214,214,214) 100%);
+  margin: 0 20px 10px 20px;
 }
 
-div#menu ul {
+#menu ul {
   font-weight: bold;
   text-shadow: #000000 1px 1px 1px;
   color: #fff;
@@ -40,12 +45,12 @@ div#menu ul {
   padding: 5px 0px;
 }
 
-div#menu ul li {
+#menu ul li {
   display: inline;
   margin-left: -4px;
 }
 
-div#menu ul li a {
+#menu ul li a {
   padding: 5px 10px 5px 10px;
   color: #fff;
   text-decoration: none;
@@ -54,24 +59,35 @@ div#menu ul li a {
   border-right: 1px solid #fff;
 }
 
-div#menu ul li a:hover {
+#menu ul li a:hover {
   background-color: #4388a7;
   
   color: #fff;
 }
 
 #page-sips #menu .sips a { background-color: #a40000; }
-/*
-#page-client #menu .client a { background-color: #a40000; }
-#page-jobs #menu .jobs a { background-color: #a40000; }
-#page-tasks #menu .tasks a { background-color: #a40000; }
-*/
 
-th.fk { background-color: #ffdda7; }
-td.fk { background-color: #fff7e2; }
+/* Loading widget */
 
-div.job { background-color: #eee; margin: 10px 0 0 0; padding: 4px 8px; }
-div.job p { margin-bottom: 4px; }
-div.job div.actions { }
+#loading {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100;
+  text-align: center;
+}
 
-div#loading { margin: 10px auto 0 auto; height: 30px; line-height: 30px; width: 200px; text-align: center; background-color: #fff7e2; border: 1px solid #aaa; border-radius: 8px; -moz-border-radius: 8px; -webkit-border-radius: 8px; box-shadow: 1px 1px 1px #888; -webkit-box-shadow: 1px 1px 1px #888; -moz-box-shadow: 1px 1px 1px #888; }
+#loading > div {
+  position: relative;
+  display: inline-block;
+}
+
+#loading > div > div {
+  background-color: #9fbfd6;
+  padding: 3px 6px;
+}
+
+#loading > div > div > span {
+  font-weight: bold;
+}
