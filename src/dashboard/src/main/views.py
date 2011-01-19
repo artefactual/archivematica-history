@@ -4,8 +4,10 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
-from dashboard.main.models import Task, Job
 from django.utils import simplejson
+from dashboard.contrib.mcp.client import MCPClient
+from dashboard.main.models import Task, Job
+from lxml import etree
 import os
 import re
 
@@ -39,18 +41,26 @@ def show_subdir(request, jobuuid, subdir):
 def get_all(request):
   # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
   objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
+  client = MCPClient()
+  jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
   def encoder(obj):
     items = []
     for item in obj:
-      item['directory'] = get_directory_by_sipuuid(item['sipuuid'])
+      jobs = Job.objects.filter(sipuuid = item['sipuuid'])
+      directory = jobs[0].directory
+      item['directory'] = re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
       item['timestamp'] = item['timestamp'].strftime('%x %X')
       item['uuid'] = item['sipuuid']
       del item['sipuuid']
+      for job in jobs:
+        for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
+          if uuid.text == job.jobuuid:
+            item['status'] = "PIIII"
+            item['job'] = job.jobuuid
+            break
+        if 'status' in item:
+          break
       items.append(item)
     return items
   response = simplejson.JSONEncoder(default=encoder).encode(objects)
   return HttpResponse(response, mimetype='application/json')
-
-def get_directory_by_sipuuid(value):
-  directory = Job.objects.filter(sipuuid = value)[0].directory
-  return re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
