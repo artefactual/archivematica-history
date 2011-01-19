@@ -1,6 +1,6 @@
-NameVirtualHost *
+# NameVirtualHost directive is assigned at ports.conf
 
-<VirtualHost *>
+<VirtualHost *:80>
 
   ServerAdmin webmaster@localhost
   DocumentRoot /var/www
@@ -53,17 +53,18 @@ NameVirtualHost *
   </Directory>
 
   # Serve static files from Dashboard
-  Alias /media "/var/www/dashboard/media/"
-  <Directory "/var/www/dashboard/media/">
+  Alias /media "/usr/local/share/dashboard/media/"
+  <Directory "/usr/local/share/dashboard/media/">
     Order allow,deny
     Allow from all
   </Directory>
 
-
   # Django with mod_wsgi
   # http://code.google.com/p/modwsgi/wiki/IntegrationWithDjango
-  WSGIScriptAlias / /var/www/dashboard/apache/django.wsgi
-  <Directory "/var/www/dashboard/apache/">
+  WSGIScriptAlias / /usr/local/share/dashboard/apache/django.wsgi
+  WSGIDaemonProcess dashboard
+  WSGIProcessGroup dashboard
+  <Directory "/usr/local/share/dashboard/apache/">
     Order allow,deny
     Allow from all
   </Directory>
