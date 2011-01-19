@@ -2,16 +2,18 @@
 var Dashboard = {};
   // Dashboard.IntervalManager
   // Dashboard.SipManager
-
+  
 Dashboard.IntervalManager = function()
   {
-    this.init();
-  }
-  
-Dashboard.IntervalManager.prototype.init = function()
-  {
     this._timeout = 60;
-    this._min = 1;
+    if (1 == arguments.length)
+    {
+      this._min = arguments[0] / 1000;
+    }
+    else
+    {
+      this._min = 1;
+    }
     this._step = 0.25;
     this._duration = 0;
     this._count = 0;
@@ -56,20 +58,19 @@ Dashboard.IntervalManager.prototype.get = function()
 
 Dashboard.SipManager = function()
   {
-    this.init();
-  }
-
-Dashboard.SipManager.prototype.init = function()
-  {
-    this.interval = 0;
-    this.defaultInterval = 5000; // Default interval if IntervalManager is not present
     this.$container = $('#content');
     this.sips = [];
+
+    this.interval = 0;
+    if (1 == arguments.length)
+    {
+      this.defaultInterval = arguments[0] * 1000;
+    }
 
     // Inititalize IntervalManager if present
     if (Dashboard.IntervalManager)
     {
-      this.intervalManager = new Dashboard.IntervalManager();
+      this.intervalManager = new Dashboard.IntervalManager(this.defaultInterval);
     }
 
     // State and timer properties
