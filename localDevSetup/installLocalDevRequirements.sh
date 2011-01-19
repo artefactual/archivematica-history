@@ -10,9 +10,10 @@ sudo apt-get update
 sudo apt-get install bagit droid fits jhove # xena 
 
 tmp="`pwd`"
+svnDir=$(dirname $tmp)/
 cd ./../buildVM/includes/
 sudo ./vmInstaller-ica-atom.sh /.
-sudo cp  apache.default /etc/apache2/sites-available/default
+sudo mv /etc/apache2/sites-available/default{,.dist}
+sudo ln -s ${svnDir}buildVM/includes/apache.default /etc/apache2/sites-available/default
 sudo /etc/init.d/apache2 restart
 cd "$tmp"
-
