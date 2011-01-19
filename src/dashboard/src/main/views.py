@@ -39,6 +39,7 @@ def show_subdir(request, jobuuid, subdir):
   except Exception: raise Http404
 
 def get_all(request):
+
   # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
   objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
   client = MCPClient()
@@ -55,11 +56,13 @@ def get_all(request):
       for job in jobs:
         for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
           if uuid.text == job.jobuuid:
-            item['status'] = "PIIII"
+            item['status'] = 1
             item['job'] = job.jobuuid
             break
         if 'status' in item:
           break
+      if 'status' not in item:
+        item['status'] = 0
       items.append(item)
     return items
   response = simplejson.JSONEncoder(default=encoder).encode(objects)
