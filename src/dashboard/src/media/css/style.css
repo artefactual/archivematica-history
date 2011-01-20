@@ -114,7 +114,7 @@ a:hover { text-decoration: underline; }
 }
 
 #sips-header-icon { float: left; width: 20px; }
-#sips-header-directory { float: left; width: 100px; }
+#sips-header-directory { float: left; width: 300px; }
 #sips-header-uuid { float: left; width: 330px; }
 #sips-header-timestamp { float: left; width: 120px; }
 #sips-header-jobs { float: left; }
@@ -131,6 +131,10 @@ a:hover { text-decoration: underline; }
   color: Red;
 }
 
+.sip-reloaded {
+  background-color: #fedda7;
+}
+
 .sip-hover {
   border: 1px solid #bbb;
   background-color: #eee;
@@ -142,7 +146,7 @@ a:hover { text-decoration: underline; }
 
 .sip-detail { float: left; line-height: 20x; }
 .sip-detail-icon { width: 20px; text-align: left; }
-.sip-detail-directory { width: 100px; }
+.sip-detail-directory { width: 300px; display: table-cell; white-space: nowrap; }
 .sip-detail-uuid { width: 330px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
 .sip-detail-timestamp { width: 120px; }
 .sip-detail-jobs { padding-right: 4px; }

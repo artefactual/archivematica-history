@@ -3,7 +3,7 @@ var Dashboard = {};
   // Dashboard.IntervalManager
   // Dashboard.SipManager
  
-Dashboard.pollingInterval = 9; // Seconds
+Dashboard.pollingInterval = 5; // Seconds
 
 Dashboard.SipManager = function()
   {
@@ -41,22 +41,22 @@ Dashboard.SipManager = function()
     };
 
     var self = this;
-    this.$container.delegate('.sip', 'click, hover', function(event)
-      {
-        if ('click' == event.type)
+    this.$container
+      .delegate('.sip', 'click', function(event)
         {
           var sip = self.get(this.getAttribute('uuid'));
-          sip.highlight();
-        }
-        else if ('mouseenter' == event.type)
+        })
+      .delegate('.sip', 'hover', function(event)
         {
-          $(this).addClass('sip-hover');
-        }
-        else if ('mouseleave' == event.type)
-        {
-          $(this).removeClass('sip-hover');
-        }
-      });
+          if ('mouseenter' == event.type)
+          {
+            $(this).addClass('sip-hover');
+          }
+          else if ('mouseleave' == event.type)
+          {
+            $(this).removeClass('sip-hover');
+          }
+        });
   };
 
 Dashboard.SipManager.prototype.get = function(uuid)
@@ -101,15 +101,12 @@ Dashboard.SipManager.prototype.load = function()
         },
       success: function(data)
         {
-          this.sips = [];
-
           for (var i in data)
           {
             // Add Sips
             this.add(data[i]);
           }
 
-          this.render();
           this.statusWidget.hide();
           this.step();
         },
@@ -120,7 +117,31 @@ Dashboard.SipManager.prototype.load = function()
 
 Dashboard.SipManager.prototype.add = function(sip)
   {
-    this.sips.push(new Dashboard.Sip(sip));
+    var existingSip = this.find(sip.uuid);
+
+    if (false === existingSip)
+    {
+      var newSip = new Dashboard.Sip(sip);
+      this.sips.push(newSip);
+      newSip.render();
+    }
+    else
+    {
+      existingSip.replace(sip);
+    }
+  };
+
+Dashboard.SipManager.prototype.find = function(uuid)
+  {
+    for (var i in this.sips)
+    {
+      if (this.sips[i].uuid == uuid)
+      {
+        return this.sips[i];
+      }
+    }
+
+    return false;
   };
 
 Dashboard.SipManager.prototype.render = function()
@@ -133,16 +154,6 @@ Dashboard.SipManager.prototype.render = function()
       '<div id="sips-header-timestamp">Timestamp</div>' +
       '<div id="sips-header-jobs">&nbsp;</div>' +
       '</div>');
-
-    for (var i in this.sips)
-    {
-      $sipsContainer.append(this.sips[i].$object);
-    }
-
-    if ($('#sips-container').length)
-    {
-      $('#sips-container').remove();
-    }
 
     $sipsContainer.appendTo(this.$container);
   };
@@ -174,6 +185,7 @@ Dashboard.SipManager.prototype.setActive = function(active)
     if (active === true)
     {
       this.isActive = true;
+      this.render();
       this.load();
     }
     else if (active === false)
@@ -198,17 +210,24 @@ Dashboard.SipManager.prototype.step = function()
 
 Dashboard.Sip = function()
   {
-    if (1 == arguments.length)
+    if (1 != arguments.length)
     {
-      var sip = arguments[0];
-      this.directory = sip.directory;
-      this.uuid = sip.uuid;
-      this.timestamp = sip.timestamp;
-      this.status = sip.status;
-
-      this.build();
+      return false;
     }
+
+    this.$container = $('#sips-container');
+
+    this.load(arguments[0]);
+    this.build();
   };
+
+Dashboard.Sip.prototype.load = function(sip)
+{
+  this.directory = sip.directory;
+  this.uuid = sip.uuid;
+  this.timestamp = sip.timestamp;
+  this.status = sip.status;
+}
 
 Dashboard.Sip.prototype.getIcon = function(status)
   {
@@ -235,4 +254,27 @@ Dashboard.Sip.prototype.build = function()
     this.$object.append('<div class="sip-detail sip-detail-uuid">' + this.uuid + '</div>');
     this.$object.append('<div class="sip-detail sip-detail-timestamp">' + this.timestamp + '</div>');
     this.$object.append('<div class="sip-detail sip-detail-jobs"><span>Show jobs</span></div>');
+  };
+
+Dashboard.Sip.prototype.render = function()
+  {
+    this.$container.append(this.$object);
+  };
+
+Dashboard.Sip.prototype.replace = function(sip)
+  {
+    if (this.timestamp != sip.timestamp)
+    {
+      this.load(sip);
+      this.build();
+
+      $('div.sip[uuid=' + this.uuid + ']', this.$container).replaceWith(this.$object);
+
+      this.$object.addClass('sip-reloaded');
+      var self = this;
+      setTimeout(function()
+        {
+          self.$object.removeClass('sip-reloaded');
+        }, 500);
+    }
   };
