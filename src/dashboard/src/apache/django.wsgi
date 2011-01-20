@@ -11,5 +11,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'dashboard.settings'
 application = django.core.handlers.wsgi.WSGIHandler()
 
 # See http://blog.dscpl.com.au/2008/12/using-modwsgi-when-developing-django.html
-# import dashboard.monitor
-# dashboard.monitor.start(interval=1.0)
+from django.conf import settings
+if settings.DEBUG:
+  import dashboard.monitor
+  dashboard.monitor.start(interval=1.0)
