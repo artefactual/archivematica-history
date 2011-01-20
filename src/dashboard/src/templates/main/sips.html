@@ -10,7 +10,11 @@
   <script type="text/javascript">
     $(document).ready(function()
       {
-        sipmgr = new Dashboard.SipManager({{ interval }});
+        {% if interval %}
+          Dashboard.pollingInterval = {{ interval }};
+        {% endif %}
+
+        sipmgr = new Dashboard.SipManager();
         sipmgr.start();
       });
   </script>
