@@ -103,7 +103,6 @@ a:hover { text-decoration: underline; }
 
 #sips-container {
   margin-top: 10px;
-  width: 660px;
 }
 
 #sips-header {
@@ -114,18 +113,18 @@ a:hover { text-decoration: underline; }
   background: url(/media/images/dots.gif) repeat-x bottom;
 }
 
-#sips-header-icon { float: left; width: 40px; }
+#sips-header-icon { float: left; width: 20px; }
 #sips-header-directory { float: left; width: 100px; }
 #sips-header-uuid { float: left; width: 330px; }
 #sips-header-timestamp { float: left; width: 120px; }
+#sips-header-jobs { float: left; }
 
 .sip {
   clear: both;
   float: left;
   cursor: pointer;
-  width: 660px;
   border: 1px solid transparent;
-  padding: 3px 2px;
+  padding: 3px 2px 3px 2px;
 }
 
 .sip-highlighted > .sip-detail-directory {
@@ -141,8 +140,19 @@ a:hover { text-decoration: underline; }
   border-color: Red;
 }
 
-.sip-detail { float: left; }
-.sip-detail-icon { width: 40px; text-align: center; }
+.sip-detail { float: left; line-height: 20x; }
+.sip-detail-icon { width: 20px; text-align: left; }
 .sip-detail-directory { width: 100px; }
 .sip-detail-uuid { width: 330px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
 .sip-detail-timestamp { width: 120px; }
+.sip-detail-jobs { padding-right: 4px; }
+
+.sip-detail-jobs span {
+  visibility: hidden;
+  font-weight: bold;
+  padding-right: 4px;
+}
+
+.sip-hover .sip-detail-jobs span {
+  visibility: visible;
+}

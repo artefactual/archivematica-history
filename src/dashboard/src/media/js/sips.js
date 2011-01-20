@@ -131,6 +131,7 @@ Dashboard.SipManager.prototype.render = function()
       '<div id="sips-header-directory">Directory</div>' +
       '<div id="sips-header-uuid">UUID</div>' +
       '<div id="sips-header-timestamp">Timestamp</div>' +
+      '<div id="sips-header-jobs">&nbsp;</div>' +
       '</div>');
 
     for (var i in this.sips)
@@ -233,4 +234,5 @@ Dashboard.Sip.prototype.build = function()
     this.$object.append('<div class="sip-detail sip-detail-directory">' + this.directory + '</div>');
     this.$object.append('<div class="sip-detail sip-detail-uuid">' + this.uuid + '</div>');
     this.$object.append('<div class="sip-detail sip-detail-timestamp">' + this.timestamp + '</div>');
+    this.$object.append('<div class="sip-detail sip-detail-jobs"><span>Show jobs</span></div>');
   };
