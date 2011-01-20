@@ -2,18 +2,16 @@
 var Dashboard = {};
   // Dashboard.IntervalManager
   // Dashboard.SipManager
-  
+ 
+Dashboard.pollingInterval = 9; // Seconds
+
 Dashboard.SipManager = function()
   {
     this.$container = $('#content');
     this.sips = [];
 
     this.isActive = false;
-    this.interval = 5000;
-    if (1 == arguments.length)
-    {
-      this.interval = arguments[0] * 1000;
-    }
+    this.interval = Dashboard.pollingInterval * 1000;
 
     this.statusWidget = {
       widget: $('<div id="status"><div><div><span>&nbsp;</span></div></div></div>').hide().appendTo(document.body),
@@ -25,12 +23,16 @@ Dashboard.SipManager = function()
           {
             this.widget.addClass('status-error');
           }
+          else
+          {
+            this.widget.removeClass('status-error');
+          }
 
           this.widget.show();
         },
       hide: function()
         {
-          this.widget.fadeOut(500).removeClass('status-error');
+          this.widget.fadeOut(500);
         },
       text: function(message)
         {
