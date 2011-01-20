@@ -39,11 +39,12 @@ def show_subdir(request, jobuuid, subdir):
   except Exception: raise Http404
 
 def get_all(request):
-
   # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
   objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
-  client = MCPClient()
-  jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
+  try:
+    client = MCPClient()
+    jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
+  except Exception: pass
   def encoder(obj):
     items = []
     for item in obj:
@@ -53,14 +54,17 @@ def get_all(request):
       item['timestamp'] = item['timestamp'].strftime('%x %X')
       item['uuid'] = item['sipuuid']
       del item['sipuuid']
-      for job in jobs:
-        for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
-          if uuid.text == job.jobuuid:
-            item['status'] = 1
-            item['job'] = job.jobuuid
+      try: jobsAwaitingApprovalXml
+      except NameError: pass
+      else:
+        for job in jobs:
+          for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
+            if uuid.text == job.jobuuid:
+              item['status'] = 1
+              item['job'] = job.jobuuid
+              break
+          if 'status' in item:
             break
-        if 'status' in item:
-          break
       if 'status' not in item:
         item['status'] = 0
       items.append(item)
