@@ -22,28 +22,41 @@
 
 set -e
 add="`dirname $0`/src/add.sh"
-"$add" \
-	--icon="accessories-calculator" \
-	--name="Restructure For Compliance" \
-	--command="archivematicaRestructureForCompliance %F/" \
-	--description="Restructure For Compliance"
 
 "$add" \
 	--icon="accessories-calculator" \
 	--name="Create DC" \
 	--command="createDublinCore %F/" \
 	--description="Insert a blank Dublin Core XML template in this folder"
-	
 
 "$add" \
 	--icon="accessories-calculator" \
-	--name="Create md5 checksum" \
+	--name="SIP-Restructure For Compliance" \
+	--command="archivematicaRestructureForCompliance %F/" \
+	--description="Restructure For Compliance"
+
+"$add" \
+	--icon="accessories-calculator" \
+	--name="SIP-Create DC" \
+	--command="cd %F/metadata && createDublinCore %F/" \
+	--description="Insert a blank Dublin Core XML into metadata directory"	
+
+"$add" \
+	--icon="accessories-calculator" \
+	--name="SIP-Create md5 checksum" \
 	--command="archivematicaCreateMD5 %F" \
 	--description="Create MD5 checksums for all the selected files in this folder"
+
+"$add" \
+	--icon="accessories-calculator" \
+	--name="SIP-BLAM!" \
+	--command="archivematicaRestructureForCompliance %F/ && archivematicaCreateMD5 %F && cd %F/metadata && createDublinCore %F/" \
+	--description="Restructures, creates MD5 and DC"
 
 "$add" \
 	--icon="accessories-calculator" \
 	--name="Remove as ROOT" \
 	--command="gksudo -u root \"rm -r -f %F\"" \
 	--description="Does a sudo remove of the file/directory. (Recursive & Force)"
+
 
