@@ -31,7 +31,7 @@ add="`dirname $0`/src/add.sh"
 "$add" \
 	--icon="accessories-calculator" \
 	--name="Create DC" \
-	--command="archivematicaCreateDublincore %F/" \
+	--command="createDublinCore %F/" \
 	--description="Insert a blank Dublin Core XML template in this folder"
 	
 
@@ -44,6 +44,6 @@ add="`dirname $0`/src/add.sh"
 "$add" \
 	--icon="accessories-calculator" \
 	--name="Remove as ROOT" \
-	--command="gksu rm -r -f %F" \
+	--command="gksudo -u root \"rm -r -f %F\"" \
 	--description="Does a sudo remove of the file/directory. (Recursive & Force)"
 
