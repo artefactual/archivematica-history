@@ -38,7 +38,7 @@ add="`dirname $0`/src/add.sh"
 "$add" \
 	--icon="accessories-calculator" \
 	--name="Create md5 checksum" \
-	--command="archivematicaCreateMD5" \
+	--command="archivematicaCreateMD5 %F" \
 	--description="Create MD5 checksums for all the selected files in this folder"
 
 "$add" \
