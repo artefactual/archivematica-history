@@ -22,8 +22,11 @@
 
 #source /etc/archivematica/SIPCreationTools/md5Settings
 
-outputDirectory="./metadata"
+outputDirectory="./../metadata"
 outputFile="${outputDirectory}/checksum.md5"
+set -e
+cd "$1"
+cd objects
 if [ -d "${outputDirectory}" ]; then
 	md5deep -rl "." > "${outputFile}" 	
 else
