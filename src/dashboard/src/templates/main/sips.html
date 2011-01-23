@@ -12,7 +12,6 @@
       {
         {% if interval %}
           window.pollingInterval = {{ interval }};
-          window.pollingInterval = 1;
         {% endif %}
 
         window.Sips = new SipCollection;
