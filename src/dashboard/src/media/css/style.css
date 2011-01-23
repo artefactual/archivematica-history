@@ -101,11 +101,11 @@ a:hover { text-decoration: underline; }
 
 /* SIPs */
 
-#sips-container {
+#sip-container {
   margin-top: 10px;
 }
 
-#sips-header {
+#sip-header {
   font-weight: bold;
   padding: 3px 2px;
   height: 19px;
@@ -113,50 +113,65 @@ a:hover { text-decoration: underline; }
   background: url(/media/images/dots.gif) repeat-x bottom;
 }
 
-#sips-header-icon { float: left; width: 20px; }
-#sips-header-directory { float: left; width: 300px; }
-#sips-header-uuid { float: left; width: 330px; }
-#sips-header-timestamp { float: left; width: 120px; }
-#sips-header-jobs { float: left; }
+#sip-header > div { float: left; }
+#sip-header-icon { width: 20px; }
+#sip-header-directory { width: 300px; }
+#sip-header-uuid { width: 330px; }
+#sip-header-timestamp { width: 120px; }
+#sip-header-jobs { }
 
 .sip {
   clear: both;
   float: left;
-  cursor: pointer;
   border: 1px solid transparent;
-  padding: 3px 2px 3px 2px;
 }
 
-.sip-highlighted > .sip-detail-directory {
-  color: Red;
-}
-
-.sip-reloaded {
-  background-color: #fedda7;
-}
-
-.sip-hover {
+.sip:hover, .sip-selected {
   border: 1px solid #bbb;
   background-color: #eee;
 }
 
-.sip-highlighted.sip-hover {
-  border-color: Red;
+.sip-highlight > .sip-row > .sip-detail-directory {
+  color: Red;
 }
 
-.sip-detail { float: left; line-height: 20x; }
+.sip-row > div { float: left; line-height: 20x; padding: 3px 2px 3px 2px; }
 .sip-detail-icon { width: 20px; text-align: left; }
 .sip-detail-directory { width: 300px; display: table-cell; white-space: nowrap; }
 .sip-detail-uuid { width: 330px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
 .sip-detail-timestamp { width: 120px; }
 .sip-detail-jobs { padding-right: 4px; }
 
-.sip-detail-jobs span {
+.sip-detail-jobs a {
   visibility: hidden;
   font-weight: bold;
   padding-right: 4px;
 }
 
-.sip-hover .sip-detail-jobs span {
+.sip:hover .sip-detail-jobs a,
+.sip-selected .sip-detail-jobs a {
   visibility: visible;
 }
+
+.sip-detail-job-container {
+  clear: both;
+  display: none;
+}
+
+.job-header-microservice { width: 660px; }
+.job-header-currentstep { width: 170px; }
+
+.job {
+  border-top: 1px solid #999;
+  background-color: White;
+  clear: both;
+  float: left;
+}
+
+.job > div {
+  float: left;
+  padding: 2px 3px;
+}
+
+.job-detail-microservice { width: 660px; border-right: 1px solid #999; }
+.job-detail-currentstep { width: 170px; text-align: right; }
