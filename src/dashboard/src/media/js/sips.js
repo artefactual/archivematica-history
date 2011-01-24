@@ -38,29 +38,14 @@ $(function()
         {
           $(this.el).html(this.template(this.model.toJSON())).attr('uuid', this.model.get('uuid'));
 
-          if (this.model.get('status'))
+          if (this.model.jobs.hasAlert())
           {
             $(this.el).addClass('sip-highlight');
           }
 
+          this.$('.sip-detail-icon').html($('<img />').attr('src', this.model.jobs.getIcon()));
+
           var self = this;
-
-          this.$('.sip-detail-icon').html(function()
-            {
-              var $img = $('<img />');
-              switch (self.model.get('status'))
-              {
-                case 0:
-                  $img.attr('src', '/media/images/accept.png');
-                  break;
-
-                case 1:
-                  $img.attr('src', '/media/images/bell.png');
-                  break;
-              }
-
-              return $img;
-            });
 
           this.model.jobs.each(function(job)
             {
@@ -91,11 +76,42 @@ $(function()
     });
 
     window.Job = Backbone.Model.extend({
+
     });
     
     window.JobCollection = Backbone.Collection.extend({
     
       model: Job,
+
+      hasAlert: function()
+        {
+          return undefined !== this.find(function(job)
+            {
+              return 0 < job.get('status') || -1 < jQuery.inArray(job.get('currentstep'), ['Requires approval', 'Failed']);
+            });
+        },
+
+      getIcon: function()
+        {
+          if (undefined !== this.find(function(job)
+            {
+              return 0 < job.get('status') || 'Requires approval' == job.get('currentstep');
+            }))
+          {
+            return '/media/images/bell.png';
+          }
+          else if (undefined !== this.find(function(job)
+            {
+              return 'Failed' == job.get('currentstep');
+            }))
+          {
+            return '/media/images/cancel.png';
+          }
+          else
+          {
+            return '/media/images/accept.png';
+          }
+        },
     
     });
 
@@ -115,11 +131,46 @@ $(function()
         {
           $(this.el).html(this.template(this.model.toJSON()));
 
+          if (-1 < jQuery.inArray(this.model.get('currentstep'), ['Requires approval', 'Failed']))
+          {
+            $(this.el).css('background-color', '#f2d8d8');
+          }
+          else
+          {
+            $(this.el).css('background-color', '#d8f2dc');
+          }
+
+          if (1 == this.model.get('status'))
+          {
+            this.$('.job-detail-currentstep').append(' (MCP)');
+          }
+
           return this;
         },
 
     });
-    
+
+    window.StatusView = Backbone.View.extend({
+
+      id: 'status',
+
+      template: _.template($('#status-template').html()),
+
+      initialize: function()
+        {
+
+        },
+      
+      show: function()
+        {
+        },
+
+      hide: function()
+        {
+        },
+
+    });
+
     window.AppView = Backbone.View.extend({
     
       el: $('#sip-container'),
