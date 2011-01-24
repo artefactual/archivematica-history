@@ -14,8 +14,13 @@ $(function()
 
       model: Sip,
       
-      url: '/sips/all/'
-      
+      url: '/sips/all/',
+
+      sync: function()
+        {
+          Backbone.sync.apply(this, arguments);
+        }
+
     });
 
     window.SipView = Backbone.View.extend({
@@ -56,8 +61,10 @@ $(function()
           return this;
         },
 
-      toggleJobs: function()
+      toggleJobs: function(event)
         {
+          event.preventDefault();
+
           var $jobContainer = this.$('.sip-detail-job-container');
 
           if ($jobContainer.is(':visible'))
@@ -118,12 +125,19 @@ $(function()
     window.JobView = Backbone.View.extend({
     
       className: 'job',
+
+      events: {
+        'click .btn_browse_job': 'browseJob',
+        'click .btn_approve_job': 'approveJob',
+        'click .btn_reject_job': 'rejectJob'
+      },
       
       template: _.template($('#job-template').html()),
 
       initialize: function()
         {
           _.bindAll(this, 'render');
+          this.model.bind('change', this.render);
           this.model.view = this;
         },
 
@@ -142,10 +156,60 @@ $(function()
 
           if (1 == this.model.get('status'))
           {
-            this.$('.job-detail-currentstep').append(' (MCP)');
+            this.$('.job-detail-currentstep')
+              .append(' (!)')
+              .append('<div></div>').children()
+              .append('<a class="btn_browse_job" href="#">Browse</a>')
+              .append('<a class="btn_approve_job" href="#">Approve</a>')
+              .append('<a class="btn_reject_job" href="#">Reject</a>')
           }
 
           return this;
+        },
+
+      browseJob: function(event)
+        {
+          event.preventDefault();
+
+          alert("browsejob " + this.model.get('uuid'));
+        },
+
+      approveJob: function(event)
+        {
+          event.preventDefault();
+          
+          $.ajax({
+            context: this,
+            data: { uuid: this.model.get('uuid') },
+            type: 'POST',
+            success: function(data)
+              {
+                this.model.set({
+                  'currentstep': 'Executing command(s)',
+                  'status': 0
+                });
+              },
+            url: '/mcp/approve-job/'
+          });
+        },
+
+      rejectJob: function(event)
+        {
+          event.preventDefault();
+
+          $.ajax({
+            context: this,
+            data: { uuid: this.model.get('uuid') },
+            type: 'POST',
+            success: function(data)
+              {
+                this.model.set({
+                  'currentstep': 'Rejected',
+                  'status': 0
+                });
+              },
+            url: '/mcp/reject-job/'
+          });
         },
 
     });
@@ -161,13 +225,31 @@ $(function()
 
         },
       
-      show: function()
+      show: function(message, error)
         {
+          this.text(message);
+
+          if (true === error)
+          {
+            $(this.el).addClass('status-error');
+          }
+          else
+          {
+            $(this.el).removeClass('status-error');
+          }
+
+          $(this.el).show();
         },
 
       hide: function()
         {
+          $(this.el).hide();
         },
+
+      text: function(message)
+        {
+          $(this.el).find('span').html(message);
+        }
 
     });
 
