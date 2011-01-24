@@ -179,3 +179,24 @@ a:hover { text-decoration: underline; }
 
 .job-detail-microservice { width: 660px; border-right: 1px dotted #bbb; }
 .job-detail-currentstep { width: 170px; }
+
+.job-detail-currentstep > div {
+  margin: 4px 0;
+}
+
+.job-detail-currentstep > div > a {
+  margin-right: 4px;
+  color: white;
+  font-weight: bold;
+  font-size: 10px;
+  padding: 2px 4px;
+  background-color: #999;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+.job-detail-currentstep > div > a:hover {
+  background-color: #777;
+  text-decoration: none;
+}
