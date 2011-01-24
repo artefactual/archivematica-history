@@ -52,22 +52,21 @@ def get_all(request):
       directory = jobs[0].directory
       item['directory'] = re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
       item['timestamp'] = item['timestamp'].strftime('%x %X')
-      item['status'] = 0
       item['uuid'] = item['sipuuid']
       del item['sipuuid']
-      try: jobsAwaitingApprovalXml
-      except NameError: pass
-      else:
-        item['jobs'] = []
-        for job in jobs:
-          newJob = {}
-          newJob['uuid'] = job.jobuuid
-          newJob['microservice'] = map_known_values(job.jobtype)
-          newJob['currentstep'] = map_known_values(job.currentstep)
-          item['jobs'].append(newJob)
+      item['jobs'] = []
+      for job in jobs:
+        newJob = {}
+        item['jobs'].append(newJob)
+        newJob['uuid'] = job.jobuuid
+        newJob['microservice'] = map_known_values(job.jobtype)
+        newJob['currentstep'] = map_known_values(job.currentstep)
+        try: jobsAwaitingApprovalXml
+        except NameError: pass
+        else:
           for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
             if uuid.text == job.jobuuid:
-              item['status'] = 1
+              newJob['status'] = 1
               break
       items.append(item)
     return items
