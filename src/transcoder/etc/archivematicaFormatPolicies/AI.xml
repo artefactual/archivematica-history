@@ -1,0 +1,7 @@
+<formatPolicy>
+  <inherit></inherit>
+  <accessFormat></accessFormat>
+  <preservationFormat>0.svg</preservationFormat>
+  <accessConversionCommand></accessConversionCommand>
+  <preservationConversionCommand>%transcoderScriptsDir%adobeIllustratorToSVG.sh %fileFullName% %fileTitle% %preservationFileDirectory%</preservationConversionCommand>
+</formatPolicy>
