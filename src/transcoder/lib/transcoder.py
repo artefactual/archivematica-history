@@ -32,15 +32,8 @@ import subprocess
 import shlex
 import uuid
 import lxml.etree as etree
-
-## This will need to get changed somehow to be more proper
-sys.path.append('/usr/lib/archivematica/MCPClient/clientScripts')
-from fileAddedToSIP import addFileToSIP
-from archivematicaFunctions import appendEventToFile 
-from archivematicaFunctions import getTagged
-from createXmlEventsAssist import createEvent
-from createXmlEventsAssist import createOutcomeInformation
-
+from premisXMLlinker import xmlNormalize 
+#from premisXMLlinker import 
 
 #Delete the normalized file if free space below x number of bytes
 spaceThreshold="10240"
@@ -79,56 +72,7 @@ if xmlStuff == "yes":
     objectsPath = sys.argv[7]
     logsPath = sys.argv[8]    
 
-def xmlCreateRelationship(relationshipType, relationshipSubType, relatedObjectIdentifierValue, relatedEventIdentifierValue, relatedObjectIdentifierType="UUID", relatedEventIdentifierType="UUID"):
-    ret = etree.Element("relationship")
-    etree.SubElement(ret, "relationshipType").text = relationshipType
-    etree.SubElement(ret, "relationshipSubType").text = relationshipSubType
-    
-    relatedObjectIdentification = etree.SubElement(ret, "relatedObjectIdentification")        
-    etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierType").text = relatedObjectIdentifierType
-    etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = relatedObjectIdentifierValue
-    relatedEventIdentification = etree.SubElement(ret, "relatedEventIdentification")
-    etree.SubElement(relatedEventIdentification, "relatedEventIdentifierType").text = relatedEventIdentifierType
-    etree.SubElement(relatedEventIdentification, "relatedEventIdentifierValue").text = relatedEventIdentifierValue
-    return ret
-    
 
-def xmlNormalize(outputFileUUID, outputFileName, command, fileUUID=fileUUID, objectsPath=objectsPath, eventUUID=eid, edate=edate, logsPath=logsPath):
-    #Create Normalization event in the original xml document.
-    eventDetailText =  "program=\"" + command.split(" ", 1)[0] + "\"; command=\"" + command + "\""  
-    eventXML = createEvent( eventUUID, "normalization", \
-                            eventDetailText=eventDetailText, \
-                            eOutcomeInformation = createOutcomeInformation(os.path.basename(outputFileName)), \
-                            eventDateTime = edate)
-    appendEventToFile(logsPath, fileUUID, eventXML)
-    
-    #Create new document using the add file script
-    addFileToSIP( objectsPath, logsPath, outputFileName, outputFileUUID, "creation", edate, edate)
-    
-    
-    
-    xmlCreateFileAssociation(outputFileUUID, outputFileName)
-    
-def xmlCreateFileAssociation(outputFileUUID, outputFileName, fileUUID=fileUUID, objectsPath=objectsPath, eventUUID=eid, edate=edate, logsPath=logsPath):
-    #print >>sys.stderr, "adding linking information"
-    originalFileXML = etree.parse( logsPath + "fileMeta/" + fileUUID + ".xml" ).getroot()
-    outputFileXML = etree.parse( logsPath + "fileMeta/" + outputFileUUID + ".xml" ).getroot()
-
-    #open the newly created document and add association
-    relationship = xmlCreateRelationship("derivation", "is source of", relatedObjectIdentifierValue=outputFileUUID, relatedEventIdentifierValue=eventUUID)
-    object = getTagged(originalFileXML, "object")[0]
-    object.append(relationship)
-
-    #print(etree.tostring(originalFileXML, pretty_print=True))
-    #print(etree.tostring(relationship, pretty_print=True))
-    
-    #open the original document, and create the associated entry.
-    relationship = xmlCreateRelationship("derivation", "has source", relatedObjectIdentifierValue=fileUUID, relatedEventIdentifierValue=eventUUID)
-    object = getTagged(outputFileXML, "object")[0]
-    object.append(relationship)
-
-    etree.ElementTree(originalFileXML).write(logsPath + "fileMeta/" + fileUUID + ".xml")
-    etree.ElementTree(outputFileXML).write(logsPath + "fileMeta/" + outputFileUUID + ".xml")
 
 #get file name and extension
 s = fileIn
@@ -214,7 +158,12 @@ def executeCommand(command, newUUID=""):
     "%normalizationScriptsDir%": transcoderScriptsDir, \
     "%transcoderScriptsDir%": transcoderScriptsDir, \
     "%accessFormat%": accessFormat[0].lower(), \
-    "%preservationFormat%": preservationFormat[0].lower() }
+    "%preservationFormat%": preservationFormat[0].lower(), \
+    "%fileUUID%": fileUUID , \
+    "%objectsPath%": objectsPath, \
+    "%eventUUID%": eid , \
+    "%edate%": edate, \
+    "%logsPath%": logsPath}
     
     #for each key replace all instances of the key in the command string
     for key in replacementDic.iterkeys():
@@ -360,7 +309,15 @@ if len(preservationConversionCommand) > 0:
                 else:
                     print >>sys.stderr, "Verified the output file exists [" + fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower() + "]"
                 if xmlStuff:
-                    xmlNormalize(outputFileUUID, fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower(), preservationConversionCommand[index]) #    {normalized; not normalized}
+                    xmlNormalize(outputFileUUID, \
+                                 fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower(), \
+                                 preservationConversionCommand[index], \
+                                 fileUUID, \
+                                 objectsPath, \
+                                 eid, \
+                                 edate, \
+                                 logsPath, \
+                                 ) #    {normalized; not normalized}
         else:
             print >>sys.stderr, "Skipping Preservation Normalization: No command"
             result = 0 
