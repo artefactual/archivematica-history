@@ -21,6 +21,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+
 set -e
 
 UUID="`uuid -v 4`"
@@ -28,12 +29,25 @@ inputFile="$1"
 fileTitle="$2"
 outputDirectory="$3"
 
+fileUUID="$4"
+objectsPath="$5"
+eventUUID="$6"
+edate="$7"
+logsPath="$8"
+
 a=0
 convert "$inputFile" /tmp/${UUID}fileTitle.%d.ai
 
 for i in `find /tmp/${UUID}*`; do
 	echo $a Converting: $i
-	inkscape $i --export-plain-svg=${outputDirectory}${fileTitle}.${a}.svg
+	outputFileName=${outputDirectory}${fileTitle}.${a}.svg
+	inkscape $i --export-plain-svg=${outputFileName}
+	
+	if [ $a -ne 0 ]; then
+		outputFileUUID="`uuid -v 4`"
+		/usr/lib/transcoder/premisXMLlinker.py "${outputFileUUID}" "${outputFileName}" "${fileUUID}" "${objectsPath}" "${eventUUID}" "${edate}" "${logsPath}" "Undefined"
+	fi
+	
 	a=$(( $a + 1 ))
 done
 
