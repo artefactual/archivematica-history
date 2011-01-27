@@ -8,8 +8,7 @@ from django.utils import simplejson
 from dashboard.contrib.mcp.client import MCPClient
 from dashboard.main.models import Task, Job
 from lxml import etree
-import os
-import re
+import os, re, time
 
 def show_dir(request, jobuuid):
   try:
@@ -42,8 +41,9 @@ def get_all(request):
   # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
   objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
   try:
-    client = MCPClient()
-    jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
+    pass
+    #client = MCPClient()
+    #jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
   except Exception: pass
   def encoder(obj):
     items = []
@@ -51,8 +51,9 @@ def get_all(request):
       jobs = get_jobs_by_sipuuid(item['sipuuid'])
       directory = jobs[0].directory
       item['directory'] = re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
-      item['timestamp'] = item['timestamp'].strftime('%x %X')
+      item['timestamp'] = time.mktime(item['timestamp'].timetuple())
       item['uuid'] = item['sipuuid']
+      item['id'] = item['sipuuid']
       del item['sipuuid']
       item['jobs'] = []
       for job in jobs:
