@@ -6,11 +6,8 @@ $(function()
       initialize: function()
         {
           this.jobs = new JobCollection(this.get('jobs'));
-          this.bind('change:timestamp', function()
-            {
-              this.view.render();
-            });
         },
+
     });
 
     window.SipCollection = Backbone.Collection.extend({
@@ -19,10 +16,14 @@ $(function()
       
       url: '/sips/all/',
 
-      sync: function()
+      initialize: function()
         {
-          Backbone.sync.apply(this, arguments);
-        }
+        },
+
+      comparator: function(sip)
+        {
+          return 0 - sip.get('timestamp');
+        },
 
     });
 
@@ -38,47 +39,62 @@ $(function()
 
       initialize: function()
         {
-          _.bindAll(this, 'render');
+          _.bindAll(this, 'render', 'update', 'add');
           this.model.view = this;
+          this.model.bind('change:timestamp', this.update);
         },
       
       render: function()
         {
           $(this.el).html(this.template(this.model.toJSON())).attr('uuid', this.model.get('uuid'));
 
-          if (this.model.jobs.hasAlert())
-          {
-            $(this.el).addClass('sip-highlight');
-          }
-
-          this.$('.sip-detail-icon').html($('<img />').attr('src', this.model.jobs.getIcon()));
-
-          var self = this;
-
-          this.model.jobs.each(function(job)
-            {
-              var view = new JobView({model: job});
-              self.$('.sip-detail-job-container').append(view.render().el);
-            });
+          this.$jobContainer = this.$('.sip-detail-job-container');
 
           return this;
+        },
+
+      update: function()
+        {
+          // Update timestamp
+          this.$('.sip-detail-timestamp').html(
+            new Date(this.model.get('timestamp') * 1000).getArchivematicaDateTime()
+          );
+
+          if (this.$jobContainer.is(':visible'))
+          {
+            this.$jobContainer.empty();
+
+            var self = this;
+            this.model.jobs.each(function(job)
+              {
+                var view = new JobView({model: job});
+                self.$jobContainer.append(view.render().el);
+              });
+          }
         },
 
       toggleJobs: function(event)
         {
           event.preventDefault();
 
-          var $jobContainer = this.$('.sip-detail-job-container');
-
-          if ($jobContainer.is(':visible'))
+          if (this.$jobContainer.is(':visible'))
           {
-            $jobContainer.slideUp('fast');
+            this.$jobContainer.slideUp('fast');
             $(this.el).removeClass('sip-selected');
             this.$('.sip-detail-jobs > a').text('Show jobs');
           }
           else
           {
-            $jobContainer.slideDown('fast');
+            this.$jobContainer.empty();
+
+            var self = this;
+            this.model.jobs.each(function(job)
+              {
+                var view = new JobView({model: job});
+                self.$jobContainer.append(view.render().el);
+              });
+
+            this.$jobContainer.slideDown('fast');
             $(this.el).addClass('sip-selected');
             this.$('.sip-detail-jobs > a').text('Hide jobs');
           }
@@ -262,9 +278,17 @@ $(function()
 
       initialize: function()
         {
-          _.bindAll(this, 'addOne', 'addAll');
+          _.bindAll(this, 'addOne', 'addAll', 'add');
           Sips.bind('refresh', this.addAll);
+          Sips.bind('add', this.add);
           Sips.fetch();
+        },
+
+      add: function(sip)
+        {
+          var index = Sips.indexOf(sip);
+          var view = new SipView({model: sip});
+          this.el.find('.sip').eq(index).before(view.render().el);
         },
       
       addOne: function(sip)
@@ -301,7 +325,18 @@ $(function()
                 {
                   var sip = response[i];
                   var item = Sips.find(function(item) { return item.get('uuid') == sip.uuid; });
-                  item.set(sip);
+
+                  if (undefined === item)
+                  {
+                    // Add new sips
+                  }
+                  else
+                  {
+                    // Update sips
+                    item.set(sip);
+                  }
+
+                  // Delete sips
                 }
               },
             complete: function()

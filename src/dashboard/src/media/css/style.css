@@ -131,7 +131,7 @@ a:hover { text-decoration: underline; }
   background-color: #eee;
 }
 
-.sip-highlight > .sip-row > .sip-detail-directory {
+.sip-highlight > .sip-detail-directory {
   color: Red;
 }
 
