@@ -79,7 +79,7 @@ def map_known_values(value):
     # currentStep
     'completedSuccessfully': 'Completed successfully',
     'completedUnsuccessfully': 'Failed',
-    'exeCommand': 'Executing',
+    'exeCommand': 'Executing command(s)',
     'requiresAprroval': 'Requires approval',
     'requiresApproval': 'Requires approval',
     # jobType
