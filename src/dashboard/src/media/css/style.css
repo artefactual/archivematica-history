@@ -131,8 +131,8 @@ a:hover { text-decoration: underline; }
   background-color: #eee;
 }
 
-.sip-highlight > .sip-detail-directory {
-  color: Red;
+.sip-new {
+  background-color: #ffff00;
 }
 
 .sip-row > div { float: left; padding: 3px 0; }
