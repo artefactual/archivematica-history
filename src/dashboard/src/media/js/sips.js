@@ -2,12 +2,11 @@ $(function()
   {
 
     window.Sip = Backbone.Model.extend({
-
+    
       initialize: function()
         {
           this.jobs = new JobCollection(this.get('jobs'));
-        }
-
+        },
     });
 
     window.SipCollection = Backbone.Collection.extend({
@@ -28,7 +27,7 @@ $(function()
       className: 'sip',
 
       template: _.template($('#sip-template').html()),
-      
+
       events: {
         'click .sip-row > .sip-detail-jobs > a': 'toggleJobs',
       },
@@ -267,36 +266,56 @@ $(function()
       addOne: function(sip)
         {
           var view = new SipView({model: sip});
-
-          var $current = this.el.find('.sip[uuid=' + sip.get('uuid') + ']');
-          if ($current.length)
-          {
-            if ($current.hasClass('sip-selected'))
-            {
-              
-            }
-            else
-            {
-              $current.replaceWith(view.render().el);
-            }
-          }
-          else
-          {
-            this.el.children('#sip-body').append(view.render().el);
-          }
+          this.el.children('#sip-body').append(view.render().el);
         },
 
       addAll: function()
         {
           Sips.each(this.addOne);
 
+          var self = this;
           setTimeout(function()
             {
-              Sips.fetch();
+              self.poll();
             }, window.pollingInterval ? window.pollingInterval * 1000: 5000);
-        }
+        },
+
+      poll: function()
+        {
+          $.ajax({
+            context: this,
+            dataType: 'json',
+            type: 'POST',
+            url: '/sips/all/',
+            error: function()
+              {
+                // Show warning
+              },
+            success: function(response)
+              {
+                Sips.refresh(response, {silent: true});
+              },
+            complete: function()
+              {
+                var self = this;
+                setTimeout(function()
+                  {
+                    self.poll();
+                  }, window.pollingInterval ? window.pollingInterval * 1000: 5000);
+              }
+          });
+        },
 
     });
 
+    Date.prototype.getArchivematicaDateTime = function()
+      {
+        pad = function (n)
+          {
+            return n < 10 ? '0' + n : n;
+          }
+
+        return this.getUTCFullYear() + '-' + pad(this.getUTCMonth() + 1) + '-' + pad(this.getUTCDate()) + ' ' + pad(this.getUTCHours()) + ':' + pad(this.getUTCMinutes()) + ':' + pad(this.getUTCSeconds());
+      };
   }
 );
