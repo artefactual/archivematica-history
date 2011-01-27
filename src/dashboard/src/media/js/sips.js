@@ -55,6 +55,8 @@ $(function()
 
       update: function()
         {
+          this.model.jobs.refresh(this.model.get('jobs'));
+
           // Update timestamp
           this.$('.sip-detail-timestamp').html(
             new Date(this.model.get('timestamp') * 1000).getArchivematicaDateTime()
@@ -65,6 +67,7 @@ $(function()
             this.$jobContainer.empty();
 
             var self = this;
+
             this.model.jobs.each(function(job)
               {
                 var view = new JobView({model: job});
@@ -183,7 +186,6 @@ $(function()
           if (1 == this.model.get('status'))
           {
             this.$('.job-detail-currentstep')
-              .append(' (!)')
               .append('<div></div>').children()
               .append('<a class="btn_browse_job" href="#">Browse</a>')
               .append('<a class="btn_approve_job" href="#">Approve</a>')
