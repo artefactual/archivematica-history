@@ -42,8 +42,8 @@ def get_all(request):
   objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
   try:
     pass
-    #client = MCPClient()
-    #jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
+    client = MCPClient()
+    jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
   except Exception: pass
   def encoder(obj):
     items = []
