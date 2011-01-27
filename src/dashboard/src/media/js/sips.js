@@ -133,6 +133,13 @@ $(function()
           {
             return '/media/images/cancel.png';
           }
+          else if (undefined !== this.find(function(job)
+            {
+              return 'Executing' == job.get('currentstep');
+            }))
+          {
+            return '/media/images/icons/arrow_refresh.png';
+          }
           else
           {
             return '/media/images/accept.png';
@@ -329,6 +336,7 @@ $(function()
                   if (undefined === item)
                   {
                     // Add new sips
+                    Sips.add(sip);
                   }
                   else
                   {
@@ -359,7 +367,7 @@ $(function()
             return n < 10 ? '0' + n : n;
           }
 
-        return this.getUTCFullYear() + '-' + pad(this.getUTCMonth() + 1) + '-' + pad(this.getUTCDate()) + ' ' + pad(this.getUTCHours()) + ':' + pad(this.getUTCMinutes()) + ':' + pad(this.getUTCSeconds());
+        return this.getUTCFullYear() + '-' + pad(this.getUTCMonth() + 1) + '-' + pad(this.getUTCDate()) + ' ' + pad(this.getUTCHours()) + ':' + pad(this.getUTCMinutes()); // + ':' + pad(this.getUTCSeconds());
       };
   }
 );
