@@ -6,6 +6,12 @@ $(function()
       initialize: function()
         {
           this.jobs = new JobCollection(this.get('jobs'));
+
+          var self = this;
+          this.jobs.each(function(job)
+            {
+              job.sip = self;
+            });
         },
 
     });
@@ -39,7 +45,7 @@ $(function()
 
       initialize: function()
         {
-          _.bindAll(this, 'render', 'update', 'add');
+          _.bindAll(this, 'render', 'update', 'add', 'updateIcon');
           this.model.view = this;
           this.model.bind('change:timestamp', this.update);
         },
@@ -62,6 +68,9 @@ $(function()
             new Date(this.model.get('timestamp') * 1000).getArchivematicaDateTime()
           );
 
+          // Update icon
+          this.updateIcon();
+
           if (this.$jobContainer.is(':visible'))
           {
             this.$jobContainer.empty();
@@ -76,9 +85,17 @@ $(function()
           }
         },
 
+      updateIcon: function()
+        {
+          this.$('.sip-detail-icon').html('<img src="' + this.model.jobs.getIcon() + '" />');
+        },
+
       toggleJobs: function(event)
         {
-          event.preventDefault();
+          if (event)
+          {
+            event.preventDefault();
+          }
 
           if (this.$jobContainer.is(':visible'))
           {
@@ -112,14 +129,6 @@ $(function()
     
       model: Job,
 
-      hasAlert: function()
-        {
-          return undefined !== this.find(function(job)
-            {
-              return 0 < job.get('status') || -1 < jQuery.inArray(job.get('currentstep'), ['Requires approval', 'Failed']);
-            });
-        },
-
       getIcon: function()
         {
           if (undefined !== this.find(function(job)
@@ -138,10 +147,17 @@ $(function()
           }
           else if (undefined !== this.find(function(job)
             {
-              return 'Executing' == job.get('currentstep');
+              return 'Executing command(s)' == job.get('currentstep');
             }))
           {
             return '/media/images/icons/arrow_refresh.png';
+          }
+          else if (undefined !== this.find(function(job)
+            {
+              return 'Rejected' == job.get('currentstep');
+            }))
+          {
+            return '/media/images/icons/control_stop_blue.png';
           }
           else
           {
@@ -174,7 +190,7 @@ $(function()
         {
           $(this.el).html(this.template(this.model.toJSON()));
 
-          if (-1 < jQuery.inArray(this.model.get('currentstep'), ['Requires approval', 'Failed']))
+          if (-1 < jQuery.inArray(this.model.get('currentstep'), ['Requires approval', 'Failed', 'Rejected', 'Executing command(s)']))
           {
             $(this.el).css('background-color', '#f2d8d8');
           }
@@ -216,6 +232,8 @@ $(function()
                   'currentstep': 'Executing command(s)',
                   'status': 0
                 });
+
+                this.model.sip.view.updateIcon();
               },
             url: '/mcp/approve-job/'
           });
@@ -235,6 +253,10 @@ $(function()
                   'currentstep': 'Rejected',
                   'status': 0
                 });
+
+                this.model.sip.view.updateIcon();
+
+                this.model.sip.view.toggleJobs();
               },
             url: '/mcp/reject-job/'
           });
@@ -297,7 +319,16 @@ $(function()
         {
           var index = Sips.indexOf(sip);
           var view = new SipView({model: sip});
-          this.el.find('.sip').eq(index).before(view.render().el);
+
+          this.el.find('.sip').eq(index)
+            // Add new SIP before and points to it
+            .before($(view.render().el).hide()).prev()
+            // And start animation
+            .addClass('sip-new')
+            .show('blind', {}, 500, function()
+              {
+                $(this).removeClass('sip-new', 2000);
+              });
         },
       
       addOne: function(sip)
