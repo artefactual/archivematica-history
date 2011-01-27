@@ -7,6 +7,8 @@ lib="/usr/lib/archivematica"
 sudo mkdir $lib
 etc="/etc/archivematica"
 sudo mkdir $etc
+share="/usr/local/share/archivematica"
+sudo mkdir $share
 
 sudo ln -s "${svnDir}src/MCPServer/etc" "${etc}/MCPServer"
 sudo ln -s "${svnDir}src/MCPClient/etc" "${etc}/MCPClient"
@@ -21,7 +23,7 @@ sudo ln -s "${svnDir}src/upload-qubit/lib/" "${lib}/upload-qubit"
 sudo ln -s "${svnDir}src/transcoder/lib/" "/usr/lib/transcoder"
 sudo ln -s "${svnDir}src/easy-extract/lib/" "/usr/lib/easy-extract"
 sudo ln -s "${svnDir}src/sanitizeNames/lib/" "/usr/lib/sanitizeNames"
-sudo ln -s "${svnDir}src/dashboard/src/" "/usr/local/share/dashboard"
+sudo ln -s "${svnDir}src/dashboard/src/" "${share}/dashboard"
 sudo ln -s "${svnDir}src/createDublinCore/lib/" "/usr/lib/createDublinCore"
 
 sudo ln "${svnDir}src/MCPServer/runArchivematicaMCPServer.sh" "/usr/bin/"

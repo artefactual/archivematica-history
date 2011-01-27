@@ -53,7 +53,7 @@
   </Directory>
 
   # Serve static files from Dashboard
-  Alias /media "/usr/local/share/dashboard/media/"
+  Alias /media "/usr/local/share/archivematica/dashboard/media/"
   <Directory "/usr/local/share/dashboard/media/">
     Order allow,deny
     Allow from all
@@ -64,7 +64,7 @@
   WSGIScriptAlias / /usr/local/share/dashboard/apache/django.wsgi
   WSGIDaemonProcess dashboard
   WSGIProcessGroup dashboard
-  <Directory "/usr/local/share/dashboard/apache/">
+  <Directory "/usr/local/share/archivematica/dashboard/apache/">
     Order allow,deny
     Allow from all
   </Directory>
