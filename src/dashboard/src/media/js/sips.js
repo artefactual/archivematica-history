@@ -181,7 +181,7 @@ $(function()
 
       initialize: function()
         {
-          _.bindAll(this, 'render');
+          _.bindAll(this, 'render', 'approveJob', 'rejectJob');
           this.model.bind('change', this.render);
           this.model.view = this;
         },
@@ -320,15 +320,23 @@ $(function()
           var index = Sips.indexOf(sip);
           var view = new SipView({model: sip});
 
-          this.el.find('.sip').eq(index)
-            // Add new SIP before and points to it
-            .before($(view.render().el).hide()).prev()
-            // And start animation
-            .addClass('sip-new')
-            .show('blind', {}, 500, function()
-              {
-                $(this).removeClass('sip-new', 2000);
-              });
+          var $new = $(view.render().el).hide();
+          var $target = this.el.find('.sip').eq(index);
+
+          if ($target.length)
+          {
+            $target.before($new);
+          }
+          else
+          {
+            this.el.children('#sip-body').append($new);
+          }
+
+          // Animation
+          $new.addClass('sip-new').show('blind', {}, 500, function()
+            {
+              $(this).removeClass('sip-new', 2000);
+            });
         },
       
       addOne: function(sip)
