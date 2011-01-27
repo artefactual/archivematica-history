@@ -81,7 +81,7 @@ $(function()
           {
             this.$jobContainer.slideUp('fast');
             $(this.el).removeClass('sip-selected');
-            this.$('.sip-detail-jobs > a').text('Show jobs');
+            this.$('.sip-detail-jobs > a').text('Show micro-services');
           }
           else
           {
@@ -96,7 +96,7 @@ $(function()
 
             this.$jobContainer.slideDown('fast');
             $(this.el).addClass('sip-selected');
-            this.$('.sip-detail-jobs > a').text('Hide jobs');
+            this.$('.sip-detail-jobs > a').text('Hide micro-services');
           }
         }
     });
