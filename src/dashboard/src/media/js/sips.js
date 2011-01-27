@@ -6,6 +6,10 @@ $(function()
       initialize: function()
         {
           this.jobs = new JobCollection(this.get('jobs'));
+          this.bind('change', function()
+            {
+              this.view.$('.sip-detail-timestamp').html(this.get('timestamp'));
+            });
         },
     });
 
@@ -293,7 +297,12 @@ $(function()
               },
             success: function(response)
               {
-                Sips.refresh(response, {silent: true});
+                for (var i in response)
+                {
+                  var sip = response[i];
+                  var item = Sips.find(function(item) { return item.get('uuid') == sip.uuid; });
+                  item.set(sip);
+                }
               },
             complete: function()
               {
