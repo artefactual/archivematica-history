@@ -25,7 +25,7 @@
   <div id="sip-container">
     <div id="sip-header">
       <div id="sip-header-icon">&nbsp;</div>
-      <div id="sip-header-directory">Directory</div>
+      <div id="sip-header-directory">Directory to Submission Information Package</div>
       <div id="sip-header-uuid">UUID</div>
       <div id="sip-header-timestamp">Timestamp</div>
       <div id="sip-header-jobs">&nbsp;</div>
@@ -38,11 +38,13 @@
 
   <script type="text/template" id="sip-template">
     <div class="sip-row">
-      <div class="sip-detail-icon"><img src="<%= this.model.jobs.getIcon() %>" /></div>
+      <div class="sip-detail-icon"><img title="asdf" src="<%= this.model.jobs.getIcon() %>" /></div>
       <div class="sip-detail-directory"><%= directory %></div>
       <div class="sip-detail-uuid"><%= uuid %></div>
       <div class="sip-detail-timestamp"><%= new Date(timestamp * 1000).getArchivematicaDateTime() %></div>
-      <div class="sip-detail-jobs"><a href="#">Show micro-services</a></div>
+      <div class="sip-detail-jobs">
+        <a href="#">Show micro-services</a>
+      </div>
     </div>
     <div class="sip-detail-job-container"></div>
   </script>
