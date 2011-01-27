@@ -61,7 +61,7 @@
 
   # Django with mod_wsgi
   # http://code.google.com/p/modwsgi/wiki/IntegrationWithDjango
-  WSGIScriptAlias / /usr/local/share/dashboard/apache/django.wsgi
+  WSGIScriptAlias / /usr/local/share/archivematica/dashboard/apache/django.wsgi
   WSGIDaemonProcess dashboard
   WSGIProcessGroup dashboard
   <Directory "/usr/local/share/archivematica/dashboard/apache/">
