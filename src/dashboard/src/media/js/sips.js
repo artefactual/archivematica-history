@@ -6,9 +6,9 @@ $(function()
       initialize: function()
         {
           this.jobs = new JobCollection(this.get('jobs'));
-          this.bind('change', function()
+          this.bind('change:timestamp', function()
             {
-              this.view.$('.sip-detail-timestamp').html(this.get('timestamp'));
+              this.view.render();
             });
         },
     });
@@ -289,7 +289,7 @@ $(function()
           $.ajax({
             context: this,
             dataType: 'json',
-            type: 'POST',
+            type: 'GET',
             url: '/sips/all/',
             error: function()
               {
