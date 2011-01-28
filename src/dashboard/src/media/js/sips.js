@@ -247,9 +247,18 @@ $(function()
             dataType: 'html',
             success: function(data)
               {
-                var $dialog = $('<div></div>')
-                  .append($(data).find('tbody'))
-                  .dialog({ title: 'Guay' });
+                var $dialog = $('<div class="task-dialog"></div>')
+                  .append('<table>' + $(data).find('tbody').html() + '</table>')
+                  .dialog({
+                    title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Tasks',
+                    width: 640,
+                    height: 480,
+                    buttons: [
+                      {
+                        text: 'Close',
+                        click: function() { $(this).dialog('close'); }
+                      }]
+                  });
               },
             url: '/tasks/' + this.model.get('uuid') + '/'
           });
