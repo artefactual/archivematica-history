@@ -180,6 +180,11 @@ a:hover { text-decoration: underline; }
 .job-detail-microservice { width: 660px; border-right: 1px dotted #bbb; }
 .job-detail-currentstep { width: 170px; }
 
+.job-detail-microservice > p {
+  display: none;
+  margin: 0;
+}
+
 .job-detail-currentstep > div {
   margin: 4px 0;
 }
@@ -199,4 +204,14 @@ a:hover { text-decoration: underline; }
 .job-detail-currentstep > div > a:hover {
   background-color: #777;
   text-decoration: none;
+}
+
+.tooltip {
+	display:none;
+	background:transparent url(/tools/img/tooltip/black_arrow.png);
+	font-size:12px;
+	height:70px;
+	width:160px;
+	padding:25px;
+	color:#fff;	
 }
