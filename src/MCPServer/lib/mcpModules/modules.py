@@ -67,7 +67,7 @@ class modulesClass():
         self.processingDirectory = self.getTagged(directories, "processingDirectory")[0].text
         self.successDirectory = self.getTagged(directories, "successDirectory")[0].text
         self.failureDirectory = self.getTagged(directories, "failureDirectory")[0].text
-        self.rejectDirectory = self.failureDirectory 
+        self.rejectDirectory = "/var/archivematica/sharedDirectory/rejected/"
         
         commands = self.getTagged(root, "commands")[0]
         self.exeCommand = commandsClass(self.getTagged(self.getTagged(commands, "exeCommand")[0], "command")[0])
