@@ -74,6 +74,11 @@ def get_all(request):
   response = simplejson.JSONEncoder(default=encoder).encode(objects)
   return HttpResponse(response, mimetype='application/json')
 
+def tasks(request, jobuuid):
+  job = Job.objects.get(jobuuid = jobuuid)
+  objects = job.task_set.all().order_by('-createdtime')
+  return render_to_response('main/tasks.html', locals())
+
 def map_known_values(value):
   map = {
     # currentStep

@@ -201,6 +201,7 @@ $(function()
         'click .btn_browse_job': 'browseJob',
         'click .btn_approve_job': 'approveJob',
         'click .btn_reject_job': 'rejectJob',
+        'click .btn_show_tasks': 'showTasks',
         'click .job-detail-microservice > a': 'toggleMicroserviceHelp',
       },
       
@@ -236,6 +237,22 @@ $(function()
           }
 
           return this;
+        },
+
+      showTasks: function(event)
+        {
+          $.ajax({
+            context: this,
+            type: 'GET',
+            dataType: 'html',
+            success: function(data)
+              {
+                var $dialog = $('<div></div>')
+                  .append($(data).find('tbody'))
+                  .dialog({ title: 'Guay' });
+              },
+            url: '/tasks/' + this.model.get('uuid') + '/'
+          });
         },
 
       toggleMicroserviceHelp: function(event)
