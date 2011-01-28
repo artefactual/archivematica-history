@@ -3,7 +3,7 @@ sudo apt-get install libapache2-mod-wsgi python-django python-django-doc python-
 
 
 version="`lsb_release -d | grep "Ubuntu 10.04"`"
-if [ -n "$version" ]; 
+if [ -n "$version" ]
 	then
 		##LUCID
 		sudo add-apt-repository ppa:austin-arcintel/archivematica
