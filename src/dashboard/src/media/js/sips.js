@@ -306,12 +306,24 @@ $(function()
 
       initialize: function()
         {
-
+          this.render();
         },
-      
-      show: function(message, error)
+
+      render: function()
         {
-          this.text(message);
+          $(this.el).html(this.template()).hide().appendTo('body');
+
+          return this;
+        },
+
+      hide: function()
+        {
+          $(this.el).fadeOut('fast');
+        },
+
+      text: function(message, error)
+        {
+          $(this.el).show().find('span').html(message);
 
           if (true === error)
           {
@@ -322,17 +334,11 @@ $(function()
             $(this.el).removeClass('status-error');
           }
 
-          $(this.el).show();
-        },
-
-      hide: function()
-        {
-          $(this.el).hide();
-        },
-
-      text: function(message)
-        {
-          $(this.el).find('span').html(message);
+          var self = this;
+          setTimeout(function()
+            {
+              self.hide();
+            }, 1000);
         }
 
     });
@@ -347,6 +353,8 @@ $(function()
           Sips.bind('refresh', this.addAll);
           Sips.bind('add', this.add);
           Sips.fetch();
+
+          window.statusWidget = new window.StatusView();
         },
 
       add: function(sip)
@@ -397,6 +405,10 @@ $(function()
             dataType: 'json',
             type: 'GET',
             url: '/sips/all/',
+            beforeSend: function()
+              {
+                window.statusWidget.text('Refreshing...');
+              },
             error: function()
               {
                 // Show warning
