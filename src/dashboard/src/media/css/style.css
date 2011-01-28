@@ -205,3 +205,12 @@ a:hover { text-decoration: underline; }
   background-color: #777;
   text-decoration: none;
 }
+
+.task-dialog {
+  font-size: 11px;
+}
+
+.task-dialog > table {
+  /* width: 640px; */
+  width: 100%;
+}
