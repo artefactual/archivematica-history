@@ -151,7 +151,7 @@ def executeCommand(command, newUUID=""):
     "%unoconvAlternativePath%": unoconvAlternativePath, \
     "%fileExtension%": fileExtension, \
     "%fileFullName%": fileFullName, \
-    "%accessFileDirectory%": accesspath, \
+    "%accessFileDirectory%": accesspath + fileUUID + "-", \
     "%preservationFileDirectory%": fileDirectory + newUUID, \
     "%fileDirectory%": fileDirectory,\
     "%fileTitle%": fileTitle, \
