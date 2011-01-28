@@ -5,6 +5,31 @@ $(function()
     
       initialize: function()
         {
+          this.loadJobs();
+        },
+
+      hasFinished: function()
+        {
+          return false == this.jobs.some(function(job)
+            {
+              return -1 < jQuery.inArray(job.get('currentstep'), ['Requires approval', 'Executing command(s)']);
+            });
+        },
+
+
+      set: function(attributes, options)
+        {
+          Backbone.Model.prototype.set.call(this, attributes, options);
+
+          if (undefined !== this.jobs && !this.hasFinished())
+          {
+            this.view.update();
+          }
+        },
+
+      loadJobs: function()
+        {
+          // Nested collection
           this.jobs = new JobCollection(this.get('jobs'));
 
           var self = this;
@@ -12,8 +37,7 @@ $(function()
             {
               job.sip = self;
             });
-        },
-
+        }
     });
 
     window.SipCollection = Backbone.Collection.extend({
@@ -24,6 +48,7 @@ $(function()
 
       initialize: function()
         {
+
         },
 
       comparator: function(sip)
@@ -61,7 +86,8 @@ $(function()
 
       update: function()
         {
-          this.model.jobs.refresh(this.model.get('jobs'));
+          // Reload nested collection
+          this.model.loadJobs(); // .refresh() shouldn't work here
 
           // Update timestamp
           this.$('.sip-detail-timestamp').html(
@@ -163,7 +189,7 @@ $(function()
           {
             return '/media/images/accept.png';
           }
-        },
+        }
     
     });
 
