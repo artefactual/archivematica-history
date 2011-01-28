@@ -8,15 +8,23 @@
 {% block js %}
   <script type="text/javascript" src="/media/js/sips.js"></script>
   <script type="text/javascript">
+
     $(document).ready(function()
       {
-        {% if interval %}
-          window.pollingInterval = {{ interval }};
+        {% if polling_interval %}
+          window.pollingInterval = {{ polling_interval }};
         {% endif %}
 
         window.Sips = new SipCollection;
         window.App = new AppView;
       });
+
+    window.microservices_help = {
+      {% for x, y in microservices_help.iteritems %}
+        '{{ x }}': '{{ y }}',
+      {% endfor %}
+    };
+
   </script>
 {% endblock %}
 
@@ -50,7 +58,14 @@
   </script>
 
   <script type="text/template" id="job-template">
-    <div class="job-detail-microservice">Micro-Service: <span><%= microservice %></span></div>
+    <div class="job-detail-microservice">
+      Micro-Service: <span><%= microservice %></span>
+      <% tmp = window.microservices_help[microservice]; %>
+      <% if (tmp !== undefined) { %>
+        [<a href="#">?</a>]
+        <p><%= tmp  %></p>
+      <% } %>
+    </div>
     <div class="job-detail-currentstep"><%= currentstep %></div>
   </script>
 

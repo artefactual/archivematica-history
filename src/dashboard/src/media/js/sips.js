@@ -200,7 +200,8 @@ $(function()
       events: {
         'click .btn_browse_job': 'browseJob',
         'click .btn_approve_job': 'approveJob',
-        'click .btn_reject_job': 'rejectJob'
+        'click .btn_reject_job': 'rejectJob',
+        'click .job-detail-microservice > a': 'toggleMicroserviceHelp',
       },
       
       template: _.template($('#job-template').html()),
@@ -235,6 +236,13 @@ $(function()
           }
 
           return this;
+        },
+
+      toggleMicroserviceHelp: function(event)
+        {
+          event.preventDefault();
+
+          $(event.target).siblings('p').toggle('blind', 500);
         },
 
       browseJob: function(event)
