@@ -42,6 +42,7 @@
 import _mysql
 import os
 import threading
+import MySQLdb
 from datetime import datetime
 from archivematicaReplacementDics import getSIPUUID
 
@@ -53,14 +54,28 @@ def getUTCDate():
 
 #sudo apt-get install python-mysqldb
 sqlLoggingLock = threading.Lock()
-db=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
-
+sqlLoggingLock.acquire()
+print "Connecting to Database"
+database=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
+print "database:", database
+sqlLoggingLock.release()
 
 def runSQL(sql):
+    global database
     #found that even though it says it's compiled thread safe, running it multi-threaded crashes it.
     sqlLoggingLock.acquire()
-    db.query(sql)
+    db = database
+    try:
+        db.query(sql)
+    except MySQLdb.OperationalError, message:  
+        #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
+        if message[0] == 2006 and message[1] == 'MySQL server has gone away':
+            database=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
+            sqlLoggingLock.release()
+            runSQL(sql)
+            return 
     sqlLoggingLock.release()
+    return
 
 
 #user approved?
