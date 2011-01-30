@@ -37,42 +37,46 @@ def show_subdir(request, jobuuid, subdir):
       return render_to_response('main/show_dir.html', locals())
   except Exception: raise Http404
 
-def get_all(request):
-  # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-  objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
-  try:
-    pass
-    client = MCPClient()
-    jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
-  except Exception: pass
-  def encoder(obj):
-    items = []
-    for item in obj:
-      jobs = get_jobs_by_sipuuid(item['sipuuid'])
-      directory = jobs[0].directory
-      item['directory'] = re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
-      item['timestamp'] = time.mktime(item['timestamp'].timetuple())
-      item['uuid'] = item['sipuuid']
-      item['id'] = item['sipuuid']
-      del item['sipuuid']
-      item['jobs'] = []
-      for job in jobs:
-        newJob = {}
-        item['jobs'].append(newJob)
-        newJob['uuid'] = job.jobuuid
-        newJob['microservice'] = map_known_values(job.jobtype)
-        newJob['currentstep'] = map_known_values(job.currentstep)
-        try: jobsAwaitingApprovalXml
-        except NameError: pass
-        else:
-          for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
-            if uuid.text == job.jobuuid:
-              newJob['status'] = 1
-              break
-      items.append(item)
-    return items
-  response = simplejson.JSONEncoder(default=encoder).encode(objects)
-  return HttpResponse(response, mimetype='application/json')
+def sips(request, uuid=None):
+  if request.method == 'GET':
+    # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
+    objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
+    try:
+      pass
+      client = MCPClient()
+      jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
+    except Exception: pass
+    def encoder(obj):
+      items = []
+      for item in obj:
+        jobs = get_jobs_by_sipuuid(item['sipuuid'])
+        directory = jobs[0].directory
+        item['directory'] = re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
+        item['timestamp'] = time.mktime(item['timestamp'].timetuple())
+        item['uuid'] = item['sipuuid']
+        item['id'] = item['sipuuid']
+        del item['sipuuid']
+        item['jobs'] = []
+        for job in jobs:
+          newJob = {}
+          item['jobs'].append(newJob)
+          newJob['uuid'] = job.jobuuid
+          newJob['microservice'] = map_known_values(job.jobtype)
+          newJob['currentstep'] = map_known_values(job.currentstep)
+          try: jobsAwaitingApprovalXml
+          except NameError: pass
+          else:
+            for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
+              if uuid.text == job.jobuuid:
+                newJob['status'] = 1
+                break
+        items.append(item)
+      return items
+    response = simplejson.JSONEncoder(default=encoder).encode(objects)
+    return HttpResponse(response, mimetype='application/json')
+  elif request.method == 'DELETE':
+    response = simplejson.JSONEncoder().encode({'removed': True})
+    return HttpResponse(response, mimetype='application/json')
 
 def tasks(request, jobuuid):
   job = Job.objects.get(jobuuid = jobuuid)
