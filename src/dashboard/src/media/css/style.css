@@ -193,16 +193,37 @@ a:hover { text-decoration: underline; }
   background-color: White;
   clear: both;
   float: left;
+  width: 100%;
 }
 
 .job > div {
-  float: left;
   padding: 2px 5px;
+  float: left;
 }
 
-.job-detail-microservice { width: 660px; border-right: 1px dotted #bbb; position: relative; }
-.job-detail-currentstep { width: 170px; }
-.job-detail-actions { width: 180px; background-color: Yellow; }
+.job-detail-microservice { width: 660px; border-right: 1px dotted #bbb; }
+.job-detail-currentstep  { width: 170px; border-right: 1px dotted #bbb; }
+.job-detail-actions      { width: 40px; }
+
+.job-detail-actions > a {
+  line-height: 18px;
+  color: #000;
+  font-weight: bold;
+  font-size: 11px;
+  padding: 2px 4px 2px 20px;
+  margin-right: 4px;
+  border-radius: 4px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center left;
+}
+
+.job-detail-actions > .btn_show_tasks { background-image: url(/media/images/cog.png); }
+.job-detail-actions > .btn_browse_job { background-image: url(/media/images/folder_magnify.png); }
+.job-detail-actions > .btn_approve_job { background-image: url(/media/images/control_play_blue.png); color: Green; }
+.job-detail-actions > .btn_reject_job { background-image: url(/media/images/control_stop_blue.png); color: Red; }
 
 .job-detail-microservice > .title {
   -webkit-transform: rotate(-90deg);
@@ -221,24 +242,6 @@ a:hover { text-decoration: underline; }
 
 .job-detail-currentstep > div {
   margin: 4px 0;
-}
-
-a.button {
-  color: white;
-  font-weight: bold;
-  font-size: 10px;
-  padding: 2px 4px;
-  background-color: #888;
-  margin-right: 4px;
-  border: 1px solid #444;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-}
-
-a.button:hover {
-  background-color: #aaa;
-  text-decoration: none;
 }
 
 .task-dialog {
