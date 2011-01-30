@@ -218,9 +218,13 @@ $(function()
         {
           $(this.el).html(this.template(this.model.toJSON()));
 
-          if (-1 < jQuery.inArray(this.model.get('currentstep'), ['Requires approval', 'Failed', 'Rejected', 'Executing command(s)']))
+          if (-1 < jQuery.inArray(this.model.get('currentstep'), ['Requires approval', 'Failed', 'Rejected']))
           {
             $(this.el).css('background-color', '#f2d8d8');
+          }
+          else if ('Executing command(s)' == this.model.get('currentstep'))
+          {
+            $(this.el).css('background-color', '#fedda7');
           }
           else
           {
