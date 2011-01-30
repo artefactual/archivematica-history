@@ -37,14 +37,14 @@ $(function()
             {
               job.sip = self;
             });
-        }
+        },
     });
 
     window.SipCollection = Backbone.Collection.extend({
 
       model: Sip,
 
-      url: '/sips/all/',
+      url: '/sips/go/',
 
       initialize: function()
         {
@@ -148,7 +148,20 @@ $(function()
 
       delete: function(event)
         {
-          
+          var self = this;
+          var e = this.model.destroy({
+            'success': function (model, response)
+              {
+                $(self.el).hide('blind', function()
+                  {
+                    $(this).remove();
+                  });
+              },
+            'error': function(model, response)
+              {
+                
+              }
+          });
         }
     });
 
@@ -449,7 +462,7 @@ $(function()
             context: this,
             dataType: 'json',
             type: 'GET',
-            url: '/sips/all/',
+            url: '/sips/go/',
             beforeSend: function()
               {
                 window.statusWidget.text('Refreshing...');
