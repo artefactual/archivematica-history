@@ -12,7 +12,8 @@ urlpatterns = patterns('dashboard.main.views',
   (r'tasks/(?P<jobuuid>' + UUID_REGEX + ')/$', 'tasks'),
 
   (r'sips/$', direct_to_template, {'template': 'main/sips.html', 'extra_context': {'polling_interval': settings.POLLING_INTERVAL, 'microservices_help': settings.MICROSERVICES_HELP}}, "sips"),
-  (r'sips/all/$', 'get_all'),
+  (r'sips/go/$', 'sips'),
+  (r'sips/go/(?P<uuid>' + UUID_REGEX + ')$', 'sips'),
 
   (r'', redirect_to, {'url': '/sips/'}),
 
