@@ -114,9 +114,8 @@ a:hover { text-decoration: underline; }
 }
 
 #sip-header > div { float: left; padding: 3px 2px 3px 2px; }
-#sip-header-icon { width: 25px; }
-#sip-header-directory { width: 300px; }
-#sip-header-uuid { width: 330px; }
+#sip-header-directory { width: 320px; }
+#sip-header-uuid { width: 310px; }
 #sip-header-timestamp { width: 120px; }
 #sip-header-jobs { }
 
@@ -138,7 +137,7 @@ a:hover { text-decoration: underline; }
 .sip-row > div { float: left; padding: 3px 0; }
 .sip-detail-icon { width: 26px; text-align: center; }
 .sip-detail-directory { width: 300px; display: table-cell; white-space: nowrap; }
-.sip-detail-uuid { width: 330px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
+.sip-detail-uuid { width: 310px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
 .sip-detail-timestamp { width: 120px; }
 .sip-detail-jobs { padding-right: 4px; }
 
