@@ -115,7 +115,7 @@ $(function()
 
       updateIcon: function()
         {
-          this.$('.sip-detail-icon-status > a').html('<img src="' + this.model.jobs.getIcon() + '" />');
+          this.$('.sip-detail-icon-status > a').html(this.model.jobs.getIcon());
         },
 
       toggleJobs: function(event)
@@ -306,8 +306,7 @@ $(function()
 
           if (1 == this.model.get('status'))
           {
-            this.$('.job-detail-currentstep')
-              .append('<div></div>').children()
+            this.$('.job-detail-actions')
               .append('<a class="button btn_browse_job" href="#">Browse</a>')
               .append('<a class="button btn_approve_job" href="#">Approve</a>')
               .append('<a class="button btn_reject_job" href="#">Reject</a>')
