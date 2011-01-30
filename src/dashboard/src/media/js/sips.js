@@ -43,7 +43,7 @@ $(function()
     window.SipCollection = Backbone.Collection.extend({
 
       model: Sip,
-      
+
       url: '/sips/all/',
 
       initialize: function()
@@ -65,7 +65,9 @@ $(function()
       template: _.template($('#sip-template').html()),
 
       events: {
-        'click .sip-row > .sip-detail-jobs > a': 'toggleJobs',
+        'click .sip-row > .sip-detail-icon-status > a': 'toggleJobs',
+        'click .sip-row > .sip-detail-actions > .btn_show_jobs': 'toggleJobs',
+        'click .sip-row > .sip-detail-actions > .btn_delete_sip': 'delete',
       },
 
       initialize: function()
@@ -77,7 +79,7 @@ $(function()
       
       render: function()
         {
-          $(this.el).html(this.template(this.model.toJSON())).attr('uuid', this.model.get('uuid'));
+          $(this.el).html(this.template(this.model.toJSON()));
 
           this.$jobContainer = this.$('.sip-detail-job-container');
 
@@ -113,7 +115,7 @@ $(function()
 
       updateIcon: function()
         {
-          this.$('.sip-detail-icon').html('<img src="' + this.model.jobs.getIcon() + '" />');
+          this.$('.sip-detail-icon-status > a').html('<img src="' + this.model.jobs.getIcon() + '" />');
         },
 
       toggleJobs: function(event)
@@ -127,7 +129,6 @@ $(function()
           {
             this.$jobContainer.slideUp('fast');
             $(this.el).removeClass('sip-selected');
-            this.$('.sip-detail-jobs > a').text('Show micro-services');
           }
           else
           {
@@ -142,8 +143,12 @@ $(function()
 
             this.$jobContainer.slideDown('fast');
             $(this.el).addClass('sip-selected');
-            this.$('.sip-detail-jobs > a').text('Hide micro-services');
           }
+        },
+
+      delete: function(event)
+        {
+          
         }
     });
 
@@ -157,44 +162,54 @@ $(function()
 
       getIcon: function()
         {
+          var path = '';
+          var title = '';
+
           if (undefined !== this.find(function(job)
             {
               return 0 < job.get('status') || 'Requires approval' == job.get('currentstep');
             }))
           {
-            return '/media/images/bell.png';
+            path = '/media/images/bell.png';
+            title = 'Requires approval';
           }
           else if (undefined !== this.find(function(job)
             {
               return 'Failed' == job.get('currentstep');
             }))
           {
-            return '/media/images/cancel.png';
+            path = '/media/images/cancel.png';
+            title = 'Failed';
           }
           else if (undefined !== this.find(function(job)
             {
               return 'Executing command(s)' == job.get('currentstep');
             }))
           {
-            return '/media/images/icons/arrow_refresh.png';
+            path = '/media/images/icons/arrow_refresh.png';
+            title = 'Executing command(s)';
           }
           else if (undefined !== this.find(function(job)
             {
               return 'Rejected' == job.get('currentstep');
             }))
           {
-            return '/media/images/icons/control_stop_blue.png';
+            path = '/media/images/icons/control_stop_blue.png';
+            title = 'Rejected';
           }
           else
           {
-            return '/media/images/accept.png';
+            path = '/media/images/accept.png';
+            title = 'Completed successfully';
           }
+
+          return '<img src="' + path + '" title="' + title + '" />';
         }
-    
+
     });
 
     window.JobView = Backbone.View.extend({
-    
+
       className: 'job',
 
       events: {
@@ -204,7 +219,7 @@ $(function()
         'click .btn_show_tasks': 'showTasks',
         'click .job-detail-microservice > a': 'toggleMicroserviceHelp',
       },
-      
+
       template: _.template($('#job-template').html()),
 
       initialize: function()
@@ -235,9 +250,9 @@ $(function()
           {
             this.$('.job-detail-currentstep')
               .append('<div></div>').children()
-              .append('<a class="btn_browse_job" href="#">Browse</a>')
-              .append('<a class="btn_approve_job" href="#">Approve</a>')
-              .append('<a class="btn_reject_job" href="#">Reject</a>')
+              .append('<a class="button btn_browse_job" href="#">Browse</a>')
+              .append('<a class="button btn_approve_job" href="#">Approve</a>')
+              .append('<a class="button btn_reject_job" href="#">Reject</a>')
           }
 
           return this;
@@ -245,13 +260,15 @@ $(function()
 
       showTasks: function(event)
         {
+          event.preventDefault();
+
           $.ajax({
             context: this,
             type: 'GET',
             dataType: 'html',
             success: function(data)
               {
-                var $dialog = $('<div class="task-dialog"></div>')
+                $('<div class="task-dialog"></div>')
                   .append('<table>' + $(data).find('tbody').html() + '</table>')
                   .dialog({
                     title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Tasks',
@@ -319,8 +336,7 @@ $(function()
                 });
 
                 this.model.sip.view.updateIcon();
-
-                this.model.sip.view.toggleJobs();
+                // this.model.sip.view.toggleJobs();
               },
             url: '/mcp/reject-job/'
           });
@@ -391,7 +407,6 @@ $(function()
         {
           var index = Sips.indexOf(sip);
           var view = new SipView({model: sip});
-
           var $new = $(view.render().el).hide();
           var $target = this.el.find('.sip').eq(index);
 
