@@ -35,7 +35,7 @@
       <div id="sip-header-directory">Directory to Submission Information Package</div>
       <div id="sip-header-uuid">UUID</div>
       <div id="sip-header-timestamp">Timestamp</div>
-      <div id="sip-header-jobs">&nbsp;</div>
+      <div id="sip-header-actions">&nbsp;</div>
     </div>
     <div id="sip-body">
     </div>
@@ -45,12 +45,13 @@
 
   <script type="text/template" id="sip-template">
     <div class="sip-row">
-      <div class="sip-detail-icon"><img src="<%= this.model.jobs.getIcon() %>" /></div>
+      <div class="sip-detail-icon-status"><a href="#"><%= this.model.jobs.getIcon() %></a></div>
       <div class="sip-detail-directory"><%= directory %></div>
       <div class="sip-detail-uuid"><%= uuid %></div>
       <div class="sip-detail-timestamp"><%= new Date(timestamp * 1000).getArchivematicaDateTime() %></div>
-      <div class="sip-detail-jobs">
-        <a href="#">Show micro-services</a>
+      <div class="sip-detail-actions">
+        <a class="btn_show_jobs" href="#">Micro-Services</a>
+        <a class="btn_delete_sip" href="#">Delete</a>
       </div>
     </div>
     <div class="sip-detail-job-container"></div>
@@ -67,7 +68,7 @@
     </div>
     <div class="job-detail-currentstep"><%= currentstep %></div>
     <div class="job-detail-actions">
-      <a class="btn_show_tasks" href="#">Tasks</div>
+      <a class="button btn_show_tasks" href="#">Tasks</div>
     </div>
   </script>
 

@@ -103,6 +103,7 @@ a:hover { text-decoration: underline; }
 
 #sip-container {
   margin-top: 10px;
+  min-width: 950px;
 }
 
 #sip-header {
@@ -114,15 +115,19 @@ a:hover { text-decoration: underline; }
 }
 
 #sip-header > div { float: left; padding: 3px 2px 3px 2px; }
-#sip-header-directory { width: 320px; }
-#sip-header-uuid { width: 310px; }
+#sip-header-directory { width: 319px; }
+#sip-header-uuid { width: 304px; }
 #sip-header-timestamp { width: 120px; }
-#sip-header-jobs { }
+#sip-header-actions { }
 
 .sip {
+  width: 100%;
   clear: both;
   float: left;
   border: 1px solid White;
+}
+
+.sip > .sip-row {
 }
 
 .sip:hover, .sip-selected {
@@ -131,28 +136,42 @@ a:hover { text-decoration: underline; }
 }
 
 .sip-new {
-  background-color: #ffff00;
+  background-color: #fedda7;
 }
 
-.sip-row > div { float: left; padding: 3px 0; }
-.sip-detail-icon { width: 26px; text-align: center; }
-.sip-detail-directory { width: 300px; display: table-cell; white-space: nowrap; }
-.sip-detail-uuid { width: 310px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
-.sip-detail-timestamp { width: 120px; }
-.sip-detail-jobs { padding-right: 4px; }
+.sip-row > div          { float:  left;}
+.sip-detail-icon-status { width:  26px; padding: 4px 0px; text-align: center; }
+.sip-detail-directory   { width: 300px; padding: 4px 0px; display: table-cell; white-space: nowrap; }
+.sip-detail-uuid        { width: 310px; padding: 4px 0px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
+.sip-detail-timestamp   { width: 120px; padding: 4px 0px; }
+.sip-detail-actions     {  }
 
-.sip-detail-icon > img {
-  margin: 0px; padding: 0px;
-}
-
-.sip-detail-jobs a {
+.sip-detail-actions > a {
   visibility: hidden;
+  float: left;
+  padding: 4px 6px;
   font-weight: bold;
-  padding-right: 4px;
+  background-color: #eee;
+  color: Black;
 }
 
-.sip:hover .sip-detail-jobs a,
-.sip-selected .sip-detail-jobs a {
+.btn_show_jobs {
+  background: transparent url(/media/images/zoom.png) no-repeat center left;
+  padding-left: 18px !important;  
+  margin-right: 6px;
+}
+
+.sip-selected .btn_show_jobs {
+  background-image: url(/media/images/zoom_out.png);
+}
+
+.btn_delete_sip {
+  background: transparent url(/media/images/delete.png) no-repeat center left;
+  padding-left: 18px !important;
+}
+
+.sip:hover .sip-detail-actions > a,
+.sip-selected .sip-detail-actions > a {
   visibility: visible;
 }
 
@@ -176,8 +195,19 @@ a:hover { text-decoration: underline; }
   padding: 2px 5px;
 }
 
-.job-detail-microservice { width: 660px; border-right: 1px dotted #bbb; }
+.job-detail-microservice { width: 660px; border-right: 1px dotted #bbb; position: relative; }
 .job-detail-currentstep { width: 170px; }
+.job-detail-actions { width: 180px; background-color: Yellow; }
+
+.job-detail-microservice > .title {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  background-color: Green;
+  left: 0px;
+  top: 0px;
+  text-align: left;
+}
 
 .job-detail-microservice > p {
   display: none;
@@ -188,32 +218,22 @@ a:hover { text-decoration: underline; }
   margin: 4px 0;
 }
 
-.job-detail-currentstep > div > a {
+a.button {
+  color: white;
+  font-weight: bold;
+  font-size: 10px;
+  padding: 2px 4px;
+  background-color: #888;
   margin-right: 4px;
-  color: white;
-  font-weight: bold;
-  font-size: 10px;
-  padding: 2px 4px;
-  background-color: #999;
+  border: 1px solid #444;
   border-radius: 4px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
 }
 
-.job-detail-currentstep > div > a:hover {
-  background-color: #777;
+a.button:hover {
+  background-color: #aaa;
   text-decoration: none;
-}
-
-.job-detail-actions > a {
-  color: white;
-  font-weight: bold;
-  font-size: 10px;
-  padding: 2px 4px;
-  background-color: #999;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
 }
 
 .task-dialog {
@@ -227,6 +247,5 @@ a:hover { text-decoration: underline; }
 
 .task-dialog .stderror {
   background-color: #ddd;
-  font-family: "Courier New", Courier, "Lucida Console", monospace;
-  color: Red;
+  font-family: "Courier 
 }
