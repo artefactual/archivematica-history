@@ -206,6 +206,17 @@ a:hover { text-decoration: underline; }
   text-decoration: none;
 }
 
+.job-detail-actions > a {
+  color: white;
+  font-weight: bold;
+  font-size: 10px;
+  padding: 2px 4px;
+  background-color: #999;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
 .task-dialog {
   font-size: 11px;
 }
@@ -213,4 +224,10 @@ a:hover { text-decoration: underline; }
 .task-dialog > table {
   /* width: 640px; */
   width: 100%;
+}
+
+.task-dialog .stderror {
+  background-color: #ddd;
+  font-family: "Courier New", Courier, "Lucida Console", monospace;
+  color: Red;
 }
