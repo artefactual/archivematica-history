@@ -148,20 +148,65 @@ $(function()
 
       delete: function(event)
         {
+          $(this.el).addClass('sip-deleting');
+
           var self = this;
-          var e = this.model.destroy({
-            'success': function (model, response)
-              {
-                $(self.el).hide('blind', function()
+
+          $('<div>' +
+              '<p><strong>Are you sure that you want to permanently delete the selected SIP?</strong></p>' +
+              '<p>Directory: ' + this.model.get('directory') + '<br />UUID: ' + this.model.get('uuid') + '<br />Status: ' + $(this.el).find('.sip-detail-icon-status > a > img').attr('title') + '</p>' +
+            '</div>').dialog(
+            {
+              modal: true,
+              resizable: false,
+              title: false,
+              draggable: false,
+              title: 'Delete SIP',
+              width: 480,
+              close: function(event, ui)
+                {
+                  if (event.which !== undefined)
                   {
-                    $(this).remove();
-                  });
-              },
-            'error': function(model, response)
-              {
-                
-              }
-          });
+                    $(self.el).removeClass('sip-deleting');
+                  }
+                },
+              buttons: [
+                  {
+                    text: 'Confirm',
+                    click: function() {
+
+                      var $dialog = $(this);
+
+                      self.model.destroy({
+                        success: function (model, response)
+                          {
+                            $dialog.dialog('close');
+
+                            setTimeout(function()
+                              {
+                                $(self.el).hide('blind', function()
+                                  {
+                                    $(this).remove();
+                                  });
+                              }, 250);
+                          },
+                        error: function(model, response)
+                          {
+                            $dialog.dialog('close');
+                            $(self.el).removeClass('sip-deleting');
+                          }
+
+                      });
+                    }
+                  },
+                  {
+                    text: 'Cancel',
+                    click: function() {
+                        $(this).dialog('close');
+                        $(self.el).removeClass('sip-deleting');
+                      }
+                  }]
+            });
         }
     });
 
