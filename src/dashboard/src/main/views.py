@@ -41,9 +41,11 @@ def sips(request, uuid=None):
   if request.method == 'GET':
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
     objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
+    mcp_available = False
     try:
       client = MCPClient()
       jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
+      mcp_available = True
     except Exception: pass
     def encoder(obj):
       items = []
@@ -71,8 +73,10 @@ def sips(request, uuid=None):
                 break
         items.append(item)
       return items
-    response = simplejson.JSONEncoder(default=encoder).encode(objects)
-    return HttpResponse(response, mimetype='application/json')
+    response = {}
+    response['objects'] = objects
+    response['mcp'] = mcp_available
+    return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
   elif request.method == 'DELETE':
     jobs = Job.objects.filter(sipuuid = uuid)
     try:
