@@ -122,6 +122,7 @@ def map_known_values(value):
     'extractPackage': 'Extract package',
     'FITS': 'FITS',
     'normalize': 'Normalize',
+    'failedNormalization': 'Normalization failed'
     'quarantine': 'Place in quarantine',
     'reviewSIP': 'Review SIP',
     'scanForRemovedFilesPostAppraiseSIPForPreservation': 'Scan for removed files post appraise SIP for preservation',
