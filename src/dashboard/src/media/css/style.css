@@ -76,6 +76,10 @@ a:hover { text-decoration: underline; }
   border-radius: 4px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
+  box-shadow: 4px 4px 4px #999999;
+  -webkit-box-shadow: 4px 4px 4px #999999;
+  -moz-box-shadow: 4px 4px 4px #999999;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#999999, offX=4, offY=4, positive=true);
 }
 
 .tooltip > .tooltip-title {
