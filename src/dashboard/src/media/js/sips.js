@@ -331,6 +331,7 @@ $(function()
                     title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Tasks',
                     width: 640,
                     height: 480,
+                    modal: true,
                     buttons: [
                       {
                         text: 'Close',
