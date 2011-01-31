@@ -55,7 +55,6 @@ a:hover { text-decoration: underline; }
   color: #fff;
   text-decoration: none;
   background-color: #42769e;
-  
   border-right: 1px solid #fff;
 }
 
@@ -66,6 +65,32 @@ a:hover { text-decoration: underline; }
 }
 
 #page-sips #menu .sips a { background-color: #a40000; }
+
+/* Tooltip widget */
+
+.tooltip {
+  position: absolute;
+  border: 1px solid #333;
+  background: #f7f5d1;
+  color: #333;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+.tooltip > .tooltip-title {
+  margin: 0;
+  white-space: nowrap;
+  padding: 2px 4px;
+  background-color: #888;
+  font-weight: bold;
+  color: White;
+}
+
+.tooltip > .tooltip-content {
+  padding: 2px 5px 2px 5px;
+  margin: 0 0 0 0;
+}
 
 /* Status widget */
 
@@ -212,7 +237,7 @@ a:hover { text-decoration: underline; }
   font-size: 11px;
   padding: 2px 4px 2px 20px;
   margin-right: 4px;
-  border-radius: 4px;
+  border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   background-color: transparent;
@@ -233,11 +258,6 @@ a:hover { text-decoration: underline; }
   left: 0px;
   top: 0px;
   text-align: left;
-}
-
-.job-detail-microservice > p {
-  display: none;
-  margin: 0;
 }
 
 .job-detail-currentstep > div {

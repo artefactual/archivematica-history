@@ -62,8 +62,7 @@
       Micro-Service: <span><%= microservice %></span>
       <% tmp = window.microservices_help[microservice]; %>
       <% if (tmp !== undefined) { %>
-        [<a href="#">?</a>]
-        <p><%= tmp  %></p>
+        [<a href="#" title="<%= tmp %>">?</a>]
       <% } %>
     </div>
     <div class="job-detail-currentstep"><%= currentstep %></div>
