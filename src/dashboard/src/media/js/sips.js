@@ -520,8 +520,6 @@ $(function()
               },
             success: function(response)
               {
-                var affectedUUIDs = [];
-              
                 for (var i in response)
                 {
                   var sip = response[i];
@@ -537,8 +535,6 @@ $(function()
                     // Update sips
                     item.set(sip);
                   }
-
-                  affectedUUIDs.push(sip.uuid);
                 }
 
                 // Delete sips
@@ -546,7 +542,7 @@ $(function()
                 {
                   var unusedSips = Sips.reject(function(sip)
                       {
-                        return -1 < $.inArray(sip.get('uuid'), affectedUUIDs);
+                        return -1 < $.inArray(sip.get('uuid'), _.pluck(response, 'uuid'));
                       });
 
                   Sips.remove(unusedSips);
