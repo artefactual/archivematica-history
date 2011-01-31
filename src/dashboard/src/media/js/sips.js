@@ -37,7 +37,7 @@ $(function()
             {
               job.sip = self;
             });
-        },
+        }
     });
 
     window.SipCollection = Backbone.Collection.extend({
@@ -54,7 +54,7 @@ $(function()
       comparator: function(sip)
         {
           return 0 - sip.get('timestamp');
-        },
+        }
 
     });
 
@@ -275,7 +275,6 @@ $(function()
         'click .btn_approve_job': 'approveJob',
         'click .btn_reject_job': 'rejectJob',
         'click .btn_show_tasks': 'showTasks',
-        'click .job-detail-microservice > a': 'toggleMicroserviceHelp',
       },
 
       template: _.template($('#job-template').html()),
@@ -312,6 +311,8 @@ $(function()
               .append('<a class="button btn_reject_job" href="#">Reject</a>')
           }
 
+          this.$('.job-detail-microservice > a').tooltip({ title: 'SIP description'});
+
           return this;
         },
 
@@ -341,13 +342,6 @@ $(function()
               },
             url: '/tasks/' + this.model.get('uuid') + '/'
           });
-        },
-
-      toggleMicroserviceHelp: function(event)
-        {
-          event.preventDefault();
-
-          $(event.target).siblings('p').toggle('blind', 500);
         },
 
       browseJob: function(event)
@@ -549,6 +543,62 @@ $(function()
         },
 
     });
+
+    (function($)
+      {
+        $.fn.tooltip = function(options)
+          {
+            var settings = {
+              xOffset: 10,
+              yOffset: 20,
+              width: 280
+            };
+
+            return this.each(function()
+              {
+                var $this = $(this);
+                var $tooltip = $;
+
+                if (options)
+                {
+                  $.extend(settings, options);
+                }
+
+                if (undefined === settings.content)
+                {
+                  settings.content = $this.attr('title');
+                }
+
+                $this
+                  .attr('title', '')
+                  .mouseover(function(event)
+                    {
+                      $tooltip = $('<div class="tooltip">' + (undefined !== settings.title ? '<p class="tooltip-title">' + settings.title + '</p>' : '') + '<div class="tooltip-content">' + settings.content + '</div></div>')
+                        .hide()
+                        .css({
+                          top: (event.pageY - settings.xOffset) + 'px',
+                          left: (event.pageX + settings.yOffset) + 'px',
+                          width: settings.width + 'px'})
+                        .show()
+                        .appendTo('body');
+                    })
+                  .mouseleave(function(event)
+                    {
+                      $tooltip.hide();
+                    })
+                  .mousemove(function(event)
+                    {
+                      $tooltip.css({
+                        top: (event.pageY - settings.xOffset) + 'px',
+                        left: (event.pageX + settings.yOffset) + 'px'});
+                    })
+                  .click(function(event)
+                    {
+                      event.preventDefault();
+                    });
+              });
+          };
+      })(jQuery);
 
     Date.prototype.getArchivematicaDateTime = function()
       {
