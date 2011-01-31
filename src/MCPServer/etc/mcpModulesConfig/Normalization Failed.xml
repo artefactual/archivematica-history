@@ -1,6 +1,6 @@
 <module>
     <requiresUserApproval>Yes</requiresUserApproval>
-    <descriptionForApproval>None Needed </descriptionForApproval>
+    <descriptionForApproval>Normalization of one or more objects in this SIP failed. To reject the SIP, click Reject; to continue processing the SIP, click Approve.</descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
