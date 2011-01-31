@@ -21,31 +21,30 @@ class Job(models.Model):
     db_table = u'Jobs'
 
 class Task(models.Model):
-  taskuuid = models.CharField(max_length=150, primary_key=True, db_column='taskUUID')
-  # jobuuid = models.CharField(max_length=150, db_column='jobUUID', blank=True)
+  taskuuid = models.CharField(max_length=50, primary_key=True, db_column='taskUUID')
+  # jobuuid = models.CharField(max_length=50, db_column='jobUUID', blank=True)
   job = models.ForeignKey(Job, db_column='jobuuid', to_field = 'jobuuid')
   createdtime = models.DateTimeField(db_column='createdTime')
-  fileuuid = models.CharField(max_length=150, db_column='fileUUID', blank=True)
-  filename = models.CharField(max_length=300, db_column='fileName', blank=True)
-  exec_field = models.CharField(max_length=150, db_column='exec', blank=True)
-  arguments = models.CharField(max_length=3000, blank=True)
+  fileuuid = models.CharField(max_length=50, db_column='fileUUID', blank=True)
+  filename = models.CharField(max_length=100, db_column='fileName', blank=True)
+  exec_field = models.CharField(max_length=50, db_column='exec', blank=True)
+  arguments = models.CharField(max_length=1000, blank=True)
   starttime = models.DateTimeField(db_column='startTime')
-  client = models.CharField(max_length=150, blank=True)
+  client = models.CharField(max_length=50, blank=True)
   endtime = models.DateTimeField(db_column='endTime')
-  exitcode = models.IntegerField(null=True, db_column='exitCode', blank=True)
   stdout = models.TextField(db_column='stdOut', blank=True)
   stderror = models.TextField(db_column='stdError', blank=True)
+  exitcode = models.IntegerField(null=True, db_column='exitCode', blank=True)
 
   class Meta:
     db_table = u'Tasks'
 
 class JobStepCompleted(models.Model):
-  pk = models.IntegerField(primary_key=True)
-  # jobuuid = models.CharField(max_length=150, db_column='jobUUID', blank=True)
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  # jobuuid = models.CharField(max_length=50, db_column='jobUUID', blank=True)
   job = models.ForeignKey(Job, db_column='jobuuid', to_field = 'jobuuid')
   completedtime = models.DateTimeField(db_column='completedTime')
-  step = models.CharField(max_length=150, blank=True)
+  step = models.CharField(max_length=50, blank=True)
 
   class Meta:
     db_table = u'jobStepCompleted'
-
