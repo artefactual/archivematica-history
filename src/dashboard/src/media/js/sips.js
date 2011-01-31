@@ -417,7 +417,11 @@ $(function()
 
       hide: function()
         {
-          $(this.el).fadeOut('fast');
+          var self = this;
+          setTimeout(function()
+            {
+              $(self.el).fadeOut('fast');
+            }, 1000);
         },
 
       text: function(message, error)
@@ -432,12 +436,6 @@ $(function()
           {
             $(this.el).removeClass('status-error');
           }
-
-          var self = this;
-          setTimeout(function()
-            {
-              self.hide();
-            }, 1000);
         }
 
     });
@@ -454,7 +452,7 @@ $(function()
 
           window.statusWidget = new window.StatusView();
 
-          this.poll();
+          this.poll(true);
         },
 
       add: function(sip)
@@ -498,7 +496,7 @@ $(function()
             });
         },
 
-      poll: function()
+      poll: function(start)
         {
           $.ajax({
             context: this,
@@ -507,11 +505,11 @@ $(function()
             url: '/sips/go/',
             beforeSend: function()
               {
-                window.statusWidget.text('Refreshing...');
+                window.statusWidget.text(undefined !== start ? 'Loading...' : 'Refreshing...');
               },
             error: function()
               {
-                // Show warning
+                window.statusWidget.text('Error trying to connect to database. Trying again...', true);
               },
             success: function(response)
               {
@@ -543,6 +541,16 @@ $(function()
                       });
 
                   Sips.remove(unusedSips);
+                }
+
+                // MCP status
+                if (response.mcp)
+                {
+                  window.statusWidget.hide();
+                }
+                else
+                {
+                  window.statusWidget.text('Error trying to connect to MCP server. Trying again...', true);
                 }
               },
             complete: function()
