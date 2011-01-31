@@ -582,7 +582,7 @@ $(function()
                         .show()
                         .appendTo('body');
                     })
-                  .mouseleave(function(event)
+                  .mouseout(function(event)
                     {
                       $tooltip.hide();
                     })
