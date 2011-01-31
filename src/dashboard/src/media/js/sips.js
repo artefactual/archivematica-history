@@ -147,6 +147,8 @@ $(function()
 
       delete: function(event)
         {
+          event.preventDefault();
+
           $(this.el).addClass('sip-deleting');
 
           var self = this;
@@ -446,29 +448,39 @@ $(function()
 
       initialize: function()
         {
-          _.bindAll(this, 'addOne', 'addAll', 'add', 'remove');
-          Sips.bind('refresh', this.addAll);
+          _.bindAll(this, 'add', 'remove');
           Sips.bind('add', this.add);
           Sips.bind('remove', this.remove);
-          Sips.fetch();
 
           window.statusWidget = new window.StatusView();
+
+          this.poll();
         },
 
       add: function(sip)
         {
-          var index = Sips.indexOf(sip);
           var view = new SipView({model: sip});
           var $new = $(view.render().el).hide();
-          var $target = this.el.find('.sip').eq(index);
 
-          if ($target.length)
+          // Get the current position in the collection
+          var position = Sips.indexOf(sip);
+          
+          if (0 == position)
           {
-            $target.before($new);
+            this.el.children('#sip-body').prepend($new);
           }
           else
           {
-            this.el.children('#sip-body').append($new);
+            var $target = this.el.find('.sip').eq(position);
+
+            if ($target.length)
+            {
+              $target.before($new);
+            }
+            else
+            {
+              this.el.children('#sip-body').append($new);
+            }
           }
 
           // Animation
@@ -484,23 +496,6 @@ $(function()
             {
               $(this).remove();
             });
-        },
-      
-      addOne: function(sip)
-        {
-          var view = new SipView({model: sip});
-          this.el.children('#sip-body').append(view.render().el);
-        },
-
-      addAll: function()
-        {
-          Sips.each(this.addOne);
-
-          var self = this;
-          setTimeout(function()
-            {
-              self.poll();
-            }, window.pollingInterval ? window.pollingInterval * 1000: 5000);
         },
 
       poll: function()
@@ -520,9 +515,11 @@ $(function()
               },
             success: function(response)
               {
-                for (var i in response)
+                var objects = response.objects;
+
+                for (var i in objects)
                 {
-                  var sip = response[i];
+                  var sip = objects[i];
                   var item = Sips.find(function(item) { return item.get('uuid') == sip.uuid; });
 
                   if (undefined === item)
@@ -538,11 +535,11 @@ $(function()
                 }
 
                 // Delete sips
-                if (Sips.length > response.length)
+                if (Sips.length > objects.length)
                 {
                   var unusedSips = Sips.reject(function(sip)
                       {
-                        return -1 < $.inArray(sip.get('uuid'), _.pluck(response, 'uuid'));
+                        return -1 < $.inArray(sip.get('uuid'), _.pluck(objects, 'uuid'));
                       });
 
                   Sips.remove(unusedSips);
