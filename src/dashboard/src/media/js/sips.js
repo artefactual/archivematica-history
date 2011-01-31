@@ -16,7 +16,6 @@ $(function()
             });
         },
 
-
       set: function(attributes, options)
         {
           Backbone.Model.prototype.set.call(this, attributes, options);
@@ -447,9 +446,10 @@ $(function()
 
       initialize: function()
         {
-          _.bindAll(this, 'addOne', 'addAll', 'add');
+          _.bindAll(this, 'addOne', 'addAll', 'add', 'remove');
           Sips.bind('refresh', this.addAll);
           Sips.bind('add', this.add);
+          Sips.bind('remove', this.remove);
           Sips.fetch();
 
           window.statusWidget = new window.StatusView();
@@ -475,6 +475,14 @@ $(function()
           $new.addClass('sip-new').show('blind', {}, 500, function()
             {
               $(this).removeClass('sip-new', 2000);
+            });
+        },
+
+      remove: function(sip)
+        {
+          $(sip.view.el).hide('blind', function()
+            {
+              $(this).remove();
             });
         },
       
@@ -512,6 +520,8 @@ $(function()
               },
             success: function(response)
               {
+                var affectedUUIDs = [];
+              
                 for (var i in response)
                 {
                   var sip = response[i];
@@ -528,7 +538,18 @@ $(function()
                     item.set(sip);
                   }
 
-                  // Delete sips
+                  affectedUUIDs.push(sip.uuid);
+                }
+
+                // Delete sips
+                if (Sips.length > response.length)
+                {
+                  var unusedSips = Sips.reject(function(sip)
+                      {
+                        return -1 < $.inArray(sip.get('uuid'), affectedUUIDs);
+                      });
+
+                  Sips.remove(unusedSips);
                 }
               },
             complete: function()
