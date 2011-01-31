@@ -42,7 +42,6 @@ def sips(request, uuid=None):
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
     objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
     try:
-      pass
       client = MCPClient()
       jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
     except Exception: pass
@@ -75,6 +74,15 @@ def sips(request, uuid=None):
     response = simplejson.JSONEncoder(default=encoder).encode(objects)
     return HttpResponse(response, mimetype='application/json')
   elif request.method == 'DELETE':
+    jobs = Job.objects.filter(sipuuid = uuid)
+    try:
+      client = MCPClient()
+      jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
+      for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
+        if 0 < len(jobs.filter(jobuuid=uuid.text)):
+          client.reject_job(uuid.text)
+    except Exception: pass
+    jobs.delete()
     response = simplejson.JSONEncoder().encode({'removed': True})
     return HttpResponse(response, mimetype='application/json')
 
@@ -129,7 +137,7 @@ def map_known_values(value):
     return value
 
 def get_jobs_by_sipuuid(uuid):
-  jobs = Job.objects.all().filter(sipuuid = uuid).order_by('-createdtime')
+  jobs = Job.objects.filter(sipuuid = uuid).order_by('-createdtime')
   priorities = {
     'completedUnsuccessfully': 0,
     'requiresAprroval': 1,
