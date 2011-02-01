@@ -16,6 +16,7 @@ class Job(models.Model):
   directory = models.CharField(max_length=750, blank=True)
   sipuuid = models.CharField(max_length=150, db_column='SIPUUID', blank=True)
   currentstep = models.CharField(max_length=150, db_column='currentStep', blank=True)
+  hidden = models.BooleanField(default=False, blank=False)
 
   class Meta:
     db_table = u'Jobs'
