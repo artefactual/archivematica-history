@@ -41,8 +41,6 @@ from archivematicaFunctions import getTagged
 from createXmlEventsAssist import createEvent
 from createXmlEventsAssist import createOutcomeInformation
 
-
-
 def xmlCreateRelationship(relationshipType, relationshipSubType, relatedObjectIdentifierValue, relatedEventIdentifierValue, relatedObjectIdentifierType="UUID", relatedEventIdentifierType="UUID"):
     ret = etree.Element("relationship")
     etree.SubElement(ret, "relationshipType").text = relationshipType
@@ -67,9 +65,7 @@ def xmlNormalize(outputFileUUID, outputFileName, command, fileUUID, objectsPath,
     appendEventToFile(logsPath, fileUUID, eventXML)
     
     #Create new document using the add file script
-    addFileToSIP( objectsPath, logsPath, outputFileName, outputFileUUID, "creation", edate, edate)
-    
-    
+    addFileToSIP( objectsPath, logsPath, outputFileName, outputFileUUID, "creation", edate, edate, eventOutcomeDetailNote=outputFileName)
     
     xmlCreateFileAssociation(outputFileUUID, outputFileName, fileUUID, objectsPath, eventUUID, edate, logsPath)
     

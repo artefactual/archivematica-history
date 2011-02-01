@@ -73,6 +73,7 @@ def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue,
         oi = createOutcomeInformation( eventOutcomeDetailNote=eventOutcomeDetailNote)
         ingestEvent = createEvent(fileUUID, eIDValue, eventDateTime=addedDate, eventDetailText=eventDetailText, eOutcomeInformation=oi)
     else:
+        #I don't think this is used any more.
         ingestEvent = createEvent(fileUUID, eIDValue, eventDateTime=addedDate, eventDetailText=relativeFilePath)
     
     newFileUUID = uuid.uuid4().__str__()
