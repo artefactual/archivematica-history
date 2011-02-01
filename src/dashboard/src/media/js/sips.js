@@ -586,7 +586,7 @@ $(function()
         return this.each(function()
           {
             var $this = $(this);
-            var $tooltip = $;
+            var $tooltip;
 
             if (options)
             {
@@ -608,12 +608,12 @@ $(function()
                       top: (event.pageY - settings.xOffset) + 'px',
                       left: (event.pageX + settings.yOffset) + 'px',
                       width: settings.width + 'px'})
-                    .show()
+                    .fadeIn()
                     .appendTo('body');
                 })
               .mouseout(function(event)
                 {
-                  $tooltip.hide();
+                  $tooltip.remove();
                 })
               .mousemove(function(event)
                 {
