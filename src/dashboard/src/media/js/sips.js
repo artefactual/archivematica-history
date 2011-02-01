@@ -475,7 +475,7 @@ $(function()
 
           window.statusWidget = new window.StatusView();
 
-          this.manageIdle();
+          // this.manageIdle();
 
           this.poll(true);
         },
