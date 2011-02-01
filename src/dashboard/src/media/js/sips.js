@@ -463,6 +463,10 @@ $(function()
     
       el: $('#sip-container'),
 
+      interval: window.pollingInterval ? window.pollingInterval * 1000: 5000,
+      
+      idle: false,
+
       initialize: function()
         {
           _.bindAll(this, 'add', 'remove');
@@ -471,7 +475,26 @@ $(function()
 
           window.statusWidget = new window.StatusView();
 
+          this.manageIdle();
+
           this.poll(true);
+        },
+
+      manageIdle: function()
+        {
+          $.idleTimer(this.interval * 10);
+
+          var self = this;
+          $(document)
+            .bind('idle.idleTimer', function()
+              {
+                self.idle = true;
+              })
+            .bind('active.idleTimer', function()
+              {
+                self.idle = false;
+                self.poll();
+              });
         },
 
       add: function(sip)
@@ -584,10 +607,14 @@ $(function()
             complete: function()
               {
                 var self = this;
-                setTimeout(function()
-                  {
-                    self.poll();
-                  }, window.pollingInterval ? window.pollingInterval * 1000: 5000);
+
+                if (!self.idle)
+                {
+                  setTimeout(function()
+                    {
+                      self.poll();
+                    }, this.interval);
+                }
               }
           });
         },
