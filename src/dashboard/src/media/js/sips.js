@@ -575,61 +575,58 @@ $(function()
 
     });
 
-    (function($)
+    $.fn.tooltip = function(options)
       {
-        $.fn.tooltip = function(options)
+        var settings = {
+          xOffset: 10,
+          yOffset: 20,
+          width: 280
+        };
+
+        return this.each(function()
           {
-            var settings = {
-              xOffset: 10,
-              yOffset: 20,
-              width: 280
-            };
+            var $this = $(this);
+            var $tooltip = $;
 
-            return this.each(function()
-              {
-                var $this = $(this);
-                var $tooltip = $;
+            if (options)
+            {
+              $.extend(settings, options);
+            }
 
-                if (options)
+            if (undefined === settings.content)
+            {
+              settings.content = $this.attr('title');
+            }
+
+            $this
+              .attr('title', '')
+              .mouseover(function(event)
                 {
-                  $.extend(settings, options);
-                }
-
-                if (undefined === settings.content)
+                  $tooltip = $('<div class="tooltip">' + (undefined !== settings.title ? '<p class="tooltip-title">' + settings.title + '</p>' : '') + '<div class="tooltip-content">' + settings.content + '</div></div>')
+                    .hide()
+                    .css({
+                      top: (event.pageY - settings.xOffset) + 'px',
+                      left: (event.pageX + settings.yOffset) + 'px',
+                      width: settings.width + 'px'})
+                    .show()
+                    .appendTo('body');
+                })
+              .mouseout(function(event)
                 {
-                  settings.content = $this.attr('title');
-                }
-
-                $this
-                  .attr('title', '')
-                  .mouseover(function(event)
-                    {
-                      $tooltip = $('<div class="tooltip">' + (undefined !== settings.title ? '<p class="tooltip-title">' + settings.title + '</p>' : '') + '<div class="tooltip-content">' + settings.content + '</div></div>')
-                        .hide()
-                        .css({
-                          top: (event.pageY - settings.xOffset) + 'px',
-                          left: (event.pageX + settings.yOffset) + 'px',
-                          width: settings.width + 'px'})
-                        .show()
-                        .appendTo('body');
-                    })
-                  .mouseout(function(event)
-                    {
-                      $tooltip.hide();
-                    })
-                  .mousemove(function(event)
-                    {
-                      $tooltip.css({
-                        top: (event.pageY - settings.xOffset) + 'px',
-                        left: (event.pageX + settings.yOffset) + 'px'});
-                    })
-                  .click(function(event)
-                    {
-                      event.preventDefault();
-                    });
-              });
-          };
-      })(jQuery);
+                  $tooltip.hide();
+                })
+              .mousemove(function(event)
+                {
+                  $tooltip.css({
+                    top: (event.pageY - settings.xOffset) + 'px',
+                    left: (event.pageX + settings.yOffset) + 'px'});
+                })
+              .click(function(event)
+                {
+                  event.preventDefault();
+                });
+          });
+      };
 
     Date.prototype.getArchivematicaDateTime = function()
       {
