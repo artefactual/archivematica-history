@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS Tasks;
 CREATE TABLE Tasks (
 taskUUID        VARCHAR(50) PRIMARY KEY,
 jobUUID         VARCHAR(50),
@@ -14,20 +15,22 @@ stdError        LONGTEXT,
 exitCode        BIGINT
 );
 
-
+DROP TABLE IF EXISTS Jobs;
 CREATE TABLE Jobs (
 jobUUID         VARCHAR(50) PRIMARY KEY,
 jobType         VARCHAR(250),
 createdTime     TIMESTAMP(8) DEFAULT NOW(),
 directory       VARCHAR(250),
 SIPUUID         VARCHAR(50),
-currentStep     VARCHAR(50)
+currentStep     VARCHAR(50),
+hidden          BOOLEAN NOT NULL DEFAULT 0
 );
 
+DROP TABLE IF EXISTS jobStepCompleted;
 CREATE TABLE jobStepCompleted (
 pk              BIGINT PRIMARY KEY AUTO_INCREMENT,
 jobUUID         VARCHAR(50),
 completedTime   TIMESTAMP(8) DEFAULT NOW(),
-step         VARCHAR(50)
+step            VARCHAR(50)
 );
 
