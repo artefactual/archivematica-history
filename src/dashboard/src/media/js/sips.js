@@ -312,7 +312,7 @@ $(function()
               .append('<a class="button btn_reject_job" href="#">Reject</a>')
           }
 
-          this.$('.job-detail-microservice > a').tooltip({ title: 'SIP description'});
+          this.$('.job-detail-microservice > a').tooltip();
 
           return this;
         },
