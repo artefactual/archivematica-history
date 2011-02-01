@@ -482,17 +482,19 @@ $(function()
 
       manageIdle: function()
         {
-          $.idleTimer(this.interval * 10);
+          $.idleTimer(this.interval * 1);
 
           var self = this;
           $(document)
             .bind('idle.idleTimer', function()
               {
                 self.idle = true;
+                $('<span id="polling-notification">Polling was disabled until next user activity is detected.</span>').appendTo('body');
               })
             .bind('active.idleTimer', function()
               {
                 self.idle = false;
+                $('#polling-notification').fadeOut('fast');
                 self.poll();
               });
         },
