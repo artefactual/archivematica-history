@@ -287,3 +287,13 @@ a:hover { text-decoration: underline; }
   background-color: #ddd;
   font-family: "Courier 
 }
+
+#polling-notification {
+  position: absolute;
+  right: 32px;
+  top: 54px;
+  padding: 2px 4px 2px 22px;
+  font-size: 12px;
+  color: Red;
+  background: transparent url(/media/images/clock.png) no-repeat center left;
+}
