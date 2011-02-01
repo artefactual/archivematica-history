@@ -37,6 +37,7 @@ $(function()
               job.sip = self;
             });
         }
+
     });
 
     window.SipCollection = Backbone.Collection.extend({
@@ -68,7 +69,7 @@ $(function()
         'click .sip-row > .sip-detail-actions > .btn_show_jobs': 'toggleJobs',
         'click .sip-row > .sip-detail-actions > .btn_delete_sip': 'remove',
       },
-
+     
       initialize: function()
         {
           _.bindAll(this, 'render', 'update', 'add', 'updateIcon');
@@ -208,6 +209,24 @@ $(function()
                       }
                   }]
             });
+        },
+
+      getIngestStartTime: function()
+        {
+          // Use "Assign file UUIDs and checksums" micro-service to represent ingest start time
+          // TODO: fastest solution would be to use the first microservice of the collection, once is ordered correctly
+          var job = this.model.jobs.detect(function(job)
+            {
+              return job.get('microservice') == 'Assign file UUIDs and checksums';
+            });
+
+          // Fallback: use last micro-service timestamp
+          if (undefined === job)
+          {
+            job = this.model.jobs.last();
+          }
+
+          return new Date(job.get('timestamp') * 1000).getArchivematicaDateTime();
         }
     });
 
