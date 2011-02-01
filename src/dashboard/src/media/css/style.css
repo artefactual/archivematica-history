@@ -186,7 +186,7 @@ a:hover { text-decoration: underline; }
 .sip-detail-icon-status { width:  26px; padding: 4px 0px; text-align: center; }
 .sip-detail-directory   { width: 300px; padding: 4px 0px; display: table-cell; white-space: nowrap; }
 .sip-detail-uuid        { width: 310px; padding: 4px 0px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
-.sip-detail-timestamp   { width: 120px; padding: 4px 0px; }
+.sip-detail-timestamp   { width: 180px; padding: 4px 0px; }
 .sip-detail-actions     {  }
 
 .sip-detail-actions > a {
@@ -223,9 +223,6 @@ a:hover { text-decoration: underline; }
   display: none;
 }
 
-.job-header-microservice { width: 660px; }
-.job-header-currentstep { width: 170px; }
-
 .job {
   border-top: 1px solid #999;
   background-color: White;
@@ -239,7 +236,7 @@ a:hover { text-decoration: underline; }
   float: left;
 }
 
-.job-detail-microservice { width: 660px; border-right: 1px dotted #bbb; }
+.job-detail-microservice { width: 620px; border-right: 1px dotted #bbb; }
 .job-detail-currentstep  { width: 170px; border-right: 1px dotted #bbb; }
 .job-detail-actions      { width: 40px; }
 
