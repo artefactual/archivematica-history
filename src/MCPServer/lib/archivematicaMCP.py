@@ -236,8 +236,8 @@ def processTaskQueue():
             client.clientLock.release()
             if taskAssigned:
                 break #break up to next task
-            else:
-                print "\tNo client currently available to run: " + task.execute + " {" + task.UUID.__str__() + "}"
+            #else:
+                #print "\tNo client currently available to run: " + task.execute + " {" + task.UUID.__str__() + "}"
     tasksLock.release()    
 
 # ~Class Task~
