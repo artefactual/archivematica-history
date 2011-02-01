@@ -1,4 +1,4 @@
-from django.db.models import Max, Min
+from django.db.models import Max
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
