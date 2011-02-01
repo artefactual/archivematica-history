@@ -1,4 +1,4 @@
-from django.db.models import Max
+from django.db.models import Max, Min
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -40,7 +40,7 @@ def show_subdir(request, jobuuid, subdir):
 def sips(request, uuid=None):
   if request.method == 'GET':
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-    objects = Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
+    objects = Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
     mcp_available = False
     try:
       client = MCPClient()
@@ -64,6 +64,7 @@ def sips(request, uuid=None):
           newJob['uuid'] = job.jobuuid
           newJob['microservice'] = map_known_values(job.jobtype)
           newJob['currentstep'] = map_known_values(job.currentstep)
+          newJob['timestamp'] = time.mktime(job.createdtime.timetuple())
           try: jobsAwaitingApprovalXml
           except NameError: pass
           else:
