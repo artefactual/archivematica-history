@@ -481,11 +481,18 @@ $(function()
             }
           }
 
-          // Animation
-          $new.addClass('sip-new').show('blind', {}, 500, function()
-            {
-              $(this).removeClass('sip-new', 2000);
-            });
+          if (!this.firstPoll)
+          {
+            // Animation
+            $new.addClass('sip-new').show('blind', {}, 500, function()
+              {
+                $(this).removeClass('sip-new', 2000);
+              });
+          }
+          else
+          {
+            $new.show();
+          }
         },
 
       remove: function(sip)
@@ -498,6 +505,8 @@ $(function()
 
       poll: function(start)
         {
+          this.firstPoll = undefined !== start;
+
           $.ajax({
             context: this,
             dataType: 'json',
