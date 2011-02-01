@@ -482,7 +482,7 @@ $(function()
 
       manageIdle: function()
         {
-          $.idleTimer(this.interval * 1);
+          $.idleTimer(this.interval * 10);
 
           var self = this;
           $(document)
