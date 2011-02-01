@@ -40,7 +40,7 @@ def show_subdir(request, jobuuid, subdir):
 def sips(request, uuid=None):
   if request.method == 'GET':
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-    objects = Job.objects.values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
+    objects = Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp = Max('createdtime')).order_by('-timestamp').exclude(sipuuid__icontains = 'None')
     mcp_available = False
     try:
       client = MCPClient()
@@ -86,7 +86,7 @@ def sips(request, uuid=None):
         if 0 < len(jobs.filter(jobuuid=uuid.text)):
           client.reject_job(uuid.text)
     except Exception: pass
-    jobs.delete()
+    jobs.update(hidden=True)
     response = simplejson.JSONEncoder().encode({'removed': True})
     return HttpResponse(response, mimetype='application/json')
 
