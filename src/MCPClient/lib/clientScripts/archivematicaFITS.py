@@ -33,13 +33,17 @@ from createXmlEventsAssist import createLinkingAgentIdentifier
 
 excludeJhoveProperties = True
 formats = []
+FITSNS = "{http://hul.harvard.edu/ois/xml/ns/fits/fits_output}"
+
 
 def excludeJhoveProperties(fits):
     """Exclude <properties> from <fits><toolOutput><tool name="Jhove" version="1.5"><repInfo> because that field contains unnecessary excess data and the key data are covered by output from other FITS tools."""
     prefix = ""
     formatValidation = None
+    #print fits
+    #print etree.tostring(fits, pretty_print=True)
     
-    tools = getTagged(getTagged(fits, "toolOutput")[0], "tool")
+    tools = getTagged(getTagged(fits, FITSNS + "toolOutput")[0], FITSNS + "tool")
     for tool in tools:
         if tool.get("name") == "Jhove":
             formatValidation = tool
@@ -57,7 +61,7 @@ def formatValidationFITSAssist(fits):
     prefix = ""
     formatValidation = None
     
-    tools = getTagged(getTagged(fits, "toolOutput")[0], "tool")
+    tools = getTagged(getTagged(fits, FITSNS + "toolOutput")[0], FITSNS + "tool")
     for tool in tools:
         if tool.get("name") == "Jhove":
             formatValidation = tool
@@ -94,7 +98,7 @@ def formatIdentificationFITSAssist(fits):
     prefix = "{http://www.nationalarchives.gov.uk/pronom/FileCollection}"
     formatIdentification = None
     
-    tools = getTagged(getTagged(fits, "toolOutput")[0], "tool")
+    tools = getTagged(getTagged(fits, FITSNS + "toolOutput")[0], FITSNS + "tool")
     for tool in tools:
         if tool.get("name") == "Droid":
             formatIdentification = tool
