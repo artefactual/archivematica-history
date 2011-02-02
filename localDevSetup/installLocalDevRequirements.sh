@@ -6,12 +6,12 @@ version="`lsb_release -d | grep "Ubuntu 10.04"`"
 if [ -n "$version" ]
 	then
 		##LUCID
-		sudo add-apt-repository ppa:austin-arcintel/archivematica
+		sudo add-apt-repository ppa:archivematica/externals
 	
 	else
 		##OTHERS
-		sudo echo deb http://ppa.launchpad.net/austin-arcintel/archivematica/ubuntu lucid main >> /etc/apt/sources.list
-		sudo echo deb-src http://ppa.launchpad.net/austin-arcintel/archivematica/ubuntu lucid main >> /etc/apt/sources.list 
+		sudo echo deb http://ppa.launchpad.net/archivematica/externals/ubuntu lucid main >> /etc/apt/sources.list
+		sudo echo deb-src http://ppa.launchpad.net/archivematica/externals/ubuntu lucid main >> /etc/apt/sources.list 
 fi
 sudo apt-get update
 sudo apt-get install bagit droid fits jhove # xena 
