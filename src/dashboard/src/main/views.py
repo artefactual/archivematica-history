@@ -8,7 +8,7 @@ from django.utils import simplejson
 from dashboard.contrib.mcp.client import MCPClient
 from dashboard.main.models import Task, Job
 from lxml import etree
-import os, re, time
+import os, re, calendar
 
 def show_dir(request, jobuuid):
   try:
@@ -53,7 +53,7 @@ def sips(request, uuid=None):
         jobs = get_jobs_by_sipuuid(item['sipuuid'])
         directory = jobs[0].directory
         item['directory'] = re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
-        item['timestamp'] = time.mktime(item['timestamp'].timetuple())
+        item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
         item['uuid'] = item['sipuuid']
         item['id'] = item['sipuuid']
         del item['sipuuid']
@@ -64,7 +64,7 @@ def sips(request, uuid=None):
           newJob['uuid'] = job.jobuuid
           newJob['microservice'] = map_known_values(job.jobtype)
           newJob['currentstep'] = map_known_values(job.currentstep)
-          newJob['timestamp'] = '%d.%d' % (time.mktime(job.createdtime.timetuple()), job.createdtimedec)
+          newJob['timestamp'] = '%d.%d' % (calendar.timegm(job.createdtime.timetuple()), job.createdtimedec)
           try: jobsAwaitingApprovalXml
           except NameError: pass
           else:
