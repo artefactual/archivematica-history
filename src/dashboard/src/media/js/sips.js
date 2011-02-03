@@ -67,7 +67,7 @@ $(function()
       events: {
         'click .sip-row > .sip-detail-icon-status > a': 'toggleJobs',
         'click .sip-row > .sip-detail-actions > .btn_show_jobs': 'toggleJobs',
-        'click .sip-row > .sip-detail-actions > .btn_delete_sip': 'remove',
+        'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove',
       },
      
       initialize: function()
@@ -150,12 +150,12 @@ $(function()
         {
           event.preventDefault();
 
-          $(this.el).addClass('sip-deleting');
+          $(this.el).addClass('sip-removing');
 
           var self = this;
 
           $('<div>' +
-              '<p><strong>Are you sure that you want to permanently delete the selected SIP?</strong></p>' +
+              '<p><strong>Are you sure you want to remove this SIP from the dashboard? Note that this does not delete the SIP or related entities.</strong></p>' +
               '<p>Directory: ' + this.model.get('directory') + '<br />UUID: ' + this.model.get('uuid') + '<br />Status: ' + $(this.el).find('.sip-detail-icon-status > a > img').attr('title') + '</p>' +
             '</div>').dialog(
             {
@@ -163,13 +163,13 @@ $(function()
               resizable: false,
               title: false,
               draggable: false,
-              title: 'Delete SIP',
+              title: 'Remove SIP',
               width: 480,
               close: function(event, ui)
                 {
                   if (event.which !== undefined)
                   {
-                    $(self.el).removeClass('sip-deleting');
+                    $(self.el).removeClass('sip-removing');
                   }
                 },
               buttons: [
@@ -195,7 +195,7 @@ $(function()
                         error: function(model, response)
                           {
                             $dialog.dialog('close');
-                            $(self.el).removeClass('sip-deleting');
+                            $(self.el).removeClass('sip-removing');
                           }
 
                       });
@@ -205,7 +205,7 @@ $(function()
                     text: 'Cancel',
                     click: function() {
                         $(this).dialog('close');
-                        $(self.el).removeClass('sip-deleting');
+                        $(self.el).removeClass('sip-removing');
                       }
                   }]
             });
@@ -331,9 +331,9 @@ $(function()
           if (1 == this.model.get('status'))
           {
             this.$('.job-detail-actions')
-              .append('<a class="button btn_browse_job" href="#">Browse</a>')
-              .append('<a class="button btn_approve_job" href="#">Approve</a>')
-              .append('<a class="button btn_reject_job" href="#">Reject</a>')
+              .append('<a class="btn_browse_job" href="#">Browse</a>')
+              .append('<a class="btn_approve_job" href="#">Approve</a>')
+              .append('<a class="btn_reject_job" href="#">Reject</a>')
           }
 
           this.$('.job-detail-microservice > a').tooltip();

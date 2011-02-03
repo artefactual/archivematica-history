@@ -177,7 +177,7 @@ a:hover { text-decoration: underline; }
   background-color: #fedda7;
 }
 
-.sip-deleting {
+.sip-removing {
   background-color: #f7cdcd;
   border-color: #bbb;
 }
@@ -207,12 +207,12 @@ a:hover { text-decoration: underline; }
   background-image: url(/media/images/zoom_out.png);
 }
 
-.btn_delete_sip {
+.btn_remove_sip {
   background: transparent url(/media/images/delete.png) no-repeat center left;
   padding-left: 18px !important;
 }
 
-.sip-deleting .sip-detail-actions > a,
+.sip-removing .sip-detail-actions > a,
 .sip:hover .sip-detail-actions > a,
 .sip-selected .sip-detail-actions > a {
   visibility: visible;
