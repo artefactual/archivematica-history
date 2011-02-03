@@ -234,22 +234,19 @@ a:hover { text-decoration: underline; }
 .job > div {
   padding: 2px 5px;
   float: left;
+  line-height: 18px;
 }
 
 .job-detail-microservice { width: 620px; border-right: 1px dotted #bbb; }
 .job-detail-currentstep  { width: 170px; border-right: 1px dotted #bbb; }
-.job-detail-actions      { width: 40px; }
+.job-detail-actions      { }
 
 .job-detail-actions > a {
-  line-height: 18px;
   color: #000;
   font-weight: bold;
   font-size: 11px;
   padding: 2px 4px 2px 20px;
   margin-right: 4px;
-  border-radius: 2px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center left;
