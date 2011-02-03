@@ -20,6 +20,7 @@ CREATE TABLE Jobs (
 jobUUID         VARCHAR(50) PRIMARY KEY,
 jobType         VARCHAR(250),
 createdTime     TIMESTAMP(8) DEFAULT NOW(),
+createdTimeDec  MEDIUMINT(7),
 directory       VARCHAR(250),
 SIPUUID         VARCHAR(50),
 currentStep     VARCHAR(50),

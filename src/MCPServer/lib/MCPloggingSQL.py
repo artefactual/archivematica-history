@@ -122,10 +122,10 @@ def logTaskCompletedSQL(task, retValue):
 
 def logJobCreatedSQL(job):
     separator = "', '"
-    runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime)
+    runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime, createdTimeDec)
     VALUES ( '""" + job.UUID.__str__() + separator + _mysql.escape_string(job.config.type) + separator \
     + _mysql.escape_string(job.directory) + separator + _mysql.escape_string(getSIPUUID(job.directory)) + \
-    separator + job.step + separator + job.createdDate + "' )" )
+    separator + job.step + separator + job.createdDate + separator + str(job.createdDateDec) + "' )" )
 
 
 def logJobStepCompletedSQL(job):
