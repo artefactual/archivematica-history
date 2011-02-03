@@ -282,6 +282,11 @@ $(function()
           }
 
           return '<img src="' + path + '" title="' + title + '" />';
+        },
+
+      comparator: function(job)
+        {
+          return 0 - job.get('timestamp');
         }
 
     });
