@@ -264,7 +264,7 @@ $(function()
               return 'Executing command(s)' == job.get('currentstep');
             }))
           {
-            path = '/media/images/icons/arrow_refresh.png';
+            path = '/media/images/arrow_refresh.png';
             title = 'Executing command(s)';
           }
           else if (undefined !== this.find(function(job)
@@ -272,7 +272,7 @@ $(function()
               return 'Rejected' == job.get('currentstep');
             }))
           {
-            path = '/media/images/icons/control_stop_blue.png';
+            path = '/media/images/control_stop_blue.png';
             title = 'Rejected';
           }
           else
