@@ -383,7 +383,11 @@ class Job:
         self.step = step
         self.directory = directory
         self.writeLock = threading.Lock()
-        self.createdDate=getUTCDate()
+        
+        from datetime import datetime
+        dt = datetime.utcnow()
+        self.createdDate = dt.isoformat('T')
+        self.createdDateDec = dt.time().microsecond
         
         replacementDic = archivematicaRD.jobReplacementDic(self, config, directory, step)
         
