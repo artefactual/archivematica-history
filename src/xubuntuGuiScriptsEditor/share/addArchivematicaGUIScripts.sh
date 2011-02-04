@@ -25,12 +25,6 @@ add="`dirname $0`/src/add.sh"
 
 "$add" \
 	--icon="accessories-calculator" \
-	--name="Create DC" \
-	--command="createDublinCore %F/" \
-	--description="Insert a blank Dublin Core XML template in this folder"
-
-"$add" \
-	--icon="accessories-calculator" \
 	--name="SIP-Restructure For Compliance" \
 	--command="archivematicaRestructureForCompliance %F/" \
 	--description="Restructure For Compliance"
@@ -49,7 +43,7 @@ add="`dirname $0`/src/add.sh"
 
 "$add" \
 	--icon="accessories-calculator" \
-	--name="SIP-BLAM!" \
+	--name="SIP-Do All" \
 	--command="archivematicaRestructureForCompliance %F/ && archivematicaCreateMD5 %F && cd %F/metadata && createDublinCore %F/" \
 	--description="Restructures, creates MD5 and DC"
 
