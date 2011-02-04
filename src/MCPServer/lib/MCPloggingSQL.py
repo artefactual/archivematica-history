@@ -43,6 +43,7 @@ import _mysql
 import os
 import threading
 import MySQLdb
+import string
 from datetime import datetime
 from archivematicaReplacementDics import getSIPUUID
 
@@ -51,13 +52,22 @@ def getUTCDate():
     d = datetime.utcnow()
     return d.isoformat('T')
 
+def getDeciDate(date):
+    valid = "." + string.digits
+    ret = ""
+    for c in date:
+        if c in valid:
+            ret += c
+        #else:
+            #ret += replacementChar
+    return ret
+
 
 #sudo apt-get install python-mysqldb
 sqlLoggingLock = threading.Lock()
 sqlLoggingLock.acquire()
 print "Connecting to Database"
 database=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
-print "database:", database
 sqlLoggingLock.release()
 
 def runSQL(sql):
@@ -125,7 +135,7 @@ def logJobCreatedSQL(job):
     runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime, createdTimeDec)
     VALUES ( '""" + job.UUID.__str__() + separator + _mysql.escape_string(job.config.type) + separator \
     + _mysql.escape_string(job.directory) + separator + _mysql.escape_string(getSIPUUID(job.directory)) + \
-    separator + job.step + separator + job.createdDate + separator + str(job.createdDateDec) + "' )" )
+    separator + job.step + separator + job.createdDate + separator + getDeciDate("." + job.createdDate.split(".")[-1]) + "' )" )
 
 
 def logJobStepCompletedSQL(job):
