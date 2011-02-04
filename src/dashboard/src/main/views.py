@@ -64,7 +64,7 @@ def sips(request, uuid=None):
           newJob['uuid'] = job.jobuuid
           newJob['microservice'] = map_known_values(job.jobtype)
           newJob['currentstep'] = map_known_values(job.currentstep)
-          newJob['timestamp'] = '%d.%d' % (calendar.timegm(job.createdtime.timetuple()), job.createdtimedec)
+          newJob['timestamp'] = '%d.%06d' % (calendar.timegm(job.createdtime.timetuple()), job.createdtimedec)
           try: jobsAwaitingApprovalXml
           except NameError: pass
           else:
