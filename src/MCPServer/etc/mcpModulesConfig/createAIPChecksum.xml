@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>remove_v0.0</execute>
-                <arguments>-R "%SIPLogsDirectory%fileMeta/" "%SIPLogsDirectory%acquiredSIPDateTime.log" "%SIPLogsDirectory%FileUUIDs.log" "%SIPLogsDirectory%VerifyChecksums.log"</arguments>
+                <arguments>-R "%SIPLogsDirectory%fileMeta/" "%SIPLogsDirectory%acquiredSIPDateTime.log" "%SIPLogsDirectory%FileUUIDs.log" </arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
