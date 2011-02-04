@@ -10,7 +10,7 @@ dbc_dbuser=demo
 
 dbc_go archivematica-mcp-server $@
 
-adduser --uid 333 --group --system --no-create-home --disabled-login archivematica
+sudo adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
 chown -R archivematica:archivematica "/var/archivematica/"
 chmod -R g+s "/var/archivematica/"
 chmod -R 775 "/var/archivematica/"
