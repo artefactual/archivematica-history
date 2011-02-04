@@ -5,18 +5,19 @@ G31DS.TIF http://www.fileformat.info/format/tiff/sample/index.htm
 LAND2.BMP http://www.fileformat.info/format/bmp/sample/index.htm
 lion.svg taken from http://croczilla.com/bits_and_pieces/svg/samples/
 MARBLES.TGA http://www.fileformat.info/format/tga/sample/index.htm
-oakland03.jp2 taken from http://www.microimages.com/gallery/jp2/
 Nemastylis_geminiflora_Flower.PNG taken from tp://en.wikipedia.org/wiki/File:Nemastylis_geminiflora_Flower.PNG
+oakland03.jp2 taken from http://www.microimages.com/gallery/jp2/
+Vector.NET-Free-Vector-Art-Pack-28-Freedom-Flight.eps http://vector4free.com/vectors/id/413
 WFPC01.GIF http://www.fileformat.info/format/gif/sample/index.htm
 
 MultimediaSIP
 0239.mpg http://open-video.org/details.php?videoid=4639
-sample.aif http://www.nch.com.au/acm/formats.html
 BigTeen Short1.mp3 http://abmp3.com/download/2735313-bigteen-short-1.html
 BlastOff.wmv http://open-video.org/details.php?videoid=6581 (downloaded as mpg file and converted for testing purposes)
 funky_breakbeat_4.wav http://www.loopasonic.com/drums.htm
 j6059_02.wma "Juno Riff" taken from http://www.loopasonic.com/users.htm (downloaded as wav file and converted for testing purposes)
 MakeUp.mov http://h10025.www1.hp.com/ewfrf/wc/document?docname=lpg40911&lc=en&cc=us&product=81685&dlc=
+sample.aif http://www.nch.com.au/acm/formats.html
 
 OfficeDocsSIP
 All files created by Artefactual Systems staff, except Data without meaning.pdf, which was taken from http://www.ijdc.net/index.php/ijdc/article/view/110/87
