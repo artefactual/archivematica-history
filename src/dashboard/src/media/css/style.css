@@ -348,16 +348,15 @@ a:hover { text-decoration: underline; }
   padding: 0 !important;
   list-style: none;
   background: transparent url(/media/vendor/jquery-ui/images/ui-bg_gloss-wave_75_2191c0_500x100.png) no-repeat center left;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
-  text-shadow: #000000 1px 1px 1px;
-  color: White;
+  text-shadow: #444 1px 1px 1px;
 }
 
 #directory-browser-content > ul > li > a {
   display: block;
   color: White;
-  padding: 8px 8px 8px 30px !important;
+  padding: 6px 8px 6px 30px !important;
   background-color: transparant;
   background-repeat: no-repeat;
   background-position: 8px center;
@@ -365,8 +364,9 @@ a:hover { text-decoration: underline; }
   text-decoration: none;
 }
 
-#directory-browser-content > ul > li:hover {
-  background-image: url(/media/vendor/jquery-ui/images/ui-bg_gloss-wave_45_e14f1c_500x100.png);
+#directory-browser-content > ul > li:hover > a {
+  background-color: #333;
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 #directory-browser-content > ul > .dir > a {
@@ -379,5 +379,5 @@ a:hover { text-decoration: underline; }
 
 #directory-browser-content > ul > .parent > a {
   background-image: url(/media/images/control_rewind.png);
-  color: #ddd;
+  background-color: rgba(0, 0, 0, 0.15);
 }
