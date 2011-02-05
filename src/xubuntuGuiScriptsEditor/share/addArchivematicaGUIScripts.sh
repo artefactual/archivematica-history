@@ -22,7 +22,7 @@
 
 set -e
 add="`dirname $0`/src/add.sh"
-UCA="~/$USER/.config/Thunar/uca.xml"
+UCA="/home/$USER/.config/Thunar/uca.xml"
 if [ -f "$UCA" ]
 then
 	echo "Appending for file $UCA." 
