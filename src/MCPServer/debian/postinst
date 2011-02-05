@@ -2,13 +2,14 @@
 
 set -e
 
-. /usr/share/debconf/confmodule
-. /usr/share/dbconfig-common/dpkg/postinst 
+#Commented out until further tests are completed
+#. /usr/share/debconf/confmodule
+#. /usr/share/dbconfig-common/dpkg/postinst 
 
-dbc_dbname=MCP
-dbc_dbuser=demo
+#dbc_dbname=MCP
+#dbc_dbuser=demo
 
-dbc_go archivematica-mcp-server $@
+#dbc_go archivematica-mcp-server $@
 
 sudo adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
 chown -R archivematica:archivematica "/var/archivematica/"
