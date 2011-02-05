@@ -92,9 +92,7 @@ $(function()
           this.model.loadJobs(); // .refresh() shouldn't work here
 
           // Update timestamp
-          this.$('.sip-detail-timestamp').html(
-            this.getIngestStartTime()
-          );
+          this.$('.sip-detail-timestamp').html(this.getIngestStartTime());
 
           // Update icon
           this.updateIcon();
@@ -655,6 +653,8 @@ $(function()
               .attr('title', '')
               .mouseover(function(event)
                 {
+                  $('.tooltip').remove();
+
                   $tooltip = $('<div class="tooltip">' + (undefined !== settings.title ? '<p class="tooltip-title">' + settings.title + '</p>' : '') + '<div class="tooltip-content">' + settings.content + '</div></div>')
                     .hide()
                     .css({
