@@ -294,3 +294,90 @@ a:hover { text-decoration: underline; }
   color: Red;
   background: transparent url(/media/images/clock.png) no-repeat center left;
 }
+
+#directory-browser {
+  display: none;
+}
+
+#directory-browser-tab {
+  position: absolute;
+  top: 74px;
+  right: 40px;
+  background-color: #42769e;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+  padding: 4px 12px 12px 12px;
+  line-height: 22px;
+  text-shadow: #000000 1px 1px 1px;
+  border-left: 2px solid White;
+  border-right: 2px solid White;
+}
+
+#directory-browser-tab > a {
+  color: White;
+}
+
+#directory-browser-content {
+  position: absolute;
+  width: 400px;
+  height: 200px;
+  background-color: #ddd;
+  top: 108px;
+  border: 2px solid #42769e;
+  right: 12px;
+  box-shadow: 4px 4px 4px #999999;
+  -webkit-box-shadow: 4px 4px 4px #999999;
+  -moz-box-shadow: 4px 4px 4px #999999;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#999999, offX=4, offY=4, positive=true);
+  border-radius: 4px 4px 4px 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  -webkit-border-radius: 4px 4px 4px 4px;
+}
+
+#directory-browser-content > ul {
+  list-style: none;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-height: 320px;
+  overflow-x: auto;
+}
+
+#directory-browser-content > ul > li {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none;
+  background: transparent url(/media/vendor/jquery-ui/images/ui-bg_gloss-wave_75_2191c0_500x100.png) no-repeat center left;
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: #000000 1px 1px 1px;
+  color: White;
+}
+
+#directory-browser-content > ul > li > a {
+  display: block;
+  color: White;
+  padding: 8px 8px 8px 30px !important;
+  background-color: transparant;
+  background-repeat: no-repeat;
+  background-position: 8px center;
+  border-bottom: 1px solid #333;
+  text-decoration: none;
+}
+
+#directory-browser-content > ul > li:hover {
+  background-image: url(/media/vendor/jquery-ui/images/ui-bg_gloss-wave_45_e14f1c_500x100.png);
+}
+
+#directory-browser-content > ul > .dir > a {
+  background-image: url(/media/images/folder.png);
+}
+
+#directory-browser-content > ul > .file > a {
+  background-image: url(/media/images/page_white.png);
+}
+
+#directory-browser-content > ul > .parent > a {
+  background-image: url(/media/images/control_rewind.png);
+  color: #ddd;
+}

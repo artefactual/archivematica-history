@@ -10,32 +10,41 @@ from dashboard.main.models import Task, Job
 from lxml import etree
 import os, re, calendar
 
-def show_dir(request, jobuuid):
-  try:
-    job = Job.objects.get(jobuuid = jobuuid)
-    list = os.listdir(job.directory)
-    return render_to_response('main/show_dir.html', locals())
-  except Exception: raise Http404
+def show_dir(request, uuid):
+  job = Job.objects.get(jobuuid = uuid)
+  
+  contents = []
+  response = {}
+  response['contents'] = contents
 
-def show_subdir(request, jobuuid, subdir):
-  try:
-    job = Job.objects.get(jobuuid = jobuuid)
-    path = os.path.join(job.directory, subdir)
-    if (os.path.isfile(path)):
-      from django.utils.encoding import smart_str
-      response = HttpResponse(mimetype = 'application/force-download')
-      response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(path)
-      response['X-Sendfile'] = smart_str(path)
-      response['Content-Type'] = ''
-      response['Content-Length'] = os.stat(path).st_size
-      # It's usually a good idea to set the 'Content-Length' header too.
-      # You can also set any other required headers: Cache-Control, etc.
-      return response
+  if 'path' in request.REQUEST and len(request.REQUEST['path']) > 0:
+    directory = os.path.join(job.directory, request.REQUEST['path'])
+    response['base'] = request.REQUEST['path'].replace('.', '')
+  else:
+    directory = job.directory
+    response['base'] = ''
+
+  parentDir = os.path.dirname(directory)
+  parentDir = parentDir.replace('%s/' % job.directory, '')
+  parentDir = parentDir.replace('%s' % job.directory, '')
+  response['parent'] = parentDir
+
+  if os.path.realpath(directory) != os.path.realpath(job.directory):
+    parent = {}
+    parent['name'] = 'Go to parent directory...'
+    parent['type'] = 'parent'
+    contents.append(parent)
+
+  for item in os.listdir(directory):
+    newItem = {}
+    newItem['name'] = item
+    if os.path.isdir(os.path.join(directory, item)):
+      newItem['type'] = 'dir'
     else:
-      parent = path.replace(job.directory, '')
-      list = os.listdir(path)
-      return render_to_response('main/show_dir.html', locals())
-  except Exception: raise Http404
+      newItem['type'] = 'file'
+    contents.append(newItem)
+
+  return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 def sips(request, uuid=None):
   if request.method == 'GET':
@@ -91,8 +100,8 @@ def sips(request, uuid=None):
     response = simplejson.JSONEncoder().encode({'removed': True})
     return HttpResponse(response, mimetype='application/json')
 
-def tasks(request, jobuuid):
-  job = Job.objects.get(jobuuid = jobuuid)
+def tasks(request, uuid):
+  job = Job.objects.get(jobuuid = uuid)
   objects = job.task_set.all().order_by('-createdtime')
   return render_to_response('main/tasks.html', locals())
 
