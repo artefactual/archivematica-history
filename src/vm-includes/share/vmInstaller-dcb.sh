@@ -23,8 +23,10 @@
 # @version svn: $Id$
 
 #download and export
-svn checkout -r6907 http://qubit-toolkit.googlecode.com/svn/branches/dcb/  dcb-svn
-svn export dcb-svn $1/var/www/dcb
+svn checkout -r6907 http://qubit-toolkit.googlecode.com/svn/branches/dcb/  /tmp/dcb-svn
+svn export /tmp/dcb-svn /var/www/dcb
 
 #fix ownership
-chroot $1 chown -R www-data:www-data /var/www/dcb
+chown -R www-data:www-data /var/www/dcb
+
+rm -rf /tmp/dcb-svn/
