@@ -503,21 +503,30 @@ $(function()
         {
           event.preventDefault();
 
-          if (this.base.length > 0)
-          {
-            this.listContents(this.base + '/' + $(event.target).text());
-          }
-          else
-          {
-            this.listContents($(event.target).text());
-          }
+          this.listContents(this.buildPath($(event.target).text()));
         },
 
       showFile: function(event)
         {
-          $(event.target).attr('target', '_blank').attr('href', '/jobs/' + this.options.uuid + '/explore/?path=' + $(event.target).text());
+          event.preventDefault();
+
+          var $target = $(event.target);
+          var source = '/jobs/' + this.options.uuid + '/explore/?path=' + this.buildPath($target.text());
+          
+          try
+          {
+            $('body').append('<iframe src="' + source + '" />');
+          }  
+          catch (err)
+          {
+          }
         },
-      
+
+      buildPath: function(destination)
+        {
+          return (this.base.length ? this.base + '/' : '') + destination;
+        },
+
       showParent: function(event)
         {
           event.preventDefault();
@@ -588,6 +597,20 @@ $(function()
           // this.manageIdle();
 
           this.poll(true);
+
+          $(document).click(function(event)
+            {
+              $target = $(event.target);
+              
+              if (!$target.parents().is('#directory-browser') && !$target.is('.btn_browse_job'))
+              {
+                $('#directory-browser').fadeOut('fast', function()
+                  {
+                    $(this).remove();
+                  });
+              }
+              
+            });
         },
 
       manageIdle: function()
