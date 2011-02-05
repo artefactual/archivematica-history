@@ -515,7 +515,7 @@ $(function()
 
       showFile: function(event)
         {
-          event.preventDefault();
+          $(event.target).attr('target', '_blank').attr('href', '/jobs/' + this.options.uuid + '/explore/?path=' + $(event.target).text());
         },
       
       showParent: function(event)

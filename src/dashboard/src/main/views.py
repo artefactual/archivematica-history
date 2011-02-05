@@ -8,9 +8,9 @@ from django.utils import simplejson
 from dashboard.contrib.mcp.client import MCPClient
 from dashboard.main.models import Task, Job
 from lxml import etree
-import os, re, calendar
+import os, re, calendar, subprocess
 
-def show_dir(request, uuid):
+def explore(request, uuid):
   job = Job.objects.get(jobuuid = uuid)
   
   contents = []
@@ -23,6 +23,14 @@ def show_dir(request, uuid):
   else:
     directory = job.directory
     response['base'] = ''
+
+  if os.path.isfile(directory):
+    mime = subprocess.Popen('/usr/bin/file --mime-type ' + directory, shell=True, stdout=subprocess.PIPE).communicate()[0].split(' ')[-1].strip()
+    response = HttpResponse(mimetype=mime)
+    response['Content-Disposition'] = 'attachment; filename=%s' %  os.path.basename(directory)
+    with open(directory) as resource:
+      response.write(resource.read())
+    return response
 
   parentDir = os.path.dirname(directory)
   parentDir = parentDir.replace('%s/' % job.directory, '')
