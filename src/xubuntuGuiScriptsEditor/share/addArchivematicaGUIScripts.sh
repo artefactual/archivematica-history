@@ -22,6 +22,16 @@
 
 set -e
 add="`dirname $0`/src/add.sh"
+UCA="~/$USER/.config/Thunar/uca.xml"
+if [ -f "$UCA" ]
+then
+	echo "Appending for file $UCA." 
+else
+	echo "Creating $UCA."
+	echo "<actions>"  > "$UCA"
+	echo "</actions>" > "$UCA" 
+fi
+
 
 "$add" \
 	--icon="accessories-calculator" \
