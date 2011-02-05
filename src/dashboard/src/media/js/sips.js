@@ -371,7 +371,7 @@ $(function()
         {
           event.preventDefault();
 
-          alert("browsejob " + this.model.get('uuid'));
+          this.directoryBrowser = new window.DirectoryBrowserView({ uuid: this.model.get('uuid') });
         },
 
       approveJob: function(event)
@@ -417,6 +417,113 @@ $(function()
           });
         },
 
+    });
+
+    window.DirectoryBrowserView = Backbone.View.extend({
+
+      id: 'directory-browser',
+
+      template: _.template($('#directory-browser-template').html()),
+
+      events: {
+          'click #directory-browser-tab > a': 'remove',
+          'click .dir > a': 'showDir',
+          'click .file > a': 'showFile',
+          'click .parent > a': 'showParent'
+        },
+
+      initialize: function()
+        {
+          _.bindAll(this, 'render');
+
+          this.render();
+        },
+
+      render: function()
+        {
+          $('#directory-browser').remove();
+
+          $(this.el).html(this.template).appendTo('body');
+
+          $(this.el).fadeIn('fast');
+
+          this.listContents();
+
+          this.$('#directory-browser-content').resizable({ handles: 'w, s, sw' });
+
+          return this;
+        },
+
+      remove: function(event)
+        {
+          event.preventDefault();
+
+          $(this.el).fadeOut('fast', function()
+            {
+              $(this).remove();
+            });
+        },
+
+      listContents: function(path)
+        {
+          var $ul = $('<ul></ul>');
+
+          if (undefined === path)
+          {
+            var path = '.';
+          }
+
+          var self = this;
+
+          $.ajax({
+            data: { path: undefined === path ? '.' : path },
+            context: self,
+            url: '/jobs/' + this.options.uuid + '/explore/',
+            type: 'GET',
+            success: function(data)
+              {
+                for (var i in data.contents)
+                {
+                  var item = data.contents[i];
+                  $ul.append('<li class="' + item.type + '"><a href="#">' + item.name + '</a></li>');
+                }
+
+                self.parent = data.parent;
+                self.base = data.base;
+              },
+            complete: function()
+              {
+                this.$('#directory-browser-content')
+                  .html($ul).height($ul.height());
+              }
+          });
+        },
+      
+      showDir: function(event)
+        {
+          event.preventDefault();
+
+          if (this.base.length > 0)
+          {
+            this.listContents(this.base + '/' + $(event.target).text());
+          }
+          else
+          {
+            this.listContents($(event.target).text());
+          }
+        },
+
+      showFile: function(event)
+        {
+          event.preventDefault();
+        },
+      
+      showParent: function(event)
+        {
+          event.preventDefault();
+
+          this.listContents(this.parent);
+        }
     });
 
     window.StatusView = Backbone.View.extend({
