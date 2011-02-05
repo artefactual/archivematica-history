@@ -93,7 +93,7 @@ $(function()
 
           // Update timestamp
           this.$('.sip-detail-timestamp').html(
-            new Date(this.model.get('timestamp') * 1000).getArchivematicaDateTime()
+            this.getIngestStartTime()
           );
 
           // Update icon
