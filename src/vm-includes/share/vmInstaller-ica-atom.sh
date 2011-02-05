@@ -23,10 +23,10 @@
 # @version svn: $Id$
 
 #download and export
-svn checkout -r6907 http://qubit-toolkit.googlecode.com/svn/branches/ica-atom/  ica-atom-svn
-svn export ica-atom-svn $1/var/www/ica-atom
+svn checkout -r6907 http://qubit-toolkit.googlecode.com/svn/branches/ica-atom/  /tmp/ica-atom-svn
+svn export /tmp/ica-atom-svn /var/www/ica-atom
 
 #fix ownership
-chroot $1 chown -R www-data:www-data /var/www/ica-atom
+chown -R www-data:www-data /var/www/ica-atom
 
-
+rm -rf /tmp/ica-atom-svn/
