@@ -62,6 +62,7 @@ def explore(request, uuid):
       newItem['type'] = 'dir'
     else:
       newItem['type'] = 'file'
+      newItem['size'] = os.path.getsize(os.path.join(directory, item))
     contents.append(newItem)
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
