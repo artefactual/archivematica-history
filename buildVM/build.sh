@@ -26,5 +26,4 @@ sudo vmbuilder "$vmType" ubuntu \
 -c archivematica.cfg \
 -d "archivematicaBuild-${svnRev}" \
 --rootsize ${rootSize} \
---execscript "`pwd`/archivematica.sh" \
 --hostname "Archivematica-${svnRev}"
