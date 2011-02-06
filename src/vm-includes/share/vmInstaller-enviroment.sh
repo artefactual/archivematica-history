@@ -22,6 +22,13 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+#Create DBs
+sudo mysqladmin create ica-atom
+sudo mysqladmin create dcb
+sudo mysqladmin create qubit
+
+sudo cp apache.default /etc/apache2/sites-available/default
+
 
 
 #Install externals/archivematica
@@ -34,7 +41,7 @@ chmod -R 770 /home/demo/.mozilla
 
 
 cp -a ./sampledata /home/demo/testFiles
-cp -a ./postBuildScripts /home/demo/postBuildScripts
+#cp -a ./postBuildScripts /home/demo/postBuildScripts
 
 #XFCE configuration
 mkdir /home/demo/.config
@@ -68,12 +75,23 @@ cp ./xfceCustomization/user-dirs.defaults /etc/xdg
 cp ./xfceCustomization/uca.xml /home/demo/.config/Thunar
 cp ./xfceCustomization/thunarrc /home/demo/.config/Thunar
 cp ./xfceCustomization/thunar.desktop /home/demo/.config/autostart
-#cp ./xfceCustomization/gtk-bookmarks /home/demo/.gtk-bookmarks
+cp ./xfceCustomization/gtk-bookmarks /home/demo/.gtk-bookmarks
 cp ./xfceCustomization/gdm.custom.conf /etc/gdm/custom.conf
 
 #fix permissions 
 chmod 444 /home/demo/.config/xfce4/panel
 chown -R demo:demo /home/demo
-chown -R demo:demo /home/demo/.mozilla
+
+./vmInstaller-mcp-db.sh
+./vmInstaller-dcb.sh
+./vmInstaller-ica-atom.sh
+./vmInstaller-qubit.sh
+
+sudo aptitude remove xscreensaver
+sudo gpasswd -a demo archivematica
+echo " "
+echo "===PLEASE REBOOT TO ENABLE NEW GROUP SETTINGS==="
+echo " "
+sleep 3
 
 
