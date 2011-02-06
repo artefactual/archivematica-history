@@ -485,7 +485,7 @@ $(function()
                 for (var i in data.contents)
                 {
                   var item = data.contents[i];
-                  $ul.append('<li class="' + item.type + '"><a href="#">' + item.name + '</a></li>');
+                  $ul.append('<li class="' + item.type + '"><a href="#"' + (undefined !== item.size ? ' title="' + parseInt(item.size / 1024) + ' kB"' : '') + '>' + item.name + '</a></li>');
                 }
 
                 self.parent = data.parent;
@@ -512,14 +512,9 @@ $(function()
 
           var $target = $(event.target);
           var source = '/jobs/' + this.options.uuid + '/explore/?path=' + this.buildPath($target.text());
-          
-          try
-          {
-            $('body').append('<iframe src="' + source + '" />');
-          }  
-          catch (err)
-          {
-          }
+
+          // Use iframe tag to open the browser download dialog...
+          $('body').append('<iframe style="display: none;" src="' + source + '" />');
         },
 
       buildPath: function(destination)
