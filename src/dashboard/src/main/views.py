@@ -11,19 +11,31 @@ from lxml import etree
 import os, re, calendar, subprocess
 
 def explore(request, uuid):
+  # Database query
   job = Job.objects.get(jobuuid = uuid)
-  
+  # Prepare response object
   contents = []
   response = {}
   response['contents'] = contents
-
+  # Parse request
   if 'path' in request.REQUEST and len(request.REQUEST['path']) > 0:
     directory = os.path.join(job.directory, request.REQUEST['path'])
     response['base'] = request.REQUEST['path'].replace('.', '')
   else:
     directory = job.directory
     response['base'] = ''
-
+  # Build directory
+  directory = os.path.abspath(directory)
+  # Security check
+  tmpDirectory = os.path.realpath(directory)
+  while True:
+    if tmpDirectory == os.path.realpath(job.directory):
+      break
+    elif tmpDirectory == '/':
+      raise Http404
+    else:
+      tmpDirectory = os.path.dirname(tmpDirectory)
+  # If it is a file, return the contents
   if os.path.isfile(directory):
     mime = subprocess.Popen('/usr/bin/file --mime-type ' + directory, shell=True, stdout=subprocess.PIPE).communicate()[0].split(' ')[-1].strip()
     response = HttpResponse(mimetype=mime)
@@ -31,18 +43,18 @@ def explore(request, uuid):
     with open(directory) as resource:
       response.write(resource.read())
     return response
-
+  # Cleaning path
   parentDir = os.path.dirname(directory)
   parentDir = parentDir.replace('%s/' % job.directory, '')
   parentDir = parentDir.replace('%s' % job.directory, '')
   response['parent'] = parentDir
-
+  # Check if it is or not the root dir to add the "Go parent" link
   if os.path.realpath(directory) != os.path.realpath(job.directory):
     parent = {}
     parent['name'] = 'Go to parent directory...'
     parent['type'] = 'parent'
     contents.append(parent)
-
+  # Add contents of the directory
   for item in os.listdir(directory):
     newItem = {}
     newItem['name'] = item
@@ -51,7 +63,6 @@ def explore(request, uuid):
     else:
       newItem['type'] = 'file'
     contents.append(newItem)
-
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 def sips(request, uuid=None):
