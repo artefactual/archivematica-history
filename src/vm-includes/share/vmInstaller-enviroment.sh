@@ -23,9 +23,24 @@
 # @version svn: $Id$
 
 #Create DBs
-sudo mysqladmin create ica-atom
-sudo mysqladmin create dcb
-sudo mysqladmin create qubit
+
+echo "The default password is demo"
+
+stty -echo
+read -p "Enter mysql root password[hit Enter if blank]: " dpPassword; echo
+stty echo
+
+if [ -n "$dpPassword" ] ; then 
+        dpPassword="-p${dpPassword}"
+fi
+
+./vmInstaller-mcp-db.sh "$dpPassword"
+sudo mysqladmin create ica-atom $dpPassword
+sudo mysqladmin create dcb $dpPassword
+sudo mysqladmin create qubit $dpPassword
+sudo mysqladmin create dashboard $dpPassword
+
+dpPassword=""
 
 sudo cp apache.default /etc/apache2/sites-available/default
 
