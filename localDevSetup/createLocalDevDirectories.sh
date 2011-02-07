@@ -7,7 +7,7 @@ lib="/usr/lib/archivematica"
 sudo mkdir $lib
 etc="/etc/archivematica"
 sudo mkdir $etc
-share="/usr/local/share/archivematica"
+share="/usr/share/archivematica"
 sudo mkdir $share
 
 sudo ln -s "${svnDir}src/MCPServer/etc" "${etc}/MCPServer"

@@ -4,7 +4,7 @@ sudo rm /usr/lib/archivematica/MCPClient/archivematicaLoadConfig.py
 
 sudo rm -r /usr/lib/archivematica
 sudo rm -r /etc/archivematica
-sudo rm -r /usr/local/share/archivematica
+sudo rm -r /usr/share/archivematica
 
 sudo rm /usr/bin/runArchivematicaMCPServer.sh 
 sudo rm /usr/bin/runArchivematicaMCPClient.sh
