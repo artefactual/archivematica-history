@@ -39,7 +39,9 @@ if [ -n "$dpPassword" ] ; then
         dpPassword="-p${dpPassword}"
 fi
 
-./vmInstaller-mcp-db.sh "$dpPassword"
+includesDir="/usr/share/archivematica/vm-includes/"
+
+${includesDir}vmInstaller-mcp-db.sh "$dpPassword"
 mysqladmin create ica-atom $dpPassword
 mysqladmin create dcb $dpPassword
 mysqladmin create qubit $dpPassword
@@ -53,13 +55,13 @@ cp apache.default /etc/apache2/sites-available/default
 
 #Install externals/archivematica
 mkdir -p /home/demo/Desktop
-cp -a ./Docs /home/demo/Docs
+cp -a ${includesDir}Docs /home/demo/Docs
 cp -a enviromentConfigFiles/exports /etc/exports
 ln -s /home/demo/Docs /home/demo/Desktop
 
 
-cp -a ./sampledata /home/demo/testFiles
-#cp -a ./postBuildScripts /home/demo/postBuildScripts
+cp -a ${includesDir}sampledata /home/demo/testFiles
+#cp -a ${includesDir}postBuildScripts /home/demo/postBuildScripts
 
 #XFCE configuration
 mkdir /home/demo/.config
@@ -69,41 +71,41 @@ mkdir -p /home/demo/.config/xfce4/desktop
 mkdir -p /home/demo/.config/xfce4/panel
 
 #add archivematica/dashboard icons
-cp ./desktopShortcuts/dashboard-desktop-icon.png /usr/share/icons
-cp ./desktopShortcuts/dcb-desktop-icon.png /usr/share/icons
-cp ./desktopShortcuts/ica-atom-desktop-icon.png /usr/share/icons
-cp ./desktopShortcuts/archivematica-xubuntu-steel.png /usr/share/xfce4/backdrops/xubuntu-karmic.png
-cp ./desktopShortcuts/ica-atom.desktop /home/demo/Desktop
-cp ./desktopShortcuts/dcb.desktop /home/demo/Desktop
-cp ./dashboard.desktop /home/demo/Desktop
-cp ./desktopShortcuts/Terminal.desktop /home/demo/Desktop
+cp ${includesDir}desktopShortcuts/dashboard-desktop-icon.png /usr/share/icons
+cp ${includesDir}desktopShortcuts/dcb-desktop-icon.png /usr/share/icons
+cp ${includesDir}desktopShortcuts/ica-atom-desktop-icon.png /usr/share/icons
+cp ${includesDir}desktopShortcuts/archivematica-xubuntu-steel.png /usr/share/xfce4/backdrops/xubuntu-karmic.png
+cp ${includesDir}desktopShortcuts/ica-atom.desktop /home/demo/Desktop
+cp ${includesDir}desktopShortcuts/dcb.desktop /home/demo/Desktop
+cp ${includesDir}dashboard.desktop /home/demo/Desktop
+cp ${includesDir}desktopShortcuts/Terminal.desktop /home/demo/Desktop
 
 #add launcher scripts
-cp ./desktopShortcuts/runica-atom.sh /usr/bin
-cp ./desktopShortcuts/rundcb.sh /usr/bin
-cp ./desktopShortcuts/rundashboard.sh /usr/bin
+cp ${includesDir}desktopShortcuts/runica-atom.sh /usr/bin
+cp ${includesDir}desktopShortcuts/rundcb.sh /usr/bin
+cp ${includesDir}desktopShortcuts/rundashboard.sh /usr/bin
 
 
 #xfce4 configuration
-cp ./panel/* /home/demo/.config/xfce4/panel
-cp ./xfceCustomization/xfce4-desktop.xml /etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
-cp ./xfceCustomization/xfce4-session.xml /etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
-cp ./xfceCustomization/icons.screen0.rc /home/demo/.config/xfce4/desktop
-cp ./xfceCustomization/user-dirs.defaults /etc/xdg
-cp ./xfceCustomization/uca.xml /home/demo/.config/Thunar
-cp ./xfceCustomization/thunarrc /home/demo/.config/Thunar
-cp ./xfceCustomization/thunar.desktop /home/demo/.config/autostart
-cp ./xfceCustomization/gtk-bookmarks /home/demo/.gtk-bookmarks
-cp ./xfceCustomization/gdm.custom.conf /etc/gdm/custom.conf
+cp ${includesDir}panel/* /home/demo/.config/xfce4/panel
+cp ${includesDir}xfceCustomization/xfce4-desktop.xml /etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
+cp ${includesDir}xfceCustomization/xfce4-session.xml /etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
+cp ${includesDir}xfceCustomization/icons.screen0.rc /home/demo/.config/xfce4/desktop
+cp ${includesDir}xfceCustomization/user-dirs.defaults /etc/xdg
+cp ${includesDir}xfceCustomization/uca.xml /home/demo/.config/Thunar
+cp ${includesDir}xfceCustomization/thunarrc /home/demo/.config/Thunar
+cp ${includesDir}xfceCustomization/thunar.desktop /home/demo/.config/autostart
+cp ${includesDir}xfceCustomization/gtk-bookmarks /home/demo/.gtk-bookmarks
+cp ${includesDir}xfceCustomization/gdm.custom.conf /etc/gdm/custom.conf
 
 #fix permissions 
 chmod 444 /home/demo/.config/xfce4/panel
 chown -R demo:demo /home/demo
 
-./vmInstaller-mcp-db.sh
-./vmInstaller-dcb.sh
-./vmInstaller-ica-atom.sh
-./vmInstaller-qubit.sh
+${includesDir}vmInstaller-mcp-db.sh
+${includesDir}vmInstaller-dcb.sh
+${includesDir}vmInstaller-ica-atom.sh
+${includesDir}vmInstaller-qubit.sh
 
 sudo aptitude remove xscreensaver
 sudo gpasswd -a demo archivematica
