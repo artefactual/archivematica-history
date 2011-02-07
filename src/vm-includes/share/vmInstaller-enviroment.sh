@@ -49,6 +49,8 @@ mysqladmin create dashboard $dpPassword
 
 dpPassword=""
 
+cp php.ini /etc/php5/cli
+cp php.ini /etc/php5/apache2
 cp apache.default /etc/apache2/sites-available/default
 
 
