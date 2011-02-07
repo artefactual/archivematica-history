@@ -24,6 +24,11 @@
 
 #Create DBs
 
+if [ "$(id -u)" != "0" ]; then
+	echo "Sorry, you are not root."
+	exit 1
+fi
+
 echo "The default password is demo"
 
 stty -echo
@@ -35,24 +40,22 @@ if [ -n "$dpPassword" ] ; then
 fi
 
 ./vmInstaller-mcp-db.sh "$dpPassword"
-sudo mysqladmin create ica-atom $dpPassword
-sudo mysqladmin create dcb $dpPassword
-sudo mysqladmin create qubit $dpPassword
-sudo mysqladmin create dashboard $dpPassword
+mysqladmin create ica-atom $dpPassword
+mysqladmin create dcb $dpPassword
+mysqladmin create qubit $dpPassword
+mysqladmin create dashboard $dpPassword
 
 dpPassword=""
 
-sudo cp apache.default /etc/apache2/sites-available/default
+cp apache.default /etc/apache2/sites-available/default
 
 
 
 #Install externals/archivematica
 mkdir -p /home/demo/Desktop
-cp -a ./.mozilla /home/demo/.mozilla
 cp -a ./Docs /home/demo/Docs
 cp -a enviromentConfigFiles/exports /etc/exports
 ln -s /home/demo/Docs /home/demo/Desktop
-chmod -R 770 /home/demo/.mozilla
 
 
 cp -a ./sampledata /home/demo/testFiles
