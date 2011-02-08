@@ -94,7 +94,8 @@ cp ${includesDir}xfceCustomization/xfce4-desktop.xml /etc/xdg/xdg-xubuntu/xfce4/
 cp ${includesDir}xfceCustomization/xfce4-session.xml /etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
 cp ${includesDir}xfceCustomization/icons.screen0.rc /home/demo/.config/xfce4/desktop
 cp ${includesDir}xfceCustomization/user-dirs.defaults /etc/xdg
-cp ${includesDir}xfceCustomization/uca.xml /home/demo/.config/Thunar
+#this is handled by /usr/share/archivematica/thunar-uca
+#cp ${includesDir}xfceCustomization/uca.xml /home/demo/.config/Thunar
 cp ${includesDir}xfceCustomization/thunarrc /home/demo/.config/Thunar
 cp ${includesDir}xfceCustomization/thunar.desktop /home/demo/.config/autostart
 cp ${includesDir}xfceCustomization/gtk-bookmarks /home/demo/.gtk-bookmarks
