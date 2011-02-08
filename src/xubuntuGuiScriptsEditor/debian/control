@@ -8,7 +8,7 @@ Homepage: http://archivematica.org
 
 Package: archivematica-thunar-uca
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, sip-creation-tools
 Description: Thunar User Custom Actions for archivematica
   thunar user custom actions for archivematica
   
