@@ -35,7 +35,7 @@ import lxml.etree as etree
 from premisXMLlinker import xmlNormalize 
 #from premisXMLlinker import 
 
-#Delete the normalized file if free space below x number of bytes
+#Delete the output file if free space below x number of bytes
 spaceThreshold="10240"
 archivmaticaVars=loadConfig("/etc/transcoder/transcoderConfig.conf")
 

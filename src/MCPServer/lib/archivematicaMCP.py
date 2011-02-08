@@ -23,7 +23,7 @@
 #~DOC~
 #
 # --- This is the MCP (master control program) ---
-# The intention of this program is to provide a cetralized automated distributed system for performing an arbitrary set of tasks on a directory.
+# The intention of this program is to provide a centralized automated distributed system for performing an arbitrary set of tasks on a directory.
 # Distributed in that the work can be performed on more than one physical computer simultaneously.
 # Centralized in that there is one centre point for configuring flow through the system.
 # Automated in that the tasks performed will be based on the config files and instantiated for each of the targets.
