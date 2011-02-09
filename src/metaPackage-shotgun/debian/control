@@ -8,5 +8,5 @@ Homepage: http://archivematica.org
 
 Package: archivematica-shotgun
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, archivematica-forensic-tools, archivematica-mcp-server, archivematica-mcp-client, archivematica-thunar-uca, archivematica-dashboard, archivematica-vm-includes, transcoder, archivematica-mcp-rpccli, upload-qubit, droid, fits, jhove, xena, easy-extract, bagit, nfs-kernel-server, nfs-common, fusesmb, smbfs, samba-common, hfsplus, hfsprogs, vlc, dosfstools, ghostscript, ffmpeg, imagemagick, libapache2-mod-php5, mysql-server, php5-cli, php5-mysql, php5-xsl, subversion-tools, mysql-client
+Depends: ${shlibs:Depends}, ${misc:Depends}, archivematica-forensic-tools, archivematica-mcp-server, archivematica-mcp-client, archivematica-thunar-uca, archivematica-dashboard, archivematica-vm-includes, transcoder, archivematica-mcp-rpccli, upload-qubit, droid, fits, jhove, xena, easy-extract, bagit, nfs-kernel-server, nfs-common, fusesmb, smbfs, samba-common, hfsplus, hfsprogs, vlc, dosfstools, ghostscript, ffmpeg, imagemagick, libapache2-mod-php5, mysql-server, php5-cli, php5-mysql, php5-xsl, subversion-tools, mysql-client, flashplugin-installer
 Description: archivematica Shotgun meta package
