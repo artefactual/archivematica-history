@@ -29,7 +29,7 @@ then
 else
 	echo "Creating $UCA."
 	echo "<actions>"  > "$UCA"
-	echo "</actions>" > "$UCA" 
+	echo "</actions>" >> "$UCA" 
 fi
 
 
