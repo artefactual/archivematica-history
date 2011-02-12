@@ -74,17 +74,17 @@ mkdir -p /home/demo/.config/xfce4/panel
 
 #add archivematica/dashboard icons
 cp ${includesDir}desktopShortcuts/dashboard-desktop-icon.png /usr/share/icons
-cp ${includesDir}desktopShortcuts/dcb-desktop-icon.png /usr/share/icons
+#cp ${includesDir}desktopShortcuts/dcb-desktop-icon.png /usr/share/icons
 cp ${includesDir}desktopShortcuts/ica-atom-desktop-icon.png /usr/share/icons
 cp ${includesDir}desktopShortcuts/archivematica-xubuntu-steel.png /usr/share/xfce4/backdrops/xubuntu-karmic.png
 cp ${includesDir}desktopShortcuts/ica-atom.desktop /home/demo/Desktop
-cp ${includesDir}desktopShortcuts/dcb.desktop /home/demo/Desktop
-cp ${includesDir}dashboard.desktop /home/demo/Desktop
+#cp ${includesDir}desktopShortcuts/dcb.desktop /home/demo/Desktop
+cp ${includesDir}desktopShortcuts/dashboard.desktop /home/demo/Desktop
 cp ${includesDir}desktopShortcuts/Terminal.desktop /home/demo/Desktop
 
 #add launcher scripts
 cp ${includesDir}desktopShortcuts/runica-atom.sh /usr/bin
-cp ${includesDir}desktopShortcuts/rundcb.sh /usr/bin
+#cp ${includesDir}desktopShortcuts/rundcb.sh /usr/bin
 cp ${includesDir}desktopShortcuts/rundashboard.sh /usr/bin
 
 
