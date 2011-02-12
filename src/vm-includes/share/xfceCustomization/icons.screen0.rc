@@ -1,12 +1,16 @@
+[Home]
+row=0
+col=0
+
 [Terminal]
 row=1
 col=0
 
-[ICA-Atom]
+[Dashboard]
 row=2
 col=0
 
-[Home]
+[ICA-Atom]
 row=3
 col=0
 
