@@ -6,14 +6,10 @@ col=0
 row=2
 col=0
 
-[DCB]
+[Home]
 row=3
 col=0
 
-[Home]
-row=4
-col=0
-
 [Docs]
-row=5
+row=4
 col=0
