@@ -12,6 +12,7 @@ CREATE TABLE CommandClassification (
     classification TEXT
 );
 
+-- needs to move to relationship between id and a command--
 Insert Into CommandClassification
     (classification) VALUES('normalize'), ('access');
 

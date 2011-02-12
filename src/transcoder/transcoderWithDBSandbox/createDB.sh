@@ -20,6 +20,6 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-databaseName="TRANSCODER"
+databaseName="MCP"
 #sudo mysqladmin DROP "$databaseName" -p || sudo mysqladmin create  "$databaseName" -p
-sudo mysql -p --execute="source ./transcoderDB.sql" "$databaseName"
+sudo mysql -p --execute="source ./transcoderDB2.sql" "$databaseName"
