@@ -106,9 +106,9 @@ chmod 444 /home/demo/.config/xfce4/panel
 chown -R demo:demo /home/demo
 
 ${includesDir}vmInstaller-mcp-db.sh
-${includesDir}vmInstaller-dcb.sh
+#${includesDir}vmInstaller-dcb.sh
 ${includesDir}vmInstaller-ica-atom.sh
-${includesDir}vmInstaller-qubit.sh
+#${includesDir}vmInstaller-qubit.sh
 
 sudo aptitude remove xscreensaver
 sudo gpasswd -a demo archivematica
