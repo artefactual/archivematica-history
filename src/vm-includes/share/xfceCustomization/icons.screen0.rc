@@ -10,10 +10,14 @@ col=0
 row=2
 col=0
 
-[ICA-Atom]
+[ICA-AtoM]
 row=3
 col=0
 
-[Docs]
+[vlc]
 row=4
+col=0
+
+[Docs]
+row=5
 col=0
