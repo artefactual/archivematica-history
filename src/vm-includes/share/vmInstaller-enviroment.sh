@@ -81,6 +81,7 @@ cp ${includesDir}desktopShortcuts/ica-atom.desktop /home/demo/Desktop
 #cp ${includesDir}desktopShortcuts/dcb.desktop /home/demo/Desktop
 cp ${includesDir}desktopShortcuts/dashboard.desktop /home/demo/Desktop
 cp ${includesDir}desktopShortcuts/Terminal.desktop /home/demo/Desktop
+cp ${includesDir}desktopShortcuts/vlc.desktop /home/demo/Desktop
 
 #add launcher scripts
 cp ${includesDir}desktopShortcuts/runica-atom.sh /usr/bin
