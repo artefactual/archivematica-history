@@ -71,6 +71,8 @@ def onceExtracted(command):
         exitCode, stdOut, stdError = executeOrRun("command", run)              
         print stdOut
         print >>sys.stderr, stdError
+        if exitCode != 0 and command.exitCode == 0:
+            command.exitCode = exitCode 
 
 onSuccess = onceExtracted
 
