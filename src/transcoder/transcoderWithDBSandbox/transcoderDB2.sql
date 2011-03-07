@@ -28,8 +28,8 @@ CREATE TABLE Commands (
     verificationCommand INT,
     Foreign Key (verificationCommand) references Commands(pk),
     command LONGTEXT,
-    toolName LONGTEXT,
-    toolVersionCommand LONGTEXT,
+    eventDetailCommand INT,
+    Foreign Key (eventDetailCommand) references Commands(pk),
     description LONGTEXT
 );
 
@@ -83,14 +83,14 @@ INSERT INTO Commands
 
 -- Default copy command --
 INSERT INTO Commands 
-    (commandType, verificationCommand, command, toolName, toolVersionCommand, description) 
+    (commandType, verificationCommand, command, description) 
     VALUES 
     ((SELECT pk FROM CommandTypes WHERE type = 'command'),
     (SELECT pk FROM  (Select * From Commands) AS temp WHERE description = 'Verifying file exists and is not size 0'),
     'cp -R "%inputFile%" "%outputDirectory%%prefix%%fileName%%postFix%.%fileExtension%"',
-    'copy',
-    'cp --version | grep cp',
     'Copying File.');
+    --     'cp --version | grep cp',
+
 
 -- Associate default access with copy --
 INSERT INTO CommandRelationships 
@@ -103,12 +103,10 @@ INSERT INTO CommandRelationships
 
 -- 7ZipCompatable
 INSERT INTO Commands 
-    (commandType, command, toolName, toolVersionCommand, description) 
+    (commandType, command, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('7z x -bd -o"%outputDirectory%" "%inputFile%")'),
-    ('7Zip'),
-    ('echo ?'),
+    ('7z x -bd -o"%outputDirectory%" "%inputFile%"'),
     ('Extracting 7zip compatable file.')
 );
 
@@ -123,15 +121,15 @@ INSERT INTO CommandRelationships
 
 -- unrar-nonfreeCompatable
 INSERT INTO Commands 
-    (commandType, command, toolName, toolVersionCommand, description) 
+    (commandType, command, description) 
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     ('echo "mkdir \"%outputDirectory%\" && unrar-nonfree x \"%inputFile%\" \"%outputDirectory%\"" | bash'),
-    ('unrar-nonfree'),
-    ('unrar-nonfree | grep \'UNRAR.\{3,10\} \''),
     ('Extracting unrar-nonfree compatable file.')
 );
+    --    ('unrar-nonfree | grep \'UNRAR.\{3,10\} \''), 
+
 
 INSERT INTO CommandRelationships 
     (commandClassification, command, fileID)
