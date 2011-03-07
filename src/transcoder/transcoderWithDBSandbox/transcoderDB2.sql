@@ -124,8 +124,8 @@ INSERT INTO Commands
     (commandType, command, description) 
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
-    (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('echo "mkdir \"%outputDirectory%\" && unrar-nonfree x \"%inputFile%\" \"%outputDirectory%\"" | bash'),
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('mkdir "%outputDirectory%" && unrar-nonfree x "%inputFile%" "%outputDirectory%"'),
     ('Extracting unrar-nonfree compatable file.')
 );
     --    ('unrar-nonfree | grep \'UNRAR.\{3,10\} \''), 

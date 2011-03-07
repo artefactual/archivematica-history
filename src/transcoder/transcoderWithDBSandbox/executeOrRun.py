@@ -3,6 +3,9 @@
 import subprocess
 import shlex
 import time
+import uuid
+import os
+import sys
 
 def launchSubProcess(command):
     print "[Executing]", command
@@ -45,9 +48,17 @@ def launchSubProcess(command):
 
 def createAndRunScript(text):
     #output the text to a /tmp/ file
-    #chmod it to be executable
+    scriptPath = "/tmp/" + uuid.uuid4().__str__()
+    FILE = os.open(scriptPath, os.O_WRONLY | os.O_CREAT, 0770)
+    os.write(FILE, text)
+    os.close(FILE)
+ 
     #run it
-    return launchSubProcess(scriptPath)
+    ret = launchSubProcess(scriptPath)
+    
+    #remove the temp file
+    
+    return ret 
 
 
 
