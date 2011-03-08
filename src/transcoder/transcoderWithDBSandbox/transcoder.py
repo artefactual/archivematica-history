@@ -53,6 +53,8 @@ commandLinkerObjects = {}
 
 global onSusccess
 onSuccess=None #pointer to a function to call once a command completes successfully
+global replacementDic
+replacementDic = {}
 identifyCommands=None
 
 class Command:
@@ -60,22 +62,29 @@ class Command:
         self.pk = commandID
         self.exitCode=None
         c=database.cursor()
-        sql = """SELECT CT.type, C.verificationCommand, C.command, C.description
+        sql = """SELECT CT.type, C.verificationCommand, C.eventDetailCommand, C.command, C.outputLocation, C.description
         FROM Commands AS C
         JOIN CommandTypes AS CT ON C.commandType = CT.pk
-        WHERE C.pk = """ + commandID + """
+        WHERE C.pk = """ + commandID.__str__() + """
         ;"""
         c.execute(sql)
         row = c.fetchone()
         while row != None:
             self.type, \
             self.verificationCommand, \
+            self.eventDetailCommand, \
             self.command, \
+            self.outputLocation, \
             self.description = \
             row
             row = c.fetchone()
         if self.verificationCommand:
             self.verificationCommand = Command(self.verificationCommand)
+            self.verificationCommand.command.replace("%outputLocation%", self.outputLocation)
+        
+        if self.eventDetailCommand:
+            self.eventDetailCommand = Command(self.eventDetailCommand)
+            self.eventDetailCommand.command.replace("%outputLocation%", self.outputLocation)
     
     def __str__(self):
         return "[COMMAND]\n" + \
@@ -83,22 +92,21 @@ class Command:
         "Type: " + self.type.__str__() + "\n" + \
         "verificationCommand: " + self.verificationCommand.__str__() + "\n" + \
         "command: " + self.command.__str__() + "\n" + \
-        "description: " + self.description.__str__()
+        "description: " + self.description.__str__() + "\n" + \
+        "outputLocation: " + self.outputLocation.__str__()
     
-    def execute(self):
+    def execute(self, skipOnSuccess=False):
         
         print self.__str__()
         
         #Do a dictionary replacement.
         #Replace replacement strings
-        self.replacementDic = { \
-        "%inputFile%": fileFullName, \
-        "%outputDirectory%": fileFullName + "TODO-DATE", \
-        }
-        
+        global replacementDic
+                
         #for each key replace all instances of the key in the command string
-        for key in self.replacementDic.iterkeys():
-            self.command = self.command.replace ( key, self.replacementDic[key] )        
+        for key in replacementDic.iterkeys():
+            self.command = self.command.replace ( key, replacementDic[key] )
+            self.outputLocation = self.outputLocation.replace ( key, replacementDic[key] )
         print self.__str__()
         
         self.exitCode, self.stdOut, self.stdError = executeOrRun(self.type, self.command)      
@@ -110,23 +118,11 @@ class Command:
             print >>sys.stderr, self.stdError
         
         else:
+            if self.verificationCommand:
+                self.exitCode = self.verificationCommand.execute(skipOnSuccess=True)
             global onSuccess
-            if onSuccess:
+            if not self.exitCode and not skipOnSuccess and onSuccess:
                 onSuccess(self)
-            else:
-                print "no onSuccess method"
-        
-        xmlStuff = False
-        if xmlStuff:
-            xmlNormalize(outputFileUUID, \
-                         fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower(), \
-                         preservationConversionCommand[index], \
-                         fileUUID, \
-                         objectsPath, \
-                         eid, \
-                         edate, \
-                         logsPath, \
-                         ) #    {normalized; not normalized}
         return self.exitCode
 
 class CommandLinker:

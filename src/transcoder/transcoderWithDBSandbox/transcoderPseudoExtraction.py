@@ -7,12 +7,16 @@ from executeOrRun import executeOrRun
 import transcoder
 #from premisXMLlinker import xmlNormalize 
 
+replacementDic = { \
+        "%inputFile%": transcoder.fileFullName, \
+        "%outputDirectory%": transcoder.fileFullName + "TODO-DATE", \
+        }
 
 def onceExtracted(command):
     extractedFiles = []
     print "TODO - Metadata regarding removal of extracted archive"
-    os.remove(command.replacementDic["%inputFile%"])
-    for w in os.walk(command.replacementDic["%outputDirectory%"]):
+    os.remove(replacementDic["%inputFile%"])
+    for w in os.walk(replacementDic["%outputDirectory%"]):
         path, directories, files = w
         for p in files:
             p = os.path.join(path, p)
@@ -76,6 +80,7 @@ def identifyCommands(fileName):
 if __name__ == '__main__':
     transcoder.onSuccess = onceExtracted
     transcoder.identifyCommands = identifyCommands
+    transcoder.replacementDic = replacementDic
     filename = sys.argv[1].__str__()
     print filename
     main(filename)
