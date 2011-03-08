@@ -29,6 +29,8 @@ from archivematicaFunctions import archivematicaRenameFile
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
+sys.path.append("/usr/lib/archivematica/MCPServer")
+from archivematicaMCPFileUUID import findUUIDFromFileUUIDxml
 
 DetoxDic={}
 UUIDsDic={}
@@ -101,7 +103,13 @@ if __name__ == '__main__':
             if os.path.isfile(newfile):
                 oldfile = oldfile.replace(objectsDirectory, "objects/", 1)
                 newfile = newfile.replace(objectsDirectory, "objects/", 1)
-                fileUUID = UUIDsDic[oldfile]
+                
+                if oldfile in UUIDsDic:
+                    fileUUID = UUIDsDic[oldfile]
+                else:
+                    fileUUID = findUUIDFromFileUUIDxml(logsDir+"FileUUIDs.log", oldfile, logsDir+"fileMeta/", updateSIPUUIDfile=False)
+                
+                
                 
                 eventOutcomeDetailNote = "Original name=\"" + oldfile + "\"; cleaned up name=\"" + newfile + "\""
                 

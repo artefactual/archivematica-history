@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%quarantined/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%extractPackages/easyExtract/</successDirectory>
+        <successDirectory>%watchDirectoryPath%extractPackages/transcoderExtractPackages/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 

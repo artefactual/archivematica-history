@@ -1,7 +1,0 @@
-<formatPolicy>
-  <inherit></inherit>
-  <accessFormat>pdf</accessFormat>
-  <preservationFormat>0.svg</preservationFormat>
-  <accessConversionCommand>ps2pdf %fileFullName% %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
-  <preservationConversionCommand>%transcoderScriptsDir%adobeIllustratorToSVG.sh %fileFullName% %fileTitle% %preservationFileDirectory% %fileUUID% %objectsPath% %eventUUID% %edate% %logsPath%</preservationConversionCommand>
-</formatPolicy>

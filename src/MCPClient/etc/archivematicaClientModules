@@ -63,5 +63,6 @@ verifyFileHasUUID_v0.0="%clientScriptsDirectory%verifyFileHasUUID.py "
 setDirectoryPermissionsForAppraisal_v0.0="%clientScriptsDirectory%setDirectoryPermissionsForAppraisal.sh "
 backupDIP_v0.0="%clientScriptsDirectory%backupDIP.sh "
 sha256deepRelative_v0.0="%clientScriptsDirectory%sha256deepRelative.sh "
+transcoderExtractPackages_v0.0="/usr/lib/transcoder/transcoderExtraction.py "
 
 

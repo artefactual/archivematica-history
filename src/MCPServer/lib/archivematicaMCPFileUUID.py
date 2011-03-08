@@ -91,7 +91,7 @@ def getTagged(root, tag):
             return ret #only return the first encounter
     return ret  
     
-def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory):
+def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory, updateSIPUUIDfile=True):
     ret = "No UUID for file: " + filename
     #for every file in the fileUUIDxmlFilesDirectory:
     configFiles = []
@@ -103,7 +103,7 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory):
         for configFile in configFiles:
             if configFile.endswith(".xml"):
                 try:
-                    print "opening: " + configFile
+                    #print "opening: " + configFile
                     tree = etree.parse(fileUUIDxmlFilesDirectory + configFile )
                     root = tree.getroot()
                     xmlFileName = getTagged(root, "currentFileName")[0]
@@ -111,10 +111,11 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory):
                     if xmlFileName.text == filename:
                         ret = uuid.text
                         try:
-                            acquireSIPUUIDFileLock(sipUUIDfile)
-                            f = open(sipUUIDfile, 'a')
-                            f.write(uuid.text + " -> " + filename + "\n")
-                            f.close()
+                            if updateSIPUUIDfile:
+                                acquireSIPUUIDFileLock(sipUUIDfile)
+                                f = open(sipUUIDfile, 'a')
+                                f.write(uuid.text + " -> " + filename + "\n")
+                                f.close()
                         except OSError, ose:
                             print >>sys.stderr, "output Error", ose
                             return -2
@@ -122,14 +123,15 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory):
                             print "I/O error({0}): {1}".format(errno, strerror)
                         except:
                             print "debug except 1"
-                        print "releasing Lock"
-                        releaseSIPUUIDFileLock(sipUUIDfile)
+                        #print "releasing Lock"
+                        if updateSIPUUIDfile:
+                            releaseSIPUUIDFileLock(sipUUIDfile)
                         return ret
                 except Exception as inst:
-                    print "debug except 2"
-                    print type(inst)     # the exception instance
-                    print inst.args      # arguments stored in .args
-                    print inst           # __str__ allows args to printed directly
+                    #print "debug except 2"
+                    #print type(inst)     # the exception instance
+                    #print inst.args      # arguments stored in .args
+                    #print inst           # __str__ allows args to printed directly
                     continue
     except:
         print "debug except 3"
