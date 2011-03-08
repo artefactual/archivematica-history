@@ -1,0 +1,8 @@
+<formatPolicy>
+  <inherit></inherit>
+  <accessFormat>MPG</accessFormat>
+  <preservationFormat>MXF</preservationFormat>
+  <accessConversionCommand>%ffmpegPath% -i %fileFullName% -ar 44100 %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
+  <preservationConversionCommand>%ffmpegPath% -i %fileFullName% -vcodec mpeg2video -qscale 1
+-qmin 1 -intra -ar 48000 %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
+</formatPolicy>

@@ -28,6 +28,7 @@ CREATE TABLE Commands (
     verificationCommand INT,
     Foreign Key (verificationCommand) references Commands(pk),
     command LONGTEXT,
+    outputLocation TEXT,
     eventDetailCommand INT,
     Foreign Key (eventDetailCommand) references Commands(pk),
     description LONGTEXT
@@ -54,7 +55,13 @@ CREATE TABLE FileIDs (
     description TEXT
 );
 
-
+DROP TABLE IF EXISTS FileIDsByExtension;
+CREATE TABLE FileIDsByExtension (
+    pk INT PRIMARY KEY AUTO_INCREMENT,
+    Extension TEXT,
+    FileIDs INT,
+    Foreign Key (FileIDs) references Command(pk)
+);
 
 DROP TABLE IF EXISTS FileIDsByPronom;
 CREATE TABLE FileIDsByPronom (
@@ -77,17 +84,18 @@ INSERT INTO FileIDs
 INSERT INTO Commands 
     (commandType, command, description) 
     SELECT pk,
-    'echo "%outputDirectory%%prefix%%fileName%%postFix%.%fileExtension%"',
-    'Verifying file exists and is not size 0'
+    'test -e "%outputLocation%',
+    'Verifying file exists'
     FROM CommandTypes WHERE type = 'command' ;
 
 -- Default copy command --
 INSERT INTO Commands 
-    (commandType, verificationCommand, command, description) 
+    (commandType, verificationCommand, command, outputLocation, description) 
     VALUES 
     ((SELECT pk FROM CommandTypes WHERE type = 'command'),
     (SELECT pk FROM  (Select * From Commands) AS temp WHERE description = 'Verifying file exists and is not size 0'),
-    'cp -R "%inputFile%" "%outputDirectory%%prefix%%fileName%%postFix%.%fileExtension%"',
+    'cp -R "%inputFile%" "%outputDirectory%%prefix%%fileName%%postfix%.%fileExtension%"',
+    '"%outputDirectory%%prefix%%fileName%%postfix%.%fileExtension%"',
     'Copying File.');
     --     'cp --version | grep cp',
 
@@ -103,10 +111,11 @@ INSERT INTO CommandRelationships
 
 -- 7ZipCompatable
 INSERT INTO Commands 
-    (commandType, command, description) 
+    (commandType, command, outputLocation, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     ('7z x -bd -o"%outputDirectory%" "%inputFile%"'),
+    '"%outputDirectory%"',
     ('Extracting 7zip compatable file.')
 );
 
@@ -121,11 +130,12 @@ INSERT INTO CommandRelationships
 
 -- unrar-nonfreeCompatable
 INSERT INTO Commands 
-    (commandType, command, description) 
+    (commandType, command, outputLocation, description) 
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('mkdir "%outputDirectory%" && unrar-nonfree x "%inputFile%" "%outputDirectory%"'),
+    '"%outputDirectory%"',
     ('Extracting unrar-nonfree compatable file.')
 );
     --    ('unrar-nonfree | grep \'UNRAR.\{3,10\} \''), 
@@ -139,6 +149,65 @@ INSERT INTO CommandRelationships
     (SELECT pk FROM FileIDs WHERE description = 'unrar-nonfreeCompatable')
 );
 -- END unrar-nonfreeCompatable
+
+
+-- ADD Normalization Path for .JPG --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .jpg file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'jpg',
+    @fileID
+);
+
+
+INSERT INTO Commands 
+    (commandType, command, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo tool:\\"convert\\" version:\\"`convert -version | grep Version:`\\"'),
+    ('convert event detail')
+);
+
+set @convertToTifEventDetailCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('convert "%fileFullName%" +compress "%outputDirectory%%prefix%%fileName%%postfix%.tif"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.tif',
+    @convertToTifEventDetailCommandID,
+    ('Transcoding to tif with convert')
+);
+set @convertToTifCommandID = LAST_INSERT_ID();
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @convertToTifCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .JPG --
+
+
+
+
+
+
+
+
+
 
 
 

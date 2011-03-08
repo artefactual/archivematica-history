@@ -1,0 +1,7 @@
+<formatPolicy>
+  <inherit></inherit>
+  <accessFormat></accessFormat>
+  <preservationFormat>ODS</preservationFormat>
+  <accessConversionCommand></accessConversionCommand>
+  <preservationConversionCommand>%unoconvAlternativePath% %preservationFormat% %fileFullName% %fileDirectory%%fileTitle%.%preservationFormat% %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
+</formatPolicy>
