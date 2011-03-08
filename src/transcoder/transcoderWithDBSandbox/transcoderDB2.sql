@@ -85,8 +85,10 @@ INSERT INTO Commands
     (commandType, command, description) 
     SELECT pk,
     'test -e "%outputLocation%',
-    'Verifying file exists'
+    'Standard verification command'
     FROM CommandTypes WHERE type = 'command' ;
+
+set @standardVerificationCommand = LAST_INSERT_ID();
 
 -- Default copy command --
 INSERT INTO Commands 
@@ -110,11 +112,22 @@ INSERT INTO CommandRelationships
 );
 
 -- 7ZipCompatable
+
 INSERT INTO Commands 
-    (commandType, command, outputLocation, description) 
+    (commandType, command, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo tool=\\"7z\\"\\; version=\\"`7z | grep Version`\\"'),
+    ('Get event detail text for 7z extraction')
+);
+
+INSERT INTO Commands 
+    (commandType, command, eventDetailCommand, outputLocation, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     ('7z x -bd -o"%outputDirectory%" "%inputFile%"'),
+    LAST_INSERT_ID(),
     '"%outputDirectory%"',
     ('Extracting 7zip compatable file.')
 );
@@ -128,17 +141,27 @@ INSERT INTO CommandRelationships
 );
 -- END 7ZipCompatable
 
+INSERT INTO Commands 
+    (commandType, command, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo tool=\\"unrar-nonfree\\"\\; version=\\"`unrar-nonfree | grep \'UNRAR\'`\\"'),
+    ('Get event detail text for unrar extraction')
+);
+
 -- unrar-nonfreeCompatable
 INSERT INTO Commands 
-    (commandType, command, outputLocation, description) 
+    (commandType, command, eventDetailCommand, outputLocation, description) 
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('mkdir "%outputDirectory%" && unrar-nonfree x "%inputFile%" "%outputDirectory%"'),
+    LAST_INSERT_ID(),
     '"%outputDirectory%"',
     ('Extracting unrar-nonfree compatable file.')
 );
-    --    ('unrar-nonfree | grep \'UNRAR.\{3,10\} \''), 
+ 
 
 
 INSERT INTO CommandRelationships 
@@ -172,20 +195,21 @@ INSERT INTO Commands
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('echo tool:\\"convert\\" version:\\"`convert -version | grep Version:`\\"'),
+    ('echo tool=\\"convert\\"\\; version=\\"`convert -version | grep Version:`\\"'),
     ('convert event detail')
 );
 
 set @convertToTifEventDetailCommandID = LAST_INSERT_ID();
 
 INSERT INTO Commands 
-    (commandType, command, outputLocation, eventDetailCommand, description) 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     ('convert "%fileFullName%" +compress "%outputDirectory%%prefix%%fileName%%postfix%.tif"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.tif',
     @convertToTifEventDetailCommandID,
+    @standardVerificationCommand,
     ('Transcoding to tif with convert')
 );
 set @convertToTifCommandID = LAST_INSERT_ID();

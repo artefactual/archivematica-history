@@ -60,6 +60,8 @@ identifyCommands=None
 class Command:
     def __init__(self, commandID):
         self.pk = commandID
+        self.stdOut = ""
+        self.stdErr = ""
         self.exitCode=None
         c=database.cursor()
         sql = """SELECT CT.type, C.verificationCommand, C.eventDetailCommand, C.command, C.outputLocation, C.description
@@ -106,7 +108,8 @@ class Command:
         #for each key replace all instances of the key in the command string
         for key in replacementDic.iterkeys():
             self.command = self.command.replace ( key, replacementDic[key] )
-            self.outputLocation = self.outputLocation.replace ( key, replacementDic[key] )
+            if self.outputLocation:
+                self.outputLocation = self.outputLocation.replace ( key, replacementDic[key] )
         print self.__str__()
         
         self.exitCode, self.stdOut, self.stdError = executeOrRun(self.type, self.command)      
@@ -120,6 +123,8 @@ class Command:
         else:
             if self.verificationCommand:
                 self.exitCode = self.verificationCommand.execute(skipOnSuccess=True)
+            if not self.exitCode and self.eventDetailCommand:
+                self.eventDetailCommand.execute(skipOnSuccess=True)
             global onSuccess
             if not self.exitCode and not skipOnSuccess and onSuccess:
                 onSuccess(self)
