@@ -26,6 +26,7 @@ def onceExtracted(command):
     for ef in extractedFiles:
         print "File Extracted:", ef
         print "TODO - addFile()"
+        print "Event Detail: " + command.eventDetailCommand.stdOut.__str__()
         
         run = sys.argv[0].__str__() + " \"" + ef + "\""
         exitCode, stdOut, stdError = executeOrRun("command", run)              
