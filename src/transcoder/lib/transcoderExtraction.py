@@ -2,10 +2,13 @@
 
 import sys
 import os
+import uuid
 from transcoder import main
 from executeOrRun import executeOrRun
 import transcoder
 #from premisXMLlinker import xmlNormalize 
+sys.path.append("/usr/lib/archivematica/MCPClient/clientScripts")
+from fileAddedToSIP import addFileToSIP
 
 replacementDic = { \
         "%inputFile%": transcoder.fileFullName, \
@@ -24,11 +27,31 @@ def onceExtracted(command):
             if os.path.isfile(p):
                 extractedFiles.append(p)
     for ef in extractedFiles:
+        fileUUID = uuid.uuid4().__str__()
         print "File Extracted:", ef
+        if True: #Add the file to the SIP
+            #<arguments>"%relativeLocation%" "%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%" "%taskUUID%" "%fileUUID%"</arguments>
+            objectsDirectory = sys.argv[2].__str__()
+            logsDirectory = sys.argv[3].__str__()
+            date = sys.argv[4].__str__()
+            taskUUID = sys.argv[5].__str__()
+            packageFileUUID = sys.argv[6].__str__()
+            
+            objects = "objects/"
+            relativeFilePath = ef.replace(objectsDirectory, objects, 1)
+            addFileToSIP( objectsDirectory, logsDirectory, ef, fileUUID, "extracted", date, date, eventDetailText=command.eventDetailCommand.stdOut.__str__(), eventOutcomeDetailNote="extracted " + relativeFilePath)
         print "TODO - addFile()"
         print "Event Detail: " + command.eventDetailCommand.stdOut.__str__()
         
-        run = sys.argv[0].__str__() + " \"" + ef + "\""
+        run = sys.argv[0].__str__() + \
+        " \"" + ef + "\""
+        if True: #Add the file to the SIP
+            run = run + " \"" + sys.argv[2].__str__() + "\"" + \
+            " \"" + sys.argv[3].__str__() + "\"" + \
+            " \"" + sys.argv[4].__str__() + "\"" + \
+            " \"" + sys.argv[5].__str__() + "\"" + \
+            " \"" + fileUUID + "\""
+ 
         exitCode, stdOut, stdError = executeOrRun("command", run)              
         print stdOut
         print >>sys.stderr, stdError

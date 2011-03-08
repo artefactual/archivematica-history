@@ -1,78 +1,27 @@
 #!/usr/bin/python
-
-# This file is part of Archivematica.
-#
-# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
-#
-# Archivematica is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 2 of the License, or
-# (at your option) any later version.
-#
-# Archivematica is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
-
-# @package Archivematica
-# @subpackage Ingest
-# @author Joseph Perry <joseph@artefactual.com>
-# @version svn: $Id$
-
-#!/usr/bin/python
-
-from archivematicaFreeSpaceChecker import checkSpace
-from archivematicaLoadConfig import loadConfig
+import re
+import MySQLdb
+import math
 import sys
-import os.path
 import os
-import logging
-import subprocess
-import shlex
-import uuid
-import lxml.etree as etree
-from premisXMLlinker import xmlNormalize 
-#from premisXMLlinker import 
+from executeOrRun import executeOrRun
+LowerEndMainGroupMax = -10
 
-#Delete the output file if free space below x number of bytes
-spaceThreshold="10240"
-archivmaticaVars=loadConfig("/etc/transcoder/transcoderConfig.conf")
-
-#CONFIGURE THE FOLLOWING DIRECTORIES
-accessFileDirectory = ""
-fileDirectory = ""
-
-#CONFIGURE THE FOLLOWING APPLICATION PATHS
-#formatPoliciesPath = "/mnt/userver910/archivematica2/includes/archivematica/formatPolicies"
-formatPoliciesPath = archivmaticaVars["formatPoliciesPath"]
-convertPath = archivmaticaVars["convertPath"]
-ffmpegPath = archivmaticaVars["ffmpegPath"]
-theoraPath = archivmaticaVars["theoraPath"]
-unoconvPath = archivmaticaVars["unoconvPath"]
-unoconvAlternativePath = archivmaticaVars["unoconvAlternativePath"]
-#xenaPath = archivmaticaVars["xenaPath"]
-transcoderScriptsDir = archivmaticaVars["transcoderScriptsDir"]
-
-#SET THE DEFAULT COMMAND
-defaultCommand = "echo No default normalization tool defined."
 
 #this script is passed fileIn, uuid
 fileIn = sys.argv[1]
-fileUUID = sys.argv[2]
-accesspath = sys.argv[3]
-xmlStuff = sys.argv[4] #yes/no
-edate = ""
-eid = ""
-objectsPath = ""
-logsPath = ""
-if xmlStuff == "yes":
-    edate = sys.argv[5]
-    eid = sys.argv[6]
-    objectsPath = sys.argv[7]
-    logsPath = sys.argv[8]    
+#fileUUID = sys.argv[2]
+#accesspath = sys.argv[3]
+#xmlStuff = sys.argv[4] #yes/no
+#edate = ""
+#eid = ""
+#objectsPath = ""
+#logsPath = ""
+#if xmlStuff == "yes":
+#    edate = sys.argv[5]
+#    eid = sys.argv[6]
+#    objectsPath = sys.argv[7]
+#    logsPath = sys.argv[8]    
 
 
 
@@ -96,246 +45,191 @@ fileExtension = s[x2mod:sLen]
 fileDirectory = s[:x1]
 fileFullName = fileDirectory + fileTitle + "." + fileExtension
 
-print >>sys.stderr, "\nNORMALIZING: " + fileTitle + "." + fileExtension + " {" + fileUUID + "}"
 
-def findDirectory(root, tag=None, text=None):
-    ret = []
-    if (not tag) and (not text):
-    #return all
-        for element in root:
-            ret.append(element)
-    else:
-        if tag:
-            if not text:
-                #match the tag
-                for element in root:
-                  if element.tag == tag:
-                    ret.append(element)
-            else:
-                #match tag and text
-                for element in root:
-                  if element.tag == tag and element.text == text:
-                    ret.append(element)
-        else:
-            #match the text
-            for element in root:
-                if element.text == text:
-                  ret.append(element)
-    return ret
+database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
+commandObjects = {}
+groupObjects = {}
+commandLinkerObjects = {}
 
-def fillAttrib(attrib, var, fileExtension):
-    tree = etree.parse(formatPoliciesPath + "/" + fileExtension.upper() + ".xml")
-    root = tree.getroot()
-#  print(etree.tostring(root))
- 
-    varsxml = findDirectory(root, "inherit")
-    if varsxml[0].text :
-        return fillAttrib( attrib, var, varsxml[0].text )
-    
-    varsxml = findDirectory(root, attrib)
-    for varxml in varsxml:
-        var.append(varxml.text)
-#  print var
+global onSusccess
+onSuccess=None #pointer to a function to call once a command completes successfully
+global replacementDic
+replacementDic = {}
+identifyCommands=None
 
-inherit = []
-accessFormat = []
-preservationFormat = []
-accessConversionCommand = []
-preservationConversionCommand =  []
-
-def executeCommand(command, newUUID=""):
-    #Replace replacement strings
-    replacementDic = { \
-    "%convertPath%": convertPath, \
-    "%ffmpegPath%": ffmpegPath, \
-    "%theoraPath%": theoraPath, \
-    "%unoconvPath%": unoconvPath, \
-    "%unoconvAlternativePath%": unoconvAlternativePath, \
-    "%fileExtension%": fileExtension, \
-    "%fileFullName%": fileFullName, \
-    "%accessFileDirectory%": accesspath, \
-    "%preservationFileDirectory%": fileDirectory + newUUID, \
-    "%fileDirectory%": fileDirectory,\
-    "%fileTitle%": fileTitle, \
-    "%normalizationScriptsDir%": transcoderScriptsDir, \
-    "%transcoderScriptsDir%": transcoderScriptsDir, \
-    "%accessFormat%": accessFormat[0].lower(), \
-    "%preservationFormat%": preservationFormat[0].lower(), \
-    "%fileUUID%": fileUUID , \
-    "%objectsPath%": objectsPath, \
-    "%eventUUID%": eid , \
-    "%edate%": edate, \
-    "%logsPath%": logsPath}
-    
-    #for each key replace all instances of the key in the command string
-    for key in replacementDic.iterkeys():
-        command = command.replace ( key, replacementDic[key] )
-
-    #execute command
-    try:
-        if command != []:
-            print >>sys.stderr, "processing: " + command.__str__()
-            retcode = subprocess.call( shlex.split(command) )
-            #it executes check for errors
-            if retcode != 0:
-                print >>sys.stderr, "error code:" + retcode.__str__()
-                quit(retcode)
-            else:
-                print >>sys.stderr, "processing completed"
-                return 0
-        else:
-            print >>sys.stderr, "no conversion for type: " 
-            return 1
-        #catch OS errors
-    except OSError, ose:
-        print >>sys.stderr, "Execution failed:", ose
-        return 1
-
-try:
-    fillAttrib("inherit", inherit, fileExtension)
-    fillAttrib("accessFormat", accessFormat, fileExtension)
-    fillAttrib("preservationFormat", preservationFormat, fileExtension)
-    fillAttrib("accessConversionCommand", accessConversionCommand, fileExtension)
-    fillAttrib("preservationConversionCommand", preservationConversionCommand, fileExtension)
-
-
-
-except OSError, ose:
-    print >>sys.stderr, "No normalization", ose
-except IOError, ose:
-    #NO config file for this extension
-    
-    #reset variables, to be sure
-    inherit = []
-    accessFormat = []
-    preservationFormat = []
-    accessConversionCommand = []
-    preservationConversionCommand =  []
-    
-    #add default command to preservationConversionCommand
-    preservationConversionCommand.append(defaultCommand)
-
-if len(accessFormat) == 0:  
-    accessFormat.append("NONE")
-else:
-    if accessFormat[0]:
-        accessFormat[0] = accessFormat[0].lower()
-    else:
-        accessFormat[0] = "NONE"
-
-if len(preservationFormat) == 0:  
-    preservationFormat.append("NONE")
-else:
-    if preservationFormat[0]:
-        preservationFormat[0] = preservationFormat[0].lower()
-    else:
-        preservationFormat[0] = "NONE"
-    
-#file not exist - no preservation format/malformed conf specified for .fileExtension
-
-if not x2mod:
-    print >>sys.stderr, "Skipping Normalization: No extension"
-    accessConversionCommand = "cp " + fileIn + " %accessFileDirectory%."
-    result = executeCommand(accessConversionCommand)
-    quit(result)
-
-
-#if the file is not in access format
-if len(accessConversionCommand) > 0 :
-    result = 1
-    index = 0
-    while(result and len(accessConversionCommand) > index):
-        if(len(accessFormat) > 0 and accessFormat[0] and accessFormat[0].upper() == fileExtension.upper()):
-            result = 0
-            accessConversionCommand[0] = "cp %fileFullName% %accessFileDirectory%."
-            print >>sys.stderr, "Already in access format. No need to normalize."
-        if accessConversionCommand[index]:
-            result = executeCommand(accessConversionCommand[index])
-            
-            #is the destination folder out of space (also may cause a normalization error).
-            if checkSpace(accesspath, spaceThreshold):
-              Format="NONE"
-              if (accessFormat[0].upper() == Format or accessFormat[0].upper() == fileExtension.upper()):
-                if accesspath != fileDirectory:
-                  os.remove(accesspath + fileTitle + "." + fileExtension)
-              else:
-                os.remove(accesspath + fileTitle + "." + accessFormat[0].lower())
-              print >>sys.stderr, "ERROR: Archivematica detected low space on the access normalization destination drive, and removed the normalized file. This should be considered a hard drive space error."
-              quit(2)        
-        else:
-            print >>sys.stderr, "Skipping Access Normalization: No command"
-            accessConversionCommand[index] = "cp %fileFullName% %accessFileDirectory%."
-            result = executeCommand(accessConversionCommand[index])
-        index += 1
-    if result:
-        print >>sys.stderr, "!!! ACCESS NORMALIZATION FAILED !!!"
-        quit(result)
-else:
-    accessConversionCommand.append("cp \"%fileFullName%\" \"%accessFileDirectory%.\"")
-    result = executeCommand(accessConversionCommand[0])
-    print >>sys.stderr, "No access normalization performed."
-    if result:
-        print >>sys.stderr, "!!! ACCESS NORMALIZATION FAILED !!!"
-        quit(result)
-
-#if the file is not in preservation format
-if len(preservationConversionCommand) > 0:
-    result = 1
-    index = 0
-    while(result and len(preservationConversionCommand) > index):
-        if(len(preservationFormat) > 0 and preservationFormat[0] and preservationFormat[0].upper() == fileExtension.upper()):
-            result = 0
-            print >>sys.stderr, "Already in preservation format. No need to normalize."
-            continue
-        if preservationConversionCommand[index]:
-            outputFileUUID = uuid.uuid4().__str__()
-            result = executeCommand(preservationConversionCommand[index], outputFileUUID)
-            
-            #is the destination folder out of space (also may cause a normalization error).
-            if checkSpace(fileDirectory, spaceThreshold): #+/ ?
-                Format="NONE"
-                if (preservationFormat[0].upper() == Format or preservationFormat[0].upper() == fileExtension.upper()):
-                    if fileDirectory != fileDirectory:#update when not transcoding to file path
-                        os.remove(fileDirectory + fileTitle + "." + fileExtension)
-                        quit(3)
-                else:
-                    os.remove(fileDirectory + fileTitle + "." + preservationFormat[0].lower())
-                    print >>sys.stderr, "ERROR: Archivematica detected low space on the access normalization destination drive, and removed the normalized file. This should be considered a hard drive space error."
-                    quit(2)
-                    
-            #XML
-            if  preservationConversionCommand[index] != defaultCommand:
-                if not os.path.isfile(fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower()):
-                    print >>sys.stderr, "Error: the output file does not exist [" + fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower() + "]"
-                    quit(100)
-                else:
-                    print >>sys.stderr, "Verified the output file exists [" + fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower() + "]"
-                if xmlStuff:
-                    xmlNormalize(outputFileUUID, \
-                                 fileDirectory + outputFileUUID + fileTitle + "." + preservationFormat[0].lower(), \
-                                 preservationConversionCommand[index], \
-                                 fileUUID, \
-                                 objectsPath, \
-                                 eid, \
-                                 edate, \
-                                 logsPath, \
-                                 ) #    {normalized; not normalized}
-        else:
-            print >>sys.stderr, "Skipping Preservation Normalization: No command"
-            result = 0 
-        index += 1
-
-        #fileDirectory will need to change eventually to something directly related to normalization path.
+class Command:
+    def __init__(self, commandID):
+        self.pk = commandID
+        self.stdOut = ""
+        self.stdErr = ""
+        self.exitCode=None
+        c=database.cursor()
+        sql = """SELECT CT.type, C.verificationCommand, C.eventDetailCommand, C.command, C.outputLocation, C.description
+        FROM Commands AS C
+        JOIN CommandTypes AS CT ON C.commandType = CT.pk
+        WHERE C.pk = """ + commandID.__str__() + """
+        ;"""
+        c.execute(sql)
+        row = c.fetchone()
+        while row != None:
+            self.type, \
+            self.verificationCommand, \
+            self.eventDetailCommand, \
+            self.command, \
+            self.outputLocation, \
+            self.description = \
+            row
+            row = c.fetchone()
+        if self.verificationCommand:
+            self.verificationCommand = Command(self.verificationCommand)
+            self.verificationCommand.command.replace("%outputLocation%", self.outputLocation)
         
-    if result:
-        print >>sys.stderr, "!!! PRESERVATION NORMALIZATION FAILED !!!"
-        quit(result)
+        if self.eventDetailCommand:
+            self.eventDetailCommand = Command(self.eventDetailCommand)
+            self.eventDetailCommand.command.replace("%outputLocation%", self.outputLocation)
+    
+    def __str__(self):
+        return "[COMMAND]\n" + \
+        "PK: " + self.pk.__str__() + "\n" + \
+        "Type: " + self.type.__str__() + "\n" + \
+        "verificationCommand: " + self.verificationCommand.__str__() + "\n" + \
+        "command: " + self.command.__str__() + "\n" + \
+        "description: " + self.description.__str__() + "\n" + \
+        "outputLocation: " + self.outputLocation.__str__()
+    
+    def execute(self, skipOnSuccess=False):
         
-else:
-    print >>sys.stderr, "No preservation normalization performed."
-#check to see if the file was created
+        print self.__str__()
+        
+        #Do a dictionary replacement.
+        #Replace replacement strings
+        global replacementDic
+                
+        #for each key replace all instances of the key in the command string
+        for key in replacementDic.iterkeys():
+            self.command = self.command.replace ( key, replacementDic[key] )
+            if self.outputLocation:
+                self.outputLocation = self.outputLocation.replace ( key, replacementDic[key] )
+        print self.__str__()
+        
+        self.exitCode, self.stdOut, self.stdError = executeOrRun(self.type, self.command)      
+        
+        #If unsuccesful
+        if self.exitCode:
+            print >>sys.stderr, self.__str__()
+            print >>sys.stderr, self.stdOut
+            print >>sys.stderr, self.stdError
+        
+        else:
+            if self.verificationCommand:
+                self.exitCode = self.verificationCommand.execute(skipOnSuccess=True)
+            if not self.exitCode and self.eventDetailCommand:
+                self.eventDetailCommand.execute(skipOnSuccess=True)
+            global onSuccess
+            if not self.exitCode and not skipOnSuccess and onSuccess:
+                onSuccess(self)
+        return self.exitCode
 
+class CommandLinker:
+    def __init__(self, commandLinker):
+        self.pk, self.command, self.group = commandLinker
+        if self.command in commandObjects:
+            self.commandObject = commandObjects[command]
+        else:
+            co =Command(self.command.__str__())
+            self.commandObject = co
+            commandObjects[self.command] = co
+        
+        if self.group in groupObjects:
+            self.groupObject = groupObjects[group]
+            groupObjects[group].members.append(self)
+        else:
+            go =Group(self.group, [self])
+            self.groupObject = go
+            groupObjects[self.group] = go
+        
+    def __str__(self):
+        return "[Command Linker]\n" + \
+        "PK: " + self.pk.__str__() + "\n" + \
+        self.commandObject.__str__() 
+    
+    def execute(self):
+        if self.commandObject.exitCode != None:
+            print "already ran"
+            return self.commandObject.exitCode
+        else:
+            print "running"
+            ret = self.commandObject.execute()
+            print "need to update database statistics"
+            return ret
+        
 
+class Group:
+    def __init__(self, pk, members=[]):
+        self.pk = pk
+        self.members = members
+    
+    def __str__(self):
+        members = ""
+        for m in self.members:
+            members += m.__str__() + "\n"
+        return "[GROUP]\n" + \
+        "PK: " + self.pk.__str__() + "\n" + \
+        members
+        
+        
+def main(fileName):
+    #determin the pk's of the Command Linkers
+    cls = identifyCommands(fileName)
 
-
-
+    if cls == []:
+        print "Nothing to do"
+        return 0
+    
+    #Create the groups and command objects for the Command Linkers
+    for c in cls:
+        cl = CommandLinker(c)
+        pk, commandPK, groupPK = c
+        commandLinkerObjects[pk] = cl
+    
+    #execute
+    for g in groupObjects:
+        if g > 0 or g < LowerEndMainGroupMax:
+            for group in groupObjects[g]:
+                for cl in group.members:
+                    cl.execute()
+    mainGroup = 0
+    while True :
+        if mainGroup in groupObjects:
+            combinedExitCode = 0
+            for cl in groupObjects[mainGroup].members:
+                cl.execute()
+                combinedExitCode += math.fabs(cl.commandObject.exitCode)
+            if len(groupObjects[mainGroup].members) > 0 and combinedExitCode == 0:
+                break 
+        if mainGroup == LowerEndMainGroupMax:
+            quit(-1)
+        mainGroup = mainGroup - 1 
+    
+    
+    #look for problems
+    for g in groupObjects:
+        #Groups that require at least one good one.
+        if g > 0:
+            exitCode=-1
+            for cl in groupObjects[g].members:
+                if cl.commandObject.exitCode == 0: 
+                    exitCode = 0
+                    break
+            if exit:
+                quit(exitCode)
+        #group that require all good ones
+        if g == mainGroup:
+            exitCode=0
+            for cl in groupObjects[g].members:
+                if cl.commandObject.exitCode != 0: 
+                    exitCode = -1
+                    break
+            if exit:
+                quit(exitCode)
+    quit(0)
