@@ -84,7 +84,7 @@ INSERT INTO FileIDs
 INSERT INTO Commands 
     (commandType, command, description) 
     SELECT pk,
-    'test -e "%outputLocation%',
+    'test -e "%outputLocation%"',
     'Standard verification command'
     FROM CommandTypes WHERE type = 'command' ;
 

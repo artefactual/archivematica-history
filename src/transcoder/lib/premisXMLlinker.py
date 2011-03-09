@@ -24,7 +24,6 @@
 
 #!/usr/bin/python
 
-from archivematicaFreeSpaceChecker import checkSpace
 from archivematicaLoadConfig import loadConfig
 import sys
 import os.path
@@ -57,9 +56,8 @@ def xmlCreateRelationship(relationshipType, relationshipSubType, relatedObjectId
     return ret
     
 
-def xmlNormalize(outputFileUUID, outputFileName, command, fileUUID, objectsPath, eventUUID, edate, logsPath):
-    #Create Normalization event in the original xml document.
-    eventDetailText =  "program=\"" + command.split(" ", 1)[0] + "\"; command=\"" + command + "\""  
+def xmlNormalize(outputFileUUID, outputFileName, eventDetailText, fileUUID, objectsPath, eventUUID, edate, logsPath):
+    #Create Normalization event in the original xml document. 
     eventXML = createEvent( eventUUID, "normalization", \
                             eventDetailText=eventDetailText, \
                             eOutcomeInformation = createOutcomeInformation(os.path.basename(outputFileName)), \

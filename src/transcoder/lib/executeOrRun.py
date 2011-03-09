@@ -42,6 +42,9 @@ def launchSubProcess(command):
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose
         return -1, "Config Error!", ose.__str__()
+    except :
+        print  >>sys.stderr, "Execution failed:", command
+        return -1, "Execution failed:", command
     return retcode, stdOut, stdError
 
         
