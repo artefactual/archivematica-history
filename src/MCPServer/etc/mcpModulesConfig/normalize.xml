@@ -15,7 +15,7 @@
     <commands>    
         <exeCommand> 
             <command>
-                <skip>No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir>objects/</filterSubDir>
@@ -34,18 +34,18 @@
         <verificationCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
+                <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
+                <standardOut>%SIPLogsDirectory%normalizationLog.txt</standardOut>
+                <standardError>%SIPLogsDirectory%normalizationLog.txt</standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>transcoderNormalizePreservation_v0.0</execute>
+                <arguments>--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"</arguments>
+                <executeOnEachFile>yes</executeOnEachFile>
             </command>            
         </verificationCommand>
         

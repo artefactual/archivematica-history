@@ -7,44 +7,35 @@ import os
 from executeOrRun import executeOrRun
 LowerEndMainGroupMax = -10
 
-
-#this script is passed fileIn, uuid
-fileIn = sys.argv[1]
-#fileUUID = sys.argv[2]
-#accesspath = sys.argv[3]
-#xmlStuff = sys.argv[4] #yes/no
-#edate = ""
-#eid = ""
-#objectsPath = ""
-#logsPath = ""
-#if xmlStuff == "yes":
-#    edate = sys.argv[5]
-#    eid = sys.argv[6]
-#    objectsPath = sys.argv[7]
-#    logsPath = sys.argv[8]    
-
-
-
-#get file name and extension
-s = fileIn
-#get indexes for python string array
-#index of next char after last /
-x1 = s.rfind('/')+1
-#index of last .
-x2 = s.rfind('.')
-#index of next char after last .
-x2mod = x2+1
-#length of s
-sLen = len(s)
-
-if x2 < x1:
-    x2mod = 0
-
-fileTitle = s[x1:x2]
-fileExtension = s[x2mod:sLen]
-fileDirectory = s[:x1]
-fileFullName = fileDirectory + fileTitle + "." + fileExtension
-
+fileTitle = ""
+fileExtension = ""
+fileDirectory = ""
+fileFullName = ""
+def setFileIn(fileIn=sys.argv[1]):
+    global fileTitle
+    global fileExtension
+    global fileDirectory
+    global fileFullName
+    #get file name and extension
+    s = fileIn
+    #get indexes for python string array
+    #index of next char after last /
+    x1 = s.rfind('/')+1
+    #index of last .
+    x2 = s.rfind('.')
+    #index of next char after last .
+    x2mod = x2+1
+    #length of s
+    sLen = len(s)
+    
+    if x2 < x1:
+        x2mod = 0
+    
+    fileTitle = s[x1:x2]
+    fileExtension = s[x2mod:sLen]
+    fileDirectory = s[:x1]
+    fileFullName = fileDirectory + fileTitle + "." + fileExtension
+setFileIn()
 
 database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
 commandObjects = {}
@@ -82,11 +73,11 @@ class Command:
             row = c.fetchone()
         if self.verificationCommand:
             self.verificationCommand = Command(self.verificationCommand)
-            self.verificationCommand.command.replace("%outputLocation%", self.outputLocation)
+            self.verificationCommand.command = self.verificationCommand.command.replace("%outputLocation%", self.outputLocation)
         
         if self.eventDetailCommand:
             self.eventDetailCommand = Command(self.eventDetailCommand)
-            self.eventDetailCommand.command.replace("%outputLocation%", self.outputLocation)
+            self.eventDetailCommand.command = self.eventDetailCommand.command.replace("%outputLocation%", self.outputLocation)
     
     def __str__(self):
         return "[COMMAND]\n" + \
