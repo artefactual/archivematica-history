@@ -19,7 +19,9 @@ global outputFileUUID
 def onceNormalized(command):
     transcodedFiles = []
     
-    if os.path.isfile(command.outputLocation):
+    if not command.outputLocation:
+        command.outputLocation = ""
+    elif os.path.isfile(command.outputLocation):
         transcodedFiles.append(command.outputLocation)
     elif os.path.isdir(command.outputLocation):        
         for w in os.walk(command.outputLocation):
@@ -29,7 +31,7 @@ def onceNormalized(command):
                 print "path: ", p
                 if os.path.isfile(p):
                     transcodedFiles.append(p)
-    elif command.outputLocation != None:
+    elif command.outputLocation:
         print >>sys.stderr, "Error - output file does not exist [" + command.outputLocation + "]"
         command.exitCode = -2
              
