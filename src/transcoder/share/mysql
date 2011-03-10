@@ -118,7 +118,7 @@ INSERT INTO Commands
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('echo tool=\\"7z\\"\\; version=\\"`7z | grep Version`\\"'),
+    ('echo program=\\"7z\\"\\; version=\\"`7z | grep Version`\\"'),
     ('Get event detail text for 7z extraction')
 );
 
@@ -146,7 +146,7 @@ INSERT INTO Commands
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('echo tool=\\"unrar-nonfree\\"\\; version=\\"`unrar-nonfree | grep \'UNRAR\'`\\"'),
+    ('echo program=\\"unrar-nonfree\\"\\; version=\\"`unrar-nonfree | grep \'UNRAR\'`\\"'),
     ('Get event detail text for unrar extraction')
 );
 
@@ -195,7 +195,7 @@ INSERT INTO Commands
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('echo tool=\\"convert\\"\\; version=\\"`convert -version | grep Version:`\\"'),
+    ('echo program=\\"convert\\"\\; version=\\"`convert -version | grep Version:`\\"'),
     ('convert event detail')
 );
 
@@ -223,6 +223,119 @@ INSERT INTO CommandRelationships
 );
 
 -- End Of ADD Normalization Path for .JPG --
+
+-- ADD Normalization Path for .GIF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .gif file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'gif',
+    @fileID
+);
+
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('convert "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.jpg"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.jpg',
+    @convertToTifEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to jpg with convert')
+);
+set @convertToJpgCommandID = LAST_INSERT_ID();
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @convertToTifCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpgCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .GIF --
+
+-- ADD Normalization Path for .TGA --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .tga file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'tga',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @convertToTifCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpgCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .TGA --
+
+-- ADD Normalization Path for .BMP --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .bmp file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'bmp',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @convertToTifCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpgCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .BMP --
 
 
 
