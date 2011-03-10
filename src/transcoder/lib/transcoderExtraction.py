@@ -61,8 +61,6 @@ def onceExtracted(command):
             objects = "objects/"
             relativeFilePath = ef.replace(objectsDirectory, objects, 1)
             addFileToSIP( objectsDirectory, logsDirectory, ef, fileUUID, "extracted", date, date, eventDetailText=command.eventDetailCommand.stdOut.__str__(), eventOutcomeDetailNote="extracted " + relativeFilePath)
-        print "TODO - addFile()"
-        print "Event Detail: " + command.eventDetailCommand.stdOut.__str__()
         
         run = sys.argv[0].__str__() + \
         " \"" + ef + "\""

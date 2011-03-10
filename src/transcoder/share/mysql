@@ -44,6 +44,7 @@ CREATE TABLE CommandRelationships (
     fileID INT,
     Foreign Key (fileID) references FileIDs(pk),
     GroupMember INT UNSIGNED DEFAULT 0,
+    countAttempts INT UNSIGNED DEFAULT 0,
     countOK INT UNSIGNED DEFAULT 0,
     countNotOK INT UNSIGNED DEFAULT 0
 );
@@ -97,7 +98,7 @@ INSERT INTO Commands
     ((SELECT pk FROM CommandTypes WHERE type = 'command'),
     (SELECT pk FROM  (Select * From Commands) AS temp WHERE description = 'Verifying file exists and is not size 0'),
     'cp -R "%inputFile%" "%outputDirectory%%prefix%%fileName%%postfix%.%fileExtension%"',
-    '"%outputDirectory%%prefix%%fileName%%postfix%.%fileExtension%"',
+    '%outputDirectory%%prefix%%fileName%%postfix%.%fileExtension%',
     'Copying File.');
     --     'cp --version | grep cp',
 
@@ -128,7 +129,7 @@ INSERT INTO Commands
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     ('7z x -bd -o"%outputDirectory%" "%inputFile%"'),
     LAST_INSERT_ID(),
-    '"%outputDirectory%"',
+    '%outputDirectory%',
     ('Extracting 7zip compatable file.')
 );
 
@@ -158,7 +159,7 @@ INSERT INTO Commands
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('mkdir "%outputDirectory%" && unrar-nonfree x "%inputFile%" "%outputDirectory%"'),
     LAST_INSERT_ID(),
-    '"%outputDirectory%"',
+    '%outputDirectory%',
     ('Extracting unrar-nonfree compatable file.')
 );
  
