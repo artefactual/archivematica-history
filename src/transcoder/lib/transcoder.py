@@ -167,12 +167,17 @@ class CommandLinker:
     
     def execute(self):
         if self.commandObject.exitCode != None:
-            print "already ran"
             return self.commandObject.exitCode
         else:
-            print "running"
             ret = self.commandObject.execute()
-            print "need to update database statistics"
+            if ret:
+                column = "countNotOK"
+            else:
+                column = "countOK"
+            c=database.cursor()
+            sql = "UPDATE CommandRelationships SET " + column + "=" + column + "+1 WHERE pk=" + self.pk.__str__() + ";"
+            c.execute(sql)
+            row = c.fetchone()
             return ret
         
 
