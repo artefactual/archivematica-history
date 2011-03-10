@@ -15,7 +15,8 @@
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes</skip>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir>objects/</filterSubDir>
@@ -23,10 +24,9 @@
                 <standardIn></standardIn>
                 <standardOut>%SIPLogsDirectory%normalizationLog.txt</standardOut>
                 <standardError>%SIPLogsDirectory%normalizationLog.txt</standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>normalize_v0.0</execute>
-                <arguments>"%relativeLocation%" "%fileUUID%" "%SIPDirectory%DIP/objects/" "yes" "%date%" "%taskUUID%" "%SIPObjectsDirectory%" "%SIPLogsDirectory%"</arguments>
+                <execute>transcoderNormalizePreservation_v0.0</execute>
+                <arguments>--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>
@@ -37,14 +37,14 @@
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
+                <filterSubDir>objects/</filterSubDir>
                 <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut>%SIPLogsDirectory%normalizationLog.txt</standardOut>
                 <standardError>%SIPLogsDirectory%normalizationLog.txt</standardError>
                 <failureNotification> </failureNotification>
                 <execute>transcoderNormalizePreservation_v0.0</execute>
-                <arguments>--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"</arguments>
+                <arguments>--inputFile "%relativeLocation%" --commandClassifications "access" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%" --accessDirectory "%SIPDirectory%DIP/objects/"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
             </command>            
         </verificationCommand>

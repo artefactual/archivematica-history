@@ -1,4 +1,26 @@
 #!/usr/bin/python
+# This file is part of Archivematica.
+#
+# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+# @package Archivematica
+# @subpackage transcoder
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
 
 import sys
 import os
@@ -15,6 +37,12 @@ outputFileUUID = uuid.uuid4().__str__()
 global replacementDic
 global opts
 global outputFileUUID
+
+def inAccessFormat():
+    return 1
+
+def inPreservationFormat():
+    return 1
 
 def onceNormalized(command):
     transcodedFiles = []
@@ -40,7 +68,8 @@ def onceNormalized(command):
         global outputFileUUID
         global replacementDic
         global opts
-        xmlNormalize(outputFileUUID, \
+        if opts.commandClassifications == "normalize":
+            xmlNormalize(outputFileUUID, \
                      ef, \
                      command.eventDetailCommand.stdOut, \
                      opts.fileUUID, \
@@ -49,8 +78,9 @@ def onceNormalized(command):
                      opts.date, \
                      opts.logsDirectory, \
                      ) #    {normalized; not normalized}
-        outputFileUUID = uuid.uuid4().__str__() 
-        replacementDic["%postfix%"] = outputFileUUID             
+        if opts.commandClassifications == "normalize":
+            outputFileUUID = uuid.uuid4().__str__() 
+            replacementDic["%postfix%"] = "-" + outputFileUUID             
 
 def identifyCommands(fileName):
     """Identify file type(s)"""
@@ -64,12 +94,27 @@ def identifyCommands(fileName):
         JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
         JOIN FileIDsByExtension AS FIBE  ON FileIDs.pk = FIBE.FileIDs 
         WHERE FIBE.Extension = '""" + transcoder.fileExtension.__str__() + """'  
-        AND CommandClassifications.classification = 'normalize';"""
+        AND CommandClassifications.classification = '""" + opts.commandClassifications +"""';"""
         c.execute(sql)
         row = c.fetchone()
         while row != None:
             ret.append(row)
             row = c.fetchone()   
+    if not len(ret):
+        if opts.commandClassifications == "normalize":
+            if inPreservationFormat():
+                print "Already in preservation format."
+            else:
+                print >>sys.stderr, "Unable to verify archival readiness."
+                exit(7)
+        
+        elif opts.commandClassifications == "access":
+            print >>sys.stderr, "Todo - copy to access directory"
+            if inAccessFormat():
+                print "Already in access format."
+            else:
+                print >>sys.stderr, "Unable to verify access readiness."
+                exit(7)
     return ret
 
 if __name__ == '__main__':
@@ -84,6 +129,7 @@ if __name__ == '__main__':
     parser.add_option("-t",  "--taskUUID",           action="store", dest="taskUUID", default="")
     parser.add_option("-o",  "--objectsDirectory",   action="store", dest="objectsDirectory", default="")
     parser.add_option("-l",  "--logsDirectory",      action="store", dest="logsDirectory", default="")
+    parser.add_option("-a",  "--accessDirectory",    action="store", dest="accessDirectory", default="")
     parser.add_option("-d",  "--date",   action="store", dest="date", default="")
     
     
@@ -93,20 +139,27 @@ if __name__ == '__main__':
     setFileIn(fileIn=filename)
     print "Operating on file: ", filename
     
-    if opts.taskUUID:
-        outputFileUUID = opts.taskUUID 
+    prefix = ""
+    postfix = ""
+    outputDirectory = ""
+    if opts.commandClassifications == "normalize":
+        postfix = "-" + opts.taskUUID
+        outputDirectory = transcoder.fileDirectory 
+    elif opts.commandClassifications == "access":
+        prefix = opts.fileUUID + "-"
+        outputDirectory = opts.accessDirectory
     
     replacementDic = { \
         "%inputFile%": transcoder.fileFullName, \
-        "%outputDirectory%": transcoder.fileDirectory, \
+        "%outputDirectory%": outputDirectory, \
         "%fileExtension%": transcoder.fileExtension, \
         "%fileFullName%": transcoder.fileFullName, \
         "%preservationFileDirectory%": transcoder.fileDirectory, \
         "%fileDirectory%": transcoder.fileDirectory,\
         "%fileTitle%": transcoder.fileTitle, \
         "%fileName%":  transcoder.fileTitle, \
-        "%prefix%": "archivematica",
-        "%postfix%": outputFileUUID
+        "%prefix%": prefix,
+        "%postfix%": postfix
         }
     
     
