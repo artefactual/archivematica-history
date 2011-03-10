@@ -33,7 +33,6 @@ import uuid
 from premisXMLlinker import xmlNormalize 
 
 print "Todo: change outputFileUUID to task uuid on first run"
-outputFileUUID = uuid.uuid4().__str__()
 global replacementDic
 global opts
 global outputFileUUID
@@ -60,6 +59,7 @@ def onceNormalized(command):
                 if os.path.isfile(p):
                     transcodedFiles.append(p)
     elif command.outputLocation:
+        print >>sys.stderr, command
         print >>sys.stderr, "Error - output file does not exist [" + command.outputLocation + "]"
         command.exitCode = -2
              
@@ -85,9 +85,8 @@ def onceNormalized(command):
 def identifyCommands(fileName):
     """Identify file type(s)"""
     ret = []
-    print "file extention: ", transcoder.fileExtension.__str__()
+    c=transcoder.database.cursor()
     if transcoder.fileExtension:
-        c=transcoder.database.cursor()
         sql = """SELECT CR.pk, CR.command, CR.GroupMember 
         FROM CommandRelationships AS CR 
         JOIN FileIDs ON CR.fileID=FileIDs.pk 
@@ -110,6 +109,15 @@ def identifyCommands(fileName):
         
         elif opts.commandClassifications == "access":
             print >>sys.stderr, "Todo - copy to access directory"
+            sql = """SELECT CR.pk, CR.command, CR.GroupMember
+            FROM CommandRelationships AS CR
+            JOIN Commands AS C ON CR.command = C.pk 
+            WHERE C.description = 'Copying File.';"""
+            c.execute(sql)
+            row = c.fetchone()
+            while row != None:
+                ret.append(row)
+                row = c.fetchone() 
             if inAccessFormat():
                 print "Already in access format."
             else:
@@ -121,6 +129,7 @@ if __name__ == '__main__':
     global opts
     global replacementDic
     global outputFileUUID
+    outputFileUUID = uuid.uuid4().__str__()
     parser = OptionParser()
     #--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"
     parser.add_option("-f",  "--inputFile",          action="store", dest="inputFile", default="")

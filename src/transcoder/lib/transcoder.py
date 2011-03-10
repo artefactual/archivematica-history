@@ -126,19 +126,21 @@ class Command:
         
         self.exitCode, self.stdOut, self.stdError = executeOrRun(self.type, self.command)      
         
+        
+        if (not self.exitCode) and self.verificationCommand:
+            self.exitCode = self.verificationCommand.execute(skipOnSuccess=True)
+        
+        if (not self.exitCode) and self.eventDetailCommand:
+            self.eventDetailCommand.execute(skipOnSuccess=True)
+        
         #If unsuccesful
         if self.exitCode:
             print >>sys.stderr, self.__str__()
             print >>sys.stderr, self.stdOut
             print >>sys.stderr, self.stdError
-        
         else:
-            if self.verificationCommand:
-                self.exitCode = self.verificationCommand.execute(skipOnSuccess=True)
-            if not self.exitCode and self.eventDetailCommand:
-                self.eventDetailCommand.execute(skipOnSuccess=True)
             global onSuccess
-            if not self.exitCode and not skipOnSuccess and onSuccess:
+            if (not skipOnSuccess) and onSuccess:
                 onSuccess(self)
         return self.exitCode
 
@@ -166,7 +168,18 @@ class CommandLinker:
         self.commandObject.__str__() 
     
     def execute(self):
+        c=database.cursor()
+        sql = "UPDATE CommandRelationships SET countAttempts=countAttempts+1 WHERE pk=" + self.pk.__str__() + ";"
+        c.execute(sql)
+        row = c.fetchone()
         if self.commandObject.exitCode != None:
+            if self.commandObject.exitCode:
+                column = "countNotOK"
+            else:
+                column = "countOK"
+            sql = "UPDATE CommandRelationships SET " + column + "=" + column + "+1 WHERE pk=" + self.pk.__str__() + ";"
+            c.execute(sql)
+            row = c.fetchone()
             return self.commandObject.exitCode
         else:
             ret = self.commandObject.execute()
@@ -174,7 +187,6 @@ class CommandLinker:
                 column = "countNotOK"
             else:
                 column = "countOK"
-            c=database.cursor()
             sql = "UPDATE CommandRelationships SET " + column + "=" + column + "+1 WHERE pk=" + self.pk.__str__() + ";"
             c.execute(sql)
             row = c.fetchone()
