@@ -87,7 +87,7 @@ def logTaskCreatedSQL(task, replacementDic):
     runSQL("""INSERT INTO Tasks (taskUUID, jobUUID, fileUUID, fileName, exec, arguments, createdTime)
     VALUES ( '"""   + taskUUID + separator \
                     + jobUUID + separator \
-                    + fileUUID + separator \
+                    + _mysql.escape_string(fileUUID) + separator \
                     + _mysql.escape_string(fileName) + separator \
                     + _mysql.escape_string(taskexec) + separator \
                     + _mysql.escape_string(arguments) + separator \
