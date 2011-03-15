@@ -339,13 +339,175 @@ INSERT INTO CommandRelationships
 -- End Of ADD Normalization Path for .BMP --
 
 
+-- Commands for handling Video files --
+INSERT INTO Commands 
+    (commandType, command, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo program=\\"ffmpeg\\"\\; version=\\"`ffmpeg 2>&1 | grep \"FFmpeg version\"`\\"'),
+    ('Get event detail text for unrar extraction')
+);
+
+set @ffmpegEventDetailCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('ffmpeg -i "%fileFullName%" -ar 44100 "%outputDirectory%%prefix%%fileName%%postfix%.mpg"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.mpg',
+    @ffmpegEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to mpg with ffmpeg')
+);
+set @ffmpegToMPGCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('ffmpeg -i "%fileFullName%" -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 48000 "%outputDirectory%%prefix%%fileName%%postfix%.mxf"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.mxf',
+    @ffmpegEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to mxf with ffmpeg')
+);
+set @ffmpegToMXFCommandID = LAST_INSERT_ID();
+
+-- End of Commands for handling Video files --
 
 
+-- ADD Normalization Path for .WMV --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .wmv file'
+);
+set @fileID = LAST_INSERT_ID();
 
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'wmv',
+    @fileID
+);
 
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToMXFCommandID,
+    @fileID
+);
 
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMPGCommandID,
+    @fileID
+);
 
+-- End Of ADD Normalization Path for .WMV --
 
+-- ADD Normalization Path for .SWF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .swf file'
+);
+set @fileID = LAST_INSERT_ID();
 
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'swf',
+    @fileID
+);
 
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToMXFCommandID,
+    @fileID
+);
 
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMPGCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .SWF --
+
+-- ADD Normalization Path for .AVI --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .avi file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'avi',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToMXFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMPGCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .AVI --
+
+-- ADD Normalization Path for .MOV --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .mov file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'mov',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToMXFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMPGCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .MOV --
