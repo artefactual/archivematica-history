@@ -353,7 +353,6 @@ set @ffmpegEventDetailCommandID = LAST_INSERT_ID();
 
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
-    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     ('ffmpeg -i "%fileFullName%" -ar 44100 "%outputDirectory%%prefix%%fileName%%postfix%.mpg"'),
@@ -366,7 +365,6 @@ set @ffmpegToMPGCommandID = LAST_INSERT_ID();
 
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
-    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     ('ffmpeg -i "%fileFullName%" -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 48000 "%outputDirectory%%prefix%%fileName%%postfix%.mxf"'),
@@ -511,3 +509,308 @@ INSERT INTO CommandRelationships
 );
 
 -- End Of ADD Normalization Path for .MOV --
+
+-- ADD Normalization Path for .FLV --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .flv file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'flv',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToMXFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMPGCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .FLV --
+
+-- ADD Normalization Path for .MPEG --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .mpeg file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'mpeg',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToMXFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMPGCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .MPEG --
+
+-- ADD Normalization Path for .MP4 --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .mp4 file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'mp4',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToMXFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMPGCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .MP4 --
+
+
+-- Commands for handling Audio files --
+INSERT INTO Commands 
+    (commandType, command, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo program=\\"ffmpeg\\"\\; version=\\"`ffmpeg 2>&1 | grep \"FFmpeg version\"`\\"'),
+    ('Get event detail text for unrar extraction')
+);
+
+set @ffmpegEventDetailCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('ffmpeg -i "%fileFullName%" -ab 192000 "%outputDirectory%%prefix%%fileName%%postfix%.mp3"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.mp3',
+    @ffmpegEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to mpg with ffmpeg')
+);
+set @ffmpegToMP3CommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('ffmpeg -i "%fileFullName%" -vcodec mpeg2video -qscale 1 -qmin 1 -intra -ar 48000 "%outputDirectory%%prefix%%fileName%%postfix%.wav"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.wav',
+    @ffmpegEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to mxf with ffmpeg')
+);
+set @ffmpegToWAVCommandID = LAST_INSERT_ID();
+
+-- End of Commands for handling Audio files --
+
+
+-- ADD Normalization Path for .AC3 --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .ac3 file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'ac3',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToWAVCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMP3CommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .AC3 --
+
+-- ADD Normalization Path for .AIF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .aif file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'aif',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToWAVCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMP3CommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .AIF --
+
+-- ADD Normalization Path for .MP3 --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .mp3 file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'mp3',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToWAVCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMP3CommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .MP3 --
+
+-- ADD Normalization Path for .WAV --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .wav file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'wav',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToWAVCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMP3CommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .WAV --
+
+-- ADD Normalization Path for .WMA --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .wma file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'wma',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToWAVCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMP3CommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .WMA --
+
+
