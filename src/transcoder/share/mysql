@@ -908,7 +908,6 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO Commands 
     (commandType, command, description) 
-    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('echo program=\\"convert\\"\\; version=\\"`convert -version | grep Version:`\\" program=\\"inkscape\\"\\; version=\\"`inkscape -V`\\" '),
@@ -919,7 +918,6 @@ set @transcoderAIToSVGsEventDetailCommandID = LAST_INSERT_ID();
 
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
-    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('# This file is part of Archivematica.\n
@@ -1006,6 +1004,74 @@ INSERT INTO CommandRelationships
 );
 
 -- End Of ADD Normalization Path for .AI --
+
+-- ADD Normalization Path for .SVG --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .svg file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'svg',
+    @fileID
+);
+
+
+INSERT INTO Commands 
+    (commandType, command, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo program=\\"inkscape\\"\\; version=\\"`inkscape -V`\\" '),
+    ('convert event detail')
+);
+set @inkscapeEventDetailCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('inkscape -z "%fileFullName%" --export-pdf="%outputDirectory%%prefix%%fileName%%postfix%.pdf"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.pdf',
+    @inkscapeEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to pdf with inkscape')
+);
+set @inkscapeToPDFCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('inkscape "%fileFullName%" --export-plain-svg="%outputDirectory%%prefix%%fileName%%postfix%.svg"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.svg',
+    @inkscapeEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to plain svg with inkscape')
+);
+
+set @inkscapeToPlainSVGCommandID = LAST_INSERT_ID();
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @inkscapeToPDFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @inkscapeToPlainSVGCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .SVG --
 
 
 
