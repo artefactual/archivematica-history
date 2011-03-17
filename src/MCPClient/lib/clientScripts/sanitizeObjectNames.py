@@ -107,7 +107,7 @@ if __name__ == '__main__':
                 if oldfile in UUIDsDic:
                     fileUUID = UUIDsDic[oldfile]
                 else:
-                    fileUUID = findUUIDFromFileUUIDxml(logsDir+"FileUUIDs.log", oldfile, logsDir+"fileMeta/", updateSIPUUIDfile=False)
+                    fileUUID = findUUIDFromFileUUIDxml(logsDir+"FileUUIDs.log", oldfile, logsDir+"fileMeta/", updateSIPUUIDfile=True)
                 
                 
                 
