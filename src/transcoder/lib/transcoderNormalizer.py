@@ -41,7 +41,8 @@ def inAccessFormat():
     return 1
 
 def inPreservationFormat():
-    ex=["CSS", "CSV", "HTML", "TXT", "XML", "XSL"]
+    ex=["CSS", "CSV", "HTML", "TXT", "XML", "XSL", \
+        "JP2", "PNG"]
     return 1
 
 def onceNormalized(command):

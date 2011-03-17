@@ -1,7 +1,0 @@
-<formatPolicy>
-  <inherit></inherit>
-  <accessFormat>JPG</accessFormat>
-  <preservationFormat>1.TIF</preservationFormat>
-  <accessConversionCommand>%convertPath% %fileFullName% %accessFileDirectory%%fileTitle%.%accessFormat%</accessConversionCommand>
-  <preservationConversionCommand>%convertPath% %fileFullName% +compress %preservationFileDirectory%%fileTitle%.%preservationFormat%</preservationConversionCommand>
-</formatPolicy>
