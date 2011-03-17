@@ -252,7 +252,6 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
-    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     ('convert "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.jpg"'),
@@ -280,6 +279,41 @@ INSERT INTO CommandRelationships
 );
 
 -- End Of ADD Normalization Path for .GIF --
+
+-- ADD Normalization Path for .TIF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .tif file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'tif',
+    @fileID
+);
+
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @convertToTifCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpgCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .TIF --
+
 
 -- ADD Normalization Path for .PSD --
 INSERT INTO FileIDs 
@@ -313,6 +347,56 @@ INSERT INTO CommandRelationships
 );
 
 -- End Of ADD Normalization Path for .PSD --
+
+-- ADD Normalization Path for .JP2 --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .jp2 file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'jp2',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpgCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .JP2 --
+
+-- ADD Normalization Path for .PNG --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .png file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'png',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpgCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .PNG --
 
 -- ADD Normalization Path for .TGA --
 INSERT INTO FileIDs 
