@@ -1,6 +1,7 @@
-#!/bin/bash
-
+#!/usr/bin/python
 # This file is part of Archivematica.
+#
+# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
 #
 # Archivematica is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,25 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
-
 # @package Archivematica
-# @subpackage Ingest
+# @subpackage transcoder
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+#-- used to Escape to sql string
 
-set -e
+import sys
+import _mysql
+lines = sys.stdin.readlines()
+for line in lines:
+    print _mysql.escape_string(line)
 
-UUID="`uuid -v 4`"
-inputFile="%fileFullName%"
-mkdir "%outputDirectory%"
-
-a=0
-convert "$inputFile" /tmp/${UUID}.%d.ai
-
-for i in `find /tmp/${UUID}*`; do
-	inkscape $i --export-plain-svg="%outputDirectory%%prefix%%fileName%.${a}%postfix%.svg"
-	a=$(( $a + 1 ))
-done
-
-rm /tmp/${UUID}*
