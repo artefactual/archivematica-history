@@ -295,6 +295,13 @@ INSERT INTO FileIDsByExtension
     @fileID
 );
 
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'tiff',
+    @fileID
+);
+
 
 INSERT INTO CommandRelationships 
     (commandClassification, command, fileID)
@@ -1110,7 +1117,7 @@ INSERT INTO Commands
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('echo program=\\"inkscape\\"\\; version=\\"`inkscape -V`\\" '),
-    ('convert event detail')
+    ('inkscape event detail')
 );
 set @inkscapeEventDetailCommandID = LAST_INSERT_ID();
 
@@ -1157,5 +1164,98 @@ INSERT INTO CommandRelationships
 
 -- End Of ADD Normalization Path for .SVG --
 
+-- ADD Normalization Path for .PDF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .pdf file'
+);
+set @fileID = LAST_INSERT_ID();
 
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'pdf',
+    @fileID
+);
+
+
+INSERT INTO Commands 
+    (commandType, command, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo program=\\"Ghostscript\\"\\; version=\\"`gs --version`\\" '),
+    ('Ghostscript event detail')
+);
+set @GhostscriptEventDetailCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('sudo gs -dPDFA -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -dPDFACompatibilityPolicy=1 -sOutputFile="%outputDirectory%%prefix%%fileName%%postfix%.pdf" "%fileFullName%"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.pdf',
+    @GhostscriptEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to pdfa with gs')
+);
+set @gsToPDFACommandID = LAST_INSERT_ID();
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .PDF --
+
+-- ADD Normalization Path for .EPS --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .eps file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'eps',
+    @fileID
+);
+
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('ps2pdf  -dEPSCrop -dPDFA "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.pdf"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.pdf',
+    @ps2pdfEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to pdf with ps2pdf')
+);
+
+set @ps2pdfAIToPDFCommandID2 = LAST_INSERT_ID();
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ps2pdfAIToPDFCommandID2,
+    @fileID
+);
+
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @inkscapeToPlainSVGCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .EPS --
 
