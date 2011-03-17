@@ -118,6 +118,19 @@ def identifyCommands(fileName):
                 ret.append(row)
                 row = c.fetchone()
             break
+    if fileName.lower().endswith('.pst'):
+        c=transcoder.database.cursor()
+        sql = """SELECT CR.pk, CR.command, CR.GroupMember 
+        FROM CommandRelationships AS CR 
+        JOIN FileIDs ON CR.fileID=FileIDs.pk 
+        JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk 
+        WHERE FileIDs.description='A .pst file' 
+        AND CommandClassifications.classification = 'extract';"""
+        c.execute(sql)
+        row = c.fetchone()
+        while row != None:
+            ret.append(row)
+            row = c.fetchone()
     return ret
 
 if __name__ == '__main__':
