@@ -25,29 +25,14 @@
 set -e
 
 UUID="`uuid -v 4`"
-inputFile="$1"
-fileTitle="$2"
-outputDirectory="$3"
-
-fileUUID="$4"
-objectsPath="$5"
-eventUUID="$6"
-edate="$7"
-logsPath="$8"
+inputFile="%fileFullName%"
+mkdir "%outputDirectory%"
 
 a=0
-convert "$inputFile" /tmp/${UUID}fileTitle.%d.ai
+convert "$inputFile" /tmp/${UUID}.%d.ai
 
 for i in `find /tmp/${UUID}*`; do
-	echo $a Converting: $i
-	outputFileName=${outputDirectory}${fileTitle}.${a}.svg
-	inkscape $i --export-plain-svg=${outputFileName}
-	
-	if [ $a -ne 0 ]; then
-		outputFileUUID="`uuid -v 4`"
-		/usr/lib/transcoder/premisXMLlinker.py "${outputFileUUID}" "${outputFileName}" "${fileUUID}" "${objectsPath}" "${eventUUID}" "${edate}" "${logsPath}" "Undefined"
-	fi
-	
+	inkscape $i --export-plain-svg="%outputDirectory%%prefix%%fileName%.${a}%postfix%.svg"
 	a=$(( $a + 1 ))
 done
 
