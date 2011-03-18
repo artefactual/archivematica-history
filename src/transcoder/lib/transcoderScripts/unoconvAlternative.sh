@@ -21,18 +21,14 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-ddirname=`dirname $2`
-dbasename=`basename $2`  
+#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%
+#"%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.tif"
+
+outputExtension="PDF"
+ddirname="`dirname %fileFullName%`"
+dbasename="`basename %fileFullName%`"  
 cd "$ddirname"
-#cd "`dirname $0`"
+outputFile="%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}"
 
-inputFile="$dbasename"
-#outputFile="`dirname $4`/`basename $3`"
-outputFile="$3"
-
-echo converting $inputFile TO: $outputFile
-echo multithreaded test
-
-flock -x /var/lock/documentConversion.lock -c "\"`dirname $0`/unoconvAlternativeSupport.sh\" \"`dirname $0`\" \"${dbasename}\" \"${outputFile}\"" && mv "$3" "$4"
-#flock -x /var/lock/unoconv.lock -c "./unoconv2.sh $1 $2 $3 $4" 
+flock -x /var/lock/documentConversion.lock -c "\"/usr/lib/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\" \"/usr/lib/transcoder/transcoderScripts\" \"${dbasename}\" \"${outputFile}\"" && mv "${outputFile}" "%outputDirectory%"
 exit "$?"

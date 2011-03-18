@@ -1,7 +1,0 @@
-<formatPolicy>
-  <inherit></inherit>
-  <accessFormat>zip</accessFormat>
-  <preservationFormat>zip</preservationFormat>
-  <accessConversionCommand>%transcoderScriptsDir%PSTToZippedMbox.sh "%fileFullName%" "%accessFileDirectory%%fileTitle%.%accessFormat%"</accessConversionCommand>
-  <preservationConversionCommand>%transcoderScriptsDir%PSTToZippedMbox.sh "%fileFullName%" "%preservationFileDirectory%%fileTitle%.%preservationFormat%"</preservationConversionCommand>
-</formatPolicy>
