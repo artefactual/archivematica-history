@@ -35,7 +35,7 @@ from archivematicaMCPFileUUID import findUUIDFromFileUUIDxml
 DetoxDic={}
 UUIDsDic={}
  
-def loadFileUUIDsDic(logsDir):
+def loadFileUUIDsDic(logsDir, objectsDirectory):
     FileUUIDs_fh = open(logsDir+"FileUUIDs.log", "r")
  
     line = FileUUIDs_fh.readline()
@@ -47,6 +47,14 @@ def loadFileUUIDsDic(logsDir):
             fileName = fileName.replace("\n", "", 1)
             UUIDsDic[fileName] = fileUUID
         line = FileUUIDs_fh.readline()
+    
+    for w in os.walk(objectsDirectory):
+        op, directories, files = w
+        for p in files:
+            path = os.path.join(op, p)
+            path = path.__str__().replace(objectsDirectory, "objects/")
+            if not path in UUIDsDic:
+                UUIDsDic[path] = findUUIDFromFileUUIDxml(logsDir+"FileUUIDs.log", path, logsDir+"fileMeta/", updateSIPUUIDfile=True)
         
 if __name__ == '__main__':
     """This prints the contents for an Archivematica Clamscan Event xml file"""
@@ -55,7 +63,7 @@ if __name__ == '__main__':
     date = sys.argv[3]
     taskUUID = sys.argv[4]
 
-    loadFileUUIDsDic(logsDir)
+    loadFileUUIDsDic(logsDir, objectsDirectory)
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
     command = "sanitizeNames \"" + objectsDirectory + "\""
     lines = []

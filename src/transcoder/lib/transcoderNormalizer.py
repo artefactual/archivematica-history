@@ -57,7 +57,6 @@ def onceNormalized(command):
             path, directories, files = w
             for p in files:
                 p = os.path.join(path, p)
-                print "path: ", p
                 if os.path.isfile(p):
                     transcodedFiles.append(p)
     elif command.outputLocation:
