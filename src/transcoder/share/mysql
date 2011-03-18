@@ -1300,3 +1300,471 @@ INSERT INTO CommandRelationships
 
 -- End Of ADD Normalization Path for .EPS --
 
+-- Normalization with open office commands
+
+INSERT INTO Commands 
+    (commandType, command, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo program=\\"openOffice\\"\\; version=\\"\\" '),
+    ('inkscape event detail')
+);
+set @openOfficeEventDetailCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('# This file is part of Archivematica.\n
+#\n
+# Archivematica is free software: you can redistribute it and/or modify\n
+# it under the terms of the GNU General Public License as published by\n
+# the Free Software Foundation, either version 2 of the License, or\n
+# (at your option) any later version.\n
+#\n
+# Archivematica is distributed in the hope that it will be useful,\n
+# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
+# GNU General Public License for more details.\n
+#\n
+# You should have received a copy of the GNU General Public License\n
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
+\n
+\n
+# @package Archivematica\n
+# @subpackage Ingest\n
+# @author Joseph Perry <joseph@artefactual.com>\n
+# @version svn: $Id$\n
+\n
+#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%\n
+#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"\n
+\n
+outputExtension=\"pdf\"\n
+ddirname=\"`dirname \"%fileFullName%\"`\"\n
+dbasename=\"`basename \"%fileFullName%\"`\"  \n
+cd \"$ddirname\"\n
+outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
+\n
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\" && mv \"${outputFile}\" \"%outputDirectory%\"\n
+exit \"$?\"\n'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.pdf',
+    @openOfficeEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to pdf with openOffice')
+);
+set @openOfficeToPDFCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('# This file is part of Archivematica.\n
+#\n
+# Archivematica is free software: you can redistribute it and/or modify\n
+# it under the terms of the GNU General Public License as published by\n
+# the Free Software Foundation, either version 2 of the License, or\n
+# (at your option) any later version.\n
+#\n
+# Archivematica is distributed in the hope that it will be useful,\n
+# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
+# GNU General Public License for more details.\n
+#\n
+# You should have received a copy of the GNU General Public License\n
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
+\n
+\n
+# @package Archivematica\n
+# @subpackage Ingest\n
+# @author Joseph Perry <joseph@artefactual.com>\n
+# @version svn: $Id$\n
+\n
+#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%\n
+#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"\n
+\n
+outputExtension=\"odt\"\n
+ddirname=\"`dirname \"%fileFullName%\"`\"\n
+dbasename=\"`basename \"%fileFullName%\"`\"  \n
+cd \"$ddirname\"\n
+outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
+\n
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
+exit \"$?\"\n'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.odt',
+    @openOfficeEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to ODT with openOffice')
+);
+set @openOfficeToODTCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('# This file is part of Archivematica.\n
+#\n
+# Archivematica is free software: you can redistribute it and/or modify\n
+# it under the terms of the GNU General Public License as published by\n
+# the Free Software Foundation, either version 2 of the License, or\n
+# (at your option) any later version.\n
+#\n
+# Archivematica is distributed in the hope that it will be useful,\n
+# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
+# GNU General Public License for more details.\n
+#\n
+# You should have received a copy of the GNU General Public License\n
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
+\n
+\n
+# @package Archivematica\n
+# @subpackage Ingest\n
+# @author Joseph Perry <joseph@artefactual.com>\n
+# @version svn: $Id$\n
+\n
+#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%\n
+#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"\n
+\n
+outputExtension=\"odp\"\n
+ddirname=\"`dirname \"%fileFullName%\"`\"\n
+dbasename=\"`basename \"%fileFullName%\"`\"  \n
+cd \"$ddirname\"\n
+outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
+\n
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
+exit \"$?\"\n'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.odp',
+    @openOfficeEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to ODP with openOffice')
+);
+set @openOfficeToODPCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('# This file is part of Archivematica.\n
+#\n
+# Archivematica is free software: you can redistribute it and/or modify\n
+# it under the terms of the GNU General Public License as published by\n
+# the Free Software Foundation, either version 2 of the License, or\n
+# (at your option) any later version.\n
+#\n
+# Archivematica is distributed in the hope that it will be useful,\n
+# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
+# GNU General Public License for more details.\n
+#\n
+# You should have received a copy of the GNU General Public License\n
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
+\n
+\n
+# @package Archivematica\n
+# @subpackage Ingest\n
+# @author Joseph Perry <joseph@artefactual.com>\n
+# @version svn: $Id$\n
+\n
+#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%\n
+#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"\n
+\n
+outputExtension=\"ods\"\n
+ddirname=\"`dirname \"%fileFullName%\"`\"\n
+dbasename=\"`basename \"%fileFullName%\"`\"  \n
+cd \"$ddirname\"\n
+outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
+\n
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
+exit \"$?\"\n'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.ods',
+    @openOfficeEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to ODS with openOffice')
+);
+set @openOfficeToODSCommandID = LAST_INSERT_ID();
+
+
+-- END Normalization with open office commands
+
+-- ADD Normalization Path for .DOC --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .doc file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'doc',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @openOfficeToODTCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .DOC --
+
+-- ADD Normalization Path for .WBK --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .wbk file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'wbk',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @openOfficeToODTCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .WBK --
+
+-- ADD Normalization Path for .WBK --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .wbk file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'wbk',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @openOfficeToODTCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .WBK --
+
+
+-- ADD Normalization Path for .WPD --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .wpd file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'wpd',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @openOfficeToODTCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .WPD --
+
+-- ADD Normalization Path for .RTF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .rtf file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'rtf',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @openOfficeToODTCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .RTF --
+
+-- ADD Normalization Path for .DOCX --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .docx file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'docx',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .DOCX --
+
+-- ADD Normalization Path for .PPTX --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .pptx file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'pptx',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .PPTX --
+
+-- ADD Normalization Path for .PPT --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .ppt file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'ppt',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @openOfficeToODPCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .PPT --
+
+-- ADD Normalization Path for .XLS --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .xls file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'xls',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (commandClassification, command, fileID)
+    VALUES (
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @openOfficeToODSCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .XLS --
+
