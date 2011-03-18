@@ -31,6 +31,8 @@ import transcoder
 sys.path.append("/usr/lib/archivematica/MCPClient/clientScripts")
 from fileAddedToSIP import addFileToSIP
 
+removeOnceExtracted = True
+
 replacementDic = { \
         "%inputFile%": transcoder.fileFullName, \
         "%outputDirectory%": transcoder.fileFullName + "TODO-DATE", \
@@ -39,7 +41,8 @@ replacementDic = { \
 def onceExtracted(command):
     extractedFiles = []
     print "TODO - Metadata regarding removal of extracted archive"
-    os.remove(replacementDic["%inputFile%"])
+    if removeOnceExtracted:
+        os.remove(replacementDic["%inputFile%"])
     for w in os.walk(replacementDic["%outputDirectory%"]):
         path, directories, files = w
         for p in files:
@@ -119,6 +122,8 @@ def identifyCommands(fileName):
                 row = c.fetchone()
             break
     if fileName.lower().endswith('.pst'):
+        global removeOnceExtracted
+        removeOnceExtracted = False
         c=transcoder.database.cursor()
         sql = """SELECT CR.pk, CR.command, CR.GroupMember 
         FROM CommandRelationships AS CR 
