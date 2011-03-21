@@ -1,3 +1,6 @@
+set @fileIDByExtensionDefaultGroupMemberID = -1;
+set @fileIDByPronomDefaultGroupMemberID = 0;
+
 DROP TABLE IF EXISTS CommandTypes;
 CREATE TABLE CommandTypes (
     pk INT PRIMARY KEY AUTO_INCREMENT,
@@ -114,8 +117,9 @@ INSERT INTO Commands
 
 -- Associate default access with copy --
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     (SELECT pk FROM Commands WHERE description = 'Copying File.'),
     (SELECT pk FROM FileIDs WHERE description = 'Access Defaults')
@@ -143,8 +147,9 @@ INSERT INTO Commands
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'extract'),
     (SELECT pk FROM Commands WHERE description = 'Extracting 7zip compatable file.'),
     (SELECT pk FROM FileIDs WHERE description = '7ZipCompatable')
@@ -175,8 +180,9 @@ INSERT INTO Commands
 
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'extract'),
     (SELECT pk FROM Commands WHERE description = 'Extracting unrar-nonfree compatable file.'),
     (SELECT pk FROM FileIDs WHERE description = 'unrar-nonfreeCompatable')
@@ -216,8 +222,9 @@ INSERT INTO Commands
 set @readPSTtoMBOXCommandID = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'extract'),
     @readPSTtoMBOXCommandID,
     @fileID
@@ -254,7 +261,6 @@ set @convertToTifEventDetailCommandID = LAST_INSERT_ID();
 
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
-    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     ('convert "%fileFullName%" +compress "%outputDirectory%%prefix%%fileName%%postfix%.tif"'),
@@ -266,8 +272,9 @@ INSERT INTO Commands
 set @convertToTifCommandID = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @convertToTifCommandID,
     @fileID
@@ -304,16 +311,18 @@ INSERT INTO Commands
 set @convertToJpgCommandID = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @convertToTifCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @convertToJpgCommandID,
     @fileID
@@ -345,16 +354,18 @@ INSERT INTO FileIDsByExtension
 
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @convertToTifCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @convertToJpgCommandID,
     @fileID
@@ -379,16 +390,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @convertToTifCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @convertToJpgCommandID,
     @fileID
@@ -412,8 +425,9 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @convertToJpgCommandID,
     @fileID
@@ -437,8 +451,9 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @convertToJpgCommandID,
     @fileID
@@ -462,16 +477,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @convertToTifCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @convertToJpgCommandID,
     @fileID
@@ -495,16 +512,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @convertToTifCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @convertToJpgCommandID,
     @fileID
@@ -568,16 +587,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToMXFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMPGCommandID,
     @fileID
@@ -601,16 +622,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToMXFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMPGCommandID,
     @fileID
@@ -634,16 +657,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToMXFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMPGCommandID,
     @fileID
@@ -667,16 +692,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToMXFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMPGCommandID,
     @fileID
@@ -700,16 +727,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToMXFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMPGCommandID,
     @fileID
@@ -733,16 +762,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToMXFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMPGCommandID,
     @fileID
@@ -766,16 +797,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToMXFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMPGCommandID,
     @fileID
@@ -838,16 +871,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToWAVCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMP3CommandID,
     @fileID
@@ -871,16 +906,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToWAVCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMP3CommandID,
     @fileID
@@ -904,16 +941,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToWAVCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMP3CommandID,
     @fileID
@@ -937,16 +976,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToWAVCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMP3CommandID,
     @fileID
@@ -970,16 +1011,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToWAVCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMP3CommandID,
     @fileID
@@ -1003,16 +1046,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @ffmpegToWAVCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMP3CommandID,
     @fileID
@@ -1097,8 +1142,9 @@ rm /tmp/${UUID}*\n'),
 set @transcoderAIToSVGsCommandID = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @transcoderAIToSVGsCommandID,
     @fileID
@@ -1128,8 +1174,9 @@ INSERT INTO Commands
 set @ps2pdfAIToPDFCommandID = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ps2pdfAIToPDFCommandID,
     @fileID
@@ -1188,16 +1235,18 @@ INSERT INTO Commands
 set @inkscapeToPlainSVGCommandID = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @inkscapeToPDFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @inkscapeToPlainSVGCommandID,
     @fileID
@@ -1243,8 +1292,371 @@ INSERT INTO Commands
 set @gsToPDFACommandID = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+
+
+-- fmt/14	Acrobat PDF 1.0 - Portable Document Format
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF 1.0 - Portable Document Format'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/14',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/15	Acrobat PDF 1.1 - Portable Document Format
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF 1.1 - Portable Document Format'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/15',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/16	Acrobat PDF 1.2 - Portable Document Format
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF 1.2 - Portable Document Format'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/16',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/17	Acrobat PDF 1.3 - Portable Document Format
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF 1.3 - Portable Document Format'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/17',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/18	Acrobat PDF 1.4 - Portable Document Format
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF 1.4 - Portable Document Format'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/18',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/19	Acrobat PDF 1.5 - Portable Document Format
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF 1.5 - Portable Document Format'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/19',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/20	Acrobat PDF 1.6 - Portable Document Format
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF 1.6 - Portable Document Format'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/20',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/276	Acrobat PDF 1.7 - Portable Document Format
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF 1.7 - Portable Document Format'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/276',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/144	Acrobat PDF/X - Portable Document Format - Exchange 1:1999
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF/X - Portable Document Format - Exchange 1:1999'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/144',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/145	Acrobat PDF/X - Portable Document Format - Exchange 1:2001
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF/X - Portable Document Format - Exchange 1:2001'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/145',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/157	Acrobat PDF/X - Portable Document Format - Exchange 1a:2001
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF/X - Portable Document Format - Exchange 1a:2001'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/157',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/146	Acrobat PDF/X - Portable Document Format - Exchange 1a:2003
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF/X - Portable Document Format - Exchange 1a:2003'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/146',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/147	Acrobat PDF/X - Portable Document Format - Exchange 2:2003
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF/X - Portable Document Format - Exchange 2:2003'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/147',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/158	Acrobat PDF/X - Portable Document Format - Exchange 3:2002
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF/X - Portable Document Format - Exchange 3:2002'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/158',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @gsToPDFACommandID,
+    @fileID
+);
+
+-- fmt/148	Acrobat PDF/X - Portable Document Format - Exchange 3:2003
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Acrobat PDF/X - Portable Document Format - Exchange 3:2003'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByPronom
+    (FileID, FileIDs)
+    VALUES (
+    'fmt/148',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByPronomDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @gsToPDFACommandID,
     @fileID
@@ -1282,8 +1694,9 @@ INSERT INTO Commands
 set @ps2pdfAIToPDFCommandID2 = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ps2pdfAIToPDFCommandID2,
     @fileID
@@ -1291,8 +1704,9 @@ INSERT INTO CommandRelationships
 
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @inkscapeToPlainSVGCommandID,
     @fileID
@@ -1502,16 +1916,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @openOfficeToPDFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @openOfficeToODTCommandID,
     @fileID
@@ -1535,16 +1951,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @openOfficeToPDFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @openOfficeToODTCommandID,
     @fileID
@@ -1568,16 +1986,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @openOfficeToPDFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @openOfficeToODTCommandID,
     @fileID
@@ -1602,16 +2022,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @openOfficeToPDFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @openOfficeToODTCommandID,
     @fileID
@@ -1635,20 +2057,24 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @openOfficeToPDFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @openOfficeToODTCommandID,
     @fileID
 );
+
+-- fmt/47
 
 -- End Of ADD Normalization Path for .RTF --
 
@@ -1668,8 +2094,9 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @openOfficeToPDFCommandID,
     @fileID
@@ -1693,8 +2120,9 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @openOfficeToPDFCommandID,
     @fileID
@@ -1718,16 +2146,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @openOfficeToPDFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @openOfficeToODPCommandID,
     @fileID
@@ -1751,16 +2181,18 @@ INSERT INTO FileIDsByExtension
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @openOfficeToPDFCommandID,
     @fileID
 );
 
 INSERT INTO CommandRelationships 
-    (commandClassification, command, fileID)
+    (GroupMember, commandClassification, command, fileID)
     VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
     @openOfficeToODSCommandID,
     @fileID

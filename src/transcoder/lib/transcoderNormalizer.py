@@ -31,6 +31,7 @@ from optparse import OptionParser
 import transcoder
 import uuid
 from premisXMLlinker import xmlNormalize 
+from getPronomsFromPremis import getPronomsFromPremis
 
 print "Todo: change outputFileUUID to task uuid on first run"
 global replacementDic
@@ -99,7 +100,22 @@ def identifyCommands(fileName):
         row = c.fetchone()
         while row != None:
             ret.append(row)
-            row = c.fetchone()   
+            row = c.fetchone()  
+            
+    for pronomID in getPronomsFromPremis(opts.logsDirectory + "fileMeta/" + opts.fileUUID + ".xml"):
+        sql = """SELECT CR.pk, CR.command, CR.GroupMember 
+        FROM CommandRelationships AS CR 
+        JOIN FileIDs ON CR.fileID=FileIDs.pk 
+        JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
+        JOIN FileIDsByPronom AS FIBP  ON FileIDs.pk = FIBP.FileIDs 
+        WHERE FIBP.FileID = '""" + pronomID.__str__() + """'  
+        AND CommandClassifications.classification = '""" + opts.commandClassifications +"""';"""
+        c.execute(sql)
+        row = c.fetchone()
+        while row != None:
+            ret.append(row)
+            row = c.fetchone()         
+     
     if not len(ret):
         if opts.commandClassifications == "normalize":
             if inPreservationFormat():
