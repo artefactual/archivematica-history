@@ -148,15 +148,15 @@ class CommandLinker:
     def __init__(self, commandLinker):
         self.pk, self.command, self.group = commandLinker
         if self.command in commandObjects:
-            self.commandObject = commandObjects[command]
+            self.commandObject = commandObjects[self.command]
         else:
             co =Command(self.command.__str__())
             self.commandObject = co
             commandObjects[self.command] = co
         
         if self.group in groupObjects:
-            self.groupObject = groupObjects[group]
-            groupObjects[group].members.append(self)
+            self.groupObject = groupObjects[self.group]
+            groupObjects[self.group].members.append(self)
         else:
             go =Group(self.group, [self])
             self.groupObject = go
@@ -223,7 +223,7 @@ def main(fileName):
     
     #execute
     for g in groupObjects:
-        if g > 0 or g < LowerEndMainGroupMax:
+        if (g > 0 or g < LowerEndMainGroupMax) and len(groupObjects[g]):
             for group in groupObjects[g]:
                 for cl in group.members:
                     cl.execute()
