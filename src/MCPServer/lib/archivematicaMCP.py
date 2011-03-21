@@ -608,7 +608,7 @@ class watchDirectory(ProcessEvent):
         self.config = config
     def process_IN_CREATE(self, event):
         """ Traditionally, archivematica does not support copying to watch directories."""
-        actOnCopied = True
+        actOnCopied = False
         if actOnCopied:
             self.process_IN_MOVED_TO(event)
         else:

@@ -22,7 +22,21 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+set -e
+
 AIP="$1"
+bname="`basename "$1"`"
 AIPsStore="$2"
+
 mv "$AIP" "${AIPsStore}."
+mkdir "/tmp/${bname}"
+7z x -bd -o"/tmp/${bname}" "${AIPsStore}${bname}/*.zip"
+cd "/tmp/${bname}/"
+cd `ls`
+md5deep -x ./tagmanifest-md5.txt ./bagit.txt ./bag-info.txt manifest-md5.txt
+md5deep -r -x ./manifest-md5.txt ./data
+
+#"`dirname "$0"checkAIPIntegrity.py`" 
+rm -r "/tmp/${bname}/"
+
 exit $?
