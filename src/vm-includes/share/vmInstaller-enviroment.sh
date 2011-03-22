@@ -56,32 +56,32 @@ cp ${includesDir}apache.default /etc/apache2/sites-available/default
 
 
 #Install externals/archivematica
-mkdir -p /home/demo/Desktop
-cp -a ${includesDir}Docs /home/demo/Docs
+mkdir -p /home/${USER}/Desktop
+cp -a ${includesDir}Docs /home/${USER}/Docs
 cp -a enviromentConfigFiles/exports /etc/exports
-ln -s /home/demo/Docs /home/demo/Desktop
+ln -s /home/${USER}/Docs /home/${USER}/Desktop
 
 
-cp -a ${includesDir}sampledata /home/demo/testFiles
-#cp -a ${includesDir}postBuildScripts /home/demo/postBuildScripts
+cp -a ${includesDir}sampledata /home/${USER}/testFiles
+#cp -a ${includesDir}postBuildScripts /home/${USER}/postBuildScripts
 
 #XFCE configuration
-mkdir /home/demo/.config
-mkdir /home/demo/.config/Thunar
-mkdir /home/demo/.config/autostart
-mkdir -p /home/demo/.config/xfce4/desktop
-mkdir -p /home/demo/.config/xfce4/panel
+mkdir /home/${USER}/.config
+mkdir /home/${USER}/.config/Thunar
+mkdir /home/${USER}/.config/autostart
+mkdir -p /home/${USER}/.config/xfce4/desktop
+mkdir -p /home/${USER}/.config/xfce4/panel
 
 #add archivematica/dashboard icons
 cp ${includesDir}desktopShortcuts/dashboard-desktop-icon.png /usr/share/icons
 #cp ${includesDir}desktopShortcuts/dcb-desktop-icon.png /usr/share/icons
 cp ${includesDir}desktopShortcuts/ica-atom-desktop-icon.png /usr/share/icons
 cp ${includesDir}desktopShortcuts/archivematica-xubuntu-steel.png /usr/share/xfce4/backdrops/xubuntu-karmic.png
-cp ${includesDir}desktopShortcuts/ica-atom.desktop /home/demo/Desktop
-#cp ${includesDir}desktopShortcuts/dcb.desktop /home/demo/Desktop
-cp ${includesDir}desktopShortcuts/dashboard.desktop /home/demo/Desktop
-cp ${includesDir}desktopShortcuts/Terminal.desktop /home/demo/Desktop
-cp ${includesDir}desktopShortcuts/vlc.desktop /home/demo/Desktop
+cp ${includesDir}desktopShortcuts/ica-atom.desktop /home/${USER}/Desktop
+#cp ${includesDir}desktopShortcuts/dcb.desktop /home/${USER}/Desktop
+cp ${includesDir}desktopShortcuts/dashboard.desktop /home/${USER}/Desktop
+cp ${includesDir}desktopShortcuts/Terminal.desktop /home/${USER}/Desktop
+cp ${includesDir}desktopShortcuts/vlc.desktop /home/${USER}/Desktop
 
 #add launcher scripts
 cp ${includesDir}desktopShortcuts/runica-atom.sh /usr/bin
@@ -90,21 +90,21 @@ cp ${includesDir}desktopShortcuts/rundashboard.sh /usr/bin
 
 
 #xfce4 configuration
-cp ${includesDir}panel/* /home/demo/.config/xfce4/panel
+cp ${includesDir}panel/* /home/${USER}/.config/xfce4/panel
 cp ${includesDir}xfceCustomization/xfce4-desktop.xml /etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
 cp ${includesDir}xfceCustomization/xfce4-session.xml /etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
-cp ${includesDir}xfceCustomization/icons.screen0.rc /home/demo/.config/xfce4/desktop
+cp ${includesDir}xfceCustomization/icons.screen0.rc /home/${USER}/.config/xfce4/desktop
 cp ${includesDir}xfceCustomization/user-dirs.defaults /etc/xdg
 #this is handled by /usr/share/archivematica/thunar-uca
-#cp ${includesDir}xfceCustomization/uca.xml /home/demo/.config/Thunar
-cp ${includesDir}xfceCustomization/thunarrc /home/demo/.config/Thunar
-cp ${includesDir}xfceCustomization/thunar.desktop /home/demo/.config/autostart
-cp ${includesDir}xfceCustomization/gtk-bookmarks /home/demo/.gtk-bookmarks
+#cp ${includesDir}xfceCustomization/uca.xml /home/${USER}/.config/Thunar
+cp ${includesDir}xfceCustomization/thunarrc /home/${USER}/.config/Thunar
+cp ${includesDir}xfceCustomization/thunar.desktop /home/${USER}/.config/autostart
+cp ${includesDir}xfceCustomization/gtk-bookmarks /home/${USER}/.gtk-bookmarks
 cp ${includesDir}xfceCustomization/gdm.custom.conf /etc/gdm/custom.conf
 
 #fix permissions 
-chmod 444 /home/demo/.config/xfce4/panel
-chown -R demo:demo /home/demo
+chmod 444 /home/${USER}/.config/xfce4/panel
+chown -R ${USER}:${USER} /home/${USER}
 
 ${includesDir}vmInstaller-mcp-db.sh
 #${includesDir}vmInstaller-dcb.sh
@@ -112,7 +112,7 @@ ${includesDir}vmInstaller-ica-atom.sh
 #${includesDir}vmInstaller-qubit.sh
 
 sudo aptitude remove xscreensaver
-sudo gpasswd -a demo archivematica
+sudo gpasswd -a ${USER} archivematica
 echo " "
 echo "===PLEASE REBOOT TO ENABLE NEW GROUP SETTINGS==="
 echo " "
