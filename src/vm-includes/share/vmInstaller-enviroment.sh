@@ -107,6 +107,7 @@ chmod 444 /home/${USER}/.config/xfce4/panel
 chown -R ${USER}:${USER} /home/${USER}
 
 ${includesDir}vmInstaller-mcp-db.sh
+${includesDir}vmInstaller-transcoder-db.sh
 #${includesDir}vmInstaller-dcb.sh
 ${includesDir}vmInstaller-ica-atom.sh
 #${includesDir}vmInstaller-qubit.sh
