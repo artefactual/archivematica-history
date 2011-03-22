@@ -65,6 +65,8 @@ import copy
 import time
 import subprocess
 import shlex
+import signal
+import sys
 import lxml.etree as etree
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
@@ -805,6 +807,7 @@ def archivematicaMCPServerListen():
 
 def startXMLRPCServer():
     """Starts the XML RPC server on the port and interface defined in /etc/archivematica/MCPServer/serverConfig.conf"""
+    global server
     server = SimpleXMLRPCServer( (archivematicaVars["MCPArchivematicaXMLClients"], string.atoi(archivematicaVars["MCPArchivematicaXMLPort"])))
     print "XML RPC Listening: " + archivematicaVars["MCPArchivematicaXMLClients"] + ":" + archivematicaVars["MCPArchivematicaXMLPort"] 
     server.register_function(getJobsAwaitingApproval)
@@ -813,8 +816,21 @@ def startXMLRPCServer():
     t = threading.Thread(target=server.serve_forever)
     t.start()
 
+
+def signal_handler(signalReceived, frame):
+    global server
+    server.shutdown()
+    reactor.stop()
+    threads = threading.enumerate()
+    mt = None
+    for thread in threads:
+        if isinstance(thread, ThreadedNotifier):
+            thread.stop()
+signal.signal(signal.SIGINT, signal_handler)
+
 if __name__ == '__main__':
     configs = loadConfigs()
     directoryWatchList = loadDirectoryWatchLlist(configs)
     startXMLRPCServer()
     archivematicaMCPServerListen()
+    
