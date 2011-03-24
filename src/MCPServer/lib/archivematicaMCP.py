@@ -44,7 +44,7 @@
 
 
 
-
+import signal
 import os
 import pyinotify
 from archivematicaReplacementDics import replacementDics 
@@ -65,14 +65,15 @@ import copy
 import time
 import subprocess
 import shlex
-import signal
 import sys
 import lxml.etree as etree
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 import xmlrpclib
-from SimpleXMLRPCServer import SimpleXMLRPCServer
+#from SimpleXMLRPCServer import SimpleXMLRPCServer
+from twisted.web import xmlrpc
+from twisted.web import server
 
 archivematicaVars = loadConfig("/etc/archivematica/MCPServer/serverConfig.conf")
 
@@ -117,18 +118,55 @@ def writeToFile(output, fileName):
         print "No output, or file specified"
     return 0
 
-# Used by RPC
-#@returns - string of XML representation of JOBs awaiting approval.
-def getJobsAwaitingApproval():
-    """returns - string of XML representation of JOBs awaiting approval."""
-    jobsLock.acquire()
-    ret = etree.Element("JobsAwaitingApproval")
-    for job in jobsAwaitingApproval:
-        ret.append(job.xmlify())
-    jobsLock.release()
-    #print etree.tostring(ret, encoding=unicode, method='text')
-    #return etree.tostring(ret, encoding=unicode, method='text')
-    return etree.tostring(ret, pretty_print=True)
+class archivematicaXMLrpc(xmlrpc.XMLRPC):
+    # Used by RPC
+    #@returns - string of XML representation of JOBs awaiting approval.
+    def xmlrpc_getJobsAwaitingApproval(self):
+        """returns - string of XML representation of JOBs awaiting approval."""
+        jobsLock.acquire()
+        ret = etree.Element("JobsAwaitingApproval")
+        for job in jobsAwaitingApproval:
+            ret.append(job.xmlify())
+        jobsLock.release()
+        #print etree.tostring(ret, encoding=unicode, method='text')
+        #return etree.tostring(ret, encoding=unicode, method='text')
+        return etree.tostring(ret, pretty_print=True)
+
+    # Used by RPC
+    #Searches for job with matching UUID in the 
+    #jobsAwaitingApproval list, and if found, rejects it.
+    #@jobUUID - string to match to a job's UUID
+    def xmlrpc_rejectJob(self, jobUUID):
+        """Reject job with the give string UUID"""
+        theJob = None
+        for job in jobsAwaitingApproval:
+            if job.UUID.__str__() == jobUUID:
+                theJob = job
+                break
+        if theJob:
+            print "Rejecting Job: " + theJob.UUID.__str__()
+            theJob.reject()
+            return "Rejecting Job: " + theJob.UUID.__str__()
+        return "Rejecting Job Failed: " + jobUUID
+
+    
+    # Used by RPC
+    #Searches for job with matching UUID in the 
+    #jobsAwaitingApproval list, and if found, approves it.
+    #@jobUUID - string to match to a job's UUID
+    def xmlrpc_approveJob(self, jobUUID):
+        """Approves job with the give string UUID"""
+        theJob = None
+        for job in jobsAwaitingApproval:
+            if job.UUID.__str__() == jobUUID:
+                theJob = job
+                break
+        if theJob:
+            print "Approving Job: " + theJob.UUID.__str__()
+            theJob.approve()
+            return "Approving Job: " + theJob.UUID.__str__()
+        return "Approving Job Failed " + jobUUID
+
 
 # Used to move/rename Directories that the archivematica user
 # may or may not have writes to move.
@@ -137,40 +175,6 @@ def renameAsSudo(source, destination):
     commandString = "sudo mv \"" + source + "\"   \"" + destination + "\""
     p = subprocess.Popen(shlex.split(commandString))
     p.wait()
-
-# Used by RPC
-#Searches for job with matching UUID in the 
-#jobsAwaitingApproval list, and if found, approves it.
-#@jobUUID - string to match to a job's UUID
-def approveJob(jobUUID):
-    """Approves job with the give string UUID"""
-    theJob = None
-    for job in jobsAwaitingApproval:
-        if job.UUID.__str__() == jobUUID:
-            theJob = job
-            break
-    if theJob:
-        print "Approving Job: " + theJob.UUID.__str__()
-        theJob.approve()
-        return "Approving Job: " + theJob.UUID.__str__()
-    return "Approving Job Failed " + jobUUID
-
-# Used by RPC
-#Searches for job with matching UUID in the 
-#jobsAwaitingApproval list, and if found, rejects it.
-#@jobUUID - string to match to a job's UUID
-def rejectJob(jobUUID):
-    """Reject job with the give string UUID"""
-    theJob = None
-    for job in jobsAwaitingApproval:
-        if job.UUID.__str__() == jobUUID:
-            theJob = job
-            break
-    if theJob:
-        print "Rejecting Job: " + theJob.UUID.__str__()
-        theJob.reject()
-        return "Rejecting Job: " + theJob.UUID.__str__()
-    return "Rejecting Job Failed: " + jobUUID
 
 #This is where the Job processing starts.
 #directory is moved to processing directory 
@@ -799,38 +803,31 @@ class archivematicaMCPServerProtocol(LineReceiver):
 
 def archivematicaMCPServerListen():
     """ Start listening for archivematica clients to connect."""
+    xmlRPC = archivematicaXMLrpc()
+    #xmlrpc.addIntrospection(xmlRPC)
+    reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaXMLPort"]), server.Site(xmlRPC))
+    print "XML RPC Listening: " + archivematicaVars["MCPArchivematicaXMLPort"]
+    
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
     reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory, interface=archivematicaVars["MCPArchivematicaServerInterface"])
     print "MCP Listening on: " + archivematicaVars["MCPArchivematicaServerInterface"] + ":" + archivematicaVars["MCPArchivematicaServerPort"] 
-    reactor.run() #Needs to be called from main thread.
-
-def startXMLRPCServer():
-    """Starts the XML RPC server on the port and interface defined in /etc/archivematica/MCPServer/serverConfig.conf"""
-    global server
-    server = SimpleXMLRPCServer( (archivematicaVars["MCPArchivematicaXMLClients"], string.atoi(archivematicaVars["MCPArchivematicaXMLPort"])))
-    print "XML RPC Listening: " + archivematicaVars["MCPArchivematicaXMLClients"] + ":" + archivematicaVars["MCPArchivematicaXMLPort"] 
-    server.register_function(getJobsAwaitingApproval)
-    server.register_function(approveJob)
-    server.register_function(rejectJob)
-    t = threading.Thread(target=server.serve_forever)
-    t.start()
-
+    reactor.run(installSignalHandlers=False) #Needs to be called from main thread.
 
 def signal_handler(signalReceived, frame):
-    global server
-    server.shutdown()
+    print signalReceived, frame
     reactor.stop()
     threads = threading.enumerate()
-    mt = None
     for thread in threads:
         if isinstance(thread, ThreadedNotifier):
             thread.stop()
-signal.signal(signal.SIGINT, signal_handler)
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)
+
     configs = loadConfigs()
     directoryWatchList = loadDirectoryWatchLlist(configs)
-    startXMLRPCServer()
+    #startXMLRPCServer()
     archivematicaMCPServerListen()
     

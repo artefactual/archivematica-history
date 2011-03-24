@@ -11,7 +11,7 @@ sudo rm /usr/bin/runArchivematicaMCPClient.sh
 sudo rm /usr/bin/upload-qubit 
 sudo rm /usr/bin/easy-extract
 sudo rm /usr/bin/transcoder
-sudo rm /usr/bin/archivematicaCreateDublincore
+#sudo rm /usr/bin/archivematicaCreateDublincore
 sudo rm /usr/bin/archivematicaCreateMD5
 sudo rm /usr/bin/archivematicaRestructureForCompliance
 sudo rm /usr/bin/sanitizeNames
@@ -25,4 +25,4 @@ sudo rm -r /usr/lib/easy-extract
 
 sudo rm -r /var/archivematica/
 
-sudo mv /etc/apache2/sites-available/default{.dist,}
+#sudo mv /etc/apache2/sites-available/default{.dist,}
