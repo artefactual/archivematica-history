@@ -34,7 +34,7 @@ else
     tmpDir=`pwd`
     cd "${target}metadata/"
     createDublinCore
-    cd $tmpDir
+    cd "$tmpDirz"
 fi
 
 
