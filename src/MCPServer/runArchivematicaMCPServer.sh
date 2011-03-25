@@ -23,11 +23,4 @@
 # @version svn: $Id$
 
 #source /etc/archivematica/archivematicaConfig.conf
-set -e
-cd /usr/lib/archivematica/MCPServer/
-pidFile="/tmp/archivematicaMCPServer.pid"
-logFile="/var/archivematica/sharedDirectory/archivematicaMCPServer.log"
-sudo -u archivematica twistd -y /usr/lib/archivematica/MCPServer/archivematicaMCP.py --pidfile "$pidFile" -l "$logFile" #--gid archivematica
-sudo -u archivematica chmod 755 "$pidFile"
-sudo -u archivematica chmod 755 "$logFile"
-echo PID: `cat "$pidFile"`
+sudo service archivematicaMCPServerD restart
