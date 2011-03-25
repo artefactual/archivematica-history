@@ -74,6 +74,9 @@ import xmlrpclib
 #from SimpleXMLRPCServer import SimpleXMLRPCServer
 from twisted.web import xmlrpc
 from twisted.web import server
+from twisted.application import service
+from twisted.application import internet
+application = service.Application("archivematicaMCPServer")
 
 archivematicaVars = loadConfig("/etc/archivematica/MCPServer/serverConfig.conf")
 
@@ -664,7 +667,7 @@ def loadDirectoryWatchLlist(configs):
             watchedDirectories.append(config.watchDirectory)
             notifier = ThreadedNotifier(wm, watchDirectory(config))
             wdd = wm.add_watch(config.watchDirectory, mask, rec=False)
-            notifier.start()            
+            notifier.start()           
         else:
             print "Tried to watch a directory that is already being watched: " + config.watchDirectory
     print "Watching the following directories:"
@@ -803,16 +806,32 @@ class archivematicaMCPServerProtocol(LineReceiver):
 
 def archivematicaMCPServerListen():
     """ Start listening for archivematica clients to connect."""
+    global application
+    
+    archivematicaService = archivematicaServices()
+    archivematicaService.setServiceParent(application)
+    #xmlFactory = twistedProtocol.ServerFactory()
     xmlRPC = archivematicaXMLrpc()
+    #xmlFactory.protocol = xmlRPC
+    xmlRPCService = internet.TCPServer(string.atoi(archivematicaVars["MCPArchivematicaXMLPort"]), server.Site(xmlRPC))
+    xmlRPCService.setServiceParent(application)
+    
+    #xmlRPC = archivematicaXMLrpc()
     #xmlrpc.addIntrospection(xmlRPC)
-    reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaXMLPort"]), server.Site(xmlRPC))
-    print "XML RPC Listening: " + archivematicaVars["MCPArchivematicaXMLPort"]
+    #reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaXMLPort"]), server.Site(xmlRPC))
+    #print "XML RPC Listening: " + archivematicaVars["MCPArchivematicaXMLPort"]
     
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
-    reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory, interface=archivematicaVars["MCPArchivematicaServerInterface"])
-    print "MCP Listening on: " + archivematicaVars["MCPArchivematicaServerInterface"] + ":" + archivematicaVars["MCPArchivematicaServerPort"] 
-    reactor.run(installSignalHandlers=False) #Needs to be called from main thread.
+    
+    MCPServerService = internet.TCPServer(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory, interface=archivematicaVars["MCPArchivematicaServerInterface"])
+    MCPServerService.setServiceParent(application)
+    
+    
+    #reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory, interface=archivematicaVars["MCPArchivematicaServerInterface"])
+    #print "MCP Listening on: " + archivematicaVars["MCPArchivematicaServerInterface"] + ":" + archivematicaVars["MCPArchivematicaServerPort"] 
+    #reactor.run(installSignalHandlers=False) #Needs to be called from main thread.
+    
 
 def signal_handler(signalReceived, frame):
     print signalReceived, frame
@@ -821,13 +840,28 @@ def signal_handler(signalReceived, frame):
     for thread in threads:
         if isinstance(thread, ThreadedNotifier):
             thread.stop()
+            
+class archivematicaServices(service.Service):
+    def startService(self):
+        print "Service Started"
+        configs = loadConfigs()
+        directoryWatchList = loadDirectoryWatchLlist(configs)
+        service.Service.startService(self)
+        
+        
+    def stopService(self):
+        print "Stopping Service"
+        service.Service.stopService(self)
+        threads = threading.enumerate()
+        for thread in threads:
+            if isinstance(thread, ThreadedNotifier):
+                thread.stop()
 
-if __name__ == '__main__':
-    signal.signal(signal.SIGTERM, signal_handler)
-    signal.signal(signal.SIGINT, signal_handler)
+#if __name__ == '__main__':
+#    signal.signal(signal.SIGTERM, signal_handler)
+#    signal.signal(signal.SIGINT, signal_handler)
 
-    configs = loadConfigs()
-    directoryWatchList = loadDirectoryWatchLlist(configs)
-    #startXMLRPCServer()
-    archivematicaMCPServerListen()
+#configs = loadConfigs()
+#directoryWatchList = loadDirectoryWatchLlist(configs)
+archivematicaMCPServerListen()
     
