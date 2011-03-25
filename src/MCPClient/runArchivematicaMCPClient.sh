@@ -23,6 +23,8 @@
 # @version svn: $Id$
 
 #source /etc/archivematica/archivematicaConfig.conf
+sudo service archivematicaMCPClientD restart
+exit $?
 
 echo Please enter sudo password, if you have not already done so.
 sudo echo Thank you.

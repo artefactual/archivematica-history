@@ -77,7 +77,7 @@ case "$1" in
 	;;
 
   *)
-	log_action_msg "Usage: /etc/init.d/ssh {start|stop|reload|force-reload|restart|try-restart|status}"
+	echo "usage [start | stop | restart ]"
 	exit 1
 esac
 

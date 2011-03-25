@@ -16,6 +16,8 @@ sudo rm /usr/bin/archivematicaCreateMD5
 sudo rm /usr/bin/archivematicaRestructureForCompliance
 sudo rm /usr/bin/sanitizeNames
 sudo rm /usr/bin/createDublinCore
+sudo rm "/etc/init.d/archivematicaMCPServerD"
+sudo rm "/etc/init.d/archivematicaMCPClientD"
 
 sudo rm -r /usr/lib/transcoder
 sudo rm -r /usr/lib/createDublinCore

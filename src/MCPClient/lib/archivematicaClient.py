@@ -39,6 +39,9 @@ from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
 from socket import gethostname
+from twisted.application import service
+from twisted.application import internet
+
 
 archivematicaVars = loadConfig("/etc/archivematica/MCPClient/clientConfig.conf")
 supportedModules = loadConfig(archivematicaVars["archivematicaClientModules"])
@@ -172,11 +175,15 @@ class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
         reactor.stop()
 
 
-if __name__ == '__main__':
-    f = archivematicaMCPClientProtocolFactory()
-    t = reactor.connectTCP(archivematicaVars["MCPArchivematicaServer"], string.atoi(archivematicaVars["MCPArchivematicaServerPort"]), f)
-    print "Connecting To: " + archivematicaVars["MCPArchivematicaServer"] + ":" + archivematicaVars["MCPArchivematicaServerPort"]
-    reactor.run()
-    print "above is a blocking call. This is executed once client disconnects"
+#if __name__ == '__main__':
+application = service.Application("archivematicaMCPClient")
+f = archivematicaMCPClientProtocolFactory()
+MCPClientService = internet.TCPClient(archivematicaVars["MCPArchivematicaServer"], string.atoi(archivematicaVars["MCPArchivematicaServerPort"]), f)
+MCPClientService.setServiceParent(application)
+
+#t = reactor.connectTCP(archivematicaVars["MCPArchivematicaServer"], string.atoi(archivematicaVars["MCPArchivematicaServerPort"]), f)
+print "Connecting To: " + archivematicaVars["MCPArchivematicaServer"] + ":" + archivematicaVars["MCPArchivematicaServerPort"]
+#reactor.run()
+#print "above is a blocking call. This is executed once client disconnects"
   
   
