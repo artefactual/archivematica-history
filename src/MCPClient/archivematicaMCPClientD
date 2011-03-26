@@ -69,7 +69,7 @@ startOODaemon() {
 startArchivematica() {
     echo "Starting"
     tmpDir="`pwd 2>/dev/null`"
-    startOODaemon
+    #startOODaemon
     cd /usr/lib/archivematica/MCPClient/
     sudo -u archivematica twistd -y /usr/lib/archivematica/MCPClient/archivematicaClient.py --pidfile "$pidFile" -l "$logFile" #--gid archivematica
     sudo -u archivematica chmod 755 "$pidFile"
