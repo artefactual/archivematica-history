@@ -28,6 +28,11 @@
 # Modified  URL_Base to'http://localhost/ica-atom/index.php'
 # @author: Joseph Perry <joseph@artefactual.com>
 
+# Edit
+# Added option 'UUIDPrefixed' to indicate file names are prefixed with a uuid.
+# This uuid should be the uuid of the file they represent.  
+# @author: Joseph Perry <joseph@artefactual.com>
+
 
 import cookielib
 import shutil
@@ -55,6 +60,7 @@ URL_CREATE_DO = URL_BASE + '/;digitalobject/create'
 URL_CREATE_ISAAR = URL_BASE + '/;create/isaar'
 URL_AUTOCOMPLETE_ACTOR = URL_BASE + '/;actor/autocomplete'
 URL_SEARCH_INFORMATION_OBJECT = URL_BASE + '/;search/index'
+UUID_LEN=36
 
 # Some static values
 ROOT_ID = '/1;isad'
@@ -235,13 +241,21 @@ def upload(opts):
 
     # Iterate over files in objects/ directory
     for file in os.listdir(opts['file'] + '/objects'):
-
+      
+      title = file
+      if opts['UUIDPrefixed']:
+          uuid = file[:UUID_LEN]
+          title = file[UUID_LEN + 1:]
+          print "UUID: " + uuid + " -> " 
+      
       # Create information object
-      data = { 'title' : file, 'parent' : '/' + parent_id + ';isad' }
+      data = { 'title' : title, 'parent' : '/' + parent_id + ';isad' }
       response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
 
       id = get_id_from_url(response.url)
-
+      if opts['UUIDPrefixed']:
+          print "UUID: " + uuid + " -> " + 'ID: %s' % (id)
+      
       # Print information object id
       if opts['debug']:
         print 'New information object ID: %s (parent ID %s)' % (id, parent_id)
@@ -256,7 +270,10 @@ def upload(opts):
 
   # Is a file?
   else:
-
+    title = opts['title']
+    if opts['UUIDPrefixed']:
+      uuid = opts['title'][:UUID_LEN]
+      title = opts['title'][UUID_LEN + 1:]
     # Create information object
     data = { 'title' : opts['title'], 'levelOfDescription': ITEM_ID, 'parent' : ROOT_ID }
     response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
@@ -291,6 +308,7 @@ if __name__ == '__main__':
     parser = optparse.OptionParser(usage='Usage: %prog [options]')
 
     parser.add_option('-d', '--debug', dest='debug', action='store_true', help='debug mode')
+    parser.add_option('-U', '--UUIDPrefixed', dest='UUIDPrefixed', action='store_true', help='Files prefixed with UUID')
 
     authentication = optparse.OptionGroup(parser, 'Authentication options')
     authentication.add_option('-e', '--email', dest='email', metavar='EMAIL', help='account e-mail')
@@ -333,7 +351,8 @@ if __name__ == '__main__':
       'file' : opts.file,
       'url' : opts.url,
       'remove' : opts.remove,
-      'debug' : opts.debug
+      'debug' : opts.debug,
+      'UUIDPrefixed'  : opts.UUIDPrefixed
       })
 
   except KeyboardInterrupt:
@@ -346,5 +365,7 @@ if __name__ == '__main__':
     exitError('ERROR: Failed trying to reach the server. Reason: %s.' % err.reason)
 
   except Exception, err:
+    print >>sys.stderr, Exception
+    raise
     exitError('ERROR: %s' % err)
 
