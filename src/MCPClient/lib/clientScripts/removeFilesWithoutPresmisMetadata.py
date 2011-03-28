@@ -23,6 +23,7 @@
 # @version svn: $Id$
 
 import sys
+import os
 
 
 # DUPLICATE CODE IN MCP Server - archivematica Replacement Dics 
@@ -44,7 +45,9 @@ def verifyFileHasUUID(uuid, filePath):
         #print uuid + " -> " + filePath
         uuid = uuid #no-op
     else:
-        print >>sys.stderr, "No UUID -> " + filePath
+        print >>sys.stderr, "No linking PREMIS metadata -> " + filePath
+        if os.path.isfile(filePath):
+            os.remove(filePath)
         quit(-1)
 
 

@@ -6,34 +6,35 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%createPackage/bagit/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%storeAIP/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%compileMetadata/METS/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%compileMetadata/METS/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
-        	<command>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
+                <filterSubDir>objects/</filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <standardOut>%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log</standardOut>
+                <standardError>%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log</standardError>
                 <failureNotification> </failureNotification>
-                <execute>bagit_v0.0</execute>
-                <arguments>create "%SIPDirectory%%SIPUUID%.zip" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%checksum.sha256" "%SIPDirectory%metadata/" --writer zip</arguments>
-                <executeOnEachFile>no</executeOnEachFile>
+                <execute>removeFilesWithoutPresmisMetadata_v0.0</execute>
+                <arguments>"%fileUUID%" "%relativeLocation%" "%SIPObjectsDirectory"</arguments>
+                <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>
         
         <verificationCommand>
-        	<command>
-                <skip>No</skip>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes/No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -41,17 +42,17 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>setFilePermission_v0.0</execute>
-                <arguments>775 "%SIPDirectory%%SIPUUID%.zip"</arguments>
-                <executeOnEachFile>no</executeOnEachFile>
-            </command>     
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>              
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
             <command>
-                <skip>No</skip>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes/No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -59,12 +60,11 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>remove_v0.0</execute>
-                <arguments>-R "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%checksum.sha256"</arguments>
-                <executeOnEachFile>no</executeOnEachFile>
-            </command>            
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>          
         </cleanupSuccessfulCommand>
         
         <cleanupUnsuccessfulCommand>
