@@ -33,7 +33,7 @@
         
         <verificationCommand>
         	<command>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -43,9 +43,9 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>setFilePermission_v0.0</execute>
+                <arguments>775 "%SIPDirectory%%SIPUUID%.zip"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
             </command>     
         </verificationCommand>
         
