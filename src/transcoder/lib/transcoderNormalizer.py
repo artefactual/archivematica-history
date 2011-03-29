@@ -80,7 +80,6 @@ def onceNormalized(command):
                      opts.date, \
                      opts.logsDirectory, \
                      ) #    {normalized; not normalized}
-        if opts.commandClassifications == "normalize":
             outputFileUUID = uuid.uuid4().__str__() 
             replacementDic["%postfix%"] = "-" + outputFileUUID             
 

@@ -9,7 +9,7 @@
         <watchDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%compileMetadata/METS/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%compileMetadata/METS/</failureDirectory>
+        <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
     <commands>    
