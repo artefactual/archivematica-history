@@ -24,7 +24,7 @@
 
 import sys
 import os
-
+from optparse import OptionParser
 
 # DUPLICATE CODE IN MCP Server - archivematica Replacement Dics 
 def isUUID(uuid):
@@ -39,26 +39,29 @@ def isUUID(uuid):
     return True
 
 
-def verifyFileHasUUID(uuid, filePath):
+def verifyFileHasUUID(uuid, filePath, objectsDirectory):
     uuid = uuid.__str__()
     if isUUID(uuid):
         #print uuid + " -> " + filePath
         uuid = uuid #no-op
     else:
-        print >>sys.stderr, "No linking PREMIS metadata -> " + filePath
+        if objectsDirectory:
+            print >>sys.stderr, filePath.replace(objectsDirectory, "objects/")
         if os.path.isfile(filePath):
             os.remove(filePath)
-        quit(-1)
+        quit(0)
 
 
 if __name__ == '__main__':
     
-    fileUUID = sys.argv[1]
-    filePath = sys.argv[2]
-    objectsDirectory = sys.argv[3]
+    parser = OptionParser()
+    #--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"
+    parser.add_option("-f",  "--inputFile",          action="store", dest="inputFile", default="")
+    parser.add_option("-o",  "--objectsDirectory",  action="store", dest="objectsDirectory", default="")
+    parser.add_option("-i",  "--fileUUID",           action="store", dest="fileUUID", default="")
     
-    filePath = filePath.replace(objectsDirectory, "objects/", 1)
-    
-    verifyFileHasUUID(fileUUID, filePath)
+    (opts, args) = parser.parse_args()
+     
+    verifyFileHasUUID(opts.fileUUID, opts.inputFile, opts.objectsDirectory)
     
     
