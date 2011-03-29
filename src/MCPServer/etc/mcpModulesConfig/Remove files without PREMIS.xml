@@ -26,7 +26,7 @@
                 <standardError>%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log</standardError>
                 <failureNotification> </failureNotification>
                 <execute>removeFilesWithoutPresmisMetadata_v0.0</execute>
-                <arguments>"%fileUUID%" "%relativeLocation%" "%SIPObjectsDirectory"</arguments>
+                <arguments>--fileUUID "%fileUUID%" --inputFile "%relativeLocation%" --objectsDirectory "%SIPObjectsDirectory%"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
             </command>
         </exeCommand>
