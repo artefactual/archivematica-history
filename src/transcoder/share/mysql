@@ -1297,7 +1297,7 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('sudo gs -dPDFA -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -dPDFACompatibilityPolicy=1 -sOutputFile="%outputDirectory%%prefix%%fileName%%postfix%.pdf" "%fileFullName%"'),
+    ('gs -dPDFA -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -dPDFACompatibilityPolicy=1 -sOutputFile="%outputDirectory%%prefix%%fileName%%postfix%.pdf" "%fileFullName%"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.pdf',
     @GhostscriptEventDetailCommandID,
     @standardVerificationCommand,
