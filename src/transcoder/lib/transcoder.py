@@ -104,10 +104,10 @@ class Command:
         return "[COMMAND]\n" + \
         "PK: " + self.pk.__str__() + "\n" + \
         "Type: " + self.type.__str__() + "\n" + \
-        "verificationCommand: " + self.verificationCommand.__str__() + "\n" + \
         "command: " + self.command.__str__() + "\n" + \
         "description: " + self.description.__str__() + "\n" + \
-        "outputLocation: " + self.outputLocation.__str__()
+        "outputLocation: " + self.outputLocation.__str__() + "\n" + \
+        "verificationCommand: " + self.verificationCommand.__str__() 
     
     def execute(self, skipOnSuccess=False):
         

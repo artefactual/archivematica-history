@@ -21,8 +21,8 @@
 -- # @author Joseph Perry <joseph@artefactual.com>
 -- # @version svn: $Id$
 
-set @fileIDByExtensionDefaultGroupMemberID = -1;
-set @fileIDByPronomDefaultGroupMemberID = 0;
+set @fileIDByExtensionDefaultGroupMemberID = 0;
+set @fileIDByPronomDefaultGroupMemberID = -1;
 
 DROP TABLE IF EXISTS CommandTypes;
 CREATE TABLE CommandTypes (
@@ -1002,15 +1002,6 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
-    @ffmpegToWAVCommandID,
-    @fileID
-);
-
-INSERT INTO CommandRelationships 
-    (GroupMember, commandClassification, command, fileID)
-    VALUES (
-    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @ffmpegToMP3CommandID,
     @fileID
@@ -1105,7 +1096,7 @@ INSERT INTO FileIDsByExtension
     @fileID
 );
 
-
+/*
 INSERT INTO Commands 
     (commandType, command, description) 
     VALUES (
@@ -1172,7 +1163,7 @@ INSERT INTO CommandRelationships
     @transcoderAIToSVGsCommandID,
     @fileID
 );
-
+*/
 
 INSERT INTO Commands 
     (commandType, command, description) 
@@ -1324,7 +1315,7 @@ INSERT INTO CommandRelationships
 );
 
 
-
+/*
 -- fmt/14	Acrobat PDF 1.0 - Portable Document Format
 INSERT INTO FileIDs 
     (description)
@@ -1684,6 +1675,7 @@ INSERT INTO CommandRelationships
     @gsToPDFACommandID,
     @fileID
 );
+*/
 
 -- End Of ADD Normalization Path for .PDF --
 
