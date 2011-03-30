@@ -29,7 +29,7 @@ from archivematicaFunctions import archivematicaRenameFile
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
-sys.path.append("/usr/lib/archivematica/MCPServer")
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from archivematicaMCPFileUUID import findUUIDFromFileUUIDxml
 
 DetoxDic={}

@@ -22,6 +22,8 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 import os
+import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from archivematicaMCPFileUUID import getUUIDOfFile
 
 

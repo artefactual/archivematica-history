@@ -12,12 +12,14 @@ sudo mkdir $share
 
 sudo ln -s "${svnDir}src/MCPServer/etc" "${etc}/MCPServer"
 sudo ln -s "${svnDir}src/MCPClient/etc" "${etc}/MCPClient"
+sudo ln -s "${svnDir}src/archivematicaCommon/etc" "${etc}/archivematicaCommon"
 sudo ln -s "${svnDir}src/SIPCreationTools/etc/" "${etc}/SIPCreationTools"
 sudo ln -s "${svnDir}src/transcoder/etc" "/etc/transcoder"
 
 
 sudo ln -s "${svnDir}src/MCPServer/lib/" "${lib}/MCPServer"
 sudo ln -s "${svnDir}src/MCPClient/lib/" "${lib}/MCPClient"
+sudo ln -s "${svnDir}src/archivematicaCommon/lib/" "${lib}/archivematicaCommon"
 sudo ln -s "${svnDir}src/SIPCreationTools/lib/" "${lib}/SIPCreationTools"
 sudo ln -s "${svnDir}src/upload-qubit/lib/" "${lib}/upload-qubit"
 sudo ln -s "${svnDir}src/transcoder/lib/" "/usr/lib/transcoder"
