@@ -50,7 +50,9 @@ def excludeJhoveProperties(fits):
         if tool.get("name") == "Jhove":
             formatValidation = tool
             break
-    
+    if not formatValidation:
+        print >>sys.stderr, "No format validation tool (Jhove)."
+        return fits
     repInfo = getTagged(formatValidation, "repInfo")[0]   
     properties = getTagged(repInfo, "properties")
 
@@ -68,9 +70,11 @@ def formatValidationFITSAssist(fits):
         if tool.get("name") == "Jhove":
             formatValidation = tool
             break
-    
+    if not formatValidation:
+        print >>sys.stderr, "No format validation tool (Jhove)."
+        quit(3)
+        
     repInfo = getTagged(formatValidation, "repInfo")[0]
-    
     #<eventDetail>program="DROID"; version="3.0"</eventDetail>
     eventDetailText =   "program=\"" + formatValidation.get("name") \
                         + "\"; version=\"" + formatValidation.get("version") + "\""
