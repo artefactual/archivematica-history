@@ -111,7 +111,7 @@ INSERT INTO FileIDs
 INSERT INTO Commands 
     (commandType, command, description) 
     SELECT pk,
-    'test -e "%outputLocation%"',
+    'test -s "%outputLocation%"',
     'Standard verification command'
     FROM CommandTypes WHERE type = 'command' ;
 
@@ -120,9 +120,32 @@ set @standardVerificationCommand = LAST_INSERT_ID();
 INSERT INTO Commands 
     (commandType, command, description) 
     SELECT pk,
-    'test -s "%outputLocation%"',
-    'Standard verification command'
-    FROM CommandTypes WHERE type = 'command' ;
+    'exitCode=0
+filesFound=0
+function checkDirectory {
+    cd "$1"
+    for f in *; do 
+        if [ -d "$f" ] ; then
+            checkDirectory "$f" || exitCode=1
+        else
+            if [ -s "$f" ]; then
+                filesFound=1
+            else
+                echo "0 byte file: $f"
+                exitCode=2
+            fi
+        fi
+    done
+}
+
+checkDirectory "%outputLocation%"
+if [ $filesFound -eq 0 ] ; then
+    exit 3
+else
+    exit $exitCode
+fi',
+    'Standard directory verification command'
+    FROM CommandTypes WHERE type = 'bashScript' ;
 
 set @standardDirectoryVerificationCommand = LAST_INSERT_ID();
 
