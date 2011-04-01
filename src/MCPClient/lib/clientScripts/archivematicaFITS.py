@@ -169,7 +169,7 @@ def includeFits(fits, xmlFile, date, eventUUID):
     newFileUUID = uuid.uuid4().__str__()
     eventDetailText, eventOutcomeText, eventOutcomeDetailNote = formatValidationFITSAssist(fits)
     outcomeInformation = createOutcomeInformation( eventOutcomeDetailNote, eventOutcomeText)
-    formatValidationEvent = createEvent( newFileUUID, "format validation", \
+    formatValidationEvent = createEvent( newFileUUID, "validation", \
                                              eventDateTime=date, \
                                              eventDetailText=eventDetailText, \
                                              eOutcomeInformation=outcomeInformation)
