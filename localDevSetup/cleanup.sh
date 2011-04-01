@@ -18,6 +18,7 @@ sudo rm /usr/bin/sanitizeNames
 sudo rm /usr/bin/createDublinCore
 sudo rm "/etc/init.d/archivematica-mcp-serverd"
 sudo rm "/etc/init.d/archivematica-mcp-clientd"
+sudo rm "/etc/init.d/openOfficed"
 
 sudo rm -r /usr/lib/transcoder
 sudo rm -r /usr/lib/createDublinCore
