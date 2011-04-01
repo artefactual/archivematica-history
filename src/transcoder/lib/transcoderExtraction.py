@@ -33,9 +33,10 @@ from fileAddedToSIP import addFileToSIP
 
 removeOnceExtracted = True
 
+date = sys.argv[4].__str__().split(".", 1)[0]
 replacementDic = { \
         "%inputFile%": transcoder.fileFullName, \
-        "%outputDirectory%": transcoder.fileFullName + "TODO-DATE", \
+        "%outputDirectory%": transcoder.fileFullName + '-' + date \
         }
 
 def onceExtracted(command):
