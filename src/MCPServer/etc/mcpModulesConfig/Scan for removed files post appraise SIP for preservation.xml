@@ -17,7 +17,7 @@
         <exeCommand> 
             <command>
                 <skip>No</skip>
-                <filterFileEnd></filterFileEnd>
+                <filterFileEnd>.xml</filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir>logs/fileMeta/</filterSubDir>
                 <requiresOutputLock>Yes</requiresOutputLock>

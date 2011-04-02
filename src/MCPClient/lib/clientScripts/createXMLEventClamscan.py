@@ -52,7 +52,8 @@ if __name__ == '__main__':
         eventOutcome = createOutcomeInformation( eventOutcomeText = "Pass")
     else:
         eventOutcome = createOutcomeInformation( eventOutcomeText = "Fail")
-        Failed = True
+        print >>sys.stderr, "Virus detected: " + fileUUID
+        failed = True
     
     event = createEvent( eIDValue, "virus check", eventDateTime=date, eventDetailText=eventDetailText, eOutcomeInformation=eventOutcome)
     #print etree.tostring(event, pretty_print=True)
