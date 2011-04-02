@@ -39,12 +39,14 @@ global opts
 global outputFileUUID
 
 def inAccessFormat():
-    return 1
+    ex=["MP3", "PDF", "JPG", "MPG"]
+    return transcoder.fileExtension.__str__().upper() in ex
 
 def inPreservationFormat():
     ex=["CSS", "CSV", "HTML", "TXT", "XML", "XSL", \
-        "JP2", "PNG"]
-    return 1
+        "JP2", "PNG", \
+        "svg", "WAV", "TIF", "PDF", "ODP", "TIF", "MXF", "ODT", "ODS", "PST", "AI" ]
+    return transcoder.fileExtension.__str__().upper() in ex
 
 def onceNormalized(command):
     transcodedFiles = []
