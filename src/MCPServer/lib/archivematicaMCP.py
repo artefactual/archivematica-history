@@ -530,15 +530,15 @@ class Job:
                         ret.append(task)
                 if command.filterFileEnd or command.filterFileStart:
                     if os.path.isfile(os.path.join(directory, f)):
-                        if filterFileEnd and filterFileStart \
-                        and f.__str__().endswith(filterFileEnd) \
-                        and f.__str__().startswith(filterFileStart):
+                        if command.filterFileEnd and command.filterFileStart \
+                        and f.__str__().endswith(command.filterFileEnd) \
+                        and f.__str__().startswith(command.filterFileStart):
                             task = Task(self, os.path.join(directory, f).__str__(), command)
                             ret.append(task)
-                        elif filterFileEnd and f.__str__().endswith(filterFileEnd):
+                        elif command.filterFileEnd and f.__str__().endswith(command.filterFileEnd):
                             task = Task(self, os.path.join(directory, f).__str__(), command)
                             ret.append(task)
-                        elif filterFileStart and f.__str__().startswith(filterFileStart):
+                        elif command.filterFileStart and f.__str__().startswith(command.filterFileStart):
                             task = Task(self, os.path.join(directory, f).__str__(), command)
                             ret.append(task)
                 else:

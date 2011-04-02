@@ -35,7 +35,7 @@
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>No</skip>
-                <filterFileEnd></filterFileEnd>
+                <filterFileEnd>.xml</filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir>logs/fileMeta/</filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
