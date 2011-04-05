@@ -75,6 +75,7 @@ class Command:
         self.stdOut = ""
         self.stdErr = ""
         self.exitCode=None
+        self.failedCount=0
         c=database.cursor()
         sql = """SELECT CT.type, C.verificationCommand, C.eventDetailCommand, C.command, C.outputLocation, C.description
         FROM Commands AS C
@@ -135,9 +136,14 @@ class Command:
         
         #If unsuccesful
         if self.exitCode:
+            print >>sys.stderr, "Failed:"
             print >>sys.stderr, self.__str__()
             print >>sys.stderr, self.stdOut
             print >>sys.stderr, self.stdError
+            if False and self.failedCount < 1: #retry count
+                self.failedCount= self.failedCount + 1
+                print >>sys.stderr, "retrying, ", self.failedCount 
+                return self.execute(skipOnSuccess)
         else:
             global onSuccess
             if (not skipOnSuccess) and onSuccess:
