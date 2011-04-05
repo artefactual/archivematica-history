@@ -16,7 +16,7 @@
 
 OOo_HOME=/usr/bin
 SOFFICE_PATH=$OOo_HOME/soffice
-PIDFILE=/var/run/openoffice-server.pid
+PIDFILE=/tmp/openoffice-server.pid
 
 set -e
 
