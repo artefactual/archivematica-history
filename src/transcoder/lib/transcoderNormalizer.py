@@ -39,7 +39,8 @@ global opts
 global outputFileUUID
 
 def inAccessFormat():
-    ex=["MP3", "PDF", "JPG", "MPG"]
+    ex=["CSS", "CSV", "HTML", "TXT", "XML", "XSL", \
+        "MP3", "PDF", "JPG", "MPG"]
     return transcoder.fileExtension.__str__().upper() in ex
 
 def inPreservationFormat():
