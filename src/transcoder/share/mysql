@@ -1289,7 +1289,7 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('ffmpeg -i "%fileFullName%" -ab 192000 "%outputDirectory%%prefix%%fileName%%postfix%.mp3"'),
+    ('ffmpeg -i "%fileFullName%" -ac 2 -ab 192000 "%outputDirectory%%prefix%%fileName%%postfix%.mp3"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.mp3',
     @ffmpegEventDetailCommandID,
     @standardVerificationCommand,
