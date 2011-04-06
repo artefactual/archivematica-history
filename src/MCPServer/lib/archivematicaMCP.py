@@ -616,9 +616,7 @@ class watchDirectory(ProcessEvent):
     def __init__(self, config):
         self.config = config
     def process_IN_CREATE(self, event):
-        """ Traditionally, archivematica does not support copying to watch directories."""
-        actOnCopied = False
-        if actOnCopied:
+        if archivematicaVars["actOnCopied"].lower() == "true":
             self.process_IN_MOVED_TO(event)
         else:
             print "Warning: %s was created. Was something copied into this directory?" %  os.path.join(event.path, event.name)
@@ -632,6 +630,7 @@ class watchDirectory(ProcessEvent):
         job = Job(self.config, os.path.join(event.path, event.name))
         if self.config.requiresUserApproval:
             #print "need to get user approval"
+            print "Created job awaiting approval"
             jobsAwaitingApproval.append(job)
             #dashboard Alert - new job needing approval.
             
