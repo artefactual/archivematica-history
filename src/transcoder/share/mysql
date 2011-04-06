@@ -278,6 +278,55 @@ INSERT INTO CommandRelationships
 
 -- END PST extraction
 
+INSERT INTO Commands 
+    (commandType, command, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo program=\\"convert\\"\\; version=\\"`convert -version | grep Version:`\\"'),
+    ('convert event detail')
+);
+
+set @convertEventDetailCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('convert "%fileFullName%" +compress "%outputDirectory%%prefix%%fileName%%postfix%.tif"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.tif',
+    @convertEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to tif with convert')
+);
+set @convertToTifCommandID = LAST_INSERT_ID();
+
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('convert "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.jpg"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.jpg',
+    @convertEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to jpg with convert')
+);
+set @convertToJpgCommandID = LAST_INSERT_ID();
+
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('convert "%fileFullName%" -resize 70% "%outputDirectory%%prefix%%fileName%%postfix%.jpg"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.jpg',
+    @convertEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to jpg with convert')
+);
+set @convertToJpg70percentCommandID = LAST_INSERT_ID();
+
 -- ADD Normalization Path for .JPG --
 INSERT INTO FileIDs 
     (description)
@@ -292,30 +341,6 @@ INSERT INTO FileIDsByExtension
     'jpg',
     @fileID
 );
-
-
-INSERT INTO Commands 
-    (commandType, command, description) 
-    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
-    VALUES (
-    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('echo program=\\"convert\\"\\; version=\\"`convert -version | grep Version:`\\"'),
-    ('convert event detail')
-);
-
-set @convertToTifEventDetailCommandID = LAST_INSERT_ID();
-
-INSERT INTO Commands 
-    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
-    VALUES (
-    (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('convert "%fileFullName%" +compress "%outputDirectory%%prefix%%fileName%%postfix%.tif"'),
-    '%outputDirectory%%prefix%%fileName%%postfix%.tif',
-    @convertToTifEventDetailCommandID,
-    @standardVerificationCommand,
-    ('Transcoding to tif with convert')
-);
-set @convertToTifCommandID = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -342,19 +367,6 @@ INSERT INTO FileIDsByExtension
     'gif',
     @fileID
 );
-
-
-INSERT INTO Commands 
-    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
-    VALUES (
-    (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('convert "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.jpg"'),
-    '%outputDirectory%%prefix%%fileName%%postfix%.jpg',
-    @convertToTifEventDetailCommandID,
-    @standardVerificationCommand,
-    ('Transcoding to jpg with convert')
-);
-set @convertToJpgCommandID = LAST_INSERT_ID();
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -576,6 +588,405 @@ INSERT INTO CommandRelationships
 );
 
 -- End Of ADD Normalization Path for .BMP --
+
+-- ADD Normalization Path for .3FR --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .3fr file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    '3fr',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .3FR --
+
+-- ADD Normalization Path for .ARW --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .arw file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'arw',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .ARW --
+
+-- ADD Normalization Path for .CR2 --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .cr2 file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'cr2',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .CR2 --
+
+-- ADD Normalization Path for .CRW --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .crw file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'crw',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .CRW --
+
+-- ADD Normalization Path for .DCR --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .dcr file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'dcr',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .DCR --
+
+-- ADD Normalization Path for .ERF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .erf file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'erf',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .ERF --
+
+-- ADD Normalization Path for .KDC --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .kdc file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'kdc',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .KDC --
+
+-- ADD Normalization Path for .MRW --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .mrw file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'mrw',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .MRW --
+
+
+-- ADD Normalization Path for .NEF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .nef file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'nef',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .NEF --
+
+
+-- ADD Normalization Path for .ORF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .orf file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'orf',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .ORF --
+
+
+-- ADD Normalization Path for .PEF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .pef file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'pef',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .PEF --
+
+
+-- ADD Normalization Path for .RAF --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .raf file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'raf',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .RAF --
+
+
+-- ADD Normalization Path for .RAW --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .raw file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'raw',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .RAW --
+
+
+-- ADD Normalization Path for .X3F --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .x3f file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'x3f',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .X3F --
+
+-- ADD Normalization Path for .DNG --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .dng file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'dng',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpg70percentCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .DNG --
+
+--  RAF, RAW, X3F. Please also include DNG.
+
 
 
 -- Commands for handling Video files --
