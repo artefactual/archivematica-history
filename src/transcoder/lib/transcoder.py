@@ -25,6 +25,7 @@ import MySQLdb
 import math
 import sys
 import os
+import time
 from executeOrRun import executeOrRun
 LowerEndMainGroupMax = -10
 
@@ -112,7 +113,7 @@ class Command:
     
     def execute(self, skipOnSuccess=False):
         
-        print self.__str__()
+        #print self.__str__()
         
         #Do a dictionary replacement.
         #Replace replacement strings
@@ -123,6 +124,7 @@ class Command:
             self.command = self.command.replace ( key, replacementDic[key] )
             if self.outputLocation:
                 self.outputLocation = self.outputLocation.replace ( key, replacementDic[key] )
+        print "Running: "
         print self.__str__()
         
         self.exitCode, self.stdOut, self.stdError = executeOrRun(self.type, self.command)      
@@ -140,8 +142,9 @@ class Command:
             print >>sys.stderr, self.__str__()
             print >>sys.stderr, self.stdOut
             print >>sys.stderr, self.stdError
-            if False and self.failedCount < 1: #retry count
+            if self.failedCount < 1: #retry count
                 self.failedCount= self.failedCount + 1
+                time.sleep(2)
                 print >>sys.stderr, "retrying, ", self.failedCount 
                 return self.execute(skipOnSuccess)
         else:
