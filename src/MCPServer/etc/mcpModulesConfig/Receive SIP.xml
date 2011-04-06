@@ -1,7 +1,7 @@
 <module>
     
     <requiresUserApproval>No</requiresUserApproval>
-    <descriptionForApproval>None Needed </descriptionForApproval>
+    <descriptionForApproval>SIP is complete, and ready for Archivematica processing.</descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
