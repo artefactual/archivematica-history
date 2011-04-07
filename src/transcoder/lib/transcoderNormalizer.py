@@ -69,7 +69,6 @@ def onceNormalized(command):
         command.exitCode = -2
              
     for ef in transcodedFiles:
-        print "TODO - addFile()"
         global outputFileUUID
         global replacementDic
         global opts
@@ -127,7 +126,6 @@ def identifyCommands(fileName):
                 exit(7)
         
         elif opts.commandClassifications == "access":
-            print >>sys.stderr, "Todo - copy to access directory"
             sql = """SELECT CR.pk, CR.command, CR.GroupMember
             FROM CommandRelationships AS CR
             JOIN Commands AS C ON CR.command = C.pk 
@@ -135,10 +133,14 @@ def identifyCommands(fileName):
             c.execute(sql)
             row = c.fetchone()
             while row != None:
-                ret.append(row)
-                row = c.fetchone() 
+                cl = transcoder.CommandLinker(row)
+                copyExitCode = cl.execute()
+                if copyExitCode:
+                    exit(copyExitCode)
+                row = c.fetchone()  
             if inAccessFormat():
                 print "Already in access format."
+                exit(0)
             else:
                 print >>sys.stderr, "Unable to verify access readiness."
                 exit(7)
