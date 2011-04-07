@@ -71,7 +71,7 @@ def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverCo
         #retcode = subprocess.call( shlex.split(command) )
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	
-        p.wait()
+        #p.wait()
         output = p.communicate(input=sInput)
 
         retcode = p.returncode
