@@ -29,7 +29,7 @@ import os
 import sys
 
 def launchSubProcess(command):
-    print "[Executing]", command
+    #print "[Executing]", command
     #return 0,"stdouts out out out", "Error error out of cheese"
 
     interval = 0

@@ -168,6 +168,7 @@ if __name__ == '__main__':
     filename = opts.inputFile
     setFileIn(fileIn=filename)
     print "Operating on file: ", filename
+    print "Using " + opts.commandClassifications + " command classifications"
     
     prefix = ""
     postfix = ""
@@ -178,6 +179,9 @@ if __name__ == '__main__':
     elif opts.commandClassifications == "access":
         prefix = opts.fileUUID + "-"
         outputDirectory = opts.accessDirectory
+    else:
+        print >>sys.stderr, "Unsupported command classification."
+        exit(2)
     
     replacementDic = { \
         "%inputFile%": transcoder.fileFullName, \
