@@ -103,13 +103,22 @@ class Command:
             self.eventDetailCommand.command = self.eventDetailCommand.command.replace("%outputLocation%", self.outputLocation)
     
     def __str__(self):
-        return "[COMMAND]\n" + \
-        "PK: " + self.pk.__str__() + "\n" + \
-        "Type: " + self.type.__str__() + "\n" + \
-        "command: " + self.command.__str__() + "\n" + \
-        "description: " + self.description.__str__() + "\n" + \
-        "outputLocation: " + self.outputLocation.__str__() + "\n" + \
-        "verificationCommand: " + self.verificationCommand.__str__() 
+        if self.verificationCommand:
+            return "[COMMAND]\n" + \
+            "PK: " + self.pk.__str__() + "\n" + \
+            "Type: " + self.type.__str__() + "\n" + \
+            "command: " + self.command.__str__() + "\n" + \
+            "description: " + self.description.__str__() + "\n" + \
+            "outputLocation: " + self.outputLocation.__str__() + "\n" + \
+            "verificationCommand: " + self.verificationCommand.pk.__str__()
+        else:
+            return "[COMMAND]\n" + \
+            "PK: " + self.pk.__str__() + "\n" + \
+            "Type: " + self.type.__str__() + "\n" + \
+            "command: " + self.command.__str__() + "\n" + \
+            "description: " + self.description.__str__() + "\n" + \
+            "outputLocation: " + self.outputLocation.__str__() + "\n" + \
+            "verificationCommand: " + self.verificationCommand.__str__() 
     
     def execute(self, skipOnSuccess=False):
         
@@ -131,6 +140,7 @@ class Command:
         
         
         if (not self.exitCode) and self.verificationCommand:
+            print
             self.exitCode = self.verificationCommand.execute(skipOnSuccess=True)
         
         if (not self.exitCode) and self.eventDetailCommand:
@@ -149,8 +159,9 @@ class Command:
                 return self.execute(skipOnSuccess)
         else:
             global onSuccess
-            print self.stdOut
-            print self.stdError
+            #uncommenting these floods the buffers with ffmpeg
+            #print self.stdOut
+            #print self.stdError
             if (not skipOnSuccess) and onSuccess:
                 onSuccess(self)
         return self.exitCode

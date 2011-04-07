@@ -139,7 +139,7 @@ def sips(request, uuid=None):
 
 def tasks(request, uuid):
   job = Job.objects.get(jobuuid = uuid)
-  objects = job.task_set.all().order_by('-createdtime')
+  objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')
   return render_to_response('main/tasks.html', locals())
 
 def map_known_values(value):
