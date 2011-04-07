@@ -149,6 +149,8 @@ class Command:
                 return self.execute(skipOnSuccess)
         else:
             global onSuccess
+            print self.stdOut
+            print self.stdError
             if (not skipOnSuccess) and onSuccess:
                 onSuccess(self)
         return self.exitCode

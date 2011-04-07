@@ -50,7 +50,7 @@ def excludeJhoveProperties(fits):
         if tool.get("name") == "Jhove":
             formatValidation = tool
             break
-    if not formatValidation:
+    if formatValidation == None:
         print >>sys.stderr, "No format validation tool (Jhove)."
         return fits
     repInfo = getTagged(formatValidation, "repInfo")[0]   
@@ -70,7 +70,7 @@ def formatValidationFITSAssist(fits):
         if tool.get("name") == "Jhove":
             formatValidation = tool
             break
-    if not formatValidation:
+    if formatValidation == None:
         print >>sys.stderr, "No format validation tool (Jhove)."
         quit(3)
         
