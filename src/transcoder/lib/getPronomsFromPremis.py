@@ -22,6 +22,7 @@
 # @version svn: $Id$
 
 import lxml.etree as etree
+import os
 
 def getTagged(root, tag):
     ret = []
@@ -35,17 +36,18 @@ def getTagged(root, tag):
     return ret  
 
 def getPronomsFromPremis(filePath):
-    tree = etree.parse( filePath )
-    root = tree.getroot()
     ret = []
-    objects = getTagged(root, "object")
-    if len(objects):
-        objectCharacteristics = getTagged(objects[0], "objectCharacteristics")
-        if len(objectCharacteristics):
-            formats = getTagged(objectCharacteristics[0], "format")
-            for format in formats:
-                formatRegistrys = getTagged(format, "formatRegistry")
-                for formatRegistry in formatRegistrys:
-                    if getTagged(formatRegistry, "formatRegistryName")[0].text == "PRONOM":
-                        ret.append(getTagged(formatRegistry, "formatRegistryKey")[0].text)
+    if os.path.isfile(filePath):
+        tree = etree.parse( filePath )
+        root = tree.getroot()
+        objects = getTagged(root, "object")
+        if len(objects):
+            objectCharacteristics = getTagged(objects[0], "objectCharacteristics")
+            if len(objectCharacteristics):
+                formats = getTagged(objectCharacteristics[0], "format")
+                for format in formats:
+                    formatRegistrys = getTagged(format, "formatRegistry")
+                    for formatRegistry in formatRegistrys:
+                        if getTagged(formatRegistry, "formatRegistryName")[0].text == "PRONOM":
+                            ret.append(getTagged(formatRegistry, "formatRegistryKey")[0].text)
     return ret  

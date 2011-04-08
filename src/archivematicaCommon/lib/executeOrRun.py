@@ -67,7 +67,6 @@ def launchSubProcess(command, stdIn="", printing=True):
     if not reactor._started:
         reactor.run()
     doneLock.acquire()   
-    print "done"
     return tsp.exitCode, tsp.stdOut, tsp.stdError
 
         

@@ -102,8 +102,9 @@ def identifyCommands(fileName):
         while row != None:
             ret.append(row)
             row = c.fetchone()  
-            
-    for pronomID in getPronomsFromPremis(opts.logsDirectory + "fileMeta/" + opts.fileUUID + ".xml"):
+    
+    premisFile = opts.logsDirectory + "fileMeta/" + opts.fileUUID + ".xml"
+    for pronomID in getPronomsFromPremis(premisFile):
         sql = """SELECT CR.pk, CR.command, CR.GroupMember 
         FROM CommandRelationships AS CR 
         JOIN FileIDs ON CR.fileID=FileIDs.pk 

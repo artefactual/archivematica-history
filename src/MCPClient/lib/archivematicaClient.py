@@ -156,11 +156,13 @@ class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
 
     def clientConnectionFailed(self, connector, reason):
         print "Connection failed - goodbye!"
-        reactor.stop()
+        if reactor._started:
+            reactor.stop()
     
     def clientConnectionLost(self, connector, reason):
         print "Connection lost - goodbye!"
-        reactor.stop()
+        if reactor._started:
+            reactor.stop()
 
 
 #if __name__ == '__main__':
