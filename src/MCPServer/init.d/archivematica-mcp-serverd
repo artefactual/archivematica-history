@@ -61,6 +61,7 @@ case "$1" in
 
   restart)
         stopArchivematica
+        sleep 1
         startArchivematica
 	;;
 
