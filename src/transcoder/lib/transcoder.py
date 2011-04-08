@@ -26,6 +26,7 @@ import math
 import sys
 import os
 import time
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRun import executeOrRun
 LowerEndMainGroupMax = -10
 
@@ -152,7 +153,7 @@ class Command:
             print >>sys.stderr, self.__str__()
             print >>sys.stderr, self.stdOut
             print >>sys.stderr, self.stdError
-            if self.failedCount < 1: #retry count
+            if False and self.failedCount < 1: #retry count
                 self.failedCount= self.failedCount + 1
                 time.sleep(2)
                 print >>sys.stderr, "retrying, ", self.failedCount 
