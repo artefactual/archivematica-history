@@ -111,6 +111,7 @@ def writeToFile(output, fileName):
             f = open(fileName, 'a')
             f.write(output.__str__())
             f.close()
+            os.chmod(fileName, 488)
         except OSError, ose:
             print >>sys.stderr, "output Error", ose
             return -2
