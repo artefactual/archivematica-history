@@ -41,13 +41,17 @@ from twisted.protocols.basic import LineReceiver
 from socket import gethostname
 from twisted.application import service
 from twisted.application import internet
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from executeOrRun import executeOrRun
 
 
 archivematicaVars = loadConfig("/etc/archivematica/MCPClient/clientConfig.conf")
 supportedModules = loadConfig(archivematicaVars["archivematicaClientModules"])
 protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
+     
+        
        
-def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverConnection = None):
+def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverConnection = None):  
     #Replace replacement strings
     if execute not in supportedModules:
         return -5, "", "Tried To Run An Unsupported Command"
@@ -63,29 +67,13 @@ def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverCo
         sInput = sInput.replace ( key, replacementDic[key] )
     #execute command
     try:
-      if execute != "" and command != "":
-        a = 0
-        b = 0
-        command += " " + arguments
-        print >>sys.stderr, "processing: {" + taskUUID + "}" + command.__str__()
-        #retcode = subprocess.call( shlex.split(command) )
-        p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	
-        #p.wait()
-        output = p.communicate(input=sInput)
-
-        retcode = p.returncode
-
-        print "returned{" + taskUUID.__str__() + "}: " + retcode.__str__()
-        print output
-                
-        #it executes check for errors
-        
-        return retcode, output[0], output[1]
-        
-      else:
-        print >>sys.stderr, "server tried to run a blank command! " 
-        return 1, "", "server tried to run a blank command! "
+        if execute != "" and command != "":
+            command += " " + arguments
+            print >>sys.stderr, "processing: {" + taskUUID + "}" + command.__str__()
+            return executeOrRun("command", command, sInput, printing=False)
+        else:
+            print >>sys.stderr, "server tried to run a blank command! " 
+            return 1, "", "server tried to run a blank command! "
     #catch OS errors
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose

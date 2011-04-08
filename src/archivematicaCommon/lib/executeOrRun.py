@@ -21,56 +21,58 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-import subprocess
 import shlex
-import time
 import uuid
 import os
-import sys
+import threading
+from twisted.internet import protocol as twistedProtocol
+from twisted.internet import reactor
 
-def launchSubProcess(command):
-    #print "[Executing]", command
-    #return 0,"stdouts out out out", "Error error out of cheese"
+import re
 
-    interval = 0
-    increaseInterval = 0.1
-    maxInterval = 2
-    maxProcessingTime = 88888888888888888888888888
-    stdError = ""
-    stdOut = ""
-    
-    try:
-        p = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
-        while not p.poll():
-            time.sleep(interval)
-            so, se = p.communicate() 
-            #append the output to stderror and stdout
-            if so:
-                stdOut = stdOut + so
-            if se:
-                stdError = stdError + se
-            
-            
-            if interval < maxInterval:
-                interval += increaseInterval
+class twistedLaunchSubProcess(twistedProtocol.ProcessProtocol):
+    def __init__(self, doneLock, stdIn="", printing=True):
+        self.stdIn = stdIn
+        self.stdOut = ""
+        self.stdError = ""
+        self.doneLock = doneLock
+        self.exitCode = None
+        self.printing = printing
         
-            if "processing time" > maxProcessingTime:
-                #kill
-                #exit code = 1000
-                #append text to standard error.
-                break
-        retcode = p.returncode
-    except OSError, ose:
-        print >>sys.stderr, "Execution failed:", ose
-        return -1, "Config Error!", ose.__str__()
-    except :
-        print  >>sys.stderr, "Execution failed:", command
-        return -1, "Execution failed:", command
-    return retcode, stdOut, stdError
+    def connectionMade(self):
+        if self.stdIn:
+            self.transport.write(self.stdIn)
+        self.transport.closeStdin() # tell them we're done
+    def outReceived(self, stdOut):
+        if self.printing:
+            print stdOut
+        self.stdOut = self.stdOut + stdOut
+        
+    def errReceived(self, stdError):
+        if self.printing:
+            print stdError
+        self.stdError = self.stdError + stdError
 
+    def processEnded(self, reason):
+        self.exitCode = reason.value.exitCode
+        self.doneLock.release()
         
 
-def createAndRunScript(text):
+def launchSubProcess(command, stdIn="", printing=True):
+    doneLock = threading.Lock()
+    doneLock.acquire()
+    tsp = twistedLaunchSubProcess(doneLock, stdIn, printing)
+    commands = shlex.split(command)
+    reactor.spawnProcess(tsp, commands[0], commands, {})
+    if not reactor._started:
+        reactor.run()
+    doneLock.acquire()   
+    print "done"
+    return tsp.exitCode, tsp.stdOut, tsp.stdError
+
+        
+
+def createAndRunScript(text, stdIn="", printing=True):
     #output the text to a /tmp/ file
     scriptPath = "/tmp/" + uuid.uuid4().__str__()
     FILE = os.open(scriptPath, os.O_WRONLY | os.O_CREAT, 0770)
@@ -81,12 +83,13 @@ def createAndRunScript(text):
     ret = launchSubProcess(scriptPath)
     
     #remove the temp file
+    os.remove(scriptPath)
     
     return ret 
 
 
 
-def executeOrRun(type, text):
+def executeOrRun(type, text, stdIn="", printing=True):
     if type == "command":
         return launchSubProcess(text)
     if type == "bashScript":
