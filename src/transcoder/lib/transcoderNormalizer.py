@@ -123,7 +123,8 @@ def identifyCommands(fileName):
                 print "Already in preservation format."
             else:
                 print >>sys.stderr, "Unable to verify archival readiness."
-                exit(7)
+                #Issue 528: related to exit code
+                exit(0)
         
         elif opts.commandClassifications == "access":
             sql = """SELECT CR.pk, CR.command, CR.GroupMember
@@ -143,7 +144,8 @@ def identifyCommands(fileName):
                 exit(0)
             else:
                 print >>sys.stderr, "Unable to verify access readiness."
-                exit(7)
+                #Issue 528: related to exit code
+                exit(0)
     return ret
 
 if __name__ == '__main__':
