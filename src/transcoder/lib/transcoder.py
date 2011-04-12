@@ -27,7 +27,7 @@ import sys
 import os
 import time
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from executeOrRun import executeOrRun
+from executeOrRunSubProcess import executeOrRun
 LowerEndMainGroupMax = -10
 
 fileTitle = ""
