@@ -36,6 +36,7 @@ if [ -d "$target" ]; then
 	mkdir "${target}logs/fileMeta"
 	mkdir "${target}metadata"
 	mv "$temp" "${target}objects" 
+	mkdir "${target}objects/submissionDocumentation"
 else
 	echo Error: Needs SIP directory as argument 1>&2
 	exit 1

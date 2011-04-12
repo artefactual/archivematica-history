@@ -33,7 +33,6 @@ import uuid
 from premisXMLlinker import xmlNormalize 
 from getPronomsFromPremis import getPronomsFromPremis
 
-print "Todo: change outputFileUUID to task uuid on first run"
 global replacementDic
 global opts
 global outputFileUUID
@@ -161,16 +160,22 @@ if __name__ == '__main__':
     parser.add_option("-o",  "--objectsDirectory",   action="store", dest="objectsDirectory", default="")
     parser.add_option("-l",  "--logsDirectory",      action="store", dest="logsDirectory", default="")
     parser.add_option("-a",  "--accessDirectory",    action="store", dest="accessDirectory", default="")
+    parser.add_option("-e",  "--excludeDirectory",    action="store", dest="excludeDirectory", default="")
     parser.add_option("-d",  "--date",   action="store", dest="date", default="")
     
     
     (opts, args) = parser.parse_args()
     
     filename = opts.inputFile
-    setFileIn(fileIn=filename)
     print "Operating on file: ", filename
     print "Using " + opts.commandClassifications + " command classifications"
-    
+   
+    if opts.excludeDirectory != "":
+        if filename.startswith(opts.excludeDirectory):
+            print "skipping file in exclude directory: ", filename
+            exit(0)
+            
+    setFileIn(fileIn=filename)
     prefix = ""
     postfix = ""
     outputDirectory = ""
