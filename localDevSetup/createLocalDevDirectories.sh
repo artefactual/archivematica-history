@@ -46,6 +46,10 @@ sudo ln "${svnDir}src/loadConfig/lib/archivematicaLoadConfig.py" "${lib}/MCPServ
 sudo ln "${svnDir}src/loadConfig/lib/archivematicaLoadConfig.py" "${lib}/MCPClient"
 sudo ln "${svnDir}src/loadConfig/lib/archivematicaLoadConfig.py" "/usr/lib/transcoder"
 
+sudo mv /usr/share/fits/xml/fits.xml /usr/share/fits/xml/fits.xml.backup
+sudo ln "${svnDir}externals/fits/archivematicaConfigs/fits.xml" /usr/share/fits/xml/
+sudo chmod 775 /usr/share/fits/xml/fits.xml
+
 sudo mkdir /var/archivematica/
 sudo ln -s "${svnDir}src/MCPServer/sharedDirectoryStructure" "/var/archivematica/sharedDirectory"
 sudo chown -R archivematica:archivematica "/var/archivematica/sharedDirectory"
