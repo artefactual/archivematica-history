@@ -2,6 +2,10 @@ sudo rm /usr/lib/transcoder/archivematicaLoadConfig.py
 sudo rm /usr/lib/archivematica/MCPServer/archivematicaLoadConfig.py
 sudo rm /usr/lib/archivematica/MCPClient/archivematicaLoadConfig.py
 
+sudo rm /usr/share/fits/xml/fits.xml
+sudo mv /usr/share/fits/xml/fits.xml.backup /usr/share/fits/xml/fits.xml
+
+
 sudo rm -r /usr/lib/archivematica
 sudo rm -r /etc/archivematica
 sudo rm -r /usr/share/archivematica
