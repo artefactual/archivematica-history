@@ -20,7 +20,6 @@
 -- # @subpackage transcoder
 -- # @author Joseph Perry <joseph@artefactual.com>
 -- # @version svn: $Id$
-
 set @fileIDByExtensionDefaultGroupMemberID = 0;
 set @fileIDByPronomDefaultGroupMemberID = -1;
 
