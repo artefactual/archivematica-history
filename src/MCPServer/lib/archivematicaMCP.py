@@ -269,7 +269,7 @@ class Task():
         self.UUID = uuid.uuid4()
         self.job = job
         self.command = command
-        self.execute = command.execute
+        self.execute = command.execute.lower()
         self.arguments = command.arguments
         self.description = command.descriptionWhileExecuting
         self.target = target

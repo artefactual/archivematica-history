@@ -34,6 +34,7 @@ import subprocess
 import time
 import threading
 import string
+import ConfigParser
 from archivematicaLoadConfig import loadConfig
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
@@ -44,12 +45,16 @@ from twisted.application import internet
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRun import executeOrRun
 
+config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
+config.read("/etc/archivematica/MCPClient/clientConfig.conf")
 
-archivematicaVars = loadConfig("/etc/archivematica/MCPClient/clientConfig.conf")
-supportedModules = loadConfig(archivematicaVars["archivematicaClientModules"])
-protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
-     
-        
+supportedModules = {}
+
+def loadSupportedModules(file):    
+    supportedModulesConfig = ConfigParser.RawConfigParser()
+    supportedModulesConfig.read(file)
+    for key, value in supportedModulesConfig.items('supportedCommands'):
+        supportedModules[key] = value + " "
        
 def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverConnection = None):  
     #Replace replacement strings
@@ -57,8 +62,8 @@ def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverCo
         return -5, "", "Tried To Run An Unsupported Command"
     command = supportedModules[execute] 
     replacementDic = { 
-        "%sharedPath%":archivematicaVars["sharedDirectoryMounted"], \
-        "%clientScriptsDirectory%":archivematicaVars["clientScriptsDirectory"]
+        "%sharedPath%":config.get('MCPClient', "sharedDirectoryMounted"), \
+        "%clientScriptsDirectory%":config.get('MCPClient', "clientScriptsDirectory")
     }  
     #for each key replace all instances of the key in the command string
     for key in replacementDic.iterkeys():
@@ -86,10 +91,10 @@ class archivematicaMCPClientProtocol(LineReceiver):
     sendLock = threading.Lock()
     
     def connectionMade(self):
-        self.write(protocol["setName"] + protocol["delimiter"] + gethostname())
+        self.write(config.get('Protocol', "setName") + config.get('Protocol', "delimiter") + gethostname())
         for module in supportedModules:
-            self.write(protocol["addToListTaskHandler"] + protocol["delimiter"] + module)
-        self.write(protocol["maxTasks"] + protocol["delimiter"] + archivematicaVars["maxThreads"])
+            self.write(config.get('Protocol', "addToListTaskHandler") + config.get('Protocol', "delimiter") + module)
+        self.write(config.get('Protocol', "maxTasks") + config.get('Protocol', "delimiter") + config.get('MCPClient', "maxThreads"))
     
     def write(self,line):
         self.sendLock.acquire() 
@@ -107,7 +112,7 @@ class archivematicaMCPClientProtocol(LineReceiver):
    
     def lineReceived(self, line):
         "As soon as any data is received, write it back."
-        command = line.split(protocol["delimiter"])
+        command = line.split(config.get('Protocol', "delimiter"))
         if len(command):
             t = threading.Thread(target=self.protocolDic.get(command[0], archivematicaMCPClientProtocol.badProtocol),\
             args=(self, command, ))
@@ -117,14 +122,14 @@ class archivematicaMCPClientProtocol(LineReceiver):
 
     def sendTaskResult(self, command, result):
         if len(command) > 1:
-            send = protocol["taskCompleted"]
-            send += protocol["delimiter"]
+            send = config.get('Protocol', "taskCompleted")
+            send += config.get('Protocol', "delimiter")
             send += command[1]
-            send += protocol["delimiter"]
+            send += config.get('Protocol', "delimiter")
             send += result[0].__str__()
-            send += protocol["delimiter"]
+            send += config.get('Protocol', "delimiter")
             send += result[1].__str__()
-            send += protocol["delimiter"]
+            send += config.get('Protocol', "delimiter")
             send += result[2].__str__()
             self.write(send)
         else:
@@ -147,8 +152,8 @@ class archivematicaMCPClientProtocol(LineReceiver):
             badProtocol(self, command)
 
     protocolDic = {
-    protocol["performTask"]:performTask, \
-    protocol["keepAlive"]:keepAlive
+    config.get('Protocol', "performTask"):performTask, \
+    config.get('Protocol', "keepAlive"):keepAlive
     }
 
 class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
@@ -166,14 +171,12 @@ class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
 
 
 #if __name__ == '__main__':
+loadSupportedModules(config.get('MCPClient', "archivematicaClientModules"))
 application = service.Application("archivematicaMCPClient")
 f = archivematicaMCPClientProtocolFactory()
-MCPClientService = internet.TCPClient(archivematicaVars["MCPArchivematicaServer"], string.atoi(archivematicaVars["MCPArchivematicaServerPort"]), f)
+MCPClientService = internet.TCPClient(config.get('MCPClient', "MCPArchivematicaServer"), string.atoi(config.get('MCPClient', "MCPArchivematicaServerPort")), f)
 MCPClientService.setServiceParent(application)
 
-#t = reactor.connectTCP(archivematicaVars["MCPArchivematicaServer"], string.atoi(archivematicaVars["MCPArchivematicaServerPort"]), f)
-print "Connecting To: " + archivematicaVars["MCPArchivematicaServer"] + ":" + archivematicaVars["MCPArchivematicaServerPort"]
-#reactor.run()
-#print "above is a blocking call. This is executed once client disconnects"
+print "Connecting To: " + config.get('MCPClient', "MCPArchivematicaServer") + ":" + config.get('MCPClient', "MCPArchivematicaServerPort")
   
   
