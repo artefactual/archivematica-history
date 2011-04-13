@@ -50,7 +50,7 @@ import pyinotify
 from archivematicaReplacementDics import replacementDics 
 from MCPlogging import *
 from MCPloggingSQL import getUTCDate
-from archivematicaLoadConfig import loadConfig
+import ConfigParser
 from mcpModules.modules import modulesClass
 from pyinotify import WatchManager
 from pyinotify import Notifier
@@ -78,10 +78,10 @@ from twisted.application import service
 from twisted.application import internet
 application = service.Application("archivematicaMCPServer")
 
-archivematicaVars = loadConfig("/etc/archivematica/MCPServer/serverConfig.conf")
+config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
+config.read("/etc/archivematica/MCPServer/serverConfig.conf")
+archivematicaRD = replacementDics(config)
 
-protocol = loadConfig(archivematicaVars["archivematicaProtocol"])
-archivematicaRD = replacementDics(archivematicaVars)
 
 #depends on OS whether you need one line or other. I think Events.Codes is older.
 mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
@@ -228,15 +228,15 @@ def processTaskQueue():
                         task.arguments = task.arguments.__str__().replace("%date%", task.assignedDate)
                         task.arguments = task.arguments.__str__().replace("%jobCreatedDate%", task.job.createdDate)
                         tasksBeingProcessed.append(task)
-                        send = protocol["performTask"]
-                        send += protocol["delimiter"] 
+                        send = config.get('Protocol', "performTask")
+                        send += config.get('Protocol', "delimiter")
                         send += task.UUID.__str__()
-                        send += protocol["delimiter"]  
+                        send += config.get('Protocol', "delimiter")
                         if task.standardIn:
                             send += task.standardIn.__str__() 
-                        send += protocol["delimiter"]  
+                        send += config.get('Protocol', "delimiter")
                         send += task.execute.__str__()
-                        send += protocol["delimiter"]  
+                        send += config.get('Protocol', "delimiter")
                         send += task.arguments.__str__()
                         client.write(send)
                         client.currentThreads += 1
@@ -306,7 +306,7 @@ class Task():
         ret = fileName
         if ret:
             if "%sharedPath%" in ret and "../" not in ret:
-                ret = ret.replace("%sharedPath%", archivematicaVars["sharedDirectory"], 1)
+                ret = ret.replace("%sharedPath%", config.get('MCPServer', "sharedDirectory"), 1)
             else:
                 ret = "<^Not allowed to write to file^> " + ret
         return ret
@@ -617,7 +617,7 @@ class watchDirectory(ProcessEvent):
     def __init__(self, config):
         self.config = config
     def process_IN_CREATE(self, event):
-        if archivematicaVars["actOnCopied"].lower() == "true":
+        if config.get('MCPServer', "actOnCopied").lower() == "true":
             self.process_IN_MOVED_TO(event)
         else:
             print "Warning: %s was created. Was something copied into this directory?" %  os.path.join(event.path, event.name)
@@ -642,13 +642,13 @@ class watchDirectory(ProcessEvent):
 def loadConfigs():
     """Loads the XML config files, with the directories to watch, and the associated commands"""
     configFiles = []
-    for dirs, subDirs, files in os.walk(archivematicaVars["moduleConfigDir"]):
+    for dirs, subDirs, files in os.walk(config.get('MCPServer', "moduleConfigDir")):
         configFiles = files
         break
 
     for configFile in configFiles:
         if configFile.endswith(".xml"):
-            configs.append(modulesClass(archivematicaVars["moduleConfigDir"], configFile))
+            configs.append(modulesClass(config.get('MCPServer', "moduleConfigDir"), configFile))
     return configs
         
 def loadDirectoryWatchLlist(configs):
@@ -700,7 +700,7 @@ class archivematicaMCPServerProtocol(LineReceiver):
    
     def lineReceived(self, line):
         "As soon as any data is received, write it back."
-        command = line.split(protocol["delimiter"])
+        command = line.split(config.get('Protocol', "delimiter"))
         if len(command):
             t = threading.Thread(target=self.protocolDic.get(command[0], archivematicaMCPServerProtocol.badProtocol),\
             args=(self, command, ))
@@ -720,9 +720,9 @@ class archivematicaMCPServerProtocol(LineReceiver):
         while 1:
             self.keepAliveLock.acquire()
             if self.channelOpen:
-                self.write(protocol["keepAlive"])
+                self.write(config.get('Protocol', "keepAlive"))
                 self.keepAliveLock.release()
-                time.sleep(string.atoi(protocol["keepAlivePause"])) 
+                time.sleep(string.atoi(config.get('Protocol', "keepAlivePause"))) 
             else:
                 self.keepAliveLock.release()
                 break
@@ -798,10 +798,10 @@ class archivematicaMCPServerProtocol(LineReceiver):
 
     #associate the protocol with the associated function.        
     protocolDic = {
-    protocol["addToListTaskHandler"]:addToListTaskHandler,
-    protocol["taskCompleted"]:taskCompleted,
-    protocol["maxTasks"]:maxTasks,
-    protocol["setName"]:setName,
+    config.get('Protocol', "addToListTaskHandler"):addToListTaskHandler,
+    config.get('Protocol', "taskCompleted"):taskCompleted,
+    config.get('Protocol', "maxTasks"):maxTasks,
+    config.get('Protocol', "setName"):setName,
     }
 
 def archivematicaMCPServerListen():
@@ -810,28 +810,17 @@ def archivematicaMCPServerListen():
     
     archivematicaService = archivematicaServices()
     archivematicaService.setServiceParent(application)
-    #xmlFactory = twistedProtocol.ServerFactory()
     xmlRPC = archivematicaXMLrpc()
-    #xmlFactory.protocol = xmlRPC
-    xmlRPCService = internet.TCPServer(string.atoi(archivematicaVars["MCPArchivematicaXMLPort"]), server.Site(xmlRPC))
+    xmlRPCService = internet.TCPServer(string.atoi(config.get('MCPServer', "MCPArchivematicaXMLPort")), server.Site(xmlRPC))
     xmlRPCService.setServiceParent(application)
-    
-    #xmlRPC = archivematicaXMLrpc()
-    #xmlrpc.addIntrospection(xmlRPC)
-    #reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaXMLPort"]), server.Site(xmlRPC))
-    #print "XML RPC Listening: " + archivematicaVars["MCPArchivematicaXMLPort"]
     
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
-    
-    MCPServerService = internet.TCPServer(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory, interface=archivematicaVars["MCPArchivematicaServerInterface"])
+   
+    MCPServerService = internet.TCPServer(string.atoi(config.get('MCPServer', "MCPArchivematicaServerPort")),factory, interface=config.get('MCPServer', "MCPArchivematicaServerInterface"))
     MCPServerService.setServiceParent(application)
     
-    
-    #reactor.listenTCP(string.atoi(archivematicaVars["MCPArchivematicaServerPort"]),factory, interface=archivematicaVars["MCPArchivematicaServerInterface"])
-    #print "MCP Listening on: " + archivematicaVars["MCPArchivematicaServerInterface"] + ":" + archivematicaVars["MCPArchivematicaServerPort"] 
-    #reactor.run(installSignalHandlers=False) #Needs to be called from main thread.
-    
+   
 
 def signal_handler(signalReceived, frame):
     print signalReceived, frame
