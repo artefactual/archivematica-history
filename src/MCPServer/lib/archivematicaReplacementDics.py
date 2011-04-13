@@ -58,7 +58,7 @@ def getSIPUUID(sipDir):
 
 class replacementDics:
     def __init__(self, archivematicaVars):
-        self.archivematicaVars = archivematicaVars
+        self.config = archivematicaVars
         
     def commandReplacementDic(self, task, job, target, command):
         
@@ -66,8 +66,8 @@ class replacementDics:
         sipDir = job.config.processingDirectory.__str__() + job.UUID.__str__() + "/" + os.path.basename(job.directory).__str__() + "/"
         SIPUUID = getSIPUUID(sipDir)
         SIPName = os.path.basename(job.directory).replace("-" + SIPUUID, "")
-        SIPDirectory = sipDir.replace(self.archivematicaVars["sharedDirectory"], "%sharedPath%")
-        processingDirectory = job.config.processingDirectory.replace(self.archivematicaVars["sharedDirectory"], "")
+        SIPDirectory = sipDir.replace(self.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
+        processingDirectory = job.config.processingDirectory.replace(self.config.get('MCPServer', "sharedDirectory"), "")
         relativeDirectoryLocationNoTrailingSlash = "%sharedPath%" + processingDirectory + job.UUID.__str__()
         relativeDirectoryLocation = relativeDirectoryLocationNoTrailingSlash + "/"
         
@@ -78,13 +78,13 @@ class replacementDics:
         "%SIPLogsDirectory%": SIPDirectory + "logs/", \
         "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
         "%SIPDirectory%": SIPDirectory, \
-        "%fileUUID%": getUUIDOfFile( sipDir + "logs/" +  self.archivematicaVars["fileUUIDSHumanReadable"], sipDir + "objects/", target,  sipDir + "logs/fileMeta/" ), \
+        "%fileUUID%": getUUIDOfFile( sipDir + "logs/" +  self.config.get('MCPServer', "fileUUIDSHumanReadable"), sipDir + "objects/", target,  sipDir + "logs/fileMeta/" ), \
         "%relativeLocation%": target.replace(job.config.watchDirectory, relativeDirectoryLocation), \
         "%relativeDirectoryLocation%": relativeDirectoryLocation, \
         "%relativeDirectoryLocationNoTrailingSlash%":relativeDirectoryLocationNoTrailingSlash, \
         "%processingDirectory%": processingDirectory, \
-        "%checksumsNoExtention%":self.archivematicaVars["checksumsNoExtention"], \
-        "%AIPsStore%":self.archivematicaVars["AIPsStore"], \
+        "%checksumsNoExtention%":self.config.get('MCPServer', "checksumsNoExtention"), \
+        "%AIPsStore%":self.config.get('MCPServer', "AIPsStore"), \
         "%SIPUUID%":SIPUUID, \
         "%SIPName%":SIPName, \
         }
@@ -92,14 +92,14 @@ class replacementDics:
 
     def jobReplacementDic(self, job, config, directory, step):       
         ret ={ \
-        "%watchDirectoryPath%": self.archivematicaVars["watchDirectoryPath"], \
-        "%processingDirectory%": self.archivematicaVars["processingDirectory"] \
+        "%watchDirectoryPath%": self.config.get('MCPServer', "watchDirectoryPath"), \
+        "%processingDirectory%": self.config.get('MCPServer', "processingDirectory") \
         }
         return ret
         
     def watchFolderRepacementDic(self):
         ret ={ \
-        "%watchDirectoryPath%": self.archivematicaVars["watchDirectoryPath"], \
+        "%watchDirectoryPath%": self.config.get('MCPServer', "watchDirectoryPath"), \
         }
         return ret
     
