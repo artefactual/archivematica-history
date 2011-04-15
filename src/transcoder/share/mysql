@@ -387,6 +387,41 @@ INSERT INTO CommandRelationships
 
 -- End Of ADD Normalization Path for .GIF --
 
+-- ADD Normalization Path for .PCT --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .pct file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'pct',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @convertToTifCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @convertToJpgCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .PCT --
+
 -- ADD Normalization Path for .TIF --
 INSERT INTO FileIDs 
     (description)
