@@ -1,4 +1,4 @@
-Source: transcoder
+Source: archivematica-transcoder
 Section: utils
 Priority: extra
 Maintainer: Austin Trask <austin@artefactual.com>
@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7)
 Standards-Version: 3.8.3
 Homepage: http://archivematica.org
 
-Package: transcoder
+Package: archivematica-transcoder
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, inkscape, ffmpeg2theora, libavcodec-unstripped-52, openjdk-6-jre, openoffice.org, openoffice.org-java-common, sanitize-names, uuid, clamav, imagemagick, readpst, ufraw, archivematica-common
 Description: Transcoder for Archivematica
