@@ -17,6 +17,9 @@ chmod -R g+s "/var/archivematica/"
 chmod -R 775 "/var/archivematica/"
 echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/gs,/usr/lib/transcoder/transcoderScripts/DocumentConverter.py" >> /etc/sudoers
 
+mkdir /var/log/archivematica
+chown archivematica:archivematica /var/log/archivematica
+
 if [ -x "/etc/init.d/archivematica-mcp-serverd" ]; then
         update-rc.d archivematica-mcp-serverd defaults >/dev/null
         #invoke-rc.d archivematica-mcp-serverd start || exit $?
