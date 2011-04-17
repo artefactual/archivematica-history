@@ -2,3 +2,9 @@
 
 adduser --uid 333 --group --system --no-create-home --disabled-login archivematica
 #echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/unoconv" >> /etc/sudoers
+
+
+if [ -x "/etc/init.d/archivematica-mcp-clientd" ]; then
+        update-rc.d archivematica-mcp-clientd defaults >/dev/null
+        #invoke-rc.d archivematica-mcp-clientd start || exit $?
+fi
