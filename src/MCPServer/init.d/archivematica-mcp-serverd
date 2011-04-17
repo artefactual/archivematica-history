@@ -25,7 +25,7 @@
 #source /etc/archivematica/archivematicaConfig.conf
 set -e
 pidFile="/tmp/archivematicaMCPServer.pid"
-logFile="/var/archivematica/sharedDirectory/archivematicaMCPServer.log"
+logFile="/var/log/archivematica/archivematicaMCPServer.log"
 
 
 startArchivematica() {
