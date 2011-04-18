@@ -1062,6 +1062,42 @@ set @ffmpegToMKVCommandID = LAST_INSERT_ID();
 -- End of Commands for handling Video files --
 
 
+-- ADD Normalization Path for .M2V --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .m2v file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'm2v',
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    @ffmpegToMKVCommandID,
+    @fileID
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMPGCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .M2V --
+
+
 -- ADD Normalization Path for .WMV --
 INSERT INTO FileIDs 
     (description)
@@ -1241,14 +1277,14 @@ INSERT INTO CommandRelationships
 INSERT INTO FileIDs 
     (description)
     VALUES (
-    'A .mpeg file'
+    'A .mpg file'
 );
 set @fileID = LAST_INSERT_ID();
 
 INSERT INTO FileIDsByExtension 
     (Extension, FileIDs)
     VALUES (
-    'mpeg',
+    'mpg',
     @fileID
 );
 
@@ -1511,42 +1547,6 @@ INSERT INTO CommandRelationships
 );
 
 -- End Of ADD Normalization Path for .WMA --
-
--- ADD Normalization Path for .M2V --
-INSERT INTO FileIDs 
-    (description)
-    VALUES (
-    'A .m2v file'
-);
-set @fileID = LAST_INSERT_ID();
-
-INSERT INTO FileIDsByExtension 
-    (Extension, FileIDs)
-    VALUES (
-    'm2v',
-    @fileID
-);
-
-INSERT INTO CommandRelationships 
-    (GroupMember, commandClassification, command, fileID)
-    VALUES (
-    @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
-    @ffmpegToWAVCommandID,
-    @fileID
-);
-
-INSERT INTO CommandRelationships 
-    (GroupMember, commandClassification, command, fileID)
-    VALUES (
-    @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMP3CommandID,
-    @fileID
-);
-
--- End Of ADD Normalization Path for .M2V --
-
 
 
 -- ADD Normalization Path for .AI --
