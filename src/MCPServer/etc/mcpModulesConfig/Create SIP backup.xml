@@ -27,7 +27,7 @@
                 <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>copy_v0.0</execute>
-                <arguments>-R "%SIPDirectory%" "%sharedPath%SIPbackups/."</arguments>
+                <arguments>-R --preserve=mode,ownership,timestamps "%SIPDirectory%" "%sharedPath%SIPbackups/."</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
