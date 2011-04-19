@@ -26,5 +26,5 @@
 #This script is restricted, by flock in unoconvAlternative.sh, to run one at a time.
 #The sleep allows for spacing between DocumentConverter.py Calls.
 
-sleep 1 && sudo "$1/DocumentConverter.py" "$2" "$3"
+sleep 1 && "$1/DocumentConverter.py" "$2" "$3"
 exit "$?"
