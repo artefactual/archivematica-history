@@ -22,7 +22,7 @@ sudo ln -s "${svnDir}src/MCPClient/lib/" "${lib}/MCPClient"
 sudo ln -s "${svnDir}src/archivematicaCommon/lib/" "${lib}/archivematicaCommon"
 sudo ln -s "${svnDir}src/SIPCreationTools/lib/" "${lib}/SIPCreationTools"
 sudo ln -s "${svnDir}src/upload-qubit/lib/" "${lib}/upload-qubit"
-sudo ln -s "${svnDir}src/transcoder/lib/" "{lib}/transcoder"
+sudo ln -s "${svnDir}src/transcoder/lib/" "${lib}/transcoder"
 sudo ln -s "${svnDir}src/easy-extract/lib/" "/usr/lib/easy-extract"
 sudo ln -s "${svnDir}src/sanitizeNames/lib/" "/usr/lib/sanitizeNames"
 sudo ln -s "${svnDir}src/dashboard/src/" "${share}/dashboard"
@@ -41,10 +41,6 @@ sudo ln "${svnDir}src/upload-qubit/upload-qubit" "/usr/bin/"
 sudo ln "${svnDir}src/easy-extract/bin/easy-extract" "/usr/bin/"
 sudo ln "${svnDir}src/transcoder/bin/transcoder" "/usr/bin/"
 sudo ln "${svnDir}src/sanitizeNames/bin/sanitizeNames" "/usr/bin/"
-
-sudo ln "${svnDir}src/loadConfig/lib/archivematicaLoadConfig.py" "${lib}/MCPServer"
-sudo ln "${svnDir}src/loadConfig/lib/archivematicaLoadConfig.py" "${lib}/MCPClient"
-sudo ln "${svnDir}src/loadConfig/lib/archivematicaLoadConfig.py" "${lib}/transcoder"
 
 sudo mv /usr/share/fits/xml/fits.xml /usr/share/fits/xml/fits.xml.backup
 sudo ln "${svnDir}externals/fits/archivematicaConfigs/fits.xml" /usr/share/fits/xml/

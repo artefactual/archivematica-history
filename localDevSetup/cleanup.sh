@@ -1,7 +1,3 @@
-sudo rm /usr/lib/transcoder/archivematicaLoadConfig.py
-sudo rm /usr/lib/archivematica/MCPServer/archivematicaLoadConfig.py
-sudo rm /usr/lib/archivematica/MCPClient/archivematicaLoadConfig.py
-
 sudo rm /usr/share/fits/xml/fits.xml
 sudo mv /usr/share/fits/xml/fits.xml.backup /usr/share/fits/xml/fits.xml
 
@@ -22,12 +18,10 @@ sudo rm /usr/bin/sanitizeNames
 sudo rm /usr/bin/createDublinCore
 sudo rm "/etc/init.d/archivematica-mcp-serverd"
 sudo rm "/etc/init.d/archivematica-mcp-clientd"
-sudo rm "/etc/init.d/openOfficed"
+sudo rm "/etc/init.d/openofficed"
 
-sudo rm -r /usr/lib/transcoder
 sudo rm -r /usr/lib/createDublinCore
 sudo rm -r /usr/lib/sanitizeNames
-sudo rm -r /etc/transcoder
 sudo rm -r /usr/lib/easy-extract
 
 sudo rm -r /var/archivematica/
