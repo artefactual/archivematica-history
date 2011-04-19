@@ -79,7 +79,7 @@ class replacementDics:
         "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
         "%SIPDirectory%": SIPDirectory, \
         "%fileUUID%": getUUIDOfFile( sipDir + "logs/" +  self.config.get('MCPServer', "fileUUIDSHumanReadable"), sipDir + "objects/", target,  sipDir + "logs/fileMeta/" ), \
-        "%relativeLocation%": target.replace(job.config.watchDirectory, relativeDirectoryLocation).replace("\"", ("\\\"")), \
+        "%relativeLocation%": target.replace(job.config.watchDirectory, relativeDirectoryLocation), \
         "%relativeDirectoryLocation%": relativeDirectoryLocation, \
         "%relativeDirectoryLocationNoTrailingSlash%":relativeDirectoryLocationNoTrailingSlash, \
         "%processingDirectory%": processingDirectory, \
