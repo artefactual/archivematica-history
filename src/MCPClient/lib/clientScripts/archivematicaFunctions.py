@@ -54,6 +54,7 @@ def appendEventToFile2(xmlFile, eventXML):
     
 def archivematicaRenameFile(SIPLogsDirectory, fileUUID, newName, eventXML):
     xmlFile = SIPLogsDirectory + "fileMeta/" + fileUUID + ".xml"
+    newName = newName.decode('utf-8')
     tree = etree.parse( xmlFile )
     root = tree.getroot()
     xmlFileName = getTagged(root, "currentFileName")[0]
@@ -82,7 +83,7 @@ def fileNoLongerExists(root, objectsDir):
     currentName = getTagged(root, "currentFileName")[0].text
     
     currentName2 = currentName.replace("objects", objectsDir, 1)
-    if os.path.isfile(currentName2):
+    if os.path.isfile(currentName2.encode('utf8')):
         return 0
     else:
         print currentName

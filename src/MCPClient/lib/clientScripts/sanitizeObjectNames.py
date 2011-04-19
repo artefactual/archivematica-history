@@ -40,7 +40,7 @@ def loadFileUUIDsDic(logsDir, objectsDirectory):
  
     line = FileUUIDs_fh.readline()
     while line:
-        detoxfiles = line.split(" -> ",1)
+        detoxfiles = line.split("  ->  ",1)
         if len(detoxfiles) > 1 :
             fileUUID = detoxfiles[0]
             fileName = detoxfiles[1]
@@ -111,6 +111,8 @@ if __name__ == '__main__':
             if os.path.isfile(newfile):
                 oldfile = oldfile.replace(objectsDirectory, "objects/", 1)
                 newfile = newfile.replace(objectsDirectory, "objects/", 1)
+                print >>sys.stderr, repr(oldfile)
+                print >>sys.stderr, repr(newfile)
                 
                 if oldfile in UUIDsDic:
                     fileUUID = UUIDsDic[oldfile]
@@ -120,7 +122,7 @@ if __name__ == '__main__':
                 
                 
                 eventOutcomeDetailNote = "Original name=\"" + oldfile + "\"; cleaned up name=\"" + newfile + "\""
-                
+                eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
                 event = createEvent( taskUUID, "name cleanup", eventDateTime=date, eventDetailText=eventDetailText, \
                                      eOutcomeInformation=createOutcomeInformation(eventOutcomeDetailNote=eventOutcomeDetailNote, 
                                                                                   eventOutcomeText="prohibited characters removed")) 
@@ -134,7 +136,7 @@ if __name__ == '__main__':
                     if file.startswith(oldfile):               
                         intermediateFileName = file.replace(oldfile, newfile, 1)
                         eventOutcomeDetailNote = "Original name=\"" + file + "\"; cleaned up name=\"" + intermediateFileName + "\""
-                        
+                        eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
                         event = createEvent( taskUUID, "name cleanup", eventDateTime=date, eventDetailText=eventDetailText, \
                                              eOutcomeInformation=createOutcomeInformation(eventOutcomeDetailNote=eventOutcomeDetailNote, 
                                                                                           eventOutcomeText="prohibited characters removed")) 
