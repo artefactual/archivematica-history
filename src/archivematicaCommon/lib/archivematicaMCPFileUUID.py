@@ -109,9 +109,6 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory, up
                     root = tree.getroot()
                     xmlFileName = getTagged(root, "currentFileName")[0]
                     uuid = getTagged(root, "fileUUID")[0]
-                    print "config file - 1", repr(xmlFileName.text)
-                    print "config file - 2", repr(filename)
-                    print "config file - xmlFileName.text == filename", xmlFileName.text == filename
                     if xmlFileName.text == filename:
                         ret = uuid.text
                         try:
