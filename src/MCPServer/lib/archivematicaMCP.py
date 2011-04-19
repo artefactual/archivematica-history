@@ -284,18 +284,19 @@ class Task():
         
         #for each key replace all instances of the key in the command string
         for key in commandReplacementDic.iterkeys():
+            value = commandReplacementDic[key].replace("\"", ("\\\""))
             if self.description:
-                self.description = self.description.replace(key, commandReplacementDic[key])
+                self.description = self.description.replace(key, value)
             if self.execute:
-                self.execute = self.execute.replace(key, commandReplacementDic[key])
+                self.execute = self.execute.replace(key, value)
             if self.arguments:
-                self.arguments = self.arguments.replace(key, commandReplacementDic[key])
+                self.arguments = self.arguments.replace(key, value)
             if self.standardIn:
-                self.standardIn = self.standardIn.replace(key, commandReplacementDic[key])
+                self.standardIn = self.standardIn.replace(key, value)
             if self.standardOut:
-                self.standardOut = self.standardOut.replace(key, commandReplacementDic[key])
+                self.standardOut = self.standardOut.replace(key, value)
             if self.standardError:
-                self.standardError = self.standardError.replace(key, commandReplacementDic[key])
+                self.standardError = self.standardError.replace(key, value)
 
         logTaskCreated(self, commandReplacementDic)
     
