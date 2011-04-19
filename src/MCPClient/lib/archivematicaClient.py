@@ -35,7 +35,6 @@ import time
 import threading
 import string
 import ConfigParser
-from archivematicaLoadConfig import loadConfig
 from twisted.internet import reactor
 from twisted.internet import protocol as twistedProtocol
 from twisted.protocols.basic import LineReceiver
