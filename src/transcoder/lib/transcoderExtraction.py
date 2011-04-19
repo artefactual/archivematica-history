@@ -25,7 +25,7 @@ import sys
 import os
 import uuid
 from transcoder import main
-from executeOrRun import executeOrRun
+from executeOrRunSubProcess import executeOrRun
 import transcoder
 #from premisXMLlinker import xmlNormalize 
 sys.path.append("/usr/lib/archivematica/MCPClient/clientScripts")
