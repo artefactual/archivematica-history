@@ -24,7 +24,6 @@
 
 #!/usr/bin/python
 
-from archivematicaLoadConfig import loadConfig
 import sys
 import os.path
 import os
