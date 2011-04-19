@@ -2242,7 +2242,7 @@ dbasename=\"`basename \"%fileFullName%\"`\"  \n
 cd \"$ddirname\"\n
 outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
 \n
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\" && mv \"${outputFile}\" \"%outputDirectory%\"\n
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\" && mv \"${outputFile}\" \"%outputDirectory%\"\n
 exit \"$?\"\n'),
     '%outputDirectory%%prefix%%fileName%%postfix%.pdf',
     @openOfficeEventDetailCommandID,
@@ -2285,7 +2285,7 @@ dbasename=\"`basename \"%fileFullName%\"`\"  \n
 cd \"$ddirname\"\n
 outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
 \n
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
 exit \"$?\"\n'),
     '%outputDirectory%%prefix%%fileName%%postfix%.odt',
     @openOfficeEventDetailCommandID,
@@ -2328,7 +2328,7 @@ dbasename=\"`basename \"%fileFullName%\"`\"  \n
 cd \"$ddirname\"\n
 outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
 \n
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
 exit \"$?\"\n'),
     '%outputDirectory%%prefix%%fileName%%postfix%.odp',
     @openOfficeEventDetailCommandID,
@@ -2371,7 +2371,7 @@ dbasename=\"`basename \"%fileFullName%\"`\"  \n
 cd \"$ddirname\"\n
 outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
 \n
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
 exit \"$?\"\n'),
     '%outputDirectory%%prefix%%fileName%%postfix%.ods',
     @openOfficeEventDetailCommandID,
