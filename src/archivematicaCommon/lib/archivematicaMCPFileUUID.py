@@ -99,15 +99,19 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory, up
         for dirs, subDirs, files in os.walk(fileUUIDxmlFilesDirectory):
             configFiles = files
             break
-
+        
+        print "config file - dir: ", fileUUIDxmlFilesDirectory
         for configFile in configFiles:
             if configFile.endswith(".xml"):
                 try:
-                    #print "opening: " + configFile
+                    print "config file - opening: " + configFile
                     tree = etree.parse(fileUUIDxmlFilesDirectory + configFile )
                     root = tree.getroot()
                     xmlFileName = getTagged(root, "currentFileName")[0]
                     uuid = getTagged(root, "fileUUID")[0]
+                    print "config file - 1", repr(xmlFileName.text)
+                    print "config file - 2", repr(filename)
+                    print "config file - xmlFileName.text == filename", xmlFileName.text == filename
                     if xmlFileName.text == filename:
                         ret = uuid.text
                         try:
@@ -128,10 +132,10 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory, up
                             releaseSIPUUIDFileLock(sipUUIDfile)
                         return ret
                 except Exception as inst:
-                    #print "debug except 2"
-                    #print type(inst)     # the exception instance
-                    #print inst.args      # arguments stored in .args
-                    #print inst           # __str__ allows args to printed directly
+                    print "debug except 2"
+                    print type(inst)     # the exception instance
+                    print inst.args      # arguments stored in .args
+                    print inst           # __str__ allows args to printed directly
                     continue
     except:
         print "debug except 3"

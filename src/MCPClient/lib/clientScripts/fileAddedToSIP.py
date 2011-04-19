@@ -58,7 +58,11 @@ def sha_for_file(fileName, block_size=2**20):
 
 def addFileToSIP( objectsDirectory, logsDirectory, filePath, fileUUID, eIDValue, date, addedDate, objects="objects/", eventDetailText="", eventOutcomeDetailNote=""):
     relativeFilePath = filePath.replace(objectsDirectory, objects, 1)
-    print fileUUID + " -> " + relativeFilePath 
+    print fileUUID, " -> ", relativeFilePath
+    relativeFilePath = relativeFilePath.decode('utf-8')
+    eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
+    #print relativeFilePath
+     
     
     #if it's a file, the content of that file is the desired date.
     if os.path.isfile(addedDate):
