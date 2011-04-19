@@ -26,7 +26,7 @@
 set -e
 pidFile="/tmp/archivematicaMCPClient.pid"
 hostName=`hostname`
-logFile="/var/log/archivematica/archivematicaMCPClient-${hostName}.log"
+logFile="/var/archivematica/sharedDirectory/archivematicaMCPClient-${hostName}.log"
 
 
 startOODaemon() {

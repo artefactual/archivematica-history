@@ -60,7 +60,7 @@ def setFileIn(fileIn=sys.argv[1]):
     fileFullName = fileDirectory + fileTitle + "." + fileExtension
 setFileIn()
 
-database=MySQLdb.connect(db="MCP", read_default_file="/etc/transcoder/dbsettings")
+database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/transcoder/dbsettings")
 commandObjects = {}
 groupObjects = {}
 commandLinkerObjects = {}
