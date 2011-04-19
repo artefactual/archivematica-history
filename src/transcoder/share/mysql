@@ -86,7 +86,7 @@ CREATE TABLE FileIDsByExtension (
     pk INT PRIMARY KEY AUTO_INCREMENT,
     Extension TEXT,
     FileIDs INT,
-    Foreign Key (FileIDs) references Command(pk)
+    Foreign Key (FileIDs) references FileIDs(pk)
 );
 
 DROP TABLE IF EXISTS FileIDsByPronom;
@@ -94,7 +94,7 @@ CREATE TABLE FileIDsByPronom (
     pk INT PRIMARY KEY AUTO_INCREMENT,
     fileID TEXT,
     FileIDs INT,
-    Foreign Key (FileIDs) references Command(pk)
+    Foreign Key (FileIDs) references FileIDs(pk)
 );
 
 
