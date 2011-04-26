@@ -40,6 +40,7 @@ from archivematicaFunctions import appendEventToFile
 from archivematicaFunctions import getTagged
 from createXmlEventsAssist import createEvent
 from createXmlEventsAssist import createOutcomeInformation
+from createXmlEventsAssist import createOrganizationAgent
 
 def xmlCreateRelationship(relationshipType, relationshipSubType, relatedObjectIdentifierValue, relatedEventIdentifierValue, relatedObjectIdentifierType="UUID", relatedEventIdentifierType="UUID"):
     ret = etree.Element("relationship")
@@ -55,12 +56,13 @@ def xmlCreateRelationship(relationshipType, relationshipSubType, relatedObjectId
     return ret
     
 
-def xmlNormalize(outputFileUUID, outputFileName, eventDetailText, fileUUID, objectsPath, eventUUID, edate, logsPath):
+def xmlNormalize(outputFileUUID, outputFileName, eventDetailText, fileUUID, objectsPath, eventUUID, edate, logsPath, linkingAgentIdentifier=None):
     #Create Normalization event in the original xml document. 
     eventXML = createEvent( eventUUID, "normalization", \
                             eventDetailText=eventDetailText, \
                             eOutcomeInformation = createOutcomeInformation(os.path.basename(outputFileName)), \
-                            eventDateTime = edate)
+                            eventDateTime = edate, \
+                            linkingAgentIdentifier = linkingAgentIdentifier)
     appendEventToFile(logsPath, fileUUID, eventXML)
     
     #Create new document using the add file script
@@ -89,7 +91,35 @@ def xmlCreateFileAssociation(outputFileUUID, outputFileName, fileUUID, objectsPa
     etree.ElementTree(originalFileXML).write(logsPath + "fileMeta/" + fileUUID + ".xml")
     etree.ElementTree(outputFileXML).write(logsPath + "fileMeta/" + outputFileUUID + ".xml")
     
+def xmlCreateFileAssociationBetween(originalFileFullPath, outputFromNormalizationFileFullPath, SIPFullPath, eventDetailText, objects="objects/", outputFileUUID="", eventUUID="", edate=""):
+    import uuid
+    from datetime import datetime
+    
+    sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+    from archivematicaMCPFileUUID import getUUIDOfFile
+    
+    
+    objectsPath = (SIPFullPath + objects)
+    logsPath =  (SIPFullPath + "logs/")
+    linkingAgentIdentifier = createOrganizationAgent()
+    
+    if outputFileUUID == "":
+        if eventUUID != "":
+            outputFileUUID = eventUUID
+        else:
+             outputFileUUID = uuid.uuid4().__str__() 
+    if eventUUID == "":
+        eventUUID = outputFileUUID 
+    if edate == "":
+        edate =  datetime.utcnow().isoformat('T')
+    
+    sourceRelative = originalFileFullPath.replace(objectsPath, objects, 1)
+    sourceUUID = getUUIDOfFile( logsPath + "FileUUIDs.log", objectsPath, originalFileFullPath, logsPath + "fileMeta/" )
+    
+    xmlNormalize(outputFileUUID, outputFromNormalizationFileFullPath, eventDetailText, sourceUUID, objectsPath, eventUUID, edate, logsPath, linkingAgentIdentifier=None)
+   
 
+testxmlNormalize="""
 # Main program
 if __name__ == '__main__':
     outputFileUUID = sys.argv[1]
@@ -101,3 +131,18 @@ if __name__ == '__main__':
     logsPath = sys.argv[7]
     command =  sys.argv[8]
     xmlNormalize(outputFileUUID, outputFileName, command, fileUUID, objectsPath, eventUUID, edate, logsPath)
+"""
+
+#testxmlCreateFileAssociationBetween = 
+if __name__ == '__main__':
+    originalFileFullPath = sys.argv[1]
+    outputFromNormalizationFileFullPath = sys.argv[2]
+    SIPFullPath = sys.argv[3] 
+    eventDetailText = sys.argv[4] 
+    xmlCreateFileAssociationBetween(originalFileFullPath, outputFromNormalizationFileFullPath, SIPFullPath, eventDetailText)
+
+
+#if __name__ == '__main__':
+    #exec testxmlCreateFileAssociationBetween
+    
+    
