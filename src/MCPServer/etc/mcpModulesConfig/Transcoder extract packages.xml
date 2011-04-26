@@ -7,9 +7,9 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%extractPackages/transcoderExtractPackages/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%extractPackages/transcoderExtractPackages/objects/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</successDirectory>
+        <successDirectory>%watchDirectoryPath%sanitizeFileNames/detox/objects/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
@@ -19,7 +19,7 @@
                 <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
+                <filterSubDir>objects</filterSubDir>
                 <standardIn></standardIn>
                 <standardOut>%SIPLogsDirectory%extraction.log</standardOut>
                 <standardError>%SIPLogsDirectory%extraction.log</standardError>

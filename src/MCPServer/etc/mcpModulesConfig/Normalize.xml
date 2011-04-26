@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%normalize/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%normalize/objects/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%prepareForAppraisal/normalized/</successDirectory>
         <failureDirectory>%watchDirectoryPath%prepareForAppraisal/normalized/</failureDirectory>

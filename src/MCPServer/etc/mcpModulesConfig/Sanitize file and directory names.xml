@@ -7,9 +7,9 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%sanitizeFileNames/detox/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%sanitizeFileNames/detox/objects</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%checkForViruses/clamAV/</successDirectory>
+        <successDirectory>%watchDirectoryPath%checkForViruses/clamAV/objects/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
