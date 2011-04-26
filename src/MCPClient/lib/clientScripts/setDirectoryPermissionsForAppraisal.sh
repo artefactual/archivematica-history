@@ -34,6 +34,9 @@ if [ -d "${target}" ]; then
 	if [ -f "${target}metadata/dublincore.xml" ]; then	
 		chmod -R 770 "${target}metadata/dublincore.xml"
 	fi
+	if [ -d "${target}metadata" ]; then	
+		chmod -R 770 "${target}metadata"
+	fi
 else
   	echo $target does not exist\ 1>&2
   	exit 1 

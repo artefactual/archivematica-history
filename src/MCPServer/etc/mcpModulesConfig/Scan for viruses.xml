@@ -6,9 +6,9 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%checkForViruses/clamAV/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%checkForViruses/clamAV/objects/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%identifyFileFormat/FITS/</successDirectory>
+        <successDirectory>%watchDirectoryPath%identifyFileFormat/FITS/objects/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 

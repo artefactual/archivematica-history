@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%structureDirectory/createDIPDirectory/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%normalize</successDirectory>
+        <successDirectory>%watchDirectoryPath%normalize/objects/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 

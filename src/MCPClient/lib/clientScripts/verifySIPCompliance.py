@@ -27,7 +27,8 @@ import sys
 requiredDirectories = ["objects", \
                        "logs", \
                        "logs/fileMeta", \
-                       "metadata"]
+                       "metadata",\
+                       "metadata/submissionDocumentation"]
 
 
 def verifyDirectoriesExist(SIPDir):

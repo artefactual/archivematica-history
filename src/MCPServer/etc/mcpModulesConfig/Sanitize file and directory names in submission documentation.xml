@@ -1,58 +1,59 @@
 <module>
-    <requiresUserApproval>Yes</requiresUserApproval>
-    <descriptionForApproval>Review normalization of objects, and manually normalize as necessary. Review submission documentation.</descriptionForApproval>
+
+    <requiresUserApproval>No</requiresUserApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%Approve normalization/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%sanitizeFileNames/detox/submission documentation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%/structureDirectory/moveSubmissionDocumentationObjectsDirectory/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%checkForViruses/clamAV/submission documentation/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 
-    <commands>    
+    <commands>
         <exeCommand> 
             <command>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <standardOut>%SIPLogsDirectory%filenameCleanup.log</standardOut>
+                <standardError>%SIPLogsDirectory%filenameCleanup.log</standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>       
+                <execute>sanitizeObjectNames_v0.0</execute>
+                <arguments>"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%" "%taskUUID%"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
+            </command>
         </exeCommand>
         
         <verificationCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
                 <requiresOutputLock>No</requiresOutputLock>
                 <standardIn></standardIn>
                 <standardOut></standardOut>
-                <standardError></standardError>
+                <standardError>%SIPDirectory%SIPnameCleanup.log</standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>            
+                <execute>sanitizeSIPName_v0.0</execute>
+                <arguments>"%relativeDirectoryLocationNoTrailingSlash%" "%date%"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
+            </command>           
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
             <command>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -61,15 +62,15 @@
                 <standardOut></standardOut>
                 <standardError></standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>moveDetoxLogToDetoxedDirectory_v0.0</execute>
+                <arguments>"%relativeDirectoryLocation%filenameCleanup.log" "%SIPDirectory%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>            
         </cleanupSuccessfulCommand>
         
         <cleanupUnsuccessfulCommand>
             <command>
-                <skip>Yes/No</skip>
+                <skip>Yes</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>

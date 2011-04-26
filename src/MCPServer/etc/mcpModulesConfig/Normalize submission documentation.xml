@@ -1,34 +1,34 @@
 <module>
-    <requiresUserApproval>Yes</requiresUserApproval>
-    <descriptionForApproval>Review normalization of objects, and manually normalize as necessary. Review submission documentation.</descriptionForApproval>
+    <requiresUserApproval>No</requiresUserApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%Approve normalization/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%normalize/submission documentation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%/structureDirectory/moveSubmissionDocumentationObjectsDirectory/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%Approve submission documentation ingest/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%Approve submission documentation ingest/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes/No</skip>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir></filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
+                <filterSubDir>objects/submissionDocumentation</filterSubDir>
+                <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut></standardOut>
-                <standardError></standardError>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <standardOut>%SIPLogsDirectory%normalizationLog.txt</standardOut>
+                <standardError>%SIPLogsDirectory%normalizationLog.txt</standardError>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>       
+                <execute>transcoderNormalizePreservation_v0.0</execute>
+                <arguments>--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"</arguments>
+                <executeOnEachFile>yes</executeOnEachFile>
+            </command>            
         </exeCommand>
         
         <verificationCommand>
@@ -46,7 +46,7 @@
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
-            </command>            
+            </command> 
         </verificationCommand>
         
         <cleanupSuccessfulCommand>

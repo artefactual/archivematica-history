@@ -1,14 +1,14 @@
 <module>
     <requiresUserApproval>Yes</requiresUserApproval>
-    <descriptionForApproval>Review normalization of objects, and manually normalize as necessary. Review submission documentation.</descriptionForApproval>
+    <descriptionForApproval>Review normalization of submission documentation.</descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%Approve normalization/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%Approve submission documentation ingest/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%/structureDirectory/moveSubmissionDocumentationObjectsDirectory/</successDirectory>
+        <successDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 

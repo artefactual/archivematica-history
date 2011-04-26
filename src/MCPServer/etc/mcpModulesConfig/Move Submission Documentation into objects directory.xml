@@ -1,21 +1,21 @@
 <module>
-    <requiresUserApproval>Yes</requiresUserApproval>
-    <descriptionForApproval>Review normalization of objects, and manually normalize as necessary. Review submission documentation.</descriptionForApproval>
+    <requiresUserApproval>No</requiresUserApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%Approve normalization/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%/structureDirectory/moveSubmissionDocumentationObjectsDirectory/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%/structureDirectory/moveSubmissionDocumentationObjectsDirectory/</successDirectory>
+        <successDirectory>%watchDirectoryPath%assignIdentifier/UUID4/submission documentation/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -23,12 +23,12 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>       
+                <execute>move_v0.0</execute>
+                <arguments>"%SIPDirectory%metadata/submissionDocumentation" "%SIPDirectory%objects/submissionDocumentation" </arguments>
+                <executeOnEachFile>No</executeOnEachFile>
+            </command>
         </exeCommand>
         
         <verificationCommand>

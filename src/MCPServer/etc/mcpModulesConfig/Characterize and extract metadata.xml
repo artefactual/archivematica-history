@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%identifyFileFormat/FITS/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%identifyFileFormat/FITS/objects/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%prepareForAppraisal/preservation/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
