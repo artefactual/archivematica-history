@@ -1,12 +1,12 @@
 <module>
     <requiresUserApproval>Yes</requiresUserApproval>
-    <descriptionForApproval>Normalization of one or more objects in this SIP failed. To reject the SIP, click Reject; to continue processing the SIP, click Approve.</descriptionForApproval>
+    <descriptionForApproval>Review normalization of objects. Manually normalize as necessary.</descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%failedNormalization/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%Approve normalization/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
