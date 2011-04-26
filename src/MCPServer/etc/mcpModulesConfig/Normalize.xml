@@ -8,8 +8,8 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%normalize/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failedNormalization/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%prepareForAppraisal/normalized/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%prepareForAppraisal/normalized/</failureDirectory>
     </directories>
 
     <commands>    
