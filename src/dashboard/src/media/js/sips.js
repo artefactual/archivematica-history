@@ -29,7 +29,7 @@ $(function()
 
       hasFinished: function()
         {
-          return false == this.jobs.some(function(job)
+          return false === this.jobs.some(function(job)
             {
               return -1 < jQuery.inArray(job.get('currentstep'), ['Requires approval', 'Executing command(s)']);
             });
@@ -72,7 +72,7 @@ $(function()
 
       comparator: function(sip)
         {
-          return 0 - sip.get('timestamp');
+          return -1 * sip.get('timestamp');
         }
 
     });
@@ -86,12 +86,12 @@ $(function()
       events: {
         'click .sip-row > .sip-detail-icon-status > a': 'toggleJobs',
         'click .sip-row > .sip-detail-actions > .btn_show_jobs': 'toggleJobs',
-        'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove',
+        'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove'
       },
      
       initialize: function()
         {
-          _.bindAll(this, 'render', 'update', 'add', 'updateIcon');
+          _.bindAll(this, 'render', 'update', 'updateIcon');
           this.model.view = this;
           this.model.bind('change:timestamp', this.update);
         },
@@ -178,7 +178,6 @@ $(function()
             {
               modal: true,
               resizable: false,
-              title: false,
               draggable: false,
               title: 'Remove SIP',
               width: 480,
@@ -234,7 +233,7 @@ $(function()
           // TODO: fastest solution would be to use the first microservice of the collection, once is ordered correctly
           var job = this.model.jobs.detect(function(job)
             {
-              return job.get('microservice') == 'Assign file UUIDs and checksums';
+              return job.get('microservice') === 'Assign file UUIDs and checksums';
             });
 
           // Fallback: use last micro-service timestamp
@@ -262,7 +261,7 @@ $(function()
 
           if (undefined !== this.find(function(job)
             {
-              return 0 < job.get('status') || 'Requires approval' == job.get('currentstep');
+              return 0 < job.get('status') || 'Requires approval' === job.get('currentstep');
             }))
           {
             path = '/media/images/bell.png';
@@ -270,7 +269,7 @@ $(function()
           }
           else if (undefined !== this.find(function(job)
             {
-              return 'Failed' == job.get('currentstep');
+              return 'Failed' === job.get('currentstep');
             }))
           {
             path = '/media/images/cancel.png';
@@ -278,7 +277,7 @@ $(function()
           }
           else if (undefined !== this.find(function(job)
             {
-              return 'Executing command(s)' == job.get('currentstep');
+              return 'Executing command(s)' === job.get('currentstep');
             }))
           {
             path = '/media/images/arrow_refresh.png';
@@ -286,7 +285,7 @@ $(function()
           }
           else if (undefined !== this.find(function(job)
             {
-              return 'Rejected' == job.get('currentstep');
+              return 'Rejected' === job.get('currentstep');
             }))
           {
             path = '/media/images/control_stop_blue.png';
@@ -303,7 +302,7 @@ $(function()
 
       comparator: function(job)
         {
-          return 0 - job.get('timestamp');
+          return -1 * job.get('timestamp');
         }
 
     });
@@ -316,7 +315,7 @@ $(function()
         'click .btn_browse_job': 'browseJob',
         'click .btn_approve_job': 'approveJob',
         'click .btn_reject_job': 'rejectJob',
-        'click .btn_show_tasks': 'showTasks',
+        'click .btn_show_tasks': 'showTasks'
       },
 
       template: _.template($('#job-template').html()),
@@ -336,7 +335,7 @@ $(function()
           {
             $(this.el).css('background-color', '#f2d8d8');
           }
-          else if ('Executing command(s)' == this.model.get('currentstep'))
+          else if ('Executing command(s)' === this.model.get('currentstep'))
           {
             $(this.el).css('background-color', '#fedda7');
           }
@@ -345,12 +344,12 @@ $(function()
             $(this.el).css('background-color', '#d8f2dc');
           }
 
-          if (1 == this.model.get('status'))
+          if (1 === this.model.get('status'))
           {
             this.$('.job-detail-actions')
               .append('<a class="btn_browse_job" href="#">Browse</a>')
               .append('<a class="btn_approve_job" href="#">Approve</a>')
-              .append('<a class="btn_reject_job" href="#">Reject</a>')
+              .append('<a class="btn_reject_job" href="#">Reject</a>');
           }
 
           this.$('.job-detail-microservice > a').tooltip();
@@ -434,7 +433,7 @@ $(function()
               },
             url: '/mcp/reject-job/'
           });
-        },
+        }
 
     });
 
@@ -489,7 +488,7 @@ $(function()
 
           if (undefined === path)
           {
-            var path = '.';
+            path = '.';
           }
 
           var self = this;
@@ -501,10 +500,10 @@ $(function()
             type: 'GET',
             success: function(data)
               {
-                for (var i in data.contents)
+                for (i in data.contents)
                 {
                   var item = data.contents[i];
-                  $ul.append('<li class="' + item.type + '"><a href="#"' + (undefined !== item.size ? ' title="' + parseInt(item.size / 1024) + ' kB"' : '') + '>' + item.name + '</a></li>');
+                  $ul.append('<li class="' + item.type + '"><a href="#"' + (undefined !== item.size ? ' title="' + parseInt(item.size / 1024, 10) + ' kB"' : '') + '>' + item.name + '</a></li>');
                 }
 
                 self.parent = data.parent;
@@ -654,7 +653,7 @@ $(function()
           // Get the current position in the collection
           var position = Sips.indexOf(sip);
           
-          if (0 == position)
+          if (0 === position)
           {
             this.el.children('#sip-body').prepend($new);
           }
@@ -698,6 +697,7 @@ $(function()
         {
           this.firstPoll = undefined !== start;
 
+
           $.ajax({
             context: this,
             dataType: 'json',
@@ -715,7 +715,7 @@ $(function()
               {
                 var objects = response.objects;
 
-                for (var i in objects)
+                for (i in objects)
                 {
                   var sip = objects[i];
                   var item = Sips.find(function(item) { return item.get('uuid') == sip.uuid; });
@@ -766,7 +766,7 @@ $(function()
                 }
               }
           });
-        },
+        }
 
     });
 
