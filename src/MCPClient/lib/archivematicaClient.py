@@ -88,6 +88,11 @@ def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverCo
 class archivematicaMCPClientProtocol(LineReceiver):
     """Archivematica Client Protocol"""
     sendLock = threading.Lock()
+    def __init__(self):
+        self.MAX_LENGTH = config.getint('Protocol', "maxLen")
+    
+    def lineLengthExceeded(self, line):
+        print >>sys.stderr, "Protocol maxLen Exceeded."
     
     def connectionMade(self):
         self.write(config.get('Protocol', "setName") + config.get('Protocol', "delimiter") + gethostname())
@@ -173,7 +178,7 @@ class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
 loadSupportedModules(config.get('MCPClient', "archivematicaClientModules"))
 application = service.Application("archivematicaMCPClient")
 f = archivematicaMCPClientProtocolFactory()
-MCPClientService = internet.TCPClient(config.get('MCPClient', "MCPArchivematicaServer"), string.atoi(config.get('MCPClient', "MCPArchivematicaServerPort")), f)
+MCPClientService = internet.TCPClient(config.get('MCPClient', "MCPArchivematicaServer"), config.getint('MCPClient', "MCPArchivematicaServerPort"), f)
 MCPClientService.setServiceParent(application)
 
 print "Connecting To: " + config.get('MCPClient', "MCPArchivematicaServer") + ":" + config.get('MCPClient', "MCPArchivematicaServerPort")
