@@ -31,40 +31,47 @@ a:hover { text-decoration: underline; }
 /* Menu */
 
 #menu {
+  height: 26px;
   background-color: #bbb;
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.19, rgb(168,168,168)), color-stop(1, rgb(214,214,214)));
   background-image: -moz-linear-gradient(center bottom, rgb(168,168,168) 19%, rgb(214,214,214) 100%);
   margin: 0 20px 10px 20px;
-}
-
-#menu ul {
   font-weight: bold;
   text-shadow: #000000 1px 1px 1px;
+}
+
+#menu > ul {
+  float: left;
   color: #fff;
   margin: 0;
-  padding: 5px 0px;
+  list-style: none;
 }
 
-#menu ul li {
-  display: inline;
-  margin-left: -4px;
+#menu > ul > li {
+  float: left;
+  list-style: none;
 }
 
-#menu ul li a {
-  padding: 5px 10px 5px 10px;
+#menu > ul > li > a {
+  display: block;
+  float: left;
+  height: 18px;
+  padding: 4px 10px 4px 10px;
   color: #fff;
   text-decoration: none;
   background-color: #42769e;
   border-right: 1px solid #fff;
 }
 
-#menu ul li a:hover {
+#menu > ul > li > a:hover {
   background-color: #4388a7;
-  
   color: #fff;
 }
 
-#page-sips #menu .sips a { background-color: #a40000; }
+#page-ingest #ingest > a { background-color: #a40000; }
+#page-archival-storage #archival-storage > a { background-color: #a40000; }
+#page-access #access > a { background-color: #a40000; }
+#page-preservation-planning #preservation-planning > a { background-color: #a40000; }
 
 /* Tooltip widget */
 
