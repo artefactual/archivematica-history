@@ -63,7 +63,7 @@ $(function()
 
       model: Sip,
 
-      url: '/sips/go/',
+      url: '/ingest/go/',
 
       initialize: function()
         {
@@ -702,7 +702,7 @@ $(function()
             context: this,
             dataType: 'json',
             type: 'GET',
-            url: '/sips/go/',
+            url: '/ingest/go/',
             beforeSend: function()
               {
                 window.statusWidget.text(undefined !== start ? 'Loading...' : 'Refreshing...');
