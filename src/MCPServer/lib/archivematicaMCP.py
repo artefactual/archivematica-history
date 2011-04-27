@@ -694,6 +694,10 @@ class archivematicaMCPServerProtocol(LineReceiver):
         self.clientLock = threading.Lock()
         self.sendLock = threading.Lock()
         self.keepAliveLock = threading.Lock()
+        self.MAX_LENGTH = config.getint('Protocol', "maxLen")
+    
+    def lineLengthExceeded(self, line):
+        print >>sys.stderr, "Protocol maxLen Exceeded."
     
     def badProtocol(self, command):
         """The client sent a command this server cannot interpret."""
@@ -812,13 +816,13 @@ def archivematicaMCPServerListen():
     archivematicaService = archivematicaServices()
     archivematicaService.setServiceParent(application)
     xmlRPC = archivematicaXMLrpc()
-    xmlRPCService = internet.TCPServer(string.atoi(config.get('MCPServer', "MCPArchivematicaXMLPort")), server.Site(xmlRPC))
+    xmlRPCService = internet.TCPServer(config.getint('MCPServer', "MCPArchivematicaXMLPort"), server.Site(xmlRPC))
     xmlRPCService.setServiceParent(application)
     
     factory.protocol = archivematicaMCPServerProtocol
     factory.clients = []
    
-    MCPServerService = internet.TCPServer(string.atoi(config.get('MCPServer', "MCPArchivematicaServerPort")),factory, interface=config.get('MCPServer', "MCPArchivematicaServerInterface"))
+    MCPServerService = internet.TCPServer(config.getint('MCPServer', "MCPArchivematicaServerPort"),factory, interface=config.get('MCPServer', "MCPArchivematicaServerInterface"))
     MCPServerService.setServiceParent(application)
     
    
