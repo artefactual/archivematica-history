@@ -83,7 +83,7 @@ def explore(request, uuid):
     contents.append(newItem)
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
-def sips(request, uuid=None):
+def ingest(request, uuid=None):
   if request.method == 'GET':
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
     objects = Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
