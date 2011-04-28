@@ -1,21 +1,21 @@
 <module>
-    <requiresUserApproval>Yes</requiresUserApproval>
-    <descriptionForApproval>Review normalization of objects, and manually normalize as necessary. Review submission documentation.</descriptionForApproval>
+    <requiresUserApproval>No</requiresUserApproval>
+    <descriptionForApproval></descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%Approve normalization/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%Verify there are submission documents to process/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%Verify there are submission documents to process/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%/structureDirectory/moveSubmissionDocumentationObjectsDirectory/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -25,9 +25,9 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
+                <execute>verifyNotEmpty_v0.0</execute>
+                <arguments>"%SIPDirectory%metadata/submissionDocumentation"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
             </command>       
         </exeCommand>
         
