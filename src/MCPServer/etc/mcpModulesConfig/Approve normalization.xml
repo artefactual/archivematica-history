@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%Approve normalization/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%/structureDirectory/moveSubmissionDocumentationObjectsDirectory/</successDirectory>
+        <successDirectory>%watchDirectoryPath%Verify there are submission documents to process/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
