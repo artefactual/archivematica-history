@@ -1,6 +1,6 @@
 <module>
     <requiresUserApproval>No</requiresUserApproval>
-    <descriptionForApproval></descriptionForApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
     <notificationStarted></notificationStarted>
     <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
