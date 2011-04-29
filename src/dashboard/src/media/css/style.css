@@ -170,9 +170,7 @@ a:hover { text-decoration: underline; }
   clear: both;
   float: left;
   border: 1px solid White;
-}
-
-.sip > .sip-row {
+  cursor: pointer;
 }
 
 .sip:hover, .sip-selected {
@@ -189,7 +187,7 @@ a:hover { text-decoration: underline; }
   border-color: #bbb;
 }
 
-.sip-row > div          { float:  left;}
+.sip-row > div          { float:  left; }
 .sip-detail-icon-status { width:  26px; padding: 4px 0px; text-align: center; }
 .sip-detail-directory   { width: 300px; padding: 4px 0px; display: table-cell; white-space: nowrap; }
 .sip-detail-uuid        { width: 310px; padding: 4px 0px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
@@ -354,7 +352,7 @@ a:hover { text-decoration: underline; }
   margin: 0 !important;
   padding: 0 !important;
   list-style: none;
-  background: transparent url(/media/vendor/jquery-ui/images/ui-bg_gloss-wave_75_2191c0_500x100.png) no-repeat center left;
+  background: transparent url(/media/vendor/jquery-ui/images-others/ui-bg_gloss-wave_75_2191c0_500x100.png) no-repeat center left;
   font-size: 13px;
   font-weight: bold;
   text-shadow: #444 1px 1px 1px;
