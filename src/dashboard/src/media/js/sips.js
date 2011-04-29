@@ -84,8 +84,7 @@ $(function()
       template: _.template($('#sip-template').html()),
 
       events: {
-        'click .sip-row > .sip-detail-icon-status > a': 'toggleJobs',
-        'click .sip-row > .sip-detail-actions > .btn_show_jobs': 'toggleJobs',
+        'click .sip-row': 'toggleJobs',
         'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove'
       },
      
