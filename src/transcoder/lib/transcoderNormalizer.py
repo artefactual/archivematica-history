@@ -36,6 +36,8 @@ from getPronomsFromPremis import getPronomsFromPremis
 global replacementDic
 global opts
 global outputFileUUID
+global outputFileUUIDHasBeenTaskUUID
+outputFileUUIDHasBeenTaskUUID = False
 
 def inAccessFormat():
     ex=["CSS", "CSV", "HTML", "TXT", "XML", "XSL", \
@@ -152,7 +154,7 @@ if __name__ == '__main__':
     global opts
     global replacementDic
     global outputFileUUID
-    outputFileUUID = uuid.uuid4().__str__()
+    
     parser = OptionParser()
     #--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"
     parser.add_option("-f",  "--inputFile",          action="store", dest="inputFile", default="")
@@ -183,6 +185,7 @@ if __name__ == '__main__':
     outputDirectory = ""
     if opts.commandClassifications == "normalize":
         postfix = "-" + opts.taskUUID
+        outputFileUUID = opts.taskUUID
         outputDirectory = transcoder.fileDirectory 
     elif opts.commandClassifications == "access":
         prefix = opts.fileUUID + "-"
