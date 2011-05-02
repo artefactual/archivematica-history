@@ -1,10 +1,26 @@
 #!/bin/sh
 
-adduser --uid 333 --group --system --no-create-home --disabled-login archivematica
+
+USERID="archivematica"
+DIRECTORY="/var/log/archivematica"
+
+
+/bin/egrep  -i "^${USERID}" /etc/passwd
+if [ $? -eq 0 ]; then
+  echo "User $USERID exists in /etc/passwd"
+else
+  echo "adding archivematica user"
+  sudo adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
+fi
+
+
 #echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/unoconv" >> /etc/sudoers
 
-mkdir /var/log/archivematica
-chown archivematica:archivematica /var/log/archivematica
+
+if [ ! -d "$DIRECTORY" ]; then
+  mkdir -p /var/log/archivematica
+  chown archivematica:archivematica /var/log/archivematica
+fi
 
 if [ -x "/etc/init.d/archivematica-mcp-clientd" ]; then
         update-rc.d archivematica-mcp-clientd defaults >/dev/null
