@@ -124,9 +124,10 @@ def formatIdentificationFITSAssist(fits):
     fileFormatHits = getTagged(IdentificationFile, prefix + "FileFormatHit")
     eventOutcomeDetailNotes = []
     eventOutcomeDetailNote = ""
-    for fileFormatHit in fileFormatHits:   
+    for fileFormatHit in fileFormatHits:
+        format = etree.Element("format")   
         if len(fileFormatHit):
-            format = etree.Element("format")
+            
             eventOutcomeDetailNote = getTagged(fileFormatHit, prefix + "PUID")[0].text
             
             formatDesignation = etree.SubElement(format, "formatDesignation")
@@ -145,6 +146,10 @@ def formatIdentificationFITSAssist(fits):
             formats.append(format)    
         else:
             eventOutcomeDetailNote = "No Matching Format Found"
+            formatDesignation = etree.SubElement(format, "formatDesignation")
+            etree.SubElement(formatDesignation, "formatName").text = "Unknown"
+            formatName
+            formats.append(format)    
         eventOutcomeDetailNotes.append(eventOutcomeDetailNote)
     return tuple([eventDetailText, eventOutcomeText, eventOutcomeDetailNotes]) #tuple([1, 2, 3]) returns (1, 2, 3).
 
