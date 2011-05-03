@@ -148,7 +148,6 @@ def formatIdentificationFITSAssist(fits):
             eventOutcomeDetailNote = "No Matching Format Found"
             formatDesignation = etree.SubElement(format, "formatDesignation")
             etree.SubElement(formatDesignation, "formatName").text = "Unknown"
-            formatName
             formats.append(format)    
         eventOutcomeDetailNotes.append(eventOutcomeDetailNote)
     return tuple([eventDetailText, eventOutcomeText, eventOutcomeDetailNotes]) #tuple([1, 2, 3]) returns (1, 2, 3).
