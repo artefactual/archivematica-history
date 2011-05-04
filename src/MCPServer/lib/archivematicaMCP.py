@@ -85,6 +85,7 @@ archivematicaRD = replacementDics(config)
 
 #depends on OS whether you need one line or other. I think Events.Codes is older.
 mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
+maskForCopied = pyinotify.IN_CREATE | pyinotify.IN_MODIFY
 #mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
 configs = []
 jobsAwaitingApproval = []
@@ -610,6 +611,48 @@ class Job:
             print "Job in bad step: " + self.step.__str__()
             return []
 
+#Used to monitor directories copied to the MCP, to act when they are done copying.
+class archivematicaWatchDirectoryTimer():
+    def __init__(self, watchDirectory, event, watchManager, path, delay=config.getint('MCPServer', "MCPWaitForCopyToCompleteSeconds")):
+        self.watchDirectory = watchDirectory
+        self.event = event
+        self.delay = delay
+        self.watchManager = watchManager
+        self.path = path
+        self.timerLock = threading.Lock()    
+        self.timer = threading.Timer(self.delay, self.timerExpired, args=[self])
+        self.timer.start()
+
+    def resetDelay(self):
+        self.timerLock.acquire()
+        #print "resetting delay: ", self
+        self.timer.cancel()
+        self.timer = threading.Timer(self.delay, self.timerExpired)
+        self.timer.start()
+        self.timerLock.release()
+    
+    def timerExpired(self):
+        self.timerLock.acquire()
+        #print "time expired", self
+        wd = self.watchManager.get_wd(self.path)
+        self.watchManager.rm_watch(wd, rec=True) 
+        self.watchDirectory.process_IN_MOVED_TO(self.event)
+
+#Used to monitor directories copied to the MCP, to see when they are done copying.
+class directoryCreated(ProcessEvent):
+    """Determin which action to take based on the watch directory. """
+    def __init__(self, watchDirectory, event, watchManager, path, timer=None):
+        self.timer = timer
+        if self.timer == None:
+            self.timer = archivematicaWatchDirectoryTimer(watchDirectory, event, watchManager, path) # self to rm, wd and event to activate Processing.
+            
+    def process_IN_CREATE(self, event):
+        self.process_IN_MODIFY(event)
+        
+    def process_IN_MODIFY(self, event):
+        self.timer.resetDelay()
+
+
 #This class holds the relation betwen watched directories, and their configs.
 #This is a one to one relationship.
 class watchDirectory(ProcessEvent):
@@ -619,7 +662,13 @@ class watchDirectory(ProcessEvent):
         self.config = config
     def process_IN_CREATE(self, event):
         if config.get('MCPServer', "actOnCopied").lower() == "true":
-            self.process_IN_MOVED_TO(event)
+            if os.path.isdir(os.path.join(event.path, event.name)):
+                wm = WatchManager()
+                notifier = ThreadedNotifier(wm, directoryCreated(self, event, wm, os.path.join(event.path, event.name)))
+                wdd = wm.add_watch(os.path.join(event.path, event.name), maskForCopied, rec=True, auto_add=True)
+                notifier.start()
+            else:
+                print "Warning: %s was created. It is a file, not a directory."
         else:
             print "Warning: %s was created. Was something copied into this directory?" %  os.path.join(event.path, event.name)
         
