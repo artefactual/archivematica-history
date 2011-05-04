@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%prepareForAppraisal/normalized/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%Approve normalization/</successDirectory>
+        <successDirectory>%watchDirectoryPath%approveNormalization/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 

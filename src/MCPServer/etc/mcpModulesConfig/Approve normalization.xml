@@ -6,9 +6,9 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%Approve normalization/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%approveNormalization/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%Verify there are submission documents to process/</successDirectory>
+        <successDirectory>%watchDirectoryPath%checkForSubmissionDocumentation/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
