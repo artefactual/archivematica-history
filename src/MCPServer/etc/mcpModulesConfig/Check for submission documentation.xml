@@ -6,7 +6,7 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%Verify there are submission documents to process/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%checkForSubmissionDocumentation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%/structureDirectory/moveSubmissionDocumentationObjectsDirectory/</successDirectory>
         <failureDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</failureDirectory>

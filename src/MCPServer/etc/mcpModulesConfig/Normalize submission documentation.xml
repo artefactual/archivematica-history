@@ -8,8 +8,8 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%normalize/submission documentation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%Approve submission documentation ingest/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%Approve submission documentation ingest/</failureDirectory>
+        <successDirectory>%watchDirectoryPath%approveSubmissionDocumentationIngest/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%approveSubmissionDocumentationIngest/</failureDirectory>
     </directories>
 
     <commands>    
