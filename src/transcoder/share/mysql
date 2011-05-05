@@ -1275,8 +1275,8 @@ set @ffmpegEventDetailCommandID = LAST_INSERT_ID();
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
-    (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('ffmpeg -i "%fileFullName%" -ar 44100 "%outputDirectory%%prefix%%fileName%%postfix%.mpg"'),
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('ffmpeg -i "%fileFullName%"  -ac `ffprobe "%fileFullName%" -show_streams 2>&1 | grep "codec_type=audio" -c` -ar 44100 "%outputDirectory%%prefix%%fileName%%postfix%.mpg"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.mpg',
     @ffmpegEventDetailCommandID,
     @standardVerificationCommand,
@@ -1287,8 +1287,8 @@ set @ffmpegToMPGCommandID = LAST_INSERT_ID();
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
-    (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('ffmpeg -i "%fileFullName%" -vcodec ffv1 -acodec pcm_s16le "%outputDirectory%%prefix%%fileName%%postfix%.mkv"'),
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('ffmpeg -i "%fileFullName%" -vcodec ffv1  -ac `ffprobe "%fileFullName%" -show_streams 2>&1 | grep "codec_type=audio" -c`  -acodec pcm_s16le "%outputDirectory%%prefix%%fileName%%postfix%.mkv"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.mkv',
     @ffmpegEventDetailCommandID,
     @standardVerificationCommand,
@@ -1666,8 +1666,8 @@ set @ffmpegEventDetailCommandID = LAST_INSERT_ID();
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
-    (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('ffmpeg -i "%fileFullName%" -ac 2 -ab 192000 "%outputDirectory%%prefix%%fileName%%postfix%.mp3"'),
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('ffmpeg -i "%fileFullName%"  -ac `ffprobe "%fileFullName%" -show_streams 2>&1 | grep "codec_type=audio" -c`  -ab 192000 "%outputDirectory%%prefix%%fileName%%postfix%.mp3"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.mp3',
     @ffmpegEventDetailCommandID,
     @standardVerificationCommand,
@@ -1678,8 +1678,8 @@ set @ffmpegToMP3CommandID = LAST_INSERT_ID();
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
-    (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('ffmpeg -i "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.wav"'),
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('ffmpeg -i "%fileFullName%" -ac `ffprobe "%fileFullName%" -show_streams 2>&1 | grep "codec_type=audio" -c` "%outputDirectory%%prefix%%fileName%%postfix%.wav"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.wav',
     @ffmpegEventDetailCommandID,
     @standardVerificationCommand,
