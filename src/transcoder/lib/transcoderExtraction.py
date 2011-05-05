@@ -84,6 +84,7 @@ def onceExtracted(command):
 def identifyCommands(fileName):
     """Identify file type(s)"""
     ret = []
+    removeOnceExtractedSkip = ['.part01.rar', '.r01', '.pst']
     
     RarExtensions = ['.part01.rar', '.r01', '.rar']
     for extension in RarExtensions:
@@ -124,7 +125,6 @@ def identifyCommands(fileName):
             break
     if fileName.lower().endswith('.pst'):
         global removeOnceExtracted
-        removeOnceExtracted = False
         c=transcoder.database.cursor()
         sql = """SELECT CR.pk, CR.command, CR.GroupMember 
         FROM CommandRelationships AS CR 
@@ -137,6 +137,12 @@ def identifyCommands(fileName):
         while row != None:
             ret.append(row)
             row = c.fetchone()
+            
+    #check if not to remove
+    for extension in removeOnceExtractedSkip:
+        if fileName.lower().endswith(extension.lower()):
+            removeOnceExtracted = False
+            break
     return ret
 
 if __name__ == '__main__':
