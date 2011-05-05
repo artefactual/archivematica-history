@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%normalize/submission documentation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%approveSubmissionDocumentationIngest/</successDirectory>
+        <successDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</successDirectory>
         <failureDirectory>%watchDirectoryPath%approveSubmissionDocumentationIngest/</failureDirectory>
     </directories>
 
