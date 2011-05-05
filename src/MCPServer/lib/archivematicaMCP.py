@@ -171,7 +171,15 @@ class archivematicaXMLrpc(xmlrpc.XMLRPC):
             theJob.approve()
             return "Approving Job: " + theJob.UUID.__str__()
         return "Approving Job Failed " + jobUUID
-
+    
+    # Used by RPC
+    #@returns - string of XML representation of clients
+    def xmlrpc_getClientInfo(self):
+        """returns - string of XML representation of clients."""
+        ret = etree.Element("Clients")
+        for client in factory.clients:
+            ret.append(client.xmlify())
+        return etree.tostring(ret, pretty_print=True)
 
 # Used to move/rename Directories that the archivematica user
 # may or may not have writes to move.
@@ -300,6 +308,16 @@ class Task():
                 self.standardError = self.standardError.replace(key, value)
 
         logTaskCreated(self, commandReplacementDic)
+    
+    #note lock tasksLock first
+    def xmlify(self):
+        ret = etree.Element("task")
+        etree.SubElement(ret, "UUID").text = self.UUID.__str__()
+        etree.SubElement(ret, "jobUUID").text = self.job.UUID.__str__()
+        etree.SubElement(ret, "execute").text = self.execute
+        etree.SubElement(ret, "arguments").text = self.arguments
+        etree.SubElement(ret, "target").text = self.target
+        return ret
     
     #This function is used to verify that where 
     #the MCP is writing to is an allowable location
@@ -744,6 +762,23 @@ class archivematicaMCPServerProtocol(LineReceiver):
         self.sendLock = threading.Lock()
         self.keepAliveLock = threading.Lock()
         self.MAX_LENGTH = config.getint('Protocol', "maxLen")
+    
+    def xmlify(self):
+        tasksLock.acquire()
+        self.clientLock.acquire()
+        ret = etree.Element("Client")
+        etree.SubElement(ret, "clientName").text = self.clientName
+        etree.SubElement(ret, "maxThreads").text = self.maxThreads.__str__()
+        etree.SubElement(ret, "currentThreads").text = self.currentThreads.__str__()
+        tasks = etree.SubElement(ret, "currentThreads")
+        for task in tasksBeingProcessed:
+            tasks.append(task.xmlify())
+        supportedTasks = etree.SubElement(ret, "supportedTasks")
+        for supportedCommand in self.supportedCommands:
+            etree.SubElement(supportedTasks, "supportedTask").text = supportedCommand
+        self.clientLock.release()
+        tasksLock.release()
+        return ret
     
     def lineLengthExceeded(self, line):
         print >>sys.stderr, "Protocol maxLen Exceeded."
