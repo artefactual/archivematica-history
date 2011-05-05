@@ -237,6 +237,7 @@ def processTaskQueue():
                         task.arguments = task.arguments.__str__().replace("%date%", task.assignedDate)
                         task.arguments = task.arguments.__str__().replace("%jobCreatedDate%", task.job.createdDate)
                         tasksBeingProcessed.append(task)
+                        task.client = client
                         send = config.get('Protocol', "performTask")
                         send += config.get('Protocol', "delimiter")
                         send += task.UUID.__str__()
@@ -287,6 +288,7 @@ class Task():
         self.standardError = command.standardError
         self.stdOut = ""
         self.stdError = ""
+        self.client = None
         
         
         commandReplacementDic = archivematicaRD.commandReplacementDic(self, job, target, command)
@@ -772,7 +774,8 @@ class archivematicaMCPServerProtocol(LineReceiver):
         etree.SubElement(ret, "currentThreads").text = self.currentThreads.__str__()
         tasks = etree.SubElement(ret, "currentThreads")
         for task in tasksBeingProcessed:
-            tasks.append(task.xmlify())
+            if task.client == self:
+                tasks.append(task.xmlify())
         supportedTasks = etree.SubElement(ret, "supportedTasks")
         for supportedCommand in self.supportedCommands:
             etree.SubElement(supportedTasks, "supportedTask").text = supportedCommand
@@ -822,6 +825,17 @@ class archivematicaMCPServerProtocol(LineReceiver):
         self.channelOpen = False
         self.keepAliveLock.release()
         self.factory.clients.remove(self)
+        
+        tasksRunningWhileClientDisconnected = []
+        tasksLock.acquire()
+        for task in tasksBeingProcessed:
+            if task.client == self:
+                tasksRunningWhileClientDisconnected.append(task)
+        tasksLock.release()
+        for task in tasksRunningWhileClientDisconnected:
+            task.stdOut = ""
+            task.stdError = "The client " + self.clientName + " disconnected while this was processing."
+            task.completed(-9)
         
     def write(self,line):      
         #Twisted isn't thread safe, use locks.
