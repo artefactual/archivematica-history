@@ -25,7 +25,7 @@
                 <standardError></standardError>
                 <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>verifyNotEmpty_v0.0</execute>
+                <execute>checkForSubmissionDocumenation_v0.0</execute>
                 <arguments>"%SIPDirectory%metadata/submissionDocumentation"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>       
