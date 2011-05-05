@@ -9,7 +9,7 @@
         <watchDirectory>%watchDirectoryPath%checkForSubmissionDocumentation/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%/structureDirectory/moveSubmissionDocumentationObjectsDirectory/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</failureDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
