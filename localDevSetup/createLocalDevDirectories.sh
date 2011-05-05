@@ -64,7 +64,7 @@ cd "$origDir"
 tmp="./sudoers-`uuid`"
 sudo cp /etc/sudoers "./ETCsudoersBackup-`date`"
 sudo grep -v archivematica  "/etc/sudoers" > "${tmp}"
-sudo echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/unoconv,/usr/bin/gs,/usr/lib/transcoder/transcoderScripts/DocumentConverter.py" >> "${tmp}"
+sudo echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/unoconv,/usr/bin/gs,/usr/lib/transcoder/transcoderScripts/DocumentConverter.py,/usr/bin/inkscape" >> "${tmp}"
 sudo chown 0:0 "${tmp}"
 sudo chmod 440 "${tmp}"
 sudo mv -f "${tmp}" /etc/sudoers

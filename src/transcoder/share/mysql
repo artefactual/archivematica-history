@@ -2034,8 +2034,9 @@ set @inkscapeToPDFCommandID = LAST_INSERT_ID();
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
-    (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('inkscape "%fileFullName%" --export-plain-svg="%outputDirectory%%prefix%%fileName%%postfix%.svg"'),
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('sudo /usr/bin/inkscape "%fileFullName%" --export-plain-svg="%outputDirectory%%prefix%%fileName%%postfix%.svg"\n
+    sudo chmod 777 "%outputDirectory%%prefix%%fileName%%postfix%.svg"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.svg',
     @inkscapeEventDetailCommandID,
     @standardVerificationCommand,
