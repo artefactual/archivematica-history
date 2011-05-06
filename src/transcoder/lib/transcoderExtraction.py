@@ -31,6 +31,8 @@ import transcoder
 sys.path.append("/usr/lib/archivematica/MCPClient/clientScripts")
 from fileAddedToSIP import addFileToSIP
 
+global extractedCount
+extractedCount = 1
 removeOnceExtracted = True
 
 date = sys.argv[4].__str__().split(".", 1)[0]
@@ -79,7 +81,11 @@ def onceExtracted(command):
         print stdOut
         print >>sys.stderr, stdError
         if exitCode != 0 and command.exitCode == 0:
-            command.exitCode = exitCode 
+            command.exitCode = exitCode
+             
+    global extractedCount
+    extractedCount = extractedCount + 1
+    replacementDic["%outputDirectory%"] = transcoder.fileFullName + '-' + extractedCount.__str__() + '-' + date
 
 def identifyCommands(fileName):
     """Identify file type(s)"""

@@ -640,7 +640,8 @@ class archivematicaWatchDirectoryTimer():
         self.watchManager = watchManager
         self.path = path
         self.timerLock = threading.Lock()    
-        self.timer = threading.Timer(self.delay, self.timerExpired, args=[self])
+        args=[self]
+        self.timer = threading.Timer(self.delay, self.timerExpired)
         self.timer.start()
 
     def resetDelay(self):
