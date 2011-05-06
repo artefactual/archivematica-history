@@ -298,6 +298,27 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    'mkdir "%outputDirectory%" && readpst -r "%inputFile%" -o "%outputDirectory%" -S',
+    '%outputDirectory%',
+    @readPSTEventDetailCommandID,
+    @standardDirectoryVerificationCommand,
+    ('Extracting pst file')
+);
+set @readPSTtoMBOXCommandID = LAST_INSERT_ID();
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'extract'),
+    @readPSTtoMBOXCommandID,
+    @fileID
+);
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     'mkdir "%outputDirectory%" && readpst -r "%inputFile%" -o "%outputDirectory%"',
     '%outputDirectory%',
     @readPSTEventDetailCommandID,
