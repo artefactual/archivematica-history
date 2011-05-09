@@ -26,7 +26,7 @@
 
 target="$1"
 if [ -d "${target}" ]; then
-	sudo chown -R archivematica "${target}"  
+	sudo chown -R archivematica:archivematica "${target}"  
 	chmod -R 750 "${target}"
 	if [ -d "${target}objects" ]; then	
 		chmod -R 770 "${target}objects"
