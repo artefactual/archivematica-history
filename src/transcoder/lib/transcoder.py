@@ -54,10 +54,24 @@ def setFileIn(fileIn=sys.argv[1]):
     if x2 < x1:
         x2mod = 0
     
-    fileTitle = s[x1:x2]
-    fileExtension = s[x2mod:sLen]
-    fileDirectory = s[:x1]
-    fileFullName = fileDirectory + fileTitle + "." + fileExtension
+    
+    fileDirectory = os.path.dirname(s) + "/"
+    if x2mod != 0:
+        fileExtension = s[x2mod:sLen]
+        fileTitle = s[x1:x2]
+        fileFullName = fileDirectory + fileTitle + "." + fileExtension
+    else:
+        print "No file extension!"
+        fileExtension = ""
+        fileTitle = s[x1:sLen]
+        fileFullName = fileDirectory + fileTitle
+    
+    print "fileTitle", fileTitle
+    print "fileExtension", fileExtension
+    print "fileDirectory", fileDirectory
+    print "fileFullName", fileFullName
+    
+    
 setFileIn()
 
 database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/transcoder/dbsettings")

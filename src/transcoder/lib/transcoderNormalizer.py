@@ -194,10 +194,14 @@ if __name__ == '__main__':
         print >>sys.stderr, "Unsupported command classification."
         exit(2)
     
+    fileExtensionWithDot = "." + transcoder.fileExtension
+    if transcoder.fileExtension == "":
+        fileExtensionWithDot = ""
     replacementDic = { \
         "%inputFile%": transcoder.fileFullName, \
         "%outputDirectory%": outputDirectory, \
         "%fileExtension%": transcoder.fileExtension, \
+        "%fileExtensionWithDot%": fileExtensionWithDot, \
         "%fileFullName%": transcoder.fileFullName, \
         "%preservationFileDirectory%": transcoder.fileDirectory, \
         "%fileDirectory%": transcoder.fileDirectory,\

@@ -194,8 +194,8 @@ INSERT INTO Commands
     VALUES 
     ((SELECT pk FROM CommandTypes WHERE type = 'command'),
     (SELECT pk FROM  (Select * From Commands) AS temp WHERE description = 'Verifying file exists and is not size 0'),
-    'cp -R "%inputFile%" "%outputDirectory%%prefix%%fileName%%postfix%.%fileExtension%"',
-    '%outputDirectory%%prefix%%fileName%%postfix%.%fileExtension%',
+    'cp -R "%inputFile%" "%outputDirectory%%prefix%%fileName%%postfix%%fileExtensionWithDot%"',
+    '%outputDirectory%%prefix%%fileName%%postfix%%fileExtensionWithDot%',
     'Copying File.');
     --     'cp --version | grep cp',
 
