@@ -32,6 +32,8 @@ from createXmlEventsAssist import createLinkingAgentIdentifier
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from archivematicaMCPFileUUID import findUUIDFromFileUUIDxml
 
+#import lxml.etree as etree
+
 DetoxDic={}
 UUIDsDic={}
  
@@ -108,6 +110,7 @@ if __name__ == '__main__':
         if len(detoxfiles) > 1 :
             oldfile = detoxfiles[0].split('\n',1)[0]
             newfile = detoxfiles[1]
+            #print "line: ", line
             if os.path.isfile(newfile):
                 oldfile = oldfile.replace(objectsDirectory, "objects/", 1)
                 newfile = newfile.replace(objectsDirectory, "objects/", 1)
@@ -119,27 +122,30 @@ if __name__ == '__main__':
                 else:
                     fileUUID = findUUIDFromFileUUIDxml(logsDir+"FileUUIDs.log", oldfile, logsDir+"fileMeta/", updateSIPUUIDfile=True)
                 
-                
+                #print "fileUUID2: ", fileUUID
                 
                 eventOutcomeDetailNote = "Original name=\"" + oldfile + "\"; cleaned up name=\"" + newfile + "\""
                 eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
                 event = createEvent( taskUUID, "name cleanup", eventDateTime=date, eventDetailText=eventDetailText, \
                                      eOutcomeInformation=createOutcomeInformation(eventOutcomeDetailNote=eventOutcomeDetailNote, 
-                                                                                  eventOutcomeText="prohibited characters removed")) 
+                                                                                  eventOutcomeText="prohibited characters removed"))
+                #print etree.tostring(event, pretty_print=True) 
                 archivematicaRenameFile(logsDir, fileUUID, newfile, event)
             elif os.path.isdir(newfile):
-                oldfile = oldfile.replace(objectsDirectory, "objects/", 1)
-                newfile = newfile.replace(objectsDirectory, "objects/", 1)
+                oldfile = oldfile.replace(objectsDirectory, "objects/", 1) + "/"
+                newfile = newfile.replace(objectsDirectory, "objects/", 1) + "/"
                 #print UUIDsDic.iteritems().__str__()
                 addToUUIDsDic = {}
                 for file, fileUUID in UUIDsDic.iteritems():
-                    if file.startswith(oldfile):               
+                    if file.startswith(oldfile):    
+                        #print "fileUUID1: ", fileUUID           
                         intermediateFileName = file.replace(oldfile, newfile, 1)
                         eventOutcomeDetailNote = "Original name=\"" + file + "\"; cleaned up name=\"" + intermediateFileName + "\""
                         eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
                         event = createEvent( taskUUID, "name cleanup", eventDateTime=date, eventDetailText=eventDetailText, \
                                              eOutcomeInformation=createOutcomeInformation(eventOutcomeDetailNote=eventOutcomeDetailNote, 
-                                                                                          eventOutcomeText="prohibited characters removed")) 
+                                                                                          eventOutcomeText="prohibited characters removed"))
+                        #print etree.tostring(event, pretty_print=True) 
                         archivematicaRenameFile(logsDir, fileUUID, intermediateFileName, event)
                         addToUUIDsDic[intermediateFileName] = fileUUID
                 UUIDsDic.update(addToUUIDsDic)

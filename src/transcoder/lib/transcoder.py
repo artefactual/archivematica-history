@@ -66,10 +66,10 @@ def setFileIn(fileIn=sys.argv[1]):
         fileTitle = s[x1:sLen]
         fileFullName = fileDirectory + fileTitle
     
-    print "fileTitle", fileTitle
-    print "fileExtension", fileExtension
-    print "fileDirectory", fileDirectory
-    print "fileFullName", fileFullName
+    #print "fileTitle", fileTitle
+    #print "fileExtension", fileExtension
+    #print "fileDirectory", fileDirectory
+    #print "fileFullName", fileFullName
     
     
 setFileIn()
