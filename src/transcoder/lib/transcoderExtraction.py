@@ -69,12 +69,12 @@ def onceExtracted(command):
             addFileToSIP( objectsDirectory, logsDirectory, ef, fileUUID, "unpacking", date, date, eventDetailText=command.eventDetailCommand.stdOut.__str__(), eventOutcomeDetailNote="extracted " + relativeFilePath)
         
         run = sys.argv[0].__str__() + \
-        " \"" + ef + "\""
-        if True: #Add the file to the SIP
-            run = run + " \"" + sys.argv[2].__str__() + "\"" + \
-            " \"" + sys.argv[3].__str__() + "\"" + \
-            " \"" + sys.argv[4].__str__() + "\"" + \
-            " \"" + sys.argv[5].__str__() + "\"" + \
+        " \"" + transcoder.escapeForCommand(ef) + "\""
+        if True: #Add the file to the SIP  
+            run = run + " \"" + transcoder.escapeForCommand(sys.argv[2].__str__()) + "\"" + \
+            " \"" + transcoder.escapeForCommand(sys.argv[3].__str__()) + "\"" + \
+            " \"" + transcoder.escapeForCommand(sys.argv[4].__str__()) + "\"" + \
+            " \"" + transcoder.escapeForCommand(sys.argv[5].__str__()) + "\"" + \
             " \"" + fileUUID + "\""
  
         exitCode, stdOut, stdError = executeOrRun("command", run)              
