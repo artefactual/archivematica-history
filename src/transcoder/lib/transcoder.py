@@ -26,6 +26,7 @@ import math
 import sys
 import os
 import time
+from pipes import quote
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
 LowerEndMainGroupMax = -10
@@ -84,6 +85,24 @@ onSuccess=None #pointer to a function to call once a command completes successfu
 global replacementDic
 replacementDic = {}
 identifyCommands=None
+
+def escapeForCommand(str):
+    ret = str
+    print >>sys.stderr, "escaping:\t ", ret
+    #ret = ret.replace("(","\\(").replace(")","\\)").replace(" ","\\ ")
+    #ret = ret.replace("\"", "\\\"")
+    #ret = ret.replace("'", "\\'")
+    #ret = "'" + ret.replace("'", "'\\''") + "'"
+    
+    #|  &  ;  <  >  (  )  $  `  \  "  '
+    
+    ret = ret.replace("\\", "\\\\")
+    ret = ret.replace("\"", "\\\"")
+    #ret = ret.replace("'", "\\'")
+    #ret = ret.replace("$", "\\$")
+    ret = ret.replace("`", "\\`")
+    print >>sys.stderr, "escapedto:\t ", ret
+    return ret
 
 class Command:
     def __init__(self, commandID):
@@ -145,7 +164,8 @@ class Command:
                 
         #for each key replace all instances of the key in the command string
         for key in replacementDic.iterkeys():
-            self.command = self.command.replace ( key, replacementDic[key] )
+            #self.command = self.command.replace ( key, quote(replacementDic[key]) )
+            self.command = self.command.replace( key, escapeForCommand(replacementDic[key]) )
             if self.outputLocation:
                 self.outputLocation = self.outputLocation.replace ( key, replacementDic[key] )
         print "Running: "
