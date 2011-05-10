@@ -79,6 +79,7 @@ if __name__ == '__main__':
 
     for line in lines:
         detoxfiles = line.split(" -> ")
+        print "line: ", line
         if len(detoxfiles) > 1 :
             oldfile = detoxfiles[0].split('\n',1)[0]
             newfile = detoxfiles[1]
