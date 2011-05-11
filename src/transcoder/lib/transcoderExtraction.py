@@ -50,12 +50,12 @@ def onceExtracted(command):
         path, directories, files = w
         for p in files:
             p = os.path.join(path, p)
-            print "path: ", p
+            #print "path: ", p
             if os.path.isfile(p):
                 extractedFiles.append(p)
     for ef in extractedFiles:
         fileUUID = uuid.uuid4().__str__()
-        print "File Extracted:", ef
+        #print "File Extracted:", ef
         if True: #Add the file to the SIP
             #<arguments>"%relativeLocation%" "%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%" "%taskUUID%" "%fileUUID%"</arguments>
             objectsDirectory = sys.argv[2].__str__()
@@ -65,9 +65,14 @@ def onceExtracted(command):
             packageFileUUID = sys.argv[6].__str__()
             
             objects = "objects/"
+            print "File Extracted:: {" + fileUUID + "} ", ef.replace(objectsDirectory, objects, 1)
+            
+            
             relativeFilePath = ef.replace(objectsDirectory, objects, 1)
             addFileToSIP( objectsDirectory, logsDirectory, ef, fileUUID, "unpacking", date, date, eventDetailText=command.eventDetailCommand.stdOut.__str__(), eventOutcomeDetailNote="extracted " + relativeFilePath)
-        
+            
+            
+            
         run = sys.argv[0].__str__() + \
         " \"" + transcoder.escapeForCommand(ef) + "\""
         if True: #Add the file to the SIP  
@@ -84,6 +89,7 @@ def onceExtracted(command):
             command.exitCode = exitCode
              
     global extractedCount
+    date = sys.argv[4].__str__()
     extractedCount = extractedCount + 1
     replacementDic["%outputDirectory%"] = transcoder.fileFullName + '-' + extractedCount.__str__() + '-' + date
 
