@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%verifyChecksum</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%createOrMoveDC/</successDirectory>
+        <successDirectory>%watchDirectoryPath%removeUnneededFiles/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
