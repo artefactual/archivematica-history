@@ -46,7 +46,8 @@ def onceExtracted(command):
     print "TODO - Metadata regarding removal of extracted archive"
     if removeOnceExtracted:
         os.remove(replacementDic["%inputFile%"])
-    for w in os.walk(replacementDic["%outputDirectory%"]):
+    print "OUTPUT DIRECTORY: ", replacementDic["%outputDirectory%"]
+    for w in os.walk(replacementDic["%outputDirectory%"].replace("*", "asterisk*")):
         path, directories, files = w
         for p in files:
             p = os.path.join(path, p)
