@@ -88,7 +88,7 @@ identifyCommands=None
 
 def escapeForCommand(str):
     ret = str
-    print >>sys.stderr, "escaping:\t ", ret
+    #print >>sys.stderr, "escaping:\t ", ret
     #ret = ret.replace("(","\\(").replace(")","\\)").replace(" ","\\ ")
     #ret = ret.replace("\"", "\\\"")
     #ret = ret.replace("'", "\\'")
@@ -101,7 +101,7 @@ def escapeForCommand(str):
     #ret = ret.replace("'", "\\'")
     #ret = ret.replace("$", "\\$")
     ret = ret.replace("`", "\\`")
-    print >>sys.stderr, "escapedto:\t ", ret
+    #print >>sys.stderr, "escapedto:\t ", ret
     return ret
 
 class Command:
