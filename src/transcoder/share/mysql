@@ -1359,6 +1359,34 @@ INSERT INTO CommandRelationships
 
 -- End Of ADD Normalization Path for .M2V --
 
+-- ADD Normalization Path for .MKV --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .mkv file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'mkv',
+    @fileID
+);
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @videoGroup);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @ffmpegToMPGCommandID,
+    @fileID
+);
+
 
 -- ADD Normalization Path for .WMV --
 INSERT INTO FileIDs 
@@ -2890,6 +2918,66 @@ INSERT INTO CommandRelationships
 -- fmt/47
 
 -- End Of ADD Normalization Path for .RTF --
+
+-- ADD Normalization Path for .ODT --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .odt file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'odt',
+    @fileID
+);
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @wordProcessingGroup);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .ODT --
+
+-- ADD Normalization Path for .ODP --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .odp file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'odp',
+    @fileID
+);
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @wordProcessingGroup);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .ODP --
 
 -- ADD Normalization Path for .DOCX --
 INSERT INTO FileIDs 
