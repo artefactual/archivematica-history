@@ -47,12 +47,13 @@ def loadDublin(root, dublincore):
 
 if __name__ == '__main__':
   if not os.path.isfile(sys.argv[1]+"/METS.xml"):
-    print("Archivematica error - METS.xml doesn't exist")
+    print >>sys.stderr, "Archivematica error - METS.xml doesn't exist"
+    exit(2)
 
   tree = etree.parse(sys.argv[1]+"/METS.xml")
   root = tree.getroot()
 
-  dtree = etree.parse(sys.argv[2]+"/dublincore.xml")
+  dtree = etree.parse(sys.argv[2]+"dublincore.xml")
   dublincore = dtree.getroot()
 
   loadDublin(root, dublincore)
