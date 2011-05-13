@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%removeUnneededFiles/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%prepareForAppraisal/submission/</successDirectory>
+        <successDirectory>%watchDirectoryPath%createOrMoveDC/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
