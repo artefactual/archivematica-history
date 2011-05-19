@@ -26,8 +26,8 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>storeAIP_v0.0</execute>
-                <arguments>"%SIPDirectory%" "%AIPsStore%"</arguments>
-                <executeOnEachFile>Yes</executeOnEachFile>
+                <arguments>"%AIPsStore%" "%SIPDirectory%%SIPUUID%.zip" "%SIPUUID%"</arguments>
+                <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
         

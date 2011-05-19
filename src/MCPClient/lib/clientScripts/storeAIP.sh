@@ -23,20 +23,22 @@
 # @version svn: $Id$
 
 set -e
+AIPsStore="$1"
+AIP="$2"
+SIPUUID="$3"
+splitDir="${SIPUUID//-//}"
+splitDirPath="${AIPsStore}${splitDir}/"
+storeLocation="${splitDirPath}`basename ${AIP}`"
+extractDirectory="/tmp/${SIPUUID}"
 
-AIP="$1"
-bname="`basename "$1"`"
-AIPsStore="$2"
+mkdir -m 755 -p "$splitDirPath"
+mv "$AIP" "$storeLocation" 
 
-mv "$AIP" "${AIPsStore}."
-mkdir "/tmp/${bname}"
-7z x -bd -o"/tmp/${bname}" "${AIPsStore}${bname}/*.zip"
-cd "/tmp/${bname}/"
-cd `ls`
-md5deep -x ./tagmanifest-md5.txt ./bagit.txt ./bag-info.txt manifest-md5.txt
-md5deep -r -x ./manifest-md5.txt ./data
+chmod 755 -R "$AIPsStore"*
 
-#"`dirname "$0"checkAIPIntegrity.py`" 
-rm -r "/tmp/${bname}/"
+mkdir "${extractDirectory}"
+7z x -bd -o"${extractDirectory}" "${storeLocation}"
+
+rm -r "${extractDirectory}"
 
 exit $?
