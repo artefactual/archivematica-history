@@ -8,7 +8,7 @@
     <directories>
         <watchDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%compileMetadata/METS/</successDirectory>
+        <successDirectory>%watchDirectoryPath%verifyPREMISChecksums/</successDirectory>
         <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
     </directories>
 

@@ -65,4 +65,4 @@ transcoderExtractPackages_v0.0 = /usr/lib/archivematica/transcoder/transcoderExt
 transcoderNormalizePreservation_v0.0 = /usr/lib/archivematica/transcoder/transcoderNormalizer.py
 checkForSubmissionDocumenation_v0.0 = %clientScriptsDirectory%checkForSubmissionDocumenation.py
 removeUnneededFiles_v0.0 = %clientScriptsDirectory%removeUnneededFiles.py
-
+verifyPREMISChecksums_v0.0 = %clientScriptsDirectory%verifyPREMISChecksums.py
