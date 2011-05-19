@@ -46,7 +46,7 @@ if __name__ == '__main__':
     
     xmlFile = logsDirectory + "fileMeta/" + fileUUID + ".xml" 
     global eventDetailText  
-    eventDetailText = ""   
+    eventDetailText = "fileRemoved"   
     if removableFile(target):
         print fileUUID + " -> " + os.path.basename(target)
         os.remove(target)

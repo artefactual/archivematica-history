@@ -6,28 +6,28 @@
     <notificationCompletedWithErrors></notificationCompletedWithErrors>
     
     <directories>
-        <watchDirectory>%watchDirectoryPath%compileMetadata/removeFilesWithoutPresmisMetadata/</watchDirectory>
+        <watchDirectory>%watchDirectoryPath%verifyPREMISChecksums/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
-        <successDirectory>%watchDirectoryPath%verifyPREMISChecksums/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
+        <successDirectory>%watchDirectoryPath%compileMetadata/METS/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
     </directories>
 
     <commands>    
         <exeCommand> 
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
                 <skip>No</skip>
-                <filterFileEnd></filterFileEnd>
+                <filterFileEnd>.xml</filterFileEnd>
                 <filterFileStart></filterFileStart>
-                <filterSubDir>objects/</filterSubDir>
-                <requiresOutputLock>No</requiresOutputLock>
+                <filterSubDir>logs/fileMeta/</filterSubDir>
+                <requiresOutputLock>Yes</requiresOutputLock>
                 <standardIn></standardIn>
-                <standardOut>%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log</standardOut>
-                <standardError>%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log</standardError>
+                <standardOut>%SIPLogsDirectory%Verify PREMIS Checksums.log</standardOut>
+                <standardError>%SIPLogsDirectory%Verify PREMIS Checksums.log</standardError>
+                <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute>removeFilesWithoutPresmisMetadata_v0.0</execute>
-                <arguments>--fileUUID "%fileUUID%" --inputFile "%relativeLocation%" --objectsDirectory "%SIPObjectsDirectory%"</arguments>
-                <executeOnEachFile>yes</executeOnEachFile>
+                <execute>verifyPREMISChecksums_v0.0</execute>
+                <arguments>"%SIPObjectsDirectory%" "%relativeLocation%" "%date%" "%taskUUID%"</arguments>
+                <executeOnEachFile> </executeOnEachFile>
             </command>
         </exeCommand>
         
@@ -46,7 +46,7 @@
                 <execute> </execute>
                 <arguments> </arguments>
                 <executeOnEachFile> </executeOnEachFile>
-            </command>              
+            </command>
         </verificationCommand>
         
         <cleanupSuccessfulCommand>
