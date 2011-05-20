@@ -27,7 +27,7 @@
                 <failureNotification> </failureNotification>
                 <execute>storeAIP_v0.0</execute>
                 <arguments>"%AIPsStore%" "%SIPDirectory%%SIPUUID%.zip" "%SIPUUID%"</arguments>
-                <executeOnEachFile>No</executeOnEachFile>
+                <executeOnEachFile>Yes</executeOnEachFile>
             </command>
         </exeCommand>
         

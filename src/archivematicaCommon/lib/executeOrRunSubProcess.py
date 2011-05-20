@@ -30,7 +30,7 @@ import sys
 def launchSubProcess(command, stdIn="", printing=True):
     stdError = ""
     stdOut = ""
-    
+    print  >>sys.stderr, command
     try:
         p = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
         stdOut, stdError = p.communicate() 
