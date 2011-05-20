@@ -31,13 +31,14 @@ reportTmp=/tmp/report-$UUID
 checkFolder="$1"
 md5Digest="$2"
 integrityReport="$3"
+checksumTool="$4"
 
 tmpDir=`pwd`
 cd "$checkFolder"
 #check for passing checksums
-md5deep -r -m "$md5Digest" . > $passTmp
+"${checksumTool}" -r -m "$md5Digest" . > $passTmp
 #check for failing checksums
-md5deep -r -n -m "$md5Digest" . > $failTmp
+"${checksumTool}" -r -n -m "$md5Digest" . > $failTmp
 cd $tmpDir      
 
 
@@ -61,10 +62,6 @@ echo $numberFail "items failed integrity checking" >> $reportTmp
 #copy pasta
 cp $reportTmp "$integrityReport"
 cat $failTmp 1>&2
-
-#display report
-#if [$numberFail != 0]
-#zenity --text-info --title "MD5 Integrity Report" --width=640 --height=480 --filename=$reportTmp
 
 #cleanup
 rm $failTmp $passTmp $reportTmp
