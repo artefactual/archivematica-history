@@ -367,11 +367,6 @@ $(function()
           return this;
         },
 
-      manualNormalization: function(event)
-        {
-          event.preventDefault();
-        },
-
       showTasks: function(event)
         {
           event.preventDefault();
@@ -398,6 +393,13 @@ $(function()
               },
             url: '/tasks/' + this.model.get('uuid') + '/'
           });
+        },
+
+      manualNormalization: function(event)
+        {
+          event.preventDefault();
+
+          this.manualNormalizationView = new window.ManualNormalizationView({ uuid: this.model.get('uuid') });
         },
 
       browseJob: function(event)
@@ -458,16 +460,18 @@ $(function()
 
       initialize: function()
         {
+          _.bindAll(this, 'render');
+
           this.render();
         },
 
       render: function()
         {
-
+          alert(this.options.uuid);
           return this;
         },
 
-    },
+    });
 
     window.DirectoryBrowserView = Backbone.View.extend({
 
