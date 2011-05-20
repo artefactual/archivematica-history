@@ -25,7 +25,7 @@
 [supportedCommands]
 #the version numbers are versions of the protocol, not versions of the programs themselves.
 upload-qubit_v0.0 = upload-qubit
-storeAIP_v0.0 = %clientScriptsDirectory%storeAIP.sh
+storeAIP_v0.0 = %clientScriptsDirectory%storeAIP.py
 echo_v0.0 = /bin/echo
 FITS_v0.0 = %clientScriptsDirectory%archivematicaFITS.py
 easyExtract_v0.0 = easy-extract
