@@ -66,12 +66,27 @@ os.makedirs(extractDirectory)
 #
 command = "7z x -bd -o\"" + extractDirectory + "\" \"" + storeLocation + "\"" 
 ret = executeOrRun("command", command, printing=printSubProcessOutput)
-print >>sys.stderr, ret
 exitCode, stdOut, stdErr = ret
 if exitCode != 0:
     print >>sys.stderr, "Error extracting"
     quit(1)
-    
+
+bag = extractDirectory + SIPUUID + "/"
+verificationCommands = []
+verificationCommands.append("/usr/share/bagit/bin/bag verifyvalid " + bag)
+verificationCommands.append("/usr/share/bagit/bin/bag checkpayloadoxum " + bag)
+verificationCommands.append("/usr/share/bagit/bin/bag verifycomplete " + bag)
+verificationCommands.append("/usr/share/bagit/bin/bag verifypayloadmanifests " + bag)
+verificationCommands.append("/usr/share/bagit/bin/bag verifytagmanifests " + bag)
+exitCode = 0
+for command in verificationCommands:
+    ret = executeOrRun("command", command, printing=printSubProcessOutput)
+    exit, stdOut, stdErr = ret
+    if exit != 0:
+        print >>sys.stderr, "Failed test: ", command
+        exitCode=1
+    else:
+        print >>sys.stderr, "Passed test: ", command
 #cleanup    
 shutil.rmtree(extractDirectory)
-
+quit(exitCode)
