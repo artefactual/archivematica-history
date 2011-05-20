@@ -248,7 +248,6 @@ a:hover { text-decoration: underline; }
 
 .job-detail-actions > a {
   color: #000;
-  font-weight: bold;
   font-size: 11px;
   padding: 2px 4px 2px 20px;
   margin-right: 4px;
@@ -261,6 +260,7 @@ a:hover { text-decoration: underline; }
 .job-detail-actions > .btn_browse_job { background-image: url(/media/images/folder_magnify.png); }
 .job-detail-actions > .btn_approve_job { background-image: url(/media/images/control_play_blue.png); color: Green; }
 .job-detail-actions > .btn_reject_job { background-image: url(/media/images/control_stop_blue.png); color: Red; }
+.job-detail-actions > .btn_manual_normalization { background-image: url(/media/images/user_comment.png); }
 
 .job-detail-microservice > .title {
   -webkit-transform: rotate(-90deg);

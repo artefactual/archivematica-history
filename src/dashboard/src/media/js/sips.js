@@ -21,7 +21,7 @@ $(function()
   {
 
     window.Sip = Backbone.Model.extend({
-    
+
       initialize: function()
         {
           this.loadJobs();
@@ -87,14 +87,14 @@ $(function()
         'click .sip-row': 'toggleJobs',
         'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove'
       },
-     
+
       initialize: function()
         {
           _.bindAll(this, 'render', 'update', 'updateIcon');
           this.model.view = this;
           this.model.bind('change:timestamp', this.update);
         },
-      
+
       render: function()
         {
           $(this.el).html(this.template(this.model.toJSON()));
@@ -248,9 +248,9 @@ $(function()
     window.Job = Backbone.Model.extend({
 
     });
-    
+
     window.JobCollection = Backbone.Collection.extend({
-    
+
       model: Job,
 
       getIcon: function()
@@ -314,7 +314,8 @@ $(function()
         'click .btn_browse_job': 'browseJob',
         'click .btn_approve_job': 'approveJob',
         'click .btn_reject_job': 'rejectJob',
-        'click .btn_show_tasks': 'showTasks'
+        'click .btn_show_tasks': 'showTasks',
+        'click .btn_manual_normalization': 'manualNormalization'
       },
 
       template: _.template($('#job-template').html()),
@@ -353,11 +354,22 @@ $(function()
               .append('<a class="btn_browse_job" href="#">Browse</a>')
               .append('<a class="btn_approve_job" href="#">Approve</a>')
               .append('<a class="btn_reject_job" href="#">Reject</a>');
+
+            if ('Approve normalization' == this.model.get('microservice'))
+            {
+              this.$('.job-detail-actions')
+                .append('<a class="btn_manual_normalization" href="#">Manual</a>');
+            }
           }
 
           this.$('.job-detail-microservice > a').tooltip();
 
           return this;
+        },
+
+      manualNormalization: function(event)
+        {
+          event.preventDefault();
         },
 
       showTasks: function(event)
@@ -398,7 +410,7 @@ $(function()
       approveJob: function(event)
         {
           event.preventDefault();
-          
+
           $.ajax({
             context: this,
             data: { uuid: this.model.get('uuid') },
@@ -439,6 +451,23 @@ $(function()
         }
 
     });
+
+    window.ManualNormalizationView = Backbone.View.extend({
+
+      id: 'manual-normalization',
+
+      initialize: function()
+        {
+          this.render();
+        },
+
+      render: function()
+        {
+
+          return this;
+        },
+
+    },
 
     window.DirectoryBrowserView = Backbone.View.extend({
 
@@ -519,7 +548,7 @@ $(function()
               }
           });
         },
-      
+
       showDir: function(event)
         {
           event.preventDefault();
@@ -595,11 +624,11 @@ $(function()
     });
 
     window.AppView = Backbone.View.extend({
-    
+
       el: $('#sip-container'),
 
       interval: window.pollingInterval ? window.pollingInterval * 1000: 5000,
-      
+
       idle: false,
 
       initialize: function()
@@ -617,7 +646,7 @@ $(function()
           $(document).click(function(event)
             {
               $target = $(event.target);
-              
+
               if (!$target.parents().is('#directory-browser') && !$target.is('.btn_browse_job'))
               {
                 $('#directory-browser').fadeOut('fast', function()
@@ -625,7 +654,7 @@ $(function()
                     $(this).remove();
                   });
               }
-              
+
             });
         },
 
@@ -655,7 +684,7 @@ $(function()
 
           // Get the current position in the collection
           var position = Sips.indexOf(sip);
-          
+
           if (0 === position)
           {
             this.el.children('#sip-body').prepend($new);
