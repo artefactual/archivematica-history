@@ -72,7 +72,7 @@ cd ./../buildVM/includes/
 
 # Install ICA-AtoM and configure Apache
 sudo ./vmInstaller-ica-atom.sh /.
-sudo mv /etc/apache2/sites-available/default{,.dist}
+sudo mv /etc/apache2/sites-available/default /etc/apache2/sites-available/default.dist
 sudo ln -s ${svnDir}buildVM/includes/apache.default /etc/apache2/sites-available/default
 sudo mv /var/www/index.html ./backup-index.html
 sudo /etc/init.d/apache2 restart
