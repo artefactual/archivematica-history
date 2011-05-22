@@ -137,6 +137,9 @@ def ingest(request, uuid=None):
     response = simplejson.JSONEncoder().encode({'removed': True})
     return HttpResponse(response, mimetype='application/json')
 
+def preservation_planning(request):
+  return render_to_response('main/preservation_planning.html', locals())
+
 def tasks(request, uuid):
   job = Job.objects.get(jobuuid = uuid)
   objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')
