@@ -386,3 +386,11 @@ a:hover { text-decoration: underline; }
   background-image: url(/media/images/control_rewind.png);
   background-color: rgba(0, 0, 0, 0.15);
 }
+
+/*
+ * Preservation planning report
+ */
+
+#page-preservation-planning table { }
+#page-preservation-planning table ul { list-style: none; }
+#page-preservation-planning table ul li { display: inline; }

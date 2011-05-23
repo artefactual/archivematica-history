@@ -138,6 +138,49 @@ def ingest(request, uuid=None):
     return HttpResponse(response, mimetype='application/json')
 
 def preservation_planning(request):
+  from django.db import connection, transaction
+  cursor = connection.cursor()
+
+  query="""SELECT
+      Groups.description,
+      FIBE.Extension,
+      CC.classification,
+      CT.TYPE,
+      CR.countAttempts,
+      CR.countOK,
+      CR.countNotOK,
+      CR.countAttempts - CR.countOK + CR.countNotOK AS countIncomplete,
+      Commands.PK AS CommandPK,
+      Commands.description,
+      Commands.command
+    FROM FileIDsByExtension AS FIBE
+    RIGHT OUTER JOIN FileIDs ON FIBE.FileIDs = FileIDs.pk
+    LEFT OUTER JOIN FileIDGroupMembers AS FIGM ON FIGM.fileID = FileIDs.pk
+    LEFT OUTER JOIN Groups on Groups.pk = FIGM.groupID
+    JOIN CommandRelationships AS CR ON FileIDs.pk = CR.FileID
+    JOIN Commands ON CR.command = Commands.pk
+    JOIN CommandClassifications AS CC on CR.commandClassification = CC.pk
+    JOIN CommandTypes AS CT ON Commands.commandType = CT.pk
+    ORDER BY Groups.description, FIBE.Extension, CC.classification"""
+
+  cursor = connection.cursor()
+  cursor.execute(query)
+  planning = cursor.fetchall()
+
+  file_types = []
+  last_type = ''
+  for item in planning:
+    if last_type == item[0]:
+      row = file_types.pop()
+    else:
+      row = {}
+      row['type'] = last_type = item[0] # File type
+      row['extensions'] = []
+    row['extensions'].append(item[1]) # Extensions
+    file_types.append(row)
+
+  cursor.close()
+
   return render_to_response('main/preservation_planning.html', locals())
 
 def tasks(request, uuid):
