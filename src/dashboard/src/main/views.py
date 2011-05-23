@@ -27,9 +27,20 @@ from dashboard.main.models import Task, Job
 from lxml import etree
 import os, re, calendar, subprocess
 
+def list_objects(request, uuid):
+  response = []
+  job = Job.objects.get(jobuuid=uuid)
+
+  for root, dirs, files in os.walk(job.directory + '/objects', False):
+    for name in files:
+     directory = root.replace(job.directory + '/objects', '')
+     response.append(os.path.join(directory, name))
+
+  return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
 def explore(request, uuid):
   # Database query
-  job = Job.objects.get(jobuuid = uuid)
+  job = Job.objects.get(jobuuid=uuid)
   # Prepare response object
   contents = []
   response = {}
