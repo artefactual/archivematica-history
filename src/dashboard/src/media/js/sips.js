@@ -458,6 +458,10 @@ $(function()
 
       id: 'manual-normalization',
 
+      template: _.template($('#manual-normalization-template').html()),
+
+      directoryContent: '',
+
       initialize: function()
         {
           _.bindAll(this, 'render');
@@ -467,10 +471,26 @@ $(function()
 
       render: function()
         {
-          alert(this.options.uuid);
+          // $('<p>ay ay</p>').dialog();
+          this.getContent();
+          alert(this.directoryContent);
           return this;
         },
 
+      getContent: function()
+        {
+          var self = this;
+
+          $.ajax({
+            context: self,
+            url: '/jobs/' + this.options.uuid + '/list-objects/',
+            type: 'GET',
+            success: function(data)
+              {
+                this.directoryContent = data;
+              }
+          });
+        }
     });
 
     window.DirectoryBrowserView = Backbone.View.extend({
