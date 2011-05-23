@@ -6,4 +6,25 @@
 
 {% block content %}
   <p>Preservation planning report.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>File type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in file_types  %}
+        <tr>
+          <td>
+            <p>{{ item.type }}</p>
+            <ul>
+              {% for extension in item.extensions %}
+                <li>{{ extension }}</li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
