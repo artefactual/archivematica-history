@@ -67,3 +67,7 @@ transcoderNormalizeAccess_v0.0 = /usr/lib/archivematica/transcoder/transcoderNor
 checkForSubmissionDocumenation_v0.0 = %clientScriptsDirectory%checkForSubmissionDocumenation.py
 removeUnneededFiles_v0.0 = %clientScriptsDirectory%removeUnneededFiles.py
 verifyPREMISChecksums_v0.0 = %clientScriptsDirectory%verifyPREMISChecksums.py
+verifyBAG_v0.0 = %clientScriptsDirectory%verifyBAG.py
+extractBAG_v0.0 = %clientScriptsDirectory%extractBAG.sh
+assignBAGUUID_v0.0 = %clientScriptsDirectory%assignSIPUUID.sh
+restructureBAG_v0.0 = %clientScriptsDirectory%restructureBAG.sh
