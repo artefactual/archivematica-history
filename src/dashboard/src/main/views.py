@@ -31,19 +31,28 @@ import calendar, os, re, simplejson, subprocess
 def manual_normalization(request, uuid):
   job = Job.objects.get(jobuuid=uuid)
 
-  # 1) Original file
-  # 2) New file
-  # 3) Directory, e.g.: /var/archivematica/sharedDirectory/watchedDirectories/failedNormalization/ImagesSIP_\(3rd_copy\)453-3c19badc-fe25-4811-ada4-3144d58fabb2/
-  # 4) Description
-  # command = "/home/jesus/archivematica/src/transcoder/lib/premisXMLlinker.py %s %s %s %s" % (job.directory)
+  try:
+    changes = simplejson.loads(request.POST.get('changes'))
+  except TypeError:
+    raise Http404
 
-  changes = simplejson.loads(request.POST.get('changes'))
+  # TODO: check input
+  # name, newName and directory
 
-  a = ''
+  results = []
   for item in changes:
-    a += item['name']
+    command = []
+    command.append("/usr/lib/archivematica/transcoder/premisXMLlinker.py")
+    command.append("%s/objects%s" % (job.directory, item["name"]))
+    command.append("%s/objects%s" % (job.directory, item["newName"]))
+    command.append("%s" % job.directory)
+    command.append("%s" % item["description"])
+    results.append(subprocess.Popen(command, shell=False, stdout=subprocess.PIPE).wait())
 
-  return HttpResponse(a, mimetype='application/json')
+  if 1 in results:
+    return HttpResponse("error", mimetype='text/plain', status=400)
+  else:
+    return HttpResponse("ok", mimetype='text/plain')
 
 def list_objects(request, uuid):
   response = []
