@@ -469,7 +469,7 @@ $(function()
         {
           var self = this;
 
-          $.when(this.getContent())
+          this.getContent()
             .done(function()
               {
                 var $list = $(document.createElement('ul')).addClass('manual-normalization-list');
@@ -477,8 +477,8 @@ $(function()
                 for (var i in this.directoryContent)
                 {
                   var $item = $(document.createElement('li'));
-                  var $title = $(document.createElement('p'));
 
+                  var $title = $(document.createElement('p'));
                   $.map(this.directoryContent[i].split('/'), function(n)
                     {
                       if (0 == n)
@@ -489,8 +489,9 @@ $(function()
                       $title.append('<span>' + n + '</span>');
                     });
 
-                  $title.prepend($('<input type="hidden" name="name" />').val(this.directoryContent[i]));
                   $item.append($title);
+
+                  $title.before($('<input type="hidden" name="name" />').val(this.directoryContent[i]));
 
                   $item
                     .hover(function()
@@ -515,7 +516,7 @@ $(function()
                         {
                           $item.addClass('selected');
 
-                          var name = $item.find('p span:last-child').text();
+                          var name = $item.find('input[name=name]').val();
                           var content = _.template($('#manual-normalization-item-template').html(),  { name: name, description: '' });
 
                           $(this).after(content);
@@ -545,13 +546,20 @@ $(function()
                               });
 
                             $.ajax({
+                              context: this,
                               data: { changes: JSON.stringify(changes) },
                               type: 'POST',
                               url: '/jobs/' + self.options.uuid + '/manual-normalization'
-                            }).done(function()
-                              {
-                                $(this).dialog('close');
-                              });
+                            })
+                              .then(function()
+                                {
+                                  $(this).dialog('close');
+                                })
+                              .fail(function()
+                                {
+                                  alert('Something was wrong with the manual normalization.');
+                                  $(this).dialog('close');
+                                });
                           },
                         'Close': function() 
                           {
