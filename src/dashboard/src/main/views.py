@@ -27,6 +27,21 @@ from dashboard.main.models import Task, Job
 from lxml import etree
 import os, re, calendar, subprocess
 
+def manual_normalization(request, uuid):
+  job = Job.objects.get(jobuuid=uuid)
+
+  # 1) Original file
+  # 2) New file
+  # 3) Directory, e.g.: /var/archivematica/sharedDirectory/watchedDirectories/failedNormalization/ImagesSIP_\(3rd_copy\)453-3c19badc-fe25-4811-ada4-3144d58fabb2/
+  # 4) Description
+  # command = "/home/jesus/archivematica/src/transcoder/lib/premisXMLlinker.py %s %s %s %s" % (job.directory)
+
+  a = ''
+  #for item in request.POST.items():
+  #  a += item[1]
+
+  return HttpResponse(a, mimetype='application/json')
+
 def list_objects(request, uuid):
   response = []
   job = Job.objects.get(jobuuid=uuid)
