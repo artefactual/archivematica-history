@@ -467,6 +467,8 @@ $(function()
 
       render: function()
         {
+          var self = this;
+
           $.when(this.getContent())
             .done(function()
               {
@@ -531,7 +533,24 @@ $(function()
                       {
                         'Submit': function()
                           {
-                            $(this).dialog('close');
+                            var changes = [];
+                            $list.children('.selected').each(function(index, sender)
+                              {
+                                changes.push({
+                                  name: 'a',
+                                  newName: 'b',
+                                  description: 'c'
+                                });
+                              });
+
+                            $.ajax({
+                              url: '/jobs/' + self.options.uuid + '/manual-normalization/',
+                              data: { changes: changes },
+                              type: 'POST'
+                            }).done(function()
+                              {
+                                $(this).dialog('close');
+                              });
                           },
                         'Close': function() 
                           {
