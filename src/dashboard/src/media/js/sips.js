@@ -458,10 +458,6 @@ $(function()
 
       id: 'manual-normalization',
 
-      template: _.template($('#manual-normalization-template').html()),
-
-      directoryContent: '',
-
       initialize: function()
         {
           _.bindAll(this, 'render');
@@ -471,25 +467,98 @@ $(function()
 
       render: function()
         {
-          // $('<p>ay ay</p>').dialog();
-          this.getContent();
-          alert(this.directoryContent);
+          $.when(this.getContent())
+            .done(function()
+              {
+                var $list = $(document.createElement('ul')).addClass('manual-normalization-list');
+
+                for (var i in this.directoryContent)
+                {
+                  var $item = $(document.createElement('li'));
+                  var $title = $(document.createElement('p'));
+
+                  $.map(this.directoryContent[i].split('/'), function(n)
+                    {
+                      if (0 == n)
+                      {
+                        return true;
+                      }
+
+                      $title.append('<span>' + n + '</span>');
+                    });
+
+                  $item.append($title);
+
+                  $item
+                    .hover(function()
+                      {
+                        $(this).addClass('hover');
+                      },
+                      function()
+                      {
+                        $(this).removeClass('hover');
+                      })
+                    .delegate('p', 'click', function(event)
+                      {
+                        var $item = $(this).closest('li');
+
+                        if ($item.hasClass('selected'))
+                        {
+                          $item.removeClass('selected');
+
+                          $(this).nextAll().remove();
+                        }
+                        else
+                        {
+                          $item.addClass('selected');
+
+                          var name = $item.find('p span:last-child').text();
+                          var content = _.template($('#manual-normalization-item-template').html(),  { name: name, description: '' });
+
+                          $(this).after(content);
+
+                        }
+                      });
+
+                  $list.append($item);
+                }
+
+                $('<div id="manual-normalization"><p>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p></div>').append($list).dialog(
+                  {
+                    width: 640,
+                    height: 480,
+                    buttons:
+                      {
+                        'Submit': function()
+                          {
+                            $(this).dialog('close');
+                          },
+                        'Close': function() 
+                          {
+                            $(this).dialog('close');
+                          }
+                      },
+                    title: 'Manual normalization'
+                  });
+              })
+            .fail(function()
+              {
+                // TODO
+              });
+
           return this;
         },
 
       getContent: function()
         {
-          var self = this;
-
-          $.ajax({
-            context: self,
+          return $.ajax({
+            dataType: 'json',
             url: '/jobs/' + this.options.uuid + '/list-objects/',
-            type: 'GET',
             success: function(data)
               {
                 this.directoryContent = data;
               }
-          });
+            });
         }
     });
 
