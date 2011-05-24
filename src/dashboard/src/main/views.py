@@ -19,13 +19,14 @@ from django.db.models import Max
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.db import connection, transaction
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.utils import simplejson
 from dashboard.contrib.mcp.client import MCPClient
 from dashboard.main.models import Task, Job
 from lxml import etree
-import os, re, calendar, subprocess
+import calendar, os, re, simplejson, subprocess
 
 def manual_normalization(request, uuid):
   job = Job.objects.get(jobuuid=uuid)
@@ -36,9 +37,11 @@ def manual_normalization(request, uuid):
   # 4) Description
   # command = "/home/jesus/archivematica/src/transcoder/lib/premisXMLlinker.py %s %s %s %s" % (job.directory)
 
+  changes = simplejson.loads(request.POST.get('changes'))
+
   a = ''
-  #for item in request.POST.items():
-  #  a += item[1]
+  for item in changes:
+    a += item['name']
 
   return HttpResponse(a, mimetype='application/json')
 
@@ -164,7 +167,6 @@ def ingest(request, uuid=None):
     return HttpResponse(response, mimetype='application/json')
 
 def preservation_planning(request):
-  from django.db import connection, transaction
   cursor = connection.cursor()
 
   query="""SELECT

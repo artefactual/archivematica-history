@@ -489,6 +489,7 @@ $(function()
                       $title.append('<span>' + n + '</span>');
                     });
 
+                  $title.prepend($('<input type="hidden" name="name" />').val(this.directoryContent[i]));
                   $item.append($title);
 
                   $item
@@ -537,16 +538,16 @@ $(function()
                             $list.children('.selected').each(function(index, sender)
                               {
                                 changes.push({
-                                  name: 'a',
-                                  newName: 'b',
-                                  description: 'c'
+                                  name: $('input[name=name]', this).val(),
+                                  newName: $('input[name=new-name]', this).val(),
+                                  description: $('input[name=description]', this).val()
                                 });
                               });
 
                             $.ajax({
-                              url: '/jobs/' + self.options.uuid + '/manual-normalization/',
-                              data: { changes: changes },
-                              type: 'POST'
+                              data: { changes: JSON.stringify(changes) },
+                              type: 'POST',
+                              url: '/jobs/' + self.options.uuid + '/manual-normalization'
                             }).done(function()
                               {
                                 $(this).dialog('close');
@@ -572,7 +573,7 @@ $(function()
         {
           return $.ajax({
             dataType: 'json',
-            url: '/jobs/' + this.options.uuid + '/list-objects/',
+            url: '/jobs/' + this.options.uuid + '/list-objects',
             success: function(data)
               {
                 this.directoryContent = data;

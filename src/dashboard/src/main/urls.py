@@ -14,8 +14,8 @@ urlpatterns = patterns('dashboard.main.views',
   (r'ingest/go/$', 'ingest'),
   (r'ingest/go/(?P<uuid>' + UUID_REGEX + ')$', 'ingest'),
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/explore/$', 'explore'),
-  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects/$', 'list_objects'),
-  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/manual-normalization/$', 'manual_normalization'),
+  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects$', 'list_objects'),
+  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/manual-normalization$', 'manual_normalization'),
   (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
 
   # Preservatin planning
