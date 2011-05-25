@@ -23,13 +23,19 @@
 # @version svn: $Id$
 
 import lxml.etree as etree
+import ConfigParser
+
+config2 = ConfigParser.SafeConfigParser()
+config2.read("/etc/archivematica/MCPClient/clientConfig.conf")
+
+config = ConfigParser.SafeConfigParser()
+config.read(config2.get('MCPClient', "sharedDirectoryMounted") + "sharedMicroServiceTasksConfigs/createXmlEventsAssist/organization.ini")
 
 
-
-yourAgentIdentifierType="repository code"
-yourAgentIdentifierValue="ORG"
-yourAgentName="Your Organization Name Here"
-yourAgentType="organization"
+yourAgentIdentifierType=config.get('organization', "yourAgentIdentifierType")
+yourAgentIdentifierValue=config.get('organization', "yourAgentIdentifierValue")
+yourAgentName=config.get('organization', "yourAgentName")
+yourAgentType=config.get('organization', "yourAgentType")
 
 organizationEvents = ["receive SIP", "SIP review", "appraise SIP"]
 
