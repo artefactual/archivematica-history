@@ -247,6 +247,12 @@ def upload(opts):
           uuid = file[:UUID_LEN]
           title = file[UUID_LEN + 1:]
           print "UUID: " + uuid + " -> " 
+          
+      #there is no extension
+      if os.path.basename(title).rfind(".") == -1:
+        title = title + ".none"
+        os.rename(opts['file'] + '/objects/' + file, opts['file'] + '/objects/' + file + ".none")
+        file = file + ".none"
       
       # Create information object
       data = { 'title' : title, 'parent' : '/' + parent_id + ';isad' }
@@ -274,6 +280,13 @@ def upload(opts):
     if opts['UUIDPrefixed']:
       uuid = opts['title'][:UUID_LEN]
       title = opts['title'][UUID_LEN + 1:]
+    
+    #there is no extension
+    if os.path.basename(title).rfind(".") == -1:
+        title = title + ".none"
+        os.rename(opts['file'] + '/objects/' + file, opts['file'] + '/objects/' + file + ".none")
+        file = file + ".none"
+
     # Create information object
     data = { 'title' : opts['title'], 'levelOfDescription': ITEM_ID, 'parent' : ROOT_ID }
     response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
