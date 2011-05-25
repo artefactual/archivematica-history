@@ -27,7 +27,7 @@
                 <descriptionWhileExecuting></descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>restructureBAG_v0.0</execute>
-                <arguments>"%SIPDirectory%"</arguments>
+                <arguments>"%SIPDirectory%" "%jobCreatedDate%"</arguments>
                 <executeOnEachFile>No</executeOnEachFile>
             </command>
         </exeCommand>
