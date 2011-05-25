@@ -39,18 +39,32 @@ def manual_normalization(request, uuid):
   # TODO: check input
   # name, newName and directory
 
-  results = []
+  output = []
+  returncodes = []
   for item in changes:
+
+    if item["filename"].startswith('/'):
+      item["filename"] = item["filename"][1:]
+
+    if item["newFilename"].startswith('/'):
+      item["newFilename"] = item["newFilename"][1:]
+
     command = []
     command.append("/usr/lib/archivematica/transcoder/premisXMLlinker.py")
-    command.append("%s/objects%s" % (job.directory, item["name"]))
-    command.append("%s/objects%s" % (job.directory, item["newName"]))
-    command.append("%s" % job.directory)
+    command.append("%s/objects/%s" % (job.directory, item["filename"]))
+    command.append("%s/objects/%s" % (job.directory, item["newFilename"]))
+    command.append("%s/" % job.directory)
     command.append("%s" % item["description"])
-    results.append(subprocess.Popen(command, shell=False, stdout=subprocess.PIPE).wait())
 
-  if 1 in results:
-    return HttpResponse("error", mimetype='text/plain', status=400)
+    process = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE)
+    output.append(process.communicate()[0])
+    # output.append(command)
+    returncodes.append(process.returncode)
+
+  if 1 in returncodes:
+    for item in output:
+      response += str(item) + '\n'
+    return HttpResponse(response, mimetype='text/plain', status=400)
   else:
     return HttpResponse("ok", mimetype='text/plain')
 

@@ -491,7 +491,7 @@ $(function()
 
                   $item.append($title);
 
-                  $title.before($('<input type="hidden" name="name" />').val(this.directoryContent[i]));
+                  $title.before($('<input type="hidden" name="filename" />').val(this.directoryContent[i]));
 
                   $item
                     .hover(function()
@@ -516,8 +516,8 @@ $(function()
                         {
                           $item.addClass('selected');
 
-                          var name = $item.find('input[name=name]').val();
-                          var content = _.template($('#manual-normalization-item-template').html(),  { name: name, description: '' });
+                          var filename = $item.find('input[name=filename]').val();
+                          var content = _.template($('#manual-normalization-item-template').html(),  { newFilename: filename, description: '' });
 
                           $(this).after(content);
 
@@ -539,8 +539,8 @@ $(function()
                             $list.children('.selected').each(function(index, sender)
                               {
                                 changes.push({
-                                  name: $('input[name=name]', this).val(),
-                                  newName: $('input[name=new-name]', this).val(),
+                                  filename: $('input[name=filename]', this).val(),
+                                  newFilename: $('input[name=new-filename]', this).val(),
                                   description: $('input[name=description]', this).val()
                                 });
                               });
