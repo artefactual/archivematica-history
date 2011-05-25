@@ -527,7 +527,7 @@ $(function()
                   $list.append($item);
                 }
 
-                $('<div id="manual-normalization"><p>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p></div>').append($list).dialog(
+                $('<div id="manual-normalization"><p>Select those files that have been normalized manually. Introduce the new filename and write a description.</p></div>').append($list).dialog(
                   {
                     width: 640,
                     height: 480,
@@ -535,16 +535,45 @@ $(function()
                       {
                         'Submit': function()
                           {
+                            var valid = true;
+
+                            // Build an array of changes from the dialog form
                             var changes = [];
                             $list.children('.selected').each(function(index, sender)
                               {
+                                var filename = $('input[name=filename]', this).val();
+                                var newFilename = $('input[name=new-filename]', this).val();
+                                var description = $('input[name=description]', this).val();
+
+                                if (filename == newFilename || 0 == description.length)
+                                {
+                                  valid = false;
+
+                                  return false;
+                                }
+
                                 changes.push({
-                                  filename: $('input[name=filename]', this).val(),
-                                  newFilename: $('input[name=new-filename]', this).val(),
-                                  description: $('input[name=description]', this).val()
+                                  filename: filename,
+                                  newFilename: newFilename,
+                                  description: description
                                 });
                               });
 
+                            if (!valid)
+                            {
+                              alert("The new filename must be different that the original. The description field must be fulfilled.");
+
+                              return false;
+                            }
+
+                            if (0 == changes.length)
+                            {
+                              $(this).dialog('close');
+
+                              return false;
+                            }
+
+                            // Sent form data to the server as JSON
                             $.ajax({
                               context: this,
                               data: { changes: JSON.stringify(changes) },

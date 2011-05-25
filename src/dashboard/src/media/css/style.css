@@ -401,10 +401,11 @@ a:hover { text-decoration: underline; }
 
 #manual-normalization {
   font-size: 11px;
+  margin-top: 4px;
 }
 
-#manual-normalization {
-  margin-top: 4px;
+#manual-normalization > p {
+  font-size: 12px;
 }
 
 #manual-normalization > ul {
