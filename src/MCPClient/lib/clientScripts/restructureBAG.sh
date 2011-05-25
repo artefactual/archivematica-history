@@ -24,6 +24,7 @@
 
 set -e
 BAG="$1"
+DATE="$2"
 DIRNAME="`dirname "$BAG"`"
 tmpUUID="`uuid`"
 mv "${BAG}data" "${DIRNAME}/${tmpUUID}"
@@ -50,4 +51,7 @@ if [ ! -d "${BAG}metadata" ]; then
 fi
 if [ ! -d "${BAG}metadata/submissionDocumentation" ]; then
     mkdir "${BAG}metadata/submissionDocumentation"
+fi
+if [ ! -e "${BAG}logs/acquiredSIPDateTime.log" ]; then
+	echo ${DATE} > "${BAG}logs/acquiredSIPDateTime.log"
 fi
