@@ -1,8 +1,18 @@
 {% extends "layout.html" %}
 
+{% load math %}
+
 {% block title %}Preservation planning{% endblock %}
 {% block h1 %}Preservation planning{% endblock %}
 {% block page_id %}preservation-planning{% endblock %}
+
+{% block js %}
+  <script type="text/javascript">
+    $(document).ready(function()
+      {
+      });
+  </script>
+{% endblock %}
 
 {% block content %}
   <p>Preservation planning report.</p>
@@ -13,17 +23,44 @@
       </tr>
     </thead>
     <tbody>
-      {% for item in file_types  %}
+      {% for item in file_types %}
         <tr>
-          <td>
-            <p>{{ item.type }}</p>
-            <ul>
-              {% for extension in item.extensions %}
-                <li>{{ extension }}</li>
-              {% endfor %}
-            </ul>
-          </td>
+            <td rowspan="{{ item.extensions|length|math:"$1 + 1" }}">
+              <p>
+                {% if item.url %}
+                  <a href="{{ item.url }}" target="_blank">
+                {% endif  %}
+                {{ item.type }}</p>
+                {% if item.url %}
+                  </a>
+                {% endif  %}
+              </p>
+            </td>
+          <th>Extension</th>
+          <th>Classification</th>
+          <th>Command type</th>
+          <th>d</th>
+          <th>e</th>
+          <th>f</th>
+          <th>g</th>
+          <th>h</th>
+          <th>g</th>
+          <th>h</th>
         </tr>
+        {% for extension in item.extensions %}
+          <tr>
+            <td>{{ extension.1 }}</td>
+            <td>{{ extension.2 }}</td>
+            <td>{{ extension.3 }}</td>
+            <td>{{ extension.4 }}</td>
+            <td>{{ extension.5 }}</td>
+            <td>{{ extension.6 }}</td>
+            <td>{{ extension.7 }}</td>
+            <td>{{ extension.8 }}</td>
+            <td>{{ extension.9 }}</td>
+            <td>{{ extension.10 }}</td>
+          </tr>
+        {% endfor %}
       {% endfor %}
     </tbody>
   </table>
