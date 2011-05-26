@@ -218,6 +218,16 @@ def preservation_planning(request):
   cursor.execute(query)
   planning = cursor.fetchall()
 
+  url = {
+    'Audio': 'http://archivematica.org/wiki/index.php?title=Audio',
+    'Presentation': 'http://archivematica.org/wiki/index.php?title=Presentation_files',
+    'Raster Image': 'http://archivematica.org/wiki/index.php?title=Raster_images',
+    'Raw Camera': 'http://archivematica.org/wiki/index.php?title=Raw_camera_files',
+    'Spreadsheet': 'http://archivematica.org/wiki/index.php?title=Spreadsheets',
+    'Video': 'http://archivematica.org/wiki/index.php?title=Video',
+    'Word Processing': 'http://archivematica.org/wiki/index.php?title=Word_processing_files'
+  }
+
   file_types = []
   last_type = ''
   for item in planning:
@@ -226,8 +236,10 @@ def preservation_planning(request):
     else:
       row = {}
       row['type'] = last_type = item[0] # File type
+      if row['type'] in url:
+        row['url'] = url[row['type']]
       row['extensions'] = []
-    row['extensions'].append(item[1]) # Extensions
+    row['extensions'].append(item) # Extensions
     file_types.append(row)
 
   cursor.close()
