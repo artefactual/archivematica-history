@@ -33,6 +33,8 @@ printSubProcessOutput=True
 AIPsStore = sys.argv[1]
 AIP = sys.argv[2]
 SIPUUID = sys.argv[3]
+HTMLFilePath = sys.argv[4]
+SIPNAME = sys.argv[5]
 
 #Get the UUID quads
 uuidQuads = []
@@ -87,6 +89,33 @@ for command in verificationCommands:
         exitCode=1
     else:
         print >>sys.stderr, "Passed test: ", command
+        
 #cleanup    
 shutil.rmtree(extractDirectory)
+
+#write to html file
+if exitCode == 0:
+    link = storeLocation.replace(AIPsStore, "AIPsStore/")
+    import lxml.etree as etree
+    if os.path.isfile(HTMLFilePath):
+        tree = etree.parse(HTMLFilePath)
+        body = tree.find("body")
+        
+    else:
+        root = etree.Element("html")
+        head = etree.SubElement(root, "head")
+        body = etree.SubElement(root, "body")
+        body.tail = "\n"
+        tree = etree.ElementTree(root)
+        
+    
+    
+    paragraph = etree.SubElement(body, "p")
+    paragraph.tail = "\n"
+    child = etree.SubElement(paragraph, "a")
+    child.set("href", link)
+    child.text = SIPUUID + " - " + SIPNAME
+    tree.write(HTMLFilePath)
+    os.chmod(HTMLFilePath, mode)
+
 quit(exitCode)

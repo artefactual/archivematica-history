@@ -62,7 +62,7 @@ def loadFileUUIDsDic():
             fileName = detoxfiles[1]
             fileName = string.replace(fileName, "\n", "", 1)
             UUIDsDic[fileName] = fileUUID
-        line = FileUUIDs_fh.readline()import os
+        line = FileUUIDs_fh.readline()
 
 if __name__ == '__main__':
     """This prints the contents for an Archivematica Clamscan Event xml file"""

@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>storeAIP_v0.0</execute>
-                <arguments>"%AIPsStore%" "%SIPDirectory%%SIPUUID%.zip" "%SIPUUID%"</arguments>
+                <arguments>"%AIPsStore%" "%SIPDirectory%%SIPUUID%.zip" "%SIPUUID%" "%sharedPath%www/index.html" "%SIPName%"</arguments>
                 <executeOnEachFile>Yes</executeOnEachFile>
             </command>
         </exeCommand>
