@@ -33,6 +33,12 @@
 # This uuid should be the uuid of the file they represent.  
 # @author: Joseph Perry <joseph@artefactual.com>
 
+# Edit
+# Modfied to add extension '.none' to files without extensions.
+# Workaround for: Issue 355:    DIP fails to upload if any filenames are missing file extensions
+# Date: May 2011  
+# @author: Joseph Perry <joseph@artefactual.com>
+
 
 import cookielib
 import shutil
