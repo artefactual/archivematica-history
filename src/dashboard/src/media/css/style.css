@@ -123,6 +123,16 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 
+#status > #status-bullet {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+#status > #status-message {
+  display: none;
+}
+
 .status-error > div > div {
   background-color: #a40000 !important;
   color: White;
@@ -483,7 +493,7 @@ a:hover { text-decoration: underline; }
   float: left;
   margin-right: 6px;
   text-align: right;
-  width: 80px;
+  width: 100px;
 }
 
 #manual-normalization > ul > li > div > .field > label:after {

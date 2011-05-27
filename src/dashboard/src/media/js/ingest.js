@@ -131,7 +131,7 @@ $(function()
 
       updateIcon: function()
         {
-          this.$('.sip-detail-icon-status > a').html(this.model.jobs.getIcon());
+          this.$('.sip-detail-icon-status').html(this.model.jobs.getIcon());
         },
 
       toggleJobs: function(event)
@@ -743,7 +743,7 @@ $(function()
 
       render: function()
         {
-          $(this.el).html(this.template()).hide().appendTo('body');
+          $(this.el).html(this.template()).appendTo('body');
 
           return this;
         },
@@ -753,21 +753,21 @@ $(function()
           var self = this;
           setTimeout(function()
             {
-              $(self.el).fadeOut('fast');
+              $(self.el).children('status-message').fadeOut('fast');
             }, 1000);
         },
 
       text: function(message, error)
         {
-          $(this.el).show().find('span').html(message);
+          $(this.el).children('status-message').show().find('span').html(message);
 
           if (true === error)
           {
-            $(this.el).addClass('status-error');
+            $(this.el).children('status-message').addClass('status-error');
           }
           else
           {
-            $(this.el).removeClass('status-error');
+            $(this.el).children('status-message').removeClass('status-error');
           }
         }
 
@@ -793,6 +793,7 @@ $(function()
 
           this.poll(true);
 
+          // Close pop-ups when click event is triggered somewhere else
           $(document).click(function(event)
             {
               $target = $(event.target);
@@ -879,6 +880,7 @@ $(function()
         {
           this.firstPoll = undefined !== start;
 
+          console.log('Polling the server...');
 
           $.ajax({
             context: this,
