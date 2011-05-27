@@ -745,7 +745,30 @@ $(function()
         {
           $(this.el).html(this.template()).appendTo('body');
 
+          var self = this;
+
+          this.$led = $(this.el).find('img');
+          this.$text = $(this.el).find('#status-message');
+
           return this;
+        },
+
+      connect: function()
+        {
+          log('Connected.');
+          this.$led.attr({'src': '/media/images/bullet_green.png', 'title': 'Connected'});
+          this.cleanText();
+        },
+
+      startPoll: function()
+        {
+          log('Start poll.');
+          this.$led.attr({'src': '/media/images/bullet_orange.png', 'title': 'Loading'});
+        },
+
+      endPoll: function()
+        {
+          log('End poll.');
         },
 
       hide: function()
@@ -757,17 +780,24 @@ $(function()
             }, 1000);
         },
 
+      cleanText: function()
+        {
+          this.$text.hide();
+        },
+
       text: function(message, error)
         {
-          $(this.el).children('status-message').show().find('span').html(message);
+          log("Status message: " + message + " (isError: " + error + ")");
+          this.$text.show().find('span').html(message);
 
           if (true === error)
           {
-            $(this.el).children('status-message').addClass('status-error');
+            this.$led.attr({'src': '/media/images/bullet_black.png', 'title': 'Disconnected'});
+            this.$text.addClass('status-error');
           }
           else
           {
-            $(this.el).children('status-message').removeClass('status-error');
+            this.$text.removeClass('status-error');
           }
         }
 
@@ -887,7 +917,7 @@ $(function()
             url: '/ingest/go/',
             beforeSend: function()
               {
-                window.statusWidget.text(undefined !== start ? 'Loading...' : 'Refreshing...');
+                window.statusWidget.startPoll();
               },
             error: function()
               {
@@ -928,7 +958,7 @@ $(function()
                 // MCP status
                 if (response.mcp)
                 {
-                  window.statusWidget.hide();
+                  window.statusWidget.connect();
                 }
                 else
                 {
@@ -938,6 +968,8 @@ $(function()
             complete: function()
               {
                 var self = this;
+
+                window.statusWidget.endPoll();
 
                 if (!self.idle)
                 {
@@ -1015,6 +1047,24 @@ $(function()
           }
 
         return this.getFullYear() + '-' + pad(this.getMonth() + 1) + '-' + pad(this.getDate()) + ' ' + pad(this.getHours()) + ':' + pad(this.getMinutes()); // + ':' + pad(this.getSeconds());
+      };
+
+    window.log = function(message)
+      {
+        try
+        {
+          console.log(message);
+        }
+        catch (error)
+        {
+          try
+          {
+            window.opera.postError(a);
+          }
+          catch (error)
+          {
+          }
+        }
       };
   }
 );
