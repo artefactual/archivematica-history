@@ -880,8 +880,6 @@ $(function()
         {
           this.firstPoll = undefined !== start;
 
-          console.log('Polling the server...');
-
           $.ajax({
             context: this,
             dataType: 'json',
