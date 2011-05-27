@@ -70,6 +70,7 @@
               }
             });
 
+        /* Not enough data yet in the database to build the dialog
         $('td.ext').not(':contains(None)').wrapInner(document.createElement('a')).children().attr('href', '#').click(function(event)
           {
             event.preventDefault();
@@ -87,6 +88,7 @@
               height: 480
             });
           });
+        */
       });
   </script>
 {% endblock %}
@@ -107,7 +109,11 @@
             {% if item.url %}
               <a href="{{ item.url }}" target="_blank">
             {% endif  %}
-            {{ item.type }}</p>
+            {% ifequal item.type None %}
+              Undefined
+            {% else %}
+              {{ item.type }}
+            {% endifequal %}
             {% if item.url %}
               </a>
             {% endif  %}
