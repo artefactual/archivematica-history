@@ -73,7 +73,7 @@ if exitCode != 0:
     print >>sys.stderr, "Error extracting"
     quit(1)
 
-bag = extractDirectory + SIPUUID + "/"
+bag = extractDirectory + SIPNAME + "-" + SIPUUID + "/"
 verificationCommands = []
 verificationCommands.append("/usr/share/bagit/bin/bag verifyvalid " + bag)
 verificationCommands.append("/usr/share/bagit/bin/bag checkpayloadoxum " + bag)
@@ -91,7 +91,7 @@ for command in verificationCommands:
         print >>sys.stderr, "Passed test: ", command
         
 #cleanup    
-shutil.rmtree(extractDirectory)
+shutil.rmtree(extractDirectory)  
 
 #write to html file
 if exitCode == 0:
