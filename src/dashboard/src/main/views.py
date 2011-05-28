@@ -212,6 +212,7 @@ def preservation_planning(request):
     JOIN Commands ON CR.command = Commands.pk
     JOIN CommandClassifications AS CC on CR.commandClassification = CC.pk
     JOIN CommandTypes AS CT ON Commands.commandType = CT.pk
+    WHERE FIBE.Extension IS NOT NULL
     ORDER BY Groups.description, FIBE.Extension, CC.classification"""
 
   cursor = connection.cursor()
