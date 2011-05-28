@@ -189,6 +189,17 @@ def ingest(request, uuid=None):
     response = simplejson.JSONEncoder().encode({'removed': True})
     return HttpResponse(response, mimetype='application/json')
 
+def archival_storage(request):
+  document = '/var/archivematica/sharedDirectory/www/index.html'
+  tree = etree.parse(document).findall('body/p/a')
+  sips = []
+  for item in tree:
+    sip = {}
+    sip['href'] = 'file:///var/archivematica/sharedDirectory/www/' + item.attrib['href']
+    sip['text'] = item.text
+    sips.append(sip)
+  return render_to_response('main/archival_storage.html', locals())
+
 def preservation_planning(request):
   cursor = connection.cursor()
 
