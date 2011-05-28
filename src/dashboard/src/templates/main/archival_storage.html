@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}Archival storage{% endblock %}
+{% block h1 %}Archival storage{% endblock %}
+{% block page_id %}archival-storage{% endblock %}
+
+{% block css %}
+  <style type="text/css">
+    #page-archival-storage #content li {
+      font-family: "Courier New", Courier, "Lucida Console", monospace;
+    }
+  </style>
+{% endblock %}
+
+{% block js %}
+  <script type="text/javascript">
+    $(document).ready(function()
+      {
+
+      });
+  </script>
+{% endblock %}
+
+{% block content %}
+
+  <ul>
+    {% for item in sips %}
+      <li><a href="{{ item.href }}">{{ item.text }}</a></li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

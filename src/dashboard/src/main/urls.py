@@ -18,6 +18,9 @@ urlpatterns = patterns('dashboard.main.views',
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/manual-normalization$', 'manual_normalization'),
   (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
 
+  # Archival storage
+  (r'archival-storage/$', 'archival_storage'),
+
   # Preservatin planning
   (r'preservation-planning/$', 'preservation_planning'),
 
