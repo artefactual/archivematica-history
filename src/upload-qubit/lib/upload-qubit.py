@@ -102,11 +102,15 @@ class URLNotAccessible(Exception):
 def exitError(message):
     print >>sys.stderr, 'upload-qubit.py error: ' + message.__str__()
     quit(1)
-    
+
 def get_id_from_url(url):
   #print "get_id_from_url: ", url
   path = urlparse.urlparse(url).path
-  return re.search(r'\d+', path).group()
+  try:
+    id = re.search(r'\d+', path).group()
+  except:
+    raise Exception('Impossible to capture ID parameter from ' + url)
+  return id
 
 def find_information_object(name):
   #print "find_information_object: ", name
@@ -247,19 +251,19 @@ def upload(opts):
 
     # Iterate over files in objects/ directory
     for file in os.listdir(opts['file'] + '/objects'):
-      
+
       title = file
       if opts['UUIDPrefixed']:
-          uuid = file[:UUID_LEN]
-          title = file[UUID_LEN + 1:]
-          print "UUID: " + uuid + " -> " 
-          
-      #there is no extension
+        uuid = file[:UUID_LEN]
+        title = file[UUID_LEN + 1:]
+        print "UUID: " + uuid + " -> "
+
+      # There is no extension
       if os.path.basename(title).rfind(".") == -1:
         title = title + ".none"
         os.rename(opts['file'] + '/objects/' + file, opts['file'] + '/objects/' + file + ".none")
         file = file + ".none"
-      
+
       # Create information object
       data = { 'title' : title, 'parent' : '/' + parent_id + ';isad' }
       response = urllib2.urlopen(URL_CREATE_ISAD, urllib.urlencode(data))
@@ -267,7 +271,7 @@ def upload(opts):
       id = get_id_from_url(response.url)
       if opts['UUIDPrefixed']:
           print "UUID: " + uuid + " -> " + 'ID: %s' % (id)
-      
+
       # Print information object id
       if opts['debug']:
         print 'New information object ID: %s (parent ID %s)' % (id, parent_id)
@@ -286,7 +290,7 @@ def upload(opts):
     if opts['UUIDPrefixed']:
       uuid = opts['title'][:UUID_LEN]
       title = opts['title'][UUID_LEN + 1:]
-    
+
     #there is no extension
     if os.path.basename(title).rfind(".") == -1:
         title = title + ".none"
@@ -385,6 +389,4 @@ if __name__ == '__main__':
 
   except Exception, err:
     print >>sys.stderr, Exception
-    raise
-    exitError('ERROR: %s' % err)
-
+    raise exitError('ERROR: %s' % err)
