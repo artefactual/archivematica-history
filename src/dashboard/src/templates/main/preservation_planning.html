@@ -30,6 +30,23 @@
       background-color: #eee;
     }
 
+    th.advanced {
+      background-color: #ddd;
+    }
+
+    td.advanced {
+      background-color: #eee;
+    }
+
+    #btn_advanced_details {
+      font-weight: normal;
+      float: right;
+    }
+
+    tr.hover > td {
+      background-color: #ffedb7;
+    }
+
   </style>
 {% endblock %}
 
@@ -37,6 +54,35 @@
   <script type="text/javascript">
     $(document).ready(function()
       {
+        $advanced = $('.advanced').hide();
+        $th = $('thead > tr > th:last');
+        $('#btn_advanced_details').click(function(event)
+          {
+            event.preventDefault();
+
+            var $sender = $(this);
+            if ('Show advanced details' == $sender.text())
+            {
+              $advanced.show();
+              $sender.text('Hide advanced details');
+              $th.attr('colspan', 10);
+            }
+            else
+            {
+              $advanced.hide();
+              $sender.text('Show advanced details');
+              $th.attr('colspan', 5);
+            }
+          });
+
+        $('tbody tr').hover(function()
+          {
+            $(this).addClass('hover');
+          }, function()
+          {
+            $(this).removeClass('hover');
+          });
+
         var link = '<a href="">Show</a>';
 
         $('td.cmd > div')
@@ -98,7 +144,9 @@
     <thead>
       <tr>
         <th>Media type</th>
-        <th colspan="5">&nbsp;</th>
+        <th colspan="5">
+          <a id="btn_advanced_details" href="">Show advanced details</a>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -119,7 +167,11 @@
           </td>
           <th>Extension</th>
           <th>Classification</th>
-          <th>Command type</th>
+          <th class="advanced">Command type</th>
+          <th class="advanced"><abbr title="# Attempts">A</abbr></th>
+          <th class="advanced"><abbr title="# Successfully">S</abbr></th>
+          <th class="advanced"><abbr title="# Unsuccessfully">U</abbr></th>
+          <th class="advanced"><abbr title="# Incomplete">I</abbr></th>
           <th>Command descrition</th>
           <th>Command</th>
         </tr>
@@ -127,7 +179,11 @@
           <tr>
             <td class="ext">{{ extension.1 }}</td>
             <td>{{ extension.2 }}</td>
-            <td>{{ extension.3 }}</td>
+            <td class="advanced">{{ extension.3 }}</td>
+            <td class="advanced">{{ extension.4 }}</td>
+            <td class="advanced">{{ extension.5 }}</td>
+            <td class="advanced">{{ extension.6 }}</td>
+            <td class="advanced">{{ extension.7 }}</td>
             <td>{{ extension.9 }}</td>
             <td class="cmd"><div>{{ extension.10 }}</div></td>
           </tr>
