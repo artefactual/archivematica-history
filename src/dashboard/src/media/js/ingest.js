@@ -782,7 +782,7 @@ $(function()
 
       cleanText: function()
         {
-          this.$text.hide();
+          this.$text.hide('fast');
         },
 
       text: function(message, error)
@@ -792,7 +792,7 @@ $(function()
 
           if (true === error)
           {
-            this.$led.attr({'src': '/media/images/bullet_black.png', 'title': 'Disconnected'});
+            this.$led.attr({'src': '/media/images/bullet_delete.png', 'title': 'Disconnected'});
             this.$text.addClass('status-error');
           }
           else
