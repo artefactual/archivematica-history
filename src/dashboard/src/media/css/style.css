@@ -519,3 +519,31 @@ a:hover { text-decoration: underline; }
 #manual-normalization > ul > li > div > .field > input {
   width: 440px;
 }
+
+/*
+ * Optimizations based in screen width
+ */
+
+.w-lte-1020 .sip-detail-uuid,
+.w-lte-1020 #sip-header-uuid {
+  display: none;
+}
+
+.w-lte-1020 #sip-header-directory {
+  width: 448px;
+}
+
+.w-lte-1020 .sip-detail-directory {
+  width: 430px;
+}
+
+.w-lte-1020 .job-detail-microservice {
+  width: 440px;
+}
+
+.w-lte-1020 .job-detail-actions > a > span,
+.w-lte-1020 .sip-detail-actions > a > span,
+.w-lte-1200 .job-detail-actions > a > span,
+.w-lte-1200 .sip-detail-actions > a > span {
+  display: none;
+}

@@ -351,14 +351,14 @@ $(function()
           if (1 === this.model.get('status'))
           {
             this.$('.job-detail-actions')
-              .append('<a class="btn_browse_job" href="#">Browse</a>')
-              .append('<a class="btn_approve_job" href="#">Approve</a>')
-              .append('<a class="btn_reject_job" href="#">Reject</a>');
+              .append('<a class="btn_browse_job" href="#"><span>Browse</span></a>')
+              .append('<a class="btn_approve_job" href="#"><span>Approve</span></a>')
+              .append('<a class="btn_reject_job" href="#"><span>Reject</span></a>');
 
             if ('Approve normalization' == this.model.get('microservice'))
             {
               this.$('.job-detail-actions')
-                .append('<a class="btn_manual_normalization" href="#">Manual</a>');
+                .append('<a class="btn_manual_normalization" href="#"><span>Manual</span></a>');
             }
           }
 
@@ -909,7 +909,7 @@ $(function()
       poll: function(start)
         {
           this.firstPoll = undefined !== start;
-
+          if (!this.firstPoll) return false;
           $.ajax({
             context: this,
             dataType: 'json',
@@ -1066,5 +1066,28 @@ $(function()
           }
         }
       };
-  }
+
+    optimizeWidth = function()
+      {
+        var width = document.documentElement.clientWidth;
+        $('#status-bullet > span').text(width);
+
+        if (1020 > width)
+        {
+          document.body.className = 'w-lte-1020';
+        }
+        else if (1200 > width)
+        {
+          document.body.className = 'w-lte-1200';
+        }
+        else
+        {
+          document.body.className = '';
+        }
+      };
+
+    window.onresize = optimizeWidth;
+    window.onload = optimizeWidth;
+
+}
 );
