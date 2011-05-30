@@ -100,21 +100,42 @@ if exitCode == 0:
     if os.path.isfile(HTMLFilePath):
         tree = etree.parse(HTMLFilePath)
         body = tree.find("body")
-        
+
     else:
         root = etree.Element("html")
         head = etree.SubElement(root, "head")
         body = etree.SubElement(root, "body")
         body.tail = "\n"
         tree = etree.ElementTree(root)
-        
-    
-    
-    paragraph = etree.SubElement(body, "p")
-    paragraph.tail = "\n"
-    child = etree.SubElement(paragraph, "a")
-    child.set("href", link)
-    child.text = SIPUUID + " - " + SIPNAME
+
+    # Calculate position
+    position = 0
+    for item in body.findall("div"):
+      name = item.find('p[@class="name"]/a').text
+      if SIPNAME < name:
+        break
+      position = position + 1
+
+    # Create HTML div object
+    div = etree.Element("div")
+    div.tail = "\n"
+
+    # SIP name
+    sip_name = etree.SubElement(div, "p")
+    sip_name.set("class", "name")
+    sip_name_link = etree.SubElement(sip_name, "a")
+    sip_name_link.text = SIPNAME
+    sip_name_link.set("href", link)
+
+    # SIP UUID
+    sip_uuid = etree.SubElement(div, "p")
+    sip_uuid.set("class", "uuid")
+    sip_uuid.text = SIPUUID
+
+    # Insert div
+    body.insert(position, div)
+
+    # Write HTML
     tree.write(HTMLFilePath)
     os.chmod(HTMLFilePath, mode)
 
