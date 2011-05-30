@@ -191,12 +191,13 @@ def ingest(request, uuid=None):
 
 def archival_storage(request):
   document = '/var/archivematica/sharedDirectory/www/index.html'
-  tree = etree.parse(document).findall('body/p/a')
+  tree = etree.parse(document).findall('body/div')
   sips = []
   for item in tree:
     sip = {}
-    sip['href'] = 'file:///var/archivematica/sharedDirectory/www/' + item.attrib['href']
-    sip['text'] = item.text
+    sip['href'] = 'file:///var/archivematica/sharedDirectory/www/' + item.find('p[@class="name"]/a').attrib['href']
+    sip['name'] = item.find('p[@class="name"]/a').text
+    sip['uuid'] = item.find('p[@class="uuid"]').text
     sips.append(sip)
   return render_to_response('main/archival_storage.html', locals())
 
