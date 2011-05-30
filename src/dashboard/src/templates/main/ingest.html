@@ -50,8 +50,8 @@
       <div class="sip-detail-uuid"><%= uuid %></div>
       <div class="sip-detail-timestamp"><%= this.getIngestStartTime() %></div>
       <div class="sip-detail-actions">
-        <a class="btn_show_jobs" href="#">Micro-Services</a>
-        <a class="btn_remove_sip" href="#">Remove</a>
+        <a class="btn_show_jobs" href="#"><span>Micro-Services</span></a>
+        <a class="btn_remove_sip" href="#"><span>Remove</span></a>
       </div>
     </div>
     <div class="sip-detail-job-container"></div>
@@ -67,7 +67,7 @@
     </div>
     <div class="job-detail-currentstep"><span title="<%= new Date(timestamp * 1000).getArchivematicaDateTime() %>  /  <%= timestamp %>"><%= currentstep %></span></div>
     <div class="job-detail-actions">
-      <a class="btn_show_tasks" href="#">Tasks</a>
+      <a class="btn_show_tasks" href="#"><span>Tasks</span></a>
     </div>
   </script>
 
