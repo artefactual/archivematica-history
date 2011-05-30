@@ -26,7 +26,7 @@
                 <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
                 <execute>bagit_v0.0</execute>
-                <arguments>create "%SIPDirectory%%SIPName%-%SIPUUID%.zip" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" --writer zip --baginfotxt "%sharedPath%sharedMicroServiceTasksConfigs/generateAIP/bagit/bag-info.txt" --payloadmanifestalgorithm "sha512"</arguments>
+                <arguments>create "%SIPDirectory%%SIPName%-%SIPUUID%.zip" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" --writer zip --payloadmanifestalgorithm "sha512"</arguments>
                 <executeOnEachFile>no</executeOnEachFile>
             </command>
         </exeCommand>
