@@ -222,12 +222,13 @@ a:hover { text-decoration: underline; }
   padding: 4px 6px;
   font-weight: bold;
   color: Black;
+  height: 16px;
 }
 
 .btn_show_jobs {
   background: transparent url(/media/images/zoom.png) no-repeat center left;
-  padding-left: 18px !important;  
-  margin-right: 6px;
+  padding-left: 18px !important;
+  margin-right: 4px;
 }
 
 .sip-selected .btn_show_jobs {
