@@ -6,7 +6,7 @@
 
 {% block css %}
   <style type="text/css">
-    #page-archival-storage #content li {
+    span.uuid {
       font-family: "Courier New", Courier, "Lucida Console", monospace;
     }
   </style>
@@ -25,7 +25,11 @@
 
   <ul>
     {% for item in sips %}
-      <li><a href="{{ item.href }}">{{ item.text }}</a></li>
+      <li>
+        <a href="{{ item.href }}">{{ item.name }}</a>
+        <br />
+        <span class="uuid">{{ item.uuid }}</span>
+      </li>
     {% endfor %}
   </ul>
 
