@@ -3,8 +3,6 @@
 # Install needed packages
 sudo apt-get install \
   libapache2-mod-wsgi \
-  python-django \
-  python-django-doc \
   python-pyinotify \
   ffmpeg2theora \
   libavcodec-unstripped-52 \
@@ -54,17 +52,20 @@ if [ -n "$version" ]
     # Lucid
     sudo add-apt-repository ppa:archivematica/externals-dev
     sudo add-apt-repository ppa:twisted-dev/ppa
+    sudo add-apt-repository ppa:chris-lea/python-django
   else
     # Others
     sudo echo deb http://ppa.launchpad.net/archivematica/externals-dev/ubuntu lucid main >> /etc/apt/sources.list
-    sudo echo deb-src http://ppa.launchpad.net/archivematica/externals-dev/ubuntu lucid main >> /etc/apt/sources.list 
+    sudo echo deb-src http://ppa.launchpad.net/archivematica/externals-dev/ubuntu lucid main >> /etc/apt/sources.list
+    sudo echo deb http://ppa.launchpad.net/chris-lea/python-django/ubuntu lucid main >> /etc/apt/sources.list
+    sudo echo deb-src http://ppa.launchpad.net/chris-lea/python-django/ubuntu lucid main >> /etc/apt/sources.list
 fi
 
 # Resynchronize package index from sources
 sudo apt-get update
 
 # Install extra packages
-sudo apt-get install bagit droid fits jhove python-twisted # xena 
+sudo apt-get install bagit droid fits jhove python-django python-twisted # xena
 
 tmp="`pwd`"
 svnDir=$(dirname $tmp)/
