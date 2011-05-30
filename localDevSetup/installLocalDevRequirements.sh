@@ -52,13 +52,10 @@ if [ -n "$version" ]
     # Lucid
     sudo add-apt-repository ppa:archivematica/externals-dev
     sudo add-apt-repository ppa:twisted-dev/ppa
-    sudo add-apt-repository ppa:chris-lea/python-django
   else
     # Others
     sudo echo deb http://ppa.launchpad.net/archivematica/externals-dev/ubuntu lucid main >> /etc/apt/sources.list
     sudo echo deb-src http://ppa.launchpad.net/archivematica/externals-dev/ubuntu lucid main >> /etc/apt/sources.list
-    sudo echo deb http://ppa.launchpad.net/chris-lea/python-django/ubuntu lucid main >> /etc/apt/sources.list
-    sudo echo deb-src http://ppa.launchpad.net/chris-lea/python-django/ubuntu lucid main >> /etc/apt/sources.list
 fi
 
 # Resynchronize package index from sources
