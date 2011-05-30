@@ -544,3 +544,7 @@ a:hover { text-decoration: underline; }
 .w-lte-1200 .sip-detail-actions > a > span {
   display: none;
 }
+
+.w-lte-1020 .job-detail-microservice > span:first-child {
+  display: none;
+}
