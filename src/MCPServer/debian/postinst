@@ -25,7 +25,7 @@ fi
 chown -R archivematica:archivematica "/var/archivematica/"
 chmod -R g+s "/var/archivematica/"
 chmod -R 775 "/var/archivematica/"
-echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/gs,/usr/lib/transcoder/transcoderScripts/DocumentConverter.py" >> /etc/sudoers
+echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/gs,/usr/lib/transcoder/transcoderScripts/DocumentConverter.py,/usr/bin/inkscape" >> /etc/sudoers
 chown archivematica:archivematica /etc/archivematica/MCPServer/dbsettings
 chmod 700 /etc/archivematica/MCPServer/dbsettings
 
