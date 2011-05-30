@@ -1070,7 +1070,6 @@ $(function()
     optimizeWidth = function()
       {
         var width = document.documentElement.clientWidth;
-        $('#status-bullet > span').text(width);
 
         if (1020 > width)
         {
@@ -1089,5 +1088,5 @@ $(function()
     window.onresize = optimizeWidth;
     window.onload = optimizeWidth;
 
-}
+  }
 );
