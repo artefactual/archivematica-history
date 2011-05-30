@@ -748,7 +748,7 @@ $(function()
           var self = this;
 
           this.$led = $(this.el).find('img');
-          this.$text = $(this.el).find('#status-message');
+          this.$text = $(this.el).find('#status-message').hide();
 
           return this;
         },
@@ -909,7 +909,7 @@ $(function()
       poll: function(start)
         {
           this.firstPoll = undefined !== start;
-          if (!this.firstPoll) return false;
+
           $.ajax({
             context: this,
             dataType: 'json',

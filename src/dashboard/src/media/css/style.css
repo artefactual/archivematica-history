@@ -145,10 +145,6 @@ a:hover { text-decoration: underline; }
   background-color: #fff;
 }
 
-#status > #status-message {
-  display: none;
-}
-
 #status > .status-error > div {
   background-color: #a40000 !important;
   color: White;
