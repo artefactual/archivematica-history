@@ -2112,6 +2112,89 @@ INSERT INTO CommandRelationships
 
 -- End Of ADD Normalization Path for .SVG --
 
+-- ADD Normalization Path for .MBOX --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .mbox file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'mbox',
+    @fileID
+);
+
+
+INSERT INTO Commands 
+    (commandType, command, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('echo program=\\"hypermail\\"\\; version=\\"`hypermail -V`\\" '),
+    ('hypermail event detail')
+);
+set @hypermailEventDetailCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
+    ('# This file is part of Archivematica.\n
+#\n
+# Archivematica is free software: you can redistribute it and/or modify\n
+# it under the terms of the GNU General Public License as published by\n
+# the Free Software Foundation, either version 2 of the License, or\n
+# (at your option) any later version.\n
+#\n
+# Archivematica is distributed in the hope that it will be useful,\n
+# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
+# GNU General Public License for more details.\n
+#\n
+# You should have received a copy of the GNU General Public License\n
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
+\n
+\n
+# @package Archivematica\n
+# @subpackage Ingest\n
+# @author Joseph Perry <joseph@artefactual.com>\n
+# @version svn: $Id$\n
+set -e\n
+UUID=\"`uuid`\"\n
+mboxFile=\"%fileFullName%\"\n
+outputFile=\"%outputDirectory%%prefix%%fileName%%postfix%.zip\"\n
+tempDir=\"/tmp/%prefix%%fileName%%postfix%\"\n
+
+\n
+hypermail -d \"${tempDir}\" -g -m \"${mboxFile}\" -M -X -L en -l \"`basename \"${mboxFile}\"`-${UUID}\"\n
+\n
+tmpdir=\"`pwd`\"\n
+cd \"`dirname \"${tempDir}\"`\"\n
+zip -r \"${outputFile}\" \"`basename \"${tempDir}\"`\"\n
+rm -r \"${tempDir}\"\n
+cd \"$tmpdir\"\n
+\n
+'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.zip',
+    @hypermailEventDetailCommandID,
+    @standardVerificationCommand,
+    ('Transcoding to zipped html with hypermail')
+);
+set @mboxToZippedHTMLCommandID = LAST_INSERT_ID();
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @mboxToZippedHTMLCommandID,
+    @fileID
+);
+-- End Of ADD Normalization Path for .MBOX --
+
+
 -- ADD Normalization Path for .PDF --
 INSERT INTO FileIDs 
     (description)
