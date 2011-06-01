@@ -41,7 +41,8 @@ sudo apt-get install \
   python-lxml \
   inkscape \
   dosfstools \
-  ufraw
+  ufraw \
+  hypermail 
 
 # Get Ubuntu version installed
 version="`lsb_release -d | grep "Ubuntu 10.04"`"
