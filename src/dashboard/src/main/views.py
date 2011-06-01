@@ -191,7 +191,11 @@ def ingest(request, uuid=None):
 
 def archival_storage(request):
   document = '/var/archivematica/sharedDirectory/www/index.html'
-  tree = etree.parse(document).findall('body/div')
+  try:
+    tree = etree.parse(document)
+  except IOError:
+    return render_to_response('main/archival_storage.html', locals())
+  tree = tree.findall('body/div')
   sips = []
   for item in tree:
     sip = {}

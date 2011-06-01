@@ -23,14 +23,18 @@
 
 {% block content %}
 
-  <ul>
-    {% for item in sips %}
-      <li>
-        <a href="{{ item.href }}">{{ item.name }}</a>
-        <br />
-        <span class="uuid">{{ item.uuid }}</span>
-      </li>
-    {% endfor %}
-  </ul>
+  {% if sips %}
+    <ul>
+      {% for item in sips %}
+        <li>
+          <a href="{{ item.href }}">{{ item.name }}</a>
+          <br />
+          <span class="uuid">{{ item.uuid }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Archival storage is empty.</p>
+  {% endif %}
 
 {% endblock %}
