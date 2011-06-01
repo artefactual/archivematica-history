@@ -26,7 +26,7 @@
                 <standardError>%SIPLogsDirectory%normalizationLog.txt</standardError>
                 <failureNotification> </failureNotification>
                 <execute>transcoderNormalizePreservation_v0.0</execute>
-                <arguments>--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"</arguments>
+                <arguments>--inputFile "%relativeLocation%" --commandClassifications "preservation" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"</arguments>
                 <executeOnEachFile>yes</executeOnEachFile>
             </command>            
         </exeCommand>
