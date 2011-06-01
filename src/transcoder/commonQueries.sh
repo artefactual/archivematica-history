@@ -1,10 +1,10 @@
 SIPUUID="$1"
 #cd "$2"
-mysql MCP --execute="SELECT Tasks.fileUUID, Tasks.fileName FROM Tasks JOIN Jobs on Tasks.jobUUID = Jobs.jobUUID WHERE Tasks.exec LIKE \"transcoderNormalizePreservation_v0.0\" AND exitCode = 0 AND Tasks.stdOut like \"%Already in access format%\" AND Jobs.SIPUUID =\"${SIPUUID}\";" > "Already in access format.txt"
+mysql MCP --execute="SELECT Tasks.fileUUID, Tasks.fileName FROM Tasks JOIN Jobs on Tasks.jobUUID = Jobs.jobUUID WHERE Tasks.exec LIKE \"transcoderNormalizeAccess_v0.0\" AND exitCode = 0 AND Tasks.stdOut like \"%Already in access format%\" AND Jobs.SIPUUID =\"${SIPUUID}\";" > "Already in access format.txt"
 
 mysql MCP --execute="SELECT Tasks.fileUUID, Tasks.fileName FROM Tasks JOIN Jobs on Tasks.jobUUID = Jobs.jobUUID WHERE Tasks.exec LIKE \"transcoderNormalizePreservation_v0.0\" AND exitCode = 0 AND Tasks.stdOut like \"%Already in preservation format%\" AND Jobs.SIPUUID =\"${SIPUUID}\";" > "Already in preservation format.txt"
 
-mysql MCP --execute="SELECT Tasks.fileUUID, Tasks.fileName FROM Tasks JOIN Jobs on Tasks.jobUUID = Jobs.jobUUID WHERE Tasks.exec LIKE \"transcoderNormalizePreservation_v0.0\" AND exitCode = 0 AND Tasks.stdOut like \"%Unable to verify access readiness%\" AND Jobs.SIPUUID =\"${SIPUUID}\";" > "Files not normalized to access format and not in access format.txt"
+mysql MCP --execute="SELECT Tasks.fileUUID, Tasks.fileName FROM Tasks JOIN Jobs on Tasks.jobUUID = Jobs.jobUUID WHERE Tasks.exec LIKE \"transcoderNormalizeAccess_v0.0\" AND exitCode = 0 AND Tasks.stdOut like \"%Unable to verify access readiness%\" AND Jobs.SIPUUID =\"${SIPUUID}\";" > "Files not normalized to access format and not in access format.txt"
 
 mysql MCP --execute="SELECT Tasks.fileUUID, Tasks.fileName FROM Tasks JOIN Jobs on Tasks.jobUUID = Jobs.jobUUID WHERE Tasks.exec LIKE \"transcoderNormalizePreservation_v0.0\" AND exitCode = 0 AND Tasks.stdOut like \"%Unable to verify archival readiness.%\" AND Jobs.SIPUUID =\"${SIPUUID}\";" > "Files not normalized to preservation format and not in preservation format.txt"
 
