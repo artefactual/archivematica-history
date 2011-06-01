@@ -259,6 +259,10 @@ def preservation_planning(request):
 
   return render_to_response('main/preservation_planning.html', locals())
 
+def normalization_report(request, uuid):
+  job = Job.objects.get(jobuuid = uuid)
+  return render_to_response('main/normalization_report.html', locals())
+
 def tasks(request, uuid):
   job = Job.objects.get(jobuuid = uuid)
   objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')

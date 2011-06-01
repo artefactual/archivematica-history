@@ -16,6 +16,7 @@ urlpatterns = patterns('dashboard.main.views',
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/explore/$', 'explore'),
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects$', 'list_objects'),
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/manual-normalization$', 'manual_normalization'),
+  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/normalization-report$', 'normalization_report'),
   (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
 
   # Archival storage

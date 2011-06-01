@@ -284,6 +284,7 @@ a:hover { text-decoration: underline; }
 .job-detail-actions > .btn_approve_job { background-image: url(/media/images/control_play_blue.png); color: Green; }
 .job-detail-actions > .btn_reject_job { background-image: url(/media/images/control_stop_blue.png); color: Red; }
 .job-detail-actions > .btn_manual_normalization { background-image: url(/media/images/user_comment.png); }
+.job-detail-actions > .btn_normalization_report { background-image: url(/media/images/table_edit.png); }
 
 .job-detail-microservice > .title {
   -webkit-transform: rotate(-90deg);
