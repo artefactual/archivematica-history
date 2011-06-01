@@ -63,4 +63,8 @@ fi
 	--command="gksudo -u root \"rm -r -f %F\"" \
 	--description="Does a sudo remove of the file/directory. (Recursive & Force)"
 
-
+"$add" \
+	--icon="accessories-calculator" \
+	--name="Set ownership and Permissions" \
+	--command="gksudo \"chown -R archivematica:archivematica %F\" && gksudo \"chmod -R 770 %F\"" \
+	--description="Set ownership to archivematica:archivematica and permissions to 770"
