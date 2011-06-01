@@ -43,7 +43,7 @@ CREATE TABLE CommandClassifications (
 
 
 INSERT INTO CommandClassifications
-    (classification) VALUES('normalize'), ('access'), ('extract');
+    (classification) VALUES('preservation'), ('access'), ('extract');
 
 DROP TABLE IF EXISTS Commands;
 CREATE TABLE Commands (
@@ -470,7 +470,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -500,7 +500,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -530,7 +530,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -569,7 +569,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -608,7 +608,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -647,7 +647,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -687,7 +687,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -727,7 +727,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -826,7 +826,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -865,7 +865,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @convertToTifCommandID,
     @fileID
 );
@@ -1403,7 +1403,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToMKVCommandID,
     @fileID
 );
@@ -1471,7 +1471,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToMKVCommandID,
     @fileID
 );
@@ -1510,7 +1510,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToMKVCommandID,
     @fileID
 );
@@ -1549,7 +1549,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToMKVCommandID,
     @fileID
 );
@@ -1588,7 +1588,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToMKVCommandID,
     @fileID
 );
@@ -1627,7 +1627,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToMKVCommandID,
     @fileID
 );
@@ -1666,7 +1666,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToMKVCommandID,
     @fileID
 );
@@ -1705,7 +1705,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToMKVCommandID,
     @fileID
 );
@@ -1744,7 +1744,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToMKVCommandID,
     @fileID
 );
@@ -1822,7 +1822,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToWAVCommandID,
     @fileID
 );
@@ -1861,7 +1861,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToWAVCommandID,
     @fileID
 );
@@ -1900,7 +1900,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToWAVCommandID,
     @fileID
 );
@@ -1969,7 +1969,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @ffmpegToWAVCommandID,
     @fileID
 );
@@ -2064,7 +2064,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @transcoderAIToSVGsCommandID,
     @fileID
 );
@@ -2167,7 +2167,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @inkscapeToPlainSVGCommandID,
     @fileID
 );
@@ -2298,7 +2298,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2324,7 +2324,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2348,7 +2348,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2372,7 +2372,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2396,7 +2396,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2420,7 +2420,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2444,7 +2444,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2468,7 +2468,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2492,7 +2492,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2516,7 +2516,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2540,7 +2540,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2564,7 +2564,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2588,7 +2588,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2612,7 +2612,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2636,7 +2636,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2660,7 +2660,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByPronomDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @gsToPDFACommandID,
     @fileID
 );
@@ -2711,7 +2711,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @inkscapeToPlainSVGCommandID,
     @fileID
 );
@@ -2936,7 +2936,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @openOfficeToODTCommandID,
     @fileID
 );
@@ -2975,7 +2975,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @openOfficeToODTCommandID,
     @fileID
 );
@@ -3014,7 +3014,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @openOfficeToODTCommandID,
     @fileID
 );
@@ -3053,7 +3053,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @openOfficeToODTCommandID,
     @fileID
 );
@@ -3214,7 +3214,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @openOfficeToODPCommandID,
     @fileID
 );
@@ -3253,7 +3253,7 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'normalize'),
+    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @openOfficeToODSCommandID,
     @fileID
 );
