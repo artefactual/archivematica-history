@@ -315,7 +315,8 @@ $(function()
         'click .btn_approve_job': 'approveJob',
         'click .btn_reject_job': 'rejectJob',
         'click .btn_show_tasks': 'showTasks',
-        'click .btn_manual_normalization': 'manualNormalization'
+        'click .btn_manual_normalization': 'manualNormalization',
+        'click .btn_normalization_report': 'normalizationReport'
       },
 
       template: _.template($('#job-template').html()),
@@ -348,6 +349,7 @@ $(function()
             $(this.el).css('background-color', '#d8f2dc');
           }
 
+          // Micro-services requiring approval
           if (1 === this.model.get('status'))
           {
             this.$('.job-detail-actions')
@@ -361,10 +363,46 @@ $(function()
                 .append('<a class="btn_manual_normalization" href="#"><span>Manual</span></a>');
             }
           }
+          else
+          {
+            if ('Approve normalization' == this.model.get('microservice'))
+            {
+              this.$('.job-detail-actions')
+                .append('<a class="btn_normalization_report" href="#"><span>Report</span></a>');
+            }
+          }
 
           this.$('.job-detail-microservice > a').tooltip();
 
           return this;
+        },
+
+      normalizationReport: function(event)
+        {
+          event.preventDefault();
+
+          $.ajax({
+            context: this,
+            type: 'GET',
+            dataType: 'html',
+            success: function(data)
+              {
+                $('<div class="task-dialog"></div>')
+                  .append('<table>' + $(data).find('tbody').html() + '</table>')
+                  .dialog({
+                    title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Normalization report',
+                    width: 640,
+                    height: 480,
+                    modal: true,
+                    buttons: [
+                      {
+                        text: 'Close',
+                        click: function() { $(this).dialog('close'); }
+                      }]
+                  });
+              },
+            url: '/jobs/' + this.model.get('uuid') + '/normalization-report'
+          });
         },
 
       showTasks: function(event)
