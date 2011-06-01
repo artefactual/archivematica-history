@@ -206,8 +206,6 @@ def archival_storage(request):
   return render_to_response('main/archival_storage.html', locals())
 
 def preservation_planning(request):
-  cursor = connection.cursor()
-
   query="""SELECT
       Groups.description,
       FIBE.Extension,
@@ -264,11 +262,23 @@ def preservation_planning(request):
   return render_to_response('main/preservation_planning.html', locals())
 
 def normalization_report(request, uuid):
-  job = Job.objects.get(jobuuid = uuid)
+  query = """
+    SELECT
+      Tasks.fileName
+    FROM Tasks
+    JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+    WHERE
+      Jobs.SIPUUID = %s AND Tasks.exec = "transcoderNormalizeAccess_v0.0"
+    ORDER BY Tasks.fileName"""
+
+  cursor = connection.cursor()
+  cursor.execute(query, (uuid,))
+  objects = cursor.fetchall()
+
   return render_to_response('main/normalization_report.html', locals())
 
 def tasks(request, uuid):
-  job = Job.objects.get(jobuuid = uuid)
+  job = Job.objects.get(jobuuid=uuid)
   objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')
   return render_to_response('main/tasks.html', locals())
 
