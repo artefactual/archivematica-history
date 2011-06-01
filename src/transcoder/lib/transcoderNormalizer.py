@@ -73,7 +73,7 @@ def onceNormalized(command):
         global outputFileUUID
         global replacementDic
         global opts
-        if opts.commandClassifications == "normalize":
+        if opts.commandClassifications == "preservation":
             xmlNormalize(outputFileUUID, \
                      ef, \
                      command.eventDetailCommand.stdOut, \
@@ -120,7 +120,7 @@ def identifyCommands(fileName):
             row = c.fetchone()         
      
     if not len(ret):
-        if opts.commandClassifications == "normalize":
+        if opts.commandClassifications == "preservation":
             if inPreservationFormat():
                 print "Already in preservation format."
             else:
@@ -156,7 +156,6 @@ if __name__ == '__main__':
     global outputFileUUID
     
     parser = OptionParser()
-    #--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"
     parser.add_option("-f",  "--inputFile",          action="store", dest="inputFile", default="")
     parser.add_option("-c",  "--commandClassifications",  action="store", dest="commandClassifications", default="")
     parser.add_option("-i",  "--fileUUID",           action="store", dest="fileUUID", default="")
@@ -183,7 +182,7 @@ if __name__ == '__main__':
     prefix = ""
     postfix = ""
     outputDirectory = ""
-    if opts.commandClassifications == "normalize":
+    if opts.commandClassifications == "preservation":
         postfix = "-" + opts.taskUUID
         outputFileUUID = opts.taskUUID
         outputDirectory = transcoder.fileDirectory 

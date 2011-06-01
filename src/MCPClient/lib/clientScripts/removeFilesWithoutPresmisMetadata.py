@@ -55,7 +55,6 @@ def verifyFileHasUUID(uuid, filePath, objectsDirectory):
 if __name__ == '__main__':
     
     parser = OptionParser()
-    #--inputFile "%relativeLocation%" --commandClassifications "normalize" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"
     parser.add_option("-f",  "--inputFile",          action="store", dest="inputFile", default="")
     parser.add_option("-o",  "--objectsDirectory",  action="store", dest="objectsDirectory", default="")
     parser.add_option("-i",  "--fileUUID",           action="store", dest="fileUUID", default="")
