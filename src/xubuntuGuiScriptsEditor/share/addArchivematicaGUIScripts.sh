@@ -48,13 +48,13 @@ fi
 "$add" \
 	--icon="accessories-calculator" \
 	--name="SIP-Create md5 checksum" \
-	--command="archivematicaCreateMD5 %F" \
+	--command="archivematicaCreateMD5 %F | zenity --progress --pulsate" \
 	--description="Create MD5 checksums for all the selected files in this folder"
 
 "$add" \
 	--icon="accessories-calculator" \
 	--name="SIP-Do All" \
-	--command="archivematicaRestructureForCompliance %F/ && archivematicaCreateMD5 %F && cd %F/metadata && createDublinCore %F/" \
+	--command="archivematicaRestructureForCompliance %F/ && archivematicaCreateMD5 %F | zenity --progress --pulsate && cd %F/metadata && createDublinCore %F/" \
 	--description="Restructures, creates MD5 and DC"
 
 "$add" \
