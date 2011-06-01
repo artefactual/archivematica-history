@@ -401,7 +401,7 @@ $(function()
                       }]
                   });
               },
-            url: '/jobs/' + this.model.get('uuid') + '/normalization-report'
+            url: '/ingest/' + this.model.sip.get('uuid') + '/normalization-report'
           });
         },
 

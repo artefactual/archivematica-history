@@ -13,10 +13,10 @@ urlpatterns = patterns('dashboard.main.views',
   url(r'ingest/$', direct_to_template, {'template': 'main/ingest.html', 'extra_context': {'polling_interval': settings.POLLING_INTERVAL, 'microservices_help': settings.MICROSERVICES_HELP}}, 'ingest'),
   (r'ingest/go/$', 'ingest'),
   (r'ingest/go/(?P<uuid>' + UUID_REGEX + ')$', 'ingest'),
+  (r'ingest/(?P<uuid>' + UUID_REGEX + ')/normalization-report$', 'normalization_report'),
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/explore/$', 'explore'),
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects$', 'list_objects'),
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/manual-normalization$', 'manual_normalization'),
-  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/normalization-report$', 'normalization_report'),
   (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
 
   # Archival storage
