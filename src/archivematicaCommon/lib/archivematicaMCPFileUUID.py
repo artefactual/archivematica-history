@@ -48,7 +48,7 @@ def releaseSIPUUIDFileLock(sipUUIDfile):
     sipUUIDFileLocksCount[sipUUIDfile] -= 1
     if sipUUIDFileLocksCount[sipUUIDfile] == 0:
         #remove the locks from the system to prevent memory leak.
-        print "actually removing lock: " + sipUUIDfile
+        #print "actually removing lock: " + sipUUIDfile
         del sipUUIDFileLocksCount[sipUUIDfile]
         del sipUUIDFileLocks[sipUUIDfile]
     lockDicsLock.release()
@@ -100,11 +100,11 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory, up
             configFiles = files
             break
         
-        print "config file - dir: ", fileUUIDxmlFilesDirectory
+        #print "config file - dir: ", fileUUIDxmlFilesDirectory
         for configFile in configFiles:
             if configFile.endswith(".xml"):
                 try:
-                    print "config file - opening: " + configFile
+                    #print "config file - opening: " + configFile
                     tree = etree.parse(fileUUIDxmlFilesDirectory + configFile )
                     root = tree.getroot()
                     xmlFileName = getTagged(root, "currentFileName")[0]
