@@ -287,6 +287,66 @@ INSERT INTO Commands
     (commandType, command, description) 
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'pythonScript'),
+    ('#!/usr/bin/python\n
+# This file is part of Archivematica.\n
+#\n
+# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>\n
+#\n
+# Archivematica is free software: you can redistribute it and/or modify\n
+# it under the terms of the GNU General Public License as published by\n
+# the Free Software Foundation, either version 2 of the License, or\n
+# (at your option) any later version.\n
+#\n
+# Archivematica is distributed in the hope that it will be useful,\n
+# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
+# GNU General Public License for more details.\n
+#\n
+# You should have received a copy of the GNU General Public License\n
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
+\n
+# @package Archivematica\n
+# @subpackage Transcoder\n
+# @author Joseph Perry <joseph@artefactual.com>\n
+# @version svn: $Id$\n
+#\n
+\n
+\n
+import os\n
+directory = \"%outputLocation%\"\n
+extension = \".mbox\"\n
+\n
+def appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=\"\"):\n
+    for dirname, dirnames, filenames in os.walk(directory):\n
+        directoryPrinted = False\n
+        for filename in filenames:\n
+            if filename.rfind(\".\") == -1:\n
+                if not directoryPrinted:\n
+                    directoryPrinted = True\n
+                    print "Directory: " + directory.replace(os.path.basename(baseDirectory), os.path.basename(baseDirectory))\n
+                    #print \"Directory: \" + directory.replace(os.path.dirname(baseDirectory), "")\n
+                newName = filename + extension\n
+                n=1\n
+                while os.path.exists(os.path.join(dirname, newName)):\n
+                    newName = newName = filename + n.__str__() + extension\n
+                    n+=1\n
+                print \"Renaming: \", filename, \" -> \" + newName\n
+                os.rename(os.path.join(dirname, filename), os.path.join(dirname, newName))
+        for subdirname in dirnames:\n
+            fullSubDirName = os.path.join(dirname, subdirname)\n
+            appendExtensionToFilesWithNoExtension(fullSubDirName, extension, baseDirectory)\n
+\n
+appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=directory)\n
+'),
+    ('append .mbox extension to files without extensions')
+);
+set @appendMboxExtensionsCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('echo program=\\"readpst\\"\\; version=\\"`readpst -V`\\"'),
     ('convert event detail')
@@ -295,12 +355,13 @@ INSERT INTO Commands
 set @readPSTEventDetailCommandID = LAST_INSERT_ID();
 
 INSERT INTO Commands 
-    (commandType, command, outputLocation, eventDetailCommand, description) 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     'mkdir "%outputDirectory%" && readpst -r "%inputFile%" -o "%outputDirectory%" -S',
     '%outputDirectory%',
     @readPSTEventDetailCommandID,
+    @appendMboxExtensionsCommandID,
     ('Extracting pst file')
 );
 set @readPSTtoMBOXCommandID = LAST_INSERT_ID();
@@ -315,12 +376,13 @@ INSERT INTO CommandRelationships
 );
 
 INSERT INTO Commands 
-    (commandType, command, outputLocation, eventDetailCommand, description) 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     'mkdir "%outputDirectory%" && readpst -r "%inputFile%" -o "%outputDirectory%"',
     '%outputDirectory%',
     @readPSTEventDetailCommandID,
+    @appendMboxExtensionsCommandID,
     ('Extracting pst file')
 );
 set @readPSTtoMBOXCommandID = LAST_INSERT_ID();
