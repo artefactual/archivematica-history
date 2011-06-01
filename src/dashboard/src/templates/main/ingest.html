@@ -46,7 +46,10 @@
   <script type="text/template" id="sip-template">
     <div class="sip-row">
       <div class="sip-detail-icon-status"><%= this.model.jobs.getIcon() %></div>
-      <div class="sip-detail-directory"><%= directory %></div>
+      <div class="sip-detail-directory">
+        <%= directory %>
+        <abbr title="<%= uuid %>">UUID</span>
+      </div>
       <div class="sip-detail-uuid"><%= uuid %></div>
       <div class="sip-detail-timestamp"><%= this.getIngestStartTime() %></div>
       <div class="sip-detail-actions">

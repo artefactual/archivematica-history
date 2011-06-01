@@ -216,6 +216,17 @@ a:hover { text-decoration: underline; }
 .sip-detail-timestamp   { width: 180px; padding: 4px 0px; }
 .sip-detail-actions     {  }
 
+.sip-detail-directory > abbr {
+  display: none;
+  border: 1px dotted #999;
+  padding: 1px 4px;
+  margin-left: 8px;
+}
+
+.sip-detail-directory > abbr:hover {
+  background-color: #fff;
+}
+
 .sip-detail-actions > a {
   visibility: hidden;
   float: left;
@@ -525,6 +536,10 @@ a:hover { text-decoration: underline; }
 .w-lte-1020 .sip-detail-uuid,
 .w-lte-1020 #sip-header-uuid {
   display: none;
+}
+
+.w-lte-1020 .sip-detail-directory > abbr {
+  display: inline;
 }
 
 .w-lte-1020 #sip-header-directory {
