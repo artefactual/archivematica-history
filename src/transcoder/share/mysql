@@ -137,6 +137,17 @@ INSERT INTO Groups (description) VALUES ('Audio');
 set @audioGroup = LAST_INSERT_ID();
 INSERT INTO Groups (description) VALUES ('Spreadsheet');
 set @spreadsheetGroup = LAST_INSERT_ID();
+INSERT INTO Groups (description) VALUES ('email');
+set @emailGroup = LAST_INSERT_ID();
+INSERT INTO Groups (description) VALUES ('Microsoft Office Open XML');
+set @microsoftOfficeOpenXML = LAST_INSERT_ID();
+INSERT INTO Groups (description) VALUES ('Plain text');
+set @plainText = LAST_INSERT_ID();
+INSERT INTO Groups (description) VALUES ('Portable Document Format');
+set @portableDocumentFormatGroup = LAST_INSERT_ID();
+INSERT INTO Groups (description) VALUES ('Vector Image');
+set @vectorImageGroup = LAST_INSERT_ID();
+
 
 INSERT INTO FileIDs
     (description) VALUES
@@ -300,6 +311,10 @@ INSERT INTO FileIDsByExtension
     'pst',
     @fileID
 );
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @emailGroup);
 
 INSERT INTO Commands 
     (commandType, command, description) 
@@ -2030,6 +2045,11 @@ INSERT INTO FileIDsByExtension
     @fileID
 );
 
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @vectorImageGroup);
+
+
 /*
 INSERT INTO Commands 
     (commandType, command, description) 
@@ -2147,6 +2167,10 @@ INSERT INTO FileIDsByExtension
     @fileID
 );
 
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @vectorImageGroup);
+
 
 INSERT INTO Commands 
     (commandType, command, description) 
@@ -2218,6 +2242,9 @@ INSERT INTO FileIDsByExtension
     @fileID
 );
 
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @emailGroup);
 
 INSERT INTO Commands 
     (commandType, command, description) 
@@ -2300,6 +2327,11 @@ INSERT INTO FileIDsByExtension
     'pdf',
     @fileID
 );
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @portableDocumentFormatGroup);
+
 
 
 INSERT INTO Commands 
@@ -2711,6 +2743,10 @@ INSERT INTO FileIDsByExtension
     'eps',
     @fileID
 );
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @vectorImageGroup);
 
 
 INSERT INTO Commands 
