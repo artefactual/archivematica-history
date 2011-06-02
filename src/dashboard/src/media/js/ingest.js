@@ -365,11 +365,13 @@ $(function()
           }
           else
           {
-            if ('Approve normalization' == this.model.get('microservice'))
-            {
-              this.$('.job-detail-actions')
-                .append('<a class="btn_normalization_report" href="#"><span>Report</span></a>');
-            }
+            // ...
+          }
+
+          if ('Approve normalization' == this.model.get('microservice'))
+          {
+            this.$('.job-detail-actions')
+              .append('<a class="btn_normalization_report" href="#"><span>Report</span></a>');
           }
 
           this.$('.job-detail-microservice > a').tooltip();
