@@ -137,7 +137,7 @@ INSERT INTO Groups (description) VALUES ('Audio');
 set @audioGroup = LAST_INSERT_ID();
 INSERT INTO Groups (description) VALUES ('Spreadsheet');
 set @spreadsheetGroup = LAST_INSERT_ID();
-INSERT INTO Groups (description) VALUES ('email');
+INSERT INTO Groups (description) VALUES ('Email');
 set @emailGroup = LAST_INSERT_ID();
 INSERT INTO Groups (description) VALUES ('Microsoft Office Open XML');
 set @microsoftOfficeOpenXML = LAST_INSERT_ID();
