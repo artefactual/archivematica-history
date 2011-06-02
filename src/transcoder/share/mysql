@@ -3204,6 +3204,10 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
+    VALUES (@fileID, @microsoftOfficeOpenXML);
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
     VALUES (@fileID, @wordProcessingGroup);
 
 INSERT INTO CommandRelationships 
@@ -3216,6 +3220,36 @@ INSERT INTO CommandRelationships
 );
 
 -- End Of ADD Normalization Path for .DOCX --
+
+-- ADD Normalization Path for .XLSX --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .docx file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'docx',
+    @fileID
+);
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @microsoftOfficeOpenXML);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @openOfficeToPDFCommandID,
+    @fileID
+);
+
+-- End Of ADD Normalization Path for .XLSX --
 
 -- ADD Normalization Path for .PPTX --
 INSERT INTO FileIDs 
@@ -3231,6 +3265,10 @@ INSERT INTO FileIDsByExtension
     'pptx',
     @fileID
 );
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @microsoftOfficeOpenXML);
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
