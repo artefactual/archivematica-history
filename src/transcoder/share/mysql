@@ -188,6 +188,17 @@ fi',
 
 set @standardDirectoryVerificationCommand = LAST_INSERT_ID();
 
+-- Don't include in access command --
+INSERT INTO Commands 
+    (commandType, command, outputLocation, description) 
+    VALUES 
+    ((SELECT pk FROM CommandTypes WHERE type = 'command'),
+    'echo Not including "%inputFile%" in DIP.',
+    '%inputFile%',
+    'Don\'t include in DIP.');
+
+set @accessNoOpCommandID = LAST_INSERT_ID();
+
 -- Default copy command --
 INSERT INTO Commands 
     (commandType, verificationCommand, command, outputLocation, description) 
@@ -197,8 +208,8 @@ INSERT INTO Commands
     'cp -R "%inputFile%" "%outputDirectory%%prefix%%fileName%%postfix%%fileExtensionWithDot%"',
     '%outputDirectory%%prefix%%fileName%%postfix%%fileExtensionWithDot%',
     'Copying File.');
-    --     'cp --version | grep cp',
 
+set @copyFileCommandID = LAST_INSERT_ID();
 
 -- Associate default access with copy --
 INSERT INTO CommandRelationships 
@@ -206,7 +217,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    (SELECT pk FROM Commands WHERE description = 'Copying File.'),
+    @copyFileCommandID,
     (SELECT pk FROM FileIDs WHERE description = 'Access Defaults')
 );
 
@@ -275,13 +286,20 @@ INSERT INTO CommandRelationships
 -- END unrar-nonfreeCompatable
 
 
--- PST extraction
+-- PST extraction & normalization
 INSERT INTO FileIDs 
     (description)
     VALUES (
     'A .pst file'
 );
 set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'pst',
+    @fileID
+);
 
 INSERT INTO Commands 
     (commandType, command, description) 
@@ -395,6 +413,17 @@ INSERT INTO CommandRelationships
     @readPSTtoMBOXCommandID,
     @fileID
 );
+
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @accessNoOpCommandID,
+    @fileID
+);
+
 
 -- END PST extraction
 
