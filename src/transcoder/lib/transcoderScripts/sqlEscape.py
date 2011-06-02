@@ -27,5 +27,6 @@ import sys
 import _mysql
 lines = sys.stdin.readlines()
 for line in lines:
-    print _mysql.escape_string(line)
+    tmp = _mysql.escape_string(line)
+    print tmp.replace("\\n","")
 

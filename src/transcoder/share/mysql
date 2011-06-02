@@ -306,56 +306,56 @@ INSERT INTO Commands
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'pythonScript'),
-    ('#!/usr/bin/python\n
-# This file is part of Archivematica.\n
-#\n
-# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>\n
-#\n
-# Archivematica is free software: you can redistribute it and/or modify\n
-# it under the terms of the GNU General Public License as published by\n
-# the Free Software Foundation, either version 2 of the License, or\n
-# (at your option) any later version.\n
-#\n
-# Archivematica is distributed in the hope that it will be useful,\n
-# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
-# GNU General Public License for more details.\n
-#\n
-# You should have received a copy of the GNU General Public License\n
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
-\n
-# @package Archivematica\n
-# @subpackage Transcoder\n
-# @author Joseph Perry <joseph@artefactual.com>\n
-# @version svn: $Id$\n
-#\n
-\n
-\n
-import os\n
-directory = \"%outputLocation%\"\n
-extension = \".mbox\"\n
-\n
-def appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=\"\"):\n
-    for dirname, dirnames, filenames in os.walk(directory):\n
-        directoryPrinted = False\n
-        for filename in filenames:\n
-            if filename.rfind(\".\") == -1:\n
-                if not directoryPrinted:\n
-                    directoryPrinted = True\n
-                    print "Directory: " + directory.replace(os.path.basename(baseDirectory), os.path.basename(baseDirectory))\n
-                    #print \"Directory: \" + directory.replace(os.path.dirname(baseDirectory), "")\n
-                newName = filename + extension\n
-                n=1\n
-                while os.path.exists(os.path.join(dirname, newName)):\n
-                    newName = newName = filename + n.__str__() + extension\n
-                    n+=1\n
-                print \"Renaming: \", filename, \" -> \" + newName\n
+    ('#!/usr/bin/python
+# This file is part of Archivematica.
+#
+# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+# @package Archivematica
+# @subpackage Transcoder
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+#
+
+
+import os
+directory = \"%outputLocation%\"
+extension = \".mbox\"
+
+def appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=\"\"):
+    for dirname, dirnames, filenames in os.walk(directory):
+        directoryPrinted = False
+        for filename in filenames:
+            if filename.rfind(\".\") == -1:
+                if not directoryPrinted:
+                    directoryPrinted = True
+                    print "Directory: " + directory.replace(os.path.basename(baseDirectory), os.path.basename(baseDirectory))
+                    #print \"Directory: \" + directory.replace(os.path.dirname(baseDirectory), "")
+                newName = filename + extension
+                n=1
+                while os.path.exists(os.path.join(dirname, newName)):
+                    newName = newName = filename + n.__str__() + extension
+                    n+=1
+                print \"Renaming: \", filename, \" -> \" + newName
                 os.rename(os.path.join(dirname, filename), os.path.join(dirname, newName))
-        for subdirname in dirnames:\n
-            fullSubDirName = os.path.join(dirname, subdirname)\n
-            appendExtensionToFilesWithNoExtension(fullSubDirName, extension, baseDirectory)\n
-\n
-appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=directory)\n
+        for subdirname in dirnames:
+            fullSubDirName = os.path.join(dirname, subdirname)
+            appendExtensionToFilesWithNoExtension(fullSubDirName, extension, baseDirectory)
+
+appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=directory)
 '),
     ('append .mbox extension to files without extensions')
 );
@@ -2045,42 +2045,42 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('# This file is part of Archivematica.\n
-#\n
-# Archivematica is free software: you can redistribute it and/or modify\n
-# it under the terms of the GNU General Public License as published by\n
-# the Free Software Foundation, either version 2 of the License, or\n
-# (at your option) any later version.\n
-#\n
-# Archivematica is distributed in the hope that it will be useful,\n
-# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
-# GNU General Public License for more details.\n
-#\n
-# You should have received a copy of the GNU General Public License\n
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
-\n
-\n
-# @package Archivematica\n
-# @subpackage Ingest\n
-# @author Joseph Perry <joseph@artefactual.com>\n
-# @version svn: $Id$\n
-\n
-\n
-set -e\n
-\n
-UUID=\"`uuid -v 4`\"\n
-inputFile=\"%fileFullName%\"\n
-mkdir \"%outputDirectory%%prefix%%fileName%%postfix%\"\n
-\n
-a=0\n
-convert \"$inputFile\" /tmp/${UUID}.%d.ai\n
-\n
-for i in `find /tmp/${UUID}*`; do\n
-    inkscape $i --export-plain-svg=\"%outputDirectory%%prefix%%fileName%%postfix%/%prefix%%fileName%.${a}%postfix%.svg\"\n
-    a=$(( $a + 1 ))\n
-done\n
-\n
+    ('# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# @package Archivematica
+# @subpackage Ingest
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+
+set -e
+
+UUID=\"`uuid -v 4`\"
+inputFile=\"%fileFullName%\"
+mkdir \"%outputDirectory%%prefix%%fileName%%postfix%\"
+
+a=0
+convert \"$inputFile\" /tmp/${UUID}.%d.ai
+
+for i in `find /tmp/${UUID}*`; do
+    inkscape $i --export-plain-svg=\"%outputDirectory%%prefix%%fileName%%postfix%/%prefix%%fileName%.${a}%postfix%.svg\"
+    a=$(( $a + 1 ))
+done
+
 rm /tmp/${UUID}*\n'),
     '%outputDirectory%%prefix%%fileName%%postfix%',
     @transcoderAIToSVGsEventDetailCommandID,
@@ -2173,7 +2173,7 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('sudo /usr/bin/inkscape "%fileFullName%" --export-plain-svg="%outputDirectory%%prefix%%fileName%%postfix%.svg"\n
+    ('sudo /usr/bin/inkscape "%fileFullName%" --export-plain-svg="%outputDirectory%%prefix%%fileName%%postfix%.svg"
     sudo chmod 777 "%outputDirectory%%prefix%%fileName%%postfix%.svg"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.svg',
     @inkscapeEventDetailCommandID,
@@ -2232,41 +2232,41 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('# This file is part of Archivematica.\n
-#\n
-# Archivematica is free software: you can redistribute it and/or modify\n
-# it under the terms of the GNU General Public License as published by\n
-# the Free Software Foundation, either version 2 of the License, or\n
-# (at your option) any later version.\n
-#\n
-# Archivematica is distributed in the hope that it will be useful,\n
-# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
-# GNU General Public License for more details.\n
-#\n
-# You should have received a copy of the GNU General Public License\n
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
-\n
-\n
-# @package Archivematica\n
-# @subpackage Ingest\n
-# @author Joseph Perry <joseph@artefactual.com>\n
-# @version svn: $Id$\n
-set -e\n
-UUID=\"`uuid`\"\n
-mboxFile=\"%fileFullName%\"\n
-outputFile=\"%outputDirectory%%prefix%%fileName%%postfix%.zip\"\n
-tempDir=\"/tmp/%prefix%%fileName%%postfix%\"\n
+    ('# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
-\n
-hypermail -d \"${tempDir}\" -g -m \"${mboxFile}\" -M -X -L en -l \"`basename \"${mboxFile}\"`-${UUID}\"\n
-\n
-tmpdir=\"`pwd`\"\n
-cd \"`dirname \"${tempDir}\"`\"\n
-zip -r \"${outputFile}\" \"`basename \"${tempDir}\"`\"\n
-rm -r \"${tempDir}\"\n
-cd \"$tmpdir\"\n
-\n
+
+# @package Archivematica
+# @subpackage Ingest
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+set -e
+UUID=\"`uuid`\"
+mboxFile=\"%fileFullName%\"
+outputFile=\"%outputDirectory%%prefix%%fileName%%postfix%.zip\"
+tempDir=\"/tmp/%prefix%%fileName%%postfix%\"
+
+
+hypermail -d \"${tempDir}\" -g -m \"${mboxFile}\" -M -X -L en -l \"`basename \"${mboxFile}\"`-${UUID}\"
+
+tmpdir=\"`pwd`\"
+cd \"`dirname \"${tempDir}\"`\"
+zip -r \"${outputFile}\" \"`basename \"${tempDir}\"`\"
+rm -r \"${tempDir}\"
+cd \"$tmpdir\"
+
 '),
     '%outputDirectory%%prefix%%fileName%%postfix%.zip',
     @hypermailEventDetailCommandID,
@@ -2762,37 +2762,37 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('# This file is part of Archivematica.\n
-#\n
-# Archivematica is free software: you can redistribute it and/or modify\n
-# it under the terms of the GNU General Public License as published by\n
-# the Free Software Foundation, either version 2 of the License, or\n
-# (at your option) any later version.\n
-#\n
-# Archivematica is distributed in the hope that it will be useful,\n
-# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
-# GNU General Public License for more details.\n
-#\n
-# You should have received a copy of the GNU General Public License\n
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
-\n
-\n
-# @package Archivematica\n
-# @subpackage Ingest\n
-# @author Joseph Perry <joseph@artefactual.com>\n
-# @version svn: $Id$\n
-\n
-#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%\n
-#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"\n
-\n
-outputExtension=\"pdf\"\n
-ddirname=\"`dirname \"%fileFullName%\"`\"\n
-dbasename=\"`basename \"%fileFullName%\"`\"  \n
-cd \"$ddirname\"\n
-outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
-\n
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\" && mv \"${outputFile}\" \"%outputDirectory%\"\n
+    ('# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# @package Archivematica
+# @subpackage Ingest
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%
+#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"
+
+outputExtension=\"pdf\"
+ddirname=\"`dirname \"%fileFullName%\"`\"
+dbasename=\"`basename \"%fileFullName%\"`\"  
+cd \"$ddirname\"
+outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
+
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\" && mv \"${outputFile}\" \"%outputDirectory%\"
 exit \"$?\"\n'),
     '%outputDirectory%%prefix%%fileName%%postfix%.pdf',
     @openOfficeEventDetailCommandID,
@@ -2805,37 +2805,37 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('# This file is part of Archivematica.\n
-#\n
-# Archivematica is free software: you can redistribute it and/or modify\n
-# it under the terms of the GNU General Public License as published by\n
-# the Free Software Foundation, either version 2 of the License, or\n
-# (at your option) any later version.\n
-#\n
-# Archivematica is distributed in the hope that it will be useful,\n
-# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
-# GNU General Public License for more details.\n
-#\n
-# You should have received a copy of the GNU General Public License\n
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
-\n
-\n
-# @package Archivematica\n
-# @subpackage Ingest\n
-# @author Joseph Perry <joseph@artefactual.com>\n
-# @version svn: $Id$\n
-\n
-#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%\n
-#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"\n
-\n
-outputExtension=\"odt\"\n
-ddirname=\"`dirname \"%fileFullName%\"`\"\n
-dbasename=\"`basename \"%fileFullName%\"`\"  \n
-cd \"$ddirname\"\n
-outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
-\n
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
+    ('# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# @package Archivematica
+# @subpackage Ingest
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%
+#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"
+
+outputExtension=\"odt\"
+ddirname=\"`dirname \"%fileFullName%\"`\"
+dbasename=\"`basename \"%fileFullName%\"`\"  
+cd \"$ddirname\"
+outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
+
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"
 exit \"$?\"\n'),
     '%outputDirectory%%prefix%%fileName%%postfix%.odt',
     @openOfficeEventDetailCommandID,
@@ -2848,37 +2848,37 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('# This file is part of Archivematica.\n
-#\n
-# Archivematica is free software: you can redistribute it and/or modify\n
-# it under the terms of the GNU General Public License as published by\n
-# the Free Software Foundation, either version 2 of the License, or\n
-# (at your option) any later version.\n
-#\n
-# Archivematica is distributed in the hope that it will be useful,\n
-# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
-# GNU General Public License for more details.\n
-#\n
-# You should have received a copy of the GNU General Public License\n
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
-\n
-\n
-# @package Archivematica\n
-# @subpackage Ingest\n
-# @author Joseph Perry <joseph@artefactual.com>\n
-# @version svn: $Id$\n
-\n
-#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%\n
-#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"\n
-\n
-outputExtension=\"odp\"\n
-ddirname=\"`dirname \"%fileFullName%\"`\"\n
-dbasename=\"`basename \"%fileFullName%\"`\"  \n
-cd \"$ddirname\"\n
-outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
-\n
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
+    ('# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# @package Archivematica
+# @subpackage Ingest
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%
+#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"
+
+outputExtension=\"odp\"
+ddirname=\"`dirname \"%fileFullName%\"`\"
+dbasename=\"`basename \"%fileFullName%\"`\"  
+cd \"$ddirname\"
+outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
+
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"
 exit \"$?\"\n'),
     '%outputDirectory%%prefix%%fileName%%postfix%.odp',
     @openOfficeEventDetailCommandID,
@@ -2891,37 +2891,37 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('# This file is part of Archivematica.\n
-#\n
-# Archivematica is free software: you can redistribute it and/or modify\n
-# it under the terms of the GNU General Public License as published by\n
-# the Free Software Foundation, either version 2 of the License, or\n
-# (at your option) any later version.\n
-#\n
-# Archivematica is distributed in the hope that it will be useful,\n
-# but WITHOUT ANY WARRANTY; without even the implied warranty of\n
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n
-# GNU General Public License for more details.\n
-#\n
-# You should have received a copy of the GNU General Public License\n
-# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.\n
-\n
-\n
-# @package Archivematica\n
-# @subpackage Ingest\n
-# @author Joseph Perry <joseph@artefactual.com>\n
-# @version svn: $Id$\n
-\n
-#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%\n
-#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"\n
-\n
-outputExtension=\"ods\"\n
-ddirname=\"`dirname \"%fileFullName%\"`\"\n
-dbasename=\"`basename \"%fileFullName%\"`\"  \n
-cd \"$ddirname\"\n
-outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"\n
-\n
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"\n
+    ('# This file is part of Archivematica.
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# @package Archivematica
+# @subpackage Ingest
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%
+#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"
+
+outputExtension=\"ods\"
+ddirname=\"`dirname \"%fileFullName%\"`\"
+dbasename=\"`basename \"%fileFullName%\"`\"  
+cd \"$ddirname\"
+outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
+
+flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"
 exit \"$?\"\n'),
     '%outputDirectory%%prefix%%fileName%%postfix%.ods',
     @openOfficeEventDetailCommandID,
