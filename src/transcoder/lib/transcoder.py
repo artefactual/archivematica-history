@@ -62,7 +62,7 @@ def setFileIn(fileIn=sys.argv[1]):
         fileTitle = s[x1:x2]
         fileFullName = fileDirectory + fileTitle + "." + fileExtension
     else:
-        print "No file extension!"
+        #print "No file extension!"
         fileExtension = ""
         fileTitle = s[x1:sLen]
         fileFullName = fileDirectory + fileTitle
