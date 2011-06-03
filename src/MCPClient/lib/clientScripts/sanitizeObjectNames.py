@@ -59,7 +59,6 @@ def loadFileUUIDsDic(logsDir, objectsDirectory):
                 UUIDsDic[path] = findUUIDFromFileUUIDxml(logsDir+"FileUUIDs.log", path, logsDir+"fileMeta/", updateSIPUUIDfile=True)
         
 if __name__ == '__main__':
-    """This prints the contents for an Archivematica Clamscan Event xml file"""
     objectsDirectory = sys.argv[1]
     logsDir =  sys.argv[2]
     date = sys.argv[3]
@@ -114,8 +113,7 @@ if __name__ == '__main__':
             if os.path.isfile(newfile):
                 oldfile = oldfile.replace(objectsDirectory, "objects/", 1)
                 newfile = newfile.replace(objectsDirectory, "objects/", 1)
-                print >>sys.stderr, repr(oldfile)
-                print >>sys.stderr, repr(newfile)
+                print oldfile, " -> ", newfile 
                 
                 if oldfile in UUIDsDic:
                     fileUUID = UUIDsDic[oldfile]
@@ -135,6 +133,7 @@ if __name__ == '__main__':
                 oldfile = oldfile.replace(objectsDirectory, "objects/", 1) + "/"
                 newfile = newfile.replace(objectsDirectory, "objects/", 1) + "/"
                 #print UUIDsDic.iteritems().__str__()
+                print oldfile, " -> ", newfile
                 addToUUIDsDic = {}
                 for file, fileUUID in UUIDsDic.iteritems():
                     if file.startswith(oldfile):    
