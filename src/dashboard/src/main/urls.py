@@ -21,6 +21,7 @@ urlpatterns = patterns('dashboard.main.views',
 
   # Archival storage
   (r'archival-storage/$', 'archival_storage'),
+  (r'archival-storage/(?P<path>[0-9A-z\-\/]+.zip)$', 'archival_storage'),
 
   # Preservatin planning
   (r'preservation-planning/$', 'preservation_planning'),
