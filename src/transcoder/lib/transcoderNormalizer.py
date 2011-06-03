@@ -90,6 +90,25 @@ def identifyCommands(fileName):
     """Identify file type(s)"""
     ret = []
     c=transcoder.database.cursor()
+    premisFile = opts.logsDirectory + "fileMeta/" + opts.fileUUID + ".xml"
+    try:
+        for pronomID in getPronomsFromPremis(premisFile):
+            sql = """SELECT CR.pk, CR.command, CR.GroupMember 
+            FROM CommandRelationships AS CR 
+            JOIN FileIDs ON CR.fileID=FileIDs.pk 
+            JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
+            JOIN FileIDsByPronom AS FIBP  ON FileIDs.pk = FIBP.FileIDs 
+            WHERE FIBP.FileID = '""" + pronomID.__str__() + """'  
+            AND CommandClassifications.classification = '""" + opts.commandClassifications +"""';"""
+            c.execute(sql)
+            row = c.fetchone()
+            while row != None:
+                ret.append(row)
+                row = c.fetchone()
+    except:
+        print >>sys.stderr, "Failed to retrieve pronomIDs."
+        ret = []
+        
     if transcoder.fileExtension:
         sql = """SELECT CR.pk, CR.command, CR.GroupMember 
         FROM CommandRelationships AS CR 
@@ -104,21 +123,6 @@ def identifyCommands(fileName):
             ret.append(row)
             row = c.fetchone()  
     
-    premisFile = opts.logsDirectory + "fileMeta/" + opts.fileUUID + ".xml"
-    for pronomID in getPronomsFromPremis(premisFile):
-        sql = """SELECT CR.pk, CR.command, CR.GroupMember 
-        FROM CommandRelationships AS CR 
-        JOIN FileIDs ON CR.fileID=FileIDs.pk 
-        JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
-        JOIN FileIDsByPronom AS FIBP  ON FileIDs.pk = FIBP.FileIDs 
-        WHERE FIBP.FileID = '""" + pronomID.__str__() + """'  
-        AND CommandClassifications.classification = '""" + opts.commandClassifications +"""';"""
-        c.execute(sql)
-        row = c.fetchone()
-        while row != None:
-            ret.append(row)
-            row = c.fetchone()         
-     
     if not len(ret):
         if opts.commandClassifications == "preservation":
             if inPreservationFormat():
