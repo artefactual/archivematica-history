@@ -410,16 +410,20 @@ class Job:
     #instantiates a job object
     #@config - the config to use against the given directory
     #@directory - The directory this job operates on.
-    def __init__(self, config, directory, step="exeCommand"):
+    def __init__(self, configs, directory, step="exeCommand"):
         self.combinedRet = 0
         self.UUID = uuid.uuid4()
-        self.config = copy.deepcopy(config)
+        self.config = copy.deepcopy(configs)
         self.step = step
         self.directory = directory
         self.writeLock = threading.Lock()
         self.createdDate=getUTCDate()
         
-        replacementDic = archivematicaRD.jobReplacementDic(self, config, directory, step)
+        if config.get('MCPServer', "forceNoApprovalRequiredOnAllJobs").lower() == "true":
+            self.config.requiresUserApproval = False
+            configs.requiresUserApproval = False
+        
+        replacementDic = archivematicaRD.jobReplacementDic(self, configs, directory, step)
         
         if self.config.requiresUserApproval:
             self.step="requiresApproval"
