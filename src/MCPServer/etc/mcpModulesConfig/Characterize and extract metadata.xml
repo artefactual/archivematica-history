@@ -9,7 +9,7 @@
         <watchDirectory>%watchDirectoryPath%identifyFileFormat/FITS/objects/</watchDirectory>
         <processingDirectory>%processingDirectory%</processingDirectory>
         <successDirectory>%watchDirectoryPath%prepareForAppraisal/preservation/</successDirectory>
-        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
+        <failureDirectory>%watchDirectoryPath%prepareForAppraisal/preservation/</failureDirectory>
     </directories>
 
     <commands>    
