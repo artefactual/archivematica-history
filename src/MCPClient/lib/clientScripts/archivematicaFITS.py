@@ -154,12 +154,18 @@ def formatIdentificationFITSAssist(fits):
 
 
 def includeFits(fits, xmlFile, date, eventUUID):
+    global exitCode
     ##eventOutcome = createOutcomeInformation( eventOutcomeDetailNote = uuid)
     #TO DO... Gleam the event outcome information from the output
     
     #print etree.tostring(fits, pretty_print=True)
-    
-    eventDetailText, eventOutcomeText, eventOutcomeDetailNotes = formatIdentificationFITSAssist(fits)
+    try:
+        eventDetailText, eventOutcomeText, eventOutcomeDetailNotes = formatIdentificationFITSAssist(fits)
+    except:
+        eventDetailText = "Failed"
+        eventOutcomeText = "Failed"
+        eventOutcomeDetailNotes = "Failed"
+        exitCode += 4
     outcomeInformation = createOutcomeInformation( "To be removed", eventOutcomeText)
     formatIdentificationEvent = createEvent( eventUUID, "format identification", \
                                              eventDateTime=date, \
@@ -175,7 +181,13 @@ def includeFits(fits, xmlFile, date, eventUUID):
         etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = eventOutcomeDetailNote
         
     newFileUUID = uuid.uuid4().__str__()
-    eventDetailText, eventOutcomeText, eventOutcomeDetailNote = formatValidationFITSAssist(fits)
+    try:
+        eventDetailText, eventOutcomeText, eventOutcomeDetailNote = formatValidationFITSAssist(fits)
+    except:
+        eventDetailText = "Failed"
+        eventOutcomeText = "Failed"
+        eventOutcomeDetailNotes = "Failed"
+        exitCode += 3
     outcomeInformation = createOutcomeInformation( eventOutcomeDetailNote, eventOutcomeText)
     formatValidationEvent = createEvent( newFileUUID, "validation", \
                                              eventDateTime=date, \
@@ -201,7 +213,8 @@ def includeFits(fits, xmlFile, date, eventUUID):
     tree.write(xmlFile)
 
 if __name__ == '__main__':
-    
+    global exitCode
+    exitCode = 0
     target = sys.argv[1]
     XMLfile = sys.argv[2]
     date = sys.argv[3]
@@ -218,15 +231,24 @@ if __name__ == '__main__':
         #p.wait()
         output = p.communicate()
         retcode = p.returncode
-
+        
+        if output[0] != "":
+            print output[0]
+        if output[1] != "":
+            print >>sys.stderr, output[1]
+        
         #it executes check for errors
         if retcode != 0:
             print >>sys.stderr, "error code:" + retcode.__str__()
             print output[1]# sError
             #return retcode
             quit(retcode)
-        
-        tree = etree.parse(tempFile)
+        try:
+            tree = etree.parse(tempFile)
+        except:
+            os.remove(tempFile)
+            print >>sys.stderr, "Failed to read Fits's xml."
+            exit(2)
         fits = tree.getroot()
         os.remove(tempFile)
         #fits = etree.XML(output[0])
@@ -238,4 +260,4 @@ if __name__ == '__main__':
         print >>sys.stderr, "Execution failed:", ose
         #return 1
         exit(1)
-        
+    exit(exitCode)    
