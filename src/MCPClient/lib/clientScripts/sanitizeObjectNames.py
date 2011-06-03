@@ -74,7 +74,7 @@ if __name__ == '__main__':
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	
-        p.wait()
+        #p.wait()
         output = p.communicate()
         retcode = p.returncode
         
@@ -90,7 +90,7 @@ if __name__ == '__main__':
         #GET VERSION
         p = subprocess.Popen(shlex.split(commandVersion), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
-        p.wait()
+        #p.wait()
         output = p.communicate()
         retcode = p.returncode
         
