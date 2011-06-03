@@ -2342,7 +2342,7 @@ INSERT INTO Commands
     '%outputDirectory%%prefix%%fileName%%postfix%.pdf',
     @GhostscriptEventDetailCommandID,
     @standardVerificationCommand,
-    ('Transcoding to pdfa with gs')
+    ('Transcoding to pdfa with Ghostscript')
 );
 set @gsToPDFACommandID = LAST_INSERT_ID();
 
