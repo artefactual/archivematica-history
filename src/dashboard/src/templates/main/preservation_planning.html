@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% load math %}
+{% load percentage %}
 
 {% block title %}Preservation planning{% endblock %}
 {% block h1 %}Preservation planning{% endblock %}
@@ -31,11 +32,11 @@
     }
 
     th.advanced {
-      background-color: #ddd;
+      background-color: #ffedb7 !important;
     }
 
-    td.advanced {
-      background-color: #eee;
+    td.advanced:first-child {
+      border: 0;
     }
 
     #btn_advanced_details {
@@ -45,6 +46,16 @@
 
     tr.hover > td {
       background-color: #ffedb7;
+    }
+
+    td.per {
+      width: 40px;
+      text-align: right;
+    }
+
+    th.per {
+      text-align: center;
+      width: 40px;
     }
 
   </style>
@@ -167,24 +178,22 @@
           </td>
           <th>Extension</th>
           <th>Normalization type</th>
-          <th class="advanced">Command type</th>
-          <th class="advanced"><abbr title="# Attempts">A</abbr></th>
-          <th class="advanced"><abbr title="# Successfully">S</abbr></th>
-          <th class="advanced"><abbr title="# Unsuccessfully">U</abbr></th>
-          <th class="advanced"><abbr title="# Incomplete">I</abbr></th>
           <th>Normalization description</th>
+          <th class="advanced">Command type</th>
+          <th class="advanced per"><img src="/media/images/accept.png" /></th>
+          <th class="advanced per"><img src="/media/images/delete.png" /></th>
+          <th class="advanced per"><img src="/media/images/error.png" /></th>
           <th>Command</th>
         </tr>
         {% for extension in item.extensions %}
           <tr>
             <td class="ext">{{ extension.1 }}</td>
             <td>{{ extension.2 }}</td>
-            <td class="advanced">{{ extension.3 }}</td>
-            <td class="advanced">{{ extension.4 }}</td>
-            <td class="advanced">{{ extension.5 }}</td>
-            <td class="advanced">{{ extension.6 }}</td>
-            <td class="advanced">{{ extension.7 }}</td>
             <td>{{ extension.9 }}</td>
+            <td class="advanced">{{ extension.3 }}</td>
+            <td class="advanced per">{{ extension.5|percentage:extension.4|safe }}</td>
+            <td class="advanced per">{{ extension.6|percentage:extension.4|safe }}</td>
+            <td class="advanced per">{{ extension.7|percentage:extension.4|safe }}</td>
             <td class="cmd"><div>{{ extension.10 }}</div></td>
           </tr>
         {% endfor %}
