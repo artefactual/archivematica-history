@@ -601,7 +601,7 @@ $(function()
 
                             if (!valid)
                             {
-                              alert("The new filename must be different that the original.");
+                              alert("Cannot find normalized file.");
 
                               return false;
                             }
@@ -626,7 +626,7 @@ $(function()
                                 })
                               .fail(function()
                                 {
-                                  alert('Something was wrong with the manual normalization.');
+                                  alert('Manual normalization failed.');
                                   $(this).dialog('close');
                                 });
                           },
