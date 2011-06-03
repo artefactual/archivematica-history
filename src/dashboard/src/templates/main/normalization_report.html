@@ -5,24 +5,24 @@
     <thead>
       <tr>
         <th>File name</th>
-        <th>Normalization access failed</th>
-        <th>Normalization preservation failed</th>
+        <th>Access normalization failed</th>
+        <th>Preservation normalization failed</th>
         <th>Already in access format</th>
         <th>Already in preservation format</th>
-        <th>Files not normalized to preservation format and not in preservation format</th>
-        <th>Files not normalized to access format and not in access format</th>
+        <th>Unverified in access format</th>
+        <th>Unverified in preservation format</th>
       </tr>
     </thead>
     <tbody>
       {% for item in objects %}
         <tr>
           <td>{{ item.1 }}</td>
-          <td>{{ item.2 }}</td>
-          <td>{{ item.3 }}</td>
-          <td>{{ item.4 }}</td>
-          <td>{{ item.5 }}</td>
-          <td>{{ item.6 }}</td>
-          <td>{{ item.7 }}</td>
+          <td>{{ item.2|yesno:"Yes,No" }}</td>
+          <td>{{ item.3|yesno:"Yes,No" }}</td>
+          <td>{{ item.4|yesno:"Yes,No" }}</td>
+          <td>{{ item.5|yesno:"Yes,No" }}</td>
+          <td>{{ item.6|yesno:"Yes,No" }}</td>
+          <td>{{ item.7|yesno:"Yes,No" }}</td>
         </tr>
       {% endfor %}
     </tbody>
