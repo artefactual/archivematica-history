@@ -390,7 +390,7 @@ $(function()
             success: function(data)
               {
                 $('<div class="task-dialog"></div>')
-                  .append('<table>' + $(data).find('tbody').html() + '</table>')
+                  .append('<table>' + $(data).find('thead').html() + $(data).find('tbody').html() + '</table>')
                   .dialog({
                     title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Normalization report',
                     width: 640,
