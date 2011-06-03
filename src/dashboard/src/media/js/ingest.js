@@ -393,8 +393,8 @@ $(function()
                   .append('<table>' + $(data).find('thead').html() + $(data).find('tbody').html() + '</table>')
                   .dialog({
                     title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Normalization report',
-                    width: 640,
-                    height: 480,
+                    width: 800,
+                    height: 600,
                     modal: true,
                     buttons: [
                       {
