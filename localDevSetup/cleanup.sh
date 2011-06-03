@@ -16,9 +16,9 @@ sudo rm /usr/bin/archivematicaCreateMD5
 sudo rm /usr/bin/archivematicaRestructureForCompliance
 sudo rm /usr/bin/sanitizeNames
 sudo rm /usr/bin/createDublinCore
-sudo rm "/etc/init.d/archivematica-mcp-serverd"
-sudo rm "/etc/init.d/archivematica-mcp-clientd"
-sudo rm "/etc/init.d/openofficed"
+sudo rm "/etc/init/archivematica-mcp-server.conf"
+sudo rm "/etc/init/archivematica-mcp-client.conf"
+sudo rm "/etc/init/openoffice-service.conf"
 
 sudo rm -r /usr/lib/createDublinCore
 sudo rm -r /usr/lib/sanitizeNames
