@@ -27,7 +27,7 @@
     <ul>
       {% for item in sips %}
         <li>
-          <a href="{{ item.href }}">{{ item.name }}</a>
+          <a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a>
           <br />
           <span class="uuid">{{ item.uuid }}</span>
         </li>
