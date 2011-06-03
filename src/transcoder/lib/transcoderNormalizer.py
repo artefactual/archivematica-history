@@ -26,7 +26,6 @@ import sys
 import os
 from transcoder import main
 from transcoder import setFileIn
-from executeOrRun import executeOrRun
 from optparse import OptionParser
 import transcoder
 import uuid
