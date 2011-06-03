@@ -585,7 +585,7 @@ $(function()
                                 var newFilename = $('input[name=new-filename]', this).val();
                                 var description = $('input[name=description]', this).val();
 
-                                if (filename == newFilename || 0 == description.length)
+                                if (filename == newFilename)
                                 {
                                   valid = false;
 
@@ -601,7 +601,7 @@ $(function()
 
                             if (!valid)
                             {
-                              alert("The new filename must be different that the original. The description field must be fulfilled.");
+                              alert("The new filename must be different that the original.");
 
                               return false;
                             }
