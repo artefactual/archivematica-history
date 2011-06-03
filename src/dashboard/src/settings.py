@@ -104,4 +104,5 @@ MICROSERVICES_HELP = {
   'Store AIP': 'If desired, review normalized files and any other content. Click "Approve" to move the AIP into archival storage.',
   'Upload DIP': 'If desired, review the DIP and remove any access copies that should not be uploaded to the public access system, e.g. for copyright or security reasons. Click "Approve" to upload the DIP to the access system.',
   'Normalization failed': 'Normalization of one or more objects in this SIP failed. To reject the SIP, click Reject; to continue processing the SIP, click Approve.',
+  'Approve normalization': 'Review normalization of objects, and manually normalize as necessary. Review submission documentation.',
 }
