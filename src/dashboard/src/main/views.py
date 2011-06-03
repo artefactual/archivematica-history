@@ -279,17 +279,90 @@ def preservation_planning(request):
   return render_to_response('main/preservation_planning.html', locals())
 
 def normalization_report(request, uuid):
+
   query = """
     SELECT
-      Tasks.fileName
+
+      Tasks.fileUUID AS U,
+      Tasks.fileName,
+
+      /* transcoderNormalizeAccess failed */
+      (
+        SELECT Tasks.exitCode
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+          Tasks.fileUUID = U
+      ) != 0,
+
+      /* transcoderNormalizeAccess failed */
+      (
+        SELECT Tasks.exitCode
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.fileUUID = U
+      ) != 0,
+
+      /* Already in access format */
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+          Tasks.stdOut LIKE '%%Already in access format%%'),
+
+      /* Already in preservation format */
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.stdOut LIKE '%%Already in preservation format%%'),
+
+      /* Files not normalized to preservation format and not in preservation format */
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.stdOut LIKE '%%Unable to verify archival readiness.%%'),
+
+      /* Files not normalized to access format and not in access format */
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.stdOut LIKE '%%Unable to verify access readiness.%%')
+
     FROM Tasks
     JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
     WHERE
-      Jobs.SIPUUID = %s AND Tasks.exec = "transcoderNormalizeAccess_v0.0"
+      Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+      Jobs.SIPUUID = %s
     ORDER BY Tasks.fileName"""
 
   cursor = connection.cursor()
-  cursor.execute(query, (uuid,))
+  cursor.execute(query, (
+    uuid, uuid, uuid, uuid, uuid, uuid, uuid
+  ))
   objects = cursor.fetchall()
 
   return render_to_response('main/normalization_report.html', locals())
