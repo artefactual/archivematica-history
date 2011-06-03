@@ -445,6 +445,7 @@ $(function()
       browseJob: function(event)
         {
           event.preventDefault();
+          event.stopPropagation();
 
           this.directoryBrowser = new window.DirectoryBrowserView({ uuid: this.model.get('uuid') });
         },
@@ -970,7 +971,10 @@ $(function()
                 for (i in objects)
                 {
                   var sip = objects[i];
-                  var item = Sips.find(function(item) { return item.get('uuid') == sip.uuid; });
+                  var item = Sips.find(function(item)
+                    {
+                      return item.get('uuid') == sip.uuid;
+                    });
 
                   if (undefined === item)
                   {
