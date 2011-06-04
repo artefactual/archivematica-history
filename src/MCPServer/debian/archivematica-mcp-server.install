@@ -2,6 +2,6 @@ runArchivematicaMCPServer.sh /usr/bin/
 etc/* /etc/archivematica/MCPServer/
 lib/* /usr/lib/archivematica/MCPServer/
 sharedDirectoryStructure/* /var/archivematica/sharedDirectory/
-init.d/* /etc/init.d/
+init/* /etc/init/
 share/mysql /usr/share/dbconfig-common/data/archivematica-mcp-server/install/
 share/* /usr/share/archivematica/

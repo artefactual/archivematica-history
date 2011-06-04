@@ -36,7 +36,7 @@ if [ ! -d "$DIRECTORY" ]; then
 fi
 
 
-if [ -x "/etc/init.d/archivematica-mcp-serverd" ]; then
-        update-rc.d archivematica-mcp-serverd defaults >/dev/null
-        #invoke-rc.d archivematica-mcp-serverd start || exit $?
+if [ -e "/etc/init/archivematica-mcp-server.conf" ]; then
+  start archivematica-mcp-server
 fi
+
