@@ -1,6 +1,6 @@
 runArchivematicaMCPClient.sh /usr/bin/
 etc/* /etc/archivematica/MCPClient/
 lib/* /usr/lib/archivematica/MCPClient/
-init.d/* /etc/init.d/
+init/* /etc/init/
 
 

@@ -1,3 +1,4 @@
+
 #!/bin/sh
 
 
@@ -22,7 +23,10 @@ if [ ! -d "$DIRECTORY" ]; then
   chown archivematica:archivematica /var/log/archivematica
 fi
 
-if [ -x "/etc/init.d/archivematica-mcp-clientd" ]; then
-        update-rc.d archivematica-mcp-clientd defaults >/dev/null
-        #invoke-rc.d archivematica-mcp-clientd start || exit $?
+if [ -e "/etc/init/openoffice-service.conf" ]; then
+  start openoffice-service
+fi
+
+if [ -e "/etc/init/archivematica-mcp-client.conf" ]; then
+  start archivematica-mcp-client
 fi
