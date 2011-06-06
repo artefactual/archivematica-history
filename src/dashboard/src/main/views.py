@@ -224,7 +224,7 @@ def preservation_planning(request):
       CR.countAttempts,
       CR.countOK,
       CR.countNotOK,
-      CR.countAttempts - CR.countOK + CR.countNotOK AS countIncomplete,
+      CR.countAttempts - (CR.countOK + CR.countNotOK) AS countIncomplete,
       Commands.PK AS CommandPK,
       Commands.description,
       Commands.command
