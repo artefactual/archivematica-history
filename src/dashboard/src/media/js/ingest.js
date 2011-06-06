@@ -353,14 +353,14 @@ $(function()
           if (1 === this.model.get('status'))
           {
             this.$('.job-detail-actions')
-              .append('<a class="btn_browse_job" href="#"><span>Browse</span></a>')
-              .append('<a class="btn_approve_job" href="#"><span>Approve</span></a>')
-              .append('<a class="btn_reject_job" href="#"><span>Reject</span></a>');
+              .append('<a class="btn_browse_job" href="#" title="Browse"><span>Browse</span></a>')
+              .append('<a class="btn_approve_job" href="#" title="Approve"><span>Approve</span></a>')
+              .append('<a class="btn_reject_job" href="#" title="Reject"><span>Reject</span></a>');
 
             if ('Approve normalization' == this.model.get('microservice'))
             {
               this.$('.job-detail-actions')
-                .append('<a class="btn_manual_normalization" href="#"><span>Manual</span></a>');
+                .append('<a class="btn_manual_normalization" href="#" title="Manual"><span>Manual</span></a>');
             }
           }
           else
@@ -371,7 +371,7 @@ $(function()
           if ('Approve normalization' == this.model.get('microservice'))
           {
             this.$('.job-detail-actions')
-              .append('<a class="btn_normalization_report" href="#"><span>Report</span></a>');
+              .append('<a class="btn_normalization_report" href="#" title="Report"><span>Report</span></a>');
           }
 
           this.$('.job-detail-microservice > a').tooltip();
