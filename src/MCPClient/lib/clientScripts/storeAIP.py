@@ -35,6 +35,7 @@ AIP = sys.argv[2]
 SIPUUID = sys.argv[3]
 HTMLFilePath = sys.argv[4]
 SIPNAME = sys.argv[5]
+SIPDATE = sys.argv[6]
 
 #Get the UUID quads
 uuidQuads = []
@@ -131,6 +132,11 @@ if exitCode == 0:
     sip_uuid = etree.SubElement(div, "p")
     sip_uuid.set("class", "uuid")
     sip_uuid.text = SIPUUID
+
+    # SIP date
+    sip_uuid = etree.SubElement(div, "p")
+    sip_uuid.set("class", "date")
+    sip_uuid.text = SIPDATE
 
     # Insert div
     body.insert(position, div)
