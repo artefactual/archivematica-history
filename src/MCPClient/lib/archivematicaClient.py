@@ -101,10 +101,11 @@ class archivematicaMCPClientProtocol(LineReceiver):
         self.write(config.get('Protocol', "maxTasks") + config.get('Protocol', "delimiter") + config.get('MCPClient', "maxThreads"))
     
     def write(self,line):
+        print "\twriting: " + line.__str__()
         self.sendLock.acquire() 
         reactor.callFromThread(self.transport.write, line + "\r\n")
         self.sendLock.release()
-        print "\twrote: " + line.__str__()
+        
     
     def clientConnectionLost(self, connector, reason):
         print "Connection lost - goodbye!"
