@@ -130,16 +130,16 @@ INSERT INTO Groups (description) VALUES ('Word Processing');
 set @wordProcessingGroup = LAST_INSERT_ID();
 INSERT INTO Groups (description) VALUES ('Vector Image');
 set @vectorImageGroup = LAST_INSERT_ID();
-INSERT INTO Groups (description) VALUES ('Raw Camera');
-set @rawCameraGroup = LAST_INSERT_ID();
+INSERT INTO Groups (description) VALUES ('Raw Camera Image');
+set @rawCameraImageGroup = LAST_INSERT_ID();
 INSERT INTO Groups (description) VALUES ('Audio');
 set @audioGroup = LAST_INSERT_ID();
 INSERT INTO Groups (description) VALUES ('Spreadsheet');
 set @spreadsheetGroup = LAST_INSERT_ID();
 INSERT INTO Groups (description) VALUES ('Email');
 set @emailGroup = LAST_INSERT_ID();
-INSERT INTO Groups (description) VALUES ('Microsoft Office Open XML');
-set @microsoftOfficeOpenXML = LAST_INSERT_ID();
+INSERT INTO Groups (description) VALUES ('Office Open XML');
+set @officeOpenXML = LAST_INSERT_ID();
 INSERT INTO Groups (description) VALUES ('Plain text');
 set @plainText = LAST_INSERT_ID();
 INSERT INTO Groups (description) VALUES ('Portable Document Format');
@@ -967,7 +967,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -997,7 +997,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1027,7 +1027,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1057,7 +1057,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1087,7 +1087,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1117,7 +1117,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1147,7 +1147,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1178,7 +1178,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1209,7 +1209,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1240,7 +1240,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1271,7 +1271,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1302,7 +1302,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1333,7 +1333,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -1363,7 +1363,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
