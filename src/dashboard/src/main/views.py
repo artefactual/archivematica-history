@@ -253,7 +253,7 @@ def preservation_planning(request):
     'Portable Document Format': 'http://archivematica.org/wiki/index.php?title=Portable_Document_Format',
     'Presentation': 'http://archivematica.org/wiki/index.php?title=Presentation_files',
     'Raster Image': 'http://archivematica.org/wiki/index.php?title=Raster_images',
-    'Raw Camera': 'http://archivematica.org/wiki/index.php?title=Raw_camera_files',
+    'Raw Camera Image': 'http://archivematica.org/wiki/index.php?title=Raw_camera_files',
     'Spreadsheet': 'http://archivematica.org/wiki/index.php?title=Spreadsheets',
     'Vector Image': 'http://archivematica.org/wiki/index.php?title=Vector_images',
     'Video': 'http://archivematica.org/wiki/index.php?title=Video',
