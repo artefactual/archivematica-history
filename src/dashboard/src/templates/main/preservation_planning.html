@@ -177,24 +177,24 @@
             {% endif  %}
           </td>
           <th>Extension</th>
-          <th>Normalization type</th>
           <th>Normalization description</th>
           <th class="advanced">Command type</th>
           <th class="advanced per"><img src="/media/images/accept.png" title="Successful"  /></th>
           <th class="advanced per"><img src="/media/images/delete.png" title="Unsuccessful" /></th>
           <th class="advanced per"><img src="/media/images/error.png" title="Hung" /></th>
           <th>Command</th>
+          <th>Purpose</th>
         </tr>
         {% for extension in item.extensions %}
           <tr>
             <td class="ext">{{ extension.1 }}</td>
-            <td>{{ extension.2 }}</td>
             <td>{{ extension.9 }}</td>
             <td class="advanced">{{ extension.3 }}</td>
             <td class="advanced per">{{ extension.5|percentage:extension.4|safe }}</td>
             <td class="advanced per">{{ extension.6|percentage:extension.4|safe }}</td>
             <td class="advanced per">{{ extension.7|percentage:extension.4|safe }}</td>
             <td class="cmd"><div>{{ extension.10 }}</div></td>
+            <td>{{ extension.2 }}</td>
           </tr>
         {% endfor %}
       {% endfor %}
