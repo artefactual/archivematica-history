@@ -248,7 +248,7 @@ def preservation_planning(request):
   url = {
     'Audio': 'http://archivematica.org/wiki/index.php?title=Audio',
     'Email': 'http://archivematica.org/wiki/index.php?title=Email',
-    'Microsoft Office Open XML': 'http://archivematica.org/wiki/index.php?title=Microsoft_Office_Open_XML',
+    'Office Open XML': 'http://archivematica.org/wiki/index.php?title=Microsoft_Office_Open_XML',
     'Plain text': 'http://archivematica.org/wiki/index.php?title=Plain_text',
     'Portable Document Format': 'http://archivematica.org/wiki/index.php?title=Portable_Document_Format',
     'Presentation': 'http://archivematica.org/wiki/index.php?title=Presentation_files',
