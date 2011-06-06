@@ -345,7 +345,7 @@ def normalization_report(request, uuid):
           Jobs.SIPUUID = %s AND
           Tasks.exitCode = 0 AND
           Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.stdOut LIKE '%%Unable to verify archival readiness.%%'),
+          Tasks.stdError LIKE '%%Unable to verify archival readiness.%%'),
 
       /* Files not normalized to access format and not in access format */
       Tasks.fileUUID IN (
@@ -356,7 +356,7 @@ def normalization_report(request, uuid):
           Jobs.SIPUUID = %s AND
           Tasks.exitCode = 0 AND
           Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.stdOut LIKE '%%Unable to verify access readiness.%%')
+          Tasks.stdError LIKE '%%Unable to verify access readiness.%%')
 
     FROM Tasks
     JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
