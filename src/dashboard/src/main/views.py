@@ -27,7 +27,6 @@ from dashboard.contrib.mcp.client import MCPClient
 from dashboard.main.models import Task, Job
 from lxml import etree
 import calendar, os, re, simplejson, subprocess
-from datetime import datetime
 
 def manual_normalization(request, uuid):
   job = Job.objects.get(jobuuid=uuid)
@@ -213,11 +212,6 @@ def archival_storage(request, path=None):
     sip['href'] = item.find('p[@class="name"]/a').attrib['href']
     sip['name'] = item.find('p[@class="name"]/a').text
     sip['uuid'] = item.find('p[@class="uuid"]').text
-    try:
-      date = datetime.strptime(item.find('p[@class="date"]').text.split('.')[0], '%Y-%m-%dT%H:%M:%S')
-      sip['date'] = date.isoformat(' ')
-    except:
-      pass
     sips.append(sip)
   return render_to_response('main/archival_storage.html', locals())
 
@@ -336,6 +330,17 @@ def normalization_report(request, uuid):
           Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
           Tasks.stdOut LIKE '%%Already in preservation format%%'),
 
+      /* Files not normalized to access format and not in access format */
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+          Tasks.stdError LIKE '%%Unable to verify access readiness.%%'),
+
       /* Files not normalized to preservation format and not in preservation format */
       Tasks.fileUUID IN (
         SELECT Tasks.fileUUID
@@ -345,18 +350,7 @@ def normalization_report(request, uuid):
           Jobs.SIPUUID = %s AND
           Tasks.exitCode = 0 AND
           Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.stdError LIKE '%%Unable to verify archival readiness.%%'),
-
-      /* Files not normalized to access format and not in access format */
-      Tasks.fileUUID IN (
-        SELECT Tasks.fileUUID
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exitCode = 0 AND
-          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.stdError LIKE '%%Unable to verify access readiness.%%')
+          Tasks.stdError LIKE '%%Unable to verify archival readiness.%%')
 
     FROM Tasks
     JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
