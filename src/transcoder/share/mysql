@@ -933,7 +933,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @rawCameraGroup);
+    VALUES (@fileID, @rawCameraImageGroup);
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
@@ -3195,7 +3195,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @microsoftOfficeOpenXML);
+    VALUES (@fileID, @officeOpenXML);
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
