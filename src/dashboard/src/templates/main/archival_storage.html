@@ -27,7 +27,7 @@
     <ul>
       {% for item in sips %}
         <li>
-          <a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a>{% if item.date %} ({{ item.date }}){% endif %}
+          <a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a> ({{ item.date }})
           <br />
           <span class="uuid">{{ item.uuid }}</span>
         </li>
