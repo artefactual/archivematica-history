@@ -1,12 +1,12 @@
-
 #!/bin/sh
 
+set -e
 
 USERID="archivematica"
 DIRECTORY="/var/log/archivematica"
 
 
-/bin/egrep  -i "^${USERID}" /etc/passwd
+egrep  -i "^${USERID}" /etc/passwd
 if [ $? -eq 0 ]; then
   echo "User $USERID exists in /etc/passwd"
 else
