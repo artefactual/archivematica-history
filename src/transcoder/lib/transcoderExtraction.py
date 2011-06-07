@@ -90,7 +90,7 @@ def onceExtracted(command):
             command.exitCode = exitCode
              
     global extractedCount
-    date = sys.argv[4].__str__()
+    date = sys.argv[4].__str__().split(".", 1)[0]
     extractedCount = extractedCount + 1
     replacementDic["%outputDirectory%"] = transcoder.fileFullName + '-' + extractedCount.__str__() + '-' + date
 
