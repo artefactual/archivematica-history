@@ -46,7 +46,7 @@ def inAccessFormat():
 def inPreservationFormat():
     ex=["CSS", "CSV", "HTML", "TXT", "XML", "XSL", \
         "JP2", "PNG", \
-        "svg", "WAV", "TIF", "PDF", "ODP", "TIF", "MXF", "ODT", "ODS", "MBOX", "AI" ]
+        "svg", "WAV", "TIF", "PDF", "ODP", "TIF", "MXF", "ODT", "ODS", "MBOX", "IMBOX", "AI" ]
     return transcoder.fileExtension.__str__().upper() in ex
 
 def onceNormalized(command):
