@@ -2,23 +2,18 @@
 
 set -e
 
-USERID="archivematica"
 DIRECTORY="/var/log/archivematica"
 
 
-egrep  -i "^${USERID}" /etc/passwd
+egrep  -i archivematica /etc/passwd
 if [ $? -eq 0 ]; then
-  echo "User $USERID exists in /etc/passwd"
+  echo "User archivematica exists in /etc/passwd"
 else
   echo "adding archivematica user"
   sudo adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
 fi
 
-
-#echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/unoconv" >> /etc/sudoers
-
-
-if [ ! -d "$DIRECTORY" ]; then
+if [ ! -d /var/log/archivematica ]; then
   mkdir -p /var/log/archivematica
   chown archivematica:archivematica /var/log/archivematica
 fi
