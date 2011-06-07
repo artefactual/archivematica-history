@@ -371,6 +371,58 @@ INSERT INTO Commands
     (commandType, command, description) 
     -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
     VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'pythonScript'),
+    ('#!/usr/bin/python
+# This file is part of Archivematica.
+#
+# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+# @package Archivematica
+# @subpackage Transcoder
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+#
+
+
+import os
+directory = \"%outputLocation%\"
+extension = \".imbox\"
+
+def appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=\"\"):
+    for dirname, dirnames, filenames in os.walk(directory):
+        for filename in filenames:
+            if filename.rfind(\".\") == -1:
+                newName = filename + extension
+                n=1
+                while os.path.exists(os.path.join(dirname, newName)):
+                    newName = newName = filename + n.__str__() + extension
+                    n+=1
+                print \"Renaming: \", filename, \" -> \" + newName
+                os.rename(os.path.join(dirname, filename), os.path.join(dirname, newName))
+
+appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=directory)
+'),
+    ('append .imbox extension to files without extensions')
+);
+set @appendIMboxExtensionsCommandID = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, description) 
+    -- VALUES SELECT pk FROM FileIDS WHERE description = 'Normalize Defaults'
+    VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('echo program=\\"readpst\\"\\; version=\\"`readpst -V`\\"'),
     ('convert event detail')
@@ -385,7 +437,7 @@ INSERT INTO Commands
     'mkdir "%outputDirectory%" && readpst -r "%inputFile%" -o "%outputDirectory%" -S',
     '%outputDirectory%',
     @readPSTEventDetailCommandID,
-    @appendMboxExtensionsCommandID,
+    @appendIMboxExtensionsCommandID,
     ('Extracting pst file')
 );
 set @readPSTtoMBOXCommandID = LAST_INSERT_ID();
@@ -432,6 +484,35 @@ INSERT INTO CommandRelationships
 
 
 -- END PST extraction
+
+-- ADD Normalization Path for .IMBOX --
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'A .imbox file'
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'imbox',
+    @fileID
+);
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @emailGroup);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @accessNoOpCommandID,
+    @fileID
+);
+-- END ADD Normalization Path for .IMBOX --
 
 INSERT INTO Commands 
     (commandType, command, description) 
