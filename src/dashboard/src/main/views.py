@@ -27,6 +27,7 @@ from dashboard.contrib.mcp.client import MCPClient
 from dashboard.main.models import Task, Job
 from lxml import etree
 import calendar, os, re, simplejson, subprocess
+from datetime import datetime
 
 def manual_normalization(request, uuid):
   job = Job.objects.get(jobuuid=uuid)
@@ -213,8 +214,8 @@ def archival_storage(request, path=None):
     sip['name'] = item.find('p[@class="name"]/a').text
     sip['uuid'] = item.find('p[@class="uuid"]').text
     try:
-     date = datetime.strptime(item.find('p[@class="date"]').text.split('.')[0], '%Y-%m-%dT%H:%M:%S')
-     sip['date'] = date.isoformat(' ')
+      date = datetime.strptime(item.find('p[@class="date"]').text.split('.')[0], '%Y-%m-%dT%H:%M:%S')
+      sip['date'] = date.isoformat(' ')
     except:
       pass
     sips.append(sip)
