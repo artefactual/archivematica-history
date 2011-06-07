@@ -35,8 +35,3 @@ if [ ! -d "$DIRECTORY" ]; then
   chown archivematica:archivematica /var/log/archivematica
 fi
 
-
-if [ -e "/etc/init/archivematica-mcp-server.conf" ]; then
-  start archivematica-mcp-server
-fi
-

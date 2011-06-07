@@ -23,10 +23,12 @@ if [ ! -d "$DIRECTORY" ]; then
   chown archivematica:archivematica /var/log/archivematica
 fi
 
-if [ -e "/etc/init/openoffice-service.conf" ]; then
-  start openoffice-service
-fi
 
-if [ -e "/etc/init/archivematica-mcp-client.conf" ]; then
-  start archivematica-mcp-client
-fi
+##instead of checking for the config files check status of upstart service
+#if [ -e "/etc/init/openoffice-service.conf" ]; then
+#  start openoffice-service
+#fi
+
+#if [ -e "/etc/init/archivematica-mcp-client.conf" ]; then
+#  start archivematica-mcp-client
+#fi
