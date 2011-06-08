@@ -1,6 +1,5 @@
 #!/bin/sh
 
-set -e
 
 #Commented out until further tests are completed
 #. /usr/share/debconf/confmodule
@@ -13,8 +12,8 @@ set -e
 
 userID=`id -u archivematica`
 
-if [ $userID==333 ]; then
-  echo "User archivematica exists""
+if [ "$userID"==333 ]; then
+  echo "User archivematica exists"
 else
   adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
 fi
