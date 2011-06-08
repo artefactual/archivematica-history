@@ -292,7 +292,69 @@ def normalization_report(request, uuid):
       Tasks.fileUUID AS U,
       Tasks.fileName,
 
-      /* transcoderNormalizeAccess failed */
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.stdOut LIKE '%%[Command]%%')
+      AS 'Preservation normalization attempted',
+
+      (
+        SELECT Tasks.exitCode
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.fileUUID = U
+      ) != 0
+      AS 'Preservation normalization failed',
+
+
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.stdOut LIKE '%%Already in preservation format%%')
+      AS 'Already in preservation format',
+
+      Tasks.fileUUID NOT IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+          Tasks.stdOut LIKE '%%description: Copying File.%%') AND
+          Tasks.fileUUID IN (
+            SELECT Tasks.fileUUID
+            FROM Tasks
+            JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+            WHERE
+              Jobs.SIPUUID = %s AND
+              Tasks.exitCode = 0 AND
+              Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+              Tasks.stdOut LIKE '%%[Command]%%') AND
+          Tasks.fileUUID NOT IN (
+            SELECT Tasks.fileUUID
+            FROM Tasks
+              JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+            WHERE
+              Jobs.SIPUUID = %s AND
+              Tasks.exitCode = 0 AND
+              Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+              Tasks.stdOut LIKE '%%Not including %% in DIP.%%')
+      AS 'Access normalization attempted',
+
       (
         SELECT Tasks.exitCode
         FROM Tasks
@@ -301,20 +363,9 @@ def normalization_report(request, uuid):
           Jobs.SIPUUID = %s AND
           Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
           Tasks.fileUUID = U
-      ) != 0,
+      ) != 0
+      AS 'Access normalization failed',
 
-      /* transcoderNormalizeAccess failed */
-      (
-        SELECT Tasks.exitCode
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.fileUUID = U
-      ) != 0,
-
-      /* Already in access format */
       Tasks.fileUUID IN (
         SELECT Tasks.fileUUID
         FROM Tasks
@@ -323,40 +374,8 @@ def normalization_report(request, uuid):
           Jobs.SIPUUID = %s AND
           Tasks.exitCode = 0 AND
           Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
-          Tasks.stdOut LIKE '%%Already in access format%%'),
-
-      /* Already in preservation format */
-      Tasks.fileUUID IN (
-        SELECT Tasks.fileUUID
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exitCode = 0 AND
-          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.stdOut LIKE '%%Already in preservation format%%'),
-
-      /* Files not normalized to access format and not in access format */
-      Tasks.fileUUID IN (
-        SELECT Tasks.fileUUID
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exitCode = 0 AND
-          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
-          Tasks.stdError LIKE '%%Unable to verify access readiness.%%'),
-
-      /* Files not normalized to preservation format and not in preservation format */
-      Tasks.fileUUID IN (
-        SELECT Tasks.fileUUID
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exitCode = 0 AND
-          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.stdError LIKE '%%Unable to verify archival readiness.%%')
+          Tasks.stdOut LIKE '%%Already in access format%%')
+      AS 'Already in access format'
 
     FROM Tasks
     JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
@@ -367,7 +386,7 @@ def normalization_report(request, uuid):
 
   cursor = connection.cursor()
   cursor.execute(query, (
-    uuid, uuid, uuid, uuid, uuid, uuid, uuid
+    uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid
   ))
   objects = cursor.fetchall()
 

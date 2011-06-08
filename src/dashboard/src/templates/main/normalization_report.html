@@ -5,24 +5,31 @@
     <thead>
       <tr>
         <th>File name</th>
-        <th>Access normalization failed</th>
+        <th>Preservation normalization attempted</th>
         <th>Preservation normalization failed</th>
-        <th>Already in access format</th>
         <th>Already in preservation format</th>
-        <th>Unverified in access format</th>
-        <th>Unverified in preservation format</th>
+        <th>Access normalization attempted</th>
+        <th>Access normalization failed</th>
+        <th>Already in access format</th>
       </tr>
     </thead>
     <tbody>
       {% for item in objects %}
         <tr>
+          <!-- File name -->
           <td>{{ item.1 }}</td>
+          <!-- Never red -->
           <td>{{ item.2|yesno:"Yes,No" }}</td>
-          <td>{{ item.3|yesno:"Yes,No" }}</td>
-          <td>{{ item.4|yesno:"Yes,No" }}</td>
+          <!-- Red when yes -->
+          <td class="{{ item.3|yesno:"error,ok" }}">{{ item.3|yesno:"Yes,No" }}</td>
+          <!-- Red is [2] is No and [4] is No -->
+          <td{% if not item.2 and not item.4 %} class="error"{% endif %}>{{ item.4|yesno:"Yes,No" }}</td>
+          <!-- Never red -->
           <td>{{ item.5|yesno:"Yes,No" }}</td>
-          <td>{{ item.6|yesno:"Yes,No" }}</td>
-          <td>{{ item.7|yesno:"Yes,No" }}</td>
+          <!-- Red when yes -->
+          <td class="{{ item.6|yesno:"error,ok" }}">{{ item.6|yesno:"Yes,No" }}</td>
+          <!-- Red is [4] is No and [6] is No -->
+          <td{% if not item.5 and not item.7 %} class="error"{% endif %}>{{ item.7|yesno:"Yes,No" }}</td>
         </tr>
       {% endfor %}
     </tbody>
