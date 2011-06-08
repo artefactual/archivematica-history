@@ -11,15 +11,12 @@ set -e
 
 #dbc_go archivematica-mcp-server $@
 
-USERID="archivematica"
-DIRECTORY="/var/log/archivematica"
+userID=`id -u archivematica`
 
-/bin/egrep  -i "^${USERID}" /etc/passwd
-if [ $? -eq 0 ]; then
-  echo "User $USERID exists in /etc/passwd - skipping"
+if [ $userID==333 ]; then
+  echo "User archivematica exists""
 else
-  echo "adding archivematica user"
-  sudo adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
+  adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
 fi
 
 chown -R archivematica:archivematica "/var/archivematica/"
@@ -28,10 +25,3 @@ chmod -R 775 "/var/archivematica/"
 echo "archivematica ALL=NOPASSWD:/bin/mv,/bin/chown,/bin/chmod,/usr/bin/gs,/usr/lib/transcoder/transcoderScripts/DocumentConverter.py,/usr/bin/inkscape" >> /etc/sudoers
 chown archivematica:archivematica /etc/archivematica/MCPServer/dbsettings
 chmod 700 /etc/archivematica/MCPServer/dbsettings
-
-
-if [ ! -d "$DIRECTORY" ]; then
-  mkdir -p /var/log/archivematica
-  chown archivematica:archivematica /var/log/archivematica
-fi
-
