@@ -3,27 +3,15 @@
 set -e
 
 DIRECTORY="/var/log/archivematica"
+userID=`id -u archivematica`
 
-
-egrep  -i archivematica /etc/passwd
-if [ $? -eq 0 ]; then
-  echo "User archivematica exists in /etc/passwd"
+if [ $userID==333 ]; then
+  echo "User archivematica exists""
 else
-  echo "adding archivematica user"
-  sudo adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
+  adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
 fi
 
 if [ ! -d /var/log/archivematica ]; then
   mkdir -p /var/log/archivematica
   chown archivematica:archivematica /var/log/archivematica
 fi
-
-
-##instead of checking for the config files check status of upstart service
-#if [ -e "/etc/init/openoffice-service.conf" ]; then
-#  start openoffice-service
-#fi
-
-#if [ -e "/etc/init/archivematica-mcp-client.conf" ]; then
-#  start archivematica-mcp-client
-#fi
