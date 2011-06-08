@@ -39,14 +39,15 @@ global outputFileUUIDHasBeenTaskUUID
 outputFileUUIDHasBeenTaskUUID = False
 
 def inAccessFormat():
-    ex=["CSS", "CSV", "HTML", "TXT", "XML", "XSL", \
-        "MP3", "PDF", "JPG", "MPG"]
+    ex=["CSS", "CSV", "DOCX", "HTML", "LOG", "TXT", "XML", "XSL", "XLSX", \
+        "MP3", "PDF", "JPG", "MPG" ]
     return transcoder.fileExtension.__str__().upper() in ex
 
 def inPreservationFormat():
-    ex=["CSS", "CSV", "HTML", "TXT", "XML", "XSL", \
+    ex=["CSS", "CSV", "DOCX", "HTML", "LOG", "TXT", "XML", "XSL", "XLSX", "LOG", \
         "JP2", "PNG", \
-        "SVG", "WAV", "TIF", "PDF", "ODP", "TIF", "MXF", "ODT", "ODS", "MBOX", "IMBOX", "AI" ]
+        "SVG", "WAV", "TIF", "PDF", "ODP", "TIF", "MXF", "ODT", "ODS", "MBOX", "IMBOX", "AI", \
+	"PPTX" ]
     return transcoder.fileExtension.__str__().upper() in ex
 
 def onceNormalized(command):
