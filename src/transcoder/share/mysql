@@ -1016,10 +1016,6 @@ INSERT INTO FileIDGroupMembers
     (fileID, groupID) 
     VALUES (@fileID, @rawCameraImageGroup);
 
-INSERT INTO FileIDGroupMembers 
-    (fileID, groupID) 
-    VALUES (@fileID, @rasterImageGroup);
-
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
