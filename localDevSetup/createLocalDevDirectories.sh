@@ -30,12 +30,19 @@ sudo ln -s "${svnDir}src/createDublinCore/lib/" "/usr/lib/createDublinCore"
 
 sudo ln "${svnDir}src/MCPServer/runArchivematicaMCPServer.sh" "/usr/bin/"
 sudo ln "${svnDir}src/MCPClient/runArchivematicaMCPClient.sh" "/usr/bin/"
-sudo ln "${svnDir}src/MCPServer/init/archivematica-mcp-server.conf" "/etc/init/"
-sudo ln "${svnDir}src/MCPClient/init/archivematica-mcp-client.conf" "/etc/init/"
-sudo ln "${svnDir}src/MCPClient/init/openoffice-service.conf" "/etc/init/"
 sudo ln "${svnDir}src/createDublinCore/bin/createDublinCore" "/usr/bin/"
 sudo ln "${svnDir}src/SIPCreationTools/bin/archivematicaCreateMD5" "/usr/bin/"
 sudo ln "${svnDir}src/SIPCreationTools/bin/archivematicaRestructureForCompliance" "/usr/bin/"
+
+if [ ! -e  /etc/init/archivematica-mcp-server.conf ] ; then
+	sudo ln "${svnDir}src/MCPServer/init/archivematica-mcp-server.conf" "/etc/init/"
+fi
+if [ ! -e  /etc/init/archivematica-mcp-client.conf ] ; then
+	sudo ln "${svnDir}src/MCPClient/init/archivematica-mcp-client.conf" "/etc/init/"
+fi
+if [ ! -e  /etc/init/openoffice-service.conf ] ; then
+	sudo ln "${svnDir}src/MCPClient/init/openoffice-service.conf" "/etc/init/"
+fi
 
 sudo ln "${svnDir}src/upload-qubit/upload-qubit" "/usr/bin/" 
 sudo ln "${svnDir}src/easy-extract/bin/easy-extract" "/usr/bin/"
