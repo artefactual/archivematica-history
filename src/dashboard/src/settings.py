@@ -4,7 +4,7 @@ BASE_PATH = os.path.dirname(__file__)
 
 # Django settings for app project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -97,11 +97,10 @@ MCP_SERVER = ('127.0.0.1', 8000)
 POLLING_INTERVAL = 5 # Seconds
 
 MICROSERVICES_HELP = {
-  'Appraise SIP for preservation': 'Appraise SIP for preservation. Delete any files not accepted for preservation. Delete any zipped or otherwise packaged files.',
-  'Appraise SIP for submission': 'Check the SIP to make sure it conforms to your Submission Agreement. Delete any files not accepted for ingest.',
+  'Appraise SIP for preservation': 'Appraise SIP for preservation. Delete any files not accepted for preservation. Add submission documentation to metadata/submissionDocumentation folder if desired.',
+  'Appraise SIP for submission': 'Check the SIP to make sure it conforms to your Submission Agreement. Delete any files not accepted for ingest. Add submission documentation to metadata/submissionDocumentation folder if desired.',
   'Remove from quarantine': 'If desired, click Approve to remove the SIP from quarantine immediately. Otherwise, wait until the quarantine period has expired and the SIP will be removed automatically.',
   'Store AIP': 'If desired, review normalized files and any other content. Click "Approve" to move the AIP into archival storage.',
   'Upload DIP': 'If desired, review the DIP and remove any access copies that should not be uploaded to the public access system, e.g. for copyright or security reasons. Click "Approve" to upload the DIP to the access system.',
-  'Normalization failed': 'Normalization of one or more objects in this SIP failed. To reject the SIP, click Reject; to continue processing the SIP, click Approve.',
-  'Approve normalization': 'Review normalization of objects, and manually normalize as necessary. Review submission documentation.',
+  'Approve normalization': 'Review normalization of objects, and manually normalize as necessary.',
 }
