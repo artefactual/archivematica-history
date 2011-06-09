@@ -51,8 +51,7 @@
         
         <cleanupSuccessfulCommand>
             <command>
-                <descriptionWhileExecuting> </descriptionWhileExecuting>
-                <skip>Yes/No</skip>
+                <skip>No</skip>
                 <filterFileEnd></filterFileEnd>
                 <filterFileStart></filterFileStart>
                 <filterSubDir></filterSubDir>
@@ -60,11 +59,12 @@
                 <standardIn></standardIn>
                 <standardOut></standardOut>
                 <standardError></standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
                 <failureNotification> </failureNotification>
-                <execute> </execute>
-                <arguments> </arguments>
-                <executeOnEachFile> </executeOnEachFile>
-            </command>          
+                <execute>remove_v0.0</execute>
+                <arguments>-R "%SIPLogsDirectory%fileMeta/" "%SIPLogsDirectory%acquiredSIPDateTime.log" "%SIPLogsDirectory%FileUUIDs.log" </arguments>
+                <executeOnEachFile>no</executeOnEachFile>
+            </command>        
         </cleanupSuccessfulCommand>
         
         <cleanupUnsuccessfulCommand>
