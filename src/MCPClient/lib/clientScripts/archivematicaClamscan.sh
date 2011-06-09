@@ -29,14 +29,32 @@ eIDValue="$2"
 eDate="$3"
 fileUUID="$4"
 logsDir="$5"
-
+temp="/tmp/`uuid`"
 clamscanResultShouldBe="Infected files: 0"
 
-clamscanVersion=`clamscan -V`
-clamscanResult=`clamscan "$target" | grep "Infected files"`
+chmod 777 "$target"
+
+
+clamscanVersion=`clamdscan -V`
+clamdscan  - <"$target" >$temp 
+a=$?
+clamscanResult=`grep "Infected files" $temp`  
 
 `dirname "$0"`/createXMLEventClamscan.py "$eIDValue" "$eDate" "$clamscanVersion" "$clamscanResult " "$clamscanResultShouldBe " "$fileUUID" "$logsDir"
+b=$?
 
-exit $?
+let "num = (( $a || $b ))"
+if [ 0 -ne $num ] ; then
+	echo 1>&2
+	#ls -l "$target" 1>&2
+	#echo USER: `whoami` 1>&2
+	echo ${fileUUID}-`basename $target` 1>&2
+	cat $temp 1>&2
+	echo 1>&2
+fi
+chmod 750 "$target"
+rm $temp 
+exit $num
+
 
 
