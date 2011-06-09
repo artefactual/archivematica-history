@@ -42,7 +42,8 @@ sudo apt-get install \
   inkscape \
   dosfstools \
   ufraw \
-  hypermail 
+  hypermail \
+  clamav-daemon 
 
 # Get Ubuntu version installed
 version="`lsb_release -d | grep "Ubuntu 10.04"`"
