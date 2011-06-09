@@ -7,12 +7,24 @@
 {% block css %}
   <style type="text/css">
 
-    span.uuid {
-      font-family: "Courier New", Courier, "Lucida Console", monospace;
+    td, th {
+      border: 1px solid #eee;
+      text-align: left;
     }
 
-    li.archival_storage {
-      margin-bottom: 6px;
+    thead > tr > th {
+      background-color: #ddd;
+    }
+
+    td.link-sip > a {
+      background: transparent url(/media/images/icons/package_go.png) no-repeat 0% 50%;
+      padding-left: 22px;
+      height: 16px;
+      display: block;
+    }
+
+    td.uuid {
+      font-family: "Courier New", Courier, "Lucida Console", monospace;
     }
 
   </style>
@@ -28,19 +40,26 @@
 {% endblock %}
 
 {% block content %}
-
   {% if sips %}
-    <ul>
-      {% for item in sips %}
-        <li class="archival_storage">
-          <a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a> ({{ item.date }})
-          <br />
-          <span class="uuid">{{ item.uuid }}</span>
-        </li>
-      {% endfor %}
-    </ul>
+    <table>
+      <thead>
+        <th>Submission Information Package</th>
+        <th>Size</th>
+        <th>UUID</th>
+        <th>Date</th>
+      </thead>
+      <tbody>
+        {% for item in sips %}
+          <tr>
+            <td class="link-sip"><a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a></td>
+            <td>{{ item.size }} MB</td>
+            <td class="uuid">{{ item.uuid }}</td>
+            <td>{{ item.date }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   {% else %}
     <p>Archival storage is empty.</p>
   {% endif %}
-
 {% endblock %}
