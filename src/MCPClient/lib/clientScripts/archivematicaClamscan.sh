@@ -32,27 +32,26 @@ logsDir="$5"
 temp="/tmp/`uuid`"
 clamscanResultShouldBe="Infected files: 0"
 
-chmod 777 "$target"
-
-
 clamscanVersion=`clamdscan -V`
 clamdscan  - <"$target" >$temp 
 a=$?
-clamscanResult=`grep "Infected files" $temp`  
 
-`dirname "$0"`/createXMLEventClamscan.py "$eIDValue" "$eDate" "$clamscanVersion" "$clamscanResult " "$clamscanResultShouldBe " "$fileUUID" "$logsDir"
-b=$?
+if [ 0 -eq $a ] ; then
+	clamscanResult=`grep "Infected files" $temp`
+	`dirname "$0"`/createXMLEventClamscan.py "$eIDValue" "$eDate" "$clamscanVersion" "$clamscanResult " "$clamscanResultShouldBe " "$fileUUID" "$logsDir"
+	b=$?
+else
+	`dirname "$0"`/createXMLEventClamscan.py "$eIDValue" "$eDate" "$clamscanVersion" "$clamscanResult " "$clamscanResultShouldBe " "$fileUUID" "$logsDir"
+	b=$?
+fi
 
 let "num = (( $a || $b ))"
 if [ 0 -ne $num ] ; then
 	echo 1>&2
-	#ls -l "$target" 1>&2
-	#echo USER: `whoami` 1>&2
 	echo ${fileUUID}-`basename $target` 1>&2
 	cat $temp 1>&2
 	echo 1>&2
 fi
-chmod 750 "$target"
 rm $temp 
 exit $num
 

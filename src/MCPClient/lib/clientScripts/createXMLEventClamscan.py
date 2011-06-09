@@ -52,7 +52,7 @@ if __name__ == '__main__':
         eventOutcome = createOutcomeInformation( eventOutcomeText = "Pass")
     else:
         eventOutcome = createOutcomeInformation( eventOutcomeText = "Fail")
-        print >>sys.stderr, "Virus detected: " + fileUUID
+        #print >>sys.stderr, "Virus detected: " + fileUUID
         failed = True
     
     event = createEvent( eIDValue, "virus check", eventDateTime=date, eventDetailText=eventDetailText, eOutcomeInformation=eventOutcome)
