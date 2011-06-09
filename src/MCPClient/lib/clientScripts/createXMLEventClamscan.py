@@ -41,8 +41,8 @@ if __name__ == '__main__':
     expectedOutcome = sys.argv[5]
     fileUUID = sys.argv[6]
     logsDir = sys.argv[7] 
-    version = vers.split("/", 1)[0]
-    virusDefs = vers.split("/", 1)[0]
+    version, virusDefs, virusDefsDate = vers.split("/")
+    virusDefs = virusDefs + "/" + virusDefsDate
     failed = False
     
     eventDetailText = "program=\"Clam AV\"; version=\"" + version + "\"; virusDefinitions=\"" + virusDefs + "\""
