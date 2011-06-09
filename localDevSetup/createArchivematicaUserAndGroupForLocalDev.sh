@@ -4,6 +4,7 @@ sudo adduser --uid 333 --group --system --home /var/lib/archivematica/ archivema
 echo -n " Your username? : "
 read username
 sudo gpasswd -a $username archivematica
+sudo gpasswd -a clamav archivematica
 
 #TODO
 #add current user to archivematica Group
