@@ -353,10 +353,10 @@ def appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=\"
     for dirname, dirnames, filenames in os.walk(directory):
         for filename in filenames:
             if filename.rfind(\".\") == -1:
-                newName = filename + extension
+                newName = os.path.join(os.path.dirname(filename), "0-" + os.path.basename(filename)) + extension
                 n=1
                 while os.path.exists(os.path.join(dirname, newName)):
-                    newName = newName = filename + n.__str__() + extension
+                    newName = os.path.join(os.path.dirname(filename), "0-" + os.path.basename(filename)) + n.__str__() + extension
                     n+=1
                 print \"Renaming: \", filename, \" -> \" + newName
                 os.rename(os.path.join(dirname, filename), os.path.join(dirname, newName))
