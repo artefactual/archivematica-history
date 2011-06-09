@@ -12,6 +12,10 @@
       text-align: left;
     }
 
+    th > a.selected {
+      color: Black;
+    }
+
     thead > tr > th {
       background-color: #ddd;
     }
@@ -43,10 +47,34 @@
   {% if sips %}
     <table>
       <thead>
-        <th>Submission Information Package</th>
-        <th>Size</th>
-        <th>UUID</th>
-        <th>Date</th>
+        <th>
+          {% if order_by == 'name' %}
+            Submission Information Package
+          {% else %}
+            <a href="?order_by=name">Submission Information Package</a></th>
+          {% endif %}
+        </th>
+        <th>
+          {% if order_by == 'size' %}
+            Size
+          {% else %}
+            <a href="?order_by=size">Size</a></th>
+          {% endif %}
+        </th>
+        <th>
+          {% if order_by == 'uuid' %}
+            UUID
+          {% else %}
+            <a href="?order_by=uuid">UUID</a></th>
+          {% endif %}
+        </th>
+        <th>
+          {% if order_by == 'date' %}
+            Date
+          {% else %}
+            <a href="?order_by=date">Date</a></th>
+          {% endif %}
+        </th>
       </thead>
       <tbody>
         {% for item in sips %}

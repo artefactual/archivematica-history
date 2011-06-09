@@ -220,6 +220,11 @@ def archival_storage(request, path=None):
     except:
       pass
     sips.append(sip)
+    order_by = request.GET.get('order_by', 'name');
+    def sort_aips(sip):
+      try: return sip[order_by]
+      except Exception: return 0
+    sips = sorted(sips, key = sort_aips)
   return render_to_response('main/archival_storage.html', locals())
 
 def preservation_planning(request):
@@ -299,6 +304,7 @@ def normalization_report(request, uuid):
         JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
         WHERE
           Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
           Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
           Tasks.stdOut LIKE '%%[Command]%%')
       AS 'Preservation normalization attempted',
@@ -332,6 +338,7 @@ def normalization_report(request, uuid):
         JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
         WHERE
           Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
           Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
           Tasks.stdOut LIKE '%%description: Copying File.%%') AND
           Tasks.fileUUID IN (
@@ -340,6 +347,7 @@ def normalization_report(request, uuid):
             JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
             WHERE
               Jobs.SIPUUID = %s AND
+              Tasks.exitCode = 0 AND
               Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
               Tasks.stdOut LIKE '%%[Command]%%') AND
           Tasks.fileUUID NOT IN (
@@ -348,6 +356,7 @@ def normalization_report(request, uuid):
               JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
             WHERE
               Jobs.SIPUUID = %s AND
+              Tasks.exitCode = 0 AND
               Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
               Tasks.stdOut LIKE '%%Not including %% in DIP.%%')
       AS 'Access normalization attempted',
