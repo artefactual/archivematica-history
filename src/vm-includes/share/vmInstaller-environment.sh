@@ -112,8 +112,8 @@ ${includesDir}vmInstaller-transcoder-db.sh
 ${includesDir}vmInstaller-ica-atom.sh
 #${includesDir}vmInstaller-qubit.sh
 
-sudo aptitude remove xscreensaver
-sudo gpasswd -a ${USER} archivematica
+aptitude remove xscreensaver
+gpasswd -a ${USER} archivematica
 echo " "
 echo "===PLEASE REBOOT TO ENABLE NEW GROUP SETTINGS==="
 echo " "
