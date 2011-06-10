@@ -218,7 +218,7 @@ def archival_storage(request, path=None):
       date = datetime.strptime(item.find('p[@class="date"]').text.split('.')[0], '%Y-%m-%dT%H:%M:%S')
       sip['date'] = date.isoformat(' ')
     except:
-      pass
+      sip['date'] = ''
     sips.append(sip)
     order_by = request.GET.get('order_by', 'name');
     sort_by = request.GET.get('sort_by', 'up');
