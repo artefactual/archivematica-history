@@ -43,7 +43,8 @@ sudo apt-get install \
   dosfstools \
   ufraw \
   hypermail \
-  clamav-daemon 
+  clamav-daemon \
+  ffprobe
 
 # Get Ubuntu version installed
 version="`lsb_release -d | grep "Ubuntu 10.04"`"
