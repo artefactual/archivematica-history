@@ -188,13 +188,7 @@
         {% for extension in item.extensions %}
           <tr>
             <td class="ext">{{ extension.1 }}</td>
-            <td>
-              {% if extension.9 != "Don't include in DIP." %}
-                {{ extension.9 }}
-              {% else %}
-                &nbsp;
-              {% endif %}
-            </td>
+            <td>{{ extension.9 }}</td>
             <td class="advanced">{{ extension.3 }}</td>
             <td class="advanced per">{{ extension.5|percentage:extension.4|safe }}</td>
             <td class="advanced per">{{ extension.6|percentage:extension.4|safe }}</td>

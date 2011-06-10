@@ -257,6 +257,7 @@ def preservation_planning(request):
     JOIN CommandTypes AS CT ON Commands.commandType = CT.pk
     WHERE
       FIBE.Extension IS NOT NULL
+      AND FIBE.Extension NOT IN ('mboxi', 'pst')
       AND CC.classification IN ('access', 'preservation')
     ORDER BY Groups.description, FIBE.Extension, CC.classification"""
 
