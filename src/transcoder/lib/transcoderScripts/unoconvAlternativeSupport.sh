@@ -26,5 +26,25 @@
 #This script is restricted, by flock in unoconvAlternative.sh, to run one at a time.
 #The sleep allows for spacing between DocumentConverter.py Calls.
 
+openOfficeNormalizationsPerformedCountFile="/tmp/OPENOFFICECOUNT"
+numberOfNormalizationsBeforeRestartingOpenOfficeService=20
+
+#create the open office count file if it doesn't exist
+if [ ! -e $openOfficeNormalizationsPerformedCountFile ] ; then
+	echo 0 >"$openOfficeNormalizationsPerformedCountFile"
+fi
+
+numberOfOpenOfficeNormalizations=`cat "$openOfficeNormalizationsPerformedCountFile"`
+
+#restart the 
+if [ $numberOfNormalizationsBeforeRestartingOpenOfficeService -eq $numberOfOpenOfficeNormalizations ] ;then 
+	sudo /usr/lib/archivematica/transcoder/transcoderScripts/restartOpenOffice.sh
+	numberOfOpenOfficeNormalizations=1
+else
+	numberOfOpenOfficeNormalizations=$(( $numberOfOpenOfficeNormalizations + 1 )) 
+fi
+
+echo $numberOfOpenOfficeNormalizations >$openOfficeNormalizationsPerformedCountFile
+
 sleep 1 && "$1/DocumentConverter.py" "$2" "$3"
 exit "$?"
