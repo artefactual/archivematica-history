@@ -39,6 +39,8 @@
       display: block;
       text-indent: -10000px;
       position: absolute;
+      width: 16px;
+      height: 16px;
     }
 
     thead > tr > th > div > a.up {
@@ -53,9 +55,12 @@
       right: -4px;
     }
 
-    thead > tr > th > div > a.selected_up,
+    thead > tr > th > div > a.selected_up {
+      background-image: url(/media/images/bullet_orange.png);
+    }
+
     thead > tr > th > div > a.selected_down {
-      background-color: #ccc;
+      background-image: url(/media/images/bullet_orange.png);
     }
 
   </style>
@@ -77,29 +82,29 @@
         <th>
           <div>
             AIP
-            <a{% if order_by == 'name' and sort_by == 'up' %} class="selected_up up"{% endif %} href="?order_by=name&sort_by=up">Sort</a>
-            <a{% if order_by == 'name' and sort_by == 'down' %} class="selected_down down"{% endif %} href="?order_by=name&sort_by=down">Sort</a>
+            <a class="up {% if order_by == 'name' and sort_by == 'up' %} selected_up{% endif %}" href="?order_by=name&sort_by=up">Sort</a>
+            <a class="down {% if order_by == 'name' and sort_by == 'down' %} selected_down{% endif %}" href="?order_by=name&sort_by=down">Sort</a>
           </div>
         </th>
         <th>
           <div>
             Size
-            <a{% if order_by == 'size' and sort_by == 'up' %} class="selected_up up"{% endif %} href="?order_by=size&sort_by=up">Sort</a>
-            <a{% if order_by == 'size' and sort_by == 'down' %} class="selected_down down"{% endif %} href="?order_by=size&sort_by=down">Sort</a>
+            <a class="up {% if order_by == 'size' and sort_by == 'up' %} selected_up"{% endif %}" href="?order_by=size&sort_by=up">Sort</a>
+            <a class="down {% if order_by == 'size' and sort_by == 'down' %} selected_down"{% endif %}" href="?order_by=size&sort_by=down">Sort</a>
           </div>
         </th>
         <th>
           <div>
             UUID
-            <a{% if order_by == 'uuid' and sort_by == 'up' %} class="selected_up up"{% endif %} href="?order_by=uuid&sort_by=up">Sort</a>
-            <a{% if order_by == 'uuid' and sort_by == 'down' %} class="selected_down down"{% endif %} href="?order_by=uuid&sort_by=down">Sort</a>
+            <a class="up {% if order_by == 'uuid' and sort_by == 'up' %} selected_up"{% endif %}" href="?order_by=uuid&sort_by=up">Sort</a>
+            <a class="down {% if order_by == 'uuid' and sort_by == 'down' %} selected_down"{% endif %}" href="?order_by=uuid&sort_by=down">Sort</a>
           </div>
         </th>
         <th>
           <div>
             Date
-            <a{% if order_by == 'date' and sort_by == 'up' %} class="selected_up up"{% endif %} href="?order_by=date&sort_by=up">Sort</a>
-            <a{% if order_by == 'date' and sort_by == 'down' %} class="selected_down down"{% endif %} href="?order_by=date&sort_by=down">Sort</a>
+            <a class="up {% if order_by == 'date' and sort_by == 'up' %} selected_up{% endif %}" href="?order_by=date&sort_by=up">Sort</a>
+            <a class="down {% if order_by == 'date' and sort_by == 'down' %} selected_down"{% endif %}" href="?order_by=date&sort_by=down">Sort</a>
           </div>
         </th>
       </thead>
