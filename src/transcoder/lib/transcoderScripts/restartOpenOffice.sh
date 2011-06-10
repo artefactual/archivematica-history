@@ -22,5 +22,5 @@
 # @version svn: $Id$
 
 sudo stop  openoffice-service
-sleep 6
+#sleep 6
 sudo start openoffice-service
