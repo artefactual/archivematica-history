@@ -63,6 +63,18 @@
       background-image: url(/media/images/bullet_orange.png);
     }
 
+    tbody > tr:last-child > td {
+      border-bottom: 2px solid #ddd;
+    }
+
+    tfoot > tr > td {
+      border: 0px;
+    }
+
+    td.size {
+      text-align: right;
+    }
+
   </style>
 {% endblock %}
 
@@ -112,12 +124,20 @@
         {% for item in sips %}
           <tr>
             <td class="link-sip"><a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a></td>
-            <td>{{ item.size }} MB</td>
+            <td class="size">{{ item.size }} MB</td>
             <td class="uuid">{{ item.uuid }}</td>
             <td>{{ item.date }}</td>
           </tr>
         {% endfor %}
       </tbody>
+      <tfoot>
+        <tr>
+          <td>&nbsp;</td>
+          <td colspan="3">
+            <span>{{ total_size }}</span> MB
+          </td>
+        </tr>
+      </tfoot>
     </table>
   {% else %}
     <p>Archival storage is empty.</p>
