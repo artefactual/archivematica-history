@@ -399,7 +399,7 @@ INSERT INTO Commands
 
 import os
 directory = \"%outputLocation%\"
-extension = \".imbox\"
+extension = \".mboxi\"
 
 def appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=\"\"):
     for dirname, dirnames, filenames in os.walk(directory):
@@ -415,9 +415,9 @@ def appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=\"
 
 appendExtensionToFilesWithNoExtension(directory, extension, baseDirectory=directory)
 '),
-    ('append .imbox extension to files without extensions')
+    ('append .mboxi extension to files without extensions')
 );
-set @appendIMboxExtensionsCommandID = LAST_INSERT_ID();
+set @appendMboxiExtensionsCommandID = LAST_INSERT_ID();
 
 INSERT INTO Commands 
     (commandType, command, description) 
@@ -437,7 +437,7 @@ INSERT INTO Commands
     'mkdir "%outputDirectory%" && readpst -r "%inputFile%" -o "%outputDirectory%" -S',
     '%outputDirectory%',
     @readPSTEventDetailCommandID,
-    @appendIMboxExtensionsCommandID,
+    @appendMboxIExtensionsCommandID,
     ('Extracting pst file')
 );
 set @readPSTtoMBOXCommandID = LAST_INSERT_ID();
@@ -485,18 +485,18 @@ INSERT INTO CommandRelationships
 
 -- END PST extraction
 
--- ADD Normalization Path for .IMBOX --
+-- ADD Normalization Path for .MBOXI --
 INSERT INTO FileIDs 
     (description)
     VALUES (
-    'A .imbox file'
+    'A .mboxi file'
 );
 set @fileID = LAST_INSERT_ID();
 
 INSERT INTO FileIDsByExtension 
     (Extension, FileIDs)
     VALUES (
-    'imbox',
+    'mboxi',
     @fileID
 );
 
@@ -512,7 +512,7 @@ INSERT INTO CommandRelationships
     @accessNoOpCommandID,
     @fileID
 );
--- END ADD Normalization Path for .IMBOX --
+-- END ADD Normalization Path for .MBOXI --
 
 INSERT INTO Commands 
     (commandType, command, description) 
