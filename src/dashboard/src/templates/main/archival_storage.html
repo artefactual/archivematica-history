@@ -31,6 +31,32 @@
       font-family: "Courier New", Courier, "Lucida Console", monospace;
     }
 
+    thead > tr > th > div {
+      position: relative;
+    }
+
+    thead > tr > th > div > {
+      width: 4px;
+      height: 4px;
+    }
+
+    thead > tr > th > div > a:first-child {
+      position: absolute;
+      top: -8px;
+      right: -4px;
+    }
+
+    thead > tr > th > div > a:last-child {
+      position: absolute;
+      top: 6px;
+      right: -4px;
+    }
+
+    thead > tr > th > div > a.selected_up,
+    thead > tr > th > div > a.selected_down {
+      background-color: #ccc;
+    }
+
   </style>
 {% endblock %}
 
@@ -48,32 +74,32 @@
     <table>
       <thead>
         <th>
-          {% if order_by == 'name' %}
-            Submission Information Package
-          {% else %}
-            <a href="?order_by=name">Submission Information Package</a></th>
-          {% endif %}
+          <div>
+            AIP
+            <a{% if order_by == 'name' and sort_by == 'up' %} class="selected_up"{% endif %} href="?order_by=name&sort_by=up"><img src="/media/images/bullet_arrow_up.png" /></a>
+            <a{% if order_by == 'name' and sort_by == 'down' %} class="selected_down"{% endif %} href="?order_by=name&sort_by=down"><img src="/media/images/bullet_arrow_down.png" /></a>
+          </div>
         </th>
         <th>
-          {% if order_by == 'size' %}
+          <div>
             Size
-          {% else %}
-            <a href="?order_by=size">Size</a></th>
-          {% endif %}
+            <a{% if order_by == 'size' and sort_by == 'up' %} class="selected_up"{% endif %} href="?order_by=size&sort_by=up"><img src="/media/images/bullet_arrow_up.png" /></a>
+            <a{% if order_by == 'size' and sort_by == 'down' %} class="selected_down"{% endif %} href="?order_by=size&sort_by=down"><img src="/media/images/bullet_arrow_down.png" /></a>
+          </div>
         </th>
         <th>
-          {% if order_by == 'uuid' %}
+          <div>
             UUID
-          {% else %}
-            <a href="?order_by=uuid">UUID</a></th>
-          {% endif %}
+            <a{% if order_by == 'uuid' and sort_by == 'up' %} class="selected_up"{% endif %} href="?order_by=uuid&sort_by=up"><img src="/media/images/bullet_arrow_up.png" /></a>
+            <a{% if order_by == 'uuid' and sort_by == 'down' %} class="selected_down"{% endif %} href="?order_by=uuid&sort_by=down"><img src="/media/images/bullet_arrow_down.png" /></a>
+          </div>
         </th>
         <th>
-          {% if order_by == 'date' %}
+          <div>
             Date
-          {% else %}
-            <a href="?order_by=date">Date</a></th>
-          {% endif %}
+            <a{% if order_by == 'date' and sort_by == 'up' %} class="selected_up"{% endif %} href="?order_by=date&sort_by=up"><img src="/media/images/bullet_arrow_up.png" /></a>
+            <a{% if order_by == 'date' and sort_by == 'down' %} class="selected_down"{% endif %} href="?order_by=date&sort_by=down"><img src="/media/images/bullet_arrow_down.png" /></a>
+          </div>
         </th>
       </thead>
       <tbody>

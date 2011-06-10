@@ -221,10 +221,17 @@ def archival_storage(request, path=None):
       pass
     sips.append(sip)
     order_by = request.GET.get('order_by', 'name');
+    sort_by = request.GET.get('sort_by', 'up');
     def sort_aips(sip):
-      try: return sip[order_by]
-      except Exception: return 0
+      value = 0
+      if 'name' == order_by:
+        value = sip['name'].lower()
+      else:
+        value = sip[order_by]
+      return value
     sips = sorted(sips, key = sort_aips)
+    if sort_by == 'down':
+      sips.reverse()
   return render_to_response('main/archival_storage.html', locals())
 
 def preservation_planning(request):
