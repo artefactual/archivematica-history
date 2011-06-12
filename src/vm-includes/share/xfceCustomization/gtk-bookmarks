@@ -9,4 +9,4 @@ file:///var/archivematica/sharedDirectory/SIPbackups
 file:///var/archivematica/sharedDirectory/watchedDirectories/failed
 file:///var/archivematica/sharedDirectory/watchedDirectories/failedNormalization
 file:///var/archivematica/sharedDirectory/rejected
-file:///home/demo/testFiles
+file:///usr/share/archivematica/sampleData
