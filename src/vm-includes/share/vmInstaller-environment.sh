@@ -62,7 +62,8 @@ cp -a enviromentConfigFiles/exports /etc/exports
 ln -s /home/${USER}/Docs /home/${USER}/Desktop
 
 
-svn export http://archivematica.googlecode.com/svn/trunk/sampledata /home/${USER}/testFiles
+svn export http://archivematica.googlecode.com/svn/trunk/sampledata /usr/share/archivematica/sampleData
+chown -R archivematica:archivematica /usr/share/archivematica/sampleData
 #cp -a ${includesDir}postBuildScripts /home/${USER}/postBuildScripts
 
 #XFCE configuration
