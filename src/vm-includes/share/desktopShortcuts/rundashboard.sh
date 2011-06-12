@@ -1,2 +1,2 @@
 #!/bin/bash
-firefox http://localhost/sips
+firefox http://localhost/ingest
