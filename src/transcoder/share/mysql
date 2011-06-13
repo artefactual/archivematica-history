@@ -3351,15 +3351,6 @@ INSERT INTO CommandRelationships
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @openOfficeToPDFCommandID,
-    @fileID
-);
-
-INSERT INTO CommandRelationships 
-    (GroupMember, commandClassification, command, fileID)
-    VALUES (
-    @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
     @openOfficeToODSCommandID,
     @fileID
