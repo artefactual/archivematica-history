@@ -331,7 +331,6 @@ def normalization_report(request, uuid):
       ) != 0
       AS 'Preservation normalization failed',
 
-
       Tasks.fileUUID IN (
         SELECT Tasks.fileUUID
         FROM Tasks
