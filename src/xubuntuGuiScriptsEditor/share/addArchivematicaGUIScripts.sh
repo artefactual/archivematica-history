@@ -57,11 +57,11 @@ fi
 	--command="archivematicaRestructureForCompliance %F/ && archivematicaCreateMD5 %F | zenity --progress --pulsate --auto-close --auto-kill && cd %F/metadata && createDublinCore %F/" \
 	--description="Restructures, creates MD5 and DC"
 
-"$add" \
-	--icon="accessories-calculator" \
-	--name="Remove as ROOT" \
-	--command="gksudo -u root \"rm -r -f %F\"" \
-	--description="Does a sudo remove of the file/directory. (Recursive & Force)"
+#"$add" \
+#	--icon="accessories-calculator" \
+#	--name="Remove as ROOT" \
+#	--command="gksudo -u root \"rm -r -f %F\"" \
+#	--description="Does a sudo remove of the file/directory. (Recursive & Force)"
 
 "$add" \
 	--icon="accessories-calculator" \
