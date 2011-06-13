@@ -316,7 +316,6 @@ def normalization_report(request, uuid):
         JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
         WHERE
           Jobs.SIPUUID = %s AND
-          Tasks.exitCode = 0 AND
           Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
           Tasks.stdOut LIKE '%%[Command]%%')
       AS 'Preservation normalization attempted',
@@ -350,7 +349,6 @@ def normalization_report(request, uuid):
         JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
         WHERE
           Jobs.SIPUUID = %s AND
-          Tasks.exitCode = 0 AND
           Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
           Tasks.stdOut LIKE '%%description: Copying File.%%') AND
           Tasks.fileUUID IN (
@@ -359,7 +357,6 @@ def normalization_report(request, uuid):
             JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
             WHERE
               Jobs.SIPUUID = %s AND
-              Tasks.exitCode = 0 AND
               Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
               Tasks.stdOut LIKE '%%[Command]%%') AND
           Tasks.fileUUID NOT IN (
@@ -368,7 +365,6 @@ def normalization_report(request, uuid):
               JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
             WHERE
               Jobs.SIPUUID = %s AND
-              Tasks.exitCode = 0 AND
               Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
               Tasks.stdOut LIKE '%%Not including %% in DIP.%%')
       AS 'Access normalization attempted',
