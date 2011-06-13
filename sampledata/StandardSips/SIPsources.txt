@@ -24,4 +24,5 @@ OfficeDocsSIP
 All files created by Artefactual Systems staff, except Data without meaning.pdf, which was taken from http://www.ijdc.net/index.php/ijdc/article/view/110/87
 and samples-final.zip, which was taken from http://openxmldeveloper.org/articles/SampleDocsAugust2007.aspx
 
-
+RawCameraSIP
+All files are from http://www.rawsamples.ch/
