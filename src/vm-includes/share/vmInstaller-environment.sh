@@ -53,7 +53,7 @@ cp ${includesDir}php.ini /etc/php5/cli
 cp ${includesDir}php.ini /etc/php5/apache2
 cp ${includesDir}apache.default /etc/apache2/sites-available/default
 
-
+export USER=$1
 
 #Install externals/archivematica
 mkdir -p /home/${USER}/Desktop
