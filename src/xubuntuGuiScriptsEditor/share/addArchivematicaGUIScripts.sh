@@ -65,6 +65,6 @@ fi
 
 "$add" \
 	--icon="accessories-calculator" \
-	--name="Set ownership and Permissions" \
+	--name="Set Ownership and Permissions" \
 	--command="gksudo \"chown -R archivematica:archivematica %F\" && gksudo \"chmod -R 770 %F\"" \
 	--description="Set ownership to archivematica:archivematica and permissions to 770"
