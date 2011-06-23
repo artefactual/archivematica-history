@@ -1,0 +1,67 @@
+/*
+DROP TABLE IF EXISTS Tasks;
+CREATE TABLE Tasks (
+taskUUID        VARCHAR(50) PRIMARY KEY,
+jobUUID         VARCHAR(50),
+createdTime     TIMESTAMP(8) DEFAULT NOW(),
+fileUUID        VARCHAR(50),
+fileName        VARCHAR(100),
+exec            VARCHAR(50),
+arguments       VARCHAR(1000),
+startTime       TIMESTAMP(8),
+client          VARCHAR(50),
+endTime         TIMESTAMP(8),
+stdOut          LONGTEXT,
+stdError        LONGTEXT,
+exitCode        BIGINT
+);
+
+DROP TABLE IF EXISTS Jobs;
+CREATE TABLE Jobs (
+jobUUID         VARCHAR(50) PRIMARY KEY,
+jobType         VARCHAR(250),
+createdTime     TIMESTAMP(8) DEFAULT NOW(),
+createdTimeDec  decimal(24,10) NOT NULL DEFAULT 0,
+directory       VARCHAR(250),
+SIPUUID         VARCHAR(50),
+currentStep     VARCHAR(50),
+hidden          BOOLEAN NOT NULL DEFAULT 0
+);
+
+DROP TABLE IF EXISTS jobStepCompleted;
+CREATE TABLE jobStepCompleted (
+pk              BIGINT PRIMARY KEY AUTO_INCREMENT,
+jobUUID         VARCHAR(50),
+completedTime   TIMESTAMP(8) DEFAULT NOW(),
+step            VARCHAR(50)
+);
+*/
+
+DROP TABLE IF EXISTS Files;
+CREATE TABLE Files(
+    fileUUID            VARCHAR(50) PRIMARY KEY,
+    originalLoacation   LONGTEXT,
+    currentLoacation    LONGTEXT,
+    removed             TIMESTAMP(8) DEFAULT 0,
+    enteredSystem       TIMESTAMP(8) DEFAULT NOW()
+);
+
+
+DROP TABLE IF EXISTS Events;
+CREATE TABLE Events(
+    pk                  INT PRIMARY KEY AUTO_INCREMENT,
+    fileUUID            VARCHAR(50),
+    eventIdentifierUUID VARCHAR(50),
+    eventType           LONGTEXT,
+    eventDateTime       TIMESTAMP(8),
+    eventDetail         LONGTEXT,
+    eventOutcomeDetailNote  LONGTEXT,
+    linkingAgentIdentifier  INT
+);
+
+DROP TABLE IF EXISTS LinkingAgentIdentifiers;
+CREATE TABLE LinkingAgentIdentifiers(
+    pk      INT PRIMARY KEY AUTO_INCREMENT,
+    Type    LONGTEXT,
+    Value   LONGTEXT
+);
