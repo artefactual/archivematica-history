@@ -49,7 +49,7 @@ def getDeciDate(date):
 #sudo apt-get install python-mysqldb
 sqlLoggingLock = threading.Lock()
 sqlLoggingLock.acquire()
-print "Connecting to Database"
+#print "Connecting to Database"
 database=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
 sqlLoggingLock.release()
 

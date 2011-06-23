@@ -665,7 +665,7 @@ class archivematicaWatchDirectoryTimer():
 
 #Used to monitor directories copied to the MCP, to see when they are done copying.
 class directoryCreated(ProcessEvent):
-    """Determin which action to take based on the watch directory. """
+    """Determine which action to take based on the watch directory. """
     def __init__(self, watchDirectory, event, watchManager, path, timer=None):
         self.timer = timer
         if self.timer == None:
@@ -681,7 +681,7 @@ class directoryCreated(ProcessEvent):
 #This class holds the relation betwen watched directories, and their configs.
 #This is a one to one relationship.
 class watchDirectory(ProcessEvent):
-    """Determin which action to take based on the watch directory. """
+    """Determine which action to take based on the watch directory. """
     config = None
     def __init__(self, config):
         self.config = config
