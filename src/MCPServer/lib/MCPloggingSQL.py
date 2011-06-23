@@ -50,11 +50,12 @@ def getDeciDate(date):
 sqlLoggingLock = threading.Lock()
 sqlLoggingLock.acquire()
 #print "Connecting to Database"
-database=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
+database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
 sqlLoggingLock.release()
 
 def runSQL(sql):
     global database
+    print sql
     #found that even though it says it's compiled thread safe, running it multi-threaded crashes it.
     sqlLoggingLock.acquire()
     db = database

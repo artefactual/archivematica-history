@@ -41,8 +41,8 @@ DROP TABLE IF EXISTS Files;
 CREATE TABLE Files(
     fileUUID            VARCHAR(50) PRIMARY KEY,
     originalLoacation   LONGTEXT,
-    currentLoacation    LONGTEXT,
-    removed             TIMESTAMP(8) DEFAULT 0,
+    currentLocation    LONGTEXT,
+    removedTime         TIMESTAMP(8) DEFAULT 0,
     enteredSystem       TIMESTAMP(8) DEFAULT NOW()
 );
 
