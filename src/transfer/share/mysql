@@ -1,40 +1,24 @@
 /*
-DROP TABLE IF EXISTS Tasks;
-CREATE TABLE Tasks (
-taskUUID        VARCHAR(50) PRIMARY KEY,
-jobUUID         VARCHAR(50),
-createdTime     TIMESTAMP(8) DEFAULT NOW(),
-fileUUID        VARCHAR(50),
-fileName        VARCHAR(100),
-exec            VARCHAR(50),
-arguments       VARCHAR(1000),
-startTime       TIMESTAMP(8),
-client          VARCHAR(50),
-endTime         TIMESTAMP(8),
-stdOut          LONGTEXT,
-stdError        LONGTEXT,
-exitCode        BIGINT
-);
+# This file is part of Archivematica.
+#
+# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
+# 
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.    If not, see <http://www.gnu.org/licenses/>.
 
-DROP TABLE IF EXISTS Jobs;
-CREATE TABLE Jobs (
-jobUUID         VARCHAR(50) PRIMARY KEY,
-jobType         VARCHAR(250),
-createdTime     TIMESTAMP(8) DEFAULT NOW(),
-createdTimeDec  decimal(24,10) NOT NULL DEFAULT 0,
-directory       VARCHAR(250),
-SIPUUID         VARCHAR(50),
-currentStep     VARCHAR(50),
-hidden          BOOLEAN NOT NULL DEFAULT 0
-);
-
-DROP TABLE IF EXISTS jobStepCompleted;
-CREATE TABLE jobStepCompleted (
-pk              BIGINT PRIMARY KEY AUTO_INCREMENT,
-jobUUID         VARCHAR(50),
-completedTime   TIMESTAMP(8) DEFAULT NOW(),
-step            VARCHAR(50)
-);
+# @package Archivematica
+# @subpackage transfer
+# @author Joseph Perry <joseph@artefactual.com>
 */
 
 DROP TABLE IF EXISTS Files;
@@ -49,7 +33,7 @@ CREATE TABLE Files(
 
 DROP TABLE IF EXISTS Events;
 CREATE TABLE Events(
-    pk                  INT PRIMARY KEY AUTO_INCREMENT,
+    pk                  BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fileUUID            VARCHAR(50),
     eventIdentifierUUID VARCHAR(50),
     eventType           LONGTEXT,

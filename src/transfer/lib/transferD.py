@@ -42,6 +42,7 @@ import threading
 sys.path.append("/usr/lib/archivematica/MCPServer")
 from MCPloggingSQL import getUTCDate
 from MCPloggingSQL import runSQL
+from MCPloggingSQL import sqlLoggingLock
 import MCPloggingSQL 
 
 sys.path.append("/usr/lib/archivematica/MCPClient/clientScripts")
@@ -50,6 +51,7 @@ from fileAddedToSIP import sha_for_file
 
 #Variables to move to config file
 transferDirectory = '/var/archivematica/sharedDirectory/transfer/'
+delayTimer = 4
 
 #Local Variables
 mask = pyinotify.IN_CREATE | pyinotify.IN_MODIFY | pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO | pyinotify.IN_DELETE | pyinotify.IN_CLOSE_WRITE
@@ -57,6 +59,36 @@ separator = "', '"
 movedFrom = {} #cookie, current location
 movedFromLock = threading.Lock()
 
+def timerExpired(event, utcDate):
+    global transferDirectory
+    
+    movedFromLock.acquire()
+    truePath = os.path.join(event.path, event.name)
+    filePath = truePath.replace(transferDirectory, "transfer/", 1)
+    if event.cookie in movedFrom:
+        #remove it from the list of unfound moves
+        fevent = movedFrom.pop(event.cookie)
+        movedFromLock.release()
+        if event.dir:
+            #recursively remove directory
+            filesWithMatchingPath = []
+            sqlLoggingLock.acquire()
+            #Find the file pk/UUID
+            c=MCPloggingSQL.database.cursor()
+            sql = """SELECT Files.currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation LIKE '""" + MySQLdb.escape_string(filePath + "/") + """%';"""
+            c.execute(sql)
+            row = c.fetchone()
+            while row != None:
+                filesWithMatchingPath.append(row[0])
+                row = c.fetchone()
+            sqlLoggingLock.release()
+            #Update the database
+            for file in filesWithMatchingPath:
+                removeFile(file, utcDate)
+        else:
+            removeFile(filePath, utcDate)        
+    else: #was moved internally
+        movedFromLock.release()
 
 def checksumFile(filePath, fileUUID):
     global transferDirectory
@@ -79,11 +111,12 @@ def checksumFile(filePath, fileUUID):
                             + MySQLdb.escape_string(eventDetail) + separator \
                             + MySQLdb.escape_string(eventOutcomeDetailNote) + "' )" )
 
-def removeFile(filePath):
+def removeFile(filePath, utcDate = getUTCDate()):
     global separator
-    utcDate = getUTCDate()
+    print "removing: ", filePath
     filesWithMatchingPath = []
     
+    sqlLoggingLock.acquire()
     #Find the file pk/UUID
     c=MCPloggingSQL.database.cursor()
     sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '""" + MySQLdb.escape_string(filePath) + """';"""
@@ -92,7 +125,7 @@ def removeFile(filePath):
     while row != None:
         filesWithMatchingPath.append(row[0])
         row = c.fetchone()
-        
+    sqlLoggingLock.release()
     #Update the database
     for file in filesWithMatchingPath: 
         eventIdentifierUUID = uuid.uuid4().__str__()
@@ -129,11 +162,17 @@ class transferNotifier(pyinotify.ProcessEvent):
         self.IN_CREATE_COUNT += 1
         print self.IN_CREATE_COUNT 
         
+        truePath = os.path.join(event.path, event.name)
+        filePath = truePath.replace(transferDirectory, "transfer/", 1)
+        
         #if it's a directory
-            
-            #for each existing file:
-                #event2 = copy.deepcopy(event)
-            
+        if os.path.isdir(truePath):
+            for file in os.listdir(truePath):
+                if os.path.isfile(os.path.join(truePath, file)):
+                    fileEvent = copy.deepcopy(event)
+                    fileEvent.path = truePath
+                    fileEvent.name = file
+                    self.process_IN_CLOSE_WRITE(fileEvent)
         
     def process_IN_MODIFY(self, event):
         print event
@@ -143,15 +182,20 @@ class transferNotifier(pyinotify.ProcessEvent):
         
         filePath = os.path.join(event.path, event.name).replace(transferDirectory, "transfer/", 1)
         fileUUID = ""
-        
+        filesToChecksum = []
+        sqlLoggingLock.acquire()
         c=MCPloggingSQL.database.cursor()
         sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '""" + MySQLdb.escape_string(filePath) + """';"""
         c.execute(sql)
         row = c.fetchone()
         while row != None:
             fileUUID = row[0]
-            checksumFile(filePath,fileUUID)
+            filesToChecksum.append(row[0])
             row = c.fetchone()
+        sqlLoggingLock.release()
+        
+        for file in filesToChecksum:
+            checksumFile(filePath, file)
         #else
             #ignore
         
@@ -163,9 +207,11 @@ class transferNotifier(pyinotify.ProcessEvent):
         movedFromLock.acquire()
         movedFrom[event.cookie] = event
         movedFromLock.release()
+        utcDate = getUTCDate()
         
         #create timer to check if it's claimed by a move to
-        
+        self.timer = threading.Timer(delayTimer, timerExpired, args=[event, utcDate], kwargs={})
+        self.timer.start()
         
         
     def process_IN_MOVED_TO(self, event):
@@ -188,9 +234,9 @@ class transferNotifier(pyinotify.ProcessEvent):
             c=MCPloggingSQL.database.cursor()
             utcDate = getUTCDate()
             #if it's a file
+            sqlLoggingLock.acquire()
             if os.path.isfile(truePath):
                 sql = """SELECT fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation = '""" + MySQLdb.escape_string(fFilePath) + """';"""
-                print sql
                 c.execute(sql)
                 row = c.fetchone()
                 while row != None:
@@ -198,13 +244,13 @@ class transferNotifier(pyinotify.ProcessEvent):
                     row = c.fetchone()
             elif os.path.isdir(truePath):
                 sql = """SELECT fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation LIKE '""" + MySQLdb.escape_string(fFilePath + "/") + """%';"""
-                print sql
                 c.execute(sql)
                 row = c.fetchone()
                 while row != None:
                     filesWithMatchingPath.append(row)
                     row = c.fetchone()
-            
+            sqlLoggingLock.release()
+
             #Update the database
             for entry in filesWithMatchingPath:
                 fileUUID, fromFilePath = entry
@@ -234,7 +280,7 @@ class transferNotifier(pyinotify.ProcessEvent):
                 
         else:
             movedFromLock.release()
-            process_IN_CLOSE_WRITE(self, event)
+            self.process_IN_CLOSE_WRITE(event)
         
     def process_IN_DELETE(self, event):
         print event
@@ -254,11 +300,13 @@ class transferNotifier(pyinotify.ProcessEvent):
         filePath = os.path.join(event.path, event.name).replace(transferDirectory, "transfer/", 1)
         fileUUID = ""
         
+        sqlLoggingLock.acquire()
         c=MCPloggingSQL.database.cursor()
         sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '""" + MySQLdb.escape_string(filePath) + """';"""
         c.execute(sql)
         row = c.fetchone()
-       
+        sqlLoggingLock.release()
+
         if row == None:   
             #Create new file
             fileUUID = uuid.uuid4().__str__() 
