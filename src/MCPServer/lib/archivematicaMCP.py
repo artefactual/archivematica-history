@@ -578,7 +578,7 @@ class Job:
     
     #@return - returns a list of the tasks created            
     def createTasksForCurrentStep(self):
-        """Determin the current step, and if it is to be skipped. 
+        """Determine the current step, and if it is to be skipped. 
         If it's not to be skipped, create the tasks for it, append them to the queue and process the queue"""
         if self.step == "exeCommand":
             if not self.config.exeCommand.skip:
