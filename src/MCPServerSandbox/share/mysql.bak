@@ -1,39 +1,22 @@
--- Archivematica MCP initial database structure
-
--- Table Structure for table `Tasks`
-
-CREATE TABLE `Tasks` (
-`taskUUID`        VARCHAR(50) PRIMARY KEY,
-`jobUUID`         VARCHAR(50),
-`createdTime`     TIMESTAMP(8) DEFAULT NOW(),
-`fileUUID`        VARCHAR(50),
-`fileName`        VARCHAR(100),
-`exec`            VARCHAR(50),
-`arguments`       VARCHAR(1000),
-`startTime`       TIMESTAMP(8),
-`client`          VARCHAR(50),
-`endTime`         TIMESTAMP(8),
-`exitCode`        BIGINT
-);
-
--- Table structure for table `Jobs`
-
-CREATE TABLE `Jobs` (
-`jobUUID`         VARCHAR(50) PRIMARY KEY,
-`jobType`         VARCHAR(250),
-`createdTime`     TIMESTAMP(8) DEFAULT NOW(),
-`directory`       VARCHAR(250),
-`SIPUUID`         VARCHAR(50),
-`currentStep`     VARCHAR(50)
-);
-
--- Table structure for table `jobStepComplete`
-
-CREATE TABLE `jobStepCompleted` (
-`pk`              BIGINT PRIMARY KEY AUTO_INCREMENT,
-`jobUUID`         VARCHAR(50),
-`completedTime`   TIMESTAMP(8) DEFAULT NOW(),
-`step`         VARCHAR(50)
-);
 
 
+thoughts...
+approvals are actual tasks, not between job steps.
+
+
+class job steps
+{
+init
+
+pre task - local stuff ??????
+
+create tasks
+throws invalid, tasks should be created.
+
+taskReply(taskID, reply)
+#returns boolean task completed
+
+}
+
+
+replacement dic includes MicroServiceChainLinks

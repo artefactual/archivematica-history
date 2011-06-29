@@ -34,12 +34,12 @@ CREATE TABLE TaskTypes (
 INSERT INTO TaskTypes
     (pk, description) 
     VALUES ( 0, 'one instance'),
-    ( 1, 'for each file');
+    ( 1, 'for each file'),
+    ( 2, 'requires user approval');
 
 DROP TABLE IF EXISTS TasksConfigs;
 CREATE TABLE TasksConfigs (
     pk                  INT UNSIGNED PRIMARY KEY,
-    requiresUserApproval    BOOLEAN DEFAULT FALSE,
     taskType            INT UNSIGNED,
     Foreign Key (taskType) references TaskTypes(pk),
     filterFileEnd       VARCHAR(50),
@@ -55,18 +55,18 @@ CREATE TABLE TasksConfigs (
 
 -- START TRANSACTION; --
 -- ReceiveSIP  --
-INSERT INTO TasksConfigs (pk, requiresUserApproval, taskType, filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardError, execute, arguments, description) 
+INSERT INTO TasksConfigs (pk, taskType, filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardError, execute, arguments, description) 
     VALUES                
-    (0,      FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" %currentlyProcessingDirectory%', 'Move to the processing directory'),
-    (1,      FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" %failed%', 'Move to the failed directory'),
-    (100,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'assignSIPUUID_v0.0', '"%SIPDirectory%" "%jobCreatedDate%" "%taskUUID%"', 'Rename SIP directory with SIP UUID'),
-    (110,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '-R --preserve=mode,ownership,timestamps "%SIPDirectory%" "%sharedPath%SIPbackups/."', 'Create SIP backup'),
-    (120,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'verifySIPCompliance_v0.0', '"%SIPDirectory%"', 'Verify SIP compliance'),
-    (130,    FALSE, 1, NULL, NULL, NULL, TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'addFiles_v0.0',  '"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%taskUUID%" "ingestion" "%date%" "%SIPLogsDirectory%acquiredSIPDateTime.log"', 'Assign file UUIDs and checksums TODO'),
-    (140,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'verifyMD5_v0.0', '"%relativeLocation%"  "%checksumsNoExtention%" "%date%" "%taskUUID%"', 'Verify metadata directory checksums - TODO change from MD5_v0.0'),
-    (150,    FALSE, 1, NULL, NULL, NULL, TRUE, '%SIPLogsDirectory%removeUnneededFiles.log', '%SIPLogsDirectory%removeUnneededFiles.log', 'removeUnneededFiles_v0.0',  '"%relativeLocation%" "%fileUUID%" "%SIPLogsDirectory%" "%date%" "%taskUUID%"', 'Remove thumbs.db files'),
-    (160,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'createOrMoveDC_v0.0', '"%SIPDirectory%" dublincore.xml', 'Create Dublin Core template'),
-    (170,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'setDirectoryPermissionsForAppraisal_v0.0', '"%SIPDirectory%"', 'Set file permissions')
+    (0,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" %currentlyProcessingDirectory%', 'Move to the processing directory'),
+    (1,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" %failed%', 'Move to the failed directory'),
+    (100,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'assignSIPUUID_v0.0', '"%SIPDirectory%" "%jobCreatedDate%" "%taskUUID%"', 'Rename SIP directory with SIP UUID'),
+    (110,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '-R --preserve=mode,ownership,timestamps "%SIPDirectory%" "%sharedPath%SIPbackups/."', 'Create SIP backup'),
+    (120,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'verifySIPCompliance_v0.0', '"%SIPDirectory%"', 'Verify SIP compliance'),
+    (130,    1, NULL, NULL, NULL, TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'addFiles_v0.0',  '"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%taskUUID%" "ingestion" "%date%" "%SIPLogsDirectory%acquiredSIPDateTime.log"', 'Assign file UUIDs and checksums TODO'),
+    (140,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'verifyMD5_v0.0', '"%relativeLocation%"  "%checksumsNoExtention%" "%date%" "%taskUUID%"', 'Verify metadata directory checksums - TODO change from MD5_v0.0'),
+    (150,    1, NULL, NULL, NULL, TRUE, '%SIPLogsDirectory%removeUnneededFiles.log', '%SIPLogsDirectory%removeUnneededFiles.log', 'removeUnneededFiles_v0.0',  '"%relativeLocation%" "%fileUUID%" "%SIPLogsDirectory%" "%date%" "%taskUUID%"', 'Remove thumbs.db files'),
+    (160,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'createOrMoveDC_v0.0', '"%SIPDirectory%" dublincore.xml', 'Create Dublin Core template'),
+    (170,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'setDirectoryPermissionsForAppraisal_v0.0', '"%SIPDirectory%"', 'Set file permissions')
 
     ;
     
