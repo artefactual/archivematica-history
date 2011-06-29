@@ -1,0 +1,176 @@
+DROP TABLE IF EXISTS MicroServiceChains;
+CREATE TABLE MicroServiceChains (
+    pk              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,            
+    description     LONGTEXT
+);
+
+DROP TABLE IF EXISTS MicroServiceChainLinks;
+CREATE TABLE MicroServiceChainLinks (
+    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    currentTask                 INT UNSIGNED,
+    Foreign Key (currentTask) references TasksConfigs(pk),            
+    defaultNextChainLink        INT UNSIGNED DEFAULT 1,   
+    microServiceChain           INT UNSIGNED,
+    Foreign Key (microServiceChain) references MicroServiceChain(pk),
+    microServiceChainPosition   INT UNSIGNED,
+    UNIQUE KEY (microServiceChain, microServiceChainPosition)    
+);
+
+DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
+CREATE TABLE MicroServiceChainLinksExitCodes (
+    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    microServiceChainLink   INT UNSIGNED,
+    Foreign Key (microServiceChainLink) references MicroServiceChainLinks(pk),
+    exitCode    INT DEFAULT 0,
+    nextTask    INT UNSIGNED  
+)
+
+DROP TABLE IF EXISTS TaskTypes;
+CREATE TABLE TaskTypes (
+    pk                 INT UNSIGNED,
+    description        LONGTEXT
+);
+
+INSERT INTO TaskTypes
+    (pk, description) 
+    VALUES ( 0, 'one instance'),
+    ( 1, 'for each file');
+
+DROP TABLE IF EXISTS TasksConfigs;
+CREATE TABLE TasksConfigs (
+    pk                  INT UNSIGNED PRIMARY KEY,
+    requiresUserApproval    BOOLEAN DEFAULT FALSE,
+    taskType            INT UNSIGNED,
+    Foreign Key (taskType) references TaskTypes(pk),
+    filterFileEnd       VARCHAR(50),
+    filterFileStart     VARCHAR(50),
+    filterSubDir        VARCHAR(50),
+    requiresOutputLock      BOOLEAN,
+    standardOutputFile      VARCHAR(250),
+    standardError       VARCHAR(250),
+    execute             VARCHAR(50),
+    arguments           LONGTEXT,
+    description         LONGTEXT
+);
+
+-- START TRANSACTION; --
+-- ReceiveSIP  --
+INSERT INTO TasksConfigs (pk, requiresUserApproval, taskType, filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardError, execute, arguments, description) 
+    VALUES                
+    (0,      FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" %currentlyProcessingDirectory%', 'Move to the processing directory'),
+    (1,      FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" %failed%', 'Move to the failed directory'),
+    (100,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'assignSIPUUID_v0.0', '"%SIPDirectory%" "%jobCreatedDate%" "%taskUUID%"', 'Rename SIP directory with SIP UUID'),
+    (110,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '-R --preserve=mode,ownership,timestamps "%SIPDirectory%" "%sharedPath%SIPbackups/."', 'Create SIP backup'),
+    (120,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'verifySIPCompliance_v0.0', '"%SIPDirectory%"', 'Verify SIP compliance'),
+    (130,    FALSE, 1, NULL, NULL, NULL, TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'addFiles_v0.0',  '"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%taskUUID%" "ingestion" "%date%" "%SIPLogsDirectory%acquiredSIPDateTime.log"', 'Assign file UUIDs and checksums TODO'),
+    (140,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'verifyMD5_v0.0', '"%relativeLocation%"  "%checksumsNoExtention%" "%date%" "%taskUUID%"', 'Verify metadata directory checksums - TODO change from MD5_v0.0'),
+    (150,    FALSE, 1, NULL, NULL, NULL, TRUE, '%SIPLogsDirectory%removeUnneededFiles.log', '%SIPLogsDirectory%removeUnneededFiles.log', 'removeUnneededFiles_v0.0',  '"%relativeLocation%" "%fileUUID%" "%SIPLogsDirectory%" "%date%" "%taskUUID%"', 'Remove thumbs.db files'),
+    (160,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'createOrMoveDC_v0.0', '"%SIPDirectory%" dublincore.xml', 'Create Dublin Core template'),
+    (170,    FALSE, 0, NULL, NULL, NULL, FALSE, NULL, NULL, 'setDirectoryPermissionsForAppraisal_v0.0', '"%SIPDirectory%"', 'Set file permissions')
+
+    ;
+    
+INSERT INTO MicroServiceChains (description) VALUES 'Receive SIP to appraise SIP for submission.'
+set @MicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO MicroServiceChainsLinks (currentTask, microServiceChain, microServiceChainPosition) 
+    VALUES 'Receive SIP to appraise SIP for submission.'
+set @MicroServiceChainLink = LAST_INSERT_ID();
+DROP TABLE IF EXISTS MicroServiceChainLinks;
+CREATE TABLE MicroServiceChainLinks (
+    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    currentTask             INT UNSIGNED,
+    Foreign Key (currentTask) references TasksConfigs(pk),            
+    defaultNextTask         INT UNSIGNED DEFAULT 1,   
+    microServiceChain       INT UNSIGNED,
+    Foreign Key (microServiceChain) references MicroServiceChain(pk),
+);
+
+DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
+CREATE TABLE MicroServiceChainLinksExitCodes (
+    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    microServiceChainLink   INT UNSIGNED,
+    Foreign Key (microServiceChainLink) references MicroServiceChainLinks(pk),
+    exitCode    INT DEFAULT 0,
+    nextTask    INT UNSIGNED  
+)
+
+/*
+    * 8 Appraise SIP for submission
+    * 9 Scan for removed files post appraise SIP for submission
+    * 10 Place in quarantine
+    * 11 Remove from quarantine
+    * 12 Extract packages
+    * 13 Sanitize file and directory names
+    * 14 Scan for viruses
+    * 15 Characterize and extract metadata
+    * 16 Set file permissions
+    * 17 Appraise SIP for preservation
+    * 18 Scan for removed files post appraise SIP for preservation
+    * 19 Create DIP directory
+    * 20 Normalize
+    * 21 Set file permissions
+    * 22 Approve normalization
+    * 23 Check for submission documentation
+    * 24 Move Submission Documentation into objects directory
+    * 25 Assign file UUIDs and checksums to submission documentation
+    * 26 Extract packages in submission documentation
+    * 27 Sanitize file and directory names in submission documentation
+    * 28 Scan for viruses in submission documentation
+    * 29 Characterize and extract metadata in submission documentation
+    * 30 Normalize submission documentation
+    * 31 Remove files without PREMIS
+    * 32 Verify PREMIS checksums
+    * 33 Compile METS
+    * 34 Add Dublin Core to METS
+    * 35 Copy METS to DIP directory
+    * 36 Generate DIP
+    * 37 Prepare For Appraise DIP For Upload
+    * 38 Prepare AIP
+    * 39 Upload DIP
+    * 40 Store AIP
+    * 41 Verify BAG
+    * 42 Restructure BAG
+/*
+-- COMMIT; --
+
+
+
+
+DROP TABLE IF EXISTS Tasks;
+CREATE TABLE Tasks (
+    taskUUID        VARCHAR(50) PRIMARY KEY,
+    jobUUID         VARCHAR(50),
+    createdTime     TIMESTAMP(8) DEFAULT NOW(),
+    fileUUID        VARCHAR(50),
+    fileName        VARCHAR(100),
+    exec            VARCHAR(50),
+    arguments       VARCHAR(1000),
+    startTime       TIMESTAMP(8),
+    client          VARCHAR(50),
+    endTime         TIMESTAMP(8),
+    stdOut          LONGTEXT,
+    stdError        LONGTEXT,
+    exitCode        BIGINT
+);
+
+DROP TABLE IF EXISTS Jobs;
+CREATE TABLE Jobs (
+    jobUUID         VARCHAR(50) PRIMARY KEY,
+    jobType         VARCHAR(250),
+    createdTime     TIMESTAMP(8) DEFAULT NOW(),
+    createdTimeDec  decimal(24,10) NOT NULL DEFAULT 0,
+    directory       VARCHAR(250),
+    SIPUUID         VARCHAR(50),
+    currentStep     VARCHAR(50),
+    hidden          BOOLEAN NOT NULL DEFAULT 0
+);
+
+DROP TABLE IF EXISTS jobStepCompleted;
+CREATE TABLE jobStepCompleted (
+    pk              BIGINT PRIMARY KEY AUTO_INCREMENT,
+    jobUUID         VARCHAR(50),
+    completedTime   TIMESTAMP(8) DEFAULT NOW(),
+    step            VARCHAR(50)
+);
+
