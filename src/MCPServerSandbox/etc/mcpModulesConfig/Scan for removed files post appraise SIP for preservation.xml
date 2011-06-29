@@ -1,0 +1,89 @@
+<module>
+    
+    <requiresUserApproval>No</requiresUserApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
+    <notificationStarted></notificationStarted>
+    <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
+    <notificationCompletedWithErrors></notificationCompletedWithErrors>
+    
+    <directories>
+        <watchDirectory>%watchDirectoryPath%scanForRemovedFiles/postAppraiseSIPForPreservation/</watchDirectory>
+        <processingDirectory>%processingDirectory%</processingDirectory>
+        <successDirectory>%watchDirectoryPath%structureDirectory/createDIPDirectory/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed</failureDirectory>
+    </directories>
+
+    <commands>    
+        <exeCommand> 
+            <command>
+                <skip>No</skip>
+                <filterFileEnd>.xml</filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir>logs/fileMeta/</filterSubDir>
+                <requiresOutputLock>Yes</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut>%SIPLogsDirectory%removedFilesAppraiseSIPForPreservation.log</standardOut>
+                <standardError>%SIPLogsDirectory%removedFilesAppraiseSIPForPreservation.log</standardError>
+                <descriptionWhileExecuting></descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute>scanForRemovedFiles_v0.0</execute>
+                <arguments>"%SIPObjectsDirectory%" "%relativeLocation%" "Appraise SIP for Preservation" "%date%" "%taskUUID%"</arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>
+        </exeCommand>
+        
+        <verificationCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>            
+        </verificationCommand>
+        
+        <cleanupSuccessfulCommand>
+            <command>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <skip>Yes</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>            
+        </cleanupSuccessfulCommand>
+        
+        <cleanupUnsuccessfulCommand>
+            <command>
+                <skip>Yes</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>              
+        </cleanupUnsuccessfulCommand>                  
+    </commands>  
+</module>

@@ -1,0 +1,88 @@
+<module>
+    <requiresUserApproval>No</requiresUserApproval>
+    <descriptionForApproval>None Needed </descriptionForApproval>
+    <notificationStarted></notificationStarted>
+    <notificationCompletedWithoutErrors></notificationCompletedWithoutErrors>
+    <notificationCompletedWithErrors></notificationCompletedWithErrors>
+    
+    <directories>
+        <watchDirectory>%watchDirectoryPath%createPackage/bagit/</watchDirectory>
+        <processingDirectory>%processingDirectory%</processingDirectory>
+        <successDirectory>%watchDirectoryPath%storeAIP/</successDirectory>
+        <failureDirectory>%watchDirectoryPath%failed/</failureDirectory>
+    </directories>
+
+    <commands>    
+        <exeCommand> 
+        	<command>
+                <skip>No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute>bagit_v0.0</execute>
+                <arguments>create "%SIPDirectory%%SIPName%-%SIPUUID%.zip" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" --writer zip --payloadmanifestalgorithm "sha512"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
+            </command>
+        </exeCommand>
+        
+        <verificationCommand>
+        	<command>
+                <skip>No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute>setFilePermission_v0.0</execute>
+                <arguments>775 "%SIPDirectory%%SIPName%-%SIPUUID%.zip"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
+            </command>     
+        </verificationCommand>
+        
+        <cleanupSuccessfulCommand>
+            <command>
+                <skip>No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting>test</descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute>remove_v0.0</execute>
+                <arguments>-R "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%checksum.sha256"</arguments>
+                <executeOnEachFile>no</executeOnEachFile>
+            </command>            
+        </cleanupSuccessfulCommand>
+        
+        <cleanupUnsuccessfulCommand>
+            <command>
+                <skip>Yes/No</skip>
+                <filterFileEnd></filterFileEnd>
+                <filterFileStart></filterFileStart>
+                <filterSubDir></filterSubDir>
+                <requiresOutputLock>No</requiresOutputLock>
+                <standardIn></standardIn>
+                <standardOut></standardOut>
+                <standardError></standardError>
+                <descriptionWhileExecuting> </descriptionWhileExecuting>
+                <failureNotification> </failureNotification>
+                <execute> </execute>
+                <arguments> </arguments>
+                <executeOnEachFile> </executeOnEachFile>
+            </command>              
+        </cleanupUnsuccessfulCommand>                  
+    </commands>  
+</module>
