@@ -1,19 +1,11 @@
-DROP TABLE IF EXISTS MicroServiceChains;
-CREATE TABLE MicroServiceChains (
-    pk              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,            
-    description     LONGTEXT
-);
-
+-- START TRANSACTION; --
 DROP TABLE IF EXISTS MicroServiceChainLinks;
 CREATE TABLE MicroServiceChainLinks (
     pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     currentTask                 INT UNSIGNED,
     Foreign Key (currentTask) references TasksConfigs(pk),            
     defaultNextChainLink        INT UNSIGNED DEFAULT 1,   
-    microServiceChain           INT UNSIGNED,
-    Foreign Key (microServiceChain) references MicroServiceChain(pk),
-    microServiceChainPosition   INT UNSIGNED,
-    UNIQUE KEY (microServiceChain, microServiceChainPosition)    
+    Foreign Key (defaultNextChainLink) references MicroServiceChainLinks(pk)
 );
 
 DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
@@ -22,8 +14,17 @@ CREATE TABLE MicroServiceChainLinksExitCodes (
     microServiceChainLink   INT UNSIGNED,
     Foreign Key (microServiceChainLink) references MicroServiceChainLinks(pk),
     exitCode    INT DEFAULT 0,
-    nextTask    INT UNSIGNED  
-)
+    nextMicroServiceChainLink   INT UNSIGNED,
+    Foreign Key (nextMicroServiceChainLink) references MicroServiceChainLinks(pk)
+);
+
+DROP TABLE IF EXISTS MicroServiceChains;
+CREATE TABLE MicroServiceChains (
+    pk              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+    startingLink    INT UNSIGNED,
+    Foreign Key (startingLink) references MicroServiceChainLinks(pk),           
+    description     LONGTEXT
+);
 
 DROP TABLE IF EXISTS TaskTypes;
 CREATE TABLE TaskTypes (
@@ -35,7 +36,7 @@ INSERT INTO TaskTypes
     (pk, description) 
     VALUES ( 0, 'one instance'),
     ( 1, 'for each file'),
-    ( 2, 'requires user approval');
+    ( 2, 'get user choice to proceed with');
 
 DROP TABLE IF EXISTS TasksConfigs;
 CREATE TABLE TasksConfigs (
@@ -47,68 +48,356 @@ CREATE TABLE TasksConfigs (
     filterSubDir        VARCHAR(50),
     requiresOutputLock      BOOLEAN,
     standardOutputFile      VARCHAR(250),
-    standardError       VARCHAR(250),
+    standardErrorFile       VARCHAR(250),
     execute             VARCHAR(50),
     arguments           LONGTEXT,
     description         LONGTEXT
 );
 
--- START TRANSACTION; --
+DROP TABLE IF EXISTS MicroServiceChainChoice;
+CREATE TABLE MicroServiceChainChoice (
+    pk                      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    choiceAvailableAtLink   INT UNSIGNED,
+    Foreign Key (choiceAvailableAtLink) references MicroServiceChainLinks(pk),
+    chainAvailable          INT UNSIGNED,
+    Foreign Key (chainAvailable) references MicroServiceChains(pk)
+);
+
+-- COMMIT; --
 -- ReceiveSIP  --
-INSERT INTO TasksConfigs (pk, taskType, filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardError, execute, arguments, description) 
+INSERT INTO TasksConfigs (pk, taskType, filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments, description) 
     VALUES                
-    (0,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" %currentlyProcessingDirectory%', 'Move to the processing directory'),
-    (1,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" %failed%', 'Move to the failed directory'),
+    (0,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%currentlyProcessingDirectory%"', 'Move to the processing directory'),
+    (1,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%failed%"', 'Move to the failed directory'),
+    (2,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%appraiseSIPForSubmission/"', 'Move to the appraiseSIPForSubmission directory'),
+    (3,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%rejectedDirectory%"', 'Move to the rejected directory'),
     (100,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'assignSIPUUID_v0.0', '"%SIPDirectory%" "%jobCreatedDate%" "%taskUUID%"', 'Rename SIP directory with SIP UUID'),
     (110,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '-R --preserve=mode,ownership,timestamps "%SIPDirectory%" "%sharedPath%SIPbackups/."', 'Create SIP backup'),
     (120,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'verifySIPCompliance_v0.0', '"%SIPDirectory%"', 'Verify SIP compliance'),
-    (130,    1, NULL, NULL, NULL, TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'addFiles_v0.0',  '"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%taskUUID%" "ingestion" "%date%" "%SIPLogsDirectory%acquiredSIPDateTime.log"', 'Assign file UUIDs and checksums TODO'),
+    (130,    1, NULL, NULL, 'objects', TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'addFiles_v0.0',  '"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%taskUUID%" "ingestion" "%date%" "%SIPLogsDirectory%acquiredSIPDateTime.log"', 'Assign file UUIDs and checksums TODO'),
     (140,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'verifyMD5_v0.0', '"%relativeLocation%"  "%checksumsNoExtention%" "%date%" "%taskUUID%"', 'Verify metadata directory checksums - TODO change from MD5_v0.0'),
-    (150,    1, NULL, NULL, NULL, TRUE, '%SIPLogsDirectory%removeUnneededFiles.log', '%SIPLogsDirectory%removeUnneededFiles.log', 'removeUnneededFiles_v0.0',  '"%relativeLocation%" "%fileUUID%" "%SIPLogsDirectory%" "%date%" "%taskUUID%"', 'Remove thumbs.db files'),
+    (150,    1, NULL, NULL, 'objects', TRUE, '%SIPLogsDirectory%removeUnneededFiles.log', '%SIPLogsDirectory%removeUnneededFiles.log', 'removeUnneededFiles_v0.0',  '"%relativeLocation%" "%fileUUID%" "%SIPLogsDirectory%" "%date%" "%taskUUID%"', 'Remove thumbs.db files'),
     (160,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'createOrMoveDC_v0.0', '"%SIPDirectory%" dublincore.xml', 'Create Dublin Core template'),
-    (170,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'setDirectoryPermissionsForAppraisal_v0.0', '"%SIPDirectory%"', 'Set file permissions')
-
+    (170,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'setDirectoryPermissionsForAppraisal_v0.0', '"%SIPDirectory%"', 'Set file permissions'),
+    (200,    2, NULL, NULL, NULL, FALSE, NULL, NULL, '', 'Check the SIP to make sure it conforms to your Submission Agreement. Delete any files not accepted for ingest.', 'Appraise SIP for submission')
     ;
-    
-INSERT INTO MicroServiceChains (description) VALUES 'Receive SIP to appraise SIP for submission.'
+
+-- default next chain link --
+INSERT INTO MicroServiceChainLinks (currentTask) 
+    VALUES (1); 
+set @defaultNextChainLink = LAST_INSERT_ID();
+
+-- reject SIP --
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (3, @defaultNextChainLink); 
+set @NextMicroServiceChainLink = LAST_INSERT_ID();
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@NextMicroServiceChainLink,  'Move to rejected Directory.');
+set @MicroServiceChainMoveToRejected = LAST_INSERT_ID();
+
+
+--  Appraise SIP for Sumission --
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (200, @defaultNextChainLink); 
+set @NextMicroServiceChainLink = LAST_INSERT_ID();
+set @MicroServiceChainLinkAppraiseSIPForSubmission = @NextMicroServiceChainLink;
+
+    -- make rejected available --
+    INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+        VALUES                
+        (@MicroServiceChainLinkAppraiseSIPForSubmission, @MicroServiceChainMoveToRejected)
+    ;
+
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (170, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (160, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (150, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (140, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (130, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (120, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (110, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (100, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (0, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Receive SIP to appraise SIP for submission.');
 set @MicroServiceChain = LAST_INSERT_ID();
 
-INSERT INTO MicroServiceChainsLinks (currentTask, microServiceChain, microServiceChainPosition) 
-    VALUES 'Receive SIP to appraise SIP for submission.'
-set @MicroServiceChainLink = LAST_INSERT_ID();
-DROP TABLE IF EXISTS MicroServiceChainLinks;
-CREATE TABLE MicroServiceChainLinks (
-    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    currentTask             INT UNSIGNED,
-    Foreign Key (currentTask) references TasksConfigs(pk),            
-    defaultNextTask         INT UNSIGNED DEFAULT 1,   
-    microServiceChain       INT UNSIGNED,
-    Foreign Key (microServiceChain) references MicroServiceChain(pk),
-);
 
-DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
-CREATE TABLE MicroServiceChainLinksExitCodes (
-    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    microServiceChainLink   INT UNSIGNED,
-    Foreign Key (microServiceChainLink) references MicroServiceChainLinks(pk),
-    exitCode    INT DEFAULT 0,
-    nextTask    INT UNSIGNED  
-)
+
+
+INSERT INTO TasksConfigs (pk, taskType, filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments, description) 
+    VALUES                
+    (4,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%appraiseSIPForPreservation/"', 'Move to the appraiseSIPForPreservation directory'),
+    (5,      0, NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%quarantined/"', 'Move to quarantined'),
+    (210,    1, '.xml', NULL, 'logs/fileMeta/', FALSE, '%SIPLogsDirectory%removedFilesAppraiseSIPForSubmission.log', '%SIPLogsDirectory%removedFilesAppraiseSIPForSubmission.log', 'scanForRemovedFiles_v0.0', '"%SIPObjectsDirectory%" "%relativeLocation%" "Appraise SIP for Submission" "%date%" "%taskUUID%"', 'Scan for removed files post appraise SIP for submission'),
+    (220,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'setSIPQuarantine_v0.0', ' -R 700 "%relativeLocation%"', 'Set quarantine permissions on SIP'),
+    (230,    1, '.xml', NULL, 'logs/fileMeta/', FALSE, NULL, NULL, 'createXMLEventQuarantine_v0.0', '"%taskUUID%" "%jobCreatedDate%" "%relativeLocation%"', 'Create quarantined PREMIS events'),
+    (240,    2, NULL, NULL, NULL, FALSE, NULL, NULL, '', 'If desired, click Approve to remove the SIP from quarantine immediately. Otherwise, wait until the quarantine period has expired and the SIP will be removed automatically.', 'Remove from quarantine'),
+    (250,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'setFilePermission_v0.0', ' -R 750 "%relativeLocation%"', 'Set unquarantined file permissions on SIP'),
+    (260,    1, '.xml', NULL, 'logs/fileMeta/', FALSE, NULL, NULL, 'createXMLEventUnquarantine_v0.0', '"%taskUUID%" "%jobCreatedDate%" "%relativeLocation%"', 'Create unquarantined PREMIS events'),
+    (270,    1, NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%extraction.log', '%SIPLogsDirectory%extraction.log', 'transcoderExtractPackages_v0.0', '"%relativeLocation%" "%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%" "%taskUUID%" "%fileUUID%"', 'Extract packages'),
+    (280,    0, NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%" "%taskUUID%"', 'Sanitize file and directory names - objects'),
+    (290,    0, NULL, NULL, 'objects', FALSE, NULL, '%SIPDirectory%SIPnameCleanup.log', 'sanitizeSIPName_v0.0', '"%relativeDirectoryLocationNoTrailingSlash%" "%date%"', 'Sanitize file and directory names - SIP'),
+    (300,    1, NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%clamAVScan.txt', '%SIPLogsDirectory%clamAVScan.txt', 'archivematicaClamscan_v0.0', '"%relativeLocation%" "%taskUUID%" "%date%" "%fileUUID%" "%SIPLogsDirectory%"', 'Scan for viruses'),
+    (310,    1, NULL, NULL, 'objects', FALSE, NULL, NULL, 'FITS_v0.0', '"%relativeLocation%" "%SIPLogsDirectory%fileMeta/%fileUUID%.xml" "%date%" "%taskUUID%"', 'Characterize and extract metadata'),
+    (400,    2, NULL, NULL, NULL, FALSE, NULL, NULL, '_v0.0', '"%SIPDirectory%"', 'Appraise SIP for preservation')    
+    ;
+    
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (240, @defaultNextChainLink); 
+set @NextMicroServiceChainLink = LAST_INSERT_ID();
+set @MicroServiceChainLinkRemoveFromQuarantine = @NextMicroServiceChainLink;
+    -- make rejected available --
+    INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+        VALUES                
+        (@MicroServiceChainLinkRemoveFromQuarantine, @MicroServiceChainMoveToRejected)
+    ;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (230, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (220, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (210, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;  
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Appraise SIP for submission to place in quarantine.');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+    INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+        VALUES                
+        (@MicroServiceChainLinkAppraiseSIPForSubmission, @MicroServiceChain)
+    ;  
+
+
+
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (400, @defaultNextChainLink); 
+set @NextMicroServiceChainLink = LAST_INSERT_ID();
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (310, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (310, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (300, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (290, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (280, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (270, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (260, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (250, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink; 
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (4, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;    
+    
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Remove from quarantine to appraise SIP for preservation.');
+set @MicroServiceChain = LAST_INSERT_ID();    
+
+    
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (400, @defaultNextChainLink); 
+set @NextMicroServiceChainLink = LAST_INSERT_ID();
+set @MicroServiceChainLinkAppraiseSIPForPreservation = @NextMicroServiceChainLink;
+
+    -- make rejected available --
+    INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+        VALUES                
+        (@MicroServiceChainLinkAppraiseSIPForPreservation, @MicroServiceChainMoveToRejected)
+    ;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (310, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (310, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (300, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (290, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (280, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (270, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (210, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;  
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (4, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;       
+    
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Appraise SIP for submission to appraise SIP for preservation. Skipping quarantine.');
+set @MicroServiceChain = LAST_INSERT_ID();    
+
+
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (200, @MicroServiceChain)
+;
+
+INSERT INTO TasksConfigs (pk, taskType, filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments, description) 
+    VALUES                
+    (410,    1, '.xml', NULL, 'logs/fileMeta/', FALSE, '%SIPLogsDirectory%removedFilesAppraiseSIPForPreservation.log', '%SIPLogsDirectory%removedFilesAppraiseSIPForPreservation.log', 'scanForRemovedFiles_v0.0', '"%SIPObjectsDirectory%" "%relativeLocation%" "Appraise SIP for Preservation" "%date%" "%taskUUID%"', 'Scan for removed files post appraise SIP for preservation'),
+    (420,    0, NULL, NULL, NULL, FALSE, NULL, NULL, 'createDirectory_v0.0', '-m 770 "%SIPDirectory%DIP/" "%SIPDirectory%DIP/objects/"', 'Create DIP directory'),
+    (430,    1, NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'transcoderNormalizeAccess_v0.0', '--inputFile "%relativeLocation%" --commandClassifications "access" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --excludeDirectory "%SIPObjectsDirectory%submissionDocumentation/" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%" --accessDirectory "%SIPDirectory%DIP/objects/"', 'Normalize access'),
+    (440,    1, NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'transcoderNormalizePreservation_v0.0', '--inputFile "%relativeLocation%" --commandClassifications "preservation" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%"', 'Normalize preservation')
+    ;
+
+
+
 
 /*
-    * 8 Appraise SIP for submission
-    * 9 Scan for removed files post appraise SIP for submission
-    * 10 Place in quarantine
-    * 11 Remove from quarantine
-    * 12 Extract packages
-    * 13 Sanitize file and directory names
-    * 14 Scan for viruses
-    * 15 Characterize and extract metadata
-    * 16 Set file permissions
-    * 17 Appraise SIP for preservation
-    * 18 Scan for removed files post appraise SIP for preservation
-    * 19 Create DIP directory
-    * 20 Normalize
     * 21 Set file permissions
     * 22 Approve normalization
     * 23 Check for submission documentation
@@ -131,8 +420,8 @@ CREATE TABLE MicroServiceChainLinksExitCodes (
     * 40 Store AIP
     * 41 Verify BAG
     * 42 Restructure BAG
-/*
--- COMMIT; --
+*/
+
 
 
 
@@ -174,3 +463,53 @@ CREATE TABLE jobStepCompleted (
     step            VARCHAR(50)
 );
 
+/*
+SELECT * FROM MicroServiceChains MSC
+RIGHT OUTER JOIN MicroServiceChainLinks CL on MSC.startingLink = CL.pk
+LEFT OUTER JOIN MicroServiceChainLinksExitCodes CLEC on CL.pk = CLEC.microServiceChainLink
+RIGHT OUTER JOIN TasksConfigs TC on TC.pk = currentTask
+LEFT OUTER JOIN TaskTypes TT on TC.taskType = TT.pk
+LEFT OUTER JOIN MicroServiceChainChoice MSCC on MSCC.chainAvailable = MSC.pk
+LEFT OUTER JOIN MicroServiceChainChoice MSCC2 on MSCC2.choiceAvailableAtLink = CL.pk
+;
+
+
+
+
+DELIMITER $$
+    CREATE FUNCTION curdemo()
+    (@pk INT UNSIGNED)
+    BEGIN
+        DECLARE done INT DEFAULT 0;
+        DECLARE a CHAR(16);
+        DECLARE b,c INT;
+        DECLARE step,chain  INT DEFAULT 1;
+        DECLARE cur1 CURSOR FOR SELECT 
+            startingLink, MSC.description, 
+            currentTask, defaultNextChainLink, 
+            microServiceChainLink, exitCode, nextMicroServiceChainLink, 
+            filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments, TC.description, 
+            TT.description
+            FROM MicroServiceChains MSC
+            RIGHT OUTER JOIN MicroServiceChainLinks CL on MSC.startingLink = CL.pk
+            LEFT OUTER JOIN MicroServiceChainLinksExitCodes CLEC on CL.pk = CLEC.microServiceChainLink
+            LEFT OUTER JOIN TasksConfigs TC on TC.pk = currentTask
+            LEFT OUTER JOIN TaskTypes TT on TC.taskType = TT.pk;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+        read_loop: LOOP
+            FETCH cur1 INTO a, b;
+            IF done THEN
+              LEAVE read_loop;
+            END IF;
+
+            IF b < c THEN
+              INSERT INTO test.t3 VALUES (a,b);
+            ELSE
+              INSERT INTO test.t3 VALUES (a,c);
+            END IF;
+        END LOOP;
+        CLOSE cur1;
+    END;
+DELIMITER ;
+*/
