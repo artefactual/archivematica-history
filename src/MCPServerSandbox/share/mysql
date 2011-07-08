@@ -1,3 +1,29 @@
+/*
+#!/usr/bin/python
+
+# This file is part of Archivematica.
+#
+# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+# @package Archivematica
+# @subpackage MCPServer
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+*/
+
 -- clear && sudo mysql --execute="source ./mysql" MCP --
 
 DROP TABLE IF EXISTS Tasks;
@@ -99,9 +125,10 @@ CREATE TABLE StandardTasksConfigs (
     filterFileEnd       VARCHAR(50),
     filterFileStart     VARCHAR(50),
     filterSubDir        VARCHAR(50),
-    requiresOutputLock      BOOLEAN,
-    standardOutputFile      VARCHAR(250),
-    standardErrorFile       VARCHAR(250),
+    requiresOutputLock  BOOLEAN,
+    reloadFileList      BOOLEAN DEFAULT TRUE,
+    standardOutputFile  VARCHAR(250),
+    standardErrorFile   VARCHAR(250),
     execute             VARCHAR(50),
     arguments           LONGTEXT
 );
@@ -114,6 +141,16 @@ CREATE TABLE MicroServiceChainChoice (
     chainAvailable          INT UNSIGNED,
     Foreign Key (chainAvailable) references MicroServiceChains(pk)
 );
+
+DROP TABLE IF EXISTS WatchedDirectories;
+CREATE TABLE WatchedDirectories (
+    pk                      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    watchedDirectoryPath    LONGTEXT,
+    chain                   INT UNSIGNED,
+    Foreign Key (chain) references MicroServiceChains(pk),
+    onlyActOnDirectories    BOOLEAN DEFAULT TRUE
+);
+
 
 -- Move To Failed Directory --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -875,3 +912,21 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+-- move to processing directory --
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (@moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Receive SIP');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+
+
+INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
+    VALUES ('%watchDirectoryPath%receiveSIP', @MicroServiceChain)
+
