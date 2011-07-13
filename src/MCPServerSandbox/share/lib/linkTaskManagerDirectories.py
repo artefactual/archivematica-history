@@ -21,3 +21,70 @@
 # @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+
+from linkTaskManager import linkTaskManager
+from taskStandard import taskStandard
+import databaseInterface
+
+import os
+
+class linkTaskManagerDirectories:
+    def __init__(self, jobChainLink, pk, unit):
+        self.tasks = []
+        self.pk = pk
+        self.jobChainLink = jobChainLink
+        sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            #pk = row[0] 
+            filterFileEnd = row[1]
+            filterFileStart = row[2]
+            filterSubDir = row[3]
+            self.requiresOutputLock = row[4]
+            reloadFileList = row[5]
+            standardOutputFile = row[6]
+            standardErrorFile = row[7]
+            execute = row[8]
+            arguments = row[9]
+            row = c.fetchone()
+        sqlLock.release()
+        
+        #if reloadFileList:
+        #    unit.reloadFileList()
+        
+        #        "%taskUUID%": task.UUID.__str__(), \
+        
+        if filterSubDir:
+            directory = os.path.join(unit.currentPath, filterSubDir)
+        else:
+            directory = unit.currentPath
+        commandReplacementDic = unit.getReplacementDic(directory)
+                #for each key replace all instances of the key in the command string
+        for key in commandReplacementDic.iterkeys():
+            value = commandReplacementDic[key].replace("\"", ("\\\""))
+            if execute:
+                execute = execute.replace(key, value)
+            if arguments:
+                arguments = arguments.replace(key, value)
+            if standardOutputFile:
+                standardOutputFile = standardOutputFile.replace(key, value)
+            if standardErrorFile:
+                standardErrorFile = standardErrorFile.replace(key, value)
+        
+        self.task = taskStandard(self, execute, arguments, self.taskAssignedCallBackFunction, self.taskCompletedCallBackFunction, standardOutputFile, standardErrorFile)
+        
+        #logTaskCreated(task, commandReplacementDic)
+    
+    def taskCompletedCallBackFunction(self, task):
+        print task
+        logTaskCompleted()
+        self.jobChainLink.jobChain.LinkCompleted(task.exitCode);
+        
+    def taskAssignedCallBackFunction(self, task):
+        logTaskAssigned()
+        print task
+        
+        
+        

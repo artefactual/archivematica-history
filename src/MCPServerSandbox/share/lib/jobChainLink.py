@@ -21,13 +21,54 @@
 # @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+import sys
+import databaseInterface
+import uuid
+from linkTaskManagerDirectories import linkTaskManagerDirectories
+
+#Constants
+constOneTask = 0
+constTaskForEachFile = 1
+constSelectPathTask = 2 
 
 class jobChainLink:
-    def __init__(jobChainLinkPK, unit):
-        jobChainLinkPK(unit)
+    def __init__(self, jobChain, jobChainLinkPK, unit):
+        self.uuid = uuid.uuid4().__str__()
+        self.jobChain = jobChain
+        self.pk = jobChainLinkPK
+        self.unit = unit
+        sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description FROM MicroServiceChainLinks JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = """ + jobChainLinkPK.__str__() 
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            self.currentTask = row[0]
+            self.defaultNextChainLink = row[1]
+            taskType = row[2]
+            taskTypePKReference = row[3]
+            self.description = row[4]
+            row = c.fetchone()
+        sqlLock.release()
+        
+        if self.createTasks(taskType, taskTypePKReference) == None:
+            self.getNextChainLinkPK(None)
+            #can't have none represent end of chain, and no tasks to process.
+            #could return negative?
     
+    def createTasks(self, taskType, taskTypePKReference):
+        if taskType == constOneTask:
+            print "it's a rabbit"
+            linkTaskManagerDirectories(self, taskTypePKReference, self.unit)
+            
+        elif taskType == constTaskForEachFile:
+            print "it's a cat"
+        elif taskType == constSelectPathTask:
+            print "it's a dog"
+        else:
+            print sys.stderr, "unsupported task type: ", taskType
     
-    def createTasks(self):
-        print "may not need externally?"
+    def getNextChainLinkPK(self, ret):
+        if ret != None:
+            print "todo find all exit code links"
     
     

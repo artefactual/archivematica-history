@@ -39,6 +39,9 @@
 #clear; sudo -u archivematica /usr/bin/twistd --rundir=/home/joseph/archivematica/src/MCPServerSandbox/share/lib -l /tmp/mcpLog.html  --pidfile /tmp/mcppid.txt -ny /home/joseph/archivematica/src/MCPServerSandbox/share/lib/main.py > /tmp/upstart2.html 2>&1; ps aux | grep 333
 import databaseInterface
 import watchDirectory
+from jobChain import jobChain
+from unitSIP import unitSIP
+from unitFile import unitFile
 from pyinotify import ThreadedNotifier
 
 import signal
@@ -148,7 +151,19 @@ class archivematicaXMLrpc(xmlrpc.XMLRPC):
 
 def createUnitAndJobChain(path, config):
     print path, config
-
+    unit = None
+    if os.path.isdir(path):
+        UUID = uuid.uuid4()
+        unit = unitSIP(path, uuid)
+    elif os.path.isfile(path):
+        return
+        UUID = uuid.uuid4()
+        unit = unitFile(path, uuid)
+    else:
+        return
+    jobChain(unit, config[1])
+    
+    
 
 def watchDirectories():
     sql = """SELECT watchedDirectoryPath, chain, onlyActOnDirectories FROM WatchedDirectories"""

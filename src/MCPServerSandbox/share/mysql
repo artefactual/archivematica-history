@@ -63,6 +63,13 @@ CREATE TABLE jobStepCompleted (
     step            VARCHAR(50)
 );
 
+DROP TABLE IF EXISTS SIP;
+CREATE TABLE SIP (
+    pk              BIGINT PRIMARY KEY AUTO_INCREMENT,
+    sipUUID         VARCHAR(50),
+    createdTime     TIMESTAMP(8) DEFAULT NOW(),
+    currentPath     LONGTEXT
+);
 
 
 

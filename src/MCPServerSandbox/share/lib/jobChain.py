@@ -22,6 +22,20 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+import databaseInterface
+from jobChainLink import jobChainLink
+#Holds:
+#-UNIT
+#-Job chain link
+#-Job chain description
+#
+#potentialToHold/getFromDB
+#-previous chain links
 class jobChain:
-    def __init__(unit, jobChain):
-        jobChainLink = jobChain.startingLink
+    def __init__(self, unit, startingLink):
+        self.currentLink = jobChainLink(self, startingLink, unit)
+        
+    
+    def nextChainLink(self, pk):
+        print "todo"
+    

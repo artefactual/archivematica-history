@@ -22,3 +22,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+from unit import unit
+
+class unitFile(unit):
+    """For objects representing a File"""

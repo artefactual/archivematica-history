@@ -23,6 +23,10 @@
 # @version svn: $Id$
 
 class unit:
+    def __init__(self, currentPath, uuid):
+        self.currentPath = currentPath.__str__()
+        self.UUID = uuid.uuid4().__str__()
+        
     #Used to write to file
     #@output - the text to append to the file
     #@fileName - The name of the file to create, or append to.
