@@ -21,3 +21,32 @@
 # @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+
+import databaseInterface
+from linkTaskManager import linkTaskManager
+from taskStandard import taskStandard
+
+class linkTaskManagerDirectory:
+    def __init__(self, pk, unit):
+        self.tasks = []
+        self.pk = pk
+        sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            #pk = row[0] 
+            filterFileEnd = row[1]
+            filterFileStart = row[2]
+            filterSubDir = row[3]
+            self.requiresOutputLock = row[4]
+            reloadFileList = row[5]
+            standardOutputFile = row[6]
+            standardErrorFile = row[7]
+            execute = row[8]
+            arguments = row[9]
+            row = c.fetchone()
+        sqlLock.release()
+        
+        if reloadFileList:
+            unit.reloadFileList()
