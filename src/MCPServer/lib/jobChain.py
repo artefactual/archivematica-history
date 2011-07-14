@@ -32,8 +32,20 @@ from jobChainLink import jobChainLink
 #potentialToHold/getFromDB
 #-previous chain links
 class jobChain:
-    def __init__(self, unit, startingLink):
-        self.currentLink = jobChainLink(self, startingLink, unit, self.nextChainLink)
+    def __init__(self, unit, chainPK):
+        self.unit = unit
+        self.pk = chainPK
+        sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__() 
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            #self.pk = row[0]
+            self.startingChainLink = row[1]
+            self.description = row[2]           
+            row = c.fetchone()
+        sqlLock.release()
+        self.currentLink = jobChainLink(self, self.startingChainLink, unit, self.nextChainLink)
         
     
     def nextChainLink(self, pk):
