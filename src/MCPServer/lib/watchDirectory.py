@@ -30,8 +30,8 @@ from pyinotify import ThreadedNotifier
 from pyinotify import EventsCodes
 from pyinotify import ProcessEvent
 
-from main import config
-from main import movingDirectoryLock
+from archivematicaMCP import config
+from archivematicaMCP import movingDirectoryLock
 
 #depends on OS whether you need one line or other. I think Events.Codes is older.
 mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events

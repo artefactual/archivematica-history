@@ -28,8 +28,6 @@ sudo ln -s "${svnDir}src/sanitizeNames/lib/" "/usr/lib/sanitizeNames"
 sudo ln -s "${svnDir}src/dashboard/src/" "${share}/dashboard"
 sudo ln -s "${svnDir}src/createDublinCore/lib/" "/usr/lib/createDublinCore"
 
-sudo ln "${svnDir}src/MCPServer/runArchivematicaMCPServer.sh" "/usr/bin/"
-sudo ln "${svnDir}src/MCPClient/runArchivematicaMCPClient.sh" "/usr/bin/"
 sudo ln "${svnDir}src/createDublinCore/bin/createDublinCore" "/usr/bin/"
 sudo ln "${svnDir}src/SIPCreationTools/bin/archivematicaCreateMD5" "/usr/bin/"
 sudo ln "${svnDir}src/SIPCreationTools/bin/archivematicaRestructureForCompliance" "/usr/bin/"

@@ -23,7 +23,7 @@
 # @version svn: $Id$
 
 from unit import unit
-import main
+import archivematicaMCP
 import os
 
 
@@ -41,8 +41,8 @@ class unitSIP(unit):
         #Pre do some variables, that other variables rely on, because dictionarys don't maintain order
         SIPUUID = self.UUID
         SIPName = os.path.basename(self.currentPath).replace("-" + SIPUUID, "")
-        SIPDirectory = self.currentPath.replace(main.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
-        relativeDirectoryLocation = target.replace(main.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
+        SIPDirectory = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
+        relativeDirectoryLocation = target.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
       
         
         ret = { \
@@ -50,9 +50,9 @@ class unitSIP(unit):
         "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
         "%SIPDirectory%": SIPDirectory, \
         "%relativeLocation%": target.replace(self.currentPath, relativeDirectoryLocation, 1), \
-        "%processingDirectory%": main.config.get('MCPServer', "processingDirectory"), \
-        "%checksumsNoExtention%":main.config.get('MCPServer', "checksumsNoExtention"), \
-        "%AIPsStore%":main.config.get('MCPServer', "AIPsStore"), \
+        "%processingDirectory%": archivematicaMCP.config.get('MCPServer', "processingDirectory"), \
+        "%checksumsNoExtention%":archivematicaMCP.config.get('MCPServer', "checksumsNoExtention"), \
+        "%AIPsStore%":archivematicaMCP.config.get('MCPServer', "AIPsStore"), \
         "%SIPUUID%":SIPUUID, \
         "%SIPName%":SIPName \
         }
