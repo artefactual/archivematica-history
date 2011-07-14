@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # This file is part of Archivematica.
 #
 # Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
@@ -16,19 +18,6 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage Ingest
+# @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-
-databaseName="MCP"
-username="demo"
-password="demo"
-sudo mysqladmin create "$databaseName"
-#sudo mysql "$databaseName"
-sudo mysql --execute="source ./preMCPLogging.sql" "$databaseName"
-sudo mysql --execute="CREATE USER '${username}'@'localhost' IDENTIFIED BY '${password}'"
-sudo mysql --execute="GRANT SELECT, UPDATE, INSERT ON ${databaseName}.* TO '${username}'@'localhost'"
-
-
-#to delete the database and all of it's contents
-# sudo mysqladmin drop MCP

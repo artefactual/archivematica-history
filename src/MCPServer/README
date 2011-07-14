@@ -1,6 +1,0 @@
-This folder contains the archivematica Master Control Program(MCP). 
-
-It keeps track of the various SIPs and their states.
-Gets commands from MCPclients.
-Issues work orders to clients.
-
