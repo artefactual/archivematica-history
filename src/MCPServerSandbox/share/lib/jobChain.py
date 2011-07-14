@@ -33,7 +33,7 @@ from jobChainLink import jobChainLink
 #-previous chain links
 class jobChain:
     def __init__(self, unit, startingLink):
-        self.currentLink = jobChainLink(self, startingLink, unit)
+        self.currentLink = jobChainLink(self, startingLink, unit, self.nextChainLink)
         
     
     def nextChainLink(self, pk):

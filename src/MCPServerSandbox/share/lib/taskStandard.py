@@ -22,6 +22,8 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+import uuid
+
 # ~Class Task~
 #Tasks are what are assigned to clients.
 #They have a zero-many(tasks) TO one(job) relationship
