@@ -1,0 +1,22 @@
+
+
+thoughts...
+approvals are actual tasks, not between job steps.
+
+
+class job steps
+{
+init
+
+pre task - local stuff ??????
+
+create tasks
+throws invalid, tasks should be created.
+
+taskReply(taskID, reply)
+#returns boolean task completed
+
+}
+
+
+replacement dic includes MicroServiceChainLinks
