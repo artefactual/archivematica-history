@@ -32,11 +32,12 @@ constTaskForEachFile = 1
 constSelectPathTask = 2 
 
 class jobChainLink:
-    def __init__(self, jobChain, jobChainLinkPK, unit):
+    def __init__(self, jobChain, jobChainLinkPK, unit, completedCallBackFunction):
         self.uuid = uuid.uuid4().__str__()
         self.jobChain = jobChain
         self.pk = jobChainLinkPK
         self.unit = unit
+        self.completedCallBackFunction = completedCallBackFunction
         sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description FROM MicroServiceChainLinks JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = """ + jobChainLinkPK.__str__() 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
@@ -58,7 +59,7 @@ class jobChainLink:
     def createTasks(self, taskType, taskTypePKReference):
         if taskType == constOneTask:
             print "it's a rabbit"
-            linkTaskManagerDirectories(self, taskTypePKReference, self.unit)
+            linkTaskManagerDirectories(self, taskTypePKReference, self.unit, self.linkProcessingComplete)
             
         elif taskType == constTaskForEachFile:
             print "it's a cat"
@@ -70,5 +71,8 @@ class jobChainLink:
     def getNextChainLinkPK(self, ret):
         if ret != None:
             print "todo find all exit code links"
+            
+    def linkProcessingComplete(self, code):
+        self.jobChain.completedCallBackFunction(self.getNextChainLinkPK(ret))
     
     
