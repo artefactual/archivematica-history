@@ -23,6 +23,7 @@
 # @version svn: $Id$
 
 import databaseInterface
+import threading
 from jobChainLink import jobChainLink
 #Holds:
 #-UNIT
@@ -45,9 +46,14 @@ class jobChain:
             self.description = row[2]           
             row = c.fetchone()
         sqlLock.release()
-        self.currentLink = jobChainLink(self, self.startingChainLink, unit, self.nextChainLink)
+        self.currentLink = jobChainLink(self, self.startingChainLink, unit)
         
     
     def nextChainLink(self, pk):
-        print "todo"
+        
+        print "got to do: ", pk
+        t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk, ))
+        t.start()
     
+    def nextChainLinkThreaded(self, pk):
+        self.currentLink = jobChainLink(self, pk, self.unit)

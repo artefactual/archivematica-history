@@ -36,7 +36,7 @@
 
 
 
-#clear; sudo -u archivematica /usr/bin/twistd --rundir=/home/joseph/archivematica/src/MCPServerSandbox/share/lib -l /tmp/mcpLog.html  --pidfile /tmp/mcppid.txt -ny /home/joseph/archivematica/src/MCPServerSandbox/share/lib/main.py > /tmp/upstart2.html 2>&1; ps aux | grep 333
+#clear; sudo -u archivematica /usr/bin/twistd --rundir=/home/joseph/archivematica/src/MCPServerSandbox/share/lib -l /tmp/mcpLog.html  --pidfile /tmp/mcppid.txt -ny /home/joseph/archivematica/src/MCPServerSandbox/share/lib/archivematicaMCP.py > /tmp/upstart2.html 2>&1; ps aux | grep 333
 import databaseInterface
 import watchDirectory
 from jobChain import jobChain
@@ -89,6 +89,8 @@ movingDirectoryLock = threading.Lock()
 factory = twistedProtocol.ServerFactory()
 jobsLock = threading.Lock()
 watchedDirectories = []
+limitGearmanConnectionsSemaphore = threading.Semaphore(value=config.getint('Protocol', "limitGearmanConnections"))
+
 
 class archivematicaXMLrpc(xmlrpc.XMLRPC):
     # Used by RPC
@@ -378,4 +380,6 @@ class archivematicaServices(service.Service):
 
 #configs = loadConfigs()
 #directoryWatchList = loadDirectoryWatchLlist(configs)
-archivematicaMCPServerListen()
+#archivematicaMCPServerListen()
+if __name__ == '__main__':
+    watchDirectories()

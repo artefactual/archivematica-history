@@ -23,6 +23,12 @@
 # @version svn: $Id$
 
 import uuid
+import gearman
+import cPickle
+import datetime
+import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from writeToFile import writeToFile
 
 # ~Class Task~
 #Tasks are what are assigned to clients.
@@ -33,15 +39,40 @@ import uuid
 class taskStandard():
     """A task is an instance of a command, operating on an entire directory, or a single file."""
     
-    def __init__(self, link, execute, arguments, taskAssignedCallBackFunction, taskCompletedCallBackFunction, standardOutputFile, standardErrorFile):
+    def __init__(self, linkTaskManager, execute, arguments, standardOutputFile, standardErrorFile, outputLock=None):
         self.UUID = uuid.uuid4().__str__()
-        self.link = link
+        self.linkTaskManager = linkTaskManager
         self.execute = execute
         self.arguments = arguments
-        self.taskAssignedCallBackFunction = taskAssignedCallBackFunction
-        self.taskCompletedCallBackFunction = taskCompletedCallBackFunction
         self.standardOutputFile = standardOutputFile
         self.standardErrorFile = standardErrorFile
+        self.outputLock = outputLock
+        print "init done"
+        self.performTask()
+        
+    def performTask(self):
+        from archivematicaMCP import limitGearmanConnectionsSemaphore
+        limitGearmanConnectionsSemaphore.acquire()
+        gm_client = gearman.GearmanClient(['localhost:4730', 'otherhost:4730'])
+        data = {"createdDate" : datetime.datetime.now().__str__()}
+        data["arguments"] = self.arguments
+        print '"'+self.execute+'"', data
+        completed_job_request = gm_client.submit_job(self.execute.lower(), cPickle.dumps(data), self.UUID)
+        limitGearmanConnectionsSemaphore.release()
+        self.check_request_status(completed_job_request)
+    
+    def check_request_status(self, job_request):
+        if job_request.complete:
+            self.results = cPickle.loads(job_request.result)
+            print "Task %s finished!  Result: %s - %s" % (job_request.job.unique, job_request.state, self.results)
+            self.writeOutputs()
+            self.linkTaskManager.taskCompletedCallBackFunction(self)
+            
+        elif job_request.timed_out:
+            print "Task %s timed out!" % job_request.unique
+        elif job_request.state == JOB_UNKNOWN:
+            print "Task %s connection failed!" % job_request.unique
+        
 
 
    
@@ -70,66 +101,26 @@ class taskStandard():
     #Used to write the output of the commands to the specified files
     def writeOutputs(self):
         """Used to write the output of the commands to the specified files"""
-        requiresOutputLock = self.command.requiresOutputLock.lower() == "yes"
         
-        if requiresOutputLock:
-            self.job.writeLock.acquire()
         
-        standardOut = self.writeOutputsValidateOutputFile(self.standardOut)
-        standardError = self.writeOutputsValidateOutputFile(self.standardError)
+        if self.outputLock != None:
+            outputLock.acquire()
+        
+        standardOut = self.writeOutputsValidateOutputFile(self.standardOutputFile)
+        standardError = self.writeOutputsValidateOutputFile(self.standardErrorFile)
          
         #output , filename
-        a = writeToFile(self.stdOut, standardOut)
-        b = writeToFile(self.stdError, standardError)
+        a = writeToFile(self.results["stdOut"], standardOut)
+        b = writeToFile(self.results["stdError"], standardError)
 
-        if requiresOutputLock:
-            self.job.writeLock.release()
+        if self.outputLock != None:
+            outputLock.release()
             
         if a:
-            self.stdError = "Failed to write to file{" + self.standardOut + "}\r\n" + self.stdError
+            self.stdError = "Failed to write to file{" + standardOut + "}\r\n" + self.results["stdOut"]
         if b:
-            self.stdError = "Failed to write to file{" + self.standardError + "}\r\n" + self.stdError
-        if  self.exitCode:
-            return self.exitCode
+            self.stdError = "Failed to write to file{" + standardError + "}\r\n" + self.results["stdError"]
+        if  self.results['exitCode']:
+            return self.results['exitCode']
         return a + b 
 
-    #Called when Client reports this task is done.
-    #Called from archivematicaMCPServerProtocol class
-    #Pseudo code
-    ##remove from tasks being processed.
-    ##Determine if the Job step is done by seeing if is the last task to execute for that job.
-    ##If the job step is done; let the job know.
-    #@returned - The exit code of the task
-    def completed(self, returned):
-        """When a task is completed, check to see if it was the last task for the job to be completed (job completed)."""
-        self.exitCode = returned
-        returned = self.writeOutputs()
-        tasksLock.acquire()
-        jobStepDone = True
-        if self in tasksBeingProcessed:
-            tasksBeingProcessed.remove(self)
-        else:
-            print "This shouldn't happen"
-            print "Task:", self.UUID
-            print self
-            for task in tasksBeingProcessed:
-                print task, task.UUID
-      
-        for task in tasksQueue:
-            if task.job.UUID == self.job.UUID:
-                jobStepDone = False
-                break
-        if jobStepDone:
-            for task in tasksBeingProcessed:
-                if task.job.UUID == self.job.UUID:
-                    jobStepDone = False
-                    break
-        self.job.combinedRet += math.fabs(returned)
-        logTaskCompleted(self, returned)
-        tasksLock.release() 
-        
-        if jobStepDone:
-            print "Job step done: " + self.job.step
-            self.job.jobStepCompleted()
-        else:
-            print "More tasks to be processed for Job"

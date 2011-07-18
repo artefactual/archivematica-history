@@ -29,11 +29,10 @@ import databaseInterface
 import os
 
 class linkTaskManagerDirectories:
-    def __init__(self, jobChainLink, pk, unit, completedCallBackFunction):
+    def __init__(self, jobChainLink, pk, unit):
         self.tasks = []
         self.pk = pk
         self.jobChainLink = jobChainLink
-        self.completedCallBackFunction = completedCallBackFunction
         sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
@@ -74,15 +73,15 @@ class linkTaskManagerDirectories:
             if standardErrorFile:
                 standardErrorFile = standardErrorFile.replace(key, value)
         
-        self.task = taskStandard(self, execute, arguments, self.taskAssignedCallBackFunction, self.taskCompletedCallBackFunction, standardOutputFile, standardErrorFile)
+        self.task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile)
         
         #logTaskCreated(task, commandReplacementDic)
     
     def taskCompletedCallBackFunction(self, task):
         print task
-        logTaskCompleted()
+        #logTaskCompleted()
         if True:
-            self.jobChainLink.completedCallBackFunction(task.exitCode)
+            self.jobChainLink.linkProcessingComplete(task.results["exitCode"])
         
     def taskAssignedCallBackFunction(self, task):
         logTaskAssigned()
