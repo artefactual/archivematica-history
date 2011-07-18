@@ -27,26 +27,3 @@ class unit:
         self.currentPath = currentPath.__str__()
         self.UUID = uuid.uuid4().__str__()
         
-    #Used to write to file
-    #@output - the text to append to the file
-    #@fileName - The name of the file to create, or append to.
-    #@returns - 0 if ok, non zero if error occured.
-    def writeToFile(output, fileName):
-        if fileName and output:
-            print "writing to: " + fileName
-            if fileName.startswith("<^Not allowed to write to file^> "):
-                return -1
-            try:
-                f = open(fileName, 'a')
-                f.write(output.__str__())
-                f.close()
-                os.chmod(fileName, 488)
-            except OSError, ose:
-                print >>sys.stderr, "output Error", ose
-                return -2
-            except IOError as (errno, strerror):
-                print "I/O error({0}): {1}".format(errno, strerror)
-                return -3
-        else:
-            print "No output, or file specified"
-        return 0

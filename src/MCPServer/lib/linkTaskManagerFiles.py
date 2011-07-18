@@ -22,14 +22,18 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-import databaseInterface
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
+import databaseInterface
 
-class linkTaskManagerDirectory:
-    def __init__(self, pk, unit):
+import os
+
+class linkTaskManagerFiles:
+    def __init__(self, jobChainLink, pk, unit, completedCallBackFunction):
         self.tasks = []
         self.pk = pk
+        self.jobChainLink = jobChainLink
+        self.completedCallBackFunction = completedCallBackFunction
         sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
@@ -48,5 +52,42 @@ class linkTaskManagerDirectory:
             row = c.fetchone()
         sqlLock.release()
         
-        if reloadFileList:
-            unit.reloadFileList()
+        #if reloadFileList:
+        #    unit.reloadFileList()
+        
+        #        "%taskUUID%": task.UUID.__str__(), \
+        
+        if filterSubDir:
+            directory = os.path.join(unit.currentPath, filterSubDir)
+        else:
+            directory = unit.currentPath
+        commandReplacementDic = unit.getReplacementDic(directory)
+                #for each key replace all instances of the key in the command string
+        for key in commandReplacementDic.iterkeys():
+            value = commandReplacementDic[key].replace("\"", ("\\\""))
+            if execute:
+                execute = execute.replace(key, value)
+            if arguments:
+                arguments = arguments.replace(key, value)
+            if standardOutputFile:
+                standardOutputFile = standardOutputFile.replace(key, value)
+            if standardErrorFile:
+                standardErrorFile = standardErrorFile.replace(key, value)
+        
+        self.task = taskStandard(self, execute, arguments, self.taskAssignedCallBackFunction, self.taskCompletedCallBackFunction, standardOutputFile, standardErrorFile)
+        
+        #logTaskCreated(task, commandReplacementDic)
+    
+    def taskCompletedCallBackFunction(self, task):
+        print task
+        logTaskCompleted()
+        #finished Creating Tasks Lock Acquire
+        if True:
+            self.jobChainLink.completedCallBackFunction(task.exitCode)
+        
+    def taskAssignedCallBackFunction(self, task):
+        logTaskAssigned()
+        print task
+        
+        
+        
