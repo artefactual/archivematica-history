@@ -29,28 +29,11 @@ from archivematicaFunctions import archivematicaRenameFile
 from createXmlEventsAssist import createEvent 
 from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from fileOperations import writeToFile
 
 DetoxDic={}
-
-
-#Duplicate from archivematica CLient
-def writeToFile(output, fileName):
-    if fileName and output:
-        print "writing to: " + fileName
-        try:
-            f = open(fileName, 'a')
-            f.write(output.__str__())
-            f.close()
-        except OSError, ose:
-            print >>sys.stderr, "output Error", ose
-            return -2
-        except IOError as (errno, strerror):
-            print "I/O error({0}): {1}".format(errno, strerror)
-            return -3
-    else:
-        print "No output or file specified"
-    return 0
-        
+      
 if __name__ == '__main__':
     """This prints the contents for an Archivematica Clamscan Event xml file"""
     SIPDirectory = sys.argv[1]

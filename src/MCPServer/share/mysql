@@ -63,12 +63,51 @@ CREATE TABLE jobStepCompleted (
     step            VARCHAR(50)
 );
 
-DROP TABLE IF EXISTS SIP;
-CREATE TABLE SIP (
+DROP TABLE IF EXISTS SIPs;
+CREATE TABLE SIPs (
     sipUUID         VARCHAR(50) PRIMARY KEY,
     createdTime     TIMESTAMP(8) DEFAULT NOW(),
     currentPath     LONGTEXT
 );
+
+
+
+
+
+
+
+DROP TABLE IF EXISTS Files;
+CREATE TABLE Files(
+    fileUUID            VARCHAR(50) PRIMARY KEY,
+    originalLoacation   LONGTEXT,
+    currentLocation     LONGTEXT,
+    sipUUID             VARCHAR(50),
+    Foreign Key (sipUUID) references SIPs(sipUUID),
+    removedTime         TIMESTAMP(8) DEFAULT 0,
+    enteredSystem       TIMESTAMP(8) DEFAULT NOW()
+);
+
+DROP TABLE IF EXISTS LinkingAgentIdentifiers;
+CREATE TABLE LinkingAgentIdentifiers(
+    pk      INT PRIMARY KEY AUTO_INCREMENT,
+    Type    LONGTEXT,
+    Value   LONGTEXT
+);
+
+DROP TABLE IF EXISTS Events;
+CREATE TABLE Events(
+    pk                  BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fileUUID            VARCHAR(50),
+    Foreign Key (fileUUID) references Files(fileUUID),
+    eventIdentifierUUID VARCHAR(50),
+    eventType           LONGTEXT,
+    eventDateTime       TIMESTAMP(8),
+    eventDetail         LONGTEXT,
+    eventOutcomeDetailNote  LONGTEXT,
+    linkingAgentIdentifier  INT,
+    Foreign Key (linkingAgentIdentifier) references linkingAgentIdentifiers(pk)
+);
+
 
 
 
@@ -83,7 +122,8 @@ CREATE TABLE MicroServiceChainLinks (
     currentTask                 INT UNSIGNED,
     Foreign Key (currentTask) references TasksConfigs(pk),            
     defaultNextChainLink        INT UNSIGNED DEFAULT 1,   
-    Foreign Key (defaultNextChainLink) references MicroServiceChainLinks(pk)
+    Foreign Key (defaultNextChainLink) references MicroServiceChainLinks(pk),
+    reloadFileList      BOOLEAN DEFAULT TRUE
 );
 
 DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
@@ -132,7 +172,6 @@ CREATE TABLE StandardTasksConfigs (
     filterFileStart     VARCHAR(50),
     filterSubDir        VARCHAR(50),
     requiresOutputLock  BOOLEAN,
-    reloadFileList      BOOLEAN DEFAULT TRUE,
     standardOutputFile  VARCHAR(250),
     standardErrorFile   VARCHAR(250),
     execute             VARCHAR(50),
@@ -161,7 +200,7 @@ CREATE TABLE WatchedDirectories (
 -- Move To Failed Directory --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%failed%" "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%failed/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
@@ -908,7 +947,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'assignSIPUUID_v0.0', '"%SIPDirectory%" "%jobCreatedDate%" "%taskUUID%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%processingDirectory%%SIPName%-%SIPUUID%" "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Rename SIP directory with SIP UUID');

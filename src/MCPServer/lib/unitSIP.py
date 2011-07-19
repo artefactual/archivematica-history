@@ -23,6 +23,7 @@
 # @version svn: $Id$
 
 from unit import unit
+from unitFile import unitFile
 import archivematicaMCP
 import os
 import sys
@@ -31,14 +32,42 @@ import databaseInterface
 
 
 class unitSIP(unit):
+    
+    def __init__(self, currentPath, UUID):
+        self.currentPath = currentPath.__str__()
+        self.UUID = UUID
+        self.fileList = {}
+    
+    def reloadFileList(self):
+        self.fileList = {}
+        #os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])
+        currentPath = self.currentPath.replace("%sharedPath%", \
+                                               archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1) + "/"
+        for directory, subDirectories, files in os.walk(currentPath):
+            directory = directory.replace( currentPath, "%SIPDirectory%", 1)
+            for file in files:
+                filePath = os.path.join(directory, file)
+                print filePath
+                self.fileList[filePath] = unitFile(filePath)
+        
+        sql = """SELECT * FROM Files WHERE sipUUID =  '""" + self.UUID + "'" #AND Files.removedTime = 0; TODO
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            UUID = row[0]
+            createdTime = row[1] 
+            currentPath = row[2]
+            print row[99]#fail
+            row = c.fetchone()
+            self.fileList[filePath].UUID = UUID
+        sqlLock.release()
+        
 
         
-    def reloadFileList(self):
-        print "todo"
-        exit(1)
         
     def reload(self):
-        sql = """SELECT * FROM SIP WHERE sipUUID =  '""" + self.UUID + "'" 
+        sql = """SELECT * FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'" 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:
@@ -55,7 +84,10 @@ class unitSIP(unit):
         # self.UUID = uuid.uuid4().__str__()
         #Pre do some variables, that other variables rely on, because dictionaries don't maintain order
         SIPUUID = self.UUID
-        SIPName = os.path.basename(self.currentPath).replace("-" + SIPUUID, "")
+        if self.currentPath.endswith("/"):
+            SIPName = os.path.basename(self.currentPath[:-1]).replace("-" + SIPUUID, "")
+        else:
+            SIPName = os.path.basename(self.currentPath).replace("-" + SIPUUID, "")
         SIPDirectory = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
         relativeDirectoryLocation = target.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
       

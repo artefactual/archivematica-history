@@ -55,8 +55,10 @@ class jobChain:
         if pk != None:
             t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk, ))
             t.start()
+        else:
+            print "Done with SIP:" + self.unit.UUID
+            exit()
     
     def nextChainLinkThreaded(self, pk):
-        self.unit.reload()
         self.currentLink = jobChainLink(self, pk, self.unit)
         

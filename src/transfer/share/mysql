@@ -21,31 +21,4 @@
 # @author Joseph Perry <joseph@artefactual.com>
 */
 
-DROP TABLE IF EXISTS Files;
-CREATE TABLE Files(
-    fileUUID            VARCHAR(50) PRIMARY KEY,
-    originalLoacation   LONGTEXT,
-    currentLocation    LONGTEXT,
-    removedTime         TIMESTAMP(8) DEFAULT 0,
-    enteredSystem       TIMESTAMP(8) DEFAULT NOW()
-);
 
-
-DROP TABLE IF EXISTS Events;
-CREATE TABLE Events(
-    pk                  BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    fileUUID            VARCHAR(50),
-    eventIdentifierUUID VARCHAR(50),
-    eventType           LONGTEXT,
-    eventDateTime       TIMESTAMP(8),
-    eventDetail         LONGTEXT,
-    eventOutcomeDetailNote  LONGTEXT,
-    linkingAgentIdentifier  INT
-);
-
-DROP TABLE IF EXISTS LinkingAgentIdentifiers;
-CREATE TABLE LinkingAgentIdentifiers(
-    pk      INT PRIMARY KEY AUTO_INCREMENT,
-    Type    LONGTEXT,
-    Value   LONGTEXT
-);

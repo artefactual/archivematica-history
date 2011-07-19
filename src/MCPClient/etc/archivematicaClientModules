@@ -55,7 +55,6 @@ remove_v0.0 = rm
 removeWithAsterisk_v0.0 = %clientScriptsDirectory%removeWithAsterisk.sh
 bagit_v0.0 = /usr/share/bagit/bin/bag
 moveDetoxLogToDetoxedDirectory_v0.0 = %clientScriptsDirectory%moveDetoxLogToDetoxedDirectory.py
-assignSIPUUID_v0.0 = %clientScriptsDirectory%assignSIPUUID.sh
 verifySIPCompliance_v0.0 = %clientScriptsDirectory%verifySIPCompliance.py
 scanForRemovedFiles_v0.0 = %clientScriptsDirectory%scanForRemovedFiles.py
 removeFilesWithoutPresmisMetadata_v0.0 = %clientScriptsDirectory%removeFilesWithoutPresmisMetadata.py

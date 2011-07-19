@@ -29,6 +29,8 @@ import MySQLdb
 import string
 from datetime import datetime
 
+global separator
+separator = "', '"
 
 def getUTCDate():    
     """Returns a string of the UTC date & time in ISO format"""

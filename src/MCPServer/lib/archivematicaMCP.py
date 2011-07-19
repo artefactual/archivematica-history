@@ -89,7 +89,7 @@ limitGearmanConnectionsSemaphore = threading.Semaphore(value=config.getint('Prot
 def findOrCreateSipInDB(path):
     UUID = uuid.uuid4().__str__()
     separator = "', '"
-    sql = """INSERT INTO SIP (sipUUID, currentPath)
+    sql = """INSERT INTO SIPs (sipUUID, currentPath)
         VALUES ('""" + UUID + separator + path + "');"
     databaseInterface.runSQL(sql)
     return UUID

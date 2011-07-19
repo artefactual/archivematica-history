@@ -26,3 +26,17 @@ from unit import unit
 
 class unitFile(unit):
     """For objects representing a File"""
+    def __init__(self, currentPath, UUID="None"):
+        self.currentPath = currentPath.__str__()
+        self.UUID = UUID
+        
+    def getReplacementDic(self):
+        # self.currentPath = currentPath.__str__()
+        # self.UUID = uuid.uuid4().__str__()
+        #Pre do some variables, that other variables rely on, because dictionaries don't maintain order
+        
+        ret = {\
+               "%relativeLocation%": self.currentPath, \
+               "%fileUUID%": self.UUID
+        }
+        return ret
