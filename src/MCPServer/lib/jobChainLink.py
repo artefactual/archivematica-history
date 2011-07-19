@@ -24,6 +24,7 @@
 import sys
 import uuid
 from linkTaskManagerDirectories import linkTaskManagerDirectories
+from linkTaskManagerFiles import linkTaskManagerFiles
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 
@@ -48,8 +49,12 @@ class jobChainLink:
             taskType = row[2]
             taskTypePKReference = row[3]
             self.description = row[4]
+            self.reloadFileList = row[4]
             row = c.fetchone()
         sqlLock.release()
+        
+        print "\t","<<<", self.description, ">>>"
+        self.unit.reload()
         
         if self.createTasks(taskType, taskTypePKReference) == None:
             self.getNextChainLinkPK(None)
@@ -63,6 +68,9 @@ class jobChainLink:
             
         elif taskType == constTaskForEachFile:
             print "it's a cat"
+            if self.reloadFileList:
+                self.unit.reloadFileList();
+            linkTaskManagerFiles(self, taskTypePKReference, self.unit)
         elif taskType == constSelectPathTask:
             print "it's a dog"
         else:

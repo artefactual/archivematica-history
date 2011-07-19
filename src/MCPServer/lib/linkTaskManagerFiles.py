@@ -24,16 +24,17 @@
 
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
+from unitFile import unitFile
 import databaseInterface
+import threading
 
 import os
 
 class linkTaskManagerFiles:
-    def __init__(self, jobChainLink, pk, unit, completedCallBackFunction):
+    def __init__(self, jobChainLink, pk, unit):
         self.tasks = []
         self.pk = pk
         self.jobChainLink = jobChainLink
-        self.completedCallBackFunction = completedCallBackFunction
         sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
@@ -43,51 +44,72 @@ class linkTaskManagerFiles:
             filterFileEnd = row[1]
             filterFileStart = row[2]
             filterSubDir = row[3]
-            self.requiresOutputLock = row[4]
-            reloadFileList = row[5]
-            standardOutputFile = row[6]
-            standardErrorFile = row[7]
-            execute = row[8]
-            arguments = row[9]
+            requiresOutputLock = row[4]
+            standardOutputFile = row[5]
+            standardErrorFile = row[6]
+            execute = row[7]
+            arguments = row[8]
             row = c.fetchone()
         sqlLock.release()
         
-        #if reloadFileList:
-        #    unit.reloadFileList()
-        
-        #        "%taskUUID%": task.UUID.__str__(), \
-        
-        if filterSubDir:
-            directory = os.path.join(unit.currentPath, filterSubDir)
+        if requiresOutputLock:
+            outputLock = threading.Lock()
         else:
-            directory = unit.currentPath
-        commandReplacementDic = unit.getReplacementDic(directory)
-                #for each key replace all instances of the key in the command string
-        for key in commandReplacementDic.iterkeys():
-            value = commandReplacementDic[key].replace("\"", ("\\\""))
-            if execute:
-                execute = execute.replace(key, value)
-            if arguments:
-                arguments = arguments.replace(key, value)
-            if standardOutputFile:
-                standardOutputFile = standardOutputFile.replace(key, value)
-            if standardErrorFile:
-                standardErrorFile = standardErrorFile.replace(key, value)
+            outputLock = None
         
-        self.task = taskStandard(self, execute, arguments, self.taskAssignedCallBackFunction, self.taskCompletedCallBackFunction, standardOutputFile, standardErrorFile)
+        SIPReplacementDic = unit.getReplacementDic(unit.currentPath)
+            
+        for file, fileUnit in unit.fileList.items():
+            print "file:", file, fileUnit
+            if filterFileEnd:
+                if not file.endswith(filterFileEnd):
+                    continue
+            if filterFileStart:
+                if not os.path.basename(file).startswith(filterFileStart):
+                    continue
+            if filterSubDir:
+                if not file.startswith("%SIPDirectory%" + filterSubDir):
+                    continue
+            
+
+
+            commandReplacementDic = fileUnit.getReplacementDic()
+            for key in commandReplacementDic.iterkeys():
+                value = commandReplacementDic[key].replace("\"", ("\\\""))
+                if execute:
+                    execute = execute.replace(key, value)
+                if arguments:
+                    arguments = arguments.replace(key, value)
+                if standardOutputFile:
+                    standardOutputFile = standardOutputFile.replace(key, value)
+                if standardErrorFile:
+                    standardErrorFile = standardErrorFile.replace(key, value)
+            
+            
+            for key in SIPReplacementDic.iterkeys():
+                value = SIPReplacementDic[key].replace("\"", ("\\\""))
+                if execute:
+                    execute = execute.replace(key, value)
+                if arguments:
+                    arguments = arguments.replace(key, value)
+                if standardOutputFile:
+                    standardOutputFile = standardOutputFile.replace(key, value)
+                if standardErrorFile:
+                    standardErrorFile = standardErrorFile.replace(key, value)
+            
+            self.tasks.append(taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, outputLock=outputLock))
+            #logTaskCreated(task, commandReplacementDic)
+            
         
-        #logTaskCreated(task, commandReplacementDic)
     
     def taskCompletedCallBackFunction(self, task):
         print task
-        logTaskCompleted()
-        #finished Creating Tasks Lock Acquire
+        #logTaskCompleted()
         if True:
-            self.jobChainLink.completedCallBackFunction(task.exitCode)
+            self.jobChainLink.linkProcessingComplete(task.results["exitCode"])
         
-    def taskAssignedCallBackFunction(self, task):
-        logTaskAssigned()
-        print task
+      
+        
         
         
         

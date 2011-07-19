@@ -43,11 +43,10 @@ class linkTaskManagerDirectories:
             filterFileStart = row[2]
             filterSubDir = row[3]
             self.requiresOutputLock = row[4]
-            reloadFileList = row[5]
-            standardOutputFile = row[6]
-            standardErrorFile = row[7]
-            execute = row[8]
-            arguments = row[9]
+            standardOutputFile = row[5]
+            standardErrorFile = row[6]
+            execute = row[7]
+            arguments = row[8]
             row = c.fetchone()
         sqlLock.release()
         
@@ -83,9 +82,6 @@ class linkTaskManagerDirectories:
         if True:
             self.jobChainLink.linkProcessingComplete(task.results["exitCode"])
         
-    def taskAssignedCallBackFunction(self, task):
-        logTaskAssigned()
-        print task
-        
+     
         
         

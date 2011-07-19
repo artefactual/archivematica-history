@@ -26,9 +26,11 @@ import uuid
 import gearman
 import cPickle
 import datetime
+import archivematicaMCP
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from writeToFile import writeToFile
+from fileOperations import writeToFile
+
 
 # ~Class Task~
 #Tasks are what are assigned to clients.
@@ -93,7 +95,7 @@ class taskStandard():
         ret = fileName
         if ret:
             if "%sharedPath%" in ret and "../" not in ret:
-                ret = ret.replace("%sharedPath%", config.get('MCPServer', "sharedDirectory"), 1)
+                ret = ret.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1)
             else:
                 ret = "<^Not allowed to write to file^> " + ret
         return ret
@@ -104,7 +106,7 @@ class taskStandard():
         
         
         if self.outputLock != None:
-            outputLock.acquire()
+            self.outputLock.acquire()
         
         standardOut = self.writeOutputsValidateOutputFile(self.standardOutputFile)
         standardError = self.writeOutputsValidateOutputFile(self.standardErrorFile)
@@ -114,7 +116,7 @@ class taskStandard():
         b = writeToFile(self.results["stdError"], standardError)
 
         if self.outputLock != None:
-            outputLock.release()
+            self.outputLock.release()
             
         if a:
             self.stdError = "Failed to write to file{" + standardOut + "}\r\n" + self.results["stdOut"]

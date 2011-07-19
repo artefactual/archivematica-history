@@ -37,6 +37,9 @@ import os
 import copy
 
 import threading
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from fileOperations import checksumFile
+from fileOperations import removeFile
 
 
 sys.path.append("/usr/lib/archivematica/MCPServer")
@@ -90,62 +93,7 @@ def timerExpired(event, utcDate):
     else: #was moved internally
         movedFromLock.release()
 
-def checksumFile(filePath, fileUUID):
-    global transferDirectory
-    truePath = filePath.replace("transfer/", transferDirectory, 1)
-    checksum = sha_for_file(truePath)
-    utcDate = getUTCDate()
-    
-    #Create Event
-    eventIdentifierUUID = uuid.uuid4().__str__()
-    eventType = "message digest calculation"
-    eventDateTime = utcDate
-    eventDetail = 'program="python"; module="hashlib.sha256()" ; file="/usr/lib/python2.6/hashlib.pyc"'
-    eventOutcomeDetailNote = checksum.__str__()
 
-    runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
-            VALUES ( '"""   + fileUUID + separator \
-                            + eventIdentifierUUID + separator \
-                            + MySQLdb.escape_string(eventType) + separator \
-                            + MySQLdb.escape_string(eventDateTime) + separator \
-                            + MySQLdb.escape_string(eventDetail) + separator \
-                            + MySQLdb.escape_string(eventOutcomeDetailNote) + "' )" )
-
-def removeFile(filePath, utcDate = getUTCDate()):
-    global separator
-    print "removing: ", filePath
-    filesWithMatchingPath = []
-    
-    sqlLoggingLock.acquire()
-    #Find the file pk/UUID
-    c=MCPloggingSQL.database.cursor()
-    sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '""" + MySQLdb.escape_string(filePath) + """';"""
-    c.execute(sql)
-    row = c.fetchone()
-    while row != None:
-        filesWithMatchingPath.append(row[0])
-        row = c.fetchone()
-    sqlLoggingLock.release()
-    #Update the database
-    for file in filesWithMatchingPath: 
-        eventIdentifierUUID = uuid.uuid4().__str__()
-        eventType = "file removed"
-        eventDateTime = utcDate
-        eventDetail = ""
-        eventOutcomeDetailNote = "removed from: " + filePath
-
-        runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
-                VALUES ( '"""   + file + separator \
-                                + eventIdentifierUUID + separator \
-                                + MySQLdb.escape_string(eventType) + separator \
-                                + MySQLdb.escape_string(eventDateTime) + separator \
-                                + MySQLdb.escape_string(eventDetail) + separator \
-                                + MySQLdb.escape_string(eventOutcomeDetailNote) + "' )" )
-        
-    
-        runSQL("UPDATE Files " + \
-           "SET removedTime='" + utcDate + "', currentLocation=NULL " + \
-           "WHERE fileUUID='" + file + "'" )
               
 class transferNotifier(pyinotify.ProcessEvent):
     def __init__(self):

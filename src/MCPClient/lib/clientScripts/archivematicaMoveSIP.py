@@ -41,11 +41,13 @@ def renameAsSudo(source, destination):
 
 
 def updateDB(dst, sipUUID):
-    sql =  """UPDATE SIP SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""
+    sql =  """UPDATE SIPs SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""
     databaseInterface.runSQL(sql)
     
 def moveSIP(src, dst, sipUUID, sharedDirectoryPath):
     # os.rename(src, dst)
+    if src.endswith("/"):
+        src = src[:-1]
     renameAsSudo(src, dst)
     
     dest = dst.replace(sharedDirectoryPath, "%sharedPath%", 1)
@@ -53,7 +55,7 @@ def moveSIP(src, dst, sipUUID, sharedDirectoryPath):
         dest = os.path.join(dest, os.path.basename(src))
     if dest.endswith("/."):
         dest = os.path.join(dest[:-1], os.path.basename(src))
-    updateDB(dest, sipUUID)
+    updateDB(dest + "/", sipUUID)
 
 if __name__ == '__main__':
     src = sys.argv[1]

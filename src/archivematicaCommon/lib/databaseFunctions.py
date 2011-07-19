@@ -22,7 +22,21 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDATE()):
+    databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem)
+    VALUES ( '"""   + fileUUID + separator \
+                    + MySQLdb.escape_string(filePath) + separator \
+                    + MySQLdb.escape_string(filePath) + separator \
+                    + enteredSystem + "' )" )
 
+def insertIntoEvents(fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote):
+    runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
+            VALUES ( '"""   + file + separator \
+                            + eventIdentifierUUID + separator \
+                            + MySQLdb.escape_string(eventType) + separator \
+                            + MySQLdb.escape_string(eventDateTime) + separator \
+                            + MySQLdb.escape_string(eventDetail) + separator \
+                            + MySQLdb.escape_string(eventOutcomeDetailNote) + "' )" )
 
 #user approved?
 #client connected/disconnected.
