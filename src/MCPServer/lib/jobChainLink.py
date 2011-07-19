@@ -22,9 +22,10 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 import sys
-import databaseInterface
 import uuid
 from linkTaskManagerDirectories import linkTaskManagerDirectories
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
 
 #Constants
 constOneTask = 0

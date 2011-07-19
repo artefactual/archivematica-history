@@ -49,7 +49,8 @@ addDCTOMETS_v0.0 = %clientScriptsDirectory%archivematicaAddDublinCoreToMETS.py
 normalize_v0.0 = /usr/lib/transcoder/transcoder.py
 createDirectory_v0.0 = mkdir
 copy_v0.0 = cp
-move_v0.0 = mv
+move_v0.0 = sudo mv
+moveSIP_v0.0 =  %clientScriptsDirectory%archivematicaMoveSIP.py
 remove_v0.0 = rm
 removeWithAsterisk_v0.0 = %clientScriptsDirectory%removeWithAsterisk.sh
 bagit_v0.0 = /usr/share/bagit/bin/bag
@@ -71,3 +72,4 @@ verifyBAG_v0.0 = %clientScriptsDirectory%verifyBAG.py
 extractBAG_v0.0 = %clientScriptsDirectory%extractBAG.sh
 assignBAGUUID_v0.0 = %clientScriptsDirectory%assignSIPUUID.sh
 restructureBAG_v0.0 = %clientScriptsDirectory%restructureBAG.sh
+
