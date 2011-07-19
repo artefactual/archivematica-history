@@ -25,6 +25,9 @@
 from unit import unit
 import archivematicaMCP
 import os
+import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
 
 
 class unitSIP(unit):
@@ -34,11 +37,23 @@ class unitSIP(unit):
         print "todo"
         exit(1)
         
+    def reload(self):
+        sql = """SELECT * FROM SIP WHERE sipUUID =  '""" + self.UUID + "'" 
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            #self.UUID = row[0]
+            self.createdTime = row[1] 
+            self.currentPath = row[2]
+            row = c.fetchone()
+        sqlLock.release()
+             
         
     def getReplacementDic(self, target):
         # self.currentPath = currentPath.__str__()
         # self.UUID = uuid.uuid4().__str__()
-        #Pre do some variables, that other variables rely on, because dictionarys don't maintain order
+        #Pre do some variables, that other variables rely on, because dictionaries don't maintain order
         SIPUUID = self.UUID
         SIPName = os.path.basename(self.currentPath).replace("-" + SIPUUID, "")
         SIPDirectory = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")

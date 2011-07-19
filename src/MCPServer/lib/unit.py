@@ -23,7 +23,7 @@
 # @version svn: $Id$
 
 class unit:
-    def __init__(self, currentPath, uuid):
+    def __init__(self, currentPath, UUID):
         self.currentPath = currentPath.__str__()
-        self.UUID = uuid.uuid4().__str__()
+        self.UUID = UUID
         

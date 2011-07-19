@@ -22,9 +22,11 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-import databaseInterface
+import sys
 import threading
 from jobChainLink import jobChainLink
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
 #Holds:
 #-UNIT
 #-Job chain link
@@ -50,10 +52,11 @@ class jobChain:
         
     
     def nextChainLink(self, pk):
-        
-        print "got to do: ", pk
-        t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk, ))
-        t.start()
+        if pk != None:
+            t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk, ))
+            t.start()
     
     def nextChainLinkThreaded(self, pk):
+        self.unit.reload()
         self.currentLink = jobChainLink(self, pk, self.unit)
+        
