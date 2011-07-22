@@ -27,14 +27,19 @@ from taskStandard import taskStandard
 from unitFile import unitFile
 import databaseInterface
 import threading
+import math
+import uuid
+import sys
 
 import os
 
 class linkTaskManagerFiles:
     def __init__(self, jobChainLink, pk, unit):
-        self.tasks = []
+        self.tasks = {}
+        self.tasksLock = threading.Lock()
         self.pk = pk
         self.jobChainLink = jobChainLink
+        self.exitCode = 0
         sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
@@ -45,10 +50,10 @@ class linkTaskManagerFiles:
             filterFileStart = row[2]
             filterSubDir = row[3]
             requiresOutputLock = row[4]
-            standardOutputFile = row[5]
-            standardErrorFile = row[6]
-            execute = row[7]
-            arguments = row[8]
+            self.standardOutputFile = row[5]
+            self.standardErrorFile = row[6]
+            self.execute = row[7]
+            self.arguments = row[8]
             row = c.fetchone()
         sqlLock.release()
         
@@ -58,7 +63,8 @@ class linkTaskManagerFiles:
             outputLock = None
         
         SIPReplacementDic = unit.getReplacementDic(unit.currentPath)
-            
+
+        self.tasksLock.acquire()            
         for file, fileUnit in unit.fileList.items():
             print "file:", file, fileUnit
             if filterFileEnd:
@@ -71,9 +77,14 @@ class linkTaskManagerFiles:
                 if not file.startswith("%SIPDirectory%" + filterSubDir):
                     continue
             
+            standardOutputFile = self.standardOutputFile
+            standardErrorFile = self.standardErrorFile 
+            execute = self.execute
+            arguments = self.arguments
 
 
             commandReplacementDic = fileUnit.getReplacementDic()
+            print commandReplacementDic
             for key in commandReplacementDic.iterkeys():
                 value = commandReplacementDic[key].replace("\"", ("\\\""))
                 if execute:
@@ -97,17 +108,38 @@ class linkTaskManagerFiles:
                 if standardErrorFile:
                     standardErrorFile = standardErrorFile.replace(key, value)
             
-            self.tasks.append(taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, outputLock=outputLock))
+            UUID = uuid.uuid4().__str__()
+            task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, outputLock=outputLock, UUID=UUID)
+            self.tasks[UUID] = task
+            t = threading.Thread(target=task.performTask)
+            t.start() 
             #logTaskCreated(task, commandReplacementDic)
-            
+        
+        self.tasksLock.release()
+        if self.tasks == {} :
+            self.jobChainLink.linkProcessingComplete(self.exitCode)
         
     
     def taskCompletedCallBackFunction(self, task):
         print task
         #logTaskCompleted()
-        if True:
-            self.jobChainLink.linkProcessingComplete(task.results["exitCode"])
+        self.exitCode += math.fabs(task.results["exitCode"])
         
+        print "self.tasksLock.acquire()"
+        self.tasksLock.acquire()
+        print "self.tasksLock.acquire()2"
+        
+        if task.UUID in self.tasks: 
+            print "removing", task.UUID
+            del self.tasks[task.UUID]
+        else:
+            print >>sys.stderr, "Key Value Error:", task.UUID
+            print >>sys.stderr, "Key Value Error:", self.tasks
+            exit(1)
+        
+        if self.tasks == {} :
+            self.jobChainLink.linkProcessingComplete(self.exitCode)
+        self.tasksLock.release()
       
         
         

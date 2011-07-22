@@ -846,6 +846,22 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/appraiseSIPForSubmission/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(),  'Move to the appraise SIP for submission directory');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @MicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -905,10 +921,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'addFiles_v0.0',  '"%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%relativeLocation%" "%taskUUID%" "ingestion" "%date%" "%SIPLogsDirectory%acquiredSIPDateTime.log"');
+    (NULL, NULL, 'objects', TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'assignFileUUIDs_v0.0',  '"%SIPDirectory%" "%relativeLocation%" "%fileUUID%" "%SIPUUID%" "%taskUUID%" "%date%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Assign file UUIDs and checksums TODO');
+    (1,      LAST_INSERT_ID(), 'Assign file UUIDs');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();

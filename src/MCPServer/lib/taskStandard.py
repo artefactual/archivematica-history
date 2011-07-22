@@ -41,8 +41,8 @@ from fileOperations import writeToFile
 class taskStandard():
     """A task is an instance of a command, operating on an entire directory, or a single file."""
     
-    def __init__(self, linkTaskManager, execute, arguments, standardOutputFile, standardErrorFile, outputLock=None):
-        self.UUID = uuid.uuid4().__str__()
+    def __init__(self, linkTaskManager, execute, arguments, standardOutputFile, standardErrorFile, outputLock=None, UUID=uuid.uuid4().__str__()):
+        self.UUID = UUID
         self.linkTaskManager = linkTaskManager
         self.execute = execute
         self.arguments = arguments
@@ -50,7 +50,6 @@ class taskStandard():
         self.standardErrorFile = standardErrorFile
         self.outputLock = outputLock
         print "init done"
-        self.performTask()
         
     def performTask(self):
         from archivematicaMCP import limitGearmanConnectionsSemaphore

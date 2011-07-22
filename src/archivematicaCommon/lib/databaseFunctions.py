@@ -22,20 +22,24 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDATE()):
-    databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem)
-    VALUES ( '"""   + fileUUID + separator \
-                    + MySQLdb.escape_string(filePath) + separator \
-                    + MySQLdb.escape_string(filePath) + separator \
-                    + enteredSystem + "' )" )
+import databaseInterface
+import MySQLdb
 
-def insertIntoEvents(fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote):
-    runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
-            VALUES ( '"""   + file + separator \
-                            + eventIdentifierUUID + separator \
-                            + MySQLdb.escape_string(eventType) + separator \
-                            + MySQLdb.escape_string(eventDateTime) + separator \
-                            + MySQLdb.escape_string(eventDetail) + separator \
+def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDate(), sipUUID=""):
+    databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, sipUUID)
+    VALUES ( '"""   + fileUUID + databaseInterface.separator \
+                    + MySQLdb.escape_string(filePath) + databaseInterface.separator \
+                    + MySQLdb.escape_string(filePath) + databaseInterface.separator \
+                    + enteredSystem + databaseInterface.separator \
+                    + sipUUID + "' )" )
+
+def insertIntoEvents(fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote):  
+    databaseInterface.runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
+            VALUES ( '"""   + fileUUID + databaseInterface.separator \
+                            + eventIdentifierUUID + databaseInterface.separator \
+                            + MySQLdb.escape_string(eventType) + databaseInterface.separator \
+                            + MySQLdb.escape_string(eventDateTime) + databaseInterface.separator \
+                            + MySQLdb.escape_string(eventDetail) + databaseInterface.separator \
                             + MySQLdb.escape_string(eventOutcomeDetailNote) + "' )" )
 
 #user approved?
@@ -49,15 +53,14 @@ def logTaskCreatedSQL(task, replacementDic):
     arguments = task.arguments
     fileName = os.path.basename(replacementDic["%relativeLocation%"])
     
-    separator = "', '"
-    
+        
     runSQL("""INSERT INTO Tasks (taskUUID, jobUUID, fileUUID, fileName, exec, arguments, createdTime)
-    VALUES ( '"""   + taskUUID + separator \
-                    + jobUUID + separator \
-                    + _mysql.escape_string(fileUUID) + separator \
-                    + _mysql.escape_string(fileName) + separator \
-                    + _mysql.escape_string(taskexec) + separator \
-                    + _mysql.escape_string(arguments) + separator \
+    VALUES ( '"""   + taskUUID + databaseInterface.separator \
+                    + jobUUID + databaseInterface.separator \
+                    + _mysql.escape_string(fileUUID) + databaseInterface.separator \
+                    + _mysql.escape_string(fileName) + databaseInterface.separator \
+                    + _mysql.escape_string(taskexec) + databaseInterface.separator \
+                    + _mysql.escape_string(arguments) + databaseInterface.separator \
                     + getUTCDate() + "' )" )
 
 def logTaskAssignedSQL(task, client):
@@ -81,17 +84,15 @@ def logTaskCompletedSQL(task, retValue):
 
 
 def logJobCreatedSQL(job):
-    separator = "', '"
-    runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime, createdTimeDec)
-    VALUES ( '""" + job.UUID.__str__() + separator + _mysql.escape_string(job.config.type) + separator \
-    + _mysql.escape_string(job.directory) + separator + _mysql.escape_string(getSIPUUID(job.directory)) + \
-    separator + job.step + separator + job.createdDate + separator + getDeciDate("." + job.createdDate.split(".")[-1]) + "' )" )
+        runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime, createdTimeDec)
+    VALUES ( '""" + job.UUID.__str__() + databaseInterface.separator + _mysql.escape_string(job.config.type) + databaseInterface.separator \
+    + _mysql.escape_string(job.directory) + databaseInterface.separator + _mysql.escape_string(getSIPUUID(job.directory)) + \
+    databaseInterface.separator + job.step + databaseInterface.separator + job.createdDate + databaseInterface.separator + getDeciDate("." + job.createdDate.split(".")[-1]) + "' )" )
 
 
 def logJobStepCompletedSQL(job):
-    separator = "', '"
-    runSQL("""INSERT INTO jobStepCompleted (jobUUID, step, completedTime)
-    VALUES ( '""" + job.UUID.__str__() + separator + job.step + separator + getUTCDate() + "' )" )
+        runSQL("""INSERT INTO jobStepCompleted (jobUUID, step, completedTime)
+    VALUES ( '""" + job.UUID.__str__() + databaseInterface.separator + job.step + databaseInterface.separator + getUTCDate() + "' )" )
   
 def logJobStepChangedSQL(job):
     jobUUUID = job.UUID.__str__()
