@@ -73,6 +73,7 @@ class linkTaskManagerDirectories:
                 standardErrorFile = standardErrorFile.replace(key, value)
         
         self.task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile)
+        self.task.performTask()
         
         #logTaskCreated(task, commandReplacementDic)
     
