@@ -26,7 +26,7 @@ import xmlrpclib
 import lxml.etree as etree
 import os
 
-proxy = xmlrpclib.ServerProxy("http://localhost:8000/")
+proxy = xmlrpclib.ServerProxy("http://localhost:8001/")
 
 def getTagged(root, tag): #bad, I use this elsewhere, should be imported
     ret = []
@@ -50,15 +50,21 @@ def printJobsAwaitingApproval(jobsAwaitingApproval):
         i += 1
         print etree.tostring(job, pretty_print=True)
         
-def approveJob(jobsAwaitingApproval, choice):
+def approveJob(jobsAwaitingApproval, choice, choice2):
     try:
         index = int(choice)
         if index >= len(jobsAwaitingApproval):
             print "index out of range"
             return
+        sipUUID = getTagged(getTagged(getTagged(jobsAwaitingApproval[index], "unit")[0], \
+                                   "unitXML")[0], \
+                                   "UUID")[0].text
         uuid = getTagged(jobsAwaitingApproval[index], "UUID")[0].text
-        print "Approving: " + uuid
-        proxy.approveJob(uuid)
+       
+        chain = getTagged(getTagged(jobsAwaitingApproval[index], "choices")[0][int(choice2)], \
+                                   "chainAvailable")[0].text
+        print "Approving: " + uuid, chain, sipUUID
+        proxy.approveJob(uuid, int(chain))
         del jobsAwaitingApproval[index]
     except ValueError:
         return    
@@ -76,13 +82,22 @@ if __name__ == '__main__':
         print "u to update List"
         print "number to approve Job"
         choice = raw_input('Please enter a value:')
-        os.system("clear")
         print "choice: " + choice
         if choice == "u":
             jobsAwaitingApproval = updateJobsAwaitingApproval(jobsAwaitingApproval)
         else:
-             approveJob(jobsAwaitingApproval, choice)
-            
+            choice2 = "No-op"
+            while choice2 != "q":
+                #try:
+                    printJobsAwaitingApproval(jobsAwaitingApproval[int(choice)][2])
+                    choice2 = raw_input('Please enter a value:')
+                    print "choice2: " + choice2
+                    approveJob(jobsAwaitingApproval, choice, choice2)
+                    choice2 = "q"
+                #except:
+                    #print "invalid choice"
+                    #choice2 = "q"
+        os.system("clear")    
     
     
 
