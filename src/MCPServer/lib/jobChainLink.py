@@ -25,6 +25,7 @@ import sys
 import uuid
 from linkTaskManagerDirectories import linkTaskManagerDirectories
 from linkTaskManagerFiles import linkTaskManagerFiles
+from linkTaskManagerChoice import linkTaskManagerChoice
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 
@@ -73,6 +74,7 @@ class jobChainLink:
             linkTaskManagerFiles(self, taskTypePKReference, self.unit)
         elif taskType == constSelectPathTask:
             print "it's a dog"
+            linkTaskManagerChoice(self, taskTypePKReference, self.unit)
         else:
             print sys.stderr, "unsupported task type: ", taskType
     

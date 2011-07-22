@@ -29,6 +29,7 @@ import os
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
+import lxml.etree as etree
 
 
 class unitSIP(unit):
@@ -106,4 +107,12 @@ class unitSIP(unit):
         "%SIPUUID%":SIPUUID, \
         "%SIPName%":SIPName \
         }
+        return ret
+    
+    def xmlify(self):
+        ret = etree.Element("unit")
+        etree.SubElement(ret, "type").text = "SIP"
+        unitXML = etree.SubElement(ret, "unitXML")
+        etree.SubElement(unitXML, "UUID").text = self.UUID
+        etree.SubElement(unitXML, "currentPath").text = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
         return ret

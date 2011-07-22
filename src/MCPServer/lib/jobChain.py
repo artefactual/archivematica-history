@@ -50,14 +50,12 @@ class jobChain:
         sqlLock.release()
         self.currentLink = jobChainLink(self, self.startingChainLink, unit)
         
-    
     def nextChainLink(self, pk):
         if pk != None:
             t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk, ))
             t.start()
         else:
             print "Done with SIP:" + self.unit.UUID
-            exit()
     
     def nextChainLinkThreaded(self, pk):
         self.currentLink = jobChainLink(self, pk, self.unit)

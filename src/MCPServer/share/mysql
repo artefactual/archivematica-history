@@ -828,13 +828,13 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Quarantine to appraise SIP for preservation.');
 set @MicroServiceChain = LAST_INSERT_ID();
 
--- TODO Fix taskconfigs for approve Normalization --
+
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
+    (NULL, NULL, NULL, TRUE, NULL, NULL, 'appraiseSIP_v0.0', '"Appraise SIP for Submission3"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      LAST_INSERT_ID(), 'Appraise SIP for Submission');
+    (2,     LAST_INSERT_ID(),      'Appraise SIP for Submission2');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -846,6 +846,16 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Appraise SIP for Submission');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
+    VALUES ('%watchDirectoryPath%appraiseSIPForSubmission', @MicroServiceChain);
+
+-- Appraise SIP for Submission ^  --
+
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/appraiseSIPForSubmission/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
@@ -855,12 +865,6 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL);
 set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @MicroServiceChain);
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)

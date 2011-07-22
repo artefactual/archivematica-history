@@ -62,8 +62,10 @@ import subprocess
 import shlex
 import sys
 import lxml.etree as etree
+from xmlRPCServer import startXMLRPCServer
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
+
 
 
 
@@ -129,3 +131,4 @@ def watchDirectories():
 #archivematicaMCPServerListen()
 if __name__ == '__main__':
     watchDirectories()
+    startXMLRPCServer()
