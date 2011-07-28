@@ -33,8 +33,19 @@ from databaseFunctions import insertIntoEvents
 
 
 #import lxml.etree as etree
-def updateFileLocation(fileUUID, src, dst, eventType, eventDateTime, eventDetail, eventIdentifierUUID = uuid.uuid4().__str__()):
+def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIdentifierUUID = uuid.uuid4().__str__(), fileUUID="None", sipUUID="None"):
+    """If the file uuid is not provided, will use the sip uuid and old path to find the file uuid"""
     
+    if not fileUUID:
+        sql = "SELECT Files.fileUUID FROM Files WHERE Files.currentLocation = '" + MySQLdb.escape_string(src) + "' AND Files.sipUUID = '" + sipUUID + "';"  
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            fileUUID = row[0] 
+            row = c.fetchone()
+        sqlLock.release()
+        
     eventOutcomeDetailNote = "Original name=\"" + src + "\"; cleaned up name=\"" + dst + "\""
     eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
     
@@ -42,7 +53,7 @@ def updateFileLocation(fileUUID, src, dst, eventType, eventDateTime, eventDetail
     insertIntoEvents(fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
         
     #UPDATE THE CURRENT FILE PATH
-    sql =  """UPDATE Files SET currentPath='""" + dst + """' WHERE fileUUID='""" + fileUUID + """';"""
+    sql =  """UPDATE Files SET currentLocation='""" + dst + """' WHERE fileUUID='""" + fileUUID + """';"""
     databaseInterface.runSQL(sql)
 
  
@@ -99,17 +110,12 @@ if __name__ == '__main__':
             newfile = detoxfiles[1]
             #print "line: ", line
             if os.path.isfile(newfile):
-                oldfile = oldfile.replace(objectsDirectory, "\%SIPDirectory\%objects/", 1)
-                newfile = newfile.replace(objectsDirectory, "\%SIPDirectory\%objects/", 1)
+                oldfile = oldfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1)
+                newfile = newfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1)
                 print oldfile, " -> ", newfile 
+
+                updateFileLocation(oldfile, newfile, "name cleanup", date, "prohibited characters removed", fileUUID=None, sipUUID=sipUUID)
                 
-                eventOutcomeDetailNote = "Original name=\"" + oldfile + "\"; cleaned up name=\"" + newfile + "\""
-                eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
-                event = createEvent( taskUUID, "name cleanup", eventDateTime=date, eventDetailText=eventDetailText, \
-                                     eOutcomeInformation=createOutcomeInformation(eventOutcomeDetailNote=eventOutcomeDetailNote, 
-                                                                                  eventOutcomeText="prohibited characters removed"))
-                #print etree.tostring(event, pretty_print=True) 
-                archivematicaRenameFile(logsDir, fileUUID, newfile, event)
             elif os.path.isdir(newfile):
                 oldfile = oldfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1) + "/"
                 newfile = newfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1) + "/"
@@ -131,7 +137,7 @@ if __name__ == '__main__':
                 print oldfile, " -> ", newfile
 
                 for fileUUID, oldPath, newPath in directoryContents:
-                    updateFileLocation(fileUUID, oldPath, newPath, "name cleanup", date, "prohibited characters removed")
+                    updateFileLocation(oldPath, newPath, "name cleanup", date, "prohibited characters removed", fileUUID=fileUUID)
                     
 
 

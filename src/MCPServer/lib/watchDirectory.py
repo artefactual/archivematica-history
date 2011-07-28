@@ -105,9 +105,12 @@ class watchDirectoryProcessEvent(ProcessEvent):
         """Create a Job based on what was moved into the directory and process it."""
         #ensure no directories are in the process of moving. (so none will be in the middle of moving INTO this directory)
         movingDirectoryLock.acquire()
-        movingDirectoryLock.release()    
+        movingDirectoryLock.release()
+        path = os.path.join(event.path, event.name)
+        if os.path.isdir(path):
+            path = path + "/"    
         
-        self.callBackFunction(os.path.join(event.path, event.name), self.config)
+        self.callBackFunction(path, self.config)
             
 
 class archivematicaWatchDirectory:

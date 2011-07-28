@@ -89,11 +89,22 @@ limitGearmanConnectionsSemaphore = threading.Semaphore(value=config.getint('Prot
 
     
 def findOrCreateSipInDB(path):
-    UUID = uuid.uuid4().__str__()
-    separator = "', '"
-    sql = """INSERT INTO SIPs (sipUUID, currentPath)
-        VALUES ('""" + UUID + separator + path + "');"
-    databaseInterface.runSQL(sql)
+    UUID = ""
+    path = path.replace(config.get('MCPServer', "sharedDirectory"), "%sharedPath%", 1)
+    sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "'"
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    while row != None:
+        print row
+        UUID = row[0]
+        row = c.fetchone()
+    sqlLock.release()
+    if UUID == "":
+        UUID = uuid.uuid4().__str__()
+        separator = "', '"
+        sql = """INSERT INTO SIPs (sipUUID, currentPath)
+            VALUES ('""" + UUID + separator + path + "');"
+        databaseInterface.runSQL(sql)
     return UUID
 
 def createUnitAndJobChain(path, config):
