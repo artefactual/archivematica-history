@@ -21,57 +21,31 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+
+#import os
+from archivematicaMoveSIP import moveSIP
 import sys
-import shlex
-import subprocess
-import os
-from archivematicaFunctions import archivematicaRenameFile
-from createXmlEventsAssist import createEvent 
-from createXmlEventsAssist import createOutcomeInformation
-from createXmlEventsAssist import createLinkingAgentIdentifier
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from fileOperations import writeToFile
+import databaseInterface
+sys.path.append("/usr/lib/sanitizeNames")
+from sanitizeNames import sanitizePath
+
 
 DetoxDic={}
       
 if __name__ == '__main__':
-    """This prints the contents for an Archivematica Clamscan Event xml file"""
     SIPDirectory = sys.argv[1]
-    date = sys.argv[2]
-
-    command = "sanitizeNames \"" + SIPDirectory + "\""
-    lines = []
-    try:
-        p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	
-        #p.wait()
-        output = p.communicate()
-        retcode = p.returncode
-        
-        #print output
-
-        #it executes check for errors
-        if retcode != 0:
-            print >>sys.stderr, "error code:" + retcode.__str__()
-            print output[1]# sError
-            quit(retcode)
-        lines = output[0].split("\n")
-    except OSError, ose:
-        print >>sys.stderr, "Execution failed:", ose
-        quit(2)
-
-    for line in lines:
-        detoxfiles = line.split(" -> ")
-        print "line: ", line
-        if len(detoxfiles) > 1 :
-            oldfile = detoxfiles[0].split('\n',1)[0]
-            newfile = detoxfiles[1]
-            #print "oldfile: " + oldfile
-            #print "newfile: " + newfile
-            if os.path.isdir(newfile):
-                oldfileBase = os.path.basename(oldfile)
-                newfileBase = os.path.basename(newfile)
-                output = oldfileBase + " -> " + newfileBase
-                output += "\nDate: " + date
-                writeToFile(output, newfile + "/logs/SIPNameSanitization.log") 
+    sipUUID =  sys.argv[2]
+    date = sys.argv[3]
+    sharedDirectoryPath = sys.argv[4]
+    #os.path.abspath(SIPDirectory)
+    
+    dst = sanitizePath(SIPDirectory)
+    dst = dst.replace(sharedDirectoryPath, "%sharedPath%", 1)
+    
+    sql =  """UPDATE SIPs SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""
+    databaseInterface.runSQL(sql)
+    
+    
+    
 

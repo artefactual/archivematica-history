@@ -1,0 +1,17 @@
+TODO:
+Fix Join of output files:
+Task 49903c02-1c11-4be1-946b-8566a03dcb51 finished!  Result: COMPLETE - {'stdOut': '/var/archivematica/sharedDirectory/watchedDirectories/quarantined/copy of imalsk-bb9892a9-ab2f-4f24-a21d-c553b7b9c785objects/WFPC01.GIF.mp3\nNothing to do\n', 'exitCode': 0, 'stdError': ''}
+writing to: /var/archivematica/sharedDirectory/watchedDirectories/quarantined/copy of imalsk-bb9892a9-ab2f-4f24-a21d-c553b7b9c785logs/extraction.log
+I/O error(2): No such file or directory
+
+unquarantine/quarantine events
+
+
+
+UPDATE Files SET currentPath='%SIPDirectory%objects/metadata/submissionDocumentation/Accession_Form_Samples.pdf' WHERE fileUUID='893440b1-163e-4579-aa0b-94d5d6350a35'
+
+
+removedTime         
+Rename & file UUIDs
+
+| enteredSystem 
