@@ -22,6 +22,9 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 import sys
+print >>sys.stderr, "Not implemented yet. TODO"
+exit(-1) 
+
 import shlex
 import lxml.etree as etree
 import uuid
