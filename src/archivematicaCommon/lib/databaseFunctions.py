@@ -33,13 +33,14 @@ def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDa
                     + enteredSystem + databaseInterface.separator \
                     + sipUUID + "' )" )
 
-def insertIntoEvents(fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote):  
-    databaseInterface.runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
+def insertIntoEvents(fileUUID="", eventIdentifierUUID="", eventType="", eventDateTime="", eventDetail="", eventOutcome="", eventOutcomeDetailNote=""):  
+    databaseInterface.runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcome, eventOutcomeDetailNote)
             VALUES ( '"""   + fileUUID + databaseInterface.separator \
                             + eventIdentifierUUID + databaseInterface.separator \
                             + MySQLdb.escape_string(eventType) + databaseInterface.separator \
                             + MySQLdb.escape_string(eventDateTime) + databaseInterface.separator \
                             + MySQLdb.escape_string(eventDetail) + databaseInterface.separator \
+                            + MySQLdb.escape_string(eventOutcome) + databaseInterface.separator \
                             + MySQLdb.escape_string(eventOutcomeDetailNote) + "' )" )
 
 #user approved?
