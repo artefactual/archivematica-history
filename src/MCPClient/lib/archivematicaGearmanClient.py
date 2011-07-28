@@ -78,6 +78,10 @@ def executeCommand(gearman_worker, gearman_job):
             command = command.replace ( key, replacementDic[key] )
             arguments = arguments.replace ( key, replacementDic[key] )
         
+        key = "%taskUUID%"
+        value = gearman_job.unique.__str__()
+        arguments = arguments.replace ( key, value )
+        
         #execute command
     
         command += " " + arguments

@@ -29,8 +29,11 @@ from transcoder import setFileIn
 from optparse import OptionParser
 import transcoder
 import uuid
-from premisXMLlinker import xmlNormalize 
+#from premisXMLlinker import xmlNormalize
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from fileOperations import addFileToSIP 
 from getPronomsFromPremis import getPronomsFromPremis
+from databaseFunctions import insertIntoEvents
 
 global replacementDic
 global opts
@@ -75,7 +78,7 @@ def onceNormalized(command):
         global replacementDic
         global opts
         if opts.commandClassifications == "preservation":
-            xmlNormalize(outputFileUUID, \
+            old = """xmlNormalize(outputFileUUID, \
                      ef, \
                      command.eventDetailCommand.stdOut, \
                      opts.fileUUID, \
@@ -83,7 +86,26 @@ def onceNormalized(command):
                      opts.taskUUID, \
                      opts.date, \
                      opts.logsDirectory, \
-                     ) #    {normalized; not normalized}
+                     ) #    {normalized; not normalized}"""
+                     
+            #Add the new file to the sip
+            filePathRelativeToSIP = ef.replace(opts.sipPath, "%SIPDirectory%", 1)
+            # addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion"):
+            addFileToSIP(filePathRelativeToSIP, outputFileUUID, opts.sipUUID, uuid.uuid4().__str__(), opts.date, sourceType="derivation")
+            #Calculate new file checksum
+            print >>sys.stderr, "TODO: calculate new file checksum"
+            #Add event information to current file
+            insertIntoEvents(fileUUID=opts.fileUUID, \
+               eventIdentifierUUID=opts.taskUUID, \
+               eventType="normalization", \
+               eventDateTime=opts.date, \
+               eventDetail="", \
+               eventOutcome="", \
+               eventOutcomeDetailNote=command.eventDetailCommand.stdOut)
+            
+            #Add linking information between files
+            
+            
             outputFileUUID = uuid.uuid4().__str__() 
             replacementDic["%postfix%"] = "-" + outputFileUUID             
 
@@ -170,7 +192,8 @@ if __name__ == '__main__':
     parser.add_option("-a",  "--accessDirectory",    action="store", dest="accessDirectory", default="")
     parser.add_option("-e",  "--excludeDirectory",    action="store", dest="excludeDirectory", default="")
     parser.add_option("-d",  "--date",   action="store", dest="date", default="")
-    
+    parser.add_option("-s",  "--sipUUID",   action="store", dest="sipUUID", default="")
+    parser.add_option("-p",  "--sipPath",   action="store", dest="sipPath", default="")
     
     (opts, args) = parser.parse_args()
     

@@ -24,19 +24,8 @@
 import sys
 import uuid
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from databaseFunctions import insertIntoFiles
-from databaseFunctions import insertIntoEvents
+from fileOperations import addFileToSIP
 
-
-def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion"):
-    insertIntoFiles(fileUUID, filePathRelativeToSIP, date, sipUUID=sipUUID)
-    insertIntoEvents(fileUUID=fileUUID, \
-                   eventIdentifierUUID=taskUUID, \
-                   eventType=sourceType, \
-                   eventDateTime=date, \
-                   eventDetail="", \
-                   eventOutcome="", \
-                   eventOutcomeDetailNote=filePathRelativeToSIP)
 
 if __name__ == '__main__':
     sipDirectory = sys.argv[1]
