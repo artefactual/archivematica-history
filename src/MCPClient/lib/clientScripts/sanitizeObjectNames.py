@@ -50,7 +50,10 @@ def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIde
     eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
     
     #CREATE THE EVENT
-    insertIntoEvents(fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
+    if not fileUUID:
+        print >>sys.stderr, "Unable to find file uuid for: ", src, " -> ", dst
+        exit(6)
+    insertIntoEvents(fileUUID=fileUUID, eventIdentifierUUID=eventIdentifierUUID, eventType=eventType, eventDateTime=eventDateTime, eventDetail="", eventOutcome="", eventOutcomeDetailNote=eventOutcomeDetailNote)
         
     #UPDATE THE CURRENT FILE PATH
     sql =  """UPDATE Files SET currentLocation='""" + dst + """' WHERE fileUUID='""" + fileUUID + """';"""

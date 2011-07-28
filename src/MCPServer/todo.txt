@@ -15,3 +15,10 @@ removedTime
 Rename & file UUIDs
 
 | enteredSystem 
+
+
+in sanitize object names:
+eventDetailText= "program=\"sanitizeNames\"; version=\"" + version + "\""
+IS NOT USED
+
+... create event looks wrong
