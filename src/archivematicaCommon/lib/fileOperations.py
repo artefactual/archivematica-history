@@ -23,6 +23,19 @@
 
 import os
 import databaseInterface
+from databaseFunctions import insertIntoFiles
+from databaseFunctions import insertIntoEvents
+
+
+def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion"):
+    insertIntoFiles(fileUUID, filePathRelativeToSIP, date, sipUUID=sipUUID)
+    insertIntoEvents(fileUUID=fileUUID, \
+                   eventIdentifierUUID=taskUUID, \
+                   eventType=sourceType, \
+                   eventDateTime=date, \
+                   eventDetail="", \
+                   eventOutcome="", \
+                   eventOutcomeDetailNote=filePathRelativeToSIP)
 
 #Used to write to file
 #@output - the text to append to the file
