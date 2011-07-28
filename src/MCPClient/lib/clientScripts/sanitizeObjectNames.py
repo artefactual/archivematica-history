@@ -25,46 +25,34 @@ import sys
 import shlex
 import subprocess
 import os
-from archivematicaFunctions import archivematicaRenameFile
-from createXmlEventsAssist import createEvent 
-from createXmlEventsAssist import createOutcomeInformation
-from createXmlEventsAssist import createLinkingAgentIdentifier
+import MySQLdb
+import uuid
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from archivematicaMCPFileUUID import findUUIDFromFileUUIDxml
+import databaseInterface
+from databaseFunctions import insertIntoEvents
+
 
 #import lxml.etree as etree
-
-DetoxDic={}
-UUIDsDic={}
- 
-def loadFileUUIDsDic(logsDir, objectsDirectory):
-    FileUUIDs_fh = open(logsDir+"FileUUIDs.log", "r")
- 
-    line = FileUUIDs_fh.readline()
-    while line:
-        detoxfiles = line.split("  ->  ",1)
-        if len(detoxfiles) > 1 :
-            fileUUID = detoxfiles[0]
-            fileName = detoxfiles[1]
-            fileName = fileName.replace("\n", "", 1)
-            UUIDsDic[fileName] = fileUUID
-        line = FileUUIDs_fh.readline()
+def updateFileLocation(fileUUID, src, dst, eventType, eventDateTime, eventDetail, eventIdentifierUUID = uuid.uuid4().__str__()):
     
-    for w in os.walk(objectsDirectory):
-        op, directories, files = w
-        for p in files:
-            path = os.path.join(op, p)
-            path = path.__str__().replace(objectsDirectory, "objects/")
-            if not path in UUIDsDic:
-                UUIDsDic[path] = findUUIDFromFileUUIDxml(logsDir+"FileUUIDs.log", path, logsDir+"fileMeta/", updateSIPUUIDfile=True)
+    eventOutcomeDetailNote = "Original name=\"" + src + "\"; cleaned up name=\"" + dst + "\""
+    eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
+    
+    #CREATE THE EVENT
+    insertIntoEvents(fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
         
+    #UPDATE THE CURRENT FILE PATH
+    sql =  """UPDATE Files SET currentPath='""" + dst + """' WHERE fileUUID='""" + fileUUID + """';"""
+    databaseInterface.runSQL(sql)
+
+ 
+       
 if __name__ == '__main__':
     objectsDirectory = sys.argv[1]
-    logsDir =  sys.argv[2]
+    sipUUID =  sys.argv[2]
     date = sys.argv[3]
     taskUUID = sys.argv[4]
 
-    loadFileUUIDsDic(logsDir, objectsDirectory)
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
     command = "sanitizeNames \"" + objectsDirectory + "\""
     lines = []
@@ -72,7 +60,7 @@ if __name__ == '__main__':
     version = ""
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	
+
         #p.wait()
         output = p.communicate()
         retcode = p.returncode
@@ -111,16 +99,9 @@ if __name__ == '__main__':
             newfile = detoxfiles[1]
             #print "line: ", line
             if os.path.isfile(newfile):
-                oldfile = oldfile.replace(objectsDirectory, "objects/", 1)
-                newfile = newfile.replace(objectsDirectory, "objects/", 1)
+                oldfile = oldfile.replace(objectsDirectory, "\%SIPDirectory\%objects/", 1)
+                newfile = newfile.replace(objectsDirectory, "\%SIPDirectory\%objects/", 1)
                 print oldfile, " -> ", newfile 
-                
-                if oldfile in UUIDsDic:
-                    fileUUID = UUIDsDic[oldfile]
-                else:
-                    fileUUID = findUUIDFromFileUUIDxml(logsDir+"FileUUIDs.log", oldfile, logsDir+"fileMeta/", updateSIPUUIDfile=True)
-                
-                #print "fileUUID2: ", fileUUID
                 
                 eventOutcomeDetailNote = "Original name=\"" + oldfile + "\"; cleaned up name=\"" + newfile + "\""
                 eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
@@ -130,22 +111,27 @@ if __name__ == '__main__':
                 #print etree.tostring(event, pretty_print=True) 
                 archivematicaRenameFile(logsDir, fileUUID, newfile, event)
             elif os.path.isdir(newfile):
-                oldfile = oldfile.replace(objectsDirectory, "objects/", 1) + "/"
-                newfile = newfile.replace(objectsDirectory, "objects/", 1) + "/"
-                #print UUIDsDic.iteritems().__str__()
+                oldfile = oldfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1) + "/"
+                newfile = newfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1) + "/"
+                directoryContents = []
+                
+                sql = "SELECT * FROM Files WHERE Files.currentLocation LIKE '" + MySQLdb.escape_string(oldfile).replace("%","\%") + "' AND Files.sipUUID = '" + sipUUID + "';"
+                 
+                c, sqlLock = databaseInterface.querySQL(sql) 
+                row = c.fetchone()
+                while row != None:
+                    print row
+                    fileUUID = row[0] 
+                    oldPath = row[1]
+                    newPath = oldPath.replace(oldfile, newfile, 1)
+                    directoryContents.append((fileUUID, oldPath, newPath))
+                    row = c.fetchone()
+                sqlLock.release()
+
                 print oldfile, " -> ", newfile
-                addToUUIDsDic = {}
-                for file, fileUUID in UUIDsDic.iteritems():
-                    if file.startswith(oldfile):    
-                        #print "fileUUID1: ", fileUUID           
-                        intermediateFileName = file.replace(oldfile, newfile, 1)
-                        eventOutcomeDetailNote = "Original name=\"" + file + "\"; cleaned up name=\"" + intermediateFileName + "\""
-                        eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
-                        event = createEvent( taskUUID, "name cleanup", eventDateTime=date, eventDetailText=eventDetailText, \
-                                             eOutcomeInformation=createOutcomeInformation(eventOutcomeDetailNote=eventOutcomeDetailNote, 
-                                                                                          eventOutcomeText="prohibited characters removed"))
-                        #print etree.tostring(event, pretty_print=True) 
-                        archivematicaRenameFile(logsDir, fileUUID, intermediateFileName, event)
-                        addToUUIDsDic[intermediateFileName] = fileUUID
-                UUIDsDic.update(addToUUIDsDic)
+
+                for fileUUID, oldPath, newPath in directoryContents:
+                    updateFileLocation(fileUUID, oldPath, newPath, "name cleanup", date, "prohibited characters removed")
+                    
+
 

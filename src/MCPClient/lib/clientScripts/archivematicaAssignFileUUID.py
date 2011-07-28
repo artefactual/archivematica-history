@@ -30,7 +30,13 @@ from databaseFunctions import insertIntoEvents
 
 def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion"):
     insertIntoFiles(fileUUID, filePathRelativeToSIP, date, sipUUID=sipUUID)
-    insertIntoEvents(fileUUID, taskUUID, sourceType, date, "", filePathRelativeToSIP)
+    insertIntoEvents(fileUUID=fileUUID, \
+                   eventIdentifierUUID=taskUUID, \
+                   eventType=sourceType, \
+                   eventDateTime=date, \
+                   eventDetail="", \
+                   eventOutcome="", \
+                   eventOutcomeDetailNote=filePathRelativeToSIP)
 
 if __name__ == '__main__':
     sipDirectory = sys.argv[1]

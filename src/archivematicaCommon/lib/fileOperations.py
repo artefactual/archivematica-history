@@ -59,9 +59,16 @@ def checksumFile(filePath, fileUUID):
     eventType = "message digest calculation"
     eventDateTime = utcDate
     eventDetail = 'program="python"; module="hashlib.sha256()" ; file="/usr/lib/python2.6/hashlib.pyc"'
+    eventOutcome = ""
     eventOutcomeDetailNote = checksum.__str__()
 
-    databaseInterface.insertIntoEvents(fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
+    databaseInterface.insertIntoEvents(fileUUID=fileUUID, \
+                                       eventIdentifierUUID=eventIdentifierUUID, \
+                                       eventType=eventType, \
+                                       eventDateTime=eventDateTime, \
+                                       eventDetail=eventDetail, \
+                                       eventOutcome=eventOutcome, \
+                                       eventOutcomeDetailNote=eventOutcomeDetailNote)
 
 def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
     global separator
@@ -86,7 +93,13 @@ def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
         eventDetail = ""
         eventOutcomeDetailNote = "removed from: " + filePath
 
-        databaseInterface.insertIntoEvents(fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
+        databaseInterface.insertIntoEvents(fileUUID=fileUUID, \
+                                       eventIdentifierUUID=eventIdentifierUUID, \
+                                       eventType=eventType, \
+                                       eventDateTime=eventDateTime, \
+                                       eventDetail=eventDetail, \
+                                       eventOutcome=eventOutcome, \
+                                       eventOutcomeDetailNote=eventOutcomeDetailNote)
         
     
         databaseInterface.runSQL("UPDATE Files " + \
