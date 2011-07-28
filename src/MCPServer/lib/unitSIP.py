@@ -103,6 +103,7 @@ class unitSIP(unit):
         "%relativeLocation%": target.replace(self.currentPath, relativeDirectoryLocation, 1), \
         "%processingDirectory%": archivematicaMCP.config.get('MCPServer', "processingDirectory"), \
         "%checksumsNoExtention%":archivematicaMCP.config.get('MCPServer', "checksumsNoExtention"), \
+        "%watchDirectoryPath%":archivematicaMCP.config.get('MCPServer', "watchDirectoryPath"), \
         "%AIPsStore%":archivematicaMCP.config.get('MCPServer', "AIPsStore"), \
         "%SIPUUID%":SIPUUID, \
         "%SIPName%":SIPName \
