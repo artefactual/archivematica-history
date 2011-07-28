@@ -53,7 +53,7 @@ if __name__ == '__main__':
     
     if eventOutcome == "Fail" or clamscanOutput[1].find(clamscanResultShouldBe) == -1:
         eventOutcome = "Fail"
-        print >>sys.stderr, fileUUID, os.path.basename(target)
+        print >>sys.stderr, fileUUID, " - ", os.path.basename(target)
         print >>sys.stderr, clamscanOutput 
     
     version, virusDefs, virusDefsDate = clamscanVersionOutput[1].split("/")
