@@ -216,7 +216,7 @@ if __name__ == '__main__':
 
     structMap = newChild(root, "structMap")
     structMapDiv = newChild(structMap, "div")
-	
+    
     createFileSec(path, sipFileGrp, structMapDiv)
 
     tree = etree.ElementTree(root)

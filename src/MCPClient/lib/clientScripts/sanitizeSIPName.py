@@ -41,11 +41,12 @@ if __name__ == '__main__':
     #os.path.abspath(SIPDirectory)
     
     dst = sanitizePath(SIPDirectory)
-    dst = dst.replace(sharedDirectoryPath, "%sharedPath%", 1)
-    
-    sql =  """UPDATE SIPs SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""
-    databaseInterface.runSQL(sql)
-    
+    if SIPDirectory != dst: 
+        dst = dst.replace(sharedDirectoryPath, "%sharedPath%", 1)
+        print SIPDirectory.replace(sharedDirectoryPath, "%sharedPath%", 1) + " -> " + dst
+        sql =  """UPDATE SIPs SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""
+        databaseInterface.runSQL(sql)
+        
     
     
 
