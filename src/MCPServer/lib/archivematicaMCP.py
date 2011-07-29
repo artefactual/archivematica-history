@@ -95,16 +95,28 @@ def findOrCreateSipInDB(path):
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:
-        print row
         UUID = row[0]
+        print "Opening existing SIP:", UUID, "-", path
         row = c.fetchone()
     sqlLock.release()
     if UUID == "":
         UUID = uuid.uuid4().__str__()
+        print "Creating SIP:", UUID, "-", path
         separator = "', '"
         sql = """INSERT INTO SIPs (sipUUID, currentPath)
             VALUES ('""" + UUID + separator + path + "');"
         databaseInterface.runSQL(sql)
+        #temp
+        sql = """SELECT * FROM SIPs"""
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        print "<existingSips>"
+        while row != None:
+            print row
+            row = c.fetchone()
+        sqlLock.release()
+        print "</existingSips>"
+        
     return UUID
 
 def createUnitAndJobChain(path, config):

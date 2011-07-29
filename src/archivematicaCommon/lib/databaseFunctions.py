@@ -42,6 +42,14 @@ def insertIntoEvents(fileUUID="", eventIdentifierUUID="", eventType="", eventDat
                             + MySQLdb.escape_string(eventDetail) + databaseInterface.separator \
                             + MySQLdb.escape_string(eventOutcome) + databaseInterface.separator \
                             + MySQLdb.escape_string(eventOutcomeDetailNote) + "' )" )
+    
+def insertIntoDerivations(sourceFileUUID="", derivedFileUUID="", relatedEventUUID=""):
+    databaseInterface.runSQL("""INSERT INTO Derivations
+        (sourceFileUUID, derivedFileUUID, relatedEventUUID) 
+        VALUES ( '""" \
+        + sourceFileUUID + databaseInterface.separator \
+        + derivedFileUUID + databaseInterface.separator \
+        + relatedEventUUID + "');")
 
 #user approved?
 #client connected/disconnected.

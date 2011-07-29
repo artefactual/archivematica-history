@@ -71,11 +71,6 @@ CREATE TABLE SIPs (
 );
 
 
-
-
-
-
-
 DROP TABLE IF EXISTS Files;
 CREATE TABLE Files(
     fileUUID            VARCHAR(50) PRIMARY KEY,
@@ -109,11 +104,15 @@ CREATE TABLE Events(
     Foreign Key (linkingAgentIdentifier) references linkingAgentIdentifiers(pk)
 );
 
-
-
-
-
-
+DROP TABLE IF EXISTS Derivations;
+CREATE TABLE Derivations (
+    pk               BIGINT PRIMARY KEY AUTO_INCREMENT,
+    sourceFileUUID   VARCHAR(50),
+    Foreign Key (sourceFileUUID) references Files(fileUUID),
+    derivedFileUUID  VARCHAR(50),
+    Foreign Key (derivedFileUUID) references Files(fileUUID),
+    relatedEventUUID VARCHAR(50)
+);
 
 
 
@@ -559,7 +558,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedDirectory%approveNormalization" "%SIPUUID%" "%sharedPath%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedDirectory%approveNormalization/." "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Move to approve normalization directory');
@@ -672,7 +671,7 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%appraiseSIPForPreservation" "%SIPUUID%" "%sharedPath%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%appraiseSIPForPreservation/." "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Move to appraise SIP for preservation directory');
@@ -845,7 +844,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%quarantined/" "%SIPUUID%" "%sharedPath%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%quarantined/." "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Move to quarantined');
