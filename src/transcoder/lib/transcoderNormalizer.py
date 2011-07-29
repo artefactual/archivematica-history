@@ -34,6 +34,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import addFileToSIP 
 from getPronomsFromPremis import getPronomsFromPremis
 from databaseFunctions import insertIntoEvents
+from databaseFunctions import insertIntoDerivations
 
 global replacementDic
 global opts
@@ -104,7 +105,7 @@ def onceNormalized(command):
                eventOutcomeDetailNote=command.eventDetailCommand.stdOut)
             
             #Add linking information between files
-            
+            insertIntoDerivations(sourceFileUUID=opts.fileUUID, derivedFileUUID=outputFileUUID, relatedEventUUID=opts.taskUUID)
             
             outputFileUUID = uuid.uuid4().__str__() 
             replacementDic["%postfix%"] = "-" + outputFileUUID             
