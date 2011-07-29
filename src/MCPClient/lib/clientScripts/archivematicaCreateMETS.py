@@ -30,34 +30,21 @@ import uuid
 import sys
 import lxml.etree as etree
 import string
+import MySQLdb
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 from datetime import datetime
 from createXmlEventsAssist import createArchivematicaAgent 
 from createXmlEventsAssist import createOrganizationAgent
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
+
 
 UUIDsDic={}
 amdSec=[]
 
-logsDIR = sys.argv[1]
-SIPUUID = sys.argv[2]
-SIPName = sys.argv[3]
-processingDIR = sys.argv[4]
-
-
-
-def loadFileUUIDsDic():
-    FileUUIDs_fh = open(logsDIR+"FileUUIDs.log", "r")
- 
-    line = FileUUIDs_fh.readline()
-    while line:
-        detoxfiles = line.split(" -> ",1)
-        if len(detoxfiles) > 1 :
-            fileUUID = detoxfiles[0]
-            fileName = detoxfiles[1]
-            fileName = string.replace(fileName, "\n", "", 1)
-            UUIDsDic[fileName] = fileUUID
-        line = FileUUIDs_fh.readline()
-
+SIPUUID = sys.argv[1]
+SIPDirectory = sys.argv[2]
+XMLFile = sys.argv[3]
 
 def newChild(parent, tag, text=None, tailText=None):
     child = etree.Element(tag)
@@ -114,31 +101,20 @@ def createDigiprovMD(uuid, filename) :
 #    fitsRoot = fitsTree.getroot()
 #    fits.append(fitsRoot)
 
-def getRelativePath(itempath, processingDIR):
-    """
-    Instead of pathSTR = itempath.replace(processingDIR + "objects", "objects", 1)
-    This was implemented to avoid problems while developing where the symbolic link would resolve while traversing the sip, and cause problems for the replacement.
-    /var/archivematica/sharedDirectory/.currentlyProcessing/801e1ffe-6dfd-46cc-822b-e890ed26477b/backup-678a0680-f1be-11df-b321-001b2429801e/
-    Error - Log has no UUID for file: /home/joseph/archivematica/src/MCPServer/sharedDirectoryStructure/.currentlyProcessing/801e1ffe-6dfd-46cc-822b-e890ed26477b/backup-678a0680-f1be-11df-b321-001b2429801e/DIP/objects/Archivematica_architecture_7May2010.jpg{/home/joseph/archivematica/src/MCPServer/sharedDirectoryStructure/.currentlyProcessing/801e1ffe-6dfd-46cc-822b-e890ed26477b/backup-678a0680-f1be-11df-b321-001b2429801e/DIP/objects}
-    """
-    ret = itempath.split(os.path.basename(os.path.dirname(processingDIR)), 1)
-    if len(ret) != 2:
-        
-        print "error: " + ret.__str__()
-        quit(3)
-    return ret[1].replace("/", "", 1)
-
 #Do /SIP-UUID/
 #Force only /SIP-UUID/objects
+doneFirstRun = False
 def createFileSec(path, parentBranch, structMapParent):
+    print >>sys.stderr, "createFileSec: ", path, parentBranch, structMapParent
     doneFirstRun = True
     pathSTR = path.__str__()
-    if pathSTR == processingDIR + "objects/": #IF it's it's the SIP folder, it's OBJECTS
+    pathSTR = path.__str__()
+    if pathSTR == SIPDirectory + "objects/": #IF it's it's the SIP folder, it's OBJECTS
         pathSTR = "objects"
     #pathSTR = string.replace(path.__str__(), "/tmp/" + sys.argv[2] + "/" + sys.argv[3], "objects", 1)
-    #if pathSTR + "/" == processingDIR: #if it's the very first run through (recursive function)
-    if os.path.basename(pathSTR) == os.path.basename(os.path.dirname(processingDIR)): #if it's the very first run through (recursive function)
-        pathSTR = sys.argv[3] + "-" + sys.argv[2]
+    #if pathSTR + "/" == SIPDirectory: #if it's the very first run through (recursive function)
+    if path == SIPDirectory: #if it's the very first run through (recursive function)
+        pathSTR = os.path.basename(os.path.dirname(SIPDirectory))
         structMapParent.set("DMDID", "SIP-description")
         
         currentBranch = newChild(parentBranch, "fileGrp")
@@ -165,13 +141,24 @@ def createFileSec(path, parentBranch, structMapParent):
             elif os.path.isfile(itempath):
                 #myuuid = uuid.uuid4()
                 myuuid=""
-                #pathSTR = itempath.replace(processingDIR + "objects", "objects", 1)
-                pathSTR = getRelativePath(itempath, processingDIR)
-                if pathSTR in UUIDsDic:
-                    myuuid = UUIDsDic[pathSTR]
-                else:
-                    print "Error - Log has no UUID for file: " + pathSTR + "{" + path.__str__() + "}"
-                createDigiprovMD(myuuid, itempath)
+                #pathSTR = itempath.replace(SIPDirectory + "objects", "objects", 1)
+                pathSTR = itempath.replace(SIPDirectory, "%SIPDirectory%", 1)
+                
+                sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND sipUUID = '""" + SIPUUID + """' AND Files.currentLocation = '""" + MySQLdb.escape_string(pathSTR) + """';"""
+                c, sqlLock = databaseInterface.querySQL(sql) 
+                row = c.fetchone()
+                if row == None:
+                    print >>sys.stderr, "No uuid for file: \"", pathSTR, "\""
+                while row != None:
+                    myuuid = row[0]
+                    row = c.fetchone()
+                sqlLock.release()
+                
+
+                #createDigiprovMD(myuuid, itempath)
+                #TODO ^
+                pathSTR = itempath.replace(SIPDirectory, "", 1)
+                
                 fileI = etree.SubElement( parentBranch, xlinkBNS + "fits", nsmap=NSMAP)
 
                 filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
@@ -197,10 +184,8 @@ if __name__ == '__main__':
 
     #cd /tmp/$UUID; 
     opath = os.getcwd()
-    os.chdir(processingDIR)
-    path = os.getcwd()
-
-    loadFileUUIDsDic()
+    os.chdir(SIPDirectory)
+    path = SIPDirectory
 
     amdSec = newChild(root, "amdSec")
 
@@ -220,7 +205,7 @@ if __name__ == '__main__':
     createFileSec(path, sipFileGrp, structMapDiv)
 
     tree = etree.ElementTree(root)
-    tree.write(processingDIR + "/METS.xml")
+    tree.write(XMLFile)
 
     # Restore original path
     os.chdir(opath)

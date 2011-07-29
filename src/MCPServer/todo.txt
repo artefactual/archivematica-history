@@ -22,3 +22,8 @@ eventDetailText= "program=\"sanitizeNames\"; version=\"" + version + "\""
 IS NOT USED
 
 ... create event looks wrong
+
+<<< Verify checksums generated on ingest >>>
+<<< Remove logs where information is now in METS >>>
+<<< Add Dublin Core to METS >>>
+

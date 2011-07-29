@@ -25,6 +25,7 @@
 import xmlrpclib
 import lxml.etree as etree
 import os
+import time
 
 proxy = xmlrpclib.ServerProxy("http://localhost:8001/")
 
@@ -77,6 +78,10 @@ if __name__ == '__main__':
     #print etree.tostring(jobsAwaitingApproval)
     choice = "No-op"
     while choice != "q":
+        while not (len(jobsAwaitingApproval)):
+            print "Fetching..."
+            time.sleep(2)
+            jobsAwaitingApproval = updateJobsAwaitingApproval(jobsAwaitingApproval)
         printJobsAwaitingApproval(jobsAwaitingApproval)
         print "q to quit"
         print "u to update List"
