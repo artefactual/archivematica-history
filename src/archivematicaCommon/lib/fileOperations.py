@@ -83,6 +83,7 @@ def checksumFile(filePath, fileUUID):
                                        eventOutcome=eventOutcome, \
                                        eventOutcomeDetailNote=eventOutcomeDetailNote)
 
+
 def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
     global separator
     print "removing: ", filePath

@@ -370,6 +370,19 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, '%SIPLogsDirectory%METSGeneration.log', '%SIPLogsDirectory%METSGeneration.log', 'createMETS_v0.0', '"%SIPUUID%" "%SIPDirectory%" "%SIPDirectory%"METS.xml');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Generate METS.xml document');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -387,10 +400,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects/', FALSE, '%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log', '%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log', 'removeFilesWithoutPresmisMetadata_v0.0', '--fileUUID "%fileUUID%" --inputFile "%relativeLocation%" --objectsDirectory "%SIPObjectsDirectory%"');
+    (NULL, NULL, 'objects/', FALSE, '%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log', '%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log', 'removeFilesWithoutPresmisMetadata_v0.0', '--fileUUID "%fileUUID%" --inputFile "%relativeLocation%" --sipDirectory "%SIPDirectory%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Remove files without PREMIS');
+    (1,      LAST_INSERT_ID(), 'Remove files without linking information (failed normalization artifacts etc.)');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();

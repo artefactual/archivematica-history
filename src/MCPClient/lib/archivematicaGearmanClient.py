@@ -59,9 +59,9 @@ def loadSupportedModules(file):
        
 def executeCommand(gearman_worker, gearman_job):
     try:
-        print gearman_worker
-        print gearman_job
-        print cPickle.loads(gearman_job.data)
+        #print gearman_worker
+        #print gearman_job
+        print gearman_job.task, cPickle.loads(gearman_job.data)
         execute = gearman_job.task
         data = cPickle.loads(gearman_job.data)
         arguments = data["arguments"]
