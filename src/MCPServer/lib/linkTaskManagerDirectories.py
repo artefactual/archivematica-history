@@ -24,9 +24,13 @@
 
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
-import databaseInterface
-
 import os
+import uuid
+import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
+import databaseFunctions
+
 
 class linkTaskManagerDirectories:
     def __init__(self, jobChainLink, pk, unit):
@@ -46,6 +50,7 @@ class linkTaskManagerDirectories:
             standardOutputFile = row[5]
             standardErrorFile = row[6]
             execute = row[7]
+            self.execute = execute
             arguments = row[8]
             row = c.fetchone()
         sqlLock.release()
@@ -72,10 +77,12 @@ class linkTaskManagerDirectories:
             if standardErrorFile:
                 standardErrorFile = standardErrorFile.replace(key, value)
         
-        self.task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile)
+        UUID = uuid.uuid4().__str__()
+        self.task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, UUID=UUID)
         self.task.performTask()
         
-        #logTaskCreated(task, commandReplacementDic)
+        databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
+        
     
     def taskCompletedCallBackFunction(self, task):
         print task

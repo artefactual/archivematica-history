@@ -152,7 +152,7 @@ def ingest(request, uuid=None):
       for item in obj:
         jobs = get_jobs_by_sipuuid(item['sipuuid'])
         directory = jobs[0].directory
-        item['directory'] = re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
+        item['directory'] = item['sipuuid']#re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
         item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
         item['uuid'] = item['sipuuid']
         item['id'] = item['sipuuid']

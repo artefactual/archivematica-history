@@ -21,7 +21,10 @@
 # @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-
+import _mysql
+import os
+import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import MySQLdb
 
@@ -54,29 +57,29 @@ def insertIntoDerivations(sourceFileUUID="", derivedFileUUID="", relatedEventUUI
 #user approved?
 #client connected/disconnected.
 
-def logTaskCreatedSQL(task, replacementDic):
-    taskUUID = task.UUID.__str__()
-    jobUUID = task.job.UUID.__str__()
-    fileUUID = replacementDic["%fileUUID%"].__str__()
-    taskexec = task.execute
-    arguments = task.arguments
-    fileName = os.path.basename(replacementDic["%relativeLocation%"])
-    
-        
-    runSQL("""INSERT INTO Tasks (taskUUID, jobUUID, fileUUID, fileName, exec, arguments, createdTime)
+def logTaskCreatedSQL(taskManager, commandReplacementDic, taskUUID, arguments):
+    taskUUID = taskUUID
+    jobUUID = taskManager.jobChainLink.UUID
+    fileUUID = ""
+    if "%fileUUID%" in commandReplacementDic:
+        fileUUID = commandReplacementDic["%fileUUID%"]
+    taskexec = taskManager.execute
+    fileName = os.path.basename(os.path.abspath(commandReplacementDic["%relativeLocation%"]))
+      
+    databaseInterface.runSQL("""INSERT INTO Tasks (taskUUID, jobUUID, fileUUID, fileName, exec, arguments, createdTime)
     VALUES ( '"""   + taskUUID + databaseInterface.separator \
                     + jobUUID + databaseInterface.separator \
                     + _mysql.escape_string(fileUUID) + databaseInterface.separator \
                     + _mysql.escape_string(fileName) + databaseInterface.separator \
                     + _mysql.escape_string(taskexec) + databaseInterface.separator \
                     + _mysql.escape_string(arguments) + databaseInterface.separator \
-                    + getUTCDate() + "' )" )
+                    + databaseInterface.getUTCDate() + "' )" )
 
 def logTaskAssignedSQL(task, client):
     taskUUID = task.UUID.__str__()
     client = client.clientName
     
-    runSQL("UPDATE Tasks " + \
+    databaseInterface.runSQL("UPDATE Tasks " + \
     "SET startTime='" + task.assignedDate + "', client='" + client + "' " + \
     "WHERE taskUUID='" + taskUUID + "'" )
 
@@ -86,26 +89,28 @@ def logTaskCompletedSQL(task, retValue):
     stdOut = task.stdOut
     stdError = task.stdError
     
-    runSQL("UPDATE Tasks " + \
+    databaseInterface.runSQL("UPDATE Tasks " + \
     "SET endTime='" + getUTCDate() +"', exitCode='" + exitCode +  "', " + \
     "stdOut='" + _mysql.escape_string(stdOut) + "', stdError='" + _mysql.escape_string(stdError) + "' "
     "WHERE taskUUID='" + taskUUID + "'" )
 
 
 def logJobCreatedSQL(job):
-        runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime, createdTimeDec)
-    VALUES ( '""" + job.UUID.__str__() + databaseInterface.separator + _mysql.escape_string(job.config.type) + databaseInterface.separator \
-    + _mysql.escape_string(job.directory) + databaseInterface.separator + _mysql.escape_string(getSIPUUID(job.directory)) + \
-    databaseInterface.separator + job.step + databaseInterface.separator + job.createdDate + databaseInterface.separator + getDeciDate("." + job.createdDate.split(".")[-1]) + "' )" )
+    separator = databaseInterface.getSeparator()
+    databaseInterface.runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime, createdTimeDec)
+        VALUES ( '""" + job.UUID.__str__() + separator + _mysql.escape_string(job.description) + separator \
+        + _mysql.escape_string(job.unit.currentPath) + separator + _mysql.escape_string(job.unit.UUID) + \
+        separator + "exeCommand" + separator + job.createdDate + separator + databaseInterface.getDeciDate("." + job.createdDate.split(".")[-1]) + "' )" )
+    #TODO -un hardcode executing exeCommand
 
 
 def logJobStepCompletedSQL(job):
-        runSQL("""INSERT INTO jobStepCompleted (jobUUID, step, completedTime)
-    VALUES ( '""" + job.UUID.__str__() + databaseInterface.separator + job.step + databaseInterface.separator + getUTCDate() + "' )" )
+    databaseInterface.runSQL("""INSERT INTO jobStepCompleted (jobUUID, step, completedTime)
+        VALUES ( '""" + job.UUID.__str__() + databaseInterface.separator + job.step + databaseInterface.separator + getUTCDate() + "' )" )
   
 def logJobStepChangedSQL(job):
     jobUUUID = job.UUID.__str__()
     
-    runSQL("UPDATE Jobs " + \
+    databaseInterface.runSQL("UPDATE Jobs " + \
     "SET currentStep='" + job.step +  "' " + \
     "WHERE jobUUID='" + jobUUUID + "'" )        

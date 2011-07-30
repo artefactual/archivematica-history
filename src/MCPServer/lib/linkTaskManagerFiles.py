@@ -30,6 +30,8 @@ import threading
 import math
 import uuid
 import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseFunctions
 
 import os
 
@@ -113,7 +115,7 @@ class linkTaskManagerFiles:
             self.tasks[UUID] = task
             t = threading.Thread(target=task.performTask)
             t.start() 
-            #logTaskCreated(task, commandReplacementDic)
+            databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
         
         self.tasksLock.release()
         if self.tasks == {} :
