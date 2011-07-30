@@ -28,6 +28,7 @@ from linkTaskManagerFiles import linkTaskManagerFiles
 from linkTaskManagerChoice import linkTaskManagerChoice
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
+from databaseFunctions import logJobCreatedSQL
 
 #Constants
 constOneTask = 0
@@ -36,10 +37,11 @@ constSelectPathTask = 2
 
 class jobChainLink:
     def __init__(self, jobChain, jobChainLinkPK, unit):
-        self.uuid = uuid.uuid4().__str__()
+        self.UUID = uuid.uuid4().__str__()
         self.jobChain = jobChain
         self.pk = jobChainLinkPK
         self.unit = unit
+        self.createdDate = databaseInterface.getUTCDate()
         sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description FROM MicroServiceChainLinks JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = """ + jobChainLinkPK.__str__() 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
@@ -54,8 +56,12 @@ class jobChainLink:
             row = c.fetchone()
         sqlLock.release()
         
+
+        
         print "\t","<<<", self.description, ">>>"
         self.unit.reload()
+        
+        logJobCreatedSQL(self)        
         
         if self.createTasks(taskType, taskTypePKReference) == None:
             self.getNextChainLinkPK(None)

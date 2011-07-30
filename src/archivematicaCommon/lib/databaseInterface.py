@@ -32,6 +32,10 @@ from datetime import datetime
 global separator
 separator = "', '"
 
+def getSeparator():
+    global separator
+    return separator
+
 def getUTCDate():    
     """Returns a string of the UTC date & time in ISO format"""
     d = datetime.utcnow()
