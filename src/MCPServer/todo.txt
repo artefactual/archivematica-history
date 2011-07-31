@@ -27,3 +27,27 @@ IS NOT USED
 <<< Remove logs where information is now in METS >>>
 <<< Add Dublin Core to METS >>>
 
+
+ERROR when left alone for period of time:
+/var/archivematica/sharedDirectory/watchedDirectories/receiveSIP/copy of imalsk/ ('%watchDirectoryPath%receiveSIP', 9L, 1)
+SELECT sipUUID FROM SIPs WHERE currentPath = '%sharedPath%watchedDirectories/receiveSIP/copy of imalsk/'
+Exception in thread Thread-33:
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/threading.py", line 532, in __bootstrap_inner
+    self.run()
+  File "/usr/lib/python2.6/threading.py", line 736, in run
+    self.function(*self.args, **self.kwargs)
+  File "/home/joseph/archivematica/src/MCPServer/lib/watchDirectory.py", line 67, in timerExpired
+    self.watchDirectoryProcessEvent.process_IN_MOVED_TO(self.event)
+  File "/home/joseph/archivematica/src/MCPServer/lib/watchDirectory.py", line 113, in process_IN_MOVED_TO
+    self.callBackFunction(path, self.config)
+  File "./archivematicaMCP.py", line 126, in createUnitAndJobChain
+    UUID = findOrCreateSipInDB(path)
+  File "./archivematicaMCP.py", line 95, in findOrCreateSipInDB
+    c, sqlLock = databaseInterface.querySQL(sql)
+  File "/usr/lib/archivematica/archivematicaCommon/databaseInterface.py", line 92, in querySQL
+    c=database.cursor()
+AttributeError: cursor
+
+
+

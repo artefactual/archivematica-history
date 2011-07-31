@@ -124,7 +124,7 @@ if __name__ == '__main__':
                 newfile = newfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1) + "/"
                 directoryContents = []
                 
-                sql = "SELECT * FROM Files WHERE Files.currentLocation LIKE '" + MySQLdb.escape_string(oldfile).replace("%","\%") + "' AND Files.sipUUID = '" + sipUUID + "';"
+                sql = "SELECT * FROM Files WHERE Files.currentLocation LIKE '" + MySQLdb.escape_string(oldfile).replace("%","\%") + "%' AND Files.sipUUID = '" + sipUUID + "';"
                  
                 c, sqlLock = databaseInterface.querySQL(sql) 
                 row = c.fetchone()

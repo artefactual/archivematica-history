@@ -25,6 +25,7 @@
 import lxml.etree as etree
 import sys
 import os
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from scanForRemovedFiles import addRemovedEvent
 
 removeIfFileNameIs = ["Thumbs.db"]
