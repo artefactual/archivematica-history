@@ -24,7 +24,7 @@
 # @version svn: $Id$
 
 from archivematicaXMLNamesSpace import *
-from archivematicaFunctions import getTagged
+
 import os
 import uuid
 import sys
@@ -37,7 +37,7 @@ from createXmlEventsAssist import createArchivematicaAgent
 from createXmlEventsAssist import createOrganizationAgent
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
-
+from archivematicaFunctions import getTagged
 
 UUIDsDic={}
 amdSec=[]

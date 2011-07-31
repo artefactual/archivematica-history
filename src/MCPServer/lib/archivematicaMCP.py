@@ -92,6 +92,7 @@ def findOrCreateSipInDB(path):
     UUID = ""
     path = path.replace(config.get('MCPServer', "sharedDirectory"), "%sharedPath%", 1)
     sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "'"
+    time.sleep(.5)
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:

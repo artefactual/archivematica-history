@@ -58,7 +58,7 @@ class jobChainLink:
         
 
         
-        print "\t","<<<", self.description, ">>>"
+        print "<<<<<<<<< ", self.description, " >>>>>>>>>"
         self.unit.reload()
         
         logJobCreatedSQL(self)        
@@ -70,16 +70,13 @@ class jobChainLink:
     
     def createTasks(self, taskType, taskTypePKReference):
         if taskType == constOneTask:
-            print "it's a rabbit"
             linkTaskManagerDirectories(self, taskTypePKReference, self.unit)
             
         elif taskType == constTaskForEachFile:
-            print "it's a cat"
             if self.reloadFileList:
                 self.unit.reloadFileList();
             linkTaskManagerFiles(self, taskTypePKReference, self.unit)
         elif taskType == constSelectPathTask:
-            print "it's a dog"
             linkTaskManagerChoice(self, taskTypePKReference, self.unit)
         else:
             print sys.stderr, "unsupported task type: ", taskType

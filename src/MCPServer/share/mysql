@@ -82,6 +82,24 @@ CREATE TABLE Files(
     enteredSystem       TIMESTAMP(8) DEFAULT NOW()
 );
 
+
+DROP TABLE IF EXISTS FilesFits;
+CREATE TABLE FilesFits(
+    fileUUID   VARCHAR(50) PRIMARY KEY,
+    Foreign Key (fileUUID) references Files(fileUUID),
+    FITSxml    LONGTEXT
+);
+
+DROP TABLE IF EXISTS FilesIDs;
+CREATE TABLE FilesIDs(
+    fileUUID        VARCHAR(50) PRIMARY KEY,
+    Foreign Key (fileUUID) references Files(fileUUID),
+    formatName      LONGTEXT,
+    formatVersion   LONGTEXT,
+    formatRegistryName  LONGTEXT,
+    formatRegistryKey   LONGTEXT
+);
+
 DROP TABLE IF EXISTS LinkingAgentIdentifiers;
 CREATE TABLE LinkingAgentIdentifiers(
     pk      INT PRIMARY KEY AUTO_INCREMENT,
@@ -553,7 +571,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedDirectory%approveNormalization/." "%SIPUUID%" "%sharedPath%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/approveNormalization/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Move to approve normalization directory');
@@ -678,7 +696,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'FITS_v0.0', '"%relativeLocation%" "%SIPLogsDirectory%fileMeta/%fileUUID%.xml" "%date%" "%taskUUID%"');
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'FITS_v0.0', '"%relativeLocation%" "%SIPLogsDirectory%fileMeta/%fileUUID%.xml" "%date%" "%taskUUID%" "%fileUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      LAST_INSERT_ID(), 'Characterize and extract metadata');

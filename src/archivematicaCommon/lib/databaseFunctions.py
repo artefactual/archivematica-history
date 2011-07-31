@@ -54,6 +54,25 @@ def insertIntoDerivations(sourceFileUUID="", derivedFileUUID="", relatedEventUUI
         + derivedFileUUID + databaseInterface.separator \
         + relatedEventUUID + "');")
 
+def insertIntoFilesFits(fileUUID="", fitsXMLString=""):
+    databaseInterface.runSQL("""INSERT INTO FilesFits
+        (fileUUID, FITSxml) 
+        VALUES ( '""" \
+        + MySQLdb.escape_string(fileUUID) + databaseInterface.separator \
+        + MySQLdb.escape_string(fitsXMLString) + "');")
+
+def insertIntoFilesIDs(fileUUID="", formatName="", formatVersion="", formatRegistryName="", formatRegistryKey=""):
+    databaseInterface.runSQL("""INSERT INTO FilesIDs
+        (fileUUID, formatName, formatVersion, formatRegistryName, formatRegistryKey) 
+        VALUES ( '""" \
+        + MySQLdb.escape_string(fileUUID) + databaseInterface.separator \
+        + MySQLdb.escape_string(formatName) + databaseInterface.separator \
+        + MySQLdb.escape_string(formatVersion) + databaseInterface.separator \
+        + MySQLdb.escape_string(formatRegistryName) + databaseInterface.separator \
+        + MySQLdb.escape_string(formatRegistryKey) + "');")
+    
+        
+    
 #user approved?
 #client connected/disconnected.
 
