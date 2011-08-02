@@ -58,7 +58,7 @@ for quad in uuidQuads:
         #mode isn't working on the mkdir
         os.chmod(AIPsStoreWithQuads, mode)
 
-storeLocation=AIPsStoreWithQuads + os.path.basename(AIP)
+storeLocation=os.path.join(AIPsStoreWithQuads, os.path.basename(os.path.abspath(AIP)))
 
 #Store the AIP
 shutil.move(AIP, storeLocation)
@@ -76,11 +76,11 @@ if exitCode != 0:
 
 bag = extractDirectory + SIPNAME + "-" + SIPUUID + "/"
 verificationCommands = []
-verificationCommands.append("/usr/share/bagit/bin/bag verifyvalid " + bag)
-verificationCommands.append("/usr/share/bagit/bin/bag checkpayloadoxum " + bag)
-verificationCommands.append("/usr/share/bagit/bin/bag verifycomplete " + bag)
-verificationCommands.append("/usr/share/bagit/bin/bag verifypayloadmanifests " + bag)
-verificationCommands.append("/usr/share/bagit/bin/bag verifytagmanifests " + bag)
+verificationCommands.append("/usr/share/bagit/bin/bag verifyvalid \"" + bag + "\"")
+verificationCommands.append("/usr/share/bagit/bin/bag checkpayloadoxum \"" + bag + "\"")
+verificationCommands.append("/usr/share/bagit/bin/bag verifycomplete \"" + bag + "\"")
+verificationCommands.append("/usr/share/bagit/bin/bag verifypayloadmanifests \"" + bag + "\"")
+verificationCommands.append("/usr/share/bagit/bin/bag verifytagmanifests \"" + bag + "\"")
 exitCode = 0
 for command in verificationCommands:
     ret = executeOrRun("command", command, printing=printSubProcessOutput)
