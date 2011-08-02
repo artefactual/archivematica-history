@@ -113,9 +113,10 @@ class linkTaskManagerFiles:
             UUID = uuid.uuid4().__str__()
             task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, outputLock=outputLock, UUID=UUID)
             self.tasks[UUID] = task
+            databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
             t = threading.Thread(target=task.performTask)
             t.start() 
-            databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
+            
         
         self.tasksLock.release()
         if self.tasks == {} :
@@ -126,13 +127,11 @@ class linkTaskManagerFiles:
         print task
         #logTaskCompleted()
         self.exitCode += math.fabs(task.results["exitCode"])
+        databaseFunctions.logTaskCompletedSQL(task)
         
-        print "self.tasksLock.acquire()"
         self.tasksLock.acquire()
-        print "self.tasksLock.acquire()2"
         
         if task.UUID in self.tasks: 
-            print "removing", task.UUID
             del self.tasks[task.UUID]
         else:
             print >>sys.stderr, "Key Value Error:", task.UUID
