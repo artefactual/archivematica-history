@@ -102,14 +102,15 @@ def logTaskAssignedSQL(task, client):
     "SET startTime='" + task.assignedDate + "', client='" + client + "' " + \
     "WHERE taskUUID='" + taskUUID + "'" )
 
-def logTaskCompletedSQL(task, retValue):
+def logTaskCompletedSQL(task):
+    print "Logging task output to db", task.UUID
     taskUUID = task.UUID.__str__()
-    exitCode = retValue.__str__()
-    stdOut = task.stdOut
-    stdError = task.stdError
+    exitCode = task.results["exitCode"].__str__()
+    stdOut = task.results["stdOut"]
+    stdError = task.results["stdError"]
     
     databaseInterface.runSQL("UPDATE Tasks " + \
-    "SET endTime='" + getUTCDate() +"', exitCode='" + exitCode +  "', " + \
+    "SET endTime='" + databaseInterface.getUTCDate() +"', exitCode='" + exitCode +  "', " + \
     "stdOut='" + _mysql.escape_string(stdOut) + "', stdError='" + _mysql.escape_string(stdError) + "' "
     "WHERE taskUUID='" + taskUUID + "'" )
 
@@ -125,7 +126,7 @@ def logJobCreatedSQL(job):
 
 def logJobStepCompletedSQL(job):
     databaseInterface.runSQL("""INSERT INTO jobStepCompleted (jobUUID, step, completedTime)
-        VALUES ( '""" + job.UUID.__str__() + databaseInterface.separator + job.step + databaseInterface.separator + getUTCDate() + "' )" )
+        VALUES ( '""" + job.UUID.__str__() + databaseInterface.separator + job.step + databaseInterface.separator + databaseInterface.getUTCDate() + "' )" )
   
 def logJobStepChangedSQL(job):
     jobUUUID = job.UUID.__str__()

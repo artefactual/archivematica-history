@@ -79,14 +79,15 @@ class linkTaskManagerDirectories:
         
         UUID = uuid.uuid4().__str__()
         self.task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, UUID=UUID)
+        databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
         self.task.performTask()
         
-        databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
+        
         
     
     def taskCompletedCallBackFunction(self, task):
         print task
-        #logTaskCompleted()
+        databaseFunctions.logTaskCompletedSQL(task)
         if True:
             self.jobChainLink.linkProcessingComplete(task.results["exitCode"])
         
