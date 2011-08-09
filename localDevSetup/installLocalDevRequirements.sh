@@ -44,7 +44,12 @@ sudo apt-get install \
   ufraw \
   hypermail \
   clamav-daemon \
-  ffprobe
+  ffprobe \
+  gearman \
+  python-setuptools
+  
+sudo easy_install gearman
+  
 
 # Get Ubuntu version installed
 version="`lsb_release -d | grep "Ubuntu 10.04"`"
