@@ -79,7 +79,7 @@ def createAndRunScript(text, stdIn="", printing=True):
     os.close(FILE)
  
     #run it
-    ret = launchSubProcess(scriptPath)
+    ret = launchSubProcess(scriptPath, stdIn="", printing=True)
     
     #remove the temp file
     os.remove(scriptPath)
@@ -90,11 +90,11 @@ def createAndRunScript(text, stdIn="", printing=True):
 
 def executeOrRun(type, text, stdIn="", printing=True):
     if type == "command":
-        return launchSubProcess(text)
+        return launchSubProcess(text, stdIn=stdIn, printing=printing)
     if type == "bashScript":
         text = "#!/bin/bash\n" + text
-        return createAndRunScript(text)
+        return createAndRunScript(text, stdIn=stdIn, printing=printing)
     if type == "pythonScript":
         text = "#!/usr/bin/python\n" + text
-        return createAndRunScript(text)
+        return createAndRunScript(text, stdIn=stdIn, printing=printing)
         
