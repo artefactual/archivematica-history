@@ -1,0 +1,101 @@
+cd `dirname $0`
+
+part="svn up"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+    echo "doing ${part} ..."
+    echo "cleaning up..."
+    cd localDevSetup/
+    ./cleanup.sh
+    cd ..
+    
+    echo "UPDATING..."
+    svn update
+    
+    echo "integrating into environment..."
+    cd localDevSetup/
+    ./createLocalDevDirectories.sh
+    cd ..
+else
+        echo "not goint to ${part}"
+fi
+
+part="update/install package requirements"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        cd localDevSetup/
+        ./installDependsFromDebianFile.py ./../src/archivematicaCommon/debian/control
+        ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
+        ./installDependsFromDebianFile.py ./../src/dashboard/debian/control
+        #./installDependsFromDebianFile.py ./../src/easy-extract/debian/control
+        ./installDependsFromDebianFile.py ./../src/MCPClient/debian/control
+        ./installDependsFromDebianFile.py ./../src/MCPrpcCLI/debian/control
+        ./installDependsFromDebianFile.py ./../src/MCPServer/debian/control
+        #./installDependsFromDebianFile.py ./../src/metaPackage-forensic-tools/debian/control
+        #./installDependsFromDebianFile.py ./../src/metaPackage-shotgun/debian/control
+        ./installDependsFromDebianFile.py ./../src/sanitizeNames/debian/control
+        ./installDependsFromDebianFile.py ./../src/SIPCreationTools/debian/control
+        ./installDependsFromDebianFile.py ./../src/transcoder/debian/control
+        ./installDependsFromDebianFile.py ./../src/upload-qubit/debian/control
+        #./installDependsFromDebianFile.py ./../src/vm-includes/debian/control
+        ./installDependsFromDebianFile.py ./../src/xubuntuGuiScriptsEditor/debian/control
+        cd ..
+else
+        echo "Not going to ${part}."
+fi
+
+part="recreate the databases"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        cd localDevSetup/
+        ./recreateDB.sh
+        cd ..
+else
+        echo "Not goint to ${part}."
+fi
+
+part="restart archivematica services"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        sudo stop archivematica-mcp-client
+        sleep 1
+        sudo stop archivematica-mcp-server
+        sleep 3
+        sudo start archivematica-mcp-server
+        sudo start archivematica-mcp-client
+else
+        echo "Not goint to ${part}."
+fi
+
+part="export sample data to ~/sampledata"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        rev="`svn info | grep \"Revision: \" | awk -F " " '{print $2}'`"
+        echo Going to export to '~/'sampledata-$rev ...
+        svn export sampledata ~/sampledata$-{rev}
+else
+        echo "Not goint to ${part}."
+fi
+
+
+exit
+
+part="cleanup"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        cd localDevSetup/
+        ./cleanup.sh
+        cd ..
+else
+        echo "Not going to ${part}"
+fi
