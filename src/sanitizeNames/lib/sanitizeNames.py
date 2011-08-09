@@ -82,7 +82,7 @@ def sanitizeRecursively(path):
             
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print >>sys.stderr, "Error, sanitizeNames takes one argument PATH or -V (version)"
+        print >>sys.stderr, "Error, sanitizeNames takes one agrument PATH or -V (version)"
         quit(-1)
     path = sys.argv[1]
     if path == "-V":
