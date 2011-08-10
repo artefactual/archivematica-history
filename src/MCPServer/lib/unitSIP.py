@@ -100,6 +100,7 @@ class unitSIP(unit):
         "%SIPLogsDirectory%": SIPDirectory + "logs/", \
         "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
         "%SIPDirectory%": SIPDirectory, \
+        "%SIPDirectoryBasename%": os.path.basename(SIPDirectory), \
         "%relativeLocation%": target.replace(self.currentPath, relativeDirectoryLocation, 1), \
         "%processingDirectory%": archivematicaMCP.config.get('MCPServer', "processingDirectory"), \
         "%checksumsNoExtention%":archivematicaMCP.config.get('MCPServer', "checksumsNoExtention"), \
