@@ -86,9 +86,19 @@ jobsLock = threading.Lock()
 watchedDirectories = []
 limitGearmanConnectionsSemaphore = threading.Semaphore(value=config.getint('Protocol', "limitGearmanConnections"))
 
-
+def isUUID(uuid):
+    split = uuid.split("-")
+    if len(split) != 5 \
+    or len(split[0]) != 8 \
+    or len(split[1]) != 4 \
+    or len(split[2]) != 4 \
+    or len(split[3]) != 4 \
+    or len(split[4]) != 12 :
+        return False
+    return True
     
 def findOrCreateSipInDB(path):
+    #Find it in the database
     UUID = ""
     path = path.replace(config.get('MCPServer', "sharedDirectory"), "%sharedPath%", 1)
     sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "'"
@@ -100,24 +110,21 @@ def findOrCreateSipInDB(path):
         print "Opening existing SIP:", UUID, "-", path
         row = c.fetchone()
     sqlLock.release()
+
+    #Just Use the end of the directory name
+    if UUID == "":
+        uuidLen = -36
+        if isUUID(path[uuidLen:]):
+            UUID = path[uuidLen:]
+    
+    #Create it
     if UUID == "":
         UUID = uuid.uuid4().__str__()
         print "Creating SIP:", UUID, "-", path
         separator = "', '"
         sql = """INSERT INTO SIPs (sipUUID, currentPath)
             VALUES ('""" + UUID + separator + path + "');"
-        databaseInterface.runSQL(sql)
-        #temp
-        sql = """SELECT * FROM SIPs"""
-        c, sqlLock = databaseInterface.querySQL(sql) 
-        row = c.fetchone()
-        print "<existingSips>"
-        while row != None:
-            print row
-            row = c.fetchone()
-        sqlLock.release()
-        print "</existingSips>"
-        
+        databaseInterface.runSQL(sql)    
     return UUID
 
 def createUnitAndJobChain(path, config):
