@@ -134,13 +134,33 @@ CREATE TABLE Derivations (
 
 
 
+DROP TABLE IF EXISTS Sounds;
+CREATE TABLE Sounds(
+    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    description        LONGTEXT,
+    fileLocation       LONGTEXT
+);
+
+INSERT INTO Sounds
+    (pk, description, fileLocation) 
+    VALUES ( 1, 'Error', '/usr/share/sounds/KDE-Im-Error-On-Connection.ogg'),
+    ( 2, 'Alert', '/usr/share/sounds/KDE-Im-Irc-Event.ogg'),
+    ( 3, 'Requires approval', '/usr/share/sounds/KDE-Sys-List-End.ogg');
+set @errorSound = 1;
+set @alertSound = 2;
+set @requiresApprovalSound = 3;
+
+
+
 DROP TABLE IF EXISTS MicroServiceChainLinks;
 CREATE TABLE MicroServiceChainLinks (
     pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     currentTask                 INT UNSIGNED,
     Foreign Key (currentTask) references TasksConfigs(pk),            
     defaultNextChainLink        INT UNSIGNED DEFAULT 1,   
-    Foreign Key (defaultNextChainLink) references MicroServiceChainLinks(pk),
+    Foreign Key (defaultNextChainLink) references MicroServiceChainLinks(pk),    
+    defaultPlaySound   INT,
+    Foreign Key (defaultPlaySound) references Sounds(pk),    
     reloadFileList      BOOLEAN DEFAULT TRUE
 );
 
@@ -151,7 +171,9 @@ CREATE TABLE MicroServiceChainLinksExitCodes (
     Foreign Key (microServiceChainLink) references MicroServiceChainLinks(pk),
     exitCode    INT DEFAULT 0,
     nextMicroServiceChainLink   INT UNSIGNED,
-    Foreign Key (nextMicroServiceChainLink) references MicroServiceChainLinks(pk)
+    Foreign Key (nextMicroServiceChainLink) references MicroServiceChainLinks(pk),
+    playSound   INT,
+    Foreign Key (playSound) references Sounds(pk)
 );
 
 DROP TABLE IF EXISTS MicroServiceChains;
@@ -224,8 +246,8 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(),  'Move to the failed directory');
 
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), NULL); 
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink, defaultPlaySound) 
+    VALUES (LAST_INSERT_ID(), NULL, @errorSound); 
 set @defaultNextChainLink = LAST_INSERT_ID();
 
 -- Move to processing directory --

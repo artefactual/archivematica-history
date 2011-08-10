@@ -29,6 +29,7 @@ from linkTaskManagerChoice import linkTaskManagerChoice
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import logJobCreatedSQL
+from playAudioFileInCVLC import playAudioFileInThread
 
 #Constants
 constOneTask = 0
@@ -42,7 +43,7 @@ class jobChainLink:
         self.pk = jobChainLinkPK
         self.unit = unit
         self.createdDate = databaseInterface.getUTCDate()
-        sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description FROM MicroServiceChainLinks JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = """ + jobChainLinkPK.__str__() 
+        sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description, MicroServiceChainLinks.reloadFileList, Sounds.fileLocation FROM MicroServiceChainLinks LEFT OUTER JOIN Sounds ON MicroServiceChainLinks.defaultPlaySound = Sounds.pk JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = """ + jobChainLinkPK.__str__() 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:
@@ -52,7 +53,8 @@ class jobChainLink:
             taskType = row[2]
             taskTypePKReference = row[3]
             self.description = row[4]
-            self.reloadFileList = row[4]
+            self.reloadFileList = row[5]
+            self.defaultSoundFile = row[6]
             row = c.fetchone()
         sqlLock.release()
         
@@ -81,6 +83,17 @@ class jobChainLink:
         else:
             print sys.stderr, "unsupported task type: ", taskType
     
+    def getSoundFileToPlay(self, exitCode):
+        if exitCode != None:
+            ret = self.defaultSoundFile
+            sql = "SELECT Sounds.fileLocation FROM MicroServiceChainLinksExitCodes LEFT OUTER JOIN Sounds ON MicroServiceChainLinksExitCodes.playSound = Sounds.pk WHERE microServiceChainLink = %s AND exitCode = %s" % (self.pk.__str__(), exitCode.__str__()) 
+            c, sqlLock = databaseInterface.querySQL(sql) 
+            row = c.fetchone()
+            if row != None:
+                ret = row[0]
+            sqlLock.release()
+            return ret
+    
     def getNextChainLinkPK(self, exitCode):
         if exitCode != None:
             ret = self.defaultNextChainLink
@@ -91,8 +104,15 @@ class jobChainLink:
                 ret = row[0]
             sqlLock.release()
             return ret
+    
             
     def linkProcessingComplete(self, exitCode):
+        playSounds = True
+        if playSounds:
+            filePath = self.getSoundFileToPlay(exitCode)
+            if filePath:
+                print "playing: ", filePath
+                playAudioFileInThread(filePath)
         self.jobChain.nextChainLink(self.getNextChainLinkPK(exitCode))
     
     

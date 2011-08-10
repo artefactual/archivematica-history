@@ -29,11 +29,21 @@ from executeOrRunSubProcess import executeOrRun
 def playAudioFile(filePath):
     command = "cvlc --play-and-exit \"" + filePath + "\""
     exitCode, stdOut, stdError = executeOrRun("command", command, printing=False)
+    if exitCode != 0:
+        print stdOut
+        print >>sys.stderr, stdError
+
+def playAudioFileInThread(filePath):
+    import threading
+    t = threading.Thread(target=playAudioFile, args=(filePath,))
+    t.start() 
     
 if __name__ == '__main__':
-    
     filePath = sys.argv[1]
     playAudioFile(filePath)
+    playAudioFileInThread(filePath)
+    
+    
     
      
 
