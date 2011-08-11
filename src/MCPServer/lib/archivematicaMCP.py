@@ -41,6 +41,7 @@
 import watchDirectory
 from jobChain import jobChain
 from unitSIP import unitSIP
+from unitDIP import unitDIP
 from unitFile import unitFile
 from pyinotify import ThreadedNotifier
 
@@ -98,9 +99,10 @@ def isUUID(uuid):
     return True
     
 def findOrCreateSipInDB(path):
-    #Find it in the database
     UUID = ""
     path = path.replace(config.get('MCPServer', "sharedDirectory"), "%sharedPath%", 1)
+    
+    #Find it in the database
     sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "'"
     time.sleep(.5)
     c, sqlLock = databaseInterface.querySQL(sql) 
@@ -114,8 +116,9 @@ def findOrCreateSipInDB(path):
     #Just Use the end of the directory name
     if UUID == "":
         uuidLen = -36
-        if isUUID(path[uuidLen:]):
-            UUID = path[uuidLen:]
+        if isUUID(path[uuidLen-1:-1]):
+            UUID = path[uuidLen-1:-1]
+                
     
     #Create it
     if UUID == "":
@@ -131,8 +134,12 @@ def createUnitAndJobChain(path, config):
     print path, config
     unit = None
     if os.path.isdir(path):
-        UUID = findOrCreateSipInDB(path)
-        unit = unitSIP(path, UUID)
+        if config[3] == "SIP":
+            UUID = findOrCreateSipInDB(path)
+            unit = unitSIP(path, UUID)
+        elif config[3] == "DIP":
+            UUID = findOrCreateSipInDB(path)
+            unit = unitDIP(path, UUID)
     elif os.path.isfile(path):
         return
         UUID = uuid.uuid4()
@@ -144,7 +151,7 @@ def createUnitAndJobChain(path, config):
     
 
 def watchDirectories():
-    sql = """SELECT watchedDirectoryPath, chain, onlyActOnDirectories FROM WatchedDirectories"""
+    sql = """SELECT watchedDirectoryPath, chain, onlyActOnDirectories, description FROM WatchedDirectories LEFT OUTER JOIN WatchedDirectoriesExpectedTypes ON WatchedDirectories.expectedType = WatchedDirectoriesExpectedTypes.pk"""
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:

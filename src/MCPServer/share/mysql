@@ -141,14 +141,16 @@ CREATE TABLE Sounds(
     fileLocation       LONGTEXT
 );
 
-INSERT INTO Sounds
-    (pk, description, fileLocation) 
-    VALUES ( 1, 'Error', '/usr/share/sounds/KDE-Im-Error-On-Connection.ogg'),
-    ( 2, 'Alert', '/usr/share/sounds/KDE-Im-Irc-Event.ogg'),
-    ( 3, 'Requires approval', '/usr/share/sounds/KDE-Sys-List-End.ogg');
 set @errorSound = 1;
 set @alertSound = 2;
 set @requiresApprovalSound = 3;
+
+INSERT INTO Sounds
+    (pk, description, fileLocation) 
+    VALUES ( @errorSound, 'Error', '/usr/share/sounds/KDE-Im-Error-On-Connection.ogg'),
+    ( @alertSound, 'Alert', '/usr/share/sounds/KDE-Im-Irc-Event.ogg'),
+    ( @requiresApprovalSound, 'Requires approval', '/usr/share/sounds/KDE-Sys-List-End.ogg');
+
 
 
 
@@ -227,13 +229,27 @@ CREATE TABLE MicroServiceChainChoice (
     Foreign Key (chainAvailable) references MicroServiceChains(pk)
 );
 
+DROP TABLE IF EXISTS WatchedDirectoriesExpectedTypes;
+CREATE TABLE WatchedDirectoriesExpectedTypes (
+    pk                      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    description             LONGTEXT
+);
+
+SET @expectedTypeSIP = 1;
+SET @expectedTypeDIP = 2;
+INSERT INTO WatchedDirectoriesExpectedTypes(pk, description) 
+    VALUES ( @expectedTypeSIP, 'SIP'),
+    ( @expectedTypeDIP, 'DIP');
+
 DROP TABLE IF EXISTS WatchedDirectories;
 CREATE TABLE WatchedDirectories (
     pk                      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     watchedDirectoryPath    LONGTEXT,
     chain                   INT UNSIGNED,
     Foreign Key (chain) references MicroServiceChains(pk),
-    onlyActOnDirectories    BOOLEAN DEFAULT TRUE
+    onlyActOnDirectories    BOOLEAN DEFAULT TRUE,
+    expectedType            INT DEFAULT 1,
+    Foreign Key (expectedType) references WatchedDirectoriesExpectedTypes(pk)
 );
 
 
@@ -285,19 +301,18 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject SIP');
 set @rejectSIPMicroServiceChain = LAST_INSERT_ID();
 
--- </uploadDIP> --
+-- <uploadDIP> --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%uploadedDIPs/." "%SIPUUID%" "%sharedPath%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%uploadedDIPs/."');
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(),  'Move to the uploadedDIPs directory');
-
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL); 
 set @MicroServiceChainLink = LAST_INSERT_ID();
-
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -306,19 +321,21 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'uploadDIP');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-
+-- disabled, because it uses the SIP uuid and updates the SIP/AIP directory location with that of the DIP --
+/*
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (@moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+*/
 
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Upload DIP');
 set @MicroServiceChain = LAST_INSERT_ID();
@@ -344,8 +361,8 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'uploadDIP');
 set @MicroServiceChain = LAST_INSERT_ID();
 
-INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
-    VALUES ('%watchDirectoryPath%uploadDIP/', @MicroServiceChain);
+INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
+    VALUES ('%watchDirectoryPath%uploadDIP/', @MicroServiceChain, @expectedTypeDIP);
 
 -- </uploadDIP> --
 
@@ -467,7 +484,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%DIP" "%sharedPath%watchedDirectories/uploadDIP/"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%DIP" "%sharedPath%watchedDirectories/uploadDIP/%SIPDirectoryBasename%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Generate DIP');

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# This file is part of Archivematica.
+#
+# Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
+#
+# Archivematica is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Archivematica is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
+
+# @package Archivematica
+# @author Joseph Perry <joseph@artefactual.com>
+# @version svn: $Id$
+
+cd `dirname $0`
+
+part="install/update mysql"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        sudo apt-get install mysql -y
+else
+        echo "Not going to ${part}"
+fi
+
+part="run the MCP Server preMCPLogging.sh"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        tmp="`pwd`"
+        cd ./src/MCPServer/share/
+        sudo ./preMCPLogging.sh
+        cd "tmp"
+else
+        echo "Not going to ${part}"
+fi
+
+part="run the MCP Server postinst script"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        sudo ./src/MCPServer/debian/postinst
+else
+        echo "Not going to ${part}"
+fi
+
+exit
+
+part="example"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+else
+        echo "Not going to ${part}"
+fi
