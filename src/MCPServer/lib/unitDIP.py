@@ -32,7 +32,7 @@ import databaseInterface
 import lxml.etree as etree
 
 
-class unitSIP(unit):
+class unitDIP(unit):
     
     def __init__(self, currentPath, UUID):
         self.currentPath = currentPath.__str__()
@@ -71,16 +71,19 @@ class unitSIP(unit):
         
         
     def reload(self):
-        sql = """SELECT * FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'" 
-        c, sqlLock = databaseInterface.querySQL(sql) 
-        row = c.fetchone()
-        while row != None:
-            print row
-            #self.UUID = row[0]
-            self.createdTime = row[1] 
-            self.currentPath = row[2]
-            row = c.fetchone()
-        sqlLock.release()
+        #sql = """SELECT * FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'" 
+        #c, sqlLock = databaseInterface.querySQL(sql) 
+        #row = c.fetchone()
+        #while row != None:
+        #    print row
+        #    #self.UUID = row[0]
+        #    self.createdTime = row[1] 
+        #    self.currentPath = row[2]
+        #    row = c.fetchone()
+        #sqlLock.release()
+        
+        #no-op for reload on DIP
+        a = "a"
              
         
     def getReplacementDic(self, target):

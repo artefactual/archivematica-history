@@ -18,6 +18,7 @@ else
   adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
 fi
 
+sudo usermod -a -G audio archivematica
 chown -R archivematica:archivematica "/var/archivematica/"
 chmod -R g+s "/var/archivematica/"
 chmod -R 775 "/var/archivematica/"
