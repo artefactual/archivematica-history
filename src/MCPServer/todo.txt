@@ -26,7 +26,7 @@ IS NOT USED
 <<< Verify checksums generated on ingest >>>
 <<< Remove logs where information is now in METS >>>
 <<< Add Dublin Core to METS >>>
-
+could be part of generate mets.
 
 ERROR when left alone for period of time:
 /var/archivematica/sharedDirectory/watchedDirectories/receiveSIP/copy of imalsk/ ('%watchDirectoryPath%receiveSIP', 9L, 1)
@@ -48,6 +48,17 @@ Traceback (most recent call last):
   File "/usr/lib/archivematica/archivematicaCommon/databaseInterface.py", line 92, in querySQL
     c=database.cursor()
 AttributeError: cursor
+
+
+Quarantine and unquarantine events.
+
+Add checksums/checksum events.
+Verify above checksums.
+
+Removing files not accounted for.
+
+Naming needs to be reviewed.
+Some "appraisal steps" are the same as their action ie. upload DIP.
 
 
 
