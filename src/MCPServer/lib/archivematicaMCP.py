@@ -140,6 +140,9 @@ def createUnitAndJobChain(path, config):
         elif config[3] == "DIP":
             UUID = findOrCreateSipInDB(path)
             unit = unitDIP(path, UUID)
+        elif config[3] == "Transfer":
+            #UUID = findOrCreateSipInDB(path)
+            unit = unitTransfer(path)
     elif os.path.isfile(path):
         return
         UUID = uuid.uuid4()
@@ -151,15 +154,27 @@ def createUnitAndJobChain(path, config):
     
 
 def watchDirectories():
+    rows = []
     sql = """SELECT watchedDirectoryPath, chain, onlyActOnDirectories, description FROM WatchedDirectories LEFT OUTER JOIN WatchedDirectoriesExpectedTypes ON WatchedDirectories.expectedType = WatchedDirectoriesExpectedTypes.pk"""
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:
-        print row
-        watchDirectory.archivematicaWatchDirectory(row[0],row, createUnitAndJobChain)
+        rows.append(row)
         row = c.fetchone()
     sqlLock.release()
-
+    
+    for row in rows:
+        print row
+        directory = row[0].replace("%watchDirectoryPath%", config.get('MCPServer', "watchDirectoryPath"), 1)
+        for item in os.listdir(directory):
+            if item == ".svn":
+                continue
+            path = os.path.join(directory, item)
+            if os.path.isdir(path):
+                path = path + "/"
+            createUnitAndJobChain(path, row)
+        watchDirectory.archivematicaWatchDirectory(directory,row, createUnitAndJobChain)
+    
 #if __name__ == '__main__':
 #    signal.signal(signal.SIGTERM, signal_handler)
 #    signal.signal(signal.SIGINT, signal_handler)

@@ -32,9 +32,15 @@ import databaseInterface
 import lxml.etree as etree
 
 
-class unitDIP(unit):
+class unitTransfer(unit):
     
-    def __init__(self, currentPath, UUID):
+    def __init__(self, currentPath, UUID=""):
+        #Just Use the end of the directory name
+        if UUID == "":
+            uuidLen = -36
+            if archivematicaMCP.isUUID(currentPath[uuidLen-1:-1]):
+                UUID = currentPath[uuidLen-1:-1]
+        
         self.currentPath = currentPath.__str__()
         self.UUID = UUID
         self.fileList = {}
@@ -81,8 +87,6 @@ class unitDIP(unit):
         #    self.currentPath = row[2]
         #    row = c.fetchone()
         #sqlLock.release()
-        
-        #no-op for reload on DIP
         return
              
         
@@ -116,7 +120,7 @@ class unitDIP(unit):
     
     def xmlify(self):
         ret = etree.Element("unit")
-        etree.SubElement(ret, "type").text = "DIP"
+        etree.SubElement(ret, "type").text = "Transfer"
         unitXML = etree.SubElement(ret, "unitXML")
         etree.SubElement(unitXML, "UUID").text = self.UUID
         etree.SubElement(unitXML, "currentPath").text = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
