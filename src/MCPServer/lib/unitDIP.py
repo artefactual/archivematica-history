@@ -83,7 +83,7 @@ class unitDIP(unit):
         #sqlLock.release()
         
         #no-op for reload on DIP
-        a = "a"
+        return
              
         
     def getReplacementDic(self, target):
@@ -116,7 +116,7 @@ class unitDIP(unit):
     
     def xmlify(self):
         ret = etree.Element("unit")
-        etree.SubElement(ret, "type").text = "SIP"
+        etree.SubElement(ret, "type").text = "DIP"
         unitXML = etree.SubElement(ret, "unitXML")
         etree.SubElement(unitXML, "UUID").text = self.UUID
         etree.SubElement(unitXML, "currentPath").text = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")

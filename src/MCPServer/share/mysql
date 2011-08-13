@@ -25,6 +25,16 @@
 */
 
 -- clear && sudo mysql --execute="source ./mysql" MCP --
+DROP TABLE IF EXISTS Transfers;
+CREATE TABLE Transfers (
+    transferUUID        VARCHAR(50) PRIMARY KEY,
+    currentLocation     LONGTEXT,
+    accessionID         LONGTEXT,
+    sourceOfAcquisition LONGTEXT,
+    typeOfTransfer      LONGTEXT,
+    description         LONGTEXT,
+    notes               LONGTEXT
+);
 
 DROP TABLE IF EXISTS Tasks;
 CREATE TABLE Tasks (
@@ -78,6 +88,8 @@ CREATE TABLE Files(
     currentLocation     LONGTEXT,
     sipUUID             VARCHAR(50),
     Foreign Key (sipUUID) references SIPs(sipUUID),
+    transferUUID             VARCHAR(50),
+    Foreign Key (transferUUID) references Transfers(transferUUID),
     removedTime         TIMESTAMP(8) DEFAULT 0,
     enteredSystem       TIMESTAMP(8) DEFAULT NOW()
 );
@@ -92,7 +104,8 @@ CREATE TABLE FilesFits(
 
 DROP TABLE IF EXISTS FilesIDs;
 CREATE TABLE FilesIDs(
-    fileUUID        VARCHAR(50) PRIMARY KEY,
+    pk              INT PRIMARY KEY,
+    fileUUID        VARCHAR(50),
     Foreign Key (fileUUID) references Files(fileUUID),
     formatName      LONGTEXT,
     formatVersion   LONGTEXT,
@@ -237,9 +250,11 @@ CREATE TABLE WatchedDirectoriesExpectedTypes (
 
 SET @expectedTypeSIP = 1;
 SET @expectedTypeDIP = 2;
+SET @expectedTypeTransfer = 3;
 INSERT INTO WatchedDirectoriesExpectedTypes(pk, description) 
     VALUES ( @expectedTypeSIP, 'SIP'),
-    ( @expectedTypeDIP, 'DIP');
+    ( @expectedTypeDIP, 'DIP'),
+    ( @expectedTypeTransfer, 'Transfer');
 
 DROP TABLE IF EXISTS WatchedDirectories;
 CREATE TABLE WatchedDirectories (
@@ -1184,5 +1199,33 @@ set @MicroServiceChain = LAST_INSERT_ID();
 
 
 INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
-    VALUES ('%watchDirectoryPath%receiveSIP', @MicroServiceChain)
+    VALUES ('%watchDirectoryPath%receiveSIP', @MicroServiceChain);
+-- --
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Transfer complete');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (2,      LAST_INSERT_ID(), 'Transfer complete');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @MicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Transfers In progress');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
+    VALUES ('%watchDirectoryPath%preIngest/activeTransfers', @MicroServiceChain, @expectedTypeTransfer);
 
