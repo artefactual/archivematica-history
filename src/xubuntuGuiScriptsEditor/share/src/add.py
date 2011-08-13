@@ -92,12 +92,18 @@ def printAction(filePath="~/.config/Thunar/uca.xml", \
     etree.SubElement(action, "command").text = command
     etree.SubElement(action, "description").text = description
     etree.SubElement(action, "patterns").text = patterns
-    etree.SubElement(action, "directories").text = directories
-    etree.SubElement(action, "audio-files").text = audioFiles
-    etree.SubElement(action, "image-files").text = imageFiles
-    etree.SubElement(action, "other-files").text = otherFiles
-    etree.SubElement(action, "text-files").text = textFiles
-    etree.SubElement(action, "video-files").text = videoFiles
+    if options.directories:
+        etree.SubElement(action, "directories")
+    if options.audioFiles:
+        etree.SubElement(action, "audio-files")
+    if options.imageFiles:
+        etree.SubElement(action, "image-files")
+    if options.otherFiles:
+        etree.SubElement(action, "other-files")
+    if options.textFiles:
+        etree.SubElement(action, "text-files")
+    if options.videoFiles:
+        etree.SubElement(action, "video-files")
     
     print(etree.tostring(action, pretty_print=True))
     
@@ -128,27 +134,27 @@ if __name__ == "__main__":
         help="")
     
     #directories
-    parser.add_option("-D", "--directories", metavar="directories", default="", \
+    parser.add_option("-D", "--directories", action="store_true", default=False, \
         help="")
     
     #audioFiles
-    parser.add_option("-A", "--audioFiles", metavar="audioFiles", default="", \
+    parser.add_option("-A", "--audioFiles", action="store_true", default=False, \
         help="")
     
     #imageFiles
-    parser.add_option("-I", "--imageFiles", metavar="imageFiles", default="", \
+    parser.add_option("-I", "--imageFiles", action="store_true", default=False, \
         help="")
     
     #otherFiles
-    parser.add_option("-O", "--otherFiles", metavar="otherFiles", default="", \
+    parser.add_option("-O", "--otherFiles", action="store_true", default=False, \
         help="")
     
     #textFiles
-    parser.add_option("-T", "--textFiles", metavar="textFiles", default="", \
+    parser.add_option("-T", "--textFiles", action="store_true", default=False, \
         help="")
     
     #videoFiles
-    parser.add_option("-V", "--videoFiles", metavar="videoFiles", default="", \
+    parser.add_option("-V", "--videoFiles", action="store_true", default=False, \
         help="")
     
 

@@ -37,34 +37,57 @@ fi
 	--icon="accessories-calculator" \
 	--name="SIP-Restructure For Compliance" \
 	--command="archivematicaRestructureForCompliance %F/" \
-	--description="Restructure For Compliance"
+	--description="Restructure For Compliance" \
+	--directories
 
 "$add" \
 	--icon="accessories-calculator" \
 	--name="SIP-Create DC" \
 	--command="cd %F/metadata && createDublinCore %F/" \
-	--description="Insert a blank Dublin Core XML into metadata directory"	
+	--description="Insert a blank Dublin Core XML into metadata directory" \
+	--directories	
 
 "$add" \
 	--icon="accessories-calculator" \
 	--name="SIP-Create md5 checksum" \
 	--command="archivematicaCreateMD5 %F | zenity --progress --pulsate --auto-close --auto-kill" \
-	--description="Create MD5 checksums for all the selected files in this folder"
+	--description="Create MD5 checksums for all the selected files in this folder" \
+	--directories
 
 "$add" \
 	--icon="accessories-calculator" \
 	--name="SIP-Do All" \
 	--command="archivematicaRestructureForCompliance %F/ && archivematicaCreateMD5 %F | zenity --progress --pulsate --auto-close --auto-kill && cd %F/metadata && createDublinCore %F/" \
-	--description="Restructures, creates MD5 and DC"
+	--description="Restructures, creates MD5 and DC" \
+	--directories
 
 #"$add" \
 #	--icon="accessories-calculator" \
 #	--name="Remove as ROOT" \
 #	--command="gksudo -u root \"rm -r -f %F\"" \
-#	--description="Does a sudo remove of the file/directory. (Recursive & Force)"
+#	--description="Does a sudo remove of the file/directory. (Recursive & Force)" \
+#    --directories
 
 "$add" \
-	--icon="accessories-calculator" \
-	--name="Set Ownership and Permissions" \
-	--command="gksudo \"chown -R archivematica:archivematica %F\" && gksudo \"chmod -R 770 %F\"" \
-	--description="Set ownership to archivematica:archivematica and permissions to 770"
+    --icon="accessories-calculator" \
+    --name="Set Ownership and Permissions" \
+    --command="gksudo \"chown -R archivematica:archivematica %F\" && gksudo \"chmod -R 770 %F\"" \
+    --description="Set ownership to archivematica:archivematica and permissions to 770" \
+    --directories --audioFiles --imageFiles --otherFiles --textFiles --videoFiles
+
+"$add" \
+    --icon="accessories-calculator" \
+    --name="Open terminal here" \
+    --command="xfce4-terminal --default-working-directory=%d" \
+    --description="Opens a terminal at this directory" \
+    --directories --audioFiles --imageFiles --otherFiles --textFiles --videoFiles
+    
+#"$add" \
+#    --icon="accessories-calculator" \
+#    --name="Save path to clipboard" \
+#    --command="echo -n %f | xclip -i" \
+#    --description="" \
+#    --directories --audioFiles --imageFiles --otherFiles --textFiles --videoFiles
+#http://forum.xfce.org/viewtopic.php?id=3215
+	
+
