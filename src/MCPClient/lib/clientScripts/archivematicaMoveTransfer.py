@@ -30,11 +30,11 @@ import databaseInterface
 from executeOrRunSubProcess import executeOrRun
 from fileOperations import renameAsSudo
 
-def updateDB(dst, sipUUID):
-    sql =  """UPDATE SIPs SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""
+def updateDB(dst, transferUUID):
+    sql =  """UPDATE Transfers SET currentLocation='""" + dst + """' WHERE transferUUID='""" + transferUUID + """';"""
     databaseInterface.runSQL(sql)
     
-def moveSIP(src, dst, sipUUID, sharedDirectoryPath):
+def moveSIP(src, dst, transferUUID, sharedDirectoryPath):
     # os.rename(src, dst)
     if src.endswith("/"):
         src = src[:-1]
@@ -45,12 +45,12 @@ def moveSIP(src, dst, sipUUID, sharedDirectoryPath):
         dest = os.path.join(dest, os.path.basename(src))
     if dest.endswith("/."):
         dest = os.path.join(dest[:-1], os.path.basename(src))
-    updateDB(dest + "/", sipUUID)
+    updateDB(dest + "/", transferUUID)
 
 if __name__ == '__main__':
     src = sys.argv[1]
     dst = sys.argv[2]
-    sipUUID = sys.argv[3]
+    transferUUID = sys.argv[3]
     sharedDirectoryPath = sys.argv[4]
-    moveSIP(src, dst, sipUUID, sharedDirectoryPath)
+    moveSIP(src, dst, transferUUID, sharedDirectoryPath)
 

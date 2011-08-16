@@ -34,15 +34,12 @@
 #
 
 
-
-
-#clear; sudo -u archivematica /usr/bin/twistd --rundir=/home/joseph/archivematica/src/MCPServerSandbox/share/lib -l /tmp/mcpLog.html  --pidfile /tmp/mcppid.txt -ny /home/joseph/archivematica/src/MCPServerSandbox/share/lib/archivematicaMCP.py > /tmp/upstart2.html 2>&1; ps aux | grep 333
-
 import watchDirectory
 from jobChain import jobChain
 from unitSIP import unitSIP
 from unitDIP import unitDIP
 from unitFile import unitFile
+from unitTransfer import unitTransfer
 from pyinotify import ThreadedNotifier
 
 import signal

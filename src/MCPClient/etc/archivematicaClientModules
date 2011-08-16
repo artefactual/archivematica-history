@@ -51,6 +51,7 @@ createDirectory_v0.0 = mkdir
 copy_v0.0 = cp
 move_v0.0 = sudo mv
 moveSIP_v0.0 =  %clientScriptsDirectory%archivematicaMoveSIP.py
+moveTransfer_v0.0 =  %clientScriptsDirectory%archivematicaMoveTransfer.py
 remove_v0.0 = rm
 removeWithAsterisk_v0.0 = %clientScriptsDirectory%removeWithAsterisk.sh
 bagit_v0.0 = /usr/share/bagit/bin/bag
