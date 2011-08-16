@@ -28,17 +28,7 @@ import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from executeOrRunSubProcess import executeOrRun
-
-def renameAsSudo(source, destination):
-    """Used to move/rename Directories that the archivematica user may or may not have writes to move"""
-    command = "sudo mv \"" + source + "\"   \"" + destination + "\""
-    exitCode, stdOut, stdError = executeOrRun("command", command, "", printing=False)
-    if exitCode:
-        print stdOut
-        print >>sys.stderr, stdError
-        exit(exitCode)
-    
-
+from fileOperations import renameAsSudo
 
 def updateDB(dst, sipUUID):
     sql =  """UPDATE SIPs SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""

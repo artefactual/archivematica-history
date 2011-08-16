@@ -22,9 +22,11 @@
 # @version svn: $Id$
 
 import os
+import sys
 import databaseInterface
 from databaseFunctions import insertIntoFiles
 from databaseFunctions import insertIntoEvents
+from executeOrRunSubProcess import executeOrRun
 
 
 def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion"):
@@ -119,4 +121,14 @@ def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
         databaseInterface.runSQL("UPDATE Files " + \
            "SET removedTime='" + utcDate + "', currentLocation=NULL " + \
            "WHERE fileUUID='" + file + "'" )
+        
+def renameAsSudo(source, destination):
+    """Used to move/rename Directories that the archivematica user may or may not have writes to move"""
+    command = "sudo mv \"" + source + "\"   \"" + destination + "\""
+    exitCode, stdOut, stdError = executeOrRun("command", command, "", printing=False)
+    if exitCode:
+        print stdOut
+        print >>sys.stderr, stdError
+        exit(exitCode)
+
         

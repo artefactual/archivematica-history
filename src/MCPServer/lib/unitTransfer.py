@@ -24,26 +24,69 @@
 
 from unit import unit
 from unitFile import unitFile
+import uuid
 import archivematicaMCP
 import os
 import sys
+import pyinotify
+import threading
+import shutil
+from pyinotify import WatchManager
+from pyinotify import Notifier
+from pyinotify import ThreadedNotifier
+from pyinotify import EventsCodes
+from pyinotify import ProcessEvent
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import lxml.etree as etree
+from fileOperations import renameAsSudo
 
-
-class unitTransfer(unit):
+a = """
+class watchDirectoryProcessEvent(ProcessEvent):
+    ""Determine which action to take based on the watch directory. ""
+    config = None
+    def __init__(self, unit):
+        self.unit = unit
+        self.cookie = None
+        
+    def process_IN_MOVED_TO(self, event):  
+        if self.cookie == event.cookie:
+            unit.updateLocation(os.path.join(event.path, event.name) + "/")
+            self.cookie = None
     
+    def process_IN_MOVED_FROM(self, event):
+        if self.unit.currentPath == os.path.join(event.path, event.name) + "/" :
+            self.cookie = event.cookie
+"""    
+class unitTransfer(unit):
     def __init__(self, currentPath, UUID=""):
         #Just Use the end of the directory name
         if UUID == "":
             uuidLen = -36
             if archivematicaMCP.isUUID(currentPath[uuidLen-1:-1]):
                 UUID = currentPath[uuidLen-1:-1]
-        
-        self.currentPath = currentPath.__str__()
+            else:
+                UUID = uuid.uuid4().__str__()
+                self.UUID = UUID
+                sql = """INSERT INTO Transfers (transferUUID, currentLocation)
+                VALUES ('""" + UUID + databaseInterface.separator + currentPath + "');"
+                databaseInterface.runSQL(sql)
+                a = """newPath = os.path.abspath(currentPath) + "-" + UUID
+                renameAsSudo(currentPath, newPath)
+                self.updateLocation(newPath)
+                currentPath = newPath"""
+        self.currentPath = currentPath
         self.UUID = UUID
         self.fileList = {}
+        #create a watch of the transfer directory path /.. watching for moves 
+        a = """wm = WatchManager()
+        notifier = ThreadedNotifier(wm, watchDirectoryProcessEvent(self))
+        mask = pyinotify.IN_MOVED_TO | pyinotify.IN_MOVED_FROM
+        wdd = wm.add_watch(self.currentPath + "..", mask, rec=False)
+        notifier.start()
+        self.notifier = notifier
+        #^ if the item moved is this unit:
+        #update this unit's current location - here and db?"""
     
     def reloadFileList(self):
         self.fileList = {}
@@ -57,7 +100,7 @@ class unitTransfer(unit):
                 print filePath
                 self.fileList[filePath] = unitFile(filePath)
         
-        sql = """SELECT  fileUUID, currentLocation FROM Files WHERE sipUUID =  '""" + self.UUID + "'" #AND Files.removedTime = 0; TODO
+        sql = """SELECT  fileUUID, currentLocation FROM Files WHERE transferUUID =  '""" + self.UUID + "'" #AND Files.removedTime = 0; TODO
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:
@@ -73,20 +116,23 @@ class unitTransfer(unit):
             self.fileList[filePath].UUID = UUID
         sqlLock.release()
         
-
+    def updateLocation(self, newLocation):
+        self.currentPath = newLocation
+        sql =  """UPDATE Transfers SET currentPath='""" + newLocation + """' WHERE transferUUID='""" + self.UUID + """';"""
+        databaseInterface.runSQL(sql)
         
         
     def reload(self):
-        #sql = """SELECT * FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'" 
-        #c, sqlLock = databaseInterface.querySQL(sql) 
-        #row = c.fetchone()
-        #while row != None:
-        #    print row
-        #    #self.UUID = row[0]
-        #    self.createdTime = row[1] 
-        #    self.currentPath = row[2]
-        #    row = c.fetchone()
-        #sqlLock.release()
+        sql = """SELECT transferUUID, currentLocation FROM Transfers WHERE transferUUID =  '""" + self.UUID + "'" 
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            self.UUID = row[0]
+            #self.createdTime = row[1] 
+            self.currentPath = row[1]
+            row = c.fetchone()
+        sqlLock.release()
         return
              
         
@@ -125,3 +171,10 @@ class unitTransfer(unit):
         etree.SubElement(unitXML, "UUID").text = self.UUID
         etree.SubElement(unitXML, "currentPath").text = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
         return ret
+
+a = """    
+    def __del__(self):
+        #TODO - cleanup the watch directory for this unit
+        self. notifier.stop()
+        super.__del__()
+"""
