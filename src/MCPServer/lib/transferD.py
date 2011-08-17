@@ -35,8 +35,12 @@ import MySQLdb
 import sys
 import os
 import copy
-
 import threading
+
+import archivematicaMCP
+
+a = """
+
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import checksumFile
 from fileOperations import removeFile
@@ -50,7 +54,7 @@ import MCPloggingSQL
 
 sys.path.append("/usr/lib/archivematica/MCPClient/clientScripts")
 from fileAddedToSIP import sha_for_file
-
+"""
 
 #Variables to move to config file
 transferDirectory = '/var/archivematica/sharedDirectory/transfer/'
@@ -269,14 +273,18 @@ class transferNotifier(pyinotify.ProcessEvent):
 
 def startWatching():
     wm = pyinotify.WatchManager()
-    notifier = pyinotify.Notifier(wm, transferNotifier())
+    notifier = pyinotify.ThreadedNotifier(wm, transferNotifier())
     wm.add_watch(transferDirectory, mask, rec=True, auto_add=True)
-    #notifier.start()
-    notifier.loop()
+    notifier.start()
+    #notifier.loop()
 
 def loadExistingFiles():
     a=1
-
-if __name__ == '__main__':
+    
+def main():
+    return
     loadExistingFiles()
     startWatching()
+    
+if __name__ == '__main__':
+    main()

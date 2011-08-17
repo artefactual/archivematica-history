@@ -41,6 +41,7 @@ from unitDIP import unitDIP
 from unitFile import unitFile
 from unitTransfer import unitTransfer
 from pyinotify import ThreadedNotifier
+import transferD
 
 import signal
 import os
@@ -180,5 +181,7 @@ def watchDirectories():
 #directoryWatchList = loadDirectoryWatchLlist(configs)
 #archivematicaMCPServerListen()
 if __name__ == '__main__':
+    transferD.main()
     watchDirectories()
     startXMLRPCServer()
+    
