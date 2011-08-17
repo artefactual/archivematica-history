@@ -1202,6 +1202,21 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
     VALUES ('%watchDirectoryPath%receiveSIP', @MicroServiceChain);
 
 -- --
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/preIngest/SIPCreation/completedTransfers" "%SIPUUID%" "%sharedPath%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Move to completedTransfers directory');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+/*INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);*/
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, '%SIPLogsDirectory%clamAVScan.txt', 'archivematicaClamscan_v0.0', '"%fileUUID%" "%relativeLocation%" "%date%" "%taskUUID%"');
