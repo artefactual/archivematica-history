@@ -29,6 +29,16 @@ from databaseFunctions import insertIntoEvents
 from executeOrRunSubProcess import executeOrRun
 
 
+def addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="ingestion"):
+    insertIntoFiles(fileUUID, filePathRelativeToSIP, date, transferUUID=transferUUID)
+    insertIntoEvents(fileUUID=fileUUID, \
+                   eventIdentifierUUID=taskUUID, \
+                   eventType=sourceType, \
+                   eventDateTime=date, \
+                   eventDetail="", \
+                   eventOutcome="", \
+                   eventOutcomeDetailNote=filePathRelativeToSIP)
+
 def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion"):
     insertIntoFiles(fileUUID, filePathRelativeToSIP, date, sipUUID=sipUUID)
     insertIntoEvents(fileUUID=fileUUID, \

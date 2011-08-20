@@ -76,7 +76,7 @@ class linkTaskManagerFiles:
                 if not os.path.basename(file).startswith(filterFileStart):
                     continue
             if filterSubDir:
-                if not file.startswith("%SIPDirectory%" + filterSubDir):
+                if not file.startswith(unit.pathString + filterSubDir):
                     continue
             
             standardOutputFile = self.standardOutputFile

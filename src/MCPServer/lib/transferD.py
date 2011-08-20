@@ -24,6 +24,7 @@
 
 #Related Docs
 # http://pyinotify.sourceforge.net/doc-v07/index.html
+# http://code.google.com/p/archivematica/source/browse/trunk/src/transfer/lib/transferD.py?r=1656
 
 #Variables to move to config file
 
@@ -36,12 +37,19 @@ import sys
 import os
 import copy
 import threading
+import time
 
 import archivematicaMCP
+from unitTransfer import unitTransfer
+from unitSIP import unitSIP
 
-a = """
+completedTransfersDirectory = "/var/archivematica/sharedDirectory/watchedDirectories/preIngest/SIPCreation/completedTransfers/"
+sipCreationDirectory = "/var/archivematica/sharedDirectory/watchedDirectories/preIngest/SIPCreation/SIPsUnderConstruction/"
+
 
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
+a = """
 from fileOperations import checksumFile
 from fileOperations import removeFile
 
@@ -59,6 +67,7 @@ from fileAddedToSIP import sha_for_file
 #Variables to move to config file
 transferDirectory = '/var/archivematica/sharedDirectory/transfer/'
 delayTimer = 4
+waitToActOnMoves = 1
 
 #Local Variables
 mask = pyinotify.IN_CREATE | pyinotify.IN_MODIFY | pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO | pyinotify.IN_DELETE | pyinotify.IN_CLOSE_WRITE
@@ -91,13 +100,13 @@ def timerExpired(event, utcDate):
             sqlLoggingLock.release()
             #Update the database
             for file in filesWithMatchingPath:
-                removeFile(file, utcDate)
+                updateDBFileWasRemoved(file, utcDate)
         else:
-            removeFile(filePath, utcDate)        
+            updateDBFileWasRemoved(filePath, utcDate)        
     else: #was moved internally
         movedFromLock.release()
 
-
+a = """
               
 class transferNotifier(pyinotify.ProcessEvent):
     def __init__(self):
@@ -137,7 +146,7 @@ class transferNotifier(pyinotify.ProcessEvent):
         filesToChecksum = []
         sqlLoggingLock.acquire()
         c=MCPloggingSQL.database.cursor()
-        sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '""" + MySQLdb.escape_string(filePath) + """';"""
+        sql = "SELECT fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(filePath) + "';"
         c.execute(sql)
         row = c.fetchone()
         while row != None:
@@ -160,6 +169,9 @@ class transferNotifier(pyinotify.ProcessEvent):
         movedFrom[event.cookie] = event
         movedFromLock.release()
         utcDate = getUTCDate()
+        
+        movedFromLock.acquire()
+        
         
         #create timer to check if it's claimed by a move to
         self.timer = threading.Timer(delayTimer, timerExpired, args=[event, utcDate], kwargs={})
@@ -188,14 +200,14 @@ class transferNotifier(pyinotify.ProcessEvent):
             #if it's a file
             sqlLoggingLock.acquire()
             if os.path.isfile(truePath):
-                sql = """SELECT fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation = '""" + MySQLdb.escape_string(fFilePath) + """';"""
+                sql = "SELECT fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(fFilePath) + "';"
                 c.execute(sql)
                 row = c.fetchone()
                 while row != None:
                     filesWithMatchingPath.append(row)
                     row = c.fetchone()
             elif os.path.isdir(truePath):
-                sql = """SELECT fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation LIKE '""" + MySQLdb.escape_string(fFilePath + "/") + """%';"""
+                sql = "SELECT fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation LIKE '" + MySQLdb.escape_string(fFilePath + "/") + "%';"
                 c.execute(sql)
                 row = c.fetchone()
                 while row != None:
@@ -214,8 +226,8 @@ class transferNotifier(pyinotify.ProcessEvent):
                 eventDetail = ""
                 eventOutcomeDetailNote = "moveFrom=\"" + fromFilePath + "\" movedTo=\"" + newPath + "\""
         
-                runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
-                        VALUES ( '"""   + fileUUID + separator \
+                runSQL(""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcomeDetailNote)
+                        VALUES ( '""   + fileUUID + separator \
                                         + eventIdentifierUUID + separator \
                                         + MySQLdb.escape_string(eventType) + separator \
                                         + MySQLdb.escape_string(eventDateTime) + separator \
@@ -240,7 +252,7 @@ class transferNotifier(pyinotify.ProcessEvent):
         print self.IN_DELETE_COUNT
         print "file was removed"
         filePath = os.path.join(event.path, event.name).replace(transferDirectory, "transfer/", 1)
-        removeFile(filePath)
+        updateDBFileWasRemoved(filePath)
         
     def process_IN_CLOSE_WRITE(self, event):
         global separator
@@ -254,7 +266,7 @@ class transferNotifier(pyinotify.ProcessEvent):
         
         sqlLoggingLock.acquire()
         c=MCPloggingSQL.database.cursor()
-        sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '""" + MySQLdb.escape_string(filePath) + """';"""
+        sql = ""SELECT fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '"" + MySQLdb.escape_string(filePath) + ""';""
         c.execute(sql)
         row = c.fetchone()
         sqlLoggingLock.release()
@@ -262,15 +274,15 @@ class transferNotifier(pyinotify.ProcessEvent):
         if row == None:   
             #Create new file
             fileUUID = uuid.uuid4().__str__() 
-            runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem)
-                VALUES ( '"""   + fileUUID + separator \
+            runSQL(""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem)
+                VALUES ( '""   + fileUUID + separator \
                                 + MySQLdb.escape_string(filePath) + separator \
                                 + MySQLdb.escape_string(filePath) + separator \
                                 + getUTCDate() + "' )" )
         else:
             fileUUID = row[0]
         checksumFile(filePath,fileUUID)
-
+"""
 def startWatching():
     wm = pyinotify.WatchManager()
     notifier = pyinotify.ThreadedNotifier(wm, transferNotifier())
@@ -278,12 +290,158 @@ def startWatching():
     notifier.start()
     #notifier.loop()
 
+class SIPWatch(pyinotify.ProcessEvent):
+    def __init__(self, unit):
+        self.unit=unit
+    #if a file is moved in, look for a cookie to claim
+        #if there isn't one - error
+        #error. No adding files to a sip in this manner.
+    #else
+        #Update the file to be linked to this SIP
+    
+    #if the SIP is moved/removed
+        #???
+    
+    #if a file is moved in, look for a cookie to claim
+    def process_IN_MOVED_TO(self, event):
+        time.sleep(waitToActOnMoves)
+        print event
+        movedFromLock.acquire()
+        if event.cookie not in movedFrom:
+            #if there isn't one - error
+            print event.cookie, movedFrom
+            print >>sys.stderr, "#error. No adding files to a sip in this manner."
+            movedFromLock.release()
+            return
+            
+        #remove it from the list of unfound moves
+        movedFromPath, filesMoved, timer = movedFrom.pop(event.cookie)
+        movedFromLock.release()
+              
+        movedToPath = os.path.join(event.path, event.name).replace(\
+                             self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
+                             "%SIPDirectory%", 1)
+        for fileUUID, oldLocation in filesMoved:
+            newFilePath = oldLocation.replace(movedFromPath, movedToPath, 1)
+            print "Moved: ", oldLocation, "->", newFilePath 
+            databaseInterface.runSQL("UPDATE Files " + \
+                "SET currentLocation='" + newFilePath +  "', " + \
+                "Files.sipUUID = '" + self.unit.UUID + "' " \
+                "WHERE fileUUID='" + fileUUID + "'" )     
+
+        
+class transferWatch(pyinotify.ProcessEvent):
+    def __init__(self, unit):
+        self.unit=unit
+
+    #when a file is moved out, create a cookie for the file, with the file uuid
+    #and a timer, so if it isn't claimed, the cookie is removed.
+    def process_IN_MOVED_FROM(self, event):
+        print event
+        #Wait for a moved to, and if one doesn't occur, consider it moved outside of the system.
+        
+        movedFromPath = os.path.join(event.path, event.name).replace(\
+                             self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
+                             "%transferDirectory%", 1)
+        filesMoved = []
+        sql = """SELECT fileUUID, currentLocation FROM Files WHERE transferUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "%%") + "%';"
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            filesMoved.append(row)            
+            row = c.fetchone()
+        sqlLock.release()
+        
+        movedFromLock.acquire()
+        utcDate = databaseInterface.getUTCDate()
+        timer = threading.Timer(delayTimer, timerExpired, args=[event, utcDate], kwargs={})
+        movedFrom[event.cookie] = (movedFromPath, filesMoved, timer)
+        print movedFrom
+        movedFromLock.release()
+
+        #create timer to check if it's claimed by a move to
+        timer.start()
+    
+    #if a file is moved in, look for a cookie to claim
+    def process_IN_MOVED_TO(self, event):
+        time.sleep(waitToActOnMoves)
+        print event
+        movedFromLock.acquire()
+        if event.cookie not in movedFrom:
+            #if there isn't one - error
+            print >>sys.stderr, "#error. No adding files to a sip in this manner."
+            movedFromLock.release()
+            return
+            
+        #remove it from the list of unfound moves
+        movedFromPath, filesMoved, timer = movedFrom.pop(event.cookie)
+        movedFromLock.release()
+        
+        movedToPath = os.path.join(event.path, event.name).replace(\
+                             self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
+                             "%transferDirectory%", 1)
+        for fileUUID, oldLocation in filesMoved:
+            newFilePath = oldLocation.replace(movedFromPath, movedToPath, 1)
+            print "Moved: ", oldLocation, "->", newFilePath 
+            print "Todo - verify it belongs to this transfer"
+            #if it's from this transfer 
+                #clear the SIP membership
+                #update current location
+
+            databaseInterface.runSQL("UPDATE Files " + \
+                "SET currentLocation='" + newFilePath +  "', " + \
+                "Files.sipUUID = NULL " + \
+                "WHERE fileUUID='" + fileUUUID + "'" )        
+            #else
+                #error ish - file doesn't belong here
+                #update current location & clear SIP
+    
+    #if the transfer is moved/removed
+        #???    
+        
+def addWatchForTransfer(path, unit):
+    "Watch for things being removed from the transfer to use the cookie, to know which sip they end up in, if any."
+    wm = pyinotify.WatchManager()
+    notifier = pyinotify.ThreadedNotifier(wm, transferWatch(unit))
+    wm.add_watch(path, mask, rec=True, auto_add=True)
+    notifier.start()
+
+def addWatchForSIP(path, unit):
+    "Watch for things being removed from the transfer to use the cookie, to know which sip they end up in, if any."
+    wm = pyinotify.WatchManager()
+    notifier = pyinotify.ThreadedNotifier(wm, SIPWatch(unit))
+    wm.add_watch(path, mask, rec=True, auto_add=True)
+    notifier.start()
+    
+
 def loadExistingFiles():
-    a=1
+    #Transfers
+    directory = completedTransfersDirectory
+    for item in os.listdir(directory):
+        if item == ".svn":
+            continue
+        path = os.path.join(directory, item)
+        if os.path.isdir(path):
+            path = path + "/"
+            unit = unitTransfer(path)
+            addWatchForTransfer(path, unit)
+        
+    #SIPS
+    directory = sipCreationDirectory
+    for item in os.listdir(directory):
+        if item == ".svn":
+            continue
+        path = os.path.join(directory, item)
+        if os.path.isdir(path):
+            path = path + "/"
+            UUID = archivematicaMCP.findOrCreateSipInDB(path)
+            unit = unitSIP(path, UUID) 
+            addWatchForSIP(path, unit)
     
 def main():
-    return
     loadExistingFiles()
+    return
     startWatching()
     
 if __name__ == '__main__':
