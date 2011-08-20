@@ -317,12 +317,38 @@ class SIPWatch(pyinotify.ProcessEvent):
                              self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
                              "%SIPDirectory%", 1)
         for fileUUID, oldLocation in filesMoved:
-            newFilePath = oldLocation.replace(movedFromPath, movedToPath, 1)
-            print "Moved: ", oldLocation, "->", newFilePath 
+            newFilePath = oldLocation.replace(movedFromPath, movedToPath, 1) 
+            print "Moved: ", oldLocation, "-> (" + self.unit.UUID + ")" + newFilePath
             databaseInterface.runSQL("UPDATE Files " + \
                 "SET currentLocation='" + newFilePath +  "', " + \
                 "Files.sipUUID = '" + self.unit.UUID + "' " \
-                "WHERE fileUUID='" + fileUUID + "'" )     
+                "WHERE fileUUID='" + fileUUID + "'" ) 
+    
+    def process_IN_MOVED_FROM(self, event):
+        print event
+        #Wait for a moved to, and if one doesn't occur, consider it moved outside of the system.
+        
+        movedFromPath = os.path.join(event.path, event.name).replace(\
+                             self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
+                             "%SIPDirectory%", 1)
+        filesMoved = []
+        sql = """SELECT fileUUID, currentLocation FROM Files WHERE sipUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "%%") + "%';"
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            filesMoved.append(row)            
+            row = c.fetchone()
+        sqlLock.release()
+        
+        movedFromLock.acquire()
+        utcDate = databaseInterface.getUTCDate()
+        timer = threading.Timer(delayTimer, timerExpired, args=[event, utcDate], kwargs={})
+        movedFrom[event.cookie] = (movedFromPath, filesMoved, timer)
+        movedFromLock.release()
+
+        #create timer to check if it's claimed by a move to
+        timer.start()    
 
         
 class transferWatch(pyinotify.ProcessEvent):
@@ -352,7 +378,6 @@ class transferWatch(pyinotify.ProcessEvent):
         utcDate = databaseInterface.getUTCDate()
         timer = threading.Timer(delayTimer, timerExpired, args=[event, utcDate], kwargs={})
         movedFrom[event.cookie] = (movedFromPath, filesMoved, timer)
-        print movedFrom
         movedFromLock.release()
 
         #create timer to check if it's claimed by a move to
@@ -378,7 +403,7 @@ class transferWatch(pyinotify.ProcessEvent):
                              "%transferDirectory%", 1)
         for fileUUID, oldLocation in filesMoved:
             newFilePath = oldLocation.replace(movedFromPath, movedToPath, 1)
-            print "Moved: ", oldLocation, "->", newFilePath 
+            print "Moved: ", oldLocation, "-> (" + self.unit.UUID + ")" + newFilePath 
             print "Todo - verify it belongs to this transfer"
             #if it's from this transfer 
                 #clear the SIP membership
@@ -439,7 +464,7 @@ class SIPCreationWatch(pyinotify.ProcessEvent):
     "watches for new sips/completed transfers"
     
     def process_IN_CREATE(self, event):
-        process_IN_MOVED_TO(self, event)
+        self.process_IN_MOVED_TO(event)
 
 
     def process_IN_MOVED_TO(self, event):
