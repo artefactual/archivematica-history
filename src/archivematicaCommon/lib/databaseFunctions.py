@@ -27,6 +27,7 @@ import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import MySQLdb
+import uuid
 
 def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDate(), transferUUID=""):
     databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, transferUUID)
@@ -133,4 +134,22 @@ def logJobStepChangedSQL(job):
     
     databaseInterface.runSQL("UPDATE Jobs " + \
     "SET currentStep='" + job.step +  "' " + \
-    "WHERE jobUUID='" + jobUUUID + "'" )        
+    "WHERE jobUUID='" + jobUUUID + "'" )    
+    
+def fileWasRemoved(fileUUID, utcDate=databaseInterface.getUTCDate(), eventDetail = "", eventOutcomeDetailNote = "", eventOutcome=""):
+    eventIdentifierUUID = uuid.uuid4().__str__()
+    eventType = "file removed"
+    eventDateTime = utcDate
+    insertIntoEvents(fileUUID=fileUUID, \
+                       eventIdentifierUUID=eventIdentifierUUID, \
+                       eventType=eventType, \
+                       eventDateTime=eventDateTime, \
+                       eventDetail=eventDetail, \
+                       eventOutcome=eventOutcome, \
+                       eventOutcomeDetailNote=eventOutcomeDetailNote)
+
+    
+    databaseInterface.runSQL("UPDATE Files " + \
+       "SET removedTime='" + utcDate + "', currentLocation=NULL " + \
+       "WHERE fileUUID='" + fileUUID + "'" )
+        
