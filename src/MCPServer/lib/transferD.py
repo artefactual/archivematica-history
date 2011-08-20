@@ -283,12 +283,7 @@ class transferNotifier(pyinotify.ProcessEvent):
             fileUUID = row[0]
         checksumFile(filePath,fileUUID)
 """
-def startWatching():
-    wm = pyinotify.WatchManager()
-    notifier = pyinotify.ThreadedNotifier(wm, transferNotifier())
-    wm.add_watch(transferDirectory, mask, rec=True, auto_add=True)
-    notifier.start()
-    #notifier.loop()
+
 
 class SIPWatch(pyinotify.ProcessEvent):
     def __init__(self, unit):
@@ -438,10 +433,44 @@ def loadExistingFiles():
             UUID = archivematicaMCP.findOrCreateSipInDB(path)
             unit = unitSIP(path, UUID) 
             addWatchForSIP(path, unit)
+
+
+class SIPCreationWatch(pyinotify.ProcessEvent):
+    "watches for new sips/completed transfers"
     
+    def process_IN_CREATE(self, event):
+        process_IN_MOVED_TO(self, event)
+
+
+    def process_IN_MOVED_TO(self, event):
+        time.sleep(1) #let db be updated by the microservice that moved it.
+        print event
+        path = os.path.join(event.path, event.name)
+        if not os.path.isdir(path):
+            print >>sys.stderr, "Bad path for watching - not a directory: ", path
+            return
+        if os.path.abspath(event.path) == os.path.abspath(completedTransfersDirectory):
+            path = path + "/"
+            unit = unitTransfer(path)
+            addWatchForTransfer(path, unit)
+        elif os.path.abspath(event.path) == os.path.abspath(sipCreationDirectory):
+            path = path + "/"
+            UUID = archivematicaMCP.findOrCreateSipInDB(path)
+            unit = unitSIP(path, UUID) 
+            addWatchForSIP(path, unit)
+        else: 
+            print >>sys.stderr, "Bad path for watching: ", event.path
+
+def startWatching():
+    wm = pyinotify.WatchManager()
+    notifier = pyinotify.ThreadedNotifier(wm, SIPCreationWatch())
+    wm.add_watch(completedTransfersDirectory, mask, rec=False, auto_add=False)
+    wm.add_watch(sipCreationDirectory, mask, rec=False, auto_add=False)
+    notifier.start()
+    #notifier.loop()
+
 def main():
     loadExistingFiles()
-    return
     startWatching()
     
 if __name__ == '__main__':
