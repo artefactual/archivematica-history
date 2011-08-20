@@ -28,13 +28,13 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import MySQLdb
 
-def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDate(), sipUUID=""):
-    databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, sipUUID)
+def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDate(), transferUUID=""):
+    databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, transferUUID)
     VALUES ( '"""   + fileUUID + databaseInterface.separator \
                     + MySQLdb.escape_string(filePath) + databaseInterface.separator \
                     + MySQLdb.escape_string(filePath) + databaseInterface.separator \
                     + enteredSystem + databaseInterface.separator \
-                    + sipUUID + "' )" )
+                    + transferUUID + "' )" )
 
 def insertIntoEvents(fileUUID="", eventIdentifierUUID="", eventType="", eventDateTime="", eventDetail="", eventOutcome="", eventOutcomeDetailNote=""):  
     databaseInterface.runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcome, eventOutcomeDetailNote)

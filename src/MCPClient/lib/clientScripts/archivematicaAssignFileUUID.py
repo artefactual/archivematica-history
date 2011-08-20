@@ -24,7 +24,8 @@
 import sys
 import uuid
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from fileOperations import addFileToSIP
+#from fileOperations import addFileToSIP
+from fileOperations import addFileToTransfer
 
 
 if __name__ == '__main__':
@@ -38,8 +39,8 @@ if __name__ == '__main__':
     if not fileUUID or fileUUID == "None":
         fileUUID = uuid.uuid4().__str__()     
     
-    filePathRelativeToSIP = filePath.replace(sipDirectory,"%SIPDirectory%", 1)
-    addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date)
+    filePathRelativeToSIP = filePath.replace(sipDirectory,"%transferDirectory%", 1)
+    addFileToTransfer(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date)
 
     
 

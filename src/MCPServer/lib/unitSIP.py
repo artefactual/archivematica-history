@@ -38,6 +38,7 @@ class unitSIP(unit):
         self.currentPath = currentPath.__str__()
         self.UUID = UUID
         self.fileList = {}
+        self.pathString = "%SIPDirectory%"
     
     def reloadFileList(self):
         self.fileList = {}

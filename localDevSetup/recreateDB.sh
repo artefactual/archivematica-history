@@ -4,6 +4,4 @@ echo MCPServer
 sudo mysql -p --execute="source ../src/MCPServer/share/mysql" "$databaseName"
 echo transcoder
 sudo mysql -p --execute="source ../src/transcoder/share/mysql" "$databaseName"
-echo transfer
-sudo mysql -p --execute="source ../src/transfer/share/mysql" "$databaseName"
 

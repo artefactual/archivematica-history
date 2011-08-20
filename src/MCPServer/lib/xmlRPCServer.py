@@ -27,7 +27,7 @@ from linkTaskManagerChoice import choicesAvailableForUnits
 import lxml.etree as etree
 
 def startXMLRPCServer():
-    server = SimpleXMLRPCServer( (archivematicaMCP.config.get('MCPServer', 'MCPArchivematicaXMLClients'), archivematicaMCP.config.getint('MCPServer', "MCPArchivematicaXMLPort")))
+    server = SimpleXMLRPCServer( (archivematicaMCP.config.get('MCPServer', 'MCPArchivematicaXMLClients'), archivematicaMCP.config.getint('MCPServer', "MCPArchivematicaXMLPort")), logRequests=False)
     server.register_function(getJobsAwaitingApproval)
     server.register_function(approveJob)
     server.serve_forever()

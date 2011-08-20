@@ -61,6 +61,8 @@ class watchDirectoryProcessEvent(ProcessEvent):
 class unitTransfer(unit):
     def __init__(self, currentPath, UUID=""):
         #Just Use the end of the directory name
+        self.pathString = "%transferDirectory%"
+        
         if UUID == "":
             uuidLen = -36
             if archivematicaMCP.isUUID(currentPath[uuidLen-1:-1]):
@@ -94,7 +96,7 @@ class unitTransfer(unit):
         currentPath = self.currentPath.replace("%sharedPath%", \
                                                archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1) + "/"
         for directory, subDirectories, files in os.walk(currentPath):
-            directory = directory.replace( currentPath, "%SIPDirectory%", 1)
+            directory = directory.replace( currentPath, "%transferDirectory%", 1)
             for file in files:
                 filePath = os.path.join(directory, file)
                 print filePath
@@ -153,6 +155,7 @@ class unitTransfer(unit):
         "%SIPLogsDirectory%": SIPDirectory + "logs/", \
         "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
         "%SIPDirectory%": SIPDirectory, \
+        "%transferDirectory%": SIPDirectory, \
         "%SIPDirectoryBasename%": os.path.basename(os.path.abspath(SIPDirectory)), \
         "%relativeLocation%": target.replace(self.currentPath, relativeDirectoryLocation, 1), \
         "%processingDirectory%": archivematicaMCP.config.get('MCPServer', "processingDirectory"), \
