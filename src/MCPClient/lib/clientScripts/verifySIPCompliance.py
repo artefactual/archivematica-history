@@ -26,7 +26,6 @@ import sys
 
 requiredDirectories = ["objects", \
                        "logs", \
-                       "logs/fileMeta", \
                        "metadata",\
                        "metadata/submissionDocumentation"]
 

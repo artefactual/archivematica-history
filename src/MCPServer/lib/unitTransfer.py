@@ -27,6 +27,7 @@ from unitFile import unitFile
 import uuid
 import archivematicaMCP
 import os
+import time
 import sys
 import pyinotify
 import threading
@@ -62,21 +63,31 @@ class unitTransfer(unit):
     def __init__(self, currentPath, UUID=""):
         #Just Use the end of the directory name
         self.pathString = "%transferDirectory%"
+        currentPath2 = currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), \
+                       "%sharedPath%", 1)
         
         if UUID == "":
-            uuidLen = -36
-            if archivematicaMCP.isUUID(currentPath[uuidLen-1:-1]):
+            sql = """SELECT transferUUID FROM Transfers WHERE currentLocation = '""" + currentPath2 + "'"
+            time.sleep(.5)
+            c, sqlLock = databaseInterface.querySQL(sql) 
+            row = c.fetchone()
+            while row != None:
+                UUID = row[0]
+                print "Opening existing Transfer:", UUID, "-", currentPath2
+                row = c.fetchone()
+            sqlLock.release()
+            
+        if UUID == "":
+            uuidLen = -36           
+            if  archivematicaMCP.isUUID(currentPath[uuidLen-1:-1]):
                 UUID = currentPath[uuidLen-1:-1]
             else:
                 UUID = uuid.uuid4().__str__()
                 self.UUID = UUID
                 sql = """INSERT INTO Transfers (transferUUID, currentLocation)
-                VALUES ('""" + UUID + databaseInterface.separator + currentPath + "');"
+                VALUES ('""" + UUID + databaseInterface.separator + currentPath2 + "');"
                 databaseInterface.runSQL(sql)
-                a = """newPath = os.path.abspath(currentPath) + "-" + UUID
-                renameAsSudo(currentPath, newPath)
-                self.updateLocation(newPath)
-                currentPath = newPath"""
+                
         self.currentPath = currentPath
         self.UUID = UUID
         self.fileList = {}
