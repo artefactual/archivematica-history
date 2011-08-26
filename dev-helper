@@ -103,7 +103,7 @@ read a
 if [[ $a == "Y" || $a == "y" ]]; then
         rev="`svn info | grep \"Revision: \" | awk -F " " '{print $2}'`"
         echo Going to export to '~/'sampledata-$rev ...
-        svn export sampledata ~/sampledata$-{rev}
+        svn export sampledata ~/sampledata-${rev}
 else
         echo "Not goint to ${part}."
 fi

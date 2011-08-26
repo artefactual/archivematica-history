@@ -28,8 +28,9 @@ from transcoder import main
 from executeOrRunSubProcess import executeOrRun
 import transcoder
 #from premisXMLlinker import xmlNormalize 
-sys.path.append("/usr/lib/archivematica/MCPClient/clientScripts")
-from fileAddedToSIP import addFileToSIP
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from fileOperations import addFileToTransfer
+from databaseFunctions import fileWasRemoved
 
 global extractedCount
 extractedCount = 1
@@ -45,7 +46,12 @@ def onceExtracted(command):
     extractedFiles = []
     print "TODO - Metadata regarding removal of extracted archive"
     if removeOnceExtracted:
+        packageFileUUID = sys.argv[6].__str__()
+        sipDirectory = sys.argv[2].__str__()
         os.remove(replacementDic["%inputFile%"])
+        currentLocation =  replacementDic["%inputFile%"].replace(sipDirectory, "%transferDirectory%", 1)
+        fileWasRemoved(packageFileUUID, eventOutcomeDetailNote = "removed from: " + currentLocation)
+        
     print "OUTPUT DIRECTORY: ", replacementDic["%outputDirectory%"]
     for w in os.walk(replacementDic["%outputDirectory%"].replace("*", "asterisk*")):
         path, directories, files = w
@@ -59,18 +65,21 @@ def onceExtracted(command):
         #print "File Extracted:", ef
         if True: #Add the file to the SIP
             #<arguments>"%relativeLocation%" "%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%" "%taskUUID%" "%fileUUID%"</arguments>
-            objectsDirectory = sys.argv[2].__str__()
-            logsDirectory = sys.argv[3].__str__()
+            sipDirectory = sys.argv[2].__str__()
+            transferUUID = sys.argv[3].__str__()
             date = sys.argv[4].__str__()
             taskUUID = sys.argv[5].__str__()
             packageFileUUID = sys.argv[6].__str__()
             
-            objects = "objects/"
-            print "File Extracted:: {" + fileUUID + "} ", ef.replace(objectsDirectory, objects, 1)
+            filePathRelativeToSIP = ef.replace(sipDirectory,"%transferDirectory%", 1)
+            print "File Extracted:: {" + fileUUID + "} ", filePathRelativeToSIP 
+            eventDetail="Extracted From: {" + packageFileUUID + "}" + filePathRelativeToSIP
+            addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="extraction", eventDetail=eventDetail)
+            #relativeFilePath = ef.replace(objectsDirectory, objects, 1)
+            #addFileToSIP( objectsDirectory, logsDirectory, ef, fileUUID, "unpacking", date, date, eventDetailText=command.eventDetailCommand.stdOut.__str__(), eventOutcomeDetailNote="extracted " + relativeFilePath)
             
             
-            relativeFilePath = ef.replace(objectsDirectory, objects, 1)
-            addFileToSIP( objectsDirectory, logsDirectory, ef, fileUUID, "unpacking", date, date, eventDetailText=command.eventDetailCommand.stdOut.__str__(), eventOutcomeDetailNote="extracted " + relativeFilePath)
+            
             
             
             

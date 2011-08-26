@@ -52,7 +52,7 @@ class unitSIP(unit):
                 print filePath
                 self.fileList[filePath] = unitFile(filePath)
         
-        sql = """SELECT  fileUUID, currentLocation FROM Files WHERE sipUUID =  '""" + self.UUID + "'" #AND Files.removedTime = 0; TODO
+        sql = """SELECT  fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND sipUUID =  '""" + self.UUID + "'" 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:

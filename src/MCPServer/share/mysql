@@ -1294,7 +1294,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%extraction.log', '%SIPLogsDirectory%extraction.log', 'transcoderExtractPackages_v0.0', '"%relativeLocation%" "%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%" "%taskUUID%" "%fileUUID%"');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%extraction.log', '%SIPLogsDirectory%extraction.log', 'transcoderExtractPackages_v0.0', '"%relativeLocation%" "%SIPDirectory%" "%SIPUUID%" "%date%" "%taskUUID%" "%fileUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      LAST_INSERT_ID(), 'Extract packages');
