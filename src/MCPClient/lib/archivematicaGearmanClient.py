@@ -41,6 +41,7 @@ import threading
 import cPickle
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
+import databaseInterface
 
 config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
 config.read("/etc/archivematica/MCPClient/clientConfig.conf")
@@ -72,7 +73,9 @@ def executeCommand(gearman_worker, gearman_job):
             exitCode = -1
             return cPickle.dumps({"exitCode" : exitCode, "stdOut": output[0], "stdError": output[1]})
         command = supportedModules[execute] 
-      
+        
+        utcDate = databaseInterface.getUTCDate()
+        replacementDic["%date%"] = utcDate
         #Replace replacement strings
         for key in replacementDic.iterkeys():
             command = command.replace ( key, replacementDic[key] )
