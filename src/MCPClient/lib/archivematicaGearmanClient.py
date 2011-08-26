@@ -82,6 +82,7 @@ def executeCommand(gearman_worker, gearman_job):
         
         
         replacementDic["%date%"] = utcDate
+        replacementDic["%jobCreatedDate%"] = data["createdDate"]
         #Replace replacement strings
         for key in replacementDic.iterkeys():
             command = command.replace ( key, replacementDic[key] )
