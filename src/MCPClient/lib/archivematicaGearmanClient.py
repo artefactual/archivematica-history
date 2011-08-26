@@ -104,7 +104,7 @@ def executeCommand(gearman_worker, gearman_job):
         return cPickle.dumps({"exitCode" : -1, "stdOut": output[0], "stdError": output[1]})
         
 
-def startThread(threadNumber=0):
+def startThread(threadNumber=0): 
     gm_worker = gearman.GearmanWorker(['localhost:4730'])
     hostID = gethostname() + "_" + threadNumber.__str__() 
     gm_worker.set_client_id(hostID)
@@ -114,14 +114,17 @@ def startThread(threadNumber=0):
     gm_worker.work()
     
 
-def startThreads(t):
+def startThreads(t=1):
+    if t == 0:
+        from externals.detectCores import detectCPUs
+        t = detectCPUs()
     for i in range(t):
         t = threading.Thread(target=startThread, args=(i, ))
         t.start()
 
 if __name__ == '__main__':
     loadSupportedModules(config.get('MCPClient', "archivematicaClientModules"))
-    startThreads(1)
+    startThreads(0)
     tl = threading.Lock()
     tl.acquire()
     tl.acquire()
