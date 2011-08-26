@@ -42,6 +42,7 @@ import cPickle
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
 import databaseInterface
+from databaseFunctions import logTaskAssignedSQL
 
 config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
 config.read("/etc/archivematica/MCPClient/clientConfig.conf")
@@ -60,13 +61,18 @@ def loadSupportedModules(file):
        
 def executeCommand(gearman_worker, gearman_job):
     try:
-        #print gearman_worker
-        #print gearman_job
-        print gearman_job.task, cPickle.loads(gearman_job.data)
         execute = gearman_job.task
         data = cPickle.loads(gearman_job.data)
+        utcDate = databaseInterface.getUTCDate()
         arguments = data["arguments"]
         sInput = ""
+        clientID = gearman_worker.worker_client_id
+        
+        if True:
+            print clientID, execute, data
+        logTaskAssignedSQL(gearman_job.unique.__str__(), clientID, utcDate)
+        
+        
         
         if execute not in supportedModules:
             output = ["Error!", "Error! - Tried to run and unsupported command." ]
@@ -74,7 +80,7 @@ def executeCommand(gearman_worker, gearman_job):
             return cPickle.dumps({"exitCode" : exitCode, "stdOut": output[0], "stdError": output[1]})
         command = supportedModules[execute] 
         
-        utcDate = databaseInterface.getUTCDate()
+        
         replacementDic["%date%"] = utcDate
         #Replace replacement strings
         for key in replacementDic.iterkeys():
@@ -104,7 +110,7 @@ def executeCommand(gearman_worker, gearman_job):
         return cPickle.dumps({"exitCode" : -1, "stdOut": output[0], "stdError": output[1]})
         
 
-def startThread(threadNumber=0): 
+def startThread(threadNumber): 
     gm_worker = gearman.GearmanWorker(['localhost:4730'])
     hostID = gethostname() + "_" + threadNumber.__str__() 
     gm_worker.set_client_id(hostID)
@@ -119,7 +125,7 @@ def startThreads(t=1):
         from externals.detectCores import detectCPUs
         t = detectCPUs()
     for i in range(t):
-        t = threading.Thread(target=startThread, args=(i, ))
+        t = threading.Thread(target=startThread, args=(i+1, ))
         t.start()
 
 if __name__ == '__main__':
