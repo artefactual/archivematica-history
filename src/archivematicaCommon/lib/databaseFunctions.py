@@ -95,12 +95,9 @@ def logTaskCreatedSQL(taskManager, commandReplacementDic, taskUUID, arguments):
                     + _mysql.escape_string(arguments) + databaseInterface.separator \
                     + databaseInterface.getUTCDate() + "' )" )
 
-def logTaskAssignedSQL(task, client):
-    taskUUID = task.UUID.__str__()
-    client = client.clientName
-    
+def logTaskAssignedSQL(taskUUID, client, date):   
     databaseInterface.runSQL("UPDATE Tasks " + \
-    "SET startTime='" + task.assignedDate + "', client='" + client + "' " + \
+    "SET startTime='" + date + "', client='" + client + "' " + \
     "WHERE taskUUID='" + taskUUID + "'" )
 
 def logTaskCompletedSQL(task):
