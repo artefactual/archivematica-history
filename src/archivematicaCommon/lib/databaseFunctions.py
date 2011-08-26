@@ -24,7 +24,6 @@
 import _mysql
 import os
 import sys
-sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import MySQLdb
 import uuid
