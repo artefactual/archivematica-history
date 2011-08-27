@@ -31,6 +31,7 @@ import transcoder
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import addFileToTransfer
 from databaseFunctions import fileWasRemoved
+from fileOperations import updateSizeAndChecksum
 
 global extractedCount
 extractedCount = 1
@@ -70,17 +71,12 @@ def onceExtracted(command):
             date = sys.argv[4].__str__()
             taskUUID = sys.argv[5].__str__()
             packageFileUUID = sys.argv[6].__str__()
-            
+           
             filePathRelativeToSIP = ef.replace(sipDirectory,"%transferDirectory%", 1)
             print "File Extracted:: {" + fileUUID + "} ", filePathRelativeToSIP 
             eventDetail="Extracted From: {" + packageFileUUID + "}" + filePathRelativeToSIP
             addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="extraction", eventDetail=eventDetail)
-            #relativeFilePath = ef.replace(objectsDirectory, objects, 1)
-            #addFileToSIP( objectsDirectory, logsDirectory, ef, fileUUID, "unpacking", date, date, eventDetailText=command.eventDetailCommand.stdOut.__str__(), eventOutcomeDetailNote="extracted " + relativeFilePath)
-            
-            
-            
-            
+            updateSizeAndChecksum(fileUUID, ef, date, uuid.uuid4.__str__())
             
             
         run = sys.argv[0].__str__() + \

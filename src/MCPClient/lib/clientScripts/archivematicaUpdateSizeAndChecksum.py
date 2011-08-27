@@ -21,38 +21,10 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-import os
 import sys
-import uuid
 from optparse import OptionParser
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from externals.checksummingTools import sha_for_file
-from databaseFunctions import insertIntoEvents
-import databaseInterface
-
-
-def updateSizeAndChecksum(fileUUID, filePath, date, eventIdentifierUUID):   
-    fileSize = os.path.getsize(filePath).__str__()
-    checksum = sha_for_file(filePath).__str__()
-    
-    sql = "UPDATE Files " + \
-        "SET fileSize='" + fileSize +"', checksum='" + checksum +  "' " + \
-        "WHERE fileUUID='" + fileUUID + "'"
-    databaseInterface.runSQL(sql)
-
-    insertIntoEvents(fileUUID=fileUUID, \
-                     eventIdentifierUUID=eventIdentifierUUID, \
-                     eventType="message digest calculation", \
-                     eventDateTime=date, \
-                     eventDetail="program=\"python\"; module=\"hashlib.sha256()\"", \
-                     eventOutcomeDetailNote=checksum)  
-    
-    insertIntoEvents(fileUUID=fileUUID, \
-                 eventIdentifierUUID=uuid.uuid4().__str__(), \
-                 eventType="file size calculation", \
-                 eventDateTime=date, \
-                 eventDetail="program=\"python\"; module=\"os.path.getsize()\"", \
-                 eventOutcomeDetailNote=fileSize)  
+from fileOperations import updateSizeAndChecksum
     
 if __name__ == '__main__':
     parser = OptionParser()

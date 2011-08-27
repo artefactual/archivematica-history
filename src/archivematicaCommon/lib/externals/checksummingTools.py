@@ -1,7 +1,4 @@
 #!/usr/bin/python
-#Author Bruce Eckel (www.BruceEckel.com) 
-#Source http://www.artima.com/weblogs/viewpost.jsp?thread=230001
-
 import hashlib
 
 #Borrowed from http://stackoverflow.com/questions/1131220/get-md5-hash-of-a-files-without-open-it-in-python

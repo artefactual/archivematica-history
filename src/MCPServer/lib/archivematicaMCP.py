@@ -72,6 +72,9 @@ config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
 config.read("/etc/archivematica/MCPServer/serverConfig.conf")
 # archivematicaRD = replacementDics(config)
 
+#time to sleep to allow db to be updated with the new location of a SIP
+dbWaitSleep = 2
+
 
 configs = []
 jobsAwaitingApproval = []
@@ -100,22 +103,23 @@ def findOrCreateSipInDB(path):
     UUID = ""
     path = path.replace(config.get('MCPServer', "sharedDirectory"), "%sharedPath%", 1)
     
-    #Find it in the database
-    sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "'"
-    time.sleep(.5)
-    c, sqlLock = databaseInterface.querySQL(sql) 
-    row = c.fetchone()
-    while row != None:
-        UUID = row[0]
-        print "Opening existing SIP:", UUID, "-", path
-        row = c.fetchone()
-    sqlLock.release()
+    #find UUID on end of SIP path
+    uuidLen = -36
+    if isUUID(path[uuidLen-1:-1]):
+        UUID = path[uuidLen-1:-1]
 
-    #Just Use the end of the directory name
+    
     if UUID == "":
-        uuidLen = -36
-        if isUUID(path[uuidLen-1:-1]):
-            UUID = path[uuidLen-1:-1]
+        #Find it in the database
+        sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "'"
+        time.sleep(dbWaitSleep) #let db be updated by the microservice that moved it.
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            UUID = row[0]
+            print "Opening existing SIP:", UUID, "-", path
+            row = c.fetchone()
+        sqlLock.release()
                 
     
     #Create it
