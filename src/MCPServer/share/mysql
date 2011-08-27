@@ -91,7 +91,9 @@ CREATE TABLE Files(
     transferUUID             VARCHAR(50),
     Foreign Key (transferUUID) references Transfers(transferUUID),
     removedTime         TIMESTAMP(8) DEFAULT 0,
-    enteredSystem       TIMESTAMP(8) DEFAULT NOW()
+    enteredSystem       TIMESTAMP(8) DEFAULT NOW(),
+    fileSize            BIGINT UNSIGNED, 
+    checksum            VARCHAR(100)
 );
 
 
@@ -1308,6 +1310,21 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, 'objects', TRUE, NULL, NULL, 'updateSizeAndChecksum_v0.0',  '--filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      LAST_INSERT_ID(), 'Assign checksums and file sizes to objects');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
 
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
