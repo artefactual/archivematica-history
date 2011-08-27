@@ -75,3 +75,4 @@ assignBAGUUID_v0.0 = %clientScriptsDirectory%assignSIPUUID.sh
 restructureBAG_v0.0 = %clientScriptsDirectory%restructureBAG.sh
 assignFileUUIDs_v0.0 = %clientScriptsDirectory%archivematicaAssignFileUUID.py
 createEvent_v0.0 = %clientScriptsDirectory%createEvent.py
+updateSizeAndChecksum_v0.0 = %clientScriptsDirectory%archivematicaUpdateSizeAndChecksum.py
