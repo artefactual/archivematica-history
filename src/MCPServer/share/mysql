@@ -989,48 +989,6 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'verifyMD5_v0.0', '"%relativeLocation%"  "%checksumsNoExtention%" "%date%" "%taskUUID%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Verify metadata directory checksums - TODO change from MD5_v0.0');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, 'objects', TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'assignFileUUIDs_v0.0',  '"%SIPDirectory%" "%relativeLocation%" "%fileUUID%" "%SIPUUID%" "%taskUUID%" "%date%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (1,      LAST_INSERT_ID(), 'Assign file UUIDs');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'verifySIPCompliance_v0.0', '"%SIPDirectory%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Verify SIP compliance');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '-R --preserve=mode,ownership,timestamps "%SIPDirectory%" "%sharedPath%SIPbackups/."');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
@@ -1043,35 +1001,6 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
-
-
--- move to processing directory --
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (@moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (@setFilePermissionsTaskConfig, @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Receive SIP');
-set @MicroServiceChain = LAST_INSERT_ID();
-
-
-
-INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
-    VALUES ('%watchDirectoryPath%receiveSIP', @MicroServiceChain);
-
-
--- --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%processingDirectory%%SIPName%-%SIPUUID%" "%SIPUUID%" "%sharedPath%"');
@@ -1116,6 +1045,13 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (@setFilePermissionsTaskConfig, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'SIP Creation complete');
 set @MicroServiceChain = LAST_INSERT_ID();
 
@@ -1124,7 +1060,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      LAST_INSERT_ID(), 'SIP Creation');
+    (2,      LAST_INSERT_ID(), 'Approve SIP Creation');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1142,8 +1078,63 @@ set @MicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
     VALUES ('%watchDirectoryPath%preIngest/SIPCreation/SIPsUnderConstruction', @MicroServiceChain, @expectedTypeSIP);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- <transfer> --
 
+-- Move To Failed Directory --
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%failed/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(),  'Move to the failed directory');
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink, defaultPlaySound) 
+    VALUES (LAST_INSERT_ID(), NULL, @errorSound); 
+set @defaultNextChainLink = LAST_INSERT_ID();
+
+-- Move to processing directory --
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%processingDirectory%." "%SIPUUID%" "%sharedPath%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Move to processing directory');
+set @moveToProcessingDirectoryTaskConfig = LAST_INSERT_ID();;
+
+
+-- Reject Transfer --
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%rejectedDirectory%." "%SIPUUID%" "%sharedPath%"');
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(),  'Move to the rejected directory');
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL); 
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject SIP');
+set @rejectSIPMicroServiceChain = LAST_INSERT_ID();
+
+
+-- transfer processing complete --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/preIngest/SIPCreation/completedTransfers/." "%SIPUUID%" "%sharedPath%"');
@@ -1157,6 +1148,18 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);*/
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'setFilePermission_v0.0', '770 -R "%relativeLocation%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Set completed transfer permisssions');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -1202,7 +1205,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'setFilePermission_v0.0', ' -R 750 "%relativeLocation%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Set unquarantined file permissions on SIP');
+    (0,      LAST_INSERT_ID(), 'Set unquarantined file permissions on Transfer');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1211,18 +1214,15 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 -- move to processing directory --
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%processingDirectory%." "%SIPUUID%" "%sharedPath%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Move to processing directory');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'SIP Creation complete');
+set @MicroServiceChain = LAST_INSERT_ID();
 
 -- --
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Unquarantine to appraise SIP for preservation.');
@@ -1274,7 +1274,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'setFilePermission_v0.0', '700 -R "%relativeLocation%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Set quarantine permissions on SIP');
+    (0,      LAST_INSERT_ID(), 'Set quarantine permissions on transfer');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1385,15 +1385,16 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
--- Move to processing directory --
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%processingDirectory%." "%SIPUUID%" "%sharedPath%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Move to processing directory');
+-- move to processing directory --
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (@setFilePermissionsTaskConfig, @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -1408,7 +1409,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      LAST_INSERT_ID(), 'Transfer complete');
+    (2,      LAST_INSERT_ID(), 'Approve transfer');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL);
 set @MicroServiceChainLink = LAST_INSERT_ID();

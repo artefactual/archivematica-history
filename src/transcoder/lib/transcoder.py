@@ -29,6 +29,7 @@ import time
 from pipes import quote
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
+from fileOperations import updateSizeAndChecksum
 LowerEndMainGroupMax = -10
 
 fileTitle = ""

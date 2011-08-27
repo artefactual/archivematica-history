@@ -220,7 +220,7 @@ class transferWatch(pyinotify.ProcessEvent):
             databaseInterface.runSQL("UPDATE Files " + \
                 "SET currentLocation='" + newFilePath +  "', " + \
                 "Files.sipUUID = NULL " + \
-                "WHERE fileUUID='" + fileUUUID + "'" )        
+                "WHERE fileUUID='" + fileUUID + "'" )        
             #else
                 #error ish - file doesn't belong here
                 #update current location & clear SIP
@@ -292,7 +292,7 @@ class SIPCreationWatch(pyinotify.ProcessEvent):
 
 
     def process_IN_MOVED_TO(self, event):
-        time.sleep(1) #let db be updated by the microservice that moved it.
+        time.sleep(archivematicaMCP.dbWaitSleep) #let db be updated by the microservice that moved it.
         print event
         path = os.path.join(event.path, event.name)
         if not os.path.isdir(path):

@@ -22,11 +22,38 @@
 # @version svn: $Id$
 
 import os
+import uuid
 import sys
 import databaseInterface
 from databaseFunctions import insertIntoFiles
-from databaseFunctions import insertIntoEvents
 from executeOrRunSubProcess import executeOrRun
+from externals.checksummingTools import sha_for_file
+from databaseFunctions import insertIntoEvents
+import databaseInterface
+
+
+def updateSizeAndChecksum(fileUUID, filePath, date, eventIdentifierUUID):   
+    fileSize = os.path.getsize(filePath).__str__()
+    checksum = sha_for_file(filePath).__str__()
+    
+    sql = "UPDATE Files " + \
+        "SET fileSize='" + fileSize +"', checksum='" + checksum +  "' " + \
+        "WHERE fileUUID='" + fileUUID + "'"
+    databaseInterface.runSQL(sql)
+
+    insertIntoEvents(fileUUID=fileUUID, \
+                     eventIdentifierUUID=eventIdentifierUUID, \
+                     eventType="message digest calculation", \
+                     eventDateTime=date, \
+                     eventDetail="program=\"python\"; module=\"hashlib.sha256()\"", \
+                     eventOutcomeDetailNote=checksum)  
+    
+    insertIntoEvents(fileUUID=fileUUID, \
+                 eventIdentifierUUID=uuid.uuid4().__str__(), \
+                 eventType="file size calculation", \
+                 eventDateTime=date, \
+                 eventDetail="program=\"python\"; module=\"os.path.getsize()\"", \
+                 eventOutcomeDetailNote=fileSize)  
 
 
 def addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="ingestion", eventDetail=""):
