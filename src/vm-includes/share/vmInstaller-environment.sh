@@ -107,6 +107,7 @@ cp ${includesDir}xfceCustomization/gdm.custom.conf /etc/gdm/custom.conf
 chmod 444 /home/${USER}/.config/xfce4/panel
 chown -R ${USER}:${USER} /home/${USER}
 
+
 ${includesDir}vmInstaller-mcp-db.sh
 ${includesDir}vmInstaller-transcoder-db.sh
 #${includesDir}vmInstaller-dcb.sh
@@ -114,6 +115,12 @@ ${includesDir}vmInstaller-ica-atom.sh
 #${includesDir}vmInstaller-qubit.sh
 
 aptitude remove xscreensaver
+
+#Get non-tainted sources.list
+wget http://archivematica.org/downloads/sources.list -O /etc/apt/sources.list
+aptitude update
+
+
 gpasswd -a ${USER} archivematica
 echo " "
 echo "===PLEASE REBOOT TO ENABLE NEW GROUP SETTINGS==="
