@@ -106,7 +106,7 @@ CREATE TABLE FilesFits(
 
 DROP TABLE IF EXISTS FilesIDs;
 CREATE TABLE FilesIDs(
-    pk              INT PRIMARY KEY,
+    pk              INT PRIMARY KEY AUTO_INCREMENT,
     fileUUID        VARCHAR(50),
     Foreign Key (fileUUID) references Files(fileUUID),
     formatName      LONGTEXT,
