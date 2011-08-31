@@ -186,7 +186,7 @@ def createDigiprovMD(uuid, filename, fileUUID) :
         etree.SubElement(eventIdentifier, "eventIdentifierValue").text = row[2] 
         
         etree.SubElement(event, "eventType").text = row[3]
-        etree.SubElement(event, "eventDateTime").text = row[4]
+        etree.SubElement(event, "eventDateTime").text = row[4].__str__()
         etree.SubElement(event, "eventDetail").text = row[5]
         
         eventOutcomeInformation  = etree.SubElement(event, "eventOutcomeInformation")
