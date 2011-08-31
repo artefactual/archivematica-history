@@ -22,6 +22,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+import uuid
 from unit import unit
 from unitFile import unitFile
 import archivematicaMCP
@@ -29,6 +30,7 @@ import os
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
+from databaseFunctions import insertIntoEvents
 import lxml.etree as etree
 
 
@@ -62,8 +64,11 @@ class unitSIP(unit):
             if currentPath in self.fileList:
                 self.fileList[currentPath].UUID = UUID
             else:
-                print "todo: find deleted files/exclude"
-                print row[99]#fail
+                
+                print self.fileList
+                eventDetail = "SIP {" + self.UUID + "} has file {" + UUID + "}\"" + currentPath + "\" in the database, but file doesn't exist in the file system."
+                print >>sys.stderr, "!!!", eventDetail, "!!!"
+                insertIntoEvents(fileUUID=UUID, eventIdentifierUUID=uuid.uuid4().__str__(), eventType="MCP warning", eventDetail=eventDetail)  
             row = c.fetchone()
             self.fileList[filePath].UUID = UUID
         sqlLock.release()

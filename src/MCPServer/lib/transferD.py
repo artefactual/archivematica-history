@@ -370,7 +370,7 @@ class SIPCreationWatch(pyinotify.ProcessEvent):
         elif os.path.abspath(event.path) == os.path.abspath(sipCreationDirectory):
             path = path + "/"
             UUID = archivematicaMCP.findOrCreateSipInDB(path)
-            unit = unitSIP(path, UUID) 
+            unit = unitSIP(path.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%", 1), UUID) 
             notifier = addWatchForSIP(path, unit)
             self.sips[path[:-1]] = notifier 
         else: 
