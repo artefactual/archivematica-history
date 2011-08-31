@@ -27,6 +27,7 @@ import os
 import threading
 import MySQLdb
 import string
+import sys
 from datetime import datetime
 
 global separator
@@ -74,6 +75,10 @@ def runSQL(sql):
             sqlLock.release()
             runSQL(sql)
             return 
+        else:
+            print >>sys.stderr, "Error with query: ", sql
+            print >>sys.stderr, "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
+            exit(-100)
     sqlLock.release()
     return
 
