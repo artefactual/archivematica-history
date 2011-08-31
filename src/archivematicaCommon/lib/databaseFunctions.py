@@ -138,13 +138,6 @@ def logJobStepCompletedSQL(job):
     databaseInterface.runSQL("""INSERT INTO jobStepCompleted (jobUUID, step, completedTime)
         VALUES ( '""" + job.UUID.__str__() + databaseInterface.separator + job.step + databaseInterface.separator + databaseInterface.getUTCDate() + "' )" )
   
-def logJobStepChangedSQL(job):
-    jobUUUID = job.UUID.__str__()
-    
-    databaseInterface.runSQL("UPDATE Jobs " + \
-    "SET currentStep='" + job.step +  "' " + \
-    "WHERE jobUUID='" + jobUUUID + "'" )    
-    
 def fileWasRemoved(fileUUID, utcDate=databaseInterface.getUTCDate(), eventDetail = "", eventOutcomeDetailNote = "", eventOutcome=""):
     eventIdentifierUUID = uuid.uuid4().__str__()
     eventType = "file removed"
