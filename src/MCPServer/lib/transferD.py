@@ -52,12 +52,14 @@ import databaseInterface
 from databaseFunctions import fileWasRemoved
 
 #Variables to move to config file
-
-delayTimer = 4
+delayTimer = 3600
 waitToActOnMoves = 1
 
+
+
 #Local Variables
-mask = pyinotify.IN_CREATE | pyinotify.IN_MODIFY | pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO | pyinotify.IN_DELETE | pyinotify.IN_CLOSE_WRITE
+mask = pyinotify.IN_CREATE | pyinotify.IN_MODIFY | pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO | pyinotify.IN_DELETE | pyinotify.IN_MOVE_SELF
+#wm = pyinotify.WatchManager()
 movedFrom = {} #cookie
 movedFromLock = threading.Lock()
 
@@ -76,8 +78,9 @@ def timerExpired(event, utcDate):
 
 
 class SIPWatch(pyinotify.ProcessEvent):
-    def __init__(self, unit):
+    def __init__(self, unit, wm):
         self.unit=unit
+        self.wm = wm
     #if a file is moved in, look for a cookie to claim
         #if there isn't one - error
         #error. No adding files to a sip in this manner.
@@ -91,6 +94,7 @@ class SIPWatch(pyinotify.ProcessEvent):
     def process_IN_MOVED_TO(self, event):
         time.sleep(waitToActOnMoves)
         print event
+        print "SIP IN_MOVED_TO"
         movedFromLock.acquire()
         if event.cookie not in movedFrom:
             #if there isn't one - error
@@ -116,8 +120,10 @@ class SIPWatch(pyinotify.ProcessEvent):
     
     def process_IN_MOVED_FROM(self, event):
         print event
+        print "SIP IN_MOVED_FROM"
         #Wait for a moved to, and if one doesn't occur, consider it moved outside of the system.
         
+        print "unit current path: ", self.unit.currentPath
         movedFromPath = os.path.join(event.path, event.name).replace(\
                              self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
                              "%SIPDirectory%", 1)
@@ -138,10 +144,12 @@ class SIPWatch(pyinotify.ProcessEvent):
         movedFromLock.release()
 
         #create timer to check if it's claimed by a move to
-        timer.start()    
-    
+        timer.start()
+        
+        
     def process_IN_DELETE(self, event):
         print event
+        print "SIP IN_DELETE"
         #Wait for a moved to, and if one doesn't occur, consider it moved outside of the system.
         
         movedFromPath = os.path.join(event.path, event.name).replace(\
@@ -157,18 +165,40 @@ class SIPWatch(pyinotify.ProcessEvent):
         sqlLock.release()
         for fileUUID, currentLocation in filesMoved:
             fileWasRemoved(fileUUID, eventOutcomeDetailNote = "removed from: " + currentLocation)
-
+    
+    def process_IN_MOVE_SELF(self, event):
+        print event
+        print "SIP IN_MOVE_SELF"
+        path = event.pathname
+        wdrm = [event.wd]
+        if path.endswith("-unknown-path"):
+            recrm = path[:path.rfind("-unknown-path")] + "/"
+        else:
+            recrm = path + "/"   
+        for key, watch in self.wm.watches.iteritems():
+            if watch.path.startswith(recrm):
+                wdrm.append(watch.wd)
+        #print "Watch directory: ", event.wd, self.wm.get_path(event.wd) 
+        #print "Removing watch directory: ", event.pathname
+        #wd = self.wm.get_wd(event.pathname)
+        rr = self.wm.rm_watch(wdrm, rec=False)
+        print "rr: ", rr    
+        print self.wm
+        
         
 class transferWatch(pyinotify.ProcessEvent):
-    def __init__(self, unit):
+    def __init__(self, unit, wm):
         self.unit=unit
+        self.wm = wm
 
     #when a file is moved out, create a cookie for the file, with the file uuid
     #and a timer, so if it isn't claimed, the cookie is removed.
     def process_IN_MOVED_FROM(self, event):
         print event
+        print "Transfer IN_MOVED_FROM"
         #Wait for a moved to, and if one doesn't occur, consider it moved outside of the system.
-        
+
+            
         movedFromPath = os.path.join(event.path, event.name).replace(\
                              self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
                              "%transferDirectory%", 1)
@@ -190,6 +220,12 @@ class transferWatch(pyinotify.ProcessEvent):
 
         #create timer to check if it's claimed by a move to
         timer.start()
+        
+        #print "Watch directory: ", event.wd, wm.get_path(event.wd) 
+        #if event.dir:
+        #    print "Removing watch directory: ", event.pathname
+        #    wd = wm.get_wd(event.pathname)
+        #    wm.rm_watch(wd, rec=True)
     
     #if a file is moved in, look for a cookie to claim
     def process_IN_MOVED_TO(self, event):
@@ -230,6 +266,7 @@ class transferWatch(pyinotify.ProcessEvent):
     
     def process_IN_DELETE(self, event):
         print event
+        print "Transfer IN_DELETE"
         #Wait for a moved to, and if one doesn't occur, consider it moved outside of the system.
         
         movedFromPath = os.path.join(event.path, event.name).replace(\
@@ -245,19 +282,44 @@ class transferWatch(pyinotify.ProcessEvent):
         sqlLock.release()
         for fileUUID, currentLocation in filesMoved:
             fileWasRemoved(fileUUID, eventOutcomeDetailNote = "removed from: " + currentLocation)
+    
+    def process_IN_MOVE_SELF(self, event):
+        print event
+        print "Transfer IN_MOVE_SELF"
+        path = event.pathname
+        wdrm = [event.wd]
+        if path.endswith("-unknown-path"):
+            recrm = path[:path.rfind("-unknown-path")] + "/"
+        else:
+            recrm = path + "/"   
+        for key, watch in self.wm.watches.iteritems():
+            if watch.path.startswith(recrm):
+                wdrm.append(watch.wd)
+        #print "Watch directory: ", event.wd, self.wm.get_path(event.wd) 
+        #print "Removing watch directory: ", event.pathname
+        #wd = self.wm.get_wd(event.pathname)
+        rr = self.wm.rm_watch(wdrm, rec=False)
+        print "rr: ", rr    
+        print self.wm
+        #self.notifier.stop()
         
-def addWatchForTransfer(path, unit):
+def addWatchForTransfer(path, unit):    
     wm = pyinotify.WatchManager()
-    notifier = pyinotify.ThreadedNotifier(wm, transferWatch(unit))
+    w = transferWatch(unit, wm)
+    notifier = pyinotify.ThreadedNotifier(wm, w)
+    w.notifier = notifier
     wm.add_watch(path, mask, rec=True, auto_add=True)
     notifier.start()
+    return notifier
 
 def addWatchForSIP(path, unit):
     wm = pyinotify.WatchManager()
-    notifier = pyinotify.ThreadedNotifier(wm, SIPWatch(unit))
+    w = SIPWatch(unit, wm)
+    notifier = pyinotify.ThreadedNotifier(wm, w)
+    w.notifier = notifier
     wm.add_watch(path, mask, rec=True, auto_add=True)
     notifier.start()
-    
+    return notifier
 
 def loadExistingFiles():
     #Transfers
@@ -287,6 +349,9 @@ def loadExistingFiles():
 class SIPCreationWatch(pyinotify.ProcessEvent):
     "watches for new sips/completed transfers"
     
+    def __init__(self):
+        self.sips = {}
+    
     def process_IN_CREATE(self, event):
         self.process_IN_MOVED_TO(event)
 
@@ -306,9 +371,18 @@ class SIPCreationWatch(pyinotify.ProcessEvent):
             path = path + "/"
             UUID = archivematicaMCP.findOrCreateSipInDB(path)
             unit = unitSIP(path, UUID) 
-            addWatchForSIP(path, unit)
+            notifier = addWatchForSIP(path, unit)
+            self.sips[path[:-1]] = notifier 
         else: 
             print >>sys.stderr, "Bad path for watching: ", event.path
+            
+    
+    #def process_IN_MOVED_FROM(self, event):
+    #    print event
+    #    if event.pathname in self.sips:
+    #        print "stopping watch on: ", event.name 
+    #        notifier = self.sips.pop(event.pathname)
+    #        notifier.stop()
 
 def startWatching():
     wm = pyinotify.WatchManager()
