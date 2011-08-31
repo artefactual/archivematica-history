@@ -185,6 +185,10 @@ def watchDirectories():
 #directoryWatchList = loadDirectoryWatchLlist(configs)
 #archivematicaMCPServerListen()
 if __name__ == '__main__':
+    if True:
+        import getpass
+        print "user: ", getpass.getuser()
+        os.setuid(333)
     transferD.main()
     watchDirectories()
     startXMLRPCServer()

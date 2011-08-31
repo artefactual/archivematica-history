@@ -88,7 +88,7 @@ class unitTransfer(unit):
                 VALUES ('""" + UUID + databaseInterface.separator + currentPath2 + "');"
                 databaseInterface.runSQL(sql)
                 
-        self.currentPath = currentPath
+        self.currentPath = currentPath2
         self.UUID = UUID
         self.fileList = {}
         #create a watch of the transfer directory path /.. watching for moves 
@@ -106,6 +106,7 @@ class unitTransfer(unit):
         #os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])
         currentPath = self.currentPath.replace("%sharedPath%", \
                                                archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1) + "/"
+        print "currentPath: ", currentPath
         for directory, subDirectories, files in os.walk(currentPath):
             directory = directory.replace( currentPath, "%transferDirectory%", 1)
             for file in files:
@@ -124,7 +125,10 @@ class unitTransfer(unit):
                 self.fileList[currentPath].UUID = UUID
             else:
                 print "todo: find deleted files/exclude"
+                for key, term in self.fileList.iteritems():
+                    print "/t", key, ":", term
                 print row[99]#fail
+                
             row = c.fetchone()
             self.fileList[filePath].UUID = UUID
         sqlLock.release()
