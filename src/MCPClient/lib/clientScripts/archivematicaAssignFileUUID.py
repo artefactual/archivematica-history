@@ -23,24 +23,42 @@
 # @version svn: $Id$
 import sys
 import uuid
+from optparse import OptionParser
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import addFileToTransfer
+from fileOperations import addFileToSIP
 
 
 if __name__ == '__main__':
-    sipDirectory = sys.argv[1]
-    filePath = sys.argv[2]
-    fileUUID = sys.argv[3]
-    sipUUID = sys.argv[4]
-    taskUUID = sys.argv[5]
-    date = sys.argv[6]
+    parser = OptionParser()
+    parser.add_option("-i",  "--fileUUID",          action="store", dest="fileUUID", default="")
+    parser.add_option("-p",  "--filePath",          action="store", dest="filePath", default="")
+    parser.add_option("-d",  "--date",              action="store", dest="date", default="")
+    parser.add_option("-u",  "--eventIdentifierUUID", action="store", dest="eventIdentifierUUID", default="")
+    parser.add_option("-s",  "--sipDirectory", action="store", dest="sipDirectory", default="")
+    parser.add_option("-S",  "--sipUUID", action="store", dest="sipUUID", default="")
+    parser.add_option("-T",  "--transferUUID", action="store", dest="transferUUID", default="")
+
     
+    (opts, args) = parser.parse_args()
+    fileUUID = opts.fileUUID
     if not fileUUID or fileUUID == "None":
         fileUUID = uuid.uuid4().__str__()     
-    
-    filePathRelativeToSIP = filePath.replace(sipDirectory,"%transferDirectory%", 1)
-    addFileToTransfer(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date)
 
+    
+    if opts.sipUUID == "" and opts.transferUUID != "":
+        filePathRelativeToSIP = opts.filePath.replace(opts.sipDirectory,"%transferDirectory%", 1)
+        addFileToTransfer(filePathRelativeToSIP, fileUUID, opts.transferUUID, opts.eventIdentifierUUID, opts.date)
+    
+    elif opts.sipUUID != "" and opts.transferUUID == "":
+        filePathRelativeToSIP = opts.filePath.replace(opts.sipDirectory,"%SIPDirectory%", 1)
+        addFileToSIP(filePathRelativeToSIP, fileUUID, opts.sipUUID, opts.eventIdentifierUUID, opts.date)
+    
+    else:
+        print >>sys.stderr, "SIP exclusive-or uuid must be defined"
+        exit(2)
+        
+    
     
 
     

@@ -28,13 +28,26 @@ import databaseInterface
 import MySQLdb
 import uuid
 
-def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDate(), transferUUID=""):
-    databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, transferUUID)
-    VALUES ( '"""   + fileUUID + databaseInterface.separator \
-                    + MySQLdb.escape_string(filePath) + databaseInterface.separator \
-                    + MySQLdb.escape_string(filePath) + databaseInterface.separator \
-                    + enteredSystem + databaseInterface.separator \
-                    + transferUUID + "' )" )
+def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDate(), transferUUID="", sipUUID=""):
+    if transferUUID != "" and sipUUID == "":
+        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, transferUUID)
+        VALUES ( '"""   + fileUUID + databaseInterface.separator \
+                        + MySQLdb.escape_string(filePath) + databaseInterface.separator \
+                        + MySQLdb.escape_string(filePath) + databaseInterface.separator \
+                        + enteredSystem + databaseInterface.separator \
+                        + transferUUID + "' )" )
+    elif transferUUID == "" and sipUUID != "":
+        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, sipUUID)
+        VALUES ( '"""   + fileUUID + databaseInterface.separator \
+                        + MySQLdb.escape_string(filePath) + databaseInterface.separator \
+                        + MySQLdb.escape_string(filePath) + databaseInterface.separator \
+                        + enteredSystem + databaseInterface.separator \
+                        + sipUUID + "' )" )
+    else:
+        print >>sys.stderr, "not supported yet - both SIP and transfer UUID's defined (or neither defined)"
+        print >>sys.stderr, "SIP UUID:", sipUUID
+        print >>sys.stderr, "transferUUID:", transferUUID
+        raise Exception("not supported yet - both SIP and transfer UUID's defined (or neither defined)", sipUUID + "-" + transferUUID)
 
 def insertIntoEvents(fileUUID="", eventIdentifierUUID="", eventType="", eventDateTime=databaseInterface.getUTCDate(), eventDetail="", eventOutcome="", eventOutcomeDetailNote=""):  
     databaseInterface.runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcome, eventOutcomeDetailNote)
