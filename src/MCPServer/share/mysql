@@ -178,7 +178,8 @@ CREATE TABLE MicroServiceChainLinks (
     Foreign Key (defaultNextChainLink) references MicroServiceChainLinks(pk),    
     defaultPlaySound   INT,
     Foreign Key (defaultPlaySound) references Sounds(pk),    
-    reloadFileList      BOOLEAN DEFAULT TRUE
+    reloadFileList      BOOLEAN DEFAULT TRUE,
+    defaultExitMessage  VARCHAR(50) DEFAULT 'completedUnsuccessfully'
 );
 
 DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
@@ -190,7 +191,8 @@ CREATE TABLE MicroServiceChainLinksExitCodes (
     nextMicroServiceChainLink   INT UNSIGNED,
     Foreign Key (nextMicroServiceChainLink) references MicroServiceChainLinks(pk),
     playSound   INT,
-    Foreign Key (playSound) references Sounds(pk)
+    Foreign Key (playSound) references Sounds(pk),
+    exitMessage  VARCHAR(50) DEFAULT 'completedSuccessfully'
 );
 
 DROP TABLE IF EXISTS MicroServiceChains;
