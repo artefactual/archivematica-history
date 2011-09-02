@@ -32,9 +32,11 @@ import uuid
 #from premisXMLlinker import xmlNormalize
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import addFileToSIP 
+from fileOperations import updateSizeAndChecksum
 from getPronomsFromPremis import getPronomsFromPremis
 from databaseFunctions import insertIntoEvents
 from databaseFunctions import insertIntoDerivations
+
 
 global replacementDic
 global opts
@@ -103,6 +105,8 @@ def onceNormalized(command):
                eventDetail="", \
                eventOutcome="", \
                eventOutcomeDetailNote=command.eventDetailCommand.stdOut)
+            
+            updateSizeAndChecksum(outputFileUUID, ef, opts.date, uuid.uuid4().__str__())
             
             #Add linking information between files
             insertIntoDerivations(sourceFileUUID=opts.fileUUID, derivedFileUUID=outputFileUUID, relatedEventUUID=opts.taskUUID)
