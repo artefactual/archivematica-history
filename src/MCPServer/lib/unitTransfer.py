@@ -124,10 +124,10 @@ class unitTransfer(unit):
             if currentPath in self.fileList:
                 self.fileList[currentPath].UUID = UUID
             else:
-                print "todo: find deleted files/exclude"
-                for key, term in self.fileList.iteritems():
-                    print "/t", key, ":", term
-                print row[99]#fail
+                print >>sys.stderr, self.fileList
+                eventDetail = "Transfer {" + self.UUID + "} has file {" + UUID + "}\"" + currentPath + "\" in the database, but file doesn't exist in the file system."
+                print >>sys.stderr, "!!!", eventDetail, "!!!"
+                insertIntoEvents(fileUUID=UUID, eventIdentifierUUID=uuid.uuid4().__str__(), eventType="MCP warning", eventDetail=eventDetail)
                 
             row = c.fetchone()
             self.fileList[filePath].UUID = UUID

@@ -37,7 +37,7 @@ if __name__ == '__main__':
     date = sys.argv[3]
     taskUUID = sys.argv[4]
     
-    command = "clamdscan  - <\"" + target + "\""
+    command = "clamdscan  - <'" + target + "'"
     commandVersion = "clamdscan -V"
     eventOutcome = "Pass"
 
