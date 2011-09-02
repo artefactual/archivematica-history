@@ -21,49 +21,67 @@
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-import lxml.etree as etree
 import sys
 import os
-from archivematicaFunctions import getTagged
-from archivematicaFunctions import fileNoLongerExists
-from createXmlEventsAssist import createEvent
-from fileAddedToSIP import sha_for_file
+from optparse import OptionParser
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
+import databaseFunctions
+from externals.checksummingTools import sha_for_file
 
-
+def verifyChecksum(fileUUID, filePath, date, eventIdentifierUUID):
+    sql = """SELECT checksum FROM Files WHERE fileUUID = '""" + fileUUID + "'"
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    checksumDB = ""
+    while row != None:
+        checksumDB = row[0]
+        row = c.fetchone()
+    sqlLock.release()
+    if checksumDB == None or checksumDB == "" or checksumDB == "None":
+        print >>sys.stderr, "No checksum found in database for file:", fileUUID, filePath
+        exit(1)
+    checksumFile = sha_for_file(filePath)
+    
+    eventOutcome=""
+    eventOutcomeDetailNote=""
+    exitCode = 0
+    if checksumFile != checksumDB:
+        eventOutcomeDetailNote = checksumFile.__str__() + " != " + checksumDB.__str__()
+        eventOutcome="Fail"
+        exitCode = 2
+        print >>sys.stderr, "Checksums do not match:", fileUUID, filePath
+        print >>sys.stderr, eventOutcomeDetailNote
+    else:
+        eventOutcomeDetailNote = checksumFile.__str__() + "verified"
+        eventOutcome="Pass"
+        exitCode = 0  
+        
+    #insertIntoEvents(fileUUID="", eventIdentifierUUID="", eventType="", eventDateTime=databaseInterface.getUTCDate(), eventDetail="", eventOutcome="", eventOutcomeDetailNote="")
+    databaseFunctions.insertIntoEvents(fileUUID=fileUUID, \
+                 eventIdentifierUUID=eventIdentifierUUID, \
+                 eventType="verify checksum", \
+                 eventDateTime=date, \
+                 eventOutcome=eventOutcome, \
+                 eventOutcomeDetailNote=eventOutcomeDetailNote, \
+                 eventDetail="program=\"python\"; module=\"hashlib.sha256()\"")
+    
+    exit(exitCode) 
+    
+    
 if __name__ == '__main__':
+    parser = OptionParser()
+    parser.add_option("-i",  "--fileUUID",          action="store", dest="fileUUID", default="")
+    parser.add_option("-p",  "--filePath",          action="store", dest="filePath", default="")
+    parser.add_option("-d",  "--date",              action="store", dest="date", default="")
+    parser.add_option("-u",  "--eventIdentifierUUID", action="store", dest="eventIdentifierUUID", default="")
+    (opts, args) = parser.parse_args()
     
-    objectsDir = sys.argv[1]
-    xmlFile = sys.argv[2]
-    date = sys.argv[3]
-    eIDValue = sys.argv[4]
+    verifyChecksum(opts.fileUUID, \
+                     opts.filePath, \
+                     opts.date, \
+                     opts.eventIdentifierUUID)  
+
+
     
-    eventDetailText = ""
     
-    if not xmlFile.endswith(".xml"):
-        print >>sys.stderr, "Warning: Non xml file in /logs/fileMeta/ {" + xmlFile + "}"
-        quit(0)
-    
-    tree = etree.parse( xmlFile )
-    root = tree.getroot()
-    currentLogName = getTagged(root, "currentFileName")[0].text
-    currentName = currentLogName.replace("objects/", objectsDir, 1)
-    
-    fileNoLongerExistsCode = fileNoLongerExists(root, objectsDir)
-    if  fileNoLongerExistsCode != 0:
-        if fileNoLongerExistsCode == -1:
-            print >>sys.stderr, '{', currentLogName, '}', " was removed."
-            quit(0)
-        elif fileNoLongerExistsCode == 1:
-            print >>sys.stderr, '{', currentLogName, '}', " was removed."
-            quit(1)
-        print >>sys.stderr, "Unhandled fileNolongerExists Exception"
-        quit(3)
-    
-    objectCharacteristics = getTagged( getTagged(root,"object")[0], "objectCharacteristics")[0]
-    fixity = getTagged( objectCharacteristics, "fixity")[0] 
-    premisChecksum = getTagged(fixity, "messageDigest")[0].text
-    
-    fileChecsum = sha_for_file(currentName).__str__()
-    if premisChecksum != fileChecsum:
-        print >>sys.stderr, '{', currentLogName, '}',  " did not pass integrity check!"     
-        quit(2)
