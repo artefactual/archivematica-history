@@ -569,12 +569,12 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'logs/fileMeta/', FALSE, '%SIPLogsDirectory%Verify PREMIS Checksums.log', '%SIPLogsDirectory%Verify PREMIS Checksums.log', 'verifyPREMISChecksums_v0.0', '"%SIPObjectsDirectory%" "%relativeLocation%" "%date%" "%taskUUID%"');
+    (NULL, NULL, 'objects/', FALSE, NULL, NULL, 'verifyPREMISChecksums_v0.0', '--fileUUID "%fileUUID%" --filePath "%relativeLocation%" --date "%date%" --eventIdentifierUUID "%taskUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      LAST_INSERT_ID(), 'Verify checksums generated on ingest');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
