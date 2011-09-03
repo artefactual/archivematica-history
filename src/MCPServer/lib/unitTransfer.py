@@ -41,6 +41,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import lxml.etree as etree
 from fileOperations import renameAsSudo
+from databaseFunctions import insertIntoEvents
 
 a = """
 class watchDirectoryProcessEvent(ProcessEvent):
@@ -127,8 +128,7 @@ class unitTransfer(unit):
                 print >>sys.stderr, self.fileList
                 eventDetail = "Transfer {" + self.UUID + "} has file {" + UUID + "}\"" + currentPath + "\" in the database, but file doesn't exist in the file system."
                 print >>sys.stderr, "!!!", eventDetail, "!!!"
-                insertIntoEvents(fileUUID=UUID, eventIdentifierUUID=uuid.uuid4().__str__(), eventType="MCP warning", eventDetail=eventDetail)
-                
+                #insertIntoEvents(fileUUID=UUID, eventIdentifierUUID=uuid.uuid4().__str__(), eventType="MCP warning", eventDetail=eventDetail)
             row = c.fetchone()
             self.fileList[filePath].UUID = UUID
         sqlLock.release()
