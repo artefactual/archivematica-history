@@ -28,10 +28,11 @@ from unitFile import unitFile
 import archivematicaMCP
 import os
 import sys
+import lxml.etree as etree
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import insertIntoEvents
-import lxml.etree as etree
+
 
 
 class unitSIP(unit):

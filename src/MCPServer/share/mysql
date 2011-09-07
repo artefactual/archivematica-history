@@ -541,6 +541,22 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copyTransfersMetadataAndLogs_v0.0', '--sipDirectory "%SIPDirectory%" --sipUUID "%SIPUUID%" --sharedPath "%sharedPath%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Copy Transfers metadata and logs');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(),  @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'addDCTOMETS_v0.0', '"%SIPDirectory%" "%SIPDirectory%metadata/"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
