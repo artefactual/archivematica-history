@@ -64,7 +64,7 @@ class linkTaskManagerChoice:
             jobChain.jobChain(self.unit, preConfiguredChain)
         else:
             choicesAvailableForUnitsLock.acquire()
-            choicesAvailableForUnits[self.UUID] = self
+            choicesAvailableForUnits[self.jobChainLink.UUID] = self
             choicesAvailableForUnitsLock.release()
             
     def checkForPreconfiguredXML(self):
@@ -103,7 +103,7 @@ class linkTaskManagerChoice:
     def xmlify(self):
         
         ret = etree.Element("choicesAvailableForUnit")
-        etree.SubElement(ret, "UUID").text = self.UUID
+        etree.SubElement(ret, "UUID").text = self.jobChainLink.UUID
         ret.append(self.unit.xmlify())
         choices = etree.SubElement(ret, "choices")
         for chainAvailable, description in self.choices:
@@ -116,6 +116,6 @@ class linkTaskManagerChoice:
         
     def proceedWithChoice(self, chain):
         choicesAvailableForUnitsLock.acquire()
-        del choicesAvailableForUnits[self.UUID]
+        del choicesAvailableForUnits[self.jobChainLink.UUID]
         choicesAvailableForUnitsLock.release()  
         jobChain.jobChain(self.unit, chain)

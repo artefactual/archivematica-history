@@ -283,7 +283,10 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
 
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink, defaultPlaySound) 
     VALUES (LAST_INSERT_ID(), NULL, @errorSound); 
-set @defaultNextChainLink = LAST_INSERT_ID();
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+set @defaultNextChainLink = @MicroServiceChainLink;
 
 -- Move to processing directory --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -317,6 +320,8 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL); 
 set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject SIP');
 set @rejectSIPMicroServiceChain = LAST_INSERT_ID();
 
@@ -1163,7 +1168,10 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
 
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink, defaultPlaySound) 
     VALUES (LAST_INSERT_ID(), NULL, @errorSound); 
-set @defaultNextChainLink = LAST_INSERT_ID();
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+set @defaultNextChainLink = @MicroServiceChainLink;
 
 -- Move to processing directory --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -1187,6 +1195,8 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL); 
 set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject transfer');
 set @rejectSIPMicroServiceChain = LAST_INSERT_ID();
 
