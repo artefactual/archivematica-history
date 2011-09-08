@@ -35,6 +35,7 @@ import jobChain
 import databaseInterface
 import lxml.etree as etree
 import os
+import archivematicaMCP
 global choicesAvailableForUnits
 choicesAvailableForUnits = {}
 choicesAvailableForUnitsLock = threading.Lock()
@@ -57,13 +58,47 @@ class linkTaskManagerChoice:
             row = c.fetchone()
         sqlLock.release()
         
-        if False:
+        preConfiguredChain = self.checkForPreconfiguredXML()
+        if preConfiguredChain != None:
             print "checking for xml file for processing rules. TODO"
+            jobChain.jobChain(self.unit, preConfiguredChain)
         else:
             choicesAvailableForUnitsLock.acquire()
             choicesAvailableForUnits[self.UUID] = self
             choicesAvailableForUnitsLock.release()
             
+    def checkForPreconfiguredXML(self):
+        ret = None
+        xmlFilePath = os.path.join( \
+                                        self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1) + "/", \
+                                        archivematicaMCP.config.get('MCPServer', "processingXMLFile") \
+                                    )
+                            
+        if os.path.isfile(xmlFilePath):
+            # For a list of items with pks: 
+            # SELECT TasksConfigs.description, choiceAvailableAtLink, ' ' AS 'SPACE', MicroServiceChains.description, chainAvailable FROM MicroServiceChainChoice Join MicroServiceChains on MicroServiceChainChoice.chainAvailable = MicroServiceChains.pk Join MicroServiceChainLinks on MicroServiceChainLinks.pk = MicroServiceChainChoice.choiceAvailableAtLink Join TasksConfigs on TasksConfigs.pk = MicroServiceChainLinks.currentTask ORDER BY choiceAvailableAtLink desc;
+            try:
+                tree = etree.parse(xmlFilePath)
+                root = tree.getroot()
+                for preconfiguredChoice in root.find("preconfiguredChoices"):
+                    #if int(preconfiguredChoice.find("appliesTo").text) == self.jobChainLink.pk:
+                    if preconfiguredChoice.find("appliesTo").text == self.jobChainLink.description:
+                        desiredChoice = preconfiguredChoice.find("goToChain").text
+                        sql = """SELECT MicroServiceChains.pk FROM MicroServiceChainChoice Join MicroServiceChains on MicroServiceChainChoice.chainAvailable = MicroServiceChains.pk WHERE MicroServiceChains.description = '%s' AND MicroServiceChainChoice.choiceAvailableAtLink = %s;""" % (desiredChoice, self.jobChainLink.pk.__str__())
+                        c, sqlLock = databaseInterface.querySQL(sql) 
+                        row = c.fetchone()
+                        while row != None:
+                            ret = row[0] 
+                            row = c.fetchone()
+                        sqlLock.release()
+                
+            except Exception as inst:
+                print >>sys.stderr, "Error parsing xml:"
+                print >>sys.stderr, type(inst)
+                print >>sys.stderr, inst.args 
+                     
+            
+        return ret
     
     def xmlify(self):
         
