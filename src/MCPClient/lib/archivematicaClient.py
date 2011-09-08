@@ -35,18 +35,22 @@ import time
 import threading
 import string
 import ConfigParser
-from twisted.internet import reactor
-from twisted.internet import protocol as twistedProtocol
-from twisted.protocols.basic import LineReceiver
 from socket import gethostname
-from twisted.application import service
-from twisted.application import internet
+import gearman
+import threading
+import cPickle
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from executeOrRun import executeOrRun
+from executeOrRunSubProcess import executeOrRun
+import databaseInterface
+from databaseFunctions import logTaskAssignedSQL
 
 config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
 config.read("/etc/archivematica/MCPClient/clientConfig.conf")
 
+replacementDic = { 
+    "%sharedPath%":config.get('MCPClient', "sharedDirectoryMounted"), \
+    "%clientScriptsDirectory%":config.get('MCPClient', "clientScriptsDirectory")
+}
 supportedModules = {}
 
 def loadSupportedModules(file):    
@@ -55,133 +59,80 @@ def loadSupportedModules(file):
     for key, value in supportedModulesConfig.items('supportedCommands'):
         supportedModules[key] = value + " "
        
-def executeCommand(taskUUID, sInput = "", execute = "", arguments = "", serverConnection = None):  
-    #Replace replacement strings
-    if execute not in supportedModules:
-        return -5, "", "Tried To Run An Unsupported Command"
-    command = supportedModules[execute] 
-    replacementDic = { 
-        "%sharedPath%":config.get('MCPClient', "sharedDirectoryMounted"), \
-        "%clientScriptsDirectory%":config.get('MCPClient', "clientScriptsDirectory")
-    }  
-    #for each key replace all instances of the key in the command string
-    for key in replacementDic.iterkeys():
-        command = command.replace ( key, replacementDic[key] )
-        arguments = arguments.replace ( key, replacementDic[key] )
-        sInput = sInput.replace ( key, replacementDic[key] )
-    #execute command
+def executeCommand(gearman_worker, gearman_job):
     try:
-        if execute != "" and command != "":
-            command += " " + arguments
-            print >>sys.stderr, "processing: {" + taskUUID + "}" + command.__str__()
-            return executeOrRun("command", command, sInput, printing=False)
-        else:
-            print >>sys.stderr, "server tried to run a blank command! " 
-            return 1, "", "server tried to run a blank command! "
+        execute = gearman_job.task
+        data = cPickle.loads(gearman_job.data)
+        utcDate = databaseInterface.getUTCDate()
+        arguments = data["arguments"]
+        sInput = ""
+        clientID = gearman_worker.worker_client_id
+        
+        if True:
+            print clientID, execute, data
+        logTaskAssignedSQL(gearman_job.unique.__str__(), clientID, utcDate)
+        
+        
+        
+        if execute not in supportedModules:
+            output = ["Error!", "Error! - Tried to run and unsupported command." ]
+            exitCode = -1
+            return cPickle.dumps({"exitCode" : exitCode, "stdOut": output[0], "stdError": output[1]})
+        command = supportedModules[execute] 
+        
+        
+        replacementDic["%date%"] = utcDate
+        replacementDic["%jobCreatedDate%"] = data["createdDate"]
+        #Replace replacement strings
+        for key in replacementDic.iterkeys():
+            command = command.replace ( key, replacementDic[key] )
+            arguments = arguments.replace ( key, replacementDic[key] )
+        
+        key = "%taskUUID%"
+        value = gearman_job.unique.__str__()
+        arguments = arguments.replace(key, value)
+        
+        #execute command
+    
+        command += " " + arguments
+        print >>sys.stderr, "processing: {" + gearman_job.unique + "}" + command.__str__()
+        exitCode, stdOut, stdError = executeOrRun("command", command, sInput, printing=False)
+        return cPickle.dumps({"exitCode" : exitCode, "stdOut": stdOut, "stdError": stdError})
     #catch OS errors
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose
         output = ["Config Error!", ose.__str__() ]
-        retcode = 1
-        return retcode, output[0], output[1]
-
-class archivematicaMCPClientProtocol(LineReceiver):
-    """Archivematica Client Protocol"""
-    sendLock = threading.Lock()
-    def __init__(self):
-        self.MAX_LENGTH = config.getint('Protocol', "maxLen")
-    
-    def lineLengthExceeded(self, line):
-        print >>sys.stderr, "Protocol maxLen Exceeded."
-    
-    def connectionMade(self):
-        self.write(config.get('Protocol', "setName") + config.get('Protocol', "delimiter") + gethostname())
-        for module in supportedModules:
-            self.write(config.get('Protocol', "addToListTaskHandler") + config.get('Protocol', "delimiter") + module)
-        self.write(config.get('Protocol', "maxTasks") + config.get('Protocol', "delimiter") + config.get('MCPClient', "maxThreads"))
-    
-    def write(self,line):
-        print "\twriting: " + line.__str__()
-        self.sendLock.acquire() 
-        reactor.callFromThread(self.transport.write, line + "\r\n")
-        self.sendLock.release()
+        exitCode = 1
+        return cPickle.dumps({"exitCode" : exitCode, "stdOut": output[0], "stdError": output[1]})
+    except:
+        print sys.exc_info().__str__()
+        print "Unexpected error:", sys.exc_info()[0]
+        output = ["", sys.exc_info().__str__()]
+        return cPickle.dumps({"exitCode" : -1, "stdOut": output[0], "stdError": output[1]})
         
+
+def startThread(threadNumber): 
+    gm_worker = gearman.GearmanWorker(['localhost:4730'])
+    hostID = gethostname() + "_" + threadNumber.__str__() 
+    gm_worker.set_client_id(hostID)
+    for key in supportedModules.iterkeys():
+        print "registering:", '"' + key + '"'
+        gm_worker.register_task(key, executeCommand)
+    gm_worker.work()
     
-    def clientConnectionLost(self, connector, reason):
-        print "Connection lost - goodbye!"
-        reactor.stop()
-        
-    def badProtocol(self, command):
-        """The client sent a command this server cannot interpret."""
-        print "read(bad protocol): " + command.__str__()
-   
-    def lineReceived(self, line):
-        "As soon as any data is received, write it back."
-        command = line.split(config.get('Protocol', "delimiter"))
-        if len(command):
-            t = threading.Thread(target=self.protocolDic.get(command[0], archivematicaMCPClientProtocol.badProtocol),\
-            args=(self, command, ))
-            t.start()
-        else:
-            badProtocol(self, command)
 
-    def sendTaskResult(self, command, result):
-        if len(command) > 1:
-            send = config.get('Protocol', "taskCompleted")
-            send += config.get('Protocol', "delimiter")
-            send += command[1]
-            send += config.get('Protocol', "delimiter")
-            send += result[0].__str__()
-            send += config.get('Protocol', "delimiter")
-            send += result[1].__str__()
-            send += config.get('Protocol', "delimiter")
-            send += result[2].__str__()
-            self.write(send)
-        else:
-            print >>sys.stderr, "this should never be executed."   
-    
-    def performTask(self, command):
-        if len(command) == 5:
-            ret = executeCommand(command[1], command[2], command[3], command[4], self)
-            print "returned: {" + command[1] + "}" + ret.__str__()
-            self.sendTaskResult(command, ret)
-                
-        else:
-            badProtocol(self, command)
-            self.sendTaskResult(command, 1)
+def startThreads(t=1):
+    if t == 0:
+        from externals.detectCores import detectCPUs
+        t = detectCPUs()
+    for i in range(t):
+        t = threading.Thread(target=startThread, args=(i+1, ))
+        t.start()
 
-    def keepAlive(self, command):    
-        if len(command) == 1:
-            print "Got keep alive. Keeping connection open."
-        else:
-            badProtocol(self, command)
-
-    protocolDic = {
-    config.get('Protocol', "performTask"):performTask, \
-    config.get('Protocol', "keepAlive"):keepAlive
-    }
-
-class archivematicaMCPClientProtocolFactory(twistedProtocol.ClientFactory):
-    protocol = archivematicaMCPClientProtocol
-
-    def clientConnectionFailed(self, connector, reason):
-        print "Connection failed - goodbye!"
-        if reactor._started:
-            reactor.stop()
-    
-    def clientConnectionLost(self, connector, reason):
-        print "Connection lost - goodbye!"
-        if reactor._started:
-            reactor.stop()
-
-
-#if __name__ == '__main__':
-loadSupportedModules(config.get('MCPClient', "archivematicaClientModules"))
-application = service.Application("archivematicaMCPClient")
-f = archivematicaMCPClientProtocolFactory()
-MCPClientService = internet.TCPClient(config.get('MCPClient', "MCPArchivematicaServer"), config.getint('MCPClient', "MCPArchivematicaServerPort"), f)
-MCPClientService.setServiceParent(application)
-
-print "Connecting To: " + config.get('MCPClient', "MCPArchivematicaServer") + ":" + config.get('MCPClient', "MCPArchivematicaServerPort")
-  
+if __name__ == '__main__':
+    loadSupportedModules(config.get('MCPClient', "archivematicaClientModules"))
+    startThreads(0)
+    tl = threading.Lock()
+    tl.acquire()
+    tl.acquire()
   
