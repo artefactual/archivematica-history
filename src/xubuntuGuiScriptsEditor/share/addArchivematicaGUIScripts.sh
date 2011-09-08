@@ -19,6 +19,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+#rm /home/$USER/.config/Thunar/uca.xml; ./addArchivematicaGUIScripts.sh 
 
 set -e
 add="`dirname $0`/src/add.sh"
@@ -91,3 +92,9 @@ fi
 #http://forum.xfce.org/viewtopic.php?id=3215
 	
 
+"$add" \
+    --icon="accessories-calculator" \
+    --name="Create a structured directory" \
+    --command="/usr/lib/archivematica/archivematicaCommon/archivematicaCreateStructuredDirectory.sh %d" \
+    --description="Creates a structured directory for archivematica processing" \
+    --directories 
