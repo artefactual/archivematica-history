@@ -28,6 +28,7 @@ requiredDirectories = ["objects", \
                        "logs", \
                        "metadata",\
                        "metadata/submissionDocumentation"]
+allowableFiles = ["processingMCP.xml"]
 
 
 def verifyDirectoriesExist(SIPDir, ret=0):
@@ -44,8 +45,9 @@ def verifyNothingElseAtTopLevel(SIPDir, ret=0):
                 print >>sys.stderr, "Error, directory exists: " + entry
                 ret += 1
         else:
-            print >>sys.stderr, "Error, file exists: " + entry
-            ret += 1
+            if entry not in allowableFiles:
+                print >>sys.stderr, "Error, file exists: " + entry
+                ret += 1
     return ret
              
 
