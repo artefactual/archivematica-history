@@ -82,6 +82,22 @@ else
         echo "Not goint to ${part}."
 fi
 
+part="reinstall upstart services - requires restart"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        sudo stop archivematica-mcp-client
+        sleep 1
+        sudo stop archivematica-mcp-server
+        sleep 3
+        sudo rm /etc/init/archivematica-mcp-server.conf /etc/init/archivematica-mcp-client.conf
+        sudo ln src/MCPServer/init/archivematica-mcp-server.conf /etc/init/
+        sudo ln src/MCPClient/init/archivematica-mcp-client.conf /etc/init/
+else
+        echo "Not goint to ${part}."
+fi
+
 part="restart archivematica services"
 echo -n "\"Would you like to ${part}?\"(Y/N)"
 read a
