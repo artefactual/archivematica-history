@@ -506,8 +506,9 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+set @PrepareAIPMicroServiceChainLink = @MicroServiceChainLink;
 
-
+-- GENERATE AIP AND DIP --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%DIP" "%sharedPath%watchedDirectories/uploadDIP/%SIPDirectoryBasename%"');
@@ -547,9 +548,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'copyTransfersMetadataAndLogs_v0.0', '--sipDirectory "%SIPDirectory%" --sipUUID "%SIPUUID%" --sharedPath "%sharedPath%"');
+SET @CopyTransfersmetadataandlogsTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Copy Transfers metadata and logs');
+    (0,      @CopyTransfersmetadataandlogsTask, 'Copy Transfers metadata and logs');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(),  @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -563,9 +565,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'addDCTOMETS_v0.0', '"%SIPDirectory%" "%SIPDirectory%metadata/"');
+SET @AddDublinCoretoMETSTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Add Dublin Core to METS');
+    (0,      @AddDublinCoretoMETSTask, 'Add Dublin Core to METS');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -577,9 +580,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, '%SIPLogsDirectory%METSGeneration.log', '%SIPLogsDirectory%METSGeneration.log', 'createMETS_v0.0', '"%SIPUUID%" "%SIPDirectory%" "%SIPDirectory%"METS.xml');
+SET @GenerateMETSxmldocumentTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Generate METS.xml document');
+    (0,      @GenerateMETSxmldocumentTask, 'Generate METS.xml document');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -591,9 +595,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects/', FALSE, NULL, NULL, 'verifyPREMISChecksums_v0.0', '--fileUUID "%fileUUID%" --filePath "%relativeLocation%" --date "%date%" --eventIdentifierUUID "%taskUUID%"');
+SET @VerifychecksumsgeneratedoningestTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Verify checksums generated on ingest');
+    (1,      @VerifychecksumsgeneratedoningestTask, 'Verify checksums generated on ingest');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -605,9 +610,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects/', FALSE, '%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log', '%SIPLogsDirectory%removedFilesWithNoPremisMetadata.log', 'removeFilesWithoutPresmisMetadata_v0.0', '--fileUUID "%fileUUID%" --inputFile "%relativeLocation%" --sipDirectory "%SIPDirectory%"');
+SET @RemovefileswithoutlinkinginformationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Remove files without linking information (failed normalization artifacts etc.)');
+    (1,      @RemovefileswithoutlinkinginformationTask, 'Remove files without linking information (failed normalization artifacts etc.)');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -619,9 +625,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects/submissionDocumentation', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'transcoderNormalizePreservation_v0.0', '--inputFile "%relativeLocation%" --commandClassifications "preservation" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%" --sipUUID "%SIPUUID%" --sipPath "%SIPDirectory%"');
+SET @NormalizesubmissiondocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Normalize submission documentation to preservation format');
+    (1,      @NormalizesubmissiondocumentationTask, 'Normalize submission documentation to preservation format');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -633,9 +640,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects/submissionDocumentation', TRUE, NULL, NULL, 'FITS_v0.0', '"%relativeLocation%" "%SIPLogsDirectory%fileMeta/%fileUUID%.xml" "%date%" "%taskUUID%" "%fileUUID%"');
+SET @CharacterizeAndExtractMetadataOnSubmissionDocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Characterize and extract metadata on submission documentation');
+    (1,      @CharacterizeAndExtractMetadataOnSubmissionDocumentationTask, 'Characterize and extract metadata on submission documentation');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -647,9 +655,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects/submissionDocumentation', TRUE, NULL, '%SIPLogsDirectory%clamAVScan.txt', 'archivematicaClamscan_v0.0', '"%fileUUID%" "%relativeLocation%" "%date%" "%taskUUID%"');
+SET @ScanforvirusesinsubmissiondocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Scan for viruses in submission documentation');
+    (1,      @ScanforvirusesinsubmissiondocumentationTask, 'Scan for viruses in submission documentation');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -661,9 +670,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects/submissionDocumentation', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPObjectsDirectory%" "%SIPUUID%" "%date%" "%taskUUID%"');
+SET @SanitizefileanddirectorynamesinsubmissiondocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Sanitize file and directory names in submission documentation');
+    (0,      @SanitizefileanddirectorynamesinsubmissiondocumentationTask, 'Sanitize file and directory names in submission documentation');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -675,9 +685,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects/submissionDocumentation', TRUE, '%SIPLogsDirectory%extraction.log', '%SIPLogsDirectory%extraction.log', 'transcoderExtractPackages_v0.0', '"%relativeLocation%" "%SIPObjectsDirectory%" "%SIPLogsDirectory%" "%date%" "%taskUUID%" "%fileUUID%"');
+SET @ExtractpackagesinsubmissiondocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Extract packages in submission documentation');
+    (1,      @ExtractpackagesinsubmissiondocumentationTask, 'Extract packages in submission documentation');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -689,9 +700,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects/submissionDocumentation', TRUE, NULL, NULL, 'updateSizeAndChecksum_v0.0',  '--filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%"');
+SET @AssignchecksumsandfilesizestosubmissiondocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Assign checksums and file sizes to objects');
+    (1,      @AssignchecksumsandfilesizestosubmissiondocumentationTask, 'Assign checksums and file sizes to submissionDocumentation');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -703,9 +715,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects/submissionDocumentation', TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'assignFileUUIDs_v0.0',  '--sipUUID "%SIPUUID%" --sipDirectory "%SIPDirectory%" --filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%"');
+SET @AssignfileUUIDstosubmissiondocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Assign file UUIDs and checksums to submission documentation');
+    (1,      @AssignfileUUIDstosubmissiondocumentationTask, 'Assign file UUIDs to submission documentation');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -717,9 +730,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, TRUE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%metadata/submissionDocumentation" "%SIPDirectory%objects/submissionDocumentation"');
+SET @MoveSubmissionDocumentationintoobjectsdirectoryTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Move Submission Documentation into objects directory');
+    (0,      @MoveSubmissionDocumentationintoobjectsdirectoryTask, 'Move Submission Documentation into objects directory');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -731,9 +745,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
+SET @CheckForSubmissionDocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Check for submission documentation');
+    (0,      @CheckForSubmissionDocumentationTask, 'Check for submission documentation');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -757,7 +772,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      LAST_INSERT_ID(), 'Approve Normalization');
+    (2,      LAST_INSERT_ID(), 'Approve Normalization to preservation and access');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -774,12 +789,12 @@ INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroService
 set @MicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
-    VALUES ('%watchDirectoryPath%approveNormalization/', @MicroServiceChain);
+    VALUES ('%watchDirectoryPath%approveNormalization/preservationAndAccess/', @MicroServiceChain);
 
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/approveNormalization/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/approveNormalization/preservationAndAccess/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Move to approve normalization directory');
@@ -839,6 +854,293 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create DIP and AIP');
+set @CreateDIPandAIPMicroServiceChain = LAST_INSERT_ID();
+-- /CREATE AIP AND DIP --
+
+
+
+-- GENERATE AIP --
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (@setFilePermissionsTaskConfig, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @PrepareAIPMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @CopyTransfersmetadataandlogsTask, 'Copy Transfers metadata and logs');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(),  @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @AddDublinCoretoMETSTask, 'Add Dublin Core to METS');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @GenerateMETSxmldocumentTask, 'Generate METS.xml document');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      @VerifychecksumsgeneratedoningestTask, 'Verify checksums generated on ingest');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      @RemovefileswithoutlinkinginformationTask, 'Remove files without linking information (failed normalization artifacts etc.)');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      @NormalizesubmissiondocumentationTask, 'Normalize submission documentation to preservation format');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      @CharacterizeAndExtractMetadataOnSubmissionDocumentationTask, 'Characterize and extract metadata on submission documentation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      @ScanforvirusesinsubmissiondocumentationTask, 'Scan for viruses in submission documentation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @SanitizefileanddirectorynamesinsubmissiondocumentationTask, 'Sanitize file and directory names in submission documentation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      @ExtractpackagesinsubmissiondocumentationTask, 'Extract packages in submission documentation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      @AssignchecksumsandfilesizestosubmissiondocumentationTask, 'Assign checksums and file sizes to submissionDocumentation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      @AssignfileUUIDstosubmissiondocumentationTask, 'Assign file UUIDs to submission documentation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @MoveSubmissionDocumentationintoobjectsdirectoryTask, 'Move Submission Documentation into objects directory');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @CheckForSubmissionDocumentationTask, 'Check for submission documentation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (@moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Process submission documentation and prepare AIP.');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (2,      LAST_INSERT_ID(), 'Approve Normalization to preservation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @MicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'approveNormalization');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
+    VALUES ('%watchDirectoryPath%approveNormalization/preservation/', @MicroServiceChain);
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/approveNormalization/preservation/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Move to approve normalization directory');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (@setFilePermissionsTaskConfig, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'transcoderNormalizePreservation_v0.0', '--inputFile "%relativeLocation%" --commandClassifications "preservation" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%" --sipUUID "%SIPUUID%" --sipPath "%SIPDirectory%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create AIP');
+set @CreateAIPMicroServiceChain = LAST_INSERT_ID();
+-- /CREATE AIP --
+
+
+
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (2,      LAST_INSERT_ID(), 'Approve Normalization to preservation');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @CreateAIPMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @CreateDIPandAIPMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create DIP ?');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
+    VALUES ('%watchDirectoryPath%workFlowDecisions/createDip/', @MicroServiceChain);
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/workFlowDecisions/createDip/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Move to workFlowDecisions-createDip directory');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
