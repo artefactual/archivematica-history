@@ -19,28 +19,21 @@ from django.http import HttpResponse
 from dashboard.contrib.mcp.client import MCPClient
 from lxml import etree
 
-def approve_job(request):
+def execute(request):
   result = ''
   if 'uuid' in request.REQUEST:
     client = MCPClient()
     uuid = request.REQUEST.get('uuid', '')
-    result = client.approve_job(uuid)
+    choice = request.REQUEST.get('choice', '')
+    result = client.execute(uuid, choice)
   return HttpResponse(result, mimetype = 'text/plain')
 
-def jobs_awaiting_approval(request):
+def list(request):
   client = MCPClient()
-  jobs = etree.XML(client.get_jobs_awaiting_approval())
+  jobs = etree.XML(client.list())
   response = ''
   if 0 < len(jobs):
     for job in jobs:
       response += etree.tostring(job)
-  response = '<Jobs>' + response + '</Jobs>'
+  response = '<MCP>%s</MCP>' % response
   return HttpResponse(response, mimetype = 'text/xml')
-
-def reject_job(request):
-  result = ''
-  if 'uuid' in request.REQUEST:
-    client = MCPClient()
-    uuid = request.REQUEST.get('uuid', '')
-    result = client.reject_job(uuid)
-  return HttpResponse(result, mimetype = 'text/plain')
