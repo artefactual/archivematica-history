@@ -130,7 +130,6 @@ class unitTransfer(unit):
                 print >>sys.stderr, "!!!", eventDetail, "!!!"
                 #insertIntoEvents(fileUUID=UUID, eventIdentifierUUID=uuid.uuid4().__str__(), eventType="MCP warning", eventDetail=eventDetail)
             row = c.fetchone()
-            self.fileList[filePath].UUID = UUID
         sqlLock.release()
         
     def updateLocation(self, newLocation):
