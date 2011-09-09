@@ -26,11 +26,8 @@ class MCPClient:
     self.server = ServerProxy(self.url)
     socket.setdefaulttimeout(3)
 
-  def approve_job(self, uuid):
-    return self.server.approveJob(uuid)
+  def execute(self, uuid, choice):
+    return self.server.approveJob(uuid, choice)
 
-  def get_jobs_awaiting_approval(self):
+  def list(self):
     return self.server.getJobsAwaitingApproval()
-
-  def reject_job(self, uuid):
-    return self.server.rejectJob(uuid)

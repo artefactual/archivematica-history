@@ -144,7 +144,7 @@ def ingest(request, uuid=None):
     mcp_available = False
     try:
       client = MCPClient()
-      jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
+      mcp_status = etree.XML(client.list())
       mcp_available = True
     except Exception: pass
     def encoder(obj):
@@ -165,13 +165,16 @@ def ingest(request, uuid=None):
           newJob['microservice'] = map_known_values(job.jobtype)
           newJob['currentstep'] = map_known_values(job.currentstep)
           newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
-          try: jobsAwaitingApprovalXml
+          try: mcp_status
           except NameError: pass
           else:
-            for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
-              if uuid.text == job.jobuuid:
-                newJob['status'] = 1
-                break
+            xml_unit = mcp_status.xpath('choicesAvailableForUnit[UUID="%s"]' % job.jobuuid)
+            if xml_unit:
+              xml_unit_choices = xml_unit[0].findall('choices/choice')
+              choices = {}
+              for choice in xml_unit_choices:
+                choices[choice.find("chainAvailable").text] = choice.find("description").text
+              newJob['choices'] = choices
         items.append(item)
       return items
     response = {}
@@ -181,11 +184,11 @@ def ingest(request, uuid=None):
   elif request.method == 'DELETE':
     jobs = Job.objects.filter(sipuuid = uuid)
     try:
-      client = MCPClient()
-      jobsAwaitingApprovalXml = etree.XML(client.get_jobs_awaiting_approval())
-      for uuid in jobsAwaitingApprovalXml.findall('Job/UUID'):
+      mcp_client = MCPClient()
+      mcp_list = etree.XML(mcp_client.list())
+      for uuid in mcp_list.findall('Job/UUID'):
         if 0 < len(jobs.filter(jobuuid=uuid.text)):
-          client.reject_job(uuid.text)
+          client.execute(uuid.text)
     except Exception: pass
     jobs.update(hidden=True)
     response = simplejson.JSONEncoder().encode({'removed': True})

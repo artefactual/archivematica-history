@@ -316,7 +316,8 @@ $(function()
         'click .btn_reject_job': 'rejectJob',
         'click .btn_show_tasks': 'showTasks',
         'click .btn_manual_normalization': 'manualNormalization',
-        'click .btn_normalization_report': 'normalizationReport'
+        'click .btn_normalization_report': 'normalizationReport',
+        'change select': 'action'
       },
 
       template: _.template($('#job-template').html()),
@@ -368,6 +369,20 @@ $(function()
             // ...
           }
 
+          choices = this.model.get('choices');
+
+          if (choices)
+          {
+            var $select = $('<select />').append('<option>Actions</option>');
+
+            for (var code in choices)
+            {
+              $select.append('<option value="' + code + '">- ' + choices[code] + '</option>');
+            }
+
+            this.$('.job-detail-actions').append($select);
+          }
+
           if ('Approve normalization' == this.model.get('microservice'))
           {
             this.$('.job-detail-actions')
@@ -377,6 +392,27 @@ $(function()
           this.$('.job-detail-microservice > a').tooltip();
 
           return this;
+        },
+
+      action: function(event)
+        {
+          var value = $(event.target).val();
+
+          $.ajax({
+            context: this,
+            data: { uuid: this.model.get('uuid'), choice: value },
+            type: 'POST',
+            success: function(data)
+              {
+                this.model.set({
+                  'currentstep': 'Executing command(s)',
+                  'status': 0
+                });
+
+                this.model.sip.view.updateIcon();
+              },
+            url: '/mcp/execute/'
+          });
         },
 
       normalizationReport: function(event)
