@@ -29,6 +29,7 @@
 #The server can send a command (matching one of the tasks) for the client to perform.
 #The client will perform that task, and return the exit code and output to the server.
 import sys
+import os
 import shlex
 import subprocess
 import time
@@ -57,6 +58,10 @@ def loadSupportedModules(file):
     supportedModulesConfig = ConfigParser.RawConfigParser()
     supportedModulesConfig.read(file)
     for key, value in supportedModulesConfig.items('supportedCommands'):
+        for key2, value2 in replacementDic.iteritems():
+            value = value.replace(key2, value2)
+        if not os.path.isfile(value):
+            print >>sys.stderr, "Warning - Module can't find file, or relies on system path:{%s}%s" % (key.__str__(), value.__str__())
         supportedModules[key] = value + " "
        
 def executeCommand(gearman_worker, gearman_job):
