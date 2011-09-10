@@ -41,9 +41,23 @@ from archivematicaFunctions import getTagged
 UUIDsDic={}
 amdSec=[]
 
-SIPUUID = sys.argv[1]
-SIPDirectory = sys.argv[2]
-XMLFile = sys.argv[3]
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("-s",  "--basePath", action="store", dest="basePath", default="")
+parser.add_option("-b",  "--basePathString", action="store", dest="basePathString", default="SIPDirectory") #transferDirectory
+parser.add_option("-f",  "--fileGroupIdentifier", action="store", dest="fileGroupIdentifier", default="sipUUID") #transferUUID
+parser.add_option("-S",  "--sipUUID", action="store", dest="sipUUID", default="")
+parser.add_option("-x",  "--xmlFile", action="store", dest="xmlFile", default="")
+parser.add_option("-a",  "--amdSec", action="store_true", dest="amdSec", default=False)
+(opts, args) = parser.parse_args()
+
+
+SIPUUID = opts.sipUUID
+basePath = opts.basePath
+XMLFile = opts.xmlFile
+includeAmdSec = opts.amdSec
+basePathString = "%%%s%%" % (opts.basePathString)
+fileGroupIdentifier = opts.fileGroupIdentifier
 
 def newChild(parent, tag, text=None, tailText=None):
     child = etree.Element(tag)
@@ -215,12 +229,12 @@ def createFileSec(path, parentBranch, structMapParent):
     doneFirstRun = True
     pathSTR = path.__str__()
     pathSTR = path.__str__()
-    if pathSTR == SIPDirectory + "objects/": #IF it's it's the SIP folder, it's OBJECTS
+    if pathSTR == basePath + "objects/": #IF it's it's the SIP folder, it's OBJECTS
         pathSTR = "objects"
     #pathSTR = string.replace(path.__str__(), "/tmp/" + sys.argv[2] + "/" + sys.argv[3], "objects", 1)
-    #if pathSTR + "/" == SIPDirectory: #if it's the very first run through (recursive function)
-    if path == SIPDirectory: #if it's the very first run through (recursive function)
-        pathSTR = os.path.basename(os.path.dirname(SIPDirectory))
+    #if pathSTR + "/" == basePath: #if it's the very first run through (recursive function)
+    if path == basePath: #if it's the very first run through (recursive function)
+        pathSTR = os.path.basename(os.path.dirname(basePath))
         structMapParent.set("DMDID", "SIP-description")
         
         currentBranch = newChild(parentBranch, "fileGrp")
@@ -247,10 +261,10 @@ def createFileSec(path, parentBranch, structMapParent):
             elif os.path.isfile(itempath):
                 #myuuid = uuid.uuid4()
                 myuuid=""
-                #pathSTR = itempath.replace(SIPDirectory + "objects", "objects", 1)
-                pathSTR = itempath.replace(SIPDirectory, "%SIPDirectory%", 1)
+                #pathSTR = itempath.replace(basePath + "objects", "objects", 1)
+                pathSTR = itempath.replace(basePath, basePathString, 1)
                 
-                sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND sipUUID = '""" + SIPUUID + """' AND Files.currentLocation = '""" + MySQLdb.escape_string(pathSTR) + """';"""
+                sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupIdentifier, SIPUUID, MySQLdb.escape_string(pathSTR))
                 c, sqlLock = databaseInterface.querySQL(sql) 
                 row = c.fetchone()
                 if row == None:
@@ -260,10 +274,10 @@ def createFileSec(path, parentBranch, structMapParent):
                     row = c.fetchone()
                 sqlLock.release()
                 
-
-                createDigiprovMD(myuuid, itempath, myuuid)
-                #TODO ^
-                pathSTR = itempath.replace(SIPDirectory, "", 1)
+                if includeAmdSec:
+                    createDigiprovMD(myuuid, itempath, myuuid)
+                
+                pathSTR = itempath.replace(basePath, "", 1)
                 
                 fileI = etree.SubElement( parentBranch, xlinkBNS + "fits", nsmap=NSMAP)
 
@@ -290,10 +304,11 @@ if __name__ == '__main__':
 
     #cd /tmp/$UUID; 
     opath = os.getcwd()
-    os.chdir(SIPDirectory)
-    path = SIPDirectory
+    os.chdir(basePath)
+    path = basePath
 
-    amdSec = newChild(root, "amdSec")
+    if includeAmdSec:
+        amdSec = newChild(root, "amdSec")
 
     fileSec = etree.Element("fileSec")
     fileSec.tail = "\n"
