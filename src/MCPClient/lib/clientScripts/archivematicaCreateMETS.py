@@ -80,7 +80,16 @@ def createDigiprovMD(uuid, filename, fileUUID) :
     premis = etree.SubElement( xmlData, premisBNS + "premis", nsmap=NSMAP, \
         attrib = { "{" + xsiNS + "}schemaLocation" : "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" })
     premis.set("version", "2.0")
-    
+
+    sql = "SELECT fileSize, checksum FROM Files WHERE fileUUID = '%s';" % (fileUUID)
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    while row != None:
+        fileSize = row[0].__str__()
+        checksum = row[1].__str__()
+        row = c.fetchone()
+    sqlLock.release()
+
         
     #OBJECT
     object = etree.SubElement(premis, "object")
@@ -96,11 +105,11 @@ def createDigiprovMD(uuid, filename, fileUUID) :
     
     fixity = etree.SubElement(object, "fixity")
     etree.SubElement(fixity, "messageDigestAlgorithm").text = "sha256"
-    etree.SubElement(fixity, "messageDigest").text = "TODO - message digest"
+    etree.SubElement(fixity, "messageDigest").text = checksum
     
-    etree.SubElement(object, "size").text = "TODO - file size in bytes"
+    etree.SubElement(object, "size").text = fileSize
     
-    sql = "SELECT * FROM FilesIDs WHERE fileUUID = '" + fileUUID + "';"
+    sql = "SELECT * FROM FilesIDs WHERE fileUUID = '%s';" % (fileUUID)
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     if not row:
