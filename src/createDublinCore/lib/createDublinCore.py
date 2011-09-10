@@ -19,8 +19,12 @@
 
 # @package Archivematica
 # @subpackage Ingest
-# @author Joseph Perry <joseph@artefactual.com>
+# @author Peter Van Garderen <peter@artefactual.com>
 # @version svn: $Id$
+
+# @author Joseph Perry <joseph@artefactual.com>
+# Continuing maintenance of this script
+# Date May 15, 2010 forward
 
 import lxml.etree as etree
 from datetime import datetime
