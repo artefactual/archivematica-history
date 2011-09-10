@@ -1,3 +1,0 @@
-#!/bin/bash
-/usr/lib/easy-extract/easy_extract.py "$@"
-
