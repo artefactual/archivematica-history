@@ -7,7 +7,6 @@ sudo rm -r /etc/archivematica
 sudo rm -r /usr/share/archivematica
 
 sudo rm /usr/bin/upload-qubit 
-sudo rm /usr/bin/easy-extract
 sudo rm /usr/bin/transcoder
 #sudo rm /usr/bin/archivematicaCreateDublincore
 sudo rm /usr/bin/archivematicaCreateMD5
@@ -18,7 +17,6 @@ sudo rm /usr/bin/createDublinCore
 
 sudo rm -r /usr/lib/createDublinCore
 sudo rm -r /usr/lib/sanitizeNames
-sudo rm -r /usr/lib/easy-extract
 
 sudo rm -r /var/archivematica/
 
