@@ -5,7 +5,7 @@ echo "Removing existing units"
 sudo ./removeUnitsFromWatchedDirectories.py
 
 
-echo "Enter root database password for the following. (Hit enter if blank)"
+echo "Enter root database password for each the following. (Hit enter if blank)"
 
 echo MCPServer
 mysql -u root -p --execute="source $currentDir/../src/MCPServer/share/mysql" "$databaseName"
