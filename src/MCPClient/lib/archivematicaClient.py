@@ -54,15 +54,25 @@ replacementDic = {
 }
 supportedModules = {}
 
+def loadSupportedModulesSupport(key, value):
+    for key2, value2 in replacementDic.iteritems():
+        value = value.replace(key2, value2)
+    if not os.path.isfile(value):
+        print >>sys.stderr, "Warning - Module can't find file, or relies on system path:{%s}%s" % (key.__str__(), value.__str__())
+    supportedModules[key] = value + " "
+        
 def loadSupportedModules(file):    
     supportedModulesConfig = ConfigParser.RawConfigParser()
     supportedModulesConfig.read(file)
     for key, value in supportedModulesConfig.items('supportedCommands'):
-        for key2, value2 in replacementDic.iteritems():
-            value = value.replace(key2, value2)
-        if not os.path.isfile(value):
-            print >>sys.stderr, "Warning - Module can't find file, or relies on system path:{%s}%s" % (key.__str__(), value.__str__())
-        supportedModules[key] = value + " "
+        loadSupportedModulesSupport(key, value)
+    
+    loadSupportedCommandsSpecial = config.get('MCPClient', "LoadSupportedCommandsSpecial")
+    if loadSupportedCommandsSpecial.lower() == "yes" or \
+    loadSupportedCommandsSpecial.lower() == "true":
+        for key, value in supportedModulesConfig.items('supportedCommandsSpecial'):
+            loadSupportedModulesSupport(key, value)
+          
        
 def executeCommand(gearman_worker, gearman_job):
     try:
