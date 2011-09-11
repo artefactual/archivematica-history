@@ -21,11 +21,13 @@
 # @version svn: $Id$
 
 #!!! this is a list of supported commands/tasks, not modules
-
-[supportedCommands]
 #the version numbers are versions of the protocol, not versions of the programs themselves.
+
+[supportedCommandsSpecial]
 upload-qubit_v0.0 = upload-qubit
 storeAIP_v0.0 = %clientScriptsDirectory%storeAIP.py
+
+[supportedCommands]
 echo_v0.0 = /bin/echo
 FITS_v0.0 = %clientScriptsDirectory%archivematicaFITS.py
 setSIPQuarantine_v0.0 = %clientScriptsDirectory%quarantineSIP.sh
