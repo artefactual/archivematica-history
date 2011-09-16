@@ -1,0 +1,32 @@
+<processingMCP>
+    <preconfiguredChoices>
+        <preconfiguredChoice>
+            <appliesTo>Workflow decision - send transfer to quarantine</appliesTo>
+            <goToChain>Skip quarantine</goToChain>
+        </preconfiguredChoice>
+        <preconfiguredChoice>
+            <appliesTo>Appraise SIP for Submission</appliesTo>
+            <goToChain>To appraise SIP for preservation</goToChain>
+        </preconfiguredChoice>
+        <preconfiguredChoice>
+            <appliesTo>Appraise SIP for preservation</appliesTo>
+            <goToChain>Prepare SIP for preservation</goToChain>
+        </preconfiguredChoice>
+        <preconfiguredChoice>
+            <appliesTo>Workflow decision - Create DIP?</appliesTo>
+            <goToChain>Create DIP and AIP</goToChain>
+        </preconfiguredChoice>
+        <preconfiguredChoice>
+            <appliesTo>Approve Normalization to preservation and access</appliesTo>
+            <goToChain>Process submission documentation and prepare DIP and AIP.</goToChain>
+        </preconfiguredChoice>
+        <preconfiguredChoice>
+            <appliesTo>Upload DIP</appliesTo>
+            <goToChain>Upload DIP</goToChain>
+        </preconfiguredChoice>
+        <preconfiguredChoice>
+            <appliesTo>Store AIP</appliesTo>
+            <goToChain>Store AIP</goToChain>
+        </preconfiguredChoice>
+    </preconfiguredChoices>
+</processingMCP>
