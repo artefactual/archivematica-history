@@ -1,8 +1,0 @@
-<processingMCP>
-    <preconfiguredChoices>
-        <preconfiguredChoice>
-            <appliesTo>Remove from quarantine</appliesTo>
-            <goToChain>Reject transfer</goToChain>
-        </preconfiguredChoice>
-    </preconfiguredChoices>
-</processingMCP>

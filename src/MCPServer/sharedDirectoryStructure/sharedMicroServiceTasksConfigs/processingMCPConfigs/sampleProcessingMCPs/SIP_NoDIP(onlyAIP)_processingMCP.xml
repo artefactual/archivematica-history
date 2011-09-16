@@ -1,8 +1,8 @@
 <processingMCP>
     <preconfiguredChoices>
         <preconfiguredChoice>
-            <appliesTo>Remove from quarantine</appliesTo>
-            <goToChain>Reject transfer</goToChain>
+            <appliesTo>Workflow decision - Create DIP?</appliesTo>
+            <goToChain>Create AIP</goToChain>
         </preconfiguredChoice>
     </preconfiguredChoices>
 </processingMCP>
