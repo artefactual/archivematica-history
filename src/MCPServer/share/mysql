@@ -401,9 +401,10 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     (0,      LAST_INSERT_ID(), 'Remove the SIP Backup.');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, NULL);
-set @NextMicroServiceChainLink = LAST_INSERT_ID();
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)

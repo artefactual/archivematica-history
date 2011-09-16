@@ -26,6 +26,7 @@ import databaseInterface
 import threading
 import uuid
 import sys
+import time
 #select * from MicroServiceChainChoice JOIN MicroServiceChains on chainAvailable = MicroServiceChains.pk;
 #| pk | choiceAvailableAtLink | chainAvailable | pk | startingLink | description
 
@@ -60,6 +61,7 @@ class linkTaskManagerChoice:
         
         preConfiguredChain = self.checkForPreconfiguredXML()
         if preConfiguredChain != None:
+            time.sleep(archivematicaMCP.config.getint('MCPServer', "waitOnAutoApprove"))
             print "checking for xml file for processing rules. TODO"
             jobChain.jobChain(self.unit, preConfiguredChain)
         else:
