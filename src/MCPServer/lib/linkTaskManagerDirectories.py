@@ -27,6 +27,7 @@ from taskStandard import taskStandard
 import os
 import uuid
 import sys
+import threading
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import databaseFunctions
@@ -80,7 +81,9 @@ class linkTaskManagerDirectories:
         UUID = uuid.uuid4().__str__()
         self.task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, UUID=UUID)
         databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
-        self.task.performTask()
+        t = threading.Thread(target=self.task.performTask)
+        t.start() 
+        
         
         
         
