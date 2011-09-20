@@ -92,6 +92,10 @@ class SIPWatch(pyinotify.ProcessEvent):
     
     #if a file is moved in, look for a cookie to claim
     def process_IN_MOVED_TO(self, event):
+        t = threading.Thread(target=self.threaded_process_IN_MOVED_TO, args=(event,))
+        t.start()
+    
+    def threaded_process_IN_MOVED_TO(self, event):
         time.sleep(waitToActOnMoves)
         print event
         print "SIP IN_MOVED_TO"
@@ -229,6 +233,10 @@ class transferWatch(pyinotify.ProcessEvent):
     
     #if a file is moved in, look for a cookie to claim
     def process_IN_MOVED_TO(self, event):
+        t = threading.Thread(target=self.threaded_process_IN_MOVED_TO, args=(event,))
+        t.start()
+    
+    def threaded_process_IN_MOVED_TO(self, event):
         time.sleep(waitToActOnMoves)
         print event
         movedFromLock.acquire()
