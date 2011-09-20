@@ -27,6 +27,7 @@ import threading
 import uuid
 import sys
 import time
+import transferD
 #select * from MicroServiceChainChoice JOIN MicroServiceChains on chainAvailable = MicroServiceChains.pk;
 #| pk | choiceAvailableAtLink | chainAvailable | pk | startingLink | description
 
@@ -120,4 +121,8 @@ class linkTaskManagerChoice:
         choicesAvailableForUnitsLock.acquire()
         del choicesAvailableForUnits[self.jobChainLink.UUID]
         choicesAvailableForUnitsLock.release()  
+        while transferD.movedFrom != {}:
+            print "Waiting for all files to finish updating their location in the database"
+            print transferD.movedFrom
+            time.sleep(1)
         jobChain.jobChain(self.unit, chain)
