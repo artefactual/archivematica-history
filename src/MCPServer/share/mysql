@@ -29,6 +29,8 @@ DROP TABLE IF EXISTS Transfers;
 CREATE TABLE Transfers (
     transferUUID        VARCHAR(50) PRIMARY KEY,
     currentLocation     LONGTEXT,
+    magicLink           BIGINT,
+    magicLinkExitMessage VARCHAR(50) DEFAULT 'completedSuccessfully',
     accessionID         LONGTEXT,
     sourceOfAcquisition LONGTEXT,
     typeOfTransfer      LONGTEXT,
@@ -77,7 +79,9 @@ DROP TABLE IF EXISTS SIPs;
 CREATE TABLE SIPs (
     sipUUID         VARCHAR(50) PRIMARY KEY,
     createdTime     TIMESTAMP(8) DEFAULT NOW(),
-    currentPath     LONGTEXT
+    currentPath     LONGTEXT,
+    magicLink       BIGINT,
+    magicLinkExitMessage VARCHAR(50) DEFAULT 'completedSuccessfully'
 );
 
 
@@ -88,7 +92,7 @@ CREATE TABLE Files(
     currentLocation     LONGTEXT,
     sipUUID             VARCHAR(50),
     Foreign Key (sipUUID) references SIPs(sipUUID),
-    transferUUID             VARCHAR(50),
+    transferUUID        VARCHAR(50),
     Foreign Key (transferUUID) references Transfers(transferUUID),
     removedTime         TIMESTAMP(8) DEFAULT 0,
     enteredSystem       TIMESTAMP(8) DEFAULT NOW(),
@@ -213,7 +217,9 @@ INSERT INTO TaskTypes
     (pk, description) 
     VALUES ( 0, 'one instance'),
     ( 1, 'for each file'),
-    ( 2, 'get user choice to proceed with');
+    ( 2, 'get user choice to proceed with'),
+    ( 3, 'assign magic link'),
+    ( 4, 'goto magic link');
 
 DROP TABLE IF EXISTS TasksConfigs;
 CREATE TABLE TasksConfigs (
@@ -1639,7 +1645,18 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+set @unquarantineDefaultTransferMagicChainLink = @MicroServiceChainLink;
 
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, NULL, NULL);
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (4,      LAST_INSERT_ID(), 'Find type to remove from quarantine as');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
 
 
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Unquarantine');
@@ -1650,6 +1667,32 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
 
 -- Remove from quarantine ^  --
 
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%quarantined/." "%SIPUUID%" "%sharedPath%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Move to quarantined');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, @unquarantineDefaultTransferMagicChainLink, NULL);
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (3,      LAST_INSERT_ID(), 'Designate to process as a standard transfer when unquarantined.');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES -- --eventDetail --eventOutcome --eventOutcomeDetailNote --
@@ -1658,10 +1701,10 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      LAST_INSERT_ID(), 'Create quarantined PREMIS events');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), Null);
+    VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, NULL);
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
@@ -1678,19 +1721,6 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%quarantined/." "%SIPUUID%" "%sharedPath%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Move to quarantined');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Quarantine');
 set @QuarantineMicroServiceChain = LAST_INSERT_ID();

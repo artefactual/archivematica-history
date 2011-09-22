@@ -27,3 +27,9 @@ class unit:
         self.currentPath = currentPath.__str__()
         self.UUID = UUID
         
+    def getMagicLink(self):
+        return
+    
+    def setMagicLink(self,link, exitStatus=""):
+        return
+        
