@@ -27,6 +27,8 @@ import MySQLdb
 from linkTaskManagerDirectories import linkTaskManagerDirectories
 from linkTaskManagerFiles import linkTaskManagerFiles
 from linkTaskManagerChoice import linkTaskManagerChoice
+from linkTaskManagerAssignMagicLink import linkTaskManagerAssignMagicLink
+from linkTaskManagerLoadMagicLink import linkTaskManagerLoadMagicLink
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import logJobCreatedSQL
@@ -36,6 +38,8 @@ from playAudioFileInCVLC import playAudioFileInThread
 constOneTask = 0
 constTaskForEachFile = 1
 constSelectPathTask = 2 
+constSetMagicLink = 3
+constLoadMagicLink = 4
 
 class jobChainLink:
     def __init__(self, jobChain, jobChainLinkPK, unit):
@@ -82,6 +86,10 @@ class jobChainLink:
             linkTaskManagerFiles(self, taskTypePKReference, self.unit)
         elif taskType == constSelectPathTask:
             linkTaskManagerChoice(self, taskTypePKReference, self.unit)
+        elif taskType == constSetMagicLink:
+            linkTaskManagerAssignMagicLink(self, taskTypePKReference, self.unit)
+        elif taskType == constLoadMagicLink:
+            linkTaskManagerLoadMagicLink(self, taskTypePKReference, self.unit)
         else:
             print sys.stderr, "unsupported task type: ", taskType
     
