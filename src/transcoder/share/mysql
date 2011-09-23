@@ -3065,15 +3065,6 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
-INSERT INTO CommandRelationships 
-    (GroupMember, commandClassification, command, fileID)
-    VALUES (
-    @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
-    @openOfficeToODTCommandID,
-    @fileID
-);
-
 -- End Of ADD Normalization Path for .DOC --
 
 -- ADD Normalization Path for .WBK --
@@ -3317,15 +3308,6 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
-INSERT INTO CommandRelationships 
-    (GroupMember, commandClassification, command, fileID)
-    VALUES (
-    @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
-    @openOfficeToODPCommandID,
-    @fileID
-);
-
 -- End Of ADD Normalization Path for .PPT --
 
 -- ADD Normalization Path for .XLS --
@@ -3346,15 +3328,6 @@ INSERT INTO FileIDsByExtension
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
     VALUES (@fileID, @spreadsheetGroup);
-
-INSERT INTO CommandRelationships 
-    (GroupMember, commandClassification, command, fileID)
-    VALUES (
-    @fileIDByExtensionDefaultGroupMemberID,
-    (SELECT pk FROM CommandClassifications WHERE classification = 'preservation'),
-    @openOfficeToODSCommandID,
-    @fileID
-);
 
 -- End Of ADD Normalization Path for .XLS --
 
