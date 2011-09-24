@@ -2011,6 +2011,21 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    ('mets.xml', NULL, 'objects', TRUE, '%SIPLogsDirectory%verifyChecksumsInFileSecOfDspaceMETSFiles.log', '%SIPLogsDirectory%verifyChecksumsInFileSecOfDspaceMETSFiles.log', 'verifyChecksumsInFileSecOfDspaceMETSFiles_v0.0', '"%relativeLocation%" "%date%" "%taskUUID%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      LAST_INSERT_ID(), 'Verify checksums in fileSec of Dspace METS files');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @ScanforvirusesTask, 'Scan for viruses');
