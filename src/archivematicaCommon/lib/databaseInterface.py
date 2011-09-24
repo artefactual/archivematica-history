@@ -93,7 +93,6 @@ def querySQL(sql):
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
             database=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
-            sqlLock.release()
             c=database.cursor()
             c.execute(sql)
     return c, sqlLock 
