@@ -67,3 +67,4 @@ assignFileUUIDs_v0.0 = %clientScriptsDirectory%archivematicaAssignFileUUID.py
 createEvent_v0.0 = %clientScriptsDirectory%createEvent.py
 updateSizeAndChecksum_v0.0 = %clientScriptsDirectory%archivematicaUpdateSizeAndChecksum.py
 copyTransfersMetadataAndLogs_v0.0 = %clientScriptsDirectory%copyTransfersMetadataAndLogs.py
+verifyChecksumsInFileSecOfDspaceMETSFiles_v0.0 = %clientScriptsDirectory%verifyChecksumsInFileSecOfDspaceMETSFiles.py
