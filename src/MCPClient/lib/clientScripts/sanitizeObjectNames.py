@@ -30,35 +30,7 @@ import uuid
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import insertIntoEvents
-
-
-#import lxml.etree as etree
-def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIdentifierUUID = uuid.uuid4().__str__(), fileUUID="None", sipUUID="None"):
-    """If the file uuid is not provided, will use the sip uuid and old path to find the file uuid"""
-    
-    if not fileUUID:
-        sql = "SELECT Files.fileUUID FROM Files WHERE Files.currentLocation = '" + MySQLdb.escape_string(src) + "' AND Files.sipUUID = '" + sipUUID + "';"  
-        c, sqlLock = databaseInterface.querySQL(sql) 
-        row = c.fetchone()
-        while row != None:
-            print row
-            fileUUID = row[0] 
-            row = c.fetchone()
-        sqlLock.release()
-        
-    eventOutcomeDetailNote = "Original name=\"" + src + "\"; cleaned up name=\"" + dst + "\""
-    eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
-    
-    #CREATE THE EVENT
-    if not fileUUID:
-        print >>sys.stderr, "Unable to find file uuid for: ", src, " -> ", dst
-        exit(6)
-    insertIntoEvents(fileUUID=fileUUID, eventIdentifierUUID=eventIdentifierUUID, eventType=eventType, eventDateTime=eventDateTime, eventDetail="", eventOutcome="", eventOutcomeDetailNote=eventOutcomeDetailNote)
-        
-    #UPDATE THE CURRENT FILE PATH
-    sql =  """UPDATE Files SET currentLocation='""" + dst + """' WHERE fileUUID='""" + fileUUID + """';"""
-    databaseInterface.runSQL(sql)
-
+from fileOperations import updateFileLocation
  
        
 if __name__ == '__main__':
