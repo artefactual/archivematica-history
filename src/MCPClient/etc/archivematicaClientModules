@@ -69,4 +69,5 @@ updateSizeAndChecksum_v0.0 = %clientScriptsDirectory%archivematicaUpdateSizeAndC
 copyTransfersMetadataAndLogs_v0.0 = %clientScriptsDirectory%copyTransfersMetadataAndLogs.py
 verifyChecksumsInFileSecOfDspaceMETSFiles_v0.0 = %clientScriptsDirectory%verifyChecksumsInFileSecOfDspaceMETSFiles.py
 moveDspaceLicenseFilesToDSpaceLicenses_v0.0 = %clientScriptsDirectory%moveDspaceLicenseFilesToDSpaceLicenses.py
+moveDspaceMetsFilesToDSpaceMETS_v0.0 = %clientScriptsDirectory%moveDspaceMetsFilesToDSpaceMETS.py
 
