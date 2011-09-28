@@ -1141,87 +1141,6 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    ('.xml', NULL, 'logs/fileMeta/', FALSE, '%SIPLogsDirectory%removedFilesAppraiseSIPForPreservation.log', '%SIPLogsDirectory%removedFilesAppraiseSIPForPreservation.log', 'scanForRemovedFiles_v0.0', '"%SIPObjectsDirectory%" "%relativeLocation%" "Appraise SIP for Preservation" "%date%" "%taskUUID%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (1,      LAST_INSERT_ID(), 'Scan for removed files post appraise SIP for preservation');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
--- move to processing directory --
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (@moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
--- --
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Prepare SIP for preservation');
-set @MicroServiceChain = LAST_INSERT_ID();
-
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, '', 'Prepare SIP for Preservation2.');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (2,      LAST_INSERT_ID(), 'Appraise SIP for preservation');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), NULL);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @MicroServiceChain);
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
-
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Prepare SIP for preservation');
-set @MicroServiceChain = LAST_INSERT_ID();
-
-INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
-    VALUES ('%watchDirectoryPath%appraiseSIPForPreservation/', @MicroServiceChain);
-
--- Remove from  appraise SIP for preservation directory ^  --
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%appraiseSIPForPreservation/." "%SIPUUID%" "%sharedPath%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Move to appraise SIP for preservation directory');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), Null);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, NULL);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, '%SIPLogsDirectory%clamAVScan.txt', 'archivematicaClamscan_v0.0', '"%fileUUID%" "%relativeLocation%" "%date%" "%taskUUID%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (1,      LAST_INSERT_ID(), 'Scan for viruses');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -1248,50 +1167,6 @@ INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink)
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'To appraise SIP for preservation');
-set @MicroServiceChain = LAST_INSERT_ID();
-
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, TRUE, NULL, NULL, 'appraiseSIP_v0.0', '"Appraise SIP for Submission3"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (2,     LAST_INSERT_ID(),      'Appraise SIP for Submission');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), NULL);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @MicroServiceChain);
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
-
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Appraise SIP for Submission');
-set @MicroServiceChain = LAST_INSERT_ID();
-
-INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
-    VALUES ('%watchDirectoryPath%appraiseSIPForSubmission', @MicroServiceChain);
-
--- Appraise SIP for Submission ^  --
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/appraiseSIPForSubmission/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(),  'Move to the appraise SIP for submission directory');
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), NULL);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, NULL);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
