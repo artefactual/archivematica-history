@@ -2013,10 +2013,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'echo_v0.0', '-R "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"');
+    ('mets.xml', NULL, 'objects', TRUE, NULL, NULL, 'moveDspaceMetsFilesToDSpaceMETS_v0.0', '"%relativeLocation%" "%date%" "%taskUUID%" "%SIPDirectory%" "%fileUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Removed bagged files.');
+    (1,      LAST_INSERT_ID(), 'Move DSpace Mets.xml files to DSpaceMETS directory');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
