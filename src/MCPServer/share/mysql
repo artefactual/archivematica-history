@@ -349,7 +349,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', '--UUIDPrefixed -r -e demo@example.com -p demo -t "%SIPName%-%SIPUUID%" -f "%SIPDirectory%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', '--UUIDPrefixed -e demo@example.com -p demo -t "%SIPName%-%SIPUUID%" -f "%SIPDirectory%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'uploadDIP');
@@ -844,7 +844,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Create DIP directory');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -1144,6 +1144,27 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'checkForAccessDirectory_v0.0', '--SIPDirectory "%SIPDirectory%" --accessDirectory "objects/access/" --objectsDirectory "objects/" --DIPDirectory "DIP" --SIPUUID "%SIPUUID%" --date "%date%" -c');
+SET @checkForAccessDirectoryCopyToDIPTask = LAST_INSERT_ID();
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'checkForAccessDirectory_v0.0', '--SIPDirectory "%SIPDirectory%" --accessDirectory "objects/access/" --objectsDirectory "objects/" --DIPDirectory "DIP" --SIPUUID "%SIPUUID%" --date "%date%"' );
+SET @checkForAccessDirectoryMoveToDIPTask = LAST_INSERT_ID();
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @checkForAccessDirectoryMoveToDIPTask, 'Check for access directory');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 179, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
     (NULL, NULL, NULL, FALSE, NULL, '%SIPDirectory%SIPnameCleanup.log', 'sanitizeSIPName_v0.0', '"%relativeLocation%" "%SIPUUID%" "%date%" "%sharedPath%"');    
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
@@ -1413,7 +1434,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 SET @CharacterizeandextractmetadataTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      @CharacterizeandextractmetadataTask, 'Characterize and extract metadata on submission documentation');
+    (1,      @CharacterizeandextractmetadataTask, 'Characterize and extract metadata');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();

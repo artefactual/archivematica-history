@@ -50,7 +50,7 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, transferDirectory, tran
     
     dest = os.path.join(outputDirectory, "mets.xml")
     renameAsSudo(metsFile, dest)
-                        
+    
     src = metsFile.replace(transferDirectory, "%transferDirectory%") 
     dst = dest.replace(transferDirectory, "%transferDirectory%")
     eventDetail = ""
