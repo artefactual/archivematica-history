@@ -70,4 +70,5 @@ copyTransfersMetadataAndLogs_v0.0 = %clientScriptsDirectory%copyTransfersMetadat
 verifyChecksumsInFileSecOfDspaceMETSFiles_v0.0 = %clientScriptsDirectory%verifyChecksumsInFileSecOfDspaceMETSFiles.py
 moveDspaceLicenseFilesToDSpaceLicenses_v0.0 = %clientScriptsDirectory%moveDspaceLicenseFilesToDSpaceLicenses.py
 moveDspaceMetsFilesToDSpaceMETS_v0.0 = %clientScriptsDirectory%moveDspaceMetsFilesToDSpaceMETS.py
+checkForAccessDirectory_v0.0 = %clientScriptsDirectory%checkForAccessDirectory.py
 
