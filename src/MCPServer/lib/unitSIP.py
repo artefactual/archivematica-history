@@ -72,7 +72,24 @@ class unitSIP(unit):
             row = c.fetchone()
         sqlLock.release()
         
-
+    def setMagicLink(self,link, exitStatus=""):
+        if exitStatus != "":
+            sql =  """UPDATE SIPs SET magicLink='""" + link + """', magicLinkExitMessage='""" + exitStatus + """' WHERE sipUUID='""" + self.UUID + """';"""
+        else:
+            sql =  """UPDATE SIPs SET magicLink='""" + link + """' WHERE sipUUID='""" + self.UUID + """';"""        
+        databaseInterface.runSQL(sql)
+    
+    def getMagicLink(self):
+        ret = None
+        sql = """SELECT magicLink, magicLinkExitMessage FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'" 
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            print row
+            ret = row
+            row = c.fetchone()
+        sqlLock.release()
+        return ret
         
         
     def reload(self):
