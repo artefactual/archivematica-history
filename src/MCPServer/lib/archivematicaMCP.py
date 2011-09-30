@@ -42,6 +42,7 @@ from unitFile import unitFile
 from unitTransfer import unitTransfer
 from pyinotify import ThreadedNotifier
 import transferD
+from xmlRPCServer import startXMLRPCServer
 
 import signal
 import os
@@ -61,7 +62,6 @@ import subprocess
 import shlex
 import sys
 import lxml.etree as etree
-from xmlRPCServer import startXMLRPCServer
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 
@@ -184,11 +184,27 @@ def watchDirectories():
 #configs = loadConfigs()
 #directoryWatchList = loadDirectoryWatchLlist(configs)
 #archivematicaMCPServerListen()
+
+    
+def signal_handler(signalReceived, frame):
+    print signalReceived, frame 
+    threads = threading.enumerate()
+    mt = None
+    for thread in threads:
+        if isinstance(thread, ThreadedNotifier):
+            print "stopping: ", type(thread), thread
+            thread.stop()
+        else:
+            print "not stopping: ", type(thread), thread
+
+
 if __name__ == '__main__':
     if True:
         import getpass
         print "user: ", getpass.getuser()
         os.setuid(333)
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
     transferD.main()
     watchDirectories()
     startXMLRPCServer()

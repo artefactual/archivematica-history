@@ -21,7 +21,7 @@
 # @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-import _mysql
+import MySQLdb
 import os
 import sys
 import databaseInterface
@@ -101,10 +101,10 @@ def logTaskCreatedSQL(taskManager, commandReplacementDic, taskUUID, arguments):
     databaseInterface.runSQL("""INSERT INTO Tasks (taskUUID, jobUUID, fileUUID, fileName, exec, arguments, createdTime)
     VALUES ( '"""   + taskUUID + databaseInterface.separator \
                     + jobUUID + databaseInterface.separator \
-                    + _mysql.escape_string(fileUUID) + databaseInterface.separator \
-                    + _mysql.escape_string(fileName) + databaseInterface.separator \
-                    + _mysql.escape_string(taskexec) + databaseInterface.separator \
-                    + _mysql.escape_string(arguments) + databaseInterface.separator \
+                    + MySQLdb.escape_string(fileUUID) + databaseInterface.separator \
+                    + MySQLdb.escape_string(fileName) + databaseInterface.separator \
+                    + MySQLdb.escape_string(taskexec) + databaseInterface.separator \
+                    + MySQLdb.escape_string(arguments) + databaseInterface.separator \
                     + databaseInterface.getUTCDate() + "' )" )
 
 def logTaskAssignedSQL(taskUUID, client, date):   
@@ -121,15 +121,15 @@ def logTaskCompletedSQL(task):
     
     databaseInterface.runSQL("UPDATE Tasks " + \
     "SET endTime='" + databaseInterface.getUTCDate() +"', exitCode='" + exitCode +  "', " + \
-    "stdOut='" + _mysql.escape_string(stdOut) + "', stdError='" + _mysql.escape_string(stdError) + "' "
+    "stdOut='" + MySQLdb.escape_string(stdOut) + "', stdError='" + MySQLdb.escape_string(stdError) + "' "
     "WHERE taskUUID='" + taskUUID + "'" )
 
 
 def logJobCreatedSQL(job):
     separator = databaseInterface.getSeparator()
     databaseInterface.runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, createdTime, createdTimeDec)
-        VALUES ( '""" + job.UUID.__str__() + separator + _mysql.escape_string(job.description) + separator \
-        + _mysql.escape_string(job.unit.currentPath) + separator + _mysql.escape_string(job.unit.UUID) + \
+        VALUES ( '""" + job.UUID.__str__() + separator + MySQLdb.escape_string(job.description) + separator \
+        + MySQLdb.escape_string(job.unit.currentPath) + separator + MySQLdb.escape_string(job.unit.UUID) + \
         separator + "exeCommand" + separator + job.createdDate + separator + databaseInterface.getDeciDate("." + job.createdDate.split(".")[-1]) + "' )" )
     #TODO -un hardcode executing exeCommand
 

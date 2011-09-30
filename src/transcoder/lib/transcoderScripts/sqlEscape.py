@@ -24,9 +24,9 @@
 #-- used to Escape to sql string
 
 import sys
-import _mysql
+import MySQLdb
 lines = sys.stdin.readlines()
 for line in lines:
-    tmp = _mysql.escape_string(line)
+    tmp = MySQLdb.escape_string(line)
     print tmp.replace("\\n","")
 

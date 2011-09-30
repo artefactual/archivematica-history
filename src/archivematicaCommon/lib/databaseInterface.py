@@ -22,7 +22,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-import _mysql
+import MySQLdb
 import os
 import threading
 import MySQLdb
@@ -71,7 +71,7 @@ def runSQL(sql):
     except MySQLdb.OperationalError, message:  
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
-            database=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
+            database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
             sqlLock.release()
             runSQL(sql)
             return 
@@ -92,7 +92,7 @@ def querySQL(sql):
     except MySQLdb.OperationalError, message:  
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
-            database=_mysql.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
+            database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
             import time
             time.sleep(10)
             c=database.cursor()
