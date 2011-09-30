@@ -73,7 +73,7 @@ def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIP
                     print row
                     objectUUID = row[0]
                     objectPath = row[1]
-                    dipPath = os.path.join(DIPDirectory, "%s-%s" % (objectUUID, os.path.basename(accessPath))) 
+                    dipPath = os.path.join(DIPDirectory,  "objects", "%s-%s" % (objectUUID, os.path.basename(accessPath))) 
                     if copy:
                         print "TODO - copy not supported yet"
                     else:
@@ -136,6 +136,8 @@ if __name__ == '__main__':
     try:
         if not os.path.isdir(DIPDirectory):
             os.mkdir(DIPDirectory)
+        if not os.path.isdir(os.path.join(DIPDirectory, "objects")):
+            os.mkdir(os.path.join(DIPDirectory, "objects"))
     except:
         print "error creating DIP directory"
     

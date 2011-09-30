@@ -809,6 +809,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'no normalization');
+set @noNormalizationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
+
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'transcoderNormalizePreservation_v0.0', '--inputFile "%relativeLocation%" --commandClassifications "preservation" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%" --sipUUID "%SIPUUID%" --sipPath "%SIPDirectory%"');
@@ -821,6 +824,9 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'preservation');
+set @normalizePreservationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
 
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -850,7 +856,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create DIP and AIP');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'preservation and access');
 set @CreateDIPandAIPMicroServiceChain = LAST_INSERT_ID();
 -- /CREATE AIP AND DIP --
 
@@ -1092,7 +1098,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create AIP');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'preservation');
 set @CreateAIPMicroServiceChain = LAST_INSERT_ID();
 -- /CREATE AIP --
 
@@ -1105,7 +1111,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      LAST_INSERT_ID(), 'Workflow decision - Create DIP?');
+    (2,      LAST_INSERT_ID(), 'Normalize as');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
     VALUES (LAST_INSERT_ID(), NULL);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1119,6 +1125,41 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+set @normalizeOptionsForASIPWITHOUTAccessDirectory = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, TRUE, NULL, NULL, 'checkForSubmissionDocumenation_v0.0', '"%SIPDirectory%metadata/submissionDocumentation"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (2,      LAST_INSERT_ID(), 'Normalize as');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @noNormalizationWithAccessDirectoryMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @normalizePreservationWithAccessDirectoryMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+set @normalizeOptionsForASIPWITHAccessDirectory = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, NULL, NULL);
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (4,      LAST_INSERT_ID(), 'Find options to normalize as');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+
 
 
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create DIP ?');
@@ -1144,6 +1185,34 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, @normalizeOptionsForASIPWITHOUTAccessDirectory, NULL);
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (3,      LAST_INSERT_ID(), 'Grant normalization options for no pre-existing DIP');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NoDIPNextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, @normalizeOptionsForASIPWITHAccessDirectory, NULL);
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (3,      LAST_INSERT_ID(), 'Grant normalization options for pre-existing DIP');
+INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @ADIPNextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'checkForAccessDirectory_v0.0', '--SIPDirectory "%SIPDirectory%" --accessDirectory "objects/access/" --objectsDirectory "objects/" --DIPDirectory "DIP" --SIPUUID "%SIPUUID%" --date "%date%" -c');
 SET @checkForAccessDirectoryCopyToDIPTask = LAST_INSERT_ID();
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -1154,12 +1223,12 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      @checkForAccessDirectoryMoveToDIPTask, 'Check for access directory');
 INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink) 
-    VALUES (LAST_INSERT_ID(), NULL);
+    VALUES (LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+    VALUES (@MicroServiceChainLink, 0, @NoDIPNextMicroServiceChainLink);
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 179, @NextMicroServiceChainLink);
+    VALUES (@MicroServiceChainLink, 179, @ADIPNextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
