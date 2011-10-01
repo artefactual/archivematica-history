@@ -23,6 +23,7 @@
 # @version svn: $Id$
 
 import databaseInterface
+#import datetime
 import threading
 import uuid
 import sys
@@ -41,6 +42,7 @@ import archivematicaMCP
 global choicesAvailableForUnits
 choicesAvailableForUnits = {}
 choicesAvailableForUnitsLock = threading.Lock()
+waitingOnTimer = "waitingOnTimer"
 
 class linkTaskManagerChoice:
     def __init__(self, jobChainLink, pk, unit):
@@ -62,9 +64,12 @@ class linkTaskManagerChoice:
         
         preConfiguredChain = self.checkForPreconfiguredXML()
         if preConfiguredChain != None:
-            time.sleep(archivematicaMCP.config.getint('MCPServer', "waitOnAutoApprove"))
-            print "checking for xml file for processing rules. TODO"
-            jobChain.jobChain(self.unit, preConfiguredChain)
+            if preConfiguredChain != waitingOnTimer:
+                time.sleep(archivematicaMCP.config.getint('MCPServer', "waitOnAutoApprove"))
+                print "checking for xml file for processing rules. TODO"
+                jobChain.jobChain(self.unit, preConfiguredChain)
+            else:
+                print "wating on delay to resume processing on unit:", unit
         else:
             choicesAvailableForUnitsLock.acquire()
             choicesAvailableForUnits[self.jobChainLink.UUID] = self
@@ -94,6 +99,27 @@ class linkTaskManagerChoice:
                             ret = row[0] 
                             row = c.fetchone()
                         sqlLock.release()
+                        try:
+                            #<delay unitAtime="yes">30</delay>
+                            delayXML = preconfiguredChoice.find("delay")
+                            unitAtimeXML = delayXML.get("unitCtime")
+                            if unitAtimeXML != None and unitAtimeXML.lower() != "no":
+                                delaySeconds=int(delayXML.text)
+                                unitTime = os.path.getmtime(self.unit.currentPath.replace("%sharedPath%", \
+                                               archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1))
+                                nowTime=time.time()
+                                timeDifference = nowTime - unitTime
+                                timeToGo = delaySeconds - timeDifference
+                                print "time to go:", timeToGo
+                                
+                                t = threading.Timer(timeToGo, jobChain.jobChain, args=[self.unit, ret], kwargs={})
+                                t.start()
+                                return waitingOnTimer
+                        
+                        except Exception as inst:
+                            print >>sys.stderr, "Error parsing xml:"
+                            print >>sys.stderr, type(inst)
+                            print >>sys.stderr, inst.args
                 
             except Exception as inst:
                 print >>sys.stderr, "Error parsing xml:"
@@ -104,7 +130,6 @@ class linkTaskManagerChoice:
         return ret
     
     def xmlify(self):
-        
         ret = etree.Element("choicesAvailableForUnit")
         etree.SubElement(ret, "UUID").text = self.jobChainLink.UUID
         ret.append(self.unit.xmlify())
