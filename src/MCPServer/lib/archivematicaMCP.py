@@ -167,6 +167,8 @@ def watchDirectories():
     for row in rows:
         print row
         directory = row[0].replace("%watchDirectoryPath%", config.get('MCPServer', "watchDirectoryPath"), 1)
+        if not os.path.isdir(directory):
+            os.makedirs(directory)
         for item in os.listdir(directory):
             if item == ".svn":
                 continue
