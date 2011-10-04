@@ -77,7 +77,7 @@ if __name__ == '__main__':
         print >>sys.stderr, "Execution failed:", ose
         quit(2)
 
-    eventDetailText= "program=\"sanitizeNames\"; version=\"" + version + "\""
+    eventDetail= "program=\"sanitizeNames\"; version=\"" + version + "\""
     for line in lines:
         detoxfiles = line.split(" -> ")
         if len(detoxfiles) > 1 :
@@ -112,7 +112,7 @@ if __name__ == '__main__':
                 print oldfile, " -> ", newfile
 
                 for fileUUID, oldPath, newPath in directoryContents:
-                    updateFileLocation(oldPath, newPath, "name cleanup", date, "prohibited characters removed", fileUUID=fileUUID)
+                    updateFileLocation(oldPath, newPath, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=fileUUID)
                     
 
 
