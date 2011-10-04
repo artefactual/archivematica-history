@@ -64,6 +64,7 @@ CREATE TABLE Jobs (
     createdTimeDec  decimal(24,10) NOT NULL DEFAULT 0,
     directory       VARCHAR(250),
     SIPUUID         VARCHAR(50),
+    unitType        VARCHAR(50),
     currentStep     VARCHAR(50),
     hidden          BOOLEAN NOT NULL DEFAULT 0
 );
