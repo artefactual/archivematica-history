@@ -332,6 +332,8 @@ def addWatchForSIP(path, unit):
 def loadExistingFiles():
     #Transfers
     directory = completedTransfersDirectory
+    if not os.path.isdir(directory):
+            os.makedirs(directory)
     for item in os.listdir(directory):
         if item == ".svn":
             continue
@@ -343,6 +345,8 @@ def loadExistingFiles():
         
     #SIPS
     directory = sipCreationDirectory
+    if not os.path.isdir(directory):
+            os.makedirs(directory)
     for item in os.listdir(directory):
         if item == ".svn":
             continue

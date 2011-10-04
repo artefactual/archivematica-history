@@ -116,6 +116,8 @@ class watchDirectoryProcessEvent(ProcessEvent):
 class archivematicaWatchDirectory:
     def __init__(self, directory, variables, callBackFunction):
         #directory = directory.replace("%watchDirectoryPath%", config.get('MCPServer', "watchDirectoryPath"), 1)
+        if not os.path.isdir(directory):
+            os.makedirs(directory)
         print "watching directory: ", directory
         wm = WatchManager()
         notifier = ThreadedNotifier(wm, watchDirectoryProcessEvent(variables, callBackFunction))
