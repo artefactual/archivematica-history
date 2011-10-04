@@ -127,10 +127,10 @@ def logTaskCompletedSQL(task):
 
 def logJobCreatedSQL(job):
     separator = databaseInterface.getSeparator()
-    databaseInterface.runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, unitType, createdTime, createdTimeDec)
+    databaseInterface.runSQL("""INSERT INTO Jobs (jobUUID, jobType, directory, SIPUUID, currentStep, unitType, microserviceGroup, createdTime, createdTimeDec)
         VALUES ( '""" + job.UUID.__str__() + separator + MySQLdb.escape_string(job.description) + separator \
         + MySQLdb.escape_string(job.unit.currentPath) + separator + MySQLdb.escape_string(job.unit.UUID) + \
-        separator + "exeCommand" + separator + job.unit.__class__.__name__  + separator + job.createdDate + separator + databaseInterface.getDeciDate("." + job.createdDate.split(".")[-1]) + "' )" )
+        separator + "exeCommand" + separator + job.unit.__class__.__name__  + separator + job.microserviceGroup.__str__() + separator + job.createdDate + separator + databaseInterface.getDeciDate("." + job.createdDate.split(".")[-1]) + "' )" )
     #TODO -un hardcode executing exeCommand
 
 
