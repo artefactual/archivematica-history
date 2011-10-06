@@ -89,7 +89,7 @@ if __name__ == '__main__':
                 newfile = newfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1)
                 print oldfile, " -> ", newfile 
 
-                updateFileLocation(oldfile, newfile, "name cleanup", date, "prohibited characters removed", fileUUID=None, sipUUID=sipUUID)
+                updateFileLocation(oldfile, newfile, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=None, sipUUID=sipUUID)
                 
             elif os.path.isdir(newfile):
                 oldfile = oldfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1) + "/"
