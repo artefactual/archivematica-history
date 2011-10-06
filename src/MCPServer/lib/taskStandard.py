@@ -76,16 +76,7 @@ class taskStandard():
         
 
 
-   
-    #note lock tasksLock first
-    def xmlify(self):
-        ret = etree.Element("task")
-        etree.SubElement(ret, "UUID").text = self.UUID.__str__()
-        etree.SubElement(ret, "jobUUID").text = self.job.UUID.__str__()
-        etree.SubElement(ret, "execute").text = self.execute
-        etree.SubElement(ret, "arguments").text = self.arguments
-        etree.SubElement(ret, "target").text = self.target
-        return ret
+ 
     
     #This function is used to verify that where 
     #the MCP is writing to is an allowable location
