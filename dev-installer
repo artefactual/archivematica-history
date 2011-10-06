@@ -56,6 +56,43 @@ else
         echo "Not going to ${part}"
 fi
 
+part="reinstall archivematica upstart services - requires restart"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        sudo stop archivematica-mcp-client
+        sleep 1
+        sudo stop archivematica-mcp-server
+        sleep 3
+        sudo rm /etc/init/archivematica-mcp-server.conf /etc/init/archivematica-mcp-client.conf
+        sudo ln src/MCPServer/init/archivematica-mcp-server.conf /etc/init/
+        sudo ln src/MCPClient/init/archivematica-mcp-client.conf /etc/init/
+else
+        echo "Not going to ${part}."
+fi
+
+part="reinstall ica-atom"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+    #download and export
+    sudo rm /var/www/ica-atom -rf
+    svn checkout -r6907 http://qubit-toolkit.googlecode.com/svn/branches/ica-atom/  ica-atom-svn
+    sudo svn export ica-atom-svn /var/www/ica-atom
+    #rm ica-atom-svn -rf    
+    
+    #delete & create "qubit" database
+    
+    #fix ownership
+    sudo chown -R www-data:www-data /var/www/ica-atom
+    
+    sudo apache2ctl restart
+else
+        echo "Not going to ${part}."
+fi
+
+
 exit
 
 part="example"
