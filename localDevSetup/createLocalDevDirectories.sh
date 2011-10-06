@@ -26,6 +26,7 @@ sudo ln -s "${svnDir}src/transcoder/lib/" "${lib}/transcoder"
 sudo ln -s "${svnDir}src/sanitizeNames/lib/" "/usr/lib/sanitizeNames"
 sudo ln -s "${svnDir}src/dashboard/src/" "${share}/dashboard"
 sudo ln -s "${svnDir}src/createDublinCore/lib/" "/usr/lib/createDublinCore"
+sudo ln -sf "${svnDir}/buildVM/includes/apache.default" "/etc/apache2/sites-enabled/000-default"
 
 sudo ln "${svnDir}src/createDublinCore/bin/createDublinCore" "/usr/bin/"
 sudo ln "${svnDir}src/SIPCreationTools/bin/archivematicaCreateMD5" "/usr/bin/"
@@ -44,6 +45,7 @@ fi
 sudo ln "${svnDir}src/upload-qubit/upload-qubit" "/usr/bin/" 
 sudo ln "${svnDir}src/transcoder/bin/transcoder" "/usr/bin/"
 sudo ln "${svnDir}src/sanitizeNames/bin/sanitizeNames" "/usr/bin/"
+
 
 sudo mv /usr/share/fits/xml/fits.xml /usr/share/fits/xml/fits.xml.backup
 sudo ln "${svnDir}externals/fits/archivematicaConfigs/fits.xml" /usr/share/fits/xml/
