@@ -29,7 +29,6 @@ from databaseFunctions import insertIntoFiles
 from executeOrRunSubProcess import executeOrRun
 from externals.checksummingTools import sha_for_file
 from databaseFunctions import insertIntoEvents
-import databaseInterface
 import MySQLdb
 
 
@@ -81,7 +80,9 @@ def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourc
 #@output - the text to append to the file
 #@fileName - The name of the file to create, or append to.
 #@returns - 0 if ok, non zero if error occured.
-def writeToFile(output, fileName):
+def writeToFile(output, fileName, writeWhite=False):
+    if not writeWhite and output.isspace():
+        return 0
     if fileName and output:
         print "writing to: " + fileName
         if fileName.startswith("<^Not allowed to write to file^> "):
