@@ -41,7 +41,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
     ./createLocalDevDirectories.sh
     cd ..
 else
-        echo "not goint to ${part}"
+        echo "not going to ${part}"
 fi
 
 part="update/install package requirements"
@@ -79,24 +79,9 @@ if [[ $a == "Y" || $a == "y" ]]; then
         ./recreateDB.sh
         cd ..
 else
-        echo "Not goint to ${part}."
+        echo "Not going to ${part}."
 fi
 
-part="reinstall upstart services - requires restart"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
-read a
-if [[ $a == "Y" || $a == "y" ]]; then
-        echo "Going to ${part} ..."
-        sudo stop archivematica-mcp-client
-        sleep 1
-        sudo stop archivematica-mcp-server
-        sleep 3
-        sudo rm /etc/init/archivematica-mcp-server.conf /etc/init/archivematica-mcp-client.conf
-        sudo ln src/MCPServer/init/archivematica-mcp-server.conf /etc/init/
-        sudo ln src/MCPClient/init/archivematica-mcp-client.conf /etc/init/
-else
-        echo "Not goint to ${part}."
-fi
 
 part="restart archivematica services"
 echo -n "\"Would you like to ${part}?\"(Y/N)"
@@ -110,7 +95,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
         sudo start archivematica-mcp-server
         sudo start archivematica-mcp-client
 else
-        echo "Not goint to ${part}."
+        echo "Not going to ${part}."
 fi
 
 part="export sample data to ~/sampledata"
@@ -121,7 +106,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
         echo Going to export to '~/'sampledata-$rev ...
         svn export sampledata ~/sampledata-${rev}
 else
-        echo "Not goint to ${part}."
+        echo "Not going to ${part}."
 fi
 
 exit
