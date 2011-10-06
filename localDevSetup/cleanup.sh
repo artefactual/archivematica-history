@@ -27,3 +27,5 @@ sudo rm -r /var/archivematica/
 #sudo rm "/etc/init/archivematica-mcp-server.conf"
 #sudo rm "/etc/init/archivematica-mcp-client.conf"
 #sudo rm "/etc/init/openoffice-service.conf"
+
+sudo rm /etc/apache2/sites-enabled/000-default
