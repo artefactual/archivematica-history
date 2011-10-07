@@ -1062,6 +1062,9 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Process submission documentation and prepare AIP.');
 set @MicroServiceChain = LAST_INSERT_ID();
 
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'No normalization');
+set @ProcessSubmissionDocumentationLinkMicroServiceChain = LAST_INSERT_ID();
+
 SET @microserviceGroup  = 'Normalize';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -1145,6 +1148,9 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @CreateDIPandAIPMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @ProcessSubmissionDocumentationLinkMicroServiceChain); -- no normalization --
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
