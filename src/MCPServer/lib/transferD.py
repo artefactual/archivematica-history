@@ -51,12 +51,6 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import fileWasRemoved
 
-#Variables to move to config file
-delayTimer = 3600
-waitToActOnMoves = 1
-
-
-
 #Local Variables
 mask = pyinotify.IN_CREATE | pyinotify.IN_MODIFY | pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO | pyinotify.IN_DELETE | pyinotify.IN_MOVE_SELF
 #wm = pyinotify.WatchManager()
@@ -96,7 +90,7 @@ class SIPWatch(pyinotify.ProcessEvent):
         t.start()
     
     def threaded_process_IN_MOVED_TO(self, event):
-        time.sleep(waitToActOnMoves)
+        time.sleep(archivematicaMCP.config.getint('MCPServer', "waitToActOnMoves"))
         print event
         print "SIP IN_MOVED_TO"
         movedFromLock.acquire()
@@ -143,7 +137,7 @@ class SIPWatch(pyinotify.ProcessEvent):
         
         movedFromLock.acquire()
         utcDate = databaseInterface.getUTCDate()
-        timer = threading.Timer(delayTimer, timerExpired, args=[event, utcDate], kwargs={})
+        timer = threading.Timer(archivematicaMCP.config.getint('MCPServer', "delayTimer"), timerExpired, args=[event, utcDate], kwargs={})
         movedFrom[event.cookie] = (movedFromPath, filesMoved, timer)
         movedFromLock.release()
 
@@ -218,7 +212,7 @@ class transferWatch(pyinotify.ProcessEvent):
         
         movedFromLock.acquire()
         utcDate = databaseInterface.getUTCDate()
-        timer = threading.Timer(delayTimer, timerExpired, args=[event, utcDate], kwargs={})
+        timer = threading.Timer(archivematicaMCP.config.getint('MCPServer', "delayTimer"), timerExpired, args=[event, utcDate], kwargs={})
         movedFrom[event.cookie] = (movedFromPath, filesMoved, timer)
         movedFromLock.release()
 
@@ -237,7 +231,7 @@ class transferWatch(pyinotify.ProcessEvent):
         t.start()
     
     def threaded_process_IN_MOVED_TO(self, event):
-        time.sleep(waitToActOnMoves)
+        time.sleep(archivematicaMCP.config.getint('MCPServer', "waitToActOnMoves"))
         print event
         movedFromLock.acquire()
         if event.cookie not in movedFrom:
