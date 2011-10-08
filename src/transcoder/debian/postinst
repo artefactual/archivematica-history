@@ -3,6 +3,7 @@
 set -e
 
 dbc_dbuser=archivematica
+dbc_dbname=MCP
 
 #Commented out until further tests are completed
 . /usr/share/debconf/confmodule
