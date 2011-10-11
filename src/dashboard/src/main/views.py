@@ -162,8 +162,8 @@ def ingest(request, uuid=None):
           newJob = {}
           item['jobs'].append(newJob)
           newJob['uuid'] = job.jobuuid
-          newJob['microservice'] = map_known_values(job.jobtype)
-          newJob['currentstep'] = map_known_values(job.currentstep)
+          newJob['microservice'] = job.jobtype #map_known_values(job.jobtype)
+          newJob['currentstep'] = job.currentstep #map_known_values(job.currentstep)
           newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
           try: mcp_status
           except NameError: pass
@@ -409,6 +409,7 @@ def tasks(request, uuid):
   return render_to_response('main/tasks.html', locals())
 
 def map_known_values(value):
+  #changes should be made in the database, not this map
   map = {
     # currentStep
     'completedSuccessfully': 'Completed successfully',

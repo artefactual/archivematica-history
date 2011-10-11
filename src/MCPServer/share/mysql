@@ -30,7 +30,7 @@ CREATE TABLE Transfers (
     transferUUID        VARCHAR(50) PRIMARY KEY,
     currentLocation     LONGTEXT,
     magicLink           BIGINT,
-    magicLinkExitMessage VARCHAR(50) DEFAULT 'completedSuccessfully',
+    magicLinkExitMessage VARCHAR(50) DEFAULT 'Completed successfully',
     type                VARCHAR(50),
     accessionID         LONGTEXT,
     sourceOfAcquisition LONGTEXT,
@@ -84,7 +84,7 @@ CREATE TABLE SIPs (
     createdTime     TIMESTAMP(8) DEFAULT NOW(),
     currentPath     LONGTEXT,
     magicLink       BIGINT,
-    magicLinkExitMessage VARCHAR(50) DEFAULT 'completedSuccessfully'
+    magicLinkExitMessage VARCHAR(50) DEFAULT 'Completed successfully'
 );
 
 
@@ -187,7 +187,7 @@ CREATE TABLE MicroServiceChainLinks (
     Foreign Key (defaultPlaySound) references Sounds(pk),    
     microserviceGroup VARCHAR(50),
     reloadFileList      BOOLEAN DEFAULT TRUE,
-    defaultExitMessage  VARCHAR(50) DEFAULT 'completedUnsuccessfully'
+    defaultExitMessage  VARCHAR(50) DEFAULT 'Failed'
 );
 
 DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
@@ -200,7 +200,7 @@ CREATE TABLE MicroServiceChainLinksExitCodes (
     Foreign Key (nextMicroServiceChainLink) references MicroServiceChainLinks(pk),
     playSound   INT,
     Foreign Key (playSound) references Sounds(pk),
-    exitMessage  VARCHAR(50) DEFAULT 'completedSuccessfully'
+    exitMessage  VARCHAR(50) DEFAULT 'Completed successfully'
 );
 
 DROP TABLE IF EXISTS MicroServiceChains;
