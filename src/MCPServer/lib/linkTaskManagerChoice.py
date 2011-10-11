@@ -67,7 +67,7 @@ class linkTaskManagerChoice:
             if preConfiguredChain != waitingOnTimer:
                 time.sleep(archivematicaMCP.config.getint('MCPServer', "waitOnAutoApprove"))
                 print "checking for xml file for processing rules. TODO"
-                self.jobChainLink.setExitMessage("completedSuccessfully")
+                self.jobChainLink.setExitMessage("Completed successfully")
                 jobChain.jobChain(self.unit, preConfiguredChain)
             else:
                 print "wating on delay to resume processing on unit:", unit
@@ -151,5 +151,5 @@ class linkTaskManagerChoice:
             print "Waiting for all files to finish updating their location in the database"            
             print transferD.movedFrom
             time.sleep(1)
-        self.jobChainLink.setExitMessage("completedSuccessfully")
+        self.jobChainLink.setExitMessage("Completed successfully")
         jobChain.jobChain(self.unit, chain)
