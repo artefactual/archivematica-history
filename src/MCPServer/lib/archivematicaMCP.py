@@ -74,7 +74,6 @@ config.read("/etc/archivematica/MCPServer/serverConfig.conf")
 #time to sleep to allow db to be updated with the new location of a SIP
 dbWaitSleep = 2
 
-
 configs = []
 jobsAwaitingApproval = []
 jobsQueue = [] #jobs shouldn't remain here long (a few seconds max) before they are turned into tasks (jobs being processed)

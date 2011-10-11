@@ -29,11 +29,16 @@ global xmlRPCServerServer
 
 def startXMLRPCServer():
     global xmlRPCServerServer
-    server = SimpleXMLRPCServer( (archivematicaMCP.config.get('MCPServer', 'MCPArchivematicaXMLClients'), archivematicaMCP.config.getint('MCPServer', "MCPArchivematicaXMLPort")), logRequests=False)
-    xmlRPCServerServer = server 
-    server.register_function(getJobsAwaitingApproval)
-    server.register_function(approveJob)
-    server.serve_forever()
+    try:
+        server = SimpleXMLRPCServer( (archivematicaMCP.config.get('MCPServer', 'MCPArchivematicaXMLClients'), archivematicaMCP.config.getint('MCPServer', "MCPArchivematicaXMLPort")), logRequests=False)
+        xmlRPCServerServer = server 
+        server.register_function(getJobsAwaitingApproval)
+        server.register_function(approveJob)
+        server.serve_forever()
+    except Exception as inst:
+        print type(inst)     # the exception instance
+        print inst.args      # arguments stored in .args
+        archivematicaMCP.signal_handler(type(inst), inst.args)
     
 def getJobsAwaitingApproval():
     ret = etree.Element("choicesAvailableForUnits")
