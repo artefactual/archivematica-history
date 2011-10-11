@@ -116,6 +116,11 @@ class jobChainLink:
             sqlLock.release()
             return ret
     
+    def setExitMessage(self, message):
+        databaseInterface.runSQL("UPDATE Jobs " + \
+                "SET currentStep='" + MySQLdb.escape_string(message.__str__()) +  "' " + \
+                "WHERE jobUUID='" + self.UUID + "'" )
+    
     def updateExitMessage(self, exitCode):
         ret = self.defaultExitMessage
         if exitCode != None:
@@ -127,9 +132,8 @@ class jobChainLink:
             sqlLock.release()
         
         if ret != None:
-            databaseInterface.runSQL("UPDATE Jobs " + \
-                "SET currentStep='" + MySQLdb.escape_string(ret.__str__()) +  "' " + \
-                "WHERE jobUUID='" + self.UUID + "'" )
+            self.setExitMessage(ret)
+            
         else:
             print "No exit message" 
             

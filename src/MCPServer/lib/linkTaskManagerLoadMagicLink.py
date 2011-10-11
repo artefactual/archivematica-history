@@ -53,6 +53,7 @@ class linkTaskManagerLoadMagicLink:
         magicLink = self.unit.getMagicLink()
         if magicLink != None:
             link, exitStatus = magicLink
+            self.jobChainLink.setExitMessage("completedSuccessfully")
             self.jobChainLink.jobChain.nextChainLink(link)
         
         
