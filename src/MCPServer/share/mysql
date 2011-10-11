@@ -1097,7 +1097,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Process submission documentation and prepare AIP.');
 set @MicroServiceChain = LAST_INSERT_ID();
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'No normalization');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'no normalization');
 set @ProcessSubmissionDocumentationLinkMicroServiceChain = LAST_INSERT_ID();
 
 SET @microserviceGroup  = 'Normalize';
@@ -1160,7 +1160,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'preservation');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'preservation only');
 set @CreateAIPMicroServiceChain = LAST_INSERT_ID();
 -- /CREATE AIP --
 
