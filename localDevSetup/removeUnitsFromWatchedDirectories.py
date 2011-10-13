@@ -27,7 +27,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import insertIntoEvents
 
-alsoRemove = ["/var/archivematica/sharedDirectory/watchedDirectories/preIngest/SIPCreation/completedTransfers/", \
+alsoRemove = ["/var/archivematica/sharedDirectory/watchedDirectories/SIPCreation/completedTransfers/", \
               "/var/archivematica/sharedDirectory/failed/", \
               "/var/archivematica/sharedDirectory/currentlyProcessing/"]
 

@@ -43,8 +43,8 @@ import archivematicaMCP
 from unitTransfer import unitTransfer
 from unitSIP import unitSIP
 
-completedTransfersDirectory = "/var/archivematica/sharedDirectory/watchedDirectories/preIngest/SIPCreation/completedTransfers/"
-sipCreationDirectory = "/var/archivematica/sharedDirectory/watchedDirectories/preIngest/SIPCreation/SIPsUnderConstruction/"
+completedTransfersDirectory = "/var/archivematica/sharedDirectory/watchedDirectories/SIPCreation/completedTransfers/"
+sipCreationDirectory = "/var/archivematica/sharedDirectory/watchedDirectories/SIPCreation/SIPsUnderConstruction/"
 
 
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
