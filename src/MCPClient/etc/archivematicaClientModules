@@ -71,4 +71,5 @@ verifyChecksumsInFileSecOfDspaceMETSFiles_v0.0 = %clientScriptsDirectory%verifyC
 moveDspaceLicenseFilesToDSpaceLicenses_v0.0 = %clientScriptsDirectory%moveDspaceLicenseFilesToDSpaceLicenses.py
 moveDspaceMetsFilesToDSpaceMETS_v0.0 = %clientScriptsDirectory%moveDspaceMetsFilesToDSpaceMETS.py
 checkForAccessDirectory_v0.0 = %clientScriptsDirectory%checkForAccessDirectory.py
+archivematicaSetTransferType_v0.0 = %clientScriptsDirectory%archivematicaSetTransferType.py
 
