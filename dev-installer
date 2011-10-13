@@ -40,7 +40,7 @@ echo -n "\"Would you like to ${part}?\"(Y/N)"
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
-        sudo apt-get install gearman python-setuptools
+        sudo apt-get install gearman python-setuptools python-gearman
 		sudo easy_install gearman
 else
         echo "Not going to ${part}"
@@ -61,7 +61,7 @@ echo -n "\"Would you like to ${part}?\"(Y/N)"
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         sudo add-apt-repository ppa:archivematica/externals-dev
-        sudo add-apt-repository ppa:twisted-dev/ppa
+        #sudo add-apt-repository ppa:twisted-dev/ppa
         sudo apt-get update
 	
 else
