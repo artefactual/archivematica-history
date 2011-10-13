@@ -3,7 +3,7 @@
         <preconfiguredChoice>
             <appliesTo>Remove from quarantine</appliesTo>
             <goToChain>Unquarantine</goToChain>
-            <delay unitCtime="yes">30</delay>
+            <delay unitCtime="yes">50</delay>
         </preconfiguredChoice>
     </preconfiguredChoices>
 </processingMCP>

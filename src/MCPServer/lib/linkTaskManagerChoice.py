@@ -23,7 +23,7 @@
 # @version svn: $Id$
 
 import databaseInterface
-#import datetime
+import datetime
 import threading
 import uuid
 import sys
@@ -73,6 +73,7 @@ class linkTaskManagerChoice:
                 print "wating on delay to resume processing on unit:", unit
         else:
             choicesAvailableForUnitsLock.acquire()
+            self.jobChainLink.setExitMessage('Awaiting decision')
             choicesAvailableForUnits[self.jobChainLink.UUID] = self
             choicesAvailableForUnitsLock.release()
             
@@ -112,9 +113,14 @@ class linkTaskManagerChoice:
                                 timeDifference = nowTime - unitTime
                                 timeToGo = delaySeconds - timeDifference
                                 print "time to go:", timeToGo
+                                #print "that will be: ", (nowTime + timeToGo)
+                                self.jobChainLink.setExitMessage("Waiting till: " + datetime.datetime.fromtimestamp((nowTime + timeToGo)).ctime())
                                 
                                 t = threading.Timer(timeToGo, jobChain.jobChain, args=[self.unit, ret], kwargs={})
                                 t.start()
+                                
+                                t2 = threading.Timer(timeToGo, self.jobChainLink.setExitMessage, args=["Completed successfully"], kwargs={})
+                                t2.start()
                                 return waitingOnTimer
                         
                         except Exception as inst:
