@@ -23,12 +23,47 @@
 
 cd `dirname $0`
 
+part="create the archivematica user"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        sudo adduser --uid 333 --group --system --home /var/lib/archivematica/ archivematica
+        sudo gpasswd -a $USER archivematica
+else
+        echo "Not going to ${part}"
+fi
+
+
+part="install gearman"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        echo "Going to ${part} ..."
+        sudo apt-get install gearman python-setuptools
+		sudo easy_install gearman
+else
+        echo "Not going to ${part}"
+fi
+
 part="install/update mysql"
 echo -n "\"Would you like to ${part}?\"(Y/N)"
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
-        sudo apt-get install mysql -y
+        sudo apt-get install mysql-server -y
+else
+        echo "Not going to ${part}"
+fi
+
+part="add ppa repositories"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        sudo add-apt-repository ppa:archivematica/externals-dev
+        sudo add-apt-repository ppa:twisted-dev/ppa
+        sudo apt-get update
+	
 else
         echo "Not going to ${part}"
 fi
@@ -41,7 +76,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
         tmp="`pwd`"
         cd ./src/MCPServer/share/
         sudo ./preMCPLogging.sh
-        cd "tmp"
+        cd "$tmp"
 else
         echo "Not going to ${part}"
 fi
