@@ -38,6 +38,7 @@ archivematicaClamscan_v0.0 = %clientScriptsDirectory%archivematicaClamscan.py
 sanitizeObjectNames_v0.0 = %clientScriptsDirectory%sanitizeObjectNames.py
 sanitizeSIPName_v0.0 = %clientScriptsDirectory%sanitizeSIPName.py
 createMETS_v0.0 = %clientScriptsDirectory%archivematicaCreateMETS.py
+createMETS_v2.0 = %clientScriptsDirectory%archivematicaCreateMETS2.py
 addDCTOMETS_v0.0 = %clientScriptsDirectory%archivematicaAddDublinCoreToMETS.py
 createDirectory_v0.0 = mkdir
 copy_v0.0 = cp

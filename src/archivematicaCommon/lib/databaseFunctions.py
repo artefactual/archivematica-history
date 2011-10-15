@@ -28,20 +28,22 @@ import databaseInterface
 import MySQLdb
 import uuid
 
-def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDate(), transferUUID="", sipUUID=""):
+def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDate(), transferUUID="", sipUUID="", use="original"):
     if transferUUID != "" and sipUUID == "":
-        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, transferUUID)
+        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, fileGrpUse, transferUUID)
         VALUES ( '"""   + fileUUID + databaseInterface.separator \
                         + MySQLdb.escape_string(filePath) + databaseInterface.separator \
                         + MySQLdb.escape_string(filePath) + databaseInterface.separator \
                         + enteredSystem + databaseInterface.separator \
+                        + use + databaseInterface.separator \
                         + transferUUID + "' )" )
     elif transferUUID == "" and sipUUID != "":
-        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, sipUUID)
+        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, fileGrpUse, sipUUID)
         VALUES ( '"""   + fileUUID + databaseInterface.separator \
                         + MySQLdb.escape_string(filePath) + databaseInterface.separator \
                         + MySQLdb.escape_string(filePath) + databaseInterface.separator \
                         + enteredSystem + databaseInterface.separator \
+                        + use + databaseInterface.separator \
                         + sipUUID + "' )" )
     else:
         print >>sys.stderr, "not supported yet - both SIP and transfer UUID's defined (or neither defined)"

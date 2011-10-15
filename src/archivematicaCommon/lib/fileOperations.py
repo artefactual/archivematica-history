@@ -66,8 +66,8 @@ def addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, d
                    eventOutcome="", \
                    eventOutcomeDetailNote=filePathRelativeToSIP)
 
-def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion"):
-    insertIntoFiles(fileUUID, filePathRelativeToSIP, date, sipUUID=sipUUID)
+def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion", use="original"):
+    insertIntoFiles(fileUUID, filePathRelativeToSIP, date, sipUUID=sipUUID, use=use)
     insertIntoEvents(fileUUID=fileUUID, \
                    eventIdentifierUUID=taskUUID, \
                    eventType=sourceType, \

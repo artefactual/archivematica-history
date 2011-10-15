@@ -70,7 +70,7 @@ class linkTaskManagerChoice:
                 self.jobChainLink.setExitMessage("Completed successfully")
                 jobChain.jobChain(self.unit, preConfiguredChain)
             else:
-                print "wating on delay to resume processing on unit:", unit
+                print "waiting on delay to resume processing on unit:", unit
         else:
             choicesAvailableForUnitsLock.acquire()
             self.jobChainLink.setExitMessage('Awaiting decision')
