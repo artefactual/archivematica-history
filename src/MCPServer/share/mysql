@@ -100,7 +100,8 @@ CREATE TABLE Files(
     removedTime         TIMESTAMP(8) DEFAULT 0,
     enteredSystem       TIMESTAMP(8) DEFAULT NOW(),
     fileSize            BIGINT UNSIGNED, 
-    checksum            VARCHAR(100)
+    checksum            VARCHAR(100),
+    fileGrpUse                VARCHAR(50) DEFAULT 'Original'
 );
 
 
@@ -598,13 +599,13 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, '%SIPLogsDirectory%METSGeneration.log', '%SIPLogsDirectory%METSGeneration.log', 'createMETS_v0.0', '--amdSec --sipUUID "%SIPUUID%" --basePath "%SIPDirectory%" --xmlFile "%SIPDirectory%"METS.xml');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'createMETS_v2.0', '--amdSec --baseDirectoryPath "%SIPDirectory%" --baseDirectoryPathString "SIPDirectory" --fileGroupIdentifier "%SIPUUID%" --fileGroupType "sipUUID" --xmlFile "%SIPDirectory%METS.xml"');
 SET @GenerateMETSxmldocumentTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      @GenerateMETSxmldocumentTask, 'Generate METS.xml document');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -958,7 +959,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      @GenerateMETSxmldocumentTask, 'Generate METS.xml document');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -1831,7 +1832,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 SET @microserviceGroup  = 'Generate METS.xml document';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, '%SIPLogsDirectory%METSGeneration.log', '%SIPLogsDirectory%METSGeneration.log', 'createMETS_v0.0', '--sipUUID "%SIPUUID%" --basePath "%SIPDirectory%" --xmlFile "%SIPLogsDirectory%"METS.xml --basePathString "transferDirectory" --fileGroupIdentifier "transferUUID"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'createMETS_v0.0', '--sipUUID "%SIPUUID%" --basePath "%SIPDirectory%" --xmlFile "%SIPLogsDirectory%"METS.xml --basePathString "transferDirectory" --fileGroupIdentifier "transferUUID"');
 set @GenerateMETSxmldocument = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES

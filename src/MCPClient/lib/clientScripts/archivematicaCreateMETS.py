@@ -294,7 +294,8 @@ def createFileSec(path, parentBranch, structMapParent):
                 #filename = replace /tmp/"UUID" with /objects/
 
                 fileI.set("ID", "file-" + item.__str__() + "-"    + myuuid.__str__())
-                fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())            
+                if includeAmdSec:
+                    fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())            
 
                 Flocat = newChild(fileI, "Flocat")
                 Flocat.set(xlinkBNS + "href", pathSTR )
