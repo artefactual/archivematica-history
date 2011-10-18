@@ -122,6 +122,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
     
     #fix ownership
     sudo chown -R www-data:www-data ica-atom-svn/
+    sudo chmod 777 -R ica-atom-svn
     
     sudo apache2ctl restart
 else
