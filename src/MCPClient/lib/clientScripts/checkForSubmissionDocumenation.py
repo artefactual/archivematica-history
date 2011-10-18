@@ -30,7 +30,7 @@ if not os.path.isdir(target):
     os.mkdir(target)
 if os.listdir(target) == []:
     print >>sys.stderr, "Directory is empty: ", target
-    fileName = os.path.join(target, "submission documentation.log")
+    fileName = os.path.join(target, "submissionDocumentation.log")
     f = open(fileName, 'a')
     f.write("No submission documentation added")
     f.close()
