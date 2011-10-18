@@ -113,14 +113,15 @@ read a
 if [[ $a == "Y" || $a == "y" ]]; then
     #download and export
     sudo rm /var/www/ica-atom -rf
-    svn checkout -r6907 http://qubit-toolkit.googlecode.com/svn/branches/ica-atom/  ica-atom-svn
-    sudo svn export ica-atom-svn /var/www/ica-atom
+    svn checkout http://qubit-toolkit.googlecode.com/svn/trunk ica-atom-svn
+    #sudo svn export ica-atom-svn /var/www/ica-atom
+    sudo ln -sf ica-atom-svn/ /var/www/ica-atom
     #rm ica-atom-svn -rf    
     
     #delete & create "qubit" database
     
     #fix ownership
-    sudo chown -R www-data:www-data /var/www/ica-atom
+    sudo chown -R www-data:www-data ica-atom-svn/
     
     sudo apache2ctl restart
 else
