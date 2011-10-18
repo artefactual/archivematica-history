@@ -24,6 +24,50 @@
 # @version svn: $Id$
 */
 
+
+DROP TABLE IF EXISTS MetadataAppliesToTypes;
+CREATE TABLE MetadataAppliesToTypes (
+    pk  INT PRIMARY KEY,
+    description varchar(50)
+);
+
+set @SIPMetadataAppliesToType = 1;
+set @TransferMetadataAppliesToType = 2;
+set @FileMetadataAppliesToType = 3;
+INSERT INTO MetadataAppliesToTypes (pk, description) 
+    VALUES ( @SIPMetadataAppliesToType, 'SIP'),
+    ( @FileMetadataAppliesToType, 'File'),
+    ( @TransferMetadataAppliesToType, 'Transfer' )
+;
+
+
+DROP TABLE IF EXISTS Dublincore;
+CREATE TABLE Dublincore (
+    pk              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    metadataAppliesToType  INT,
+    Foreign Key (metadataAppliesToType) references MetadataAppliesToTypes(pk),
+    metadataAppliesToidentifier      VARCHAR(50),
+    title           LONGTEXT,
+    creator         LONGTEXT,
+    subject         LONGTEXT,
+    description     LONGTEXT,
+    publisher       LONGTEXT,
+    contributor     LONGTEXT,
+    date            LONGTEXT,
+    type            LONGTEXT,
+    format          LONGTEXT,
+    identifier      LONGTEXT,
+    source          LONGTEXT,
+    isPartOf        LONGTEXT,
+    language        LONGTEXT,
+    coverage        LONGTEXT,
+    rights          LONGTEXT
+);
+
+
+
+
+
 -- clear && sudo mysql --execute="source ./mysql" MCP --
 DROP TABLE IF EXISTS Transfers;
 CREATE TABLE Transfers (
