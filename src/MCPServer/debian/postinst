@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dbc_dbname=archivematicamcp
+dbc_dbname=MCP
 dbc_dbuser=archivematica
 
 #Commented out until further tests are completed

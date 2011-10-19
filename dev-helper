@@ -50,6 +50,7 @@ read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
         cd localDevSetup/
+	sudo apt-get update
         ./installDependsFromDebianFile.py ./../src/archivematicaCommon/debian/control
         ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
         ./installDependsFromDebianFile.py ./../src/dashboard/debian/control
@@ -94,7 +95,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
         sleep 3
         sudo start archivematica-mcp-server
         sudo start archivematica-mcp-client
-	sudo apache2ctl restart
+        sudo apache2ctl restart
 else
         echo "Not going to ${part}."
 fi
@@ -106,6 +107,19 @@ if [[ $a == "Y" || $a == "y" ]]; then
         rev="`svn info | grep \"Revision: \" | awk -F " " '{print $2}'`"
         echo Going to export to '~/'sampledata-$rev ...
         svn export sampledata ~/sampledata-${rev}
+else
+        echo "Not going to ${part}."
+fi
+
+part="re-create gui-scripts editor file"
+echo -n "\"Would you like to ${part}?\"(Y/N)"
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+        rm /home/$USER/.config/Thunar/uca.xml
+        tmp="`pwd`"
+        cd src/xubuntuGuiScriptsEditor/share
+        ./addArchivematicaGUIScripts.sh
+        cd "$tmp"
 else
         echo "Not going to ${part}."
 fi

@@ -1,6 +1,4 @@
 /*
-#!/usr/bin/python
-
 # This file is part of Archivematica.
 #
 # Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
@@ -64,7 +62,57 @@ CREATE TABLE Dublincore (
     rights          LONGTEXT
 );
 
-
+/*
+<premis>
+  <rights>
+    <rightsStatement>
+      <rightsStatementIdentifier>
+        <rightsStatementIdentiferType>UUID</rightsStatementIdentiferType>
+        <rightsStatementIdentifierValue>14cbad80-70nd-4f46-887f-k1gv7f9f30h6</rightsStatementIdentifierValue>
+      </rightsStatementIdentifier>
+      <rightsBasis>License</rightsBasis>
+      <copyrightInformation>
+        <copyrightStatus></copyrightStatus>
+        <copyrightJurisdiction></copyrightJurisdiction>
+        <copyrightStatusDeterminationDate></copyrightStatusDeterminationDate>
+        <copyrightNote></copyrightNote>
+      </copyrightInformation>
+      <licenseInformation>
+        <licenseIdentifier>
+          <licenseIdentifierType>UUID</licenseIdentifierType>
+          <licenseIdentifierValue>d3e828fb-e6f1-40b6-a3c5-839773b35755</licenseIdentifierValue>
+        </licenseIdentifier>
+        <licenseTerms>This file is licensed under the Creative Commons Attribution-Share Alike 3.0 Unported license</licenseTerms>
+        <licenseNote></licenseNote> 
+      </licenseInformation>
+      <statuteInformation>
+        <statuteJurisdiction></statuteJurisdiction>
+        <statuteCitation></statuteCitation>
+        <statuteInformationDeterminationDate></statuteInformationDeterminationDate>
+        <statuteNote></statuteNote>
+      </statuteInformation>
+      <rightsGranted>
+        <act>Disseminate</act>
+        <restriction>Allow</restriction>
+        <termOfGrant>
+          <startDate>2011-09-16</startDate>
+          <endDate>open</endDate>
+        </termOfGrant>
+        <rightsGrantedNote>Attribution required</rightsGrantedNote>
+      </rightsGranted>
+        <linkingObjectIdentifier>
+        <linkingObjectIdentifierType>UUID</linkingObjectIdentifierType>
+        <linkingObjectIdentifierValue>52cbad80-70fd-4f46-887f-a1be7f9f30e0</linkingObjectIdentifierValue>
+      </linkingObjectIdentifier>
+      <linkingAgentIdentifier> *Repeatable
+        <linkingAgentIdentifierType></linkingAgentIdentifierType>
+        <linkingAgentIdentifierValue></linkingAgentIdentifierValue>
+        <linkingAgentRole></linkingAgentRole>
+      </linkingAgentIdentifier>
+    </rightsStatement>
+  </rights>
+</premis>
+*/
 
 
 
