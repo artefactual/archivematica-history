@@ -95,11 +95,36 @@ def newChild(parent, tag, text=None, tailText=None, sets=[]):
         child.set(key, value)
     return child
 
-
-
+SIPMetadataAppliesToType = 1
+TransferMetadataAppliesToType = 2
+FileMetadataAppliesToType = 3
+def getDublinCore(type, id):
+    sql = """SELECT     title, creator, subject, description, publisher, contributor, date, type, format, identifier, source, isPartOf, language, coverage, rights 
+    FROM Dublincore WHERE metadataAppliesToType = %s AND metadataAppliesToidentifier = '%s';""" % \
+    (type.__str__(), id.__str__())
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    if row == None:
+        return None
+    ret = etree.Element( "dublincore" )
+    while row != None:
+        key = ["title", "creator", "subject", "description", "publisher", "contributor", "date", "type", "format", "identifier", "source", "isPartOf", "language", "coverage", "rights"]
+        #title, creator, subject, description, publisher, contributor, date, type, format, identifier, source, isPartOf, language, coverage, rights = row
+        #key.index("title") == title
+        i = 0
+        for term in key:
+            if row[i] != None:
+                txt = row[i].__str__()
+            else:
+                txt = ""
+            newChild(ret, term, text=txt)
+            i+=1
+            
+        row = c.fetchone()
+    sqlLock.release()
+    return ret
     
-
-
+    
 #DMID="dmdSec_01" for an object goes in here
 #<file ID="file1-UUID" GROUPID="G1" DMID="dmdSec_02" ADMID="amdSec_01">
 def createFileSec(directoryPath, structMapDiv):
@@ -209,6 +234,11 @@ if __name__ == '__main__':
     root = etree.Element( "mets", \
     nsmap = NSMAP, \
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
+    
+    
+    dc = getDublinCore(SIPMetadataAppliesToType, fileGroupIdentifier)
+    if dc != None:
+        root.append(dc)
     
     root.append(fileSec)
     root.append(structMap)
