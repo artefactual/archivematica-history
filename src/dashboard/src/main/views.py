@@ -30,6 +30,10 @@ from lxml import etree
 import calendar, os, re, simplejson, subprocess
 from datetime import datetime
 
+def transfer(request):
+  foo = datetime.now()
+  return render_to_response('main/transfer.html', locals())
+
 def manual_normalization(request, uuid):
   job = Job.objects.get(jobuuid=uuid)
 
