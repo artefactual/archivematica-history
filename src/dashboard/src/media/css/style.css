@@ -69,6 +69,7 @@ a:hover { text-decoration: underline; }
 }
 
 #page-ingest #ingest > a { background-color: #a40000; }
+#page-transfer #transfer > a { background-color: #a40000; }
 #page-archival-storage #archival-storage > a { background-color: #a40000; }
 #page-access #access > a { background-color: #a40000; }
 #page-preservation-planning #preservation-planning > a { background-color: #a40000; }
