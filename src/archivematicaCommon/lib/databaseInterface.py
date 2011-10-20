@@ -25,7 +25,6 @@
 import MySQLdb
 import os
 import threading
-import MySQLdb
 import string
 import sys
 from datetime import datetime
@@ -82,6 +81,9 @@ def runSQL(sql):
     sqlLock.release()
     return
 
+
+
+
 def querySQL(sql):
     global database
     sqlLock.acquire()
@@ -104,6 +106,28 @@ def querySQL(sql):
 #            filesToChecksum.append(row[0])
 #            row = c.fetchone()
         
+
+def queryAllSQL(sql):
+    global database
+    sqlLock.acquire()
+    #print sql
+    rows = []
+    try:
+        c=database.cursor()
+        c.execute(sql)
+        rows = c.fetchall()
+        sqlLock.release()
+    except MySQLdb.OperationalError, message:  
+        #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
+        if message[0] == 2006 and message[1] == 'MySQL server has gone away':
+            database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/MCPServer/dbsettings")
+            import time
+            time.sleep(10)
+            c=database.cursor()
+            c.execute(sql)
+            rows = c.fetchall()
+            sqlLock.release()
+    return rows
 
 
 
