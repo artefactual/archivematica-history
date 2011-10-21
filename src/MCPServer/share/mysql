@@ -62,7 +62,186 @@ CREATE TABLE Dublincore (
     rights          LONGTEXT
 );
 
+
+-- rightsStatement (O, R)
+DROP TABLE IF EXISTS RightsStatement;
+CREATE TABLE RightsStatement ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    rightsStatementIdentifier LONGTEXT NOT NULL,
+    rightsStatementIdentifierType LONGTEXT NOT NULL,
+    rightsStatementIdentifierValue LONGTEXT NOT NULL,
+    rightsBasis LONGTEXT NOT NULL,
+    copyrightInformation LONGTEXT,
+    copyrightStatus LONGTEXT NOT NULL,
+    copyrightJurisdiction LONGTEXT NOT NULL,
+    copyrightStatusDeterminationDate LONGTEXT,
+    licenseInformation LONGTEXT,
+    licenseIdentifier LONGTEXT,
+    licenseIdentifierType LONGTEXT NOT NULL,
+    licenseIdentifierValue LONGTEXT NOT NULL,
+    licenseTerms LONGTEXT
+);
+
+-- rightsExtension (O, R) ??? --
+
+-- 4.1.3.4 copyrightNote (O, R)
+DROP TABLE IF EXISTS RightsStatementCopyrightNote;
+CREATE TABLE RightsStatementCopyrightNote ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    copyrightNote LONGTEXT NOT NULL
+);
+
+-- 4.1.4.3 licenseNote (O, R)
+DROP TABLE IF EXISTS RightsStatementLicenseNote;
+CREATE TABLE RightsStatementLicenseNote ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    licenseNote LONGTEXT NOT NULL
+);
+
+
+-- 4.1.5 statuteInformation (O, R)
+DROP TABLE IF EXISTS RightsStatementStatuteInformation;
+CREATE TABLE RightsStatementStatuteInformation ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    statuteJurisdiction LONGTEXT NOT NULL,
+    statuteCitation LONGTEXT NOT NULL,
+    statuteInformationDeterminationDate LONGTEXT
+
+);
+
+-- 4.1.5.4 statuteNote (O, R)
+DROP TABLE IF EXISTS RightsStatementStatuteInformationStatuteNote;
+CREATE TABLE RightsStatementStatuteInformationStatuteNote ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatementStatuteInformation INT UNSIGNED,
+    Foreign Key (fkRightsStatementStatuteInformation) references RightsStatementStatuteInformation(pk),
+    statuteNote LONGTEXT NOT NULL
+);
+
+
+-- 4.1.7 linkingObjectIdentifier (O, R)
+DROP TABLE IF EXISTS RightsStatementLinkingObjectIdentifier;
+CREATE TABLE RightsStatementLinkingObjectIdentifier ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    linkingObjectIdentifierType LONGTEXT NOT NULL,
+    linkingObjectIdentifierValue LONGTEXT NOT NULL
+);
+
+-- 4.1.7.? LinkingObjectRole (O, R)
+DROP TABLE IF EXISTS RightsStatementLinkingObjectIdentifierLinkingObjectRole;
+CREATE TABLE RightsStatementLinkingObjectIdentifierLinkingObjectRole ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatementLinkingObjectIdentifier INT UNSIGNED,
+    Foreign Key (fkRightsStatementLinkingObjectIdentifier) references RightsStatementLinkingObjectIdentifier(pk),
+    LinkingObjectRole LONGTEXT NOT NULL
+);
+
+
+-- linkingAgentIdentifier (O, R)
+DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifier;
+CREATE TABLE RightsStatementLinkingAgentIdentifier ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    linkingAgentIdentifierType LONGTEXT NOT NULL,
+    linkingAgentIdentifierValue LONGTEXT NOT NULL
+);
+
+-- 4.1.8.3 linkingAgentRole (O, R)
+DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifierLinkingAgentRole;
+CREATE TABLE RightsStatementLinkingAgentIdentifierLinkingAgentRole ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatementLinkingAgentIdentifier INT UNSIGNED,
+    Foreign Key (fkRightsStatementLinkingAgentIdentifier) references RightsStatementLinkingAgentIdentifier(pk),
+    linkingAgentRole LONGTEXT NOT NULL
+);
+
+-- 4.1.6 rightsGranted (O, R)
+DROP TABLE IF EXISTS RightsStatementRightsGranted;
+CREATE TABLE RightsStatementRightsGranted ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    act LONGTEXT NOT NULL,
+    termOfGrant LONGTEXT NOT NULL,
+    startDate LONGTEXT NOT NULL,
+    endDate LONGTEXT
+);
+
+-- 4.1.6.2 restriction (O, R)
+DROP TABLE IF EXISTS RightsStatementRightsGrantedRestriction;
+CREATE TABLE RightsStatementRightsGrantedRestriction ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatementRightsGranted INT UNSIGNED,
+    Foreign Key (fkRightsStatementRightsGranted) references RightsStatementRightsGranted(pk),
+    restriction LONGTEXT
+);
+-- 4.1.6.4 rightsGrantedNote (O, R)
+DROP TABLE IF EXISTS RightsStatementRightsGrantedRestriction;
+CREATE TABLE RightsStatementRightsGrantedRestriction ( 
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatementRightsGranted INT UNSIGNED,
+    Foreign Key (fkRightsStatementRightsGranted) references RightsStatementRightsGranted(pk),
+    rightsGrantedNote LONGTEXT 
+);
+
 /*
+Entity semantic units
+4.1
+rightsStatement (O, R)
+4.1.1 rightsStatementIdentifier (M, NR)
+4.1.1.1 rightsStatementIdentifierType (M, NR)
+4.1.1.2 rightsStatementIdentifierValue (M, NR)
+4.1.2 rightsBasis (M, NR)
+4.1.3 copyrightInformation (O, NR)
+4.1.3.1 copyrightStatus (M, NR)
+4.1.3.2 copyrightJurisdiction (M, NR)
+4.1.3.3 copyrightStatusDeterminationDate (O, NR)
+4.1.3.4 copyrightNote (O, R)
+4.1.4 licenseInformation (O, NR)
+4.1.4.1 licenseIdentifier (O, NR)
+4.1.4.1.1 licenseIdentifierType (M, NR)
+4.1.4.1.2 licenseIdentifierValue (M, NR)
+4.1.4.2 licenseTerms (O, NR)
+4.1.4.3 licenseNote (O, R)
+4.1.5 statuteInformation (O, R)
+4.1.5.1 statuteJurisdiction (M, NR)
+Data Dictionary for Preservation Metadata: PREMIS version 2.1
+165
+THE PREMIS DATA DICTIONARY
+4.2
+166
+4.1.5.2 statuteCitation (M, NR)
+4.1.5.3 statuteInformationDeterminationDate (O, NR)
+4.1.5.4 statuteNote (O, R)
+4.1.6 rightsGranted (O, R)
+4.1.6.1 act (M, NR)
+4.1.6.2 restriction (O, R)
+4.1.6.3 termOfGrant (M, NR)
+4.1.6.3.1 startDate (M, NR)
+4.1.6.3.2 endDate (O, NR)
+4.1.6.4 rightsGrantedNote (O, R)
+4.1.7 linkingObjectIdentifier (O, R)
+4.1.7.1 linkingObjectIdentifierType (M, NR)
+4.1.7.2 linkingObjectIdentifierValue (M, NR)
+4.1.7.3 linkingObjectRole (O, R)
+4.1.8 linkingAgentIdentifier (O, R)
+4.1.8.1 linkingAgentIdentifierType (M, NR)
+4.1.8.2 linkingAgentIdentifierValue (M, NR)
+4.1.8.3 linkingAgentRole (O, R)
+rightsExtension (O, R)
+
+
+
+
 <premis>
   <rights>
     <rightsStatement>
