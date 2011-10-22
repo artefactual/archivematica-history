@@ -47,7 +47,7 @@ includeAmdSec = opts.amdSec
 baseDirectoryPathString = "%%%s%%" % (opts.baseDirectoryPathString)
 fileGroupIdentifier = opts.fileGroupIdentifier
 fileGroupType = opts.fileGroupType
-includeAmdSec=False #opts.amdSec #TODO
+includeAmdSec = opts.amdSec 
 
 #Global Variables
 globalMets = root = etree.Element( "mets", \
@@ -55,9 +55,9 @@ globalMets = root = etree.Element( "mets", \
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
 
 globalFileGrps = {}
-globalFileGrpsUses = ["original", "preservation", "service", "access", "license", "plaintext"]
+globalFileGrpsUses = ["original", "submissionDocumentation", "preservation", "service", "access", "license", "plaintext"]
 for use in globalFileGrpsUses:
-    grp = etree.Element(use)
+    grp = etree.Element("fileGrp")
     grp.set("USE", use) 
     globalFileGrps[use] = grp 
  
@@ -69,10 +69,14 @@ global amdSecs
 amdSecs = []
 global dmdSecs
 dmdSecs = []
+global globalDmdSecCounter
 globalDmdSecCounter = 0
+global globalAmdSecCounter
 globalAmdSecCounter = 0
 globalTechMDCounter = 0
+global globalRightsMDCounter
 globalRightsMDCounter = 0
+global globalDigiprovMDCounter 
 globalDigiprovMDCounter = 0
 
 
@@ -123,6 +127,194 @@ def getDublinCore(type, id):
         row = c.fetchone()
     sqlLock.release()
     return ret
+
+def createDigiprovMD(fileUUID):
+    ret = etree.Element("digiprovMD")
+    digiprovMD = ret #newChild(amdSec, "digiprovMD")
+    #digiprovMD.set("ID", "digiprov-"+ os.path.basename(filename) + "-" + fileUUID)
+    global globalDigiprovMDCounter
+    globalDigiprovMDCounter += 1
+    digiprovMD.set("ID", "digiprovMD_"+ globalDigiprovMDCounter.__str__())
+    mdWrap = newChild(digiprovMD,"mdWrap")
+    mdWrap.set("MDTYPE", "PREMIS")
+    xmlData = newChild(mdWrap, "xmlData")
+    premis = etree.SubElement( xmlData, premisBNS + "premis", nsmap=NSMAP, \
+        attrib = { "{" + xsiNS + "}schemaLocation" : "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" })
+    premis.set("version", "2.0")
+
+    sql = "SELECT fileSize, checksum FROM Files WHERE fileUUID = '%s';" % (fileUUID)
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    while row != None:
+        fileSize = row[0].__str__()
+        checksum = row[1].__str__()
+        row = c.fetchone()
+    sqlLock.release()
+
+        
+    #OBJECT
+    object = etree.SubElement(premis, "object")
+    
+    objectIdentifier = etree.SubElement(object, "objectIdentifier")
+    etree.SubElement(objectIdentifier, "objectIdentifierType").text = "UUID"
+    etree.SubElement(objectIdentifier, "objectIdentifierValue").text = fileUUID
+    
+    etree.SubElement(object, "objectCategory").text = "file"
+    
+    objectCharacteristics = etree.SubElement(object, "objectCharacteristics")
+    etree.SubElement(objectCharacteristics, "compositionLevel").text = "0"
+    
+    fixity = etree.SubElement(object, "fixity")
+    etree.SubElement(fixity, "messageDigestAlgorithm").text = "sha256"
+    etree.SubElement(fixity, "messageDigest").text = checksum
+    
+    etree.SubElement(object, "size").text = fileSize
+    
+    sql = "SELECT * FROM FilesIDs WHERE fileUUID = '%s';" % (fileUUID)
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    if not row:
+        format = etree.SubElement(object, "format")
+        formatDesignation = etree.SubElement(format, "formatDesignation")
+        etree.SubElement(formatDesignation, "formatName").text = "Unknown"
+    while row != None:
+        print row
+        format = etree.SubElement(object, "format")
+        #fileUUID = row[0] 
+        
+        formatDesignation = etree.SubElement(format, "formatDesignation")
+        etree.SubElement(formatDesignation, "formatName").text = row[1]
+        etree.SubElement(formatDesignation, "formatVersion").text = row[2] 
+
+        formatRegistry = etree.SubElement(format, "formatRegistry")
+        etree.SubElement(formatRegistry, "formatRegistryName").text = row[3]
+        etree.SubElement(formatRegistry, "formatRegistryKey").text = row[4]
+        row = c.fetchone()
+    sqlLock.release()
+    
+    objectCharacteristicsExtension = etree.SubElement(premis, "objectCharacteristicsExtension")
+    
+    sql = "SELECT FilesFits.FITSxml FROM FilesFits WHERE fileUUID = '" + fileUUID + "';"
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    if not row:
+        print >>sys.stderr, "Error no fits."
+    while row != None:
+        fits = etree.fromstring(row[0])
+        objectCharacteristicsExtension.append(fits)
+        row = c.fetchone()
+    sqlLock.release()
+    
+    sql = "SELECT Files.originalLoacation FROM Files WHERE Files.fileUUID = '" + fileUUID + "';"
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    if not row:
+        print >>sys.stderr, "Error no fits."
+    while row != None:
+        etree.SubElement(object, "originalName").text = row[0]
+        row = c.fetchone()
+    sqlLock.release()
+    
+    sql = "SELECT * FROM Derivations WHERE sourceFileUUID = '" + fileUUID + "';"
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    while row != None:
+        relationship = etree.SubElement(object, "relationship")
+        etree.SubElement(object, "relationshipType").text = "derivation"
+        etree.SubElement(object, "relationshipSubType").text = "is source of"
+        
+        relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
+        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
+        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[2]
+        
+        relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
+        etree.SubElement(relatedEventIdentification, "relatedObjectIdentification").text = "UUID"
+        etree.SubElement(relatedEventIdentification, "relatedObjectIdentifierValue").text = row[3]
+
+        row = c.fetchone()
+    sqlLock.release()
+
+    sql = "SELECT * FROM Derivations WHERE derivedFileUUID = '" + fileUUID + "';"
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    while row != None:
+        relationship = etree.SubElement(object, "relationship")
+        etree.SubElement(object, "relationshipType").text = "derivation"
+        etree.SubElement(object, "relationshipSubType").text = "has source"
+        
+        relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
+        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
+        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[1]
+        
+        relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
+        etree.SubElement(relatedEventIdentification, "relatedObjectIdentification").text = "UUID"
+        etree.SubElement(relatedEventIdentification, "relatedObjectIdentifierValue").text = row[3]
+
+        row = c.fetchone()
+    sqlLock.release()
+
+    
+    #EVENTS
+    #premis.append(events)
+    events = etree.SubElement(premis, "events")
+    #| pk  | fileUUID | eventIdentifierUUID | eventType | eventDateTime | eventDetail | eventOutcome | eventOutcomeDetailNote | linkingAgentIdentifier |
+    sql = "SELECT * FROM Events WHERE fileUUID = '" + fileUUID + "';"
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    while row != None:
+        event = etree.SubElement(events, "event")
+        
+        eventIdentifier = etree.SubElement(event, "eventIdentifier")
+        etree.SubElement(eventIdentifier, "eventIdentifierType").text = "UUID"
+        etree.SubElement(eventIdentifier, "eventIdentifierValue").text = row[2] 
+        
+        etree.SubElement(event, "eventType").text = row[3]
+        etree.SubElement(event, "eventDateTime").text = row[4].__str__()
+        etree.SubElement(event, "eventDetail").text = row[5]
+        
+        eventOutcomeInformation  = etree.SubElement(event, "eventOutcomeInformation")
+        etree.SubElement(eventOutcomeInformation, "eventOutcome").text = row[6]
+        eventOutcomeDetail = etree.SubElement(eventOutcomeInformation, "eventOutcomeDetail")
+        etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = row[7]
+        
+        linkingAgentIdentifier = etree.SubElement(event, "linkingAgentIdentifier")
+        etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierType").text = "repository code"
+        etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierType").text = "TODO"
+        row = c.fetchone()
+    sqlLock.release()
+   
+    return ret    
+    #AGENTS
+    agents = etree.SubElement(premis, "agents")
+    agents.append(createArchivematicaAgent())
+    agents.append(createOrganizationAgent())
+
+def getRights(fileUUID, filePath, use, type, id):
+    ret = []
+    #if there are file level rights, use them
+    #elif there are SIP level rights, use them
+    #elif there are Transfer level rights, use them
+    return ret
+
+def getAMDSec(fileUUID, filePath, use, type, id):
+    global globalAmdSecCounter
+    globalAmdSecCounter += 1
+    AMDID = "AMDSec-%s" % (globalAmdSecCounter.__str__()) 
+    AMD = etree.Element("AMDSec")
+    AMD.set("ID", AMDID)
+    ret = (AMD, AMDID)
+    #tech MD
+    #digiprob MD
+    AMD.append(createDigiprovMD(fileUUID))
+    
+    if use == "original":
+        #rights MD (repeatable)
+        rightsList = getRights(fileUUID, filePath, use, type, id)
+        if rightsList != None and rightsList != []:
+            for rights in rightsList:
+                AMD.append(rights)    
+    return ret
+    
     
     
 #DMID="dmdSec_01" for an object goes in here
@@ -174,7 +366,10 @@ def createFileSec(directoryPath, structMapDiv):
                 print >>sys.stderr, "No groupID for file: \"", directoryPathSTR, "\""
                 globalErrorCount += 1
             
-            if use in globalFileGrps:
+            if use not in globalFileGrps:
+                print >>sys.stderr, "Invalid use: \"", use, "\""
+                globalErrorCount += 1
+            else:                
                 file = """<file ID="file1-UUID" GROUPID="G1" ADMID="amdSec_01">
 <Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
 </file>"""
@@ -183,12 +378,11 @@ def createFileSec(directoryPath, structMapDiv):
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
                 Flocat = newChild(file, "Flocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("locType","other"), ("otherLocType", "system")])
                 if includeAmdSec:
-                    AMD, AMDID = createDigiprovMD(myuuid, itemdirectoryPath, myuuid)
-                    file.set("AMDID", AMDID)
+                    AMD, AMDID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier)
+                    global amdSecs
+                    amdSecs.append(AMD)
                 
-            else:
-                print >>sys.stderr, "Invalid use: \"", use, "\""
-                globalErrorCount += 1
+            
             
             
             #fileI = etree.SubElement( structMapDiv, xlinkBNS + "fits", nsmap=NSMAP)
@@ -239,6 +433,10 @@ if __name__ == '__main__':
     dc = getDublinCore(SIPMetadataAppliesToType, fileGroupIdentifier)
     if dc != None:
         root.append(dc)
+        
+    
+    for amdSec in amdSecs:
+        root.append(amdSec)
     
     root.append(fileSec)
     root.append(structMap)
