@@ -99,6 +99,16 @@ def newChild(parent, tag, text=None, tailText=None, sets=[]):
         child.set(key, value)
     return child
 
+def createAgent(agentIdentifierType, agentIdentifierValue, agentName, agentType):
+    ret = etree.Element("agent")
+    agentIdentifier = etree.SubElement( ret, "agentIdentifier")
+    etree.SubElement( agentIdentifier, "agentIdentifierType").text = agentIdentifierType
+    etree.SubElement( agentIdentifier, "agentIdentifierValue").text = agentIdentifierValue
+    etree.SubElement( ret, "agentName").text = agentName
+    etree.SubElement( ret, "agentType").text = agentType
+    return ret
+
+
 SIPMetadataAppliesToType = 1
 TransferMetadataAppliesToType = 2
 FileMetadataAppliesToType = 3
@@ -197,8 +207,8 @@ def createDigiprovMD(fileUUID):
     sql = "SELECT FilesFits.FITSxml FROM FilesFits WHERE fileUUID = '" + fileUUID + "';"
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
-    if not row:
-        print >>sys.stderr, "Error no fits."
+    #if not row:
+    #    print >>sys.stderr, "Error no fits.", fileUUID
     while row != None:
         fits = etree.fromstring(row[0])
         objectCharacteristicsExtension.append(fits)
@@ -276,19 +286,33 @@ def createDigiprovMD(fileUUID):
         etree.SubElement(eventOutcomeInformation, "eventOutcome").text = row[6]
         eventOutcomeDetail = etree.SubElement(eventOutcomeInformation, "eventOutcomeDetail")
         etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = row[7]
-        
-        linkingAgentIdentifier = etree.SubElement(event, "linkingAgentIdentifier")
-        etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierType").text = "repository code"
-        etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierType").text = "TODO"
         row = c.fetchone()
     sqlLock.release()
+    
+    for event in events:
+        sql = """SELECT agentIdentifierType, agentIdentifierValue, agentName, agentType FROM Agents;"""
+        c, sqlLock = databaseInterface.querySQL(sql) 
+        row = c.fetchone()
+        while row != None:
+            linkingAgentIdentifier = etree.SubElement(event, "linkingAgentIdentifier")
+            etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierType").text = row[0]
+            etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierValue").text = row[1]
+            row = c.fetchone()
+        sqlLock.release()
    
-    return ret    
+    
     #AGENTS
-    agents = etree.SubElement(premis, "agents")
-    agents.append(createArchivematicaAgent())
-    agents.append(createOrganizationAgent())
-
+    sql = """SELECT agentIdentifierType, agentIdentifierValue, agentName, agentType FROM Agents;"""
+    c, sqlLock = databaseInterface.querySQL(sql) 
+    row = c.fetchone()
+    while row != None:
+        agents = etree.SubElement(premis, "agents")
+        #createAgent(agentIdentifierType, agentIdentifierValue, agentName, agentType)
+        agents.append(createAgent(row[0], row[1], row[2], row[3]))
+        row = c.fetchone()
+    sqlLock.release()
+    return ret
+    
 def getRights(fileUUID, filePath, use, type, id):
     ret = []
     #if there are file level rights, use them
@@ -360,11 +384,22 @@ def createFileSec(directoryPath, structMapDiv):
             newChild(structMapDiv, "fptr", sets=[("FILEID",FILEID)])
             
             GROUPID=""
-            if use =="original":
+            if use =="original" or use == "submissionDocumentation":
                 GROUPID = "Group-%s" % (myuuid) 
+            
+            if use =="preservation":
+                sql = "SELECT * FROM Derivations WHERE derivedFileUUID = '" + myuuid + "';"
+                c, sqlLock = databaseInterface.querySQL(sql)
+                row = c.fetchone()
+                while row != None:
+                    GROUPID = "Group-%s" % (row[1])
+                    row = c.fetchone()
+                sqlLock.release()
+            
+        
             if GROUPID=="":
-                print >>sys.stderr, "No groupID for file: \"", directoryPathSTR, "\""
                 globalErrorCount += 1
+                print >>sys.stderr, "No groupID for file: \"", directoryPathSTR, "\""
             
             if use not in globalFileGrps:
                 print >>sys.stderr, "Invalid use: \"", use, "\""
@@ -381,6 +416,7 @@ def createFileSec(directoryPath, structMapDiv):
                     AMD, AMDID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier)
                     global amdSecs
                     amdSecs.append(AMD)
+                    file.set("AMDID", AMDID)
                 
             
             
