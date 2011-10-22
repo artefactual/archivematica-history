@@ -82,6 +82,16 @@ CREATE TABLE RightsStatement (
     licenseTerms LONGTEXT
 );
 
+DROP TABLE IF EXISTS ArchivematicaRightsStatement;
+CREATE TABLE ArchivematicaRightsStatement (
+    pk              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    metadataAppliesToType  INT,
+    Foreign Key (metadataAppliesToType) references MetadataAppliesToTypes(pk),
+    metadataAppliesToidentifier      VARCHAR(50),
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk)
+);
+
 -- rightsExtension (O, R) ??? --
 
 -- 4.1.3.4 copyrightNote (O, R)
@@ -125,6 +135,8 @@ CREATE TABLE RightsStatementStatuteInformationStatuteNote (
 );
 
 
+/*
+USING - ArchivematicaRightsStatement TABLE
 -- 4.1.7 linkingObjectIdentifier (O, R)
 DROP TABLE IF EXISTS RightsStatementLinkingObjectIdentifier;
 CREATE TABLE RightsStatementLinkingObjectIdentifier ( 
@@ -143,7 +155,7 @@ CREATE TABLE RightsStatementLinkingObjectIdentifierLinkingObjectRole (
     Foreign Key (fkRightsStatementLinkingObjectIdentifier) references RightsStatementLinkingObjectIdentifier(pk),
     LinkingObjectRole LONGTEXT NOT NULL
 );
-
+*/
 
 -- linkingAgentIdentifier (O, R)
 DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifier;

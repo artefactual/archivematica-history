@@ -29,7 +29,8 @@ from databaseFunctions import insertIntoEvents
 
 alsoRemove = ["/var/archivematica/sharedDirectory/watchedDirectories/SIPCreation/completedTransfers/", \
               "/var/archivematica/sharedDirectory/failed/", \
-              "/var/archivematica/sharedDirectory/currentlyProcessing/"]
+              "/var/archivematica/sharedDirectory/currentlyProcessing/", \
+              "/var/archivematica/sharedDirectory/transferBackups/"]
 
 def removeEverythingInDirectory(directory):
     if directory[-1] != "/":
