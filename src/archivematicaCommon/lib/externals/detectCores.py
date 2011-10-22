@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -OO
 #Author Bruce Eckel (www.BruceEckel.com) 
 #Source http://www.artima.com/weblogs/viewpost.jsp?thread=230001
 
