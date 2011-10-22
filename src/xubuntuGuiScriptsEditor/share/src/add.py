@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -OO
 # This file is part of Archivematica.
 #
 # Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>

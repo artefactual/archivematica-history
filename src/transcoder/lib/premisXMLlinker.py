@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -OO
 
 # This file is part of Archivematica.
 #
@@ -22,7 +22,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#!/usr/bin/python
+#!/usr/bin/python -OO
 
 import sys
 import os.path

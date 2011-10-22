@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -OO
 # This file is part of Archivematica.
 #
 # Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
@@ -95,6 +95,6 @@ def executeOrRun(type, text, stdIn="", printing=True):
         text = "#!/bin/bash\n" + text
         return createAndRunScript(text, stdIn=stdIn, printing=printing)
     if type == "pythonScript":
-        text = "#!/usr/bin/python\n" + text
+        text = "#!/usr/bin/python -OO\n" + text
         return createAndRunScript(text, stdIn=stdIn, printing=printing)
         
