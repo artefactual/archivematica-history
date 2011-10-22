@@ -38,7 +38,8 @@ if __name__ == '__main__':
     parser.add_option("-s",  "--sipDirectory", action="store", dest="sipDirectory", default="")
     parser.add_option("-S",  "--sipUUID", action="store", dest="sipUUID", default="")
     parser.add_option("-T",  "--transferUUID", action="store", dest="transferUUID", default="")
-
+    parser.add_option("-e",  "--use", action="store", dest="use", default="original")
+    
     
     (opts, args) = parser.parse_args()
     fileUUID = opts.fileUUID
@@ -48,14 +49,14 @@ if __name__ == '__main__':
     
     if opts.sipUUID == "" and opts.transferUUID != "":
         filePathRelativeToSIP = opts.filePath.replace(opts.sipDirectory,"%transferDirectory%", 1)
-        addFileToTransfer(filePathRelativeToSIP, fileUUID, opts.transferUUID, opts.eventIdentifierUUID, opts.date)
+        addFileToTransfer(filePathRelativeToSIP, fileUUID, opts.transferUUID, opts.eventIdentifierUUID, opts.date, use=opts.use)
     
     elif opts.sipUUID != "" and opts.transferUUID == "":
         filePathRelativeToSIP = opts.filePath.replace(opts.sipDirectory,"%SIPDirectory%", 1)
-        addFileToSIP(filePathRelativeToSIP, fileUUID, opts.sipUUID, opts.eventIdentifierUUID, opts.date)
+        addFileToSIP(filePathRelativeToSIP, fileUUID, opts.sipUUID, opts.eventIdentifierUUID, opts.date, use=opts.use)
     
     else:
-        print >>sys.stderr, "SIP exclusive-or uuid must be defined"
+        print >>sys.stderr, "SIP exclusive-or Transfer uuid must be defined"
         exit(2)
         
     

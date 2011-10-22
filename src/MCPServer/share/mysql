@@ -22,6 +22,22 @@
 # @version svn: $Id$
 */
 
+DROP TABLE IF EXISTS Agents;
+CREATE TABLE Agents (
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    agentIdentifierType     LONGTEXT,
+    agentIdentifierValue    LONGTEXT,
+    agentName               LONGTEXT,
+    agentType               LONGTEXT
+);
+
+set @archivematicaAgent = 1;
+set @organizationAgent = 2;
+INSERT INTO Agents (pk, agentIdentifierType, agentIdentifierValue, agentName, agentType)
+    VALUES (@archivematicaAgent, 'preservation system', 'Archivematica-0.7', 'Archivematica', 'software'),
+    (@organizationAgent, 'repository code', 'ORG', 'Your Organization Name Here', 'organization')
+;
+
 
 DROP TABLE IF EXISTS MetadataAppliesToTypes;
 CREATE TABLE MetadataAppliesToTypes (
@@ -1018,7 +1034,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects/submissionDocumentation', TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'assignFileUUIDs_v0.0',  '--sipUUID "%SIPUUID%" --sipDirectory "%SIPDirectory%" --filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%"');
+    (NULL, NULL, 'objects/submissionDocumentation', TRUE, '%SIPLogsDirectory%FileUUIDs.log', '%SIPLogsDirectory%FileUUIDsError.log', 'assignFileUUIDs_v0.0',  '--sipUUID "%SIPUUID%" --sipDirectory "%SIPDirectory%" --filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%" --use "submissionDocumentation"');
 SET @AssignfileUUIDstosubmissiondocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
