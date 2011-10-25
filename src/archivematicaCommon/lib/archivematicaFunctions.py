@@ -103,6 +103,6 @@ def escapeForCommand(str):
     ret = ret.replace("\"", "\\\"")
     ret = ret.replace("'", "\\'")
     ret = ret.replace("$", "\\$")
-    ret = ret.replace("`", "\\`")
-    print >>sys.stderr, str, " -> escapedto:\t ", ret
+    #ret = ret.replace("`", "\\`")
+    #print >>sys.stderr, str, " -> escapedto:\t ", ret
     return ret
