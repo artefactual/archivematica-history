@@ -34,9 +34,11 @@ from createXmlEventsAssist import createOutcomeInformation
 from createXmlEventsAssist import createLinkingAgentIdentifier
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from archivematicaFunctions import getTagged
+from archivematicaFunctions import escapeForCommand
 from databaseFunctions import insertIntoFilesFits
 from databaseFunctions import insertIntoEvents
 from databaseFunctions import insertIntoFilesIDs
+
 
 excludeJhoveProperties = True
 formats = []
@@ -260,7 +262,9 @@ if __name__ == '__main__':
     
     tempFile="/tmp/" + uuid.uuid4().__str__()
     
-    command = "fits.sh -i \"" + target + "\" -o \"" + tempFile + "\"" 
+    command = "fits.sh -i \"" + escapeForCommand(target) + "\" -o \"" + tempFile + "\""
+    print >>sys.stderr, command
+    print >>sys.stderr,  shlex.split(command)
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
