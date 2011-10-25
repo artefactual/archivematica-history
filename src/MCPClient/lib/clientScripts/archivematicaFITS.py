@@ -263,8 +263,8 @@ if __name__ == '__main__':
     tempFile="/tmp/" + uuid.uuid4().__str__()
     
     command = "fits.sh -i \"" + escapeForCommand(target) + "\" -o \"" + tempFile + "\""
-    print >>sys.stderr, command
-    print >>sys.stderr,  shlex.split(command)
+    #print >>sys.stderr, command
+    #print >>sys.stderr,  shlex.split(command)
     try:
         p = subprocess.Popen(shlex.split(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     

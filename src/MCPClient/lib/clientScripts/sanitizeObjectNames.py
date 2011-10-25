@@ -38,6 +38,13 @@ if __name__ == '__main__':
     sipUUID =  sys.argv[2]
     date = sys.argv[3]
     taskUUID = sys.argv[4]
+    groupType = sys.argv[5]
+    groupType = "%%%s%%" % (groupType)
+    groupSQL = sys.argv[6]
+    groupID = sipUUID
+    
+    relativeReplacement = "%sobjects/" % (groupType) #"%SIPDirectory%objects/"
+    
 
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
     command = "sanitizeNames \"" + objectsDirectory + "\""
@@ -85,18 +92,24 @@ if __name__ == '__main__':
             newfile = detoxfiles[1]
             #print "line: ", line
             if os.path.isfile(newfile):
-                oldfile = oldfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1)
-                newfile = newfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1)
+                oldfile = oldfile.replace(objectsDirectory, relativeReplacement, 1)
+                newfile = newfile.replace(objectsDirectory, relativeReplacement, 1)
                 print oldfile, " -> ", newfile 
-
-                updateFileLocation(oldfile, newfile, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=None, sipUUID=sipUUID)
+                
+                if groupType == "%sipDirectory%":
+                    updateFileLocation(oldfile, newfile, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=None, sipUUID=sipUUID)
+                elif groupType == "%transferDirectory%":
+                    updateFileLocation(oldfile, newfile, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=None, transferUUID=sipUUID)
+                else:
+                    print >>sys.stderr, "bad group type", groupType
+                    exit(3)
                 
             elif os.path.isdir(newfile):
-                oldfile = oldfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1) + "/"
-                newfile = newfile.replace(objectsDirectory, "%SIPDirectory%objects/", 1) + "/"
+                oldfile = oldfile.replace(objectsDirectory, relativeReplacement, 1) + "/"
+                newfile = newfile.replace(objectsDirectory, relativeReplacement, 1) + "/"
                 directoryContents = []
                 
-                sql = "SELECT fileUUID, currentLocation FROM Files WHERE Files.removedTime = 0 AND Files.currentLocation LIKE '" + MySQLdb.escape_string(oldfile).replace("%","\%") + "%' AND Files.sipUUID = '" + sipUUID + "';"
+                sql = "SELECT fileUUID, currentLocation FROM Files WHERE Files.removedTime = 0 AND Files.currentLocation LIKE '" + MySQLdb.escape_string(oldfile).replace("%","\%") + "%' AND " + groupSQL + " = '" + groupID + "';"
                  
                 c, sqlLock = databaseInterface.querySQL(sql) 
                 row = c.fetchone()
