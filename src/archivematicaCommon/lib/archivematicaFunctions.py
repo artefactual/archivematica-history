@@ -89,4 +89,20 @@ def fileNoLongerExists(root, objectsDir):
         print currentName
         return 1
     
-
+def escapeForCommand(str):
+    ret = str
+    #print >>sys.stderr, "escaping:\t ", ret
+    #ret = ret.replace("(","\\(").replace(")","\\)").replace(" ","\\ ")
+    #ret = ret.replace("\"", "\\\"")
+    #ret = ret.replace("'", "\\'")
+    #ret = "'" + ret.replace("'", "'\\''") + "'"
+    
+    #|  &  ;  <  >  (  )  $  `  \  "  '
+    
+    ret = ret.replace("\\", "\\\\")
+    ret = ret.replace("\"", "\\\"")
+    ret = ret.replace("'", "\\'")
+    ret = ret.replace("$", "\\$")
+    ret = ret.replace("`", "\\`")
+    print >>sys.stderr, str, " -> escapedto:\t ", ret
+    return ret

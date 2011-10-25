@@ -30,6 +30,7 @@ from pipes import quote
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
 from fileOperations import updateSizeAndChecksum
+from archivematicaFunctions import escapeForCommand
 LowerEndMainGroupMax = -10
 
 fileTitle = ""
@@ -87,23 +88,7 @@ global replacementDic
 replacementDic = {}
 identifyCommands=None
 
-def escapeForCommand(str):
-    ret = str
-    #print >>sys.stderr, "escaping:\t ", ret
-    #ret = ret.replace("(","\\(").replace(")","\\)").replace(" ","\\ ")
-    #ret = ret.replace("\"", "\\\"")
-    #ret = ret.replace("'", "\\'")
-    #ret = "'" + ret.replace("'", "'\\''") + "'"
-    
-    #|  &  ;  <  >  (  )  $  `  \  "  '
-    
-    ret = ret.replace("\\", "\\\\")
-    ret = ret.replace("\"", "\\\"")
-    #ret = ret.replace("'", "\\'")
-    #ret = ret.replace("$", "\\$")
-    ret = ret.replace("`", "\\`")
-    #print >>sys.stderr, "escapedto:\t ", ret
-    return ret
+
 
 class Command:
     def __init__(self, commandID):
