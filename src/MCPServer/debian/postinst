@@ -1,5 +1,18 @@
 #!/bin/sh
 
+# source debconf stuff
+. /usr/share/debconf/confmodule
+
+dbc_dbname=MCP
+dbc_dbuser=archivematica
+
+# source dbconfig-common shell library, and call the hook function
+if [ -f /usr/share/dbconfig-common/dpkg/config.mysql ]; then
+  . /usr/share/dbconfig-common/dpkg/config.mysql
+  dbc_go archivematica-mcp-server $@
+fi
+
+
 userID=`id -u archivematica`
 
 if [ "${userID}" = 333 ]; then
