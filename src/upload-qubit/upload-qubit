@@ -20,13 +20,7 @@
 # @package Archivematica
 # @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
-# @version svn: $Id$
-
-
-
-# @package Archivematica
-# @subpackage Ingest
 # @author Austin Trask <austin@artefactual.com>
 # @version svn: $Id$
 
-/usr/lib/archivematica/upload-qubit/upload-qubit.py "$@"
+/usr/lib/archivematica/upload-qubit/upload-qubit.php "$@"
