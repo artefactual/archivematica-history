@@ -127,7 +127,7 @@ def executeCommand(gearman_worker, gearman_job):
         
 
 def startThread(threadNumber): 
-    gm_worker = gearman.GearmanWorker(['localhost:4730'])
+    gm_worker = gearman.GearmanWorker([config.get('MCPClient', "MCPArchivematicaServer")])
     hostID = gethostname() + "_" + threadNumber.__str__() 
     gm_worker.set_client_id(hostID)
     for key in supportedModules.iterkeys():

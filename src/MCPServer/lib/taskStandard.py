@@ -54,7 +54,7 @@ class taskStandard():
     def performTask(self):
         from archivematicaMCP import limitGearmanConnectionsSemaphore
         limitGearmanConnectionsSemaphore.acquire()
-        gm_client = gearman.GearmanClient(['localhost:4730', 'otherhost:4730'])
+        gm_client = gearman.GearmanClient([archivematicaMCP.config.get('MCPServer', "MCPArchivematicaServer")])
         data = {"createdDate" : datetime.datetime.now().__str__()}
         data["arguments"] = self.arguments
         print '"'+self.execute+'"', data
