@@ -1,3 +1,2 @@
 upload-qubit /usr/bin/
-lib/* /usr/lib/archivematica/upload-qubit/  
-
+lib/* /usr/lib/archivematica/upload-qubit/
