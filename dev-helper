@@ -24,7 +24,7 @@
 cd `dirname $0`
 
 part="svn up"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
     echo "doing ${part} ..."
@@ -45,7 +45,7 @@ else
 fi
 
 part="update/install package requirements"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
@@ -72,7 +72,7 @@ else
 fi
 
 part="recreate the databases"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
@@ -85,7 +85,7 @@ fi
 
 
 part="restart archivematica services"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
@@ -101,7 +101,7 @@ else
 fi
 
 part="export sample data to ~/sampledata"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         rev="`svn info | grep \"Revision: \" | awk -F " " '{print $2}'`"
@@ -112,7 +112,7 @@ else
 fi
 
 part="re-create gui-scripts editor file"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         rm /home/$USER/.config/Thunar/uca.xml
@@ -127,7 +127,7 @@ fi
 exit
 
 part="example"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
