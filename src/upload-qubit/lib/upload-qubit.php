@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 $cfg = array(
@@ -8,7 +9,7 @@ $cfg = array(
 
 if ('cli' !== php_sapi_name())
 {
-  die('This script was designed for php-cli.');
+  die("This script was designed for php-cli.\n");
 }
 
 if (4 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
@@ -28,13 +29,13 @@ $directory = $argv[3];
 
 if (false == file_exists($directory) || false == is_readable($directory))
 {
-  die('Given directory could not be found or is not readable.');
+  die("Given directory could not be found or is not readable.\n");
 }
 
 $zip = new ZipArchive;
-$file = tempnam('/tmp', 'dip').'.zip';
+$file = tempnam('/tmp', 'dip');
 $zip->open($file, ZipArchive::CREATE);
-$zip->addFile($directory.'/METS.xml', '/METS.xml');
+$zip->addFile($directory.'/METS.xml', 'METS.xml');
 if ($handle = opendir($directory.'/objects'))
 {
   while (false !== ($item = readdir($handle)))
@@ -44,31 +45,46 @@ if ($handle = opendir($directory.'/objects'))
       continue;
     }
 
-    $zip->addFile($directory.'/objects/'.$item, '/objects/'.$item);
+    $zip->addFile($directory.'/objects/'.$item, 'objects/'.$item);
   }
 }
 $zip->close();
 $cfg['file'] = $file;
 
+echo $file . " was generated. Sending to ICA-AtoM.\n";
+
 require(dirname(__FILE__).'/swordapp-php-library/swordappclient.php');
 $client = new SWORDAPPClient();
 
-$deposit = $client->deposit(
-  $cfg['url'],
-  $cfg['username'],
-  $cfg['password'],
-  $cfg['obo'],
-  $cfg['file'],
-  $cfg['format'],
-  $cfg['contenttype']);
+try
+{
+  $deposit = $client->deposit(
+    $cfg['url'],
+    $cfg['username'],
+    $cfg['password'],
+    $cfg['obo'],
+    $cfg['file'],
+    $cfg['format'],
+    $cfg['contenttype']);
+}
+catch (Exception $e)
+{
+  echo $e->getMessage() . "\n";
+  exit(1);
+}
+
+if (unlink($file))
+{
+  echo $file . " was removed.\n";
+}
 
 if ($deposit->sac_status == 201)
 {
-  echo $deposit->sac_status;
+  echo "Package uploaded successfully.\n";
   exit(0);
 }
 else
 {
-  echo $deposit->sac_status;
+  echo "Package could not be uploaded.\n";
   exit(1);
 }
