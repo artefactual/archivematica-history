@@ -24,7 +24,7 @@
 cd `dirname $0`
 
 part="create the archivematica user"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
@@ -36,7 +36,7 @@ fi
 
 
 part="install gearman"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
@@ -47,7 +47,7 @@ else
 fi
 
 part="install/update mysql"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
@@ -57,7 +57,7 @@ else
 fi
 
 part="add ppa repositories"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         sudo add-apt-repository ppa:archivematica/externals-dev
@@ -69,7 +69,7 @@ else
 fi
 
 part="run the MCP Server preMCPLogging.sh"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
@@ -82,7 +82,7 @@ else
 fi
 
 part="run the MCP Server postinst script"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
@@ -92,7 +92,7 @@ else
 fi
 
 part="reinstall archivematica upstart services - requires restart"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
@@ -108,7 +108,7 @@ else
 fi
 
 part="reinstall ica-atom"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
     #download and export
@@ -133,7 +133,7 @@ fi
 exit
 
 part="example"
-echo -n "\"Would you like to ${part}?\"(Y/N)"
+echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
