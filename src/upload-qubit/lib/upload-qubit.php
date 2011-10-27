@@ -11,7 +11,7 @@ if ('cli' !== php_sapi_name())
   die('This script was designed for php-cli.');
 }
 
-if (in_array($argv[1], array('--help', '-help', '-h', '-?')))
+if (4 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
 {
    die(<<<content
     Usage:
@@ -25,8 +25,30 @@ $cfg['username'] = $argv[1];
 $cfg['password'] = $argv[2];
 
 $directory = $argv[3];
-$a = new ZipArchive;
 
+if (false == file_exists($directory) || false == is_readable($directory))
+{
+  die('Given directory could not be found or is not readable.');
+}
+
+$zip = new ZipArchive;
+$file = tempnam('/tmp', 'dip').'.zip';
+$zip->open($file, ZipArchive::CREATE);
+$zip->addFile($directory.'/METS.xml', '/METS.xml');
+if ($handle = opendir($directory.'/objects'))
+{
+  while (false !== ($item = readdir($handle)))
+  {
+    if ($item == '.' || $item == '..')
+    {
+      continue;
+    }
+
+    $zip->addFile($directory.'/objects/'.$item, '/objects/'.$item);
+  }
+}
+$zip->close();
+$cfg['file'] = $file;
 
 require(dirname(__FILE__).'/swordapp-php-library/swordappclient.php');
 $client = new SWORDAPPClient();
@@ -40,13 +62,13 @@ $deposit = $client->deposit(
   $cfg['format'],
   $cfg['contenttype']);
 
-if ($client->sac_status == 201)
+if ($deposit->sac_status == 201)
 {
-  echo $client->sac_status;
+  echo $deposit->sac_status;
   exit(0);
 }
 else
 {
-  echo $client->sac_status;
+  echo $deposit->sac_status;
   exit(1);
 }
