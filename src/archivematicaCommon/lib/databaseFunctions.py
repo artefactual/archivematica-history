@@ -29,7 +29,7 @@ import uuid
 
 def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDate(), transferUUID="", sipUUID="", use="original"):
     if transferUUID != "" and sipUUID == "":
-        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, fileGrpUse, transferUUID)
+        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLocation, currentLocation, enteredSystem, fileGrpUse, transferUUID)
         VALUES ( '"""   + fileUUID + databaseInterface.separator \
                         + MySQLdb.escape_string(filePath) + databaseInterface.separator \
                         + MySQLdb.escape_string(filePath) + databaseInterface.separator \
@@ -37,7 +37,7 @@ def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDa
                         + use + databaseInterface.separator \
                         + transferUUID + "' )" )
     elif transferUUID == "" and sipUUID != "":
-        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLoacation, currentLocation, enteredSystem, fileGrpUse, sipUUID)
+        databaseInterface.runSQL("""INSERT INTO Files (fileUUID, originalLocation, currentLocation, enteredSystem, fileGrpUse, sipUUID)
         VALUES ( '"""   + fileUUID + databaseInterface.separator \
                         + MySQLdb.escape_string(filePath) + databaseInterface.separator \
                         + MySQLdb.escape_string(filePath) + databaseInterface.separator \

@@ -390,7 +390,7 @@ CREATE TABLE SIPs (
 DROP TABLE IF EXISTS Files;
 CREATE TABLE Files(
     fileUUID            VARCHAR(50) PRIMARY KEY,
-    originalLoacation   LONGTEXT,
+    originalLocation   LONGTEXT,
     currentLocation     LONGTEXT,
     sipUUID             VARCHAR(50),
     Foreign Key (sipUUID) references SIPs(sipUUID),
