@@ -21,7 +21,6 @@
 # @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-import MySQLdb
 import os
 import sys
 import databaseInterface
