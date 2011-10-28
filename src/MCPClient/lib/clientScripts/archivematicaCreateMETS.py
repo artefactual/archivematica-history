@@ -144,7 +144,7 @@ def createDigiprovMD(uuid, filename, fileUUID) :
         row = c.fetchone()
     sqlLock.release()
     
-    sql = "SELECT Files.originalLoacation FROM Files WHERE Files.fileUUID = '" + fileUUID + "';"
+    sql = "SELECT Files.originalLocation FROM Files WHERE Files.fileUUID = '" + fileUUID + "';"
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     if not row:

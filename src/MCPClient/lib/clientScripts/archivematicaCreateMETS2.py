@@ -215,7 +215,7 @@ def createDigiprovMD(fileUUID):
         row = c.fetchone()
     sqlLock.release()
     
-    sql = "SELECT Files.originalLoacation FROM Files WHERE Files.fileUUID = '" + fileUUID + "';"
+    sql = "SELECT Files.originalLocation FROM Files WHERE Files.fileUUID = '" + fileUUID + "';"
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     if not row:
@@ -384,10 +384,10 @@ def createFileSec(directoryPath, structMapDiv):
             newChild(structMapDiv, "fptr", sets=[("FILEID",FILEID)])
             
             GROUPID=""
-            if use =="original" or use == "submissionDocumentation":
+            if use == "original" or use == "submissionDocumentation":
                 GROUPID = "Group-%s" % (myuuid) 
             
-            if use =="preservation":
+            if use == "preservation":
                 sql = "SELECT * FROM Derivations WHERE derivedFileUUID = '" + myuuid + "';"
                 c, sqlLock = databaseInterface.querySQL(sql)
                 row = c.fetchone()
@@ -395,7 +395,17 @@ def createFileSec(directoryPath, structMapDiv):
                     GROUPID = "Group-%s" % (row[1])
                     row = c.fetchone()
                 sqlLock.release()
-            
+                
+            if use == "license":
+                sql = """SELECT originalLocation FROM Files where fileUUID = '%s'""" % (myuuid)
+                originalLocation = databaseInterface.queryAllSQL(sql)[0][0]
+                sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND originalLocation LIKE '%s/%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(os.path.dirname(originalLocation)).replace("%", "%%"))
+                c, sqlLock = databaseInterface.querySQL(sql) 
+                row = c.fetchone()
+                while row != None:
+                    GROUPID = "Group-%s" % (row[0])
+                    row = c.fetchone()
+                sqlLock.release()
         
             if GROUPID=="":
                 globalErrorCount += 1
