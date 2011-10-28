@@ -1,10 +1,13 @@
 #!/usr/bin/env php
 <?php
 
+error_reporting(E_ALL ^ E_NOTICE);
+
 $cfg = array(
   'format' => 'http://purl.org/net/sword-types/METSArchivematicaDIP',
   'contenttype' => 'application/zip',
   'obo' => null,
+  // Use qubit_dev.php instead of index.php if you want to switch on the debug mode
   'url' => 'http://localhost/ica-atom/index.php/sword/deposit/archivematica');
 
 if ('cli' !== php_sapi_name())
@@ -16,7 +19,7 @@ if (4 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
 {
    die(<<<content
     Usage:
-      $argv[0] USERNAME PASSWORD FILENAME
+      $argv[0] USERNAME PASSWORD DIRECTORY
 
 content
   );
@@ -69,7 +72,24 @@ try
 }
 catch (Exception $e)
 {
-  echo $e->getMessage() . "\n";
+  echo "[!!] Package could not be deposited:\n";
+  echo "[!!] " . $e->getMessage() . "\n";
+
+  if (isset($e->data['status']))
+  {
+    echo "[!!] HTTP response status code: " . $e->data['status'] . "\n";
+  }
+
+  if (isset($e->data['response']) && 0 < strlen($e->data['response']))
+  {
+    echo "[!!] ----- Server response -----\n";
+    echo $e->data['response'];
+  }
+  else
+  {
+    echo "[**] You should switch on the debug mode to get a detailed error report.\n";
+  }
+
   exit(1);
 }
 
