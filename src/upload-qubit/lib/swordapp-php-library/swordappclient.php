@@ -115,7 +115,8 @@ class SWORDAPPClient {
 				// Build the deposit response object
 				$sac_dresponse->buildhierarchy($sac_xml, $sac_ns);
 			} catch (Exception $e) {
-			    throw new Exception("Error parsing response entry (" . $e->getMessage() . ")");
+          require('swordappexception.php');
+			    throw new SWORDAPPException("Error parsing response entry (" . $e->getMessage() . ")", array('status' => $sac_status, 'response' => $sac_resp));
 			}
 		} else {
 			try {
@@ -129,7 +130,8 @@ class SWORDAPPClient {
 				// Build the deposit response object
 				$sac_dresponse->buildhierarchy($sac_xml, $sac_ns);
 			} catch (Exception $e) {
-			    throw new Exception("Error parsing error document (" . $e->getMessage() . ")");
+          require('swordappexception.php');
+			    throw new SWORDAPPException("Error parsing error document (" . $e->getMessage() . ")", array('status' => $sac_status, 'response' => $sac_resp));
 			}
 		}
 
