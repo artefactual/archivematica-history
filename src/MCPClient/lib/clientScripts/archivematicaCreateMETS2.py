@@ -138,6 +138,20 @@ def getDublinCore(type, id):
     sqlLock.release()
     return ret
 
+def createDMDSec(type, id):
+    dc = getDublinCore(type, id)
+    if dc == None:
+        return None
+    global globalDmdSecCounter
+    globalDmdSecCounter += 1
+    dmdSec = etree.Element("digiprovMD")
+    ID = "dmdSec_" + globalDmdSecCounter.__str__()
+    dmdSec.set("ID", ID)
+    mdWrap = newChild(dmdSec, "mdWrap")
+    xmlData = newChild(mdWrap, "xmlData")
+    xmlData.append(dc)
+    return (dmdSec, ID)
+    
 def createDigiprovMD(fileUUID):
     ret = etree.Element("digiprovMD")
     digiprovMD = ret #newChild(amdSec, "digiprovMD")
@@ -454,6 +468,10 @@ def createFileSec(directoryPath, structMapDiv):
             
             
 if __name__ == '__main__':
+    if False: #True: #insert sample dc for testing
+        sql = """ INSERT INTO Dublincore (metadataAppliesToType, metadataAppliesToidentifier, title, creator, subject, description, publisher, contributor, date, type, format, identifier, source, isPartOf, language, coverage, rights)
+            VALUES (1, '%s', "title3", "creator4", "subject5", "description6", "publisher7", "contributor8", "date9", "type0", "format11", "identifier12", "source13", "isPartOf14", "language15", "coverage16", "rights17"); """ % (fileGroupIdentifier)
+        databaseInterface.runSQL(sql)
     
     if not baseDirectoryPath.endswith('/'):
         baseDirectoryPath += '/'
@@ -461,7 +479,7 @@ if __name__ == '__main__':
     structMap.set("TYPE", "physical")
     structMapDiv = newChild(structMap, "div", sets=[("TYPE","directory"), ("LABEL","%s-%s" % (os.path.basename(baseDirectoryPath[:-1]), fileGroupIdentifier))])
     #dmdSec, dmdSecID = createDMDSec(SIP)
-    structMapDiv = newChild(structMapDiv, "div", sets=[("TYPE","directory"), ("LABEL","objects"), ("DMID","TODO !!! dmdSec_01") ])
+    structMapDiv = newChild(structMapDiv, "div", sets=[("TYPE","directory"), ("LABEL","objects") ])
     createFileSec(os.path.join(baseDirectoryPath, "objects"), structMapDiv)
     
     
@@ -476,9 +494,11 @@ if __name__ == '__main__':
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
     
     
-    dc = getDublinCore(SIPMetadataAppliesToType, fileGroupIdentifier)
+    dc = createDMDSec(SIPMetadataAppliesToType, fileGroupIdentifier)
     if dc != None:
-        root.append(dc)
+        (dmdSec, ID) = dc
+        structMapDiv.set("DMID", ID)
+        root.append(dmdSec)
         
     
     for amdSec in amdSecs:
@@ -486,7 +506,8 @@ if __name__ == '__main__':
     
     root.append(fileSec)
     root.append(structMap)
-    print etree.tostring(root, pretty_print=True)
+    if False: #debug
+        print etree.tostring(root, pretty_print=True)
             
     #<div TYPE="directory" LABEL="AIP1-UUID">
     #<div TYPE="directory" LABEL="objects" DMID="dmdSec_01">
