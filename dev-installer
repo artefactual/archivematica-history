@@ -115,7 +115,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
     sudo rm /var/www/ica-atom -rf
     svn checkout http://qubit-toolkit.googlecode.com/svn/trunk ica-atom-svn
     #sudo svn export ica-atom-svn /var/www/ica-atom
-    sudo ln -sf ica-atom-svn/ /var/www/ica-atom
+    sudo ln -sf `pwd`/ica-atom-svn/ /var/www/ica-atom
     #rm ica-atom-svn -rf    
     
     #delete & create "qubit" database
@@ -124,6 +124,9 @@ if [[ $a == "Y" || $a == "y" ]]; then
     sudo chown -R www-data:www-data ica-atom-svn/
     sudo chmod 777 -R ica-atom-svn
     
+    # sudo mysqladmin drop qubit
+    echo "enter mysql root password (hit enter if blank)"
+    mysql -u root -p --execute="CREATE DATABASE qubit CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
     sudo apache2ctl restart
 else
         echo "Not going to ${part}."
