@@ -2455,10 +2455,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    ('mets.xml', NULL, 'objects', TRUE, NULL, NULL, 'moveDspaceLicenseFilesToDSpaceLicenses_v0.0', '"%relativeLocation%" "%date%" "%taskUUID%" "%SIPDirectory%" "%SIPUUID%"');
+    ('mets.xml', NULL, 'objects', TRUE, NULL, NULL, 'identifyDspaceLicenseFiles_v0.0', '"%relativeLocation%" "%date%" "%taskUUID%" "%SIPDirectory%" "%SIPUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Moved license files, designated in mets.xml, to DSpaceLicenses');
+    (1,      LAST_INSERT_ID(), 'Identify DSpace license files');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
