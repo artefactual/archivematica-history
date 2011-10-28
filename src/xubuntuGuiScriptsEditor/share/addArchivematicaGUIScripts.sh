@@ -33,26 +33,25 @@ else
 	echo "</actions>" >> "$UCA" 
 fi
 
-
+"$add" \
+    --icon="accessories-calculator" \
+    --name="Create a structured directory" \
+    --command="/usr/lib/archivematica/archivematicaCommon/archivematicaCreateStructuredDirectory.sh %d" \
+    --description="Creates a structured directory for archivematica processing" \
+    --directories 
+    
 "$add" \
 	--icon="accessories-calculator" \
-	--name="SIP-Restructure For Compliance" \
+	--name="Restructure For Compliance" \
 	--command="archivematicaRestructureForCompliance %F/" \
 	--description="Restructure For Compliance" \
 	--directories
 
 "$add" \
 	--icon="accessories-calculator" \
-	--name="SIP-Create md5 checksum" \
+	--name="Create md5 checksum" \
 	--command="archivematicaCreateMD5 %F | zenity --progress --pulsate --auto-close --auto-kill" \
 	--description="Create MD5 checksums for all the selected files in this folder" \
-	--directories
-
-"$add" \
-	--icon="accessories-calculator" \
-	--name="SIP-Do All" \
-	--command="archivematicaRestructureForCompliance %F/ && archivematicaCreateMD5 %F | zenity --progress --pulsate --auto-close --auto-kill && cd %F/metadata" \
-	--description="Restructures, creates MD5 and DC" \
 	--directories
 
 #"$add" \
@@ -85,9 +84,4 @@ fi
 #http://forum.xfce.org/viewtopic.php?id=3215
 	
 
-"$add" \
-    --icon="accessories-calculator" \
-    --name="Create a structured directory" \
-    --command="/usr/lib/archivematica/archivematicaCommon/archivematicaCreateStructuredDirectory.sh %d" \
-    --description="Creates a structured directory for archivematica processing" \
-    --directories 
+
