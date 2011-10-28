@@ -43,13 +43,6 @@ fi
 
 "$add" \
 	--icon="accessories-calculator" \
-	--name="SIP-Create DC" \
-	--command="cd %F/metadata && createDublinCore %F/" \
-	--description="Insert a blank Dublin Core XML into metadata directory" \
-	--directories	
-
-"$add" \
-	--icon="accessories-calculator" \
 	--name="SIP-Create md5 checksum" \
 	--command="archivematicaCreateMD5 %F | zenity --progress --pulsate --auto-close --auto-kill" \
 	--description="Create MD5 checksums for all the selected files in this folder" \
@@ -58,7 +51,7 @@ fi
 "$add" \
 	--icon="accessories-calculator" \
 	--name="SIP-Do All" \
-	--command="archivematicaRestructureForCompliance %F/ && archivematicaCreateMD5 %F | zenity --progress --pulsate --auto-close --auto-kill && cd %F/metadata && createDublinCore %F/" \
+	--command="archivematicaRestructureForCompliance %F/ && archivematicaCreateMD5 %F | zenity --progress --pulsate --auto-close --auto-kill && cd %F/metadata" \
 	--description="Restructures, creates MD5 and DC" \
 	--directories
 
