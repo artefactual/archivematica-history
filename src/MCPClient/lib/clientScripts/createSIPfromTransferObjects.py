@@ -23,6 +23,7 @@
 # @version svn: $Id$
 import uuid
 import shutil
+import MySQLdb
 import os
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
@@ -42,6 +43,7 @@ if __name__ == '__main__':
     transferUUID = sys.argv[3]
     processingDirectory = sys.argv[4]
     autoProcessSIPDirectory = sys.argv[5]
+    sharedPath = sys.argv[6]
     sipName = transferName
     sipUUID = uuid.uuid4().__str__()
     
@@ -49,7 +51,7 @@ if __name__ == '__main__':
     tmpSIPDir = os.path.join(processingDirectory, sipName) + "/"
     destSIPDir =  os.path.join(autoProcessSIPDirectory, sipName) + "/"
     createStructuredDirectory(tmpSIPDir)
-    databaseFunctions.createSIP(destSIPDir, sipUUID)
+    databaseFunctions.createSIP(destSIPDir.replace(sharedPath, '%sharedPath%'), sipUUID)
     
     #move the objects to the SIPDir
     for item in os.listdir(objectsDirectory):
@@ -57,13 +59,14 @@ if __name__ == '__main__':
         
     #get the database list of files in the objects directory
     #for each file, confirm it's in the SIP objects directory, and update the current location/ owning SIP'
-    sql = """SELECT  fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND currentLocation LIKE '%transferDirectory%objects' AND transferUUID =  '""" + transferUUID + "'" 
+    sql = """SELECT  fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND currentLocation LIKE '%%transferDirectory%%objects%' AND transferUUID =  '""" + transferUUID + "'" 
     for row in databaseInterface.queryAllSQL(sql):
-        UUID = row[0]
+        fileUUID = row[0]
         currentPath = row[1]
         currentSIPFilePath = currentPath.replace("%transferDirectory%", tmpSIPDir)
         if os.path.isfile(currentSIPFilePath):
-            sql = """UPDATE Files SET currentLocation='%s' sipUUID='%s'""" (MySQLdb.escape_string(currentPath.replace("%transferDirectory%", "%sipDirectory%")), sipUUID)
+            sql = """UPDATE Files SET currentLocation='%s', sipUUID='%s' WHERE fileUUID='%s'""" % (MySQLdb.escape_string(currentPath.replace("%transferDirectory%", "%SIPDirectory%")), sipUUID, fileUUID)
+            databaseInterface.runSQL(sql)
         else:
             print >>sys.stderr, "file not found: ", currentSIPFilePath
         

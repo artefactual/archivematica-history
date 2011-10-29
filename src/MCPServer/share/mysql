@@ -1819,7 +1819,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'createSIPfromTransferObjects_v0.0', '"%SIPObjectsDirectory%" "%SIPName%" "%SIPUUID%" "%processingDirectory%" "%sharedPath%watchedDirectories/system/autoProcessSIP/"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'createSIPfromTransferObjects_v0.0', '"%SIPObjectsDirectory%" "%SIPName%" "%SIPUUID%" "%processingDirectory%" "%sharedPath%watchedDirectories/system/autoProcessSIP/" "%sharedPath%"');
 SET @moveToCompletedTransferTaskTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
