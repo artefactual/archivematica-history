@@ -1,1 +1,2 @@
-lib/* /usr/lib/archivematica/archivematicaCommon
+etc/* /etc/archivematica/archivematicaCommon/
+lib/* /usr/lib/archivematica/archivematicaCommon/
