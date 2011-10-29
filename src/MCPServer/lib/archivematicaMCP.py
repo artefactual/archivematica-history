@@ -64,6 +64,7 @@ import sys
 import lxml.etree as etree
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
+import databaseFunctions
 
 global xmlRPCServerServer
 
@@ -97,7 +98,7 @@ def isUUID(uuid):
         return False
     return True
     
-def findOrCreateSipInDB(path):
+def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
     UUID = ""
     path = path.replace(config.get('MCPServer', "sharedDirectory"), "%sharedPath%", 1)
     
@@ -110,7 +111,8 @@ def findOrCreateSipInDB(path):
     if UUID == "":
         #Find it in the database
         sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "'"
-        time.sleep(dbWaitSleep) #let db be updated by the microservice that moved it.
+        if waitSleep != 0:
+            time.sleep(waitSleep) #let db be updated by the microservice that moved it.
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:
@@ -122,12 +124,7 @@ def findOrCreateSipInDB(path):
     
     #Create it
     if UUID == "":
-        UUID = uuid.uuid4().__str__()
-        print "Creating SIP:", UUID, "-", path
-        separator = "', '"
-        sql = """INSERT INTO SIPs (sipUUID, currentPath)
-            VALUES ('""" + UUID + separator + path + "');"
-        databaseInterface.runSQL(sql)    
+        UUID = databaseFunctions.createSIP(path)
     return UUID
 
 def createUnitAndJobChain(path, config):

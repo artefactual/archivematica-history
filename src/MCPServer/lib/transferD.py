@@ -363,7 +363,7 @@ class SIPCreationWatch(pyinotify.ProcessEvent):
 
 
     def process_IN_MOVED_TO(self, event):
-        time.sleep(archivematicaMCP.dbWaitSleep) #let db be updated by the microservice that moved it.
+        #time.sleep(archivematicaMCP.dbWaitSleep) #let db be updated by the microservice that moved it.
         print event
         path = os.path.join(event.path, event.name)
         if not os.path.isdir(path):
@@ -375,7 +375,7 @@ class SIPCreationWatch(pyinotify.ProcessEvent):
             addWatchForTransfer(path, unit)
         elif os.path.abspath(event.path) == os.path.abspath(sipCreationDirectory):
             path = path + "/"
-            UUID = archivematicaMCP.findOrCreateSipInDB(path)
+            UUID = archivematicaMCP.findOrCreateSipInDB(path, waitSleep=0)
             unit = unitSIP(path.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%", 1), UUID) 
             notifier = addWatchForSIP(path, unit)
             self.sips[path[:-1]] = notifier 
