@@ -25,8 +25,7 @@ sudo ln -s "${svnDir}src/upload-qubit/lib/" "${lib}/upload-qubit"
 sudo ln -s "${svnDir}src/transcoder/lib/" "${lib}/transcoder"
 sudo ln -s "${svnDir}src/sanitizeNames/lib/" "/usr/lib/sanitizeNames"
 sudo ln -s "${svnDir}src/dashboard/src/" "${share}/dashboard"
-sudo ln -sf "${svnDir}/buildVM/includes/apache.default" "/etc/apache2/sites-enabled/000-default"
-
+sudo ln -sf "${svnDir}buildVM/includes/apache.default" "/etc/apache2/sites-enabled/000-default"
 sudo ln "${svnDir}src/SIPCreationTools/bin/archivematicaCreateMD5" "/usr/bin/"
 sudo ln "${svnDir}src/SIPCreationTools/bin/archivematicaRestructureForCompliance" "/usr/bin/"
 
