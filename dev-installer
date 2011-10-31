@@ -117,15 +117,16 @@ if [[ $a == "Y" || $a == "y" ]]; then
     #sudo svn export ica-atom-svn /var/www/ica-atom
     sudo ln -sf `pwd`/ica-atom-svn/ /var/www/ica-atom
     #rm ica-atom-svn -rf    
-    
+
     #delete & create "qubit" database
-    
+
     #fix ownership
     sudo chown -R www-data:www-data ica-atom-svn/
     sudo chmod 777 -R ica-atom-svn
-    
-    cp ica-atom-svn/apps/qubit/config/settings.yml.tmpl ica-atom-svn/apps/qubit/config/settings.yml
-    
+
+    # Not needed anymore, feel free to remove it
+    # cp ica-atom-svn/apps/qubit/config/settings.yml.tmpl ica-atom-svn/apps/qubit/config/settings.yml
+
     # sudo mysqladmin drop qubit
     echo "enter mysql root password (hit enter if blank)"
     mysql -u root -p --execute="CREATE DATABASE qubit CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
