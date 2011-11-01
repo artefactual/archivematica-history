@@ -3,6 +3,49 @@
 
 error_reporting(E_ALL ^ E_NOTICE);
 
+function zip ($source, $destination)
+{
+  if (extension_loaded('zip') === true)
+  {
+    if (file_exists($source) === true)
+    {
+      $zip = new ZipArchive();
+
+      if ($zip->open($destination, ZIPARCHIVE::CREATE) === true)
+      {
+        $source = realpath($source);
+
+        if (is_dir($source) === true)
+        {
+          $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
+
+          foreach ($files as $file)
+          {
+            $file = realpath($file);
+
+            if (is_dir($file) === true)
+            {
+              $zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
+            }
+            else if (is_file($file) === true)
+            {
+              $zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
+            }
+          }
+        }
+        else if (is_file($source) === true)
+        {
+          $zip->addFromString(basename($source), file_get_contents($source));
+        }
+      }
+
+      return $zip->close();
+    }
+  }
+
+  return false;
+}
+
 $cfg = array(
   'format' => 'http://purl.org/net/sword-types/METSArchivematicaDIP',
   'contenttype' => 'application/zip',
@@ -30,31 +73,28 @@ $cfg['password'] = $argv[2];
 
 $directory = $argv[3];
 
+if ('debug' == @$argv[4])
+{
+  $cfg['url'] = str_replace('index.php', 'qubit_dev.php', $cfg['url']);
+}
+
 if (false == file_exists($directory) || false == is_readable($directory))
 {
-  die("Given directory could not be found or is not readable.\n");
+  fwrite(STDERR, "Given directory could not be found or is not readable.\n");
+  exit(1);
 }
 
-$zip = new ZipArchive;
 $file = tempnam('/tmp', 'dip');
-$zip->open($file, ZipArchive::CREATE);
-$zip->addFile($directory.'/METS.xml', 'METS.xml');
-if ($handle = opendir($directory.'/objects'))
-{
-  while (false !== ($item = readdir($handle)))
-  {
-    if ($item == '.' || $item == '..')
-    {
-      continue;
-    }
 
-    $zip->addFile($directory.'/objects/'.$item, 'objects/'.$item);
-  }
+if (!zip($directory, $file))
+{
+  fwrite(STDOUT, "[!!] Error creating zip file.\n");
+  exit(1);
 }
-$zip->close();
+
 $cfg['file'] = $file;
 
-echo $file . " was generated. Sending to ICA-AtoM.\n";
+fwrite(STDOUT, "[OK] " . $file . " was generated. Sending to ICA-AtoM.\n");
 
 require(dirname(__FILE__).'/swordapp-php-library/swordappclient.php');
 $client = new SWORDAPPClient();
@@ -72,22 +112,22 @@ try
 }
 catch (Exception $e)
 {
-  echo "[!!] Package could not be deposited:\n";
-  echo "[!!] " . $e->getMessage() . "\n";
+  fwrite(STDERR, "[!!] Package could not be deposited:\n");
+  fwrite(STDERR, "[!!] " . $e->getMessage() . "\n");
 
   if (isset($e->data['status']))
   {
-    echo "[!!] HTTP response status code: " . $e->data['status'] . "\n";
+    fwrite(STDERR, "[!!] HTTP response status code: " . $e->data['status'] . "\n");
   }
 
   if (isset($e->data['response']) && 0 < strlen($e->data['response']))
   {
-    echo "[!!] ----- Server response -----\n";
-    echo $e->data['response'];
+    fwrite(STDERR, "[!!] ----- Server response -----\n");
+    fwrite(STDERR, $e->data['response']);
   }
   else
   {
-    echo "[**] You should switch on the debug mode to get a detailed error report.\n";
+    fwrite(STDERR, "[**] You should switch on the debug mode to get a detailed error report.\n");
   }
 
   exit(1);
@@ -95,16 +135,17 @@ catch (Exception $e)
 
 if (unlink($file))
 {
-  echo $file . " was removed.\n";
+  fwrite(STDOUT, "[OK] " . $file . " was removed.\n");
 }
 
 if ($deposit->sac_status == 201)
 {
-  echo "Package uploaded successfully.\n";
+  fwrite(STDOUT, "[OK] Package uploaded successfully.\n");
   exit(0);
 }
 else
 {
-  echo "Package could not be uploaded.\n";
+  fwrite(STDERR, "[!!] Package could not be uploaded (" . $deposit->sac_status . ").\n");
+  fwrite(STDERR, "[!!] You should switch on the debug mode to get a detailed error report.\n");
   exit(1);
 }
