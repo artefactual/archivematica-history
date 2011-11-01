@@ -50,9 +50,9 @@ def inAccessFormat():
     return transcoder.fileExtension.__str__().upper() in ex
 
 def inPreservationFormat():
-    ex=["CSS", "CSV", "DOCX", "HTML", "LOG", "TXT", "XML", "XSL", "XLSX", "LOG", \
+    ex=["CSS", "CSV", "DOC", "DOCX", "HTML", "LOG", "PPT", "TXT", "XML", "XLS", "XLSX", "LOG", \
         "JP2", "PNG", \
-        "SVG", "WAV", "TIF", "PDF", "ODG", "ODP", "TIF", "MXF", "ODT", "ODS", "MBOX", "MBOXI", "AI", \
+        "SVG", "WAV", "TIF", "PDF", "ODG", "ODP", "TIF", "MKV", "MXF", "ODT", "ODS", "MBOX", "MBOXI", "AI", \
     "PPTX", \
     "DNG" ]
     return transcoder.fileExtension.__str__().upper() in ex
