@@ -76,6 +76,7 @@ $directory = $argv[3];
 if ('debug' == @$argv[4])
 {
   $cfg['url'] = str_replace('index.php', 'qubit_dev.php', $cfg['url']);
+  $cfg['debug'] = true;
 }
 
 if (false == file_exists($directory) || false == is_readable($directory))
@@ -118,6 +119,12 @@ catch (Exception $e)
   if (isset($e->data['status']))
   {
     fwrite(STDERR, "[!!] HTTP response status code: " . $e->data['status'] . "\n");
+
+    if ('404' == $e->data['status'])
+    {
+      fwrite(STDERR, "[!!] Please check that qtSwordPlugin is enabled.\n");
+      fwrite(STDERR, "[!!] Please check that the next resource exists: " . $cfg['url'] . "\n");
+    }
   }
 
   if (isset($e->data['response']) && 0 < strlen($e->data['response']))
@@ -127,7 +134,7 @@ catch (Exception $e)
   }
   else
   {
-    fwrite(STDERR, "[**] You should switch on the debug mode to get a detailed error report.\n");
+    fwrite(STDERR, "[!!] You should switch on the debug mode to get a detailed error report.\n");
   }
 
   exit(1);
