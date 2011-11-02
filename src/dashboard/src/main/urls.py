@@ -9,8 +9,14 @@ urlpatterns = patterns('dashboard.main.views',
   # Index
   (r'^$', redirect_to, {'url': '/ingest/'}),
 
+  # Transfer
+  (r'transfer/$', 'transfer_base'),
+  (r'transfer/go/$', 'transfer'),
+  (r'transfer/go/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer'),
+  (r'transfer/metadata/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer_metadata'),
+
   # Ingest
-  url(r'ingest/$', direct_to_template, {'template': 'main/ingest.html', 'extra_context': {'polling_interval': settings.POLLING_INTERVAL, 'microservices_help': settings.MICROSERVICES_HELP}}, 'ingest'),
+  (r'ingest/$', 'ingest_base'),
   (r'ingest/go/$', 'ingest'),
   (r'ingest/go/(?P<uuid>' + UUID_REGEX + ')$', 'ingest'),
   (r'ingest/(?P<uuid>' + UUID_REGEX + ')/normalization-report$', 'normalization_report'),
@@ -18,7 +24,6 @@ urlpatterns = patterns('dashboard.main.views',
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects$', 'list_objects'),
   (r'jobs/(?P<uuid>' + UUID_REGEX + ')/manual-normalization$', 'manual_normalization'),
   (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
-  (r'transfer/$', 'transfer'),
 
   # Archival storage
   (r'archival-storage/$', 'archival_storage'),

@@ -9,6 +9,29 @@
 
 from django.db import models
 
+class DublinCore(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  metadataappliestotype = models.IntegerField(db_column='metadataAppliesToType')
+  metadataappliestoidentifier = models.CharField(max_length=50, blank=True, db_column='metadataAppliesToidentifier')
+  title = models.TextField(db_column='title', blank=True)
+  creator = models.TextField(db_column='creator', blank=True)
+  subject = models.TextField(db_column='subject', blank=True)
+  description = models.TextField(db_column='description', blank=True)
+  publisher = models.TextField(db_column='publisher', blank=True)
+  contributor = models.TextField(db_column='contributor', blank=True)
+  date = models.TextField(db_column='date', blank=True)
+  type = models.TextField(db_column='type', blank=True)
+  format = models.TextField(db_column='format', blank=True)
+  identifer = models.TextField(db_column='identifier', blank=True)
+  source = models.TextField(db_column='source', blank=True)
+  isPartOf = models.TextField(db_column='isPartOf', blank=True)
+  language = models.TextField(db_column='language', blank=True)
+  coverage = models.TextField(db_column='coverage', blank=True)
+  rights = models.TextField(db_column='rights', blank=True) 
+
+  class Meta:
+    db_table = u'Dublincore'
+
 class Job(models.Model):
   jobuuid = models.CharField(max_length=150, primary_key=True, db_column='jobUUID')
   jobtype = models.CharField(max_length=750, db_column='jobType', blank=True)
@@ -16,7 +39,9 @@ class Job(models.Model):
   createdtimedec = models.DecimalField(null=True, db_column='createdTimeDec', blank=True)
   directory = models.CharField(max_length=750, blank=True)
   sipuuid = models.CharField(max_length=150, db_column='SIPUUID', blank=True)
+  unittype = models.CharField(max_length=150, db_column='unitType', blank=True)
   currentstep = models.CharField(max_length=150, db_column='currentStep', blank=True)
+  microservicegroup = models.CharField(max_length=150, db_column='microserviceGroup', blank=True)
   hidden = models.BooleanField(default=False, blank=False)
 
   class Meta:
