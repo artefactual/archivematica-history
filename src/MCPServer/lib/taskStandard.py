@@ -70,9 +70,22 @@ class taskStandard():
             self.linkTaskManager.taskCompletedCallBackFunction(self)
             
         elif job_request.timed_out:
-            print "Task %s timed out!" % job_request.unique
+            print >>sys.stderr, "Task %s timed out!" % job_request.unique
+            self.results['exitCode'] = -1
+            self.results["stdError"] = "Task %s timed out!" % job_request.unique
+            self.linkTaskManager.taskCompletedCallBackFunction(self)
+            
         elif job_request.state == JOB_UNKNOWN:
-            print "Task %s connection failed!" % job_request.unique
+            print >>sys.stderr, "Task %s connection failed!" % job_request.unique
+            self.results["stdError"] = "Task %s connection failed!" % job_request.unique
+            self.results['exitCode'] = -1
+            self.linkTaskManager.taskCompletedCallBackFunction(self)
+        
+        else:
+            print >>sys.stderr, "Task %s failed!" % job_request.unique
+            self.results["stdError"] = "Task %s failed!" % job_request.unique
+            self.results['exitCode'] = -1
+            self.linkTaskManager.taskCompletedCallBackFunction(self)
         
 
 

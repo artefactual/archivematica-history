@@ -53,6 +53,7 @@ class jobChain:
     def nextChainLink(self, pk):
         if pk != None:
             t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk, ))
+            t.daemon = True
             t.start()
         else:
             print "Done with SIP:" + self.unit.UUID

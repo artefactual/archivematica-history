@@ -142,6 +142,7 @@ def startThreads(t=1):
         t = detectCPUs()
     for i in range(t):
         t = threading.Thread(target=startThread, args=(i+1, ))
+        t.daemon = True
         t.start()
 
 if __name__ == '__main__':

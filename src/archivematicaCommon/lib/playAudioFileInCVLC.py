@@ -36,6 +36,7 @@ def playAudioFile(filePath):
 def playAudioFileInThread(filePath):
     import threading
     t = threading.Thread(target=playAudioFile, args=(filePath,))
+    t.daemon = True
     t.start() 
     
 if __name__ == '__main__':

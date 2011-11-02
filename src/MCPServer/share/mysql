@@ -2884,3 +2884,10 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
     VALUES ('%watchDirectoryPath%activeTransfers/Dspace1.7', @MicroServiceChain, @expectedTypeTransfer);
 
 -- /DPSACE TRANSFER --
+
+
+-- VIEWS --
+-- SELECT count(taskUUID) from lastJobsTasks;
+CREATE OR REPLACE VIEW lastJobsTasks AS SELECT * FROM Tasks WHERE jobUUID = (SELECT jobUUID FROM Jobs ORDER BY createdTime DESC, createdTimeDec DESC LIMIT 1);
+
+-- /VIEWS --

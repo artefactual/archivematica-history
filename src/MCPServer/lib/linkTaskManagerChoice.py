@@ -117,6 +117,7 @@ class linkTaskManagerChoice:
                                 self.jobChainLink.setExitMessage("Waiting till: " + datetime.datetime.fromtimestamp((nowTime + timeToGo)).ctime())
                                 
                                 t = threading.Timer(timeToGo, jobChain.jobChain, args=[self.unit, ret], kwargs={})
+                                t.daemon = True
                                 t.start()
                                 
                                 t2 = threading.Timer(timeToGo, self.jobChainLink.setExitMessage, args=["Completed successfully"], kwargs={})

@@ -82,6 +82,7 @@ class linkTaskManagerDirectories:
         self.task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, UUID=UUID)
         databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
         t = threading.Thread(target=self.task.performTask)
+        t.daemon = True
         t.start() 
         
         
