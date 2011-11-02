@@ -235,12 +235,12 @@ a:hover { text-decoration: underline; }
   font-weight: bold;
   color: Black;
   height: 16px;
+  margin-right: 4px;
 }
 
 .btn_show_jobs {
   background: transparent url(/media/images/zoom.png) no-repeat center left;
   padding-left: 18px !important;
-  margin-right: 4px;
 }
 
 .sip-selected .btn_show_jobs {
@@ -249,6 +249,11 @@ a:hover { text-decoration: underline; }
 
 .btn_remove_sip {
   background: transparent url(/media/images/delete.png) no-repeat center left;
+  padding-left: 18px !important;
+}
+
+.btn_edit_metadata {
+  background: transparent url(/media/images/table_edit.png) no-repeat center left;
   padding-left: 18px !important;
 }
 
@@ -572,4 +577,65 @@ a:hover { text-decoration: underline; }
 
 td.error {
   background-color: #f2d8d8;
+}
+
+/*
+ * Forms
+ */
+
+.form-item {
+  padding: .5em;
+}
+
+.form-item label {
+  display: block;
+  width: 100%;
+}
+
+.form-item input,
+.form-item textarea {
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0.2em;
+}
+
+/*
+ * Reset jQuery UI dialog
+ */
+
+.ui-dialog {
+  padding: 0;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+}
+
+.ui-dialog .ui-widget-header {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.ui-dialog .ui-dialog-title {
+  line-height: 1.2em;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: #eee;
+  padding: 10px 18px;
+}
+
+.ui-dialog .ui-dialog-content {
+  padding: 1em;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+  border-color: #e5e5e5;
 }

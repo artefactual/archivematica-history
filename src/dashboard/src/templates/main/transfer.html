@@ -5,17 +5,116 @@
 {% block page_id %}transfer{% endblock %}
 
 {% block js %}
+  <script type="text/javascript" src="/media/js/transfer.js"></script>
   <script type="text/javascript">
+
     $(document).ready(function()
       {
-        // Your code!
+        {% if polling_interval %}
+          window.pollingInterval = {{ polling_interval }};
+        {% endif %}
+
+        window.Sips = new SipCollection;
+        window.App = new AppView;
       });
+
+    window.microservices_help = {
+      {% for x, y in microservices_help.iteritems %}
+        '{{ x }}': '{{ y }}',
+      {% endfor %}
+    };
+
   </script>
 {% endblock %}
 
 {% block content %}
 
-  <p>Hello world! Datetime:</p>
-  <p>{{ foo }}</p>
+  <div id="sip-container">
+    <div id="sip-header">
+      <div id="sip-header-directory">Submission Information Package</div>
+      <div id="sip-header-uuid">UUID</div>
+      <div id="sip-header-timestamp">Ingest start time</div>
+      <div id="sip-header-actions">&nbsp;</div>
+    </div>
+    <div id="sip-body">
+    </div>
+  </div>
+
+  <!-- Templates -->
+
+  <script type="text/template" id="sip-template">
+    <div class="sip-row">
+      <div class="sip-detail-icon-status"><%= this.model.jobs.getIcon() %></div>
+      <div class="sip-detail-directory">
+        <%= directory %>
+        <abbr title="<%= uuid %>">UUID</span>
+      </div>
+      <div class="sip-detail-uuid"><%= uuid %></div>
+      <div class="sip-detail-timestamp"><%= this.getIngestStartTime() %></div>
+      <div class="sip-detail-actions">
+        <a class="btn_show_jobs" href="#" title="Micro-Services"><span>Micro-Services</span></a>
+        <a class="btn_remove_sip" href="#" title="Remove"><span>Remove</span></a>
+        <a class="btn_edit_metadata" href="#" title="Metadata"><span>Metadata</span></a>
+      </div>
+    </div>
+    <div class="sip-detail-job-container"></div>
+  </script>
+
+  <script type="text/template" id="job-template">
+    <div class="job-detail-microservice">
+      <span>Micro-Service:&nbsp;</span><span title="<%= uuid %>"><%= microservice %></span>
+      <% tmp = window.microservices_help[microservice]; %>
+      <% if (tmp !== undefined) { %>
+        [<a href="#" title="<%= tmp %>">?</a>]
+      <% } %>
+    </div>
+    <div class="job-detail-currentstep"><span title="<%= new Date(timestamp * 1000).getArchivematicaDateTime() %>  /  <%= timestamp %>"><%= currentstep %></span></div>
+    <div class="job-detail-actions">
+      <a class="btn_show_tasks" href="#" title="Tasks"><span>Tasks</span></a>
+    </div>
+  </script>
+
+  <script type="text/template" id="directory-browser-template">
+    <div id="directory-browser-tab">Directory browser (<a href="#">Close</a>)</div>
+    <div id="directory-browser-content"></div>
+  </script>
+
+  <script type="text/template" id="manual-normalization-item-template">
+    <div>
+      <div class="field">
+        <label for="new-filename">New filename</label>
+        <input name="new-filename" size="80" type="text" value="<%= newFilename %>" />
+      </div>
+      <div class="field">
+        <label for="description">Description</label>
+        <input name="description" type="text" value="<%= description %>" />
+      </div>
+    </div>
+  </script>
+
+  <script type="text/template" id="status-template">
+    <div id="status-bullet">
+      <span>Connection status</span>
+      <img src="/media/images/bullet_delete.png" />
+    </div>
+    <div id="status-message">
+      <div>
+        <span>&nbsp;</span>
+      </div>
+    </div>
+  </script>
+
+  <script type=="text/template" id="metadata-dialog">
+    <form>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-item">
+          {{ field.errors }}
+          {{ field.label_tag }}
+          <input type="text" value="<%= {{ field.name }} %>" />
+        </div>
+      {% endfor %}
+    </form>
+  </script>
 
 {% endblock %}

@@ -6,8 +6,8 @@
     <link href="/media/css/reset.css" rel="stylesheet" type="text/css" />
     <link href="/media/css/fonts.css" rel="stylesheet" type="text/css" />
     <link href="/media/css/base.css" rel="stylesheet" type="text/css" />
-    <link href="/media/css/style.css" rel="stylesheet" type="text/css" />
     <link href="/media/vendor/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="/media/css/style.css" rel="stylesheet" type="text/css" />
     <script src="/media/vendor/jquery.js" type="text/javascript"></script>
     <script src="/media/vendor/jquery-ui/jquery-ui.js" type="text/javascript"></script>
     <script src="/media/vendor/jquery.idle-timer.js" type="text/javascript"></script>
@@ -23,8 +23,8 @@
       </div>
       <div id="menu">
         <ul>
-          <li id="transfer"><a href="{% url main.views.transfer %}">Transfer</a></li>
-          <li id="ingest"><a href="{% url ingest %}">Ingest</a></li>
+          <li id="transfer"><a href="{% url main.views.transfer_base %}">Transfer</a></li>
+          <li id="ingest"><a href="{% url main.views.ingest_base %}">Ingest</a></li>
           <li id="archival-storage"><a href="{% url main.views.archival_storage %}">Archival storage</a></li>
           <li id="access" style="display: none;"><a href="#" onclick="return false;">Access</a></li>
           <li id="preservation-planning"><a href="{% url main.views.preservation_planning %}">Preservation planning</a></li>
