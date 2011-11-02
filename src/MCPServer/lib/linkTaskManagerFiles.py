@@ -115,6 +115,7 @@ class linkTaskManagerFiles:
             self.tasks[UUID] = task
             databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
             t = threading.Thread(target=task.performTask)
+            t.daemon = True
             t.start() 
             
         

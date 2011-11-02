@@ -32,8 +32,7 @@
 #
 # It loads configurations from the database.
 #
-
-
+import threading
 import watchDirectory
 from jobChain import jobChain
 from unitSIP import unitSIP
@@ -53,7 +52,6 @@ import pyinotify
 import ConfigParser
 # from mcpModules.modules import modulesClass
 import uuid
-import threading
 import string
 import math
 import copy
@@ -193,7 +191,15 @@ def signal_handler(signalReceived, frame):
     threads = threading.enumerate()
     mt = None
     for thread in threads:
+        if isinstance(thread, threading.Thread):
+            print "stopping: ", type(thread), thread
+            try:
+                thread.__stop()
+            except Exception as inst:
+                print type(inst)     # the exception instance
+                print inst.args
         if isinstance(thread, ThreadedNotifier):
+            
             print "stopping: ", type(thread), thread
             try:
                 thread.stop()
@@ -202,6 +208,7 @@ def signal_handler(signalReceived, frame):
                 print inst.args 
         else:
             print "not stopping: ", type(thread), thread
+    sys.exit(0)
     exit(0)
 
 
