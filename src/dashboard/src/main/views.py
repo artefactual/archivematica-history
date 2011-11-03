@@ -156,7 +156,7 @@ def ingest_metadata(request, uuid):
   try:
     dc = DublinCore.objects.get_sip_metadata(uuid)
   except ObjectDoesNotExist:
-    raise Http404
+    dc = DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
 
   if request.method == 'POST':
     form = DublinCoreMetadataForm(request.POST)
