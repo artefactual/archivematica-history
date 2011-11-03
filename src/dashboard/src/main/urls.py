@@ -32,4 +32,7 @@ urlpatterns = patterns('dashboard.main.views',
   # Preservation planning
   (r'preservation-planning/$', 'preservation_planning'),
 
+  # Access
+  (r'access/$', 'access'),
+
 )
