@@ -29,7 +29,9 @@ import databaseInterface
 import threading
 import math
 import uuid
+import time
 import sys
+import archivematicaMCP
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseFunctions
 
@@ -42,6 +44,7 @@ class linkTaskManagerFiles:
         self.pk = pk
         self.jobChainLink = jobChainLink
         self.exitCode = 0
+        self.clearToNextLink = True
         sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
@@ -116,7 +119,16 @@ class linkTaskManagerFiles:
             databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
             t = threading.Thread(target=task.performTask)
             t.daemon = True
+            while(archivematicaMCP.limitTaskThreads <= threading.activeCount()):
+                print "Waiting for active threads", threading.activeCount()
+                self.clearToNextLink = False
+                self.tasksLock.release()
+                time.sleep(4)
+                self.tasksLock.acquire()
+                self.clearToNextLink = True
+            print "Active threads:", threading.activeCount()
             t.start() 
+            
             
         
         self.tasksLock.release()
@@ -129,8 +141,9 @@ class linkTaskManagerFiles:
         #logTaskCompleted()
         self.exitCode += math.fabs(task.results["exitCode"])
         databaseFunctions.logTaskCompletedSQL(task)
+        print "DEBUG done logging task", task.UUID 
         
-        self.tasksLock.acquire()
+
         
         if task.UUID in self.tasks: 
             del self.tasks[task.UUID]
@@ -138,8 +151,9 @@ class linkTaskManagerFiles:
             print >>sys.stderr, "Key Value Error:", task.UUID
             print >>sys.stderr, "Key Value Error:", self.tasks
             exit(1)
-        
-        if self.tasks == {} :
+
+        self.tasksLock.acquire()        
+        if self.clearToNextLink == True and self.tasks == {} :
             self.jobChainLink.linkProcessingComplete(self.exitCode)
         self.tasksLock.release()
       
