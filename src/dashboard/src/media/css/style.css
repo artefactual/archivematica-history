@@ -78,11 +78,12 @@ a:hover { text-decoration: underline; }
   background-image: -ms-linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
 }
 
-#page-ingest #ingest > a { background-color: #a40000; }
-#page-transfer #transfer > a { background-color: #a40000; }
-#page-archival-storage #archival-storage > a { background-color: #a40000; }
-#page-access #access > a { background-color: #a40000; }
-#page-preservation-planning #preservation-planning > a { background-color: #a40000; }
+#page-ingest #ingest > a,
+#page-transfer #transfer > a,
+#page-archival-storage #archival-storage > a,
+#page-access #access > a,
+#page-preservation-planning #preservation-planning > a,
+#page-settings #settings > a { background-color: #a40000; }
 
 /* Tooltip widget */
 

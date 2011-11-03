@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}Settings{% endblock %}
+{% block h1 %}Settings{% endblock %}
+{% block page_id %}settings{% endblock %}
+
+{% block js %}
+  <script type="text/javascript">
+
+    $(document).ready(function()
+      {
+      });
+
+  </script>
+{% endblock %}
+
+{% block content %}
+
+  <table>
+  {% for item in settings %}
+    <tr>
+      <td>{{ item.pk }}</td>
+      <td>{{ item.execute }}</td>
+      <td style="font-family: courier-new, monospace, fixed;">{{ item.arguments }}</td>
+    </tr>
+  {% endfor %}
+  </table>
+
+{% endblock %}

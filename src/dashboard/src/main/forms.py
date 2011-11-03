@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ModelForm
 
 class DublinCoreMetadataForm(forms.Form):
   title = forms.CharField(required=False)
@@ -23,3 +24,5 @@ class TransferMetadataForm(forms.Form):
   type_of_transfer = forms.CharField()
   description = forms.CharField()
   notes = forms.CharField()
+
+# ...

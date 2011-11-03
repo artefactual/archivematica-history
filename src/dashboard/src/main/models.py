@@ -54,6 +54,14 @@ class Job(models.Model):
   class Meta:
     db_table = u'Jobs'
 
+class StandardTaskConfig(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  execute = models.TextField(db_column='execute', blank=True)
+  arguments = models.TextField(db_column='arguments', blank=True)
+
+  class Meta:
+    db_table = u'StandardTasksConfigs'
+
 class Task(models.Model):
   taskuuid = models.CharField(max_length=50, primary_key=True, db_column='taskUUID')
   # jobuuid = models.CharField(max_length=50, db_column='jobUUID', blank=True)

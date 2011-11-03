@@ -16,7 +16,7 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db.models import Max
-from django.conf import settings
+from django.conf import settings as django_settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -27,7 +27,7 @@ from django.utils import simplejson
 from django.views.static import serve
 from dashboard.contrib.mcp.client import MCPClient
 from dashboard.main.forms import DublinCoreMetadataForm
-from dashboard.main.models import Task, Job, DublinCore
+from dashboard.main.models import Task, Job, DublinCore, StandardTaskConfig
 from lxml import etree
 import calendar, os, re, subprocess
 from datetime import datetime
@@ -143,8 +143,8 @@ def ingest_base(request):
 
   form = DublinCoreMetadataForm()
 
-  polling_interval = settings.POLLING_INTERVAL
-  microservices_help = settings.MICROSERVICES_HELP
+  polling_interval = django_settings.POLLING_INTERVAL
+  microservices_help = django_settings.MICROSERVICES_HELP
 
   return render_to_response('main/ingest.html', locals())
 
@@ -178,8 +178,8 @@ def transfer_base(request):
 
   # form = TransferMetadataForm()
 
-  polling_interval = settings.POLLING_INTERVAL
-  microservices_help = settings.MICROSERVICES_HELP
+  polling_interval = django_settings.POLLING_INTERVAL
+  microservices_help = django_settings.MICROSERVICES_HELP
 
   return render_to_response('main/transfer.html', locals())
 
@@ -576,3 +576,7 @@ def get_jobs_by_sipuuid(uuid):
 
 def access(request):
   return render_to_response('main/access.html', locals())
+
+def settings(request):
+  settings = StandardTaskConfig.objects.all()
+  return render_to_response('main/settings.html', locals())
