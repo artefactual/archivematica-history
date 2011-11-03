@@ -35,4 +35,7 @@ urlpatterns = patterns('dashboard.main.views',
   # Access
   (r'access/$', 'access'),
 
+  # Settings
+  (r'settings/$', 'settings'),
+
 )
