@@ -83,6 +83,7 @@ tasksLock = threading.Lock()
 movingDirectoryLock = threading.Lock()
 jobsLock = threading.Lock()
 watchedDirectories = []
+limitTaskThreads = config.getint('Protocol', "limitTaskThreads")
 limitGearmanConnectionsSemaphore = threading.Semaphore(value=config.getint('Protocol', "limitGearmanConnections"))
 
 def isUUID(uuid):
