@@ -111,7 +111,7 @@
         <div class="form-item">
           {{ field.errors }}
           {{ field.label_tag }}
-          <input type="text" value="<%= {{ field.name }} %>" />
+          <input type="text" name="{{ field.name }}" value="<%= {{ field.name }} %>" />
         </div>
       {% endfor %}
     </form>

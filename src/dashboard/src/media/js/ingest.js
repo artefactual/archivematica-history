@@ -232,6 +232,8 @@ $(function()
           event.stopPropagation();
           event.preventDefault();
 
+          var url = '/ingest/metadata/' + this.model.get('uuid') + '/';
+
           var showDialog = function(data)
             {
               $('<div class="metadata-dialog"></div>')
@@ -244,24 +246,42 @@ $(function()
                   buttons: [
                     {
                       text: 'Close',
-                      click: function() { $(this).dialog('close'); }
+                      click: function()
+                        {
+                          $(this).dialog('close');
+                        }
                     },
                     {
                       text: 'Save',
-                      click: function() { }
+                      click: function()
+                        {
+                          $.ajax({
+                            context: this,
+                            type: 'POST',
+                            dataType: 'json',
+                            data: $(this).find('form').serialize(),
+                            success: function()
+                              {
+                                $(this).dialog('close');
+                              },
+                            error: function()
+                              {
+                                alert("Error.");
+                              },
+                            url: url});
+                        }
                     }]
                 });
             };
 
           $.ajax({
-            context: this,
             type: 'GET',
             dataType: 'json',
             success: function(data)
               {
                 showDialog(data);
               },
-            url: '/ingest/metadata/' + this.model.get('uuid') + '/'
+            url: url
           });
 
         },

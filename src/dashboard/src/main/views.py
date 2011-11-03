@@ -22,11 +22,11 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db import connection, transaction
 from django.shortcuts import render_to_response
-from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.utils import simplejson
 from django.views.static import serve
 from dashboard.contrib.mcp.client import MCPClient
-from dashboard.main.forms import DublinCoreMetadataForm, TransferMetadataForm
+from dashboard.main.forms import DublinCoreMetadataForm
 from dashboard.main.models import Task, Job, DublinCore
 from lxml import etree
 import calendar, os, re, subprocess
@@ -149,29 +149,30 @@ def ingest_base(request):
   return render_to_response('main/ingest.html', locals())
 
 def ingest_metadata(request, uuid):
+  fields = ['title', 'creator', 'subject', 'description', 'publisher',
+            'contributor', 'date', 'type', 'format', 'identifier',
+            'source', 'isPartOf', 'language', 'coverage', 'rights']
+
   try:
     dc = DublinCore.objects.get_sip_metadata(uuid)
   except ObjectDoesNotExist:
     raise Http404
 
-  response = {}
-  response['title'] = dc.title
-  response['creator'] = dc.creator
-  response['subject'] = dc.subject
-  response['description'] = dc.description
-  response['publisher'] = dc.publisher
-  response['contributor'] = dc.contributor
-  response['date'] = dc.date
-  response['type'] = dc.type
-  response['format'] = dc.format
-  response['identifier'] = dc.identifier
-  response['source'] = dc.source
-  response['isPartOf'] = dc.isPartOf
-  response['language'] = dc.language
-  response['coverage'] = dc.coverage
-  response['rights'] = dc.rights
+  if request.method == 'POST':
+    form = DublinCoreMetadataForm(request.POST)
+    if form.is_valid():
+      for item in fields:
+        setattr(dc, item, form.cleaned_data[item])
+      dc.save()
+      return HttpResponse()
+    else:
+      return HttpResponseBadRequest()
+  else:
+    response = {}
+    for item in fields:
+      response[item] = getattr(dc, item)
 
-  return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 def transfer_base(request):
 
