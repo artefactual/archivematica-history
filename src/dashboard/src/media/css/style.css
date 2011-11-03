@@ -36,8 +36,13 @@ a:hover { text-decoration: underline; }
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.19, rgb(168,168,168)), color-stop(1, rgb(214,214,214)));
   background-image: -moz-linear-gradient(center bottom, rgb(168,168,168) 19%, rgb(214,214,214) 100%);
   margin: 0 20px 10px 20px;
+  padding: 0 0 0 5px;
   font-weight: bold;
   text-shadow: #000000 1px 1px 1px;
+  -moz-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
 
 #menu > ul {
@@ -66,6 +71,11 @@ a:hover { text-decoration: underline; }
 #menu > ul > li > a:hover {
   background-color: #4388a7;
   color: #fff;
+  background-image: linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
+  background-image: -o-linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
+  background-image: -moz-linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
+  background-image: -webkit-linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
+  background-image: -ms-linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
 }
 
 #page-ingest #ingest > a { background-color: #a40000; }
