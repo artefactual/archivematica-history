@@ -10,7 +10,7 @@ class DublinCoreMetadataForm(forms.Form):
   date = forms.CharField()
   type = forms.CharField()
   format = forms.CharField()
-  identifer = forms.CharField()
+  identifier = forms.CharField()
   source = forms.CharField()
   isPartOf = forms.CharField()
   language = forms.CharField()

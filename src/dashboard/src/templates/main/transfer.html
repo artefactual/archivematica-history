@@ -54,7 +54,6 @@
       <div class="sip-detail-actions">
         <a class="btn_show_jobs" href="#" title="Micro-Services"><span>Micro-Services</span></a>
         <a class="btn_remove_sip" href="#" title="Remove"><span>Remove</span></a>
-        <a class="btn_edit_metadata" href="#" title="Metadata"><span>Metadata</span></a>
       </div>
     </div>
     <div class="sip-detail-job-container"></div>
@@ -102,19 +101,6 @@
         <span>&nbsp;</span>
       </div>
     </div>
-  </script>
-
-  <script type=="text/template" id="metadata-dialog">
-    <form>
-      {% csrf_token %}
-      {% for field in form %}
-        <div class="form-item">
-          {{ field.errors }}
-          {{ field.label_tag }}
-          <input type="text" value="<%= {{ field.name }} %>" />
-        </div>
-      {% endfor %}
-    </form>
   </script>
 
 {% endblock %}

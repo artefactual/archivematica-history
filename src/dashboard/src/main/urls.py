@@ -13,10 +13,10 @@ urlpatterns = patterns('dashboard.main.views',
   (r'transfer/$', 'transfer_base'),
   (r'transfer/go/$', 'transfer'),
   (r'transfer/go/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer'),
-  (r'transfer/metadata/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer_metadata'),
 
   # Ingest
   (r'ingest/$', 'ingest_base'),
+  (r'ingest/metadata/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_metadata'),
   (r'ingest/go/$', 'ingest'),
   (r'ingest/go/(?P<uuid>' + UUID_REGEX + ')$', 'ingest'),
   (r'ingest/(?P<uuid>' + UUID_REGEX + ')/normalization-report$', 'normalization_report'),

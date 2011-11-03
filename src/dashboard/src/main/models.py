@@ -9,6 +9,11 @@
 
 from django.db import models
 
+class DublinCoreManager(models.Manager):
+
+  def get_sip_metadata(self, uuid):
+    return DublinCore.objects.get(metadataappliestotype__exact=1, metadataappliestoidentifier__exact=uuid)
+
 class DublinCore(models.Model):
   id = models.IntegerField(primary_key=True, db_column='pk')
   metadataappliestotype = models.IntegerField(db_column='metadataAppliesToType')
@@ -22,12 +27,14 @@ class DublinCore(models.Model):
   date = models.TextField(db_column='date', blank=True)
   type = models.TextField(db_column='type', blank=True)
   format = models.TextField(db_column='format', blank=True)
-  identifer = models.TextField(db_column='identifier', blank=True)
+  identifier = models.TextField(db_column='identifier', blank=True)
   source = models.TextField(db_column='source', blank=True)
   isPartOf = models.TextField(db_column='isPartOf', blank=True)
   language = models.TextField(db_column='language', blank=True)
   coverage = models.TextField(db_column='coverage', blank=True)
   rights = models.TextField(db_column='rights', blank=True) 
+
+  objects = DublinCoreManager()
 
   class Meta:
     db_table = u'Dublincore'
