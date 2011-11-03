@@ -44,7 +44,7 @@ class linkTaskManagerFiles:
         self.pk = pk
         self.jobChainLink = jobChainLink
         self.exitCode = 0
-        self.clearToNextLink = True
+        self.clearToNextLink = False
         sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
@@ -121,16 +121,14 @@ class linkTaskManagerFiles:
             t.daemon = True
             while(archivematicaMCP.limitTaskThreads <= threading.activeCount()):
                 print "Waiting for active threads", threading.activeCount()
-                self.clearToNextLink = False
                 self.tasksLock.release()
                 time.sleep(4)
                 self.tasksLock.acquire()
-                self.clearToNextLink = True
             print "Active threads:", threading.activeCount()
             t.start() 
             
             
-        
+        self.clearToNextLink = True
         self.tasksLock.release()
         if self.tasks == {} :
             self.jobChainLink.linkProcessingComplete(self.exitCode)
@@ -141,10 +139,7 @@ class linkTaskManagerFiles:
         #logTaskCompleted()
         self.exitCode += math.fabs(task.results["exitCode"])
         databaseFunctions.logTaskCompletedSQL(task)
-        print "DEBUG done logging task", task.UUID 
-        
 
-        
         if task.UUID in self.tasks: 
             del self.tasks[task.UUID]
         else:
@@ -154,6 +149,7 @@ class linkTaskManagerFiles:
 
         self.tasksLock.acquire()        
         if self.clearToNextLink == True and self.tasks == {} :
+            print "DEBUG proceeding to next link", self.jobChainLink.UUID
             self.jobChainLink.linkProcessingComplete(self.exitCode)
         self.tasksLock.release()
       
