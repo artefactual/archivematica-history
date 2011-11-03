@@ -23,10 +23,14 @@
 # @version svn: $Id$
 
 import os
-
+import sys
+try:
+    max = int(sys.argv[1])
+except:
+    max = 1000
 i = 0
 str = "."
-while i < 1000:
+while i < max:
     str = "%s/%d" % (str, i)
     os.mkdir(str)
     i +=1
@@ -35,4 +39,8 @@ FILE = open(str + "/testfile.txt","w")
 FILE.writelines("testText")
 FILE.close()
 
+for directory, subDirectories, files in os.walk("./0"):
+    for file in files:
+        filePath = os.path.join(directory, file)
+        print filePath
      
