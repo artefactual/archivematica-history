@@ -85,8 +85,7 @@ $(function()
 
       events: {
         'click .sip-row': 'toggleJobs',
-        'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove',
-        'click .sip-row > .sip-detail-actions > .btn_edit_metadata': 'openMetadataEditor'
+        'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove'
       },
 
       initialize: function()
@@ -225,45 +224,6 @@ $(function()
                       }
                   }]
             });
-        },
-
-      openMetadataEditor: function(event)
-        {
-          event.stopPropagation();
-          event.preventDefault();
-
-          var showDialog = function(data)
-            {
-              $('<div class="metadata-dialog"></div>')
-                .append(_.template($('#metadata-dialog').html()))
-                .dialog({
-                  title: 'Metadata editor',
-                  width: 640,
-                  height: 480,
-                  modal: true,
-                  buttons: [
-                    {
-                      text: 'Close',
-                      click: function() { $(this).dialog('close'); }
-                    },
-                    {
-                      text: 'Save',
-                      click: function() { }
-                    }]
-                });
-            };
-
-          $.ajax({
-            context: this,
-            type: 'GET',
-            dataType: 'json',
-            success: function(data)
-              { alert(data);
-                showDialog(data);
-              },
-            url: '/transfer/metadata/' + this.model.get('uuid') + '/'
-          });
-
         },
 
       getIngestStartTime: function()

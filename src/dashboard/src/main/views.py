@@ -141,15 +141,16 @@ def explore(request, uuid):
 
 def ingest_base(request):
 
+  form = DublinCoreMetadataForm()
+
   polling_interval = settings.POLLING_INTERVAL
   microservices_help = settings.MICROSERVICES_HELP
 
   return render_to_response('main/ingest.html', locals())
 
-def transfer_metadata(request, uuid):
-
+def ingest_metadata(request, uuid):
   try:
-    dc = DublinCore.objects.get(metadataappliestotype__exact=1, metadataappliestoidentifier__exact=uuid)
+    dc = DublinCore.objects.get_sip_metadata(uuid)
   except ObjectDoesNotExist:
     raise Http404
 
@@ -157,12 +158,24 @@ def transfer_metadata(request, uuid):
   response['title'] = dc.title
   response['creator'] = dc.creator
   response['subject'] = dc.subject
+  response['description'] = dc.description
+  response['publisher'] = dc.publisher
+  response['contributor'] = dc.contributor
+  response['date'] = dc.date
+  response['type'] = dc.type
+  response['format'] = dc.format
+  response['identifier'] = dc.identifier
+  response['source'] = dc.source
+  response['isPartOf'] = dc.isPartOf
+  response['language'] = dc.language
+  response['coverage'] = dc.coverage
+  response['rights'] = dc.rights
 
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 def transfer_base(request):
 
-  form = DublinCoreMetadataForm()
+  # form = TransferMetadataForm()
 
   polling_interval = settings.POLLING_INTERVAL
   microservices_help = settings.MICROSERVICES_HELP
