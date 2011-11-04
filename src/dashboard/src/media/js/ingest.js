@@ -233,10 +233,11 @@ $(function()
           event.preventDefault();
 
           var url = '/ingest/metadata/' + this.model.get('uuid') + '/';
+          var self = this;
 
           var showDialog = function(data)
             {
-              $('<div class="metadata-dialog"></div>')
+              var dialog = $('<div class="metadata-dialog"></div>')
                 .append(_.template($('#metadata-dialog').html(), data))
                 .dialog({
                   title: 'Metadata editor',
@@ -272,6 +273,15 @@ $(function()
                         }
                     }]
                 });
+
+              if (self.model.jobs.detect(function(job)
+                {
+                  return job.get('microservice') === 'Normalize submission documentation to preservation format';
+                }))
+              {
+                dialog.find('input, select, textarea').prop('disabled', true);
+                dialog.dialog('option', 'buttons', dialog.dialog('option', 'buttons').splice(0,1));
+              }
             };
 
           $.ajax({

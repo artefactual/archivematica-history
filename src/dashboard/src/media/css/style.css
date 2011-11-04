@@ -594,6 +594,10 @@ td.error {
  * Forms
  */
 
+textarea {
+  resize: vertical;
+}
+
 .form-item {
   padding: .5em;
 }
@@ -603,6 +607,12 @@ td.error {
   width: 100%;
 }
 
+.form-item p {
+  font-size: 0.8em;
+  color: #666;
+  margin: 0;
+}
+
 .form-item input,
 .form-item textarea {
   width: 100%;
@@ -610,6 +620,7 @@ td.error {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   padding: 0.2em;
+  margin: 0.2em 0 0 0;
 }
 
 /*

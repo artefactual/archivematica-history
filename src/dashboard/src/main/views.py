@@ -142,7 +142,6 @@ def explore(request, uuid):
 def ingest_base(request):
 
   form = DublinCoreMetadataForm()
-  form.set_initial_value()
 
   polling_interval = django_settings.POLLING_INTERVAL
   microservices_help = django_settings.MICROSERVICES_HELP
