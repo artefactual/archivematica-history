@@ -328,6 +328,14 @@ $(function()
           }
           else if (undefined !== this.find(function(job)
             {
+              return 0 < job.get('status') || 'Awaiting decision' === job.get('currentstep');
+            }))
+          {
+            path = '/media/images/bell.png';
+            title = 'Awaiting decision';
+          }
+          else if (undefined !== this.find(function(job)
+            {
               return 'Failed' === job.get('currentstep');
             }))
           {
