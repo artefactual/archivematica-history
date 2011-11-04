@@ -32,6 +32,7 @@ from pyinotify import ProcessEvent
 
 from archivematicaMCP import config
 from archivematicaMCP import movingDirectoryLock
+from archivematicaMCP import debug
 
 #depends on OS whether you need one line or other. I think Events.Codes is older.
 mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
@@ -111,6 +112,9 @@ class watchDirectoryProcessEvent(ProcessEvent):
             path = path + "/"    
         
         self.callBackFunction(path, self.config)
+    
+    def process_default(self, event):
+        print event
             
 
 class archivematicaWatchDirectory:
@@ -120,6 +124,10 @@ class archivematicaWatchDirectory:
             os.makedirs(directory)
         print "watching directory: ", directory
         wm = WatchManager()
+        
+        #wm.add_watch(directory, , proc_fun=MyProcessing())
+        if debug:
+            mask = pyinotify.ALL_EVENTS
         notifier = ThreadedNotifier(wm, watchDirectoryProcessEvent(variables, callBackFunction))
         wdd = wm.add_watch(directory, mask, rec=False)
         notifier.start()

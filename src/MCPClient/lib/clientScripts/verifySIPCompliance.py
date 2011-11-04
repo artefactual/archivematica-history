@@ -30,6 +30,17 @@ requiredDirectories = ["objects", \
                        "metadata/submissionDocumentation"]
 allowableFiles = ["processingMCP.xml"]
 
+def checkDirectory(directory, ret=0):
+    try:
+        for directory, subDirectories, files in os.walk(directory):
+            for file in files:
+                filePath = os.path.join(directory, file)
+    except Exception as inst:
+        print >>sys.stderr, "Error navigating directory:", directory.__str__()
+        print >>sys.stderr, type(inst)
+        print >>sys.stderr, inst.args
+        ret += 1
+    return ret
 
 def verifyDirectoriesExist(SIPDir, ret=0):
     for directory in requiredDirectories:
@@ -56,4 +67,8 @@ if __name__ == '__main__':
     SIPDir = sys.argv[1] 
     ret = verifyDirectoriesExist(SIPDir)
     ret = verifyNothingElseAtTopLevel(SIPDir, ret)
+    ret = checkDirectory(SIPDir, ret)
+    if ret != 0:
+        import time
+        time.sleep(10)
     quit(ret)

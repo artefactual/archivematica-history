@@ -2890,4 +2890,6 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
 -- SELECT count(taskUUID) from lastJobsTasks;
 CREATE OR REPLACE VIEW lastJobsTasks AS SELECT * FROM Tasks WHERE jobUUID = (SELECT jobUUID FROM Jobs ORDER BY createdTime DESC, createdTimeDec DESC LIMIT 1);
 
+CREATE OR REPLACE VIEW lastJobsInfo AS SELECT count(taskUUID) AS 'Completed Tasks', min(startTime), max(endTime), TIMEDIFF(UTC_TIMESTAMP(), min(startTime)) AS 'Job duration', TIMEDIFF(UTC_TIMESTAMP(), max(endTime)) AS 'Time Since last return', TIME(TIMEDIFF(UTC_TIMESTAMP(), min(startTime))/count(taskUUID)) AS 'AVG proc time'  FROM lastJobsTasks where startTime != 0;
+
 -- /VIEWS --

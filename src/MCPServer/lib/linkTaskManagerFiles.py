@@ -123,7 +123,7 @@ class linkTaskManagerFiles:
             while(archivematicaMCP.limitTaskThreads <= threading.activeCount()):
                 print "Waiting for active threads", threading.activeCount()
                 self.tasksLock.release()
-                time.sleep(4)
+                time.sleep(archivematicaMCP.limitTaskThreadsSleep)
                 self.tasksLock.acquire()
             print "Active threads:", threading.activeCount()
             t.start() 

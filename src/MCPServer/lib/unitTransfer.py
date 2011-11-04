@@ -103,6 +103,7 @@ class unitTransfer(unit):
         #update this unit's current location - here and db?"""
     
     def reloadFileList(self):
+        print "DEBUG reloading transfer file list: ", self.UUID
         self.fileList = {}
         #os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])
         currentPath = self.currentPath.replace("%sharedPath%", \

@@ -84,7 +84,9 @@ movingDirectoryLock = threading.Lock()
 jobsLock = threading.Lock()
 watchedDirectories = []
 limitTaskThreads = config.getint('Protocol', "limitTaskThreads")
+limitTaskThreadsSleep = config.getfloat('Protocol', "limitTaskThreadsSleep")
 limitGearmanConnectionsSemaphore = threading.Semaphore(value=config.getint('Protocol', "limitGearmanConnections"))
+debug = True
 
 def isUUID(uuid):
     split = uuid.split("-")
@@ -110,8 +112,8 @@ def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
     if UUID == "":
         #Find it in the database
         sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "'"
-        if waitSleep != 0:
-            time.sleep(waitSleep) #let db be updated by the microservice that moved it.
+        #if waitSleep != 0:
+            #time.sleep(waitSleep) #let db be updated by the microservice that moved it.
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:
@@ -124,6 +126,7 @@ def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
     #Create it
     if UUID == "":
         UUID = databaseFunctions.createSIP(path)
+        print "DEBUG creating sip", path, UUID
     return UUID
 
 def createUnitAndJobChain(path, config):
@@ -146,7 +149,19 @@ def createUnitAndJobChain(path, config):
     else:
         return
     jobChain(unit, config[1])
-    
+
+def createUnitAndJobChainThreaded(path, config):
+    #createUnitAndJobChain(path, config)
+    #return
+
+    print "DEBGUG alert watch path: ", path
+    t = threading.Thread(target=createUnitAndJobChain, args=(path, config))
+    t.daemon = True
+    while(limitTaskThreads <= threading.activeCount()):
+        print threading.activeCount().__str__()
+        print "waiting on thread count", threading.activeCount()
+        time.sleep(4)
+    t.start() 
     
 
 def watchDirectories():
@@ -171,7 +186,7 @@ def watchDirectories():
             if os.path.isdir(path):
                 path = path + "/"
             createUnitAndJobChain(path, row)
-        watchDirectory.archivematicaWatchDirectory(directory,row, createUnitAndJobChain)
+        watchDirectory.archivematicaWatchDirectory(directory,row, createUnitAndJobChainThreaded)
     
 #if __name__ == '__main__':
 #    signal.signal(signal.SIGTERM, signal_handler)
@@ -187,6 +202,7 @@ def signal_handler(signalReceived, frame):
     try:
         xmlRPCServer.xmlRPCServerServer.server_close()
     except Exception as inst:
+            print "DEBUG EXCEPTION!"
             print type(inst)     # the exception instance
             print inst.args 
     threads = threading.enumerate()
@@ -197,6 +213,7 @@ def signal_handler(signalReceived, frame):
             try:
                 thread.__stop()
             except Exception as inst:
+                print "DEBUG EXCEPTION!"
                 print type(inst)     # the exception instance
                 print inst.args
         if isinstance(thread, ThreadedNotifier):
@@ -205,6 +222,7 @@ def signal_handler(signalReceived, frame):
             try:
                 thread.stop()
             except Exception as inst:
+                print "DEBUG EXCEPTION!"
                 print type(inst)     # the exception instance
                 print inst.args 
         else:
@@ -212,12 +230,34 @@ def signal_handler(signalReceived, frame):
     sys.exit(0)
     exit(0)
 
+def debugMonitor():
+    while True:
+        print "<DEBUG>"
+        print "\tThreadCount: ", threading.activeCount()
+        print "\tDate Time: ", databaseInterface.getUTCDate()
+        print "</DEBUG>"
+        time.sleep(30)
+        
+def flushOutputs():
+    while True:
+        sys.stdout.flush()
+        sys.stderr.flush()
+        time.sleep(5)
 
 if __name__ == '__main__':
     if True:
         import getpass
         print "user: ", getpass.getuser()
         os.setuid(333)
+    if True:
+        t = threading.Thread(target=debugMonitor)
+        t.daemon = True
+        t.start() 
+    if True:
+        t = threading.Thread(target=flushOutputs)
+        t.daemon = True
+        t.start() 
+        
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
     transferD.main()

@@ -27,20 +27,25 @@ import sys
 try:
     max = int(sys.argv[1])
 except:
-    max = 1000
-i = 0
-str = "."
-while i < max:
-    str = "%s/%d" % (str, i)
-    os.mkdir(str)
-    i +=1
+    max = 950
+try:
+    max2 = int(sys.argv[1])
+except:
+    max2 = 950
+    
+def simple(i = 0, str = "."):
+    while i < max:
+        str = "%s/%d" % (str, i)
+        os.mkdir(str)
+        i +=1
+    FILE = open(str + "/testfile.txt","w")
+    FILE.write("testText\n")
+    FILE.close()
 
-FILE = open(str + "/testfile.txt","w")
-FILE.writelines("testText")
-FILE.close()
+for x in range(max2):
+    dir = "./" + x.__str__()
+    os.mkdir(dir)
+    simple(str=dir)
+    
 
-for directory, subDirectories, files in os.walk("./0"):
-    for file in files:
-        filePath = os.path.join(directory, file)
-        print filePath
      

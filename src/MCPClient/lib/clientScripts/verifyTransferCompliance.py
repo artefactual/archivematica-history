@@ -23,6 +23,7 @@
 # @version svn: $Id$
 import os
 import sys
+from verifySIPCompliance import checkDirectory
 
 requiredDirectories = ["objects", \
                        "logs", \
@@ -53,4 +54,8 @@ if __name__ == '__main__':
     SIPDir = sys.argv[1] 
     ret = verifyDirectoriesExist(SIPDir)
     ret = verifyNothingElseAtTopLevel(SIPDir, ret)
+    ret = checkDirectory(SIPDir, ret)
+    if ret != 0:
+        import time
+        time.sleep(10)
     quit(ret)
