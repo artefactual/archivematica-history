@@ -36,9 +36,11 @@ def startXMLRPCServer():
         server.register_function(approveJob)
         server.serve_forever()
     except Exception as inst:
+        print "DEBUG EXCEPTION! xml rpc"
         print type(inst)     # the exception instance
         print inst.args      # arguments stored in .args
         archivematicaMCP.signal_handler(type(inst), inst.args)
+    print "DEBUG EXCEPTION! xml rpc2"
     
 def getJobsAwaitingApproval():
     ret = etree.Element("choicesAvailableForUnits")

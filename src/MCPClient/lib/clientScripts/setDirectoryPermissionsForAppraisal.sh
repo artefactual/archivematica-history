@@ -27,12 +27,11 @@
 target="$1"
 if [ -d "${target}" ]; then
 	sudo chown -R archivematica:archivematica "${target}"  
+	echo `basename "${target}"` owned by "archivematica:archivematica" now 
 	chmod -R 750 "${target}"
+	chmod 770 "${target}"
 	if [ -d "${target}objects" ]; then	
 		chmod -R 770 "${target}objects"
-	fi
-	if [ -f "${target}metadata/dublincore.xml" ]; then	
-		chmod -R 770 "${target}metadata/dublincore.xml"
 	fi
 	if [ -d "${target}metadata" ]; then	
 		chmod -R 770 "${target}metadata"
