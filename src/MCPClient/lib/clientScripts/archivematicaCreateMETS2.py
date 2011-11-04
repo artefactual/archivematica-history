@@ -144,7 +144,7 @@ def createDMDSec(type, id):
         return None
     global globalDmdSecCounter
     globalDmdSecCounter += 1
-    dmdSec = etree.Element("digiprovMD")
+    dmdSec = etree.Element("dmdSec")
     ID = "dmdSec_" + globalDmdSecCounter.__str__()
     dmdSec.set("ID", ID)
     mdWrap = newChild(dmdSec, "mdWrap")
