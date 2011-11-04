@@ -18,6 +18,10 @@ class DublinCoreMetadataForm(forms.Form):
   coverage = forms.CharField(required=False)
   rights = forms.CharField(required=False)
 
+  def set_initial_value(self):
+    for name, field in self.fields.items():
+      field.initial = name
+
 class TransferMetadataForm(forms.Form):
   accession_identifier = forms.CharField()
   source_of_acquisition = forms.CharField()
