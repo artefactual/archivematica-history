@@ -84,6 +84,7 @@ $(function()
       template: _.template($('#sip-template').html()),
 
       events: {
+        'mousedown .sip-row': 'openDedicatedPage',
         'click .sip-row': 'toggleJobs',
         'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove'
       },
@@ -132,6 +133,14 @@ $(function()
       updateIcon: function()
         {
           this.$('.sip-detail-icon-status').html(this.model.jobs.getIcon());
+        },
+
+      openDedicatedPage: function(event)
+        {
+          if (3 == event.which)
+          {
+            window.location = '/transfer/' + this.model.get('uuid') + '/';
+          }
         },
 
       toggleJobs: function(event)

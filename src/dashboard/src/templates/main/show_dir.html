@@ -15,7 +15,6 @@
 
   </script>
   <style type="text/css">
-  
 
   </style>
 {% endblock %}
@@ -30,9 +29,9 @@
       {{ job.currentstep|map_known_values }}<br />
       <strong>Micro-Service:</strong> {{ job.jobtype|map_known_values }}<br />
     </p>
-    
+
     <hr />
-    
+
     <p>Contents of <a href="{% url main.views.show_dir job.jobuuid %}">{{ job.directory }}</a></p>
 
     {% if parent %}

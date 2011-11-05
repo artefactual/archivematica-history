@@ -32,6 +32,9 @@ from lxml import etree
 import calendar, os, re, subprocess
 from datetime import datetime
 
+def home(request):
+  return render_to_response('home.html', locals())
+
 def jobs_manual_normalization(request, uuid):
   job = Job.objects.get(jobuuid=uuid)
 
@@ -146,7 +149,7 @@ def ingest_grid(request):
   polling_interval = django_settings.POLLING_INTERVAL
   microservices_help = django_settings.MICROSERVICES_HELP
 
-  return render_to_response('main/ingest_grid.html', locals())
+  return render_to_response('main/ingest/grid.html', locals())
 
 def ingest_metadata(request, uuid):
   fields = ['title', 'creator', 'subject', 'description', 'publisher',
@@ -181,7 +184,7 @@ def transfer_grid(request):
   polling_interval = django_settings.POLLING_INTERVAL
   microservices_help = django_settings.MICROSERVICES_HELP
 
-  return render_to_response('main/transfer_grid.html', locals())
+  return render_to_response('main/transfer/grid.html', locals())
 
 def transfer_status(request, uuid=None):
   if request.method == 'GET':
@@ -404,13 +407,12 @@ def preservation_planning(request):
   return render_to_response('main/preservation_planning.html', locals())
 
 def ingest_detail(request, uuid):
-  return HttpResponse()
+  return render_to_response('main/ingest/detail.html', locals())
 
 def transfer_detail(request, uuid):
-  return HttpResponse()
+  return render_to_response('main/transfer/detail.html', locals())
 
 def ingest_normalization_report(request, uuid):
-
   query = """
     SELECT
 
