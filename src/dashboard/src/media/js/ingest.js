@@ -63,7 +63,7 @@ $(function()
 
       model: Sip,
 
-      url: '/ingest/go/',
+      url: '/ingest/status',
 
       initialize: function()
         {
@@ -232,7 +232,7 @@ $(function()
           event.stopPropagation();
           event.preventDefault();
 
-          var url = '/ingest/metadata/' + this.model.get('uuid') + '/';
+          var url = '/ingest/metadata/' + this.model.get('uuid');
           var self = this;
 
           var showDialog = function(data)
@@ -240,7 +240,7 @@ $(function()
               var dialog = $('<div class="metadata-dialog"></div>')
                 .append(_.template($('#metadata-dialog').html(), data))
                 .dialog({
-                  title: 'Metadata editor',
+                  title: 'Dublin Core metadata editor',
                   width: 640,
                   height: 480,
                   modal: true,
@@ -279,7 +279,7 @@ $(function()
                   return job.get('microservice') === 'Normalize submission documentation to preservation format';
                 }))
               {
-                dialog.find('input, select, textarea').prop('disabled', true);
+                dialog.find('input, select, textarea').prop('disabled', true).addClass('disabled');
                 dialog.dialog('option', 'buttons', dialog.dialog('option', 'buttons').splice(0,1));
               }
             };
@@ -517,7 +517,7 @@ $(function()
                       }]
                   });
               },
-            url: '/ingest/' + this.model.sip.get('uuid') + '/normalization-report'
+            url: '/ingest/normalization-report/' + this.model.sip.get('uuid')
           });
         },
 
@@ -545,7 +545,7 @@ $(function()
                       }]
                   });
               },
-            url: '/tasks/' + this.model.get('uuid') + '/'
+            url: '/tasks/' + this.model.get('uuid')
           });
         },
 
@@ -733,7 +733,7 @@ $(function()
                               context: this,
                               data: { changes: JSON.stringify(changes) },
                               type: 'POST',
-                              url: '/jobs/' + self.options.uuid + '/manual-normalization'
+                              url: '/jobs/manual-normalization/' + self.options.uuid
                             })
                               .then(function()
                                 {
@@ -765,7 +765,7 @@ $(function()
         {
           return $.ajax({
             dataType: 'json',
-            url: '/jobs/' + this.options.uuid + '/list-objects',
+            url: '/jobs/list-objects/' + this.options.uuid,
             success: function(data)
               {
                 this.directoryContent = data;
@@ -833,7 +833,7 @@ $(function()
           $.ajax({
             data: { path: undefined === path ? '.' : path },
             context: self,
-            url: '/jobs/' + this.options.uuid + '/explore/',
+            url: '/jobs/explore/' + this.options.uuid,
             type: 'GET',
             success: function(data)
               {
@@ -1069,7 +1069,7 @@ $(function()
             context: this,
             dataType: 'json',
             type: 'GET',
-            url: '/ingest/go/',
+            url: '/ingest/status',
             beforeSend: function()
               {
                 window.statusWidget.startPoll();

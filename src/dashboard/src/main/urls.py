@@ -10,24 +10,28 @@ urlpatterns = patterns('dashboard.main.views',
   (r'^$', redirect_to, {'url': '/ingest/'}),
 
   # Transfer
-  (r'transfer/$', 'transfer_base'),
-  (r'transfer/go/$', 'transfer'),
-  (r'transfer/go/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer'),
+  (r'transfer/$', 'transfer_grid'),
+  (r'transfer/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer_detail'),
+  (r'transfer/status/$', 'transfer_status'),
+  (r'transfer/status/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer_status'),
 
   # Ingest
-  (r'ingest/$', 'ingest_base'),
+  (r'ingest/$', 'ingest_grid'),
+  (r'ingest/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_detail'),
+  (r'ingest/status/$', 'ingest_status'),
+  (r'ingest/status/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_status'),
   (r'ingest/metadata/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_metadata'),
-  (r'ingest/go/$', 'ingest'),
-  (r'ingest/go/(?P<uuid>' + UUID_REGEX + ')$', 'ingest'),
-  (r'ingest/(?P<uuid>' + UUID_REGEX + ')/normalization-report$', 'normalization_report'),
-  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/explore/$', 'explore'),
-  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects$', 'list_objects'),
-  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/manual-normalization$', 'manual_normalization'),
+  (r'ingest/normalization_report/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_normalization_report'),
+
+  # Jobs and taks (is part of ingest)
+  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/explore/$', 'jobs_explore'),
+  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects/$', 'jobs_list_objects'),
+  (r'jobs/(?P<uuid>' + UUID_REGEX + ')/manual-normalization/$', 'jobs_manual_normalization'),
   (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
 
   # Archival storage
   (r'archival-storage/$', 'archival_storage'),
-  (r'archival-storage/(?P<path>AIPsStore/[0-9a-z]{4}/[0-9a-z]{3}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/.*\.zip)$', 'archival_storage'),
+  (r'archival-storage/(?P<path>AIPsStore/[0-9a-z]{4}/[0-9a-z]{3}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/.*\.zip)/$', 'archival_storage'),
 
   # Preservation planning
   (r'preservation-planning/$', 'preservation_planning'),

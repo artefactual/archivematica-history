@@ -63,7 +63,7 @@ $(function()
 
       model: Sip,
 
-      url: '/transfer/go/',
+      url: '/transfer/status',
 
       initialize: function()
         {
@@ -419,7 +419,7 @@ $(function()
 
                 this.model.sip.view.updateIcon();
               },
-            url: '/mcp/execute/'
+            url: '/mcp/execute'
           });
         },
 
@@ -447,7 +447,7 @@ $(function()
                       }]
                   });
               },
-            url: '/ingest/' + this.model.sip.get('uuid') + '/normalization-report'
+            url: '/ingest/normalization-report' + this.model.sip.get('uuid')
           });
         },
 
@@ -475,7 +475,7 @@ $(function()
                       }]
                   });
               },
-            url: '/tasks/' + this.model.get('uuid') + '/'
+            url: '/tasks/' + this.model.get('uuid')
           });
         },
 
@@ -511,7 +511,7 @@ $(function()
 
                 this.model.sip.view.updateIcon();
               },
-            url: '/mcp/approve-job/'
+            url: '/mcp/approve-job'
           });
         },
 
@@ -533,7 +533,7 @@ $(function()
                 this.model.sip.view.updateIcon();
                 // this.model.sip.view.toggleJobs();
               },
-            url: '/mcp/reject-job/'
+            url: '/mcp/reject-job'
           });
         }
 
@@ -663,7 +663,7 @@ $(function()
                               context: this,
                               data: { changes: JSON.stringify(changes) },
                               type: 'POST',
-                              url: '/jobs/' + self.options.uuid + '/manual-normalization'
+                              url: '/jobs/manual-normalization/' + self.options.uuid
                             })
                               .then(function()
                                 {
@@ -695,7 +695,7 @@ $(function()
         {
           return $.ajax({
             dataType: 'json',
-            url: '/jobs/' + this.options.uuid + '/list-objects',
+            url: '/jobs/list-objects/' + this.options.uuid,
             success: function(data)
               {
                 this.directoryContent = data;
@@ -763,7 +763,7 @@ $(function()
           $.ajax({
             data: { path: undefined === path ? '.' : path },
             context: self,
-            url: '/jobs/' + this.options.uuid + '/explore/',
+            url: '/jobs/explore/' + this.options.uuid,
             type: 'GET',
             success: function(data)
               {
@@ -999,7 +999,7 @@ $(function()
             context: this,
             dataType: 'json',
             type: 'GET',
-            url: '/transfer/go/',
+            url: '/transfer/status',
             beforeSend: function()
               {
                 window.statusWidget.startPoll();
