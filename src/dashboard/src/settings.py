@@ -123,6 +123,7 @@ INSTALLED_APPS = (
   # 'django.contrib.sites',
   # 'django.contrib.messages',
   # 'django.contrib.staticfiles',
+  'django.contrib.webdesign',
 
   # Uncomment the next line to enable the admin:
   # 'django.contrib.admin',
@@ -156,8 +157,7 @@ LOGGING = {
 }
 
 # Dashboard internal settings
-#"localhost:4730"
-MCP_SERVER = ('127.0.0.1', 4730)
+MCP_SERVER = ('127.0.0.1', 4730) # localhost:4730
 POLLING_INTERVAL = 5 # Seconds
 
 MICROSERVICES_HELP = {
