@@ -268,6 +268,11 @@ a:hover { text-decoration: underline; }
   padding-left: 18px !important;
 }
 
+.btn_edit_rights {
+  background: transparent url(/media/images/vcard_edit.png) no-repeat center left;
+  padding-left: 18px !important;
+}
+
 .sip-removing .sip-detail-actions > a,
 .sip:hover .sip-detail-actions > a,
 .sip-selected .sip-detail-actions > a {
@@ -596,6 +601,17 @@ td.error {
 
 textarea {
   resize: vertical;
+}
+
+input[disabled],
+select[disabled],
+textarea[disabled],
+input[readonly],
+select[readonly],
+textarea[readonly] {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  cursor: not-allowed;
 }
 
 .form-item {

@@ -32,7 +32,7 @@ from lxml import etree
 import calendar, os, re, subprocess
 from datetime import datetime
 
-def manual_normalization(request, uuid):
+def jobs_manual_normalization(request, uuid):
   job = Job.objects.get(jobuuid=uuid)
 
   try:
@@ -72,7 +72,7 @@ def manual_normalization(request, uuid):
   else:
     return HttpResponse("ok", mimetype='text/plain')
 
-def list_objects(request, uuid):
+def jobs_list_objects(request, uuid):
   response = []
   job = Job.objects.get(jobuuid=uuid)
 
@@ -83,7 +83,7 @@ def list_objects(request, uuid):
 
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
-def explore(request, uuid):
+def jobs_explore(request, uuid):
   # Database query
   job = Job.objects.get(jobuuid=uuid)
   # Prepare response object
@@ -139,14 +139,14 @@ def explore(request, uuid):
     contents.append(newItem)
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
-def ingest_base(request):
+def ingest_grid(request):
 
   form = DublinCoreMetadataForm()
 
   polling_interval = django_settings.POLLING_INTERVAL
   microservices_help = django_settings.MICROSERVICES_HELP
 
-  return render_to_response('main/ingest.html', locals())
+  return render_to_response('main/ingest_grid.html', locals())
 
 def ingest_metadata(request, uuid):
   fields = ['title', 'creator', 'subject', 'description', 'publisher',
@@ -174,16 +174,16 @@ def ingest_metadata(request, uuid):
 
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
-def transfer_base(request):
+def transfer_grid(request):
 
   # form = TransferMetadataForm()
 
   polling_interval = django_settings.POLLING_INTERVAL
   microservices_help = django_settings.MICROSERVICES_HELP
 
-  return render_to_response('main/transfer.html', locals())
+  return render_to_response('main/transfer_grid.html', locals())
 
-def transfer(request, uuid=None):
+def transfer_status(request, uuid=None):
   if request.method == 'GET':
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
     objects = Job.objects.filter(hidden=False, unittype__exact='unitTransfer').values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
@@ -240,7 +240,7 @@ def transfer(request, uuid=None):
     response = simplejson.JSONEncoder().encode({'removed': True})
     return HttpResponse(response, mimetype='application/json')
 
-def ingest(request, uuid=None):
+def ingest_status(request, uuid=None):
   if request.method == 'GET':
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
     objects = Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None').filter(unittype__exact = 'unitSIP')
@@ -403,7 +403,13 @@ def preservation_planning(request):
 
   return render_to_response('main/preservation_planning.html', locals())
 
-def normalization_report(request, uuid):
+def ingest_detail(request, uuid):
+  return HttpResponse()
+
+def transfer_detail(request, uuid):
+  return HttpResponse()
+
+def ingest_normalization_report(request, uuid):
 
   query = """
     SELECT
