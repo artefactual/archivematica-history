@@ -5,28 +5,29 @@
             <goToChain>Skip quarantine</goToChain>
         </preconfiguredChoice>
         <preconfiguredChoice>
-            <appliesTo>Appraise SIP for Submission</appliesTo>
-            <goToChain>To appraise SIP for preservation</goToChain>
+            <appliesTo>Create SIP from transfer objects</appliesTo>
+            <goToChain>Create SIP from transfer objects</goToChain>
         </preconfiguredChoice>
         <preconfiguredChoice>
-            <appliesTo>Appraise SIP for preservation</appliesTo>
-            <goToChain>Prepare SIP for preservation</goToChain>
+            <appliesTo>Normalize</appliesTo>
+            <goToChain>preservation and access</goToChain>
         </preconfiguredChoice>
         <preconfiguredChoice>
-            <appliesTo>Workflow decision - Create DIP?</appliesTo>
-            <goToChain>Create DIP and AIP</goToChain>
-        </preconfiguredChoice>
-        <preconfiguredChoice>
-            <appliesTo>Approve Normalization to preservation and access</appliesTo>
+            <appliesTo>Approve normalization</appliesTo>
             <goToChain>Process submission documentation and prepare DIP and AIP.</goToChain>
         </preconfiguredChoice>
         <preconfiguredChoice>
-            <appliesTo>Upload DIP</appliesTo>
+            <appliesTo>uploadDIP</appliesTo>
             <goToChain>Upload DIP</goToChain>
         </preconfiguredChoice>
         <preconfiguredChoice>
             <appliesTo>Store AIP</appliesTo>
             <goToChain>Store AIP</goToChain>
+        </preconfiguredChoice>
+        <preconfiguredChoice>
+            <appliesTo>Remove from quarantine</appliesTo>
+            <goToChain>Unquarantine</goToChain>
+            <delay unitCtime="yes">50</delay>
         </preconfiguredChoice>
     </preconfiguredChoices>
 </processingMCP>
