@@ -1,37 +1,6 @@
-body {
-  
-}
-
-#main-container {
-
-}
-
-#content {
-  margin: 0 20px;
-}
-
-a, a * { cursor: pointer; outline: none; }
-a:link, a:visited, a:focus, a:active { text-decoration: none; color: Blue; }
-a:hover { text-decoration: underline; }
-
 /* Header */
 
 #header {
-  background: #fff url(../images/logo.png) no-repeat 20px 50%;
-  height: 34px;
-  margin-top: 20px;
-  padding: 10px;
-}
-
-#header h1 {
-  text-indent: -12345px;
-  margin: 0;
-}
-
-/* Menu */
-
-#menu {
-  height: 26px;
   background-color: #bbb;
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.19, rgb(168,168,168)), color-stop(1, rgb(214,214,214)));
   background-image: -moz-linear-gradient(center bottom, rgb(168,168,168) 19%, rgb(214,214,214) 100%);
@@ -47,44 +16,6 @@ a:hover { text-decoration: underline; }
 
 #menu > ul {
   float: left;
-  color: #fff;
-  margin: 0;
-  list-style: none;
-}
-
-#menu > ul > li {
-  float: left;
-  list-style: none;
-}
-
-#menu > ul > li > a {
-  display: block;
-  float: left;
-  height: 18px;
-  padding: 4px 10px 4px 10px;
-  color: #fff;
-  text-decoration: none;
-  background-color: #42769e;
-  border-right: 1px solid #fff;
-}
-
-#menu > ul > li > a:hover {
-  background-color: #4388a7;
-  color: #fff;
-  background-image: linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
-  background-image: -o-linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
-  background-image: -moz-linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
-  background-image: -webkit-linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
-  background-image: -ms-linear-gradient(bottom, rgb(16,62,92) 44%, rgb(42,93,120) 72%, rgb(72,121,156) 86%);
-}
-
-#page-ingest #ingest > a,
-#page-transfer #transfer > a,
-#page-archival-storage #archival-storage > a,
-#page-access #access > a,
-#page-preservation-planning #preservation-planning > a,
-#page-settings #settings > a { background-color: #a40000; }
-
 /* Tooltip widget */
 
 .tooltip {
@@ -113,15 +44,6 @@ a:hover { text-decoration: underline; }
 .tooltip > .tooltip-content {
   padding: 2px 5px 2px 5px;
   margin: 0 0 0 0;
-}
-
-/* jQuery UI Dialog */
-
-.ui-dialog {
-  box-shadow: 0px 0px 8px #333;
-  -webkit-box-shadow: 0px 0px 8px #333;
-  -moz-box-shadow: 0px 0px 8px #333;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#333, offX=4, offY=4, positive=true);
 }
 
 /* Status widget */
@@ -644,6 +566,10 @@ textarea[readonly] {
  */
 
 .ui-dialog {
+  box-shadow: 0px 0px 8px #333;
+  -webkit-box-shadow: 0px 0px 8px #333;
+  -moz-box-shadow: 0px 0px 8px #333;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#333, offX=4, offY=4, positive=true);
   padding: 0;
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
