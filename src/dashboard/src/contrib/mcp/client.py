@@ -16,18 +16,43 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
-from xmlrpclib import ServerProxy, Error
-import socket
+import gearman
+import cPickle
 
 class MCPClient:
+    def __init__(self, host=settings.MCP_SERVER[0], port=settings.MCP_SERVER[1]):
+        #def __init__(self, host, port):
+        self.server ="%s:%d" % (host, port)      
+    
+    def execute(self, uuid, choice):
+        gm_client = gearman.GearmanClient([self.server])
+        data={}
+        data["jobUUID"] = uuid
+        data["chain"] = choice
+        completed_job_request = gm_client.submit_job("approveJob", cPickle.dumps(data), None)
+        #self.check_request_status(completed_job_request)
+        return 
+    
+    def list(self):
+        gm_client = gearman.GearmanClient([self.server])
+        completed_job_request = gm_client.submit_job("getJobsAwaitingApproval", "", None)
+        #self.check_request_status(completed_job_request)
+        return cPickle.loads(completed_job_request.result)
+    
+    def check_request_status(self, job_request):
+        if job_request.complete:
+            self.results = cPickle.loads(job_request.result)
+            print "Task %s finished!  Result: %s - %s" % (job_request.job.unique, job_request.state, self.results)
+            
+        elif job_request.timed_out:
+            print >>sys.stderr, "Task %s timed out!" % job_request.unique
+            
+        elif job_request.state == JOB_UNKNOWN:
+            print >>sys.stderr, "Task %s connection failed!" % job_request.unique
+        
+        else:
+            print >>sys.stderr, "Task %s failed!" % job_request.unique
 
-  def __init__(self, host=settings.MCP_SERVER[0], port=settings.MCP_SERVER[1]):
-    self.url = 'http://%s:%d' % (host, port)
-    self.server = ServerProxy(self.url)
-    socket.setdefaulttimeout(3)
-
-  def execute(self, uuid, choice):
-    return self.server.approveJob(uuid, choice)
-
-  def list(self):
-    return self.server.getJobsAwaitingApproval()
+if __name__ == '__main__':
+    mcpClient = MCPClient("localhost", 4730)
+    print mcpClient.list()

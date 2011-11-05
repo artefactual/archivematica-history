@@ -21,12 +21,14 @@
 # @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-from SimpleXMLRPCServer import SimpleXMLRPCServer
 import archivematicaMCP
 from linkTaskManagerChoice import choicesAvailableForUnits
 import lxml.etree as etree
-global xmlRPCServerServer
+import gearman
+import cPickle
+from socket import gethostname
 
+a = """
 def startXMLRPCServer():
     global xmlRPCServerServer
     try:
@@ -41,7 +43,8 @@ def startXMLRPCServer():
         print inst.args      # arguments stored in .args
         archivematicaMCP.signal_handler(type(inst), inst.args)
     print "DEBUG EXCEPTION! xml rpc2"
-    
+    """    
+
 def getJobsAwaitingApproval():
     ret = etree.Element("choicesAvailableForUnits")
     for UUID, choice in choicesAvailableForUnits.items():
@@ -55,4 +58,31 @@ def approveJob(jobUUID, chain):
         choicesAvailableForUnits[jobUUID].proceedWithChoice(chain)
     return "approving: ", jobUUID, chain
 
-    
+def gearmanApproveJob(gearman_worker, gearman_job):
+    try:
+        execute = gearman_job.task
+        data = cPickle.loads(gearman_job.data)
+        jobUUID = data["jobUUID"]
+        chain = data["chain"]
+        return cPickle.dumps(approveJob(jobUUID, chain))
+    #catch OS errors
+    except:
+        return None
+
+def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
+    try:
+        print "DEBUG - getting list of jobs"
+        execute = gearman_job.task
+        return cPickle.dumps(getJobsAwaitingApproval())
+    #catch OS errors
+    except:
+        return None
+
+
+def startXMLRPCServer(): 
+    gm_worker = gearman.GearmanWorker([archivematicaMCP.config.get('MCPServer', 'GearmanServerWorker')])
+    hostID = gethostname() + "_MCPServer" 
+    gm_worker.set_client_id(hostID)
+    gm_worker.register_task("approveJob", gearmanApproveJob)
+    gm_worker.register_task("getJobsAwaitingApproval", gearmanGetJobsAwaitingApproval)
+    gm_worker.work()
