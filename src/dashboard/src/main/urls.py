@@ -7,7 +7,7 @@ UUID_REGEX = '[\w]{8}(-[\w]{4}){3}-[\w]{12}'
 urlpatterns = patterns('dashboard.main.views',
 
   # Index
-  (r'^$', redirect_to, {'url': '/ingest/'}),
+  (r'^$', 'home'),
 
   # Transfer
   (r'transfer/$', 'transfer_grid'),

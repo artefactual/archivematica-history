@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% load webdesign %}
+
+{% block title %}{% endblock %}
+{% block h1 %}{% endblock %}
+{% block page_id %}{% endblock %}
+
+{% block content %}
+
+  <div class="hero-unit">
+    <h1>Welcome to Archivematica!</h1>
+    <p>Hi, this is the dashboard. Thank you for coming!</p>
+  </div>
+
+  <div class="row">
+    <div class="span6">
+      <h2>Transfer</h2>
+      <p>{% lorem 40 w random %}</p>
+      <p><a class="btn" href="{% url main.views.transfer_grid %}">Go</a></p>
+    </div>
+    <div class="span5">
+      <h2>Ingest</h2>
+      <p>{% lorem 40 w random %}</p>
+      <p><a class="btn" href="{% url main.views.ingest_grid %}">Go</a></p>
+    </div>
+    <div class="span5">
+      <h2>Archival storage</h2>
+      <p>{% lorem 40 w random %}</p>
+      <p><a class="btn" href="{% url main.views.archival_storage %}">Go</a></p>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="row">
+    <div class="span6">
+      <h2>Preservation plannig</h2>
+      <p>{% lorem 40 w random %}</p>
+      <p><a class="btn" href="{% url main.views.preservation_planning %}">Go</a></p>
+    </div>
+    <div class="span5">
+      <h2>Access</h2>
+      <p>{% lorem 40 w random %}</p>
+      <p><a class="btn" href="{% url main.views.access %}">Go</a></p>
+    </div>
+    <div class="span5">
+      <h2>Settings</h2>
+      <p>{% lorem 40 w random %}</p>
+      <p><a class="btn" href="{% url main.views.settings %}">Go</a></p>
+    </div>
+  </div>
+
+{% endblock %}

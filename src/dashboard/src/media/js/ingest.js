@@ -84,6 +84,7 @@ $(function()
       template: _.template($('#sip-template').html()),
 
       events: {
+        'mousedown .sip-row': 'openDedicatedPage',
         'click .sip-row': 'toggleJobs',
         'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove',
         'click .sip-row > .sip-detail-actions > .btn_edit_metadata': 'openMetadataEditor'
@@ -135,12 +136,22 @@ $(function()
           this.$('.sip-detail-icon-status').html(this.model.jobs.getIcon());
         },
 
+      openDedicatedPage: function(event)
+        {
+          if (3 == event.which)
+          {
+            window.location = '/ingest/' + this.model.get('uuid') + '/';
+          }
+        },
+
       toggleJobs: function(event)
         {
           if (event)
           {
             event.preventDefault();
           }
+
+          console.log(event.which);
 
           if (this.$jobContainer.is(':visible'))
           {
