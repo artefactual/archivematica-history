@@ -35,7 +35,9 @@
     <div class="topbar">
       <div class="topbar-inner">
         <div class="container-fluid">
+
           <a class="brand" href="{% url main.views.home %}">Archivematica</a>
+
           <ul class="nav">
             <li id="home"><a href="{% url main.views.home %}">Home</a></li>
             <li id="transfer"><a href="{% url main.views.transfer_grid %}">Transfer</a></li>
@@ -45,7 +47,9 @@
             <li id="access"><a href="{% url main.views.access %}">Access</a></li>
             <li id="settings"><a href="{% url main.views.settings %}">Settings</a></li>
           </ul>
-          <p style="display: none;" class="pull-right">Logged in as <a href="#">username</a></p>
+
+          {% block topbar %}{% endblock %}
+
         </div>
       </div>
     </div>

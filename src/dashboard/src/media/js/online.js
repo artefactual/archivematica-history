@@ -21,7 +21,7 @@ $(function()
   {
     window.StatusView = Backbone.View.extend({
 
-      id: 'status',
+      el: '#connection-status',
 
       template: _.template($('#status-template').html()),
 
@@ -32,7 +32,7 @@ $(function()
 
       render: function()
         {
-          $(this.el).html(this.template()).appendTo('body');
+          $(this.el).html(this.template());
 
           var self = this;
 
