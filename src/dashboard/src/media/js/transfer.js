@@ -84,8 +84,8 @@ $(function()
       template: _.template($('#sip-template').html()),
 
       events: {
-        'mousedown .sip-row': 'openDedicatedPage',
         'click .sip-row': 'toggleJobs',
+        'click .sip-row > .sip-detail-actions > .btn_show_panel': 'openPanel',
         'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove'
       },
 
@@ -101,6 +101,8 @@ $(function()
           $(this.el).html(this.template(this.model.toJSON()));
 
           this.$jobContainer = this.$('.sip-detail-job-container');
+
+          this.$('.sip-detail-actions > a').twipsy();
 
           return this;
         },
@@ -135,12 +137,12 @@ $(function()
           this.$('.sip-detail-icon-status').html(this.model.jobs.getIcon());
         },
 
-      openDedicatedPage: function(event)
+      openPanel: function(event)
         {
-          if (3 == event.which)
-          {
-            window.location = '/ingest/' + this.model.get('uuid') + '/';
-          }
+          event.preventDefault();
+          event.stopPropagation();
+
+          window.location = '/transfer/' + this.model.get('uuid') + '/';
         },
 
       toggleJobs: function(event)
@@ -408,6 +410,8 @@ $(function()
 
           this.$('.job-detail-microservice > a').tooltip();
 
+          this.$('.job-detail-actions > a').twipsy();
+
           return this;
         },
 
@@ -428,7 +432,7 @@ $(function()
 
                 this.model.sip.view.updateIcon();
               },
-            url: '/mcp/execute'
+            url: '/mcp/execute/'
           });
         },
 

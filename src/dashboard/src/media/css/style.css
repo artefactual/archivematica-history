@@ -101,7 +101,11 @@
 .sip-detail-directory   { width: 300px; padding: 4px 0px; display: table-cell; white-space: nowrap; }
 .sip-detail-uuid        { width: 310px; padding: 4px 0px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
 .sip-detail-timestamp   { width: 180px; padding: 4px 0px; }
-.sip-detail-actions     {  }
+.sip-detail-actions     { }
+
+/* Clearfix in .sip-row */
+.sip-row { *zoom: 1; }
+.sip-row:after { clear: both; content: ""; display: table; }
 
 .sip-detail-directory > abbr {
   display: none;
@@ -117,36 +121,23 @@
 .sip-detail-actions > a {
   visibility: hidden;
   float: left;
-  padding: 4px 6px;
-  font-weight: bold;
-  color: Black;
-  height: 16px;
+  height: 26px;
+  width: 16px;
   margin-right: 4px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center left;
 }
 
-.btn_show_jobs {
-  background: transparent url(/media/images/zoom.png) no-repeat center left;
-  padding-left: 18px !important;
+.sip-detail-actions > a > span {
+  display: none;
 }
 
-.sip-selected .btn_show_jobs {
-  background-image: url(/media/images/zoom_out.png);
-}
-
-.btn_remove_sip {
-  background: transparent url(/media/images/delete.png) no-repeat center left;
-  padding-left: 18px !important;
-}
-
-.btn_edit_metadata {
-  background: transparent url(/media/images/table_edit.png) no-repeat center left;
-  padding-left: 18px !important;
-}
-
-.btn_edit_rights {
-  background: transparent url(/media/images/vcard_edit.png) no-repeat center left;
-  padding-left: 18px !important;
-}
+.btn_show_jobs { background-image: url(/media/images/zoom.png); }
+.sip-selected .btn_show_jobs { background-image: url(/media/images/zoom_out.png); }
+.btn_remove_sip { background-image: url(/media/images/delete.png); }
+.btn_edit_metadata { background-image: url(/media/images/table_edit.png); }
+.btn_show_panel { background-image: url(/media/images/layout.png); }
 
 .sip-removing .sip-detail-actions > a,
 .sip:hover .sip-detail-actions > a,
@@ -178,13 +169,27 @@
 .job-detail-actions      { }
 
 .job-detail-actions > a {
-  color: #000;
-  font-size: 11px;
-  padding: 2px 4px 2px 20px;
-  margin-right: 4px;
+  display: block;
+  float: left;
+  width: 16px;
+  height: 16px;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center left;
+}
+
+.job-detail-actions > a > span {
+  display: none;
+}
+
+.job-detail-actions > select {
+  width: 80px;
+  height: auto;
+  line-height: normal;
+  padding: 0;
+  font-size: 11px;
+  margin-left: 8px;
+  border: 1px solid #999;
 }
 
 .job-detail-actions > .btn_show_tasks { background-image: url(/media/images/cog.png); }
