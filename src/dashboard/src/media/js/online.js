@@ -34,10 +34,8 @@ $(function()
         {
           $(this.el).html(this.template());
 
-          var self = this;
-
           this.$led = $(this.el).find('img');
-          this.$text = $(this.el).find('#status-message').hide();
+          this.$text = $(this.el).find('span');
 
           return this;
         },
@@ -46,7 +44,7 @@ $(function()
         {
           log('Connected.');
           this.$led.attr({'src': '/media/images/bullet_green.png', 'title': 'Connected'});
-          this.cleanText();
+          this.$text.text('Connected');
         },
 
       startPoll: function()
@@ -60,33 +58,18 @@ $(function()
           log('End poll.');
         },
 
-      hide: function()
-        {
-          var self = this;
-          setTimeout(function()
-            {
-              $(self.el).children('status-message').fadeOut('fast');
-            }, 1000);
-        },
-
-      cleanText: function()
-        {
-          this.$text.hide('fast');
-        },
-
       text: function(message, error)
         {
-          log("Status message: " + message + " (isError: " + error + ")");
-          this.$text.show().find('span').html(message);
+          log('Status message: ' + message + ')');
 
           if (true === error)
           {
             this.$led.attr({'src': '/media/images/bullet_delete.png', 'title': 'Disconnected'});
-            this.$text.addClass('status-error');
+            this.$text.text(message);
           }
           else
           {
-            this.$text.removeClass('status-error');
+            this.$text.text('Connected');
           }
         }
 
