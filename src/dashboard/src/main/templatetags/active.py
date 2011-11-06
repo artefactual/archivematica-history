@@ -5,5 +5,7 @@ register = Library()
 
 @register.simple_tag
 def active(request, pattern):
-  if pattern == request.path:
+  if request.path.startswith(pattern) and pattern != '/':
+    return 'active'
+  elif request.path == pattern == '/':
     return 'active'
