@@ -1,0 +1,31 @@
+{% extends "layout_fluid.html" %}
+
+{% block title %}{% endblock %}
+{% block h1 %}{% endblock %}
+{% block page_id %}{% endblock %}
+
+{% block sidebar %}
+  <h5>Micro-Services</h5>
+  <h5>Metadata</h5>
+  <h5>Rights</h5>
+  <h5>Actions</h5>
+  <ul>
+    <li><a href="#">Delete</a></li>
+  </ul>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="span12">
+      <ul class="breadcrumb">
+        <li><a href="{% url main.views.transfer_grid %}">Transfer</a> <span class="divider">/</span></li>
+        <li class="active">Submission Information Package</li>
+      </ul>
+      <h1>Submission Information Package<br /><small>{{ uuid }}</small></h1>
+      <p>Sabían que iban a ser políticamente incorrectos. Quince años después de su último mitin juntos, Felipe González y Alfonso Guerra, expresidente y exvicepresidente del Gobierno, respectivamente, introdujeron ayer en campaña, en un multitudinario mitin (más de 20.000 personas) en Dos Hermanas (Sevilla), el fin de ETA. En su afán por ensalzar al candidato, Alfredo Pérez Rubalcaba, exministro del Interior, ambos acusaron al PP de no estar muy satisfecho de que ETA comunicara el cese de la violencia nada más empezar la campaña. “¡La derecha no soporta que no hayan sido ellos los que han acabado con ETA!”, gritó Guerra. “Quizá José María Aznar habría podido decirle a sus amigos del MLNV — en alusión al “Movimiento de Liberación Nacional Vasco”, la forma en que Aznar se refirió a ETA en 1999— que esperaran un poquito, pero no han podido esperar porque Alfredo [Pérez Rubalcaba] tenía a ETA acorralada. Ha sido Alfredo quien ha derrotado a ETA”, aseguró Guerra, quien también se acordó del presidente Zapatero: “Espero que Rajoy le pida perdón por haberle acusado de traicionar a los muertos”.</p>
+      <p>González siguió los pasos de la intervención de Guerra. “Jamás se me hubiera ocurrido a mí llamar a esos criminales MLNV, pero eso hicieron esos patriotas de hojalata y les ofrecieron diálogo sin condiciones”, dijo. Acto seguido lanzó la siguiente insinuación: “¡Ay, si hubieran [los populares] podido retrasar el anuncio un poquito! ¿Y si lo hubieran intentado?”. González dejó la pregunta en el aire, hizo una pausa un tanto teatral y siguió con otro tema.</p>
+      <p>De no haber sido por la introducción del final de ETA, el de ayer habría sido un mitin clásico, a la manera de los multitudinarios actos del PSOE de los años noventa, en los que los máximos líderes enardecían a los suyos con fuertes diatribas contra la derecha y exaltación de los valores del socialismo, menciones a su fundador, Pablo Iglesias, incluidas. Esto es exactamente lo que quería repetir el candidato Rubalcaba cuando decidió que el gran acto de su campaña fuera en el velódromo de Dos Hermanas, en Sevilla, y con Felipe González y Alfonso Guerra como teloneros.</p>
+    </div>
+  </div>
+{% endblock %}
+
