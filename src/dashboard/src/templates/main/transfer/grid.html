@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block topbar %}
-  <p id="connection-status" class="pull-right">Connection status</p>
+  <div id="connection-status" class="pull-right"></div>
 {% endblock %}
 
 {% block sidebar %}
@@ -104,13 +104,8 @@
 
   <script type="text/template" id="status-template">
     <div id="status-bullet">
-      <span>Connection status</span>
+      <span>Initializing...</span>
       <img src="/media/images/bullet_delete.png" />
-    </div>
-    <div id="status-message">
-      <div>
-        <span>&nbsp;</span>
-      </div>
     </div>
   </script>
 
