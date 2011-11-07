@@ -355,8 +355,8 @@ def getAMDSec(fileUUID, filePath, use, type, id):
     
     
     
-#DMID="dmdSec_01" for an object goes in here
-#<file ID="file1-UUID" GROUPID="G1" DMID="dmdSec_02" ADMID="amdSec_01">
+#DMDID="dmdSec_01" for an object goes in here
+#<file ID="file1-UUID" GROUPID="G1" DMDID="dmdSec_02" ADMID="amdSec_01">
 def createFileSec(directoryPath, structMapDiv):
     delayed = []
     for item in os.listdir(directoryPath):
@@ -497,7 +497,7 @@ if __name__ == '__main__':
     dc = createDMDSec(SIPMetadataAppliesToType, fileGroupIdentifier)
     if dc != None:
         (dmdSec, ID) = dc
-        structMapDiv.set("DMID", ID)
+        structMapDiv.set("DMDID", ID)
         root.append(dmdSec)
         
     
@@ -510,7 +510,7 @@ if __name__ == '__main__':
         print etree.tostring(root, pretty_print=True)
             
     #<div TYPE="directory" LABEL="AIP1-UUID">
-    #<div TYPE="directory" LABEL="objects" DMID="dmdSec_01">
+    #<div TYPE="directory" LABEL="objects" DMDID="dmdSec_01">
     #Recursive function for creating structmap and fileSec
     tree = etree.ElementTree(root)
     tree.write(XMLFile)
