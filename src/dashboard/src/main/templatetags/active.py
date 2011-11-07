@@ -9,3 +9,5 @@ def active(request, pattern):
     return 'active'
   elif request.path == pattern == '/':
     return 'active'
+  else:
+    return ''
