@@ -35,6 +35,18 @@ from datetime import datetime
 def home(request):
   return render_to_response('home.html', locals())
 
+def status(request):
+  client = MCPClient()
+  xml = etree.XML(client.list())
+
+  sip_count = len(xml.xpath('//choicesAvailableForUnits/choicesAvailableForUnit/unit/type[text()="SIP"]'))
+  transfer_count = len(xml.xpath('//choicesAvailableForUnits/choicesAvailableForUnit/unit/type[text()="Transfer"]'))
+  dip_count = len(xml.xpath('//choicesAvailableForUnits/choicesAvailableForUnit/unit/type[text()="DIP"]'))
+
+  response = {'sip': sip_count, 'transfer': transfer_count, 'dip': dip_count}
+
+  return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
 def jobs_manual_normalization(request, uuid):
   job = Job.objects.get(jobuuid=uuid)
 

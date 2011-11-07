@@ -1,3 +1,35 @@
+body {
+  padding-top: 60px !important;
+}
+
+.topbar .brand {
+  background: transparent url(../../media/images/logo-small.png) no-repeat 50% 50%;
+  width: 229px;
+  text-indent: -99999em;
+}
+
+.nav li {
+  position: relative;
+}
+
+.nav li span {
+  position: absolute;
+  float: right;
+  top: 4px;
+  right: -8px;
+  -webkit-border-radius: 999px;
+  -moz-border-radius: 999px;
+  border-radius: 999px;
+  background-color: Red;
+  color: White;
+  font-weight: bold;
+  font-size: 9px;
+  width: 2em;
+  height: 16px;
+  text-align: center;
+  z-index: 10;
+}
+
 /* Tooltips */
 
 .tooltip {

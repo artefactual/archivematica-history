@@ -169,6 +169,7 @@ else:
 # Dashboard internal settings
 MCP_SERVER = ('127.0.0.1', 4730) # localhost:4730
 POLLING_INTERVAL = 5 # Seconds
+STATUS_POLLING_INTERVAL = 5 # Seconds
 
 MICROSERVICES_HELP = {
   'Appraise SIP for preservation': 'Appraise SIP for preservation. Delete any files not accepted for preservation. Add submission documentation to metadata/ submissionDocumentation folder if desired.',

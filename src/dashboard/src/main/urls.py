@@ -42,4 +42,7 @@ urlpatterns = patterns('dashboard.main.views',
   # Settings
   (r'settings/$', 'settings'),
 
+  #Status
+  (r'status/$', 'status'),
+
 )
