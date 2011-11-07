@@ -29,7 +29,7 @@ $(function()
 
           this.transfer = this.$('ul.nav > li').eq(1);
           this.sip = this.$('ul.nav > li').eq(2);
-          this.dip = this.$('ul.nav > li').eq(3);
+          this.dip = this.$('ul.nav > li').eq(5);
         },
 
       render: function()
@@ -53,7 +53,6 @@ $(function()
           }
 
           led.text(value);
-          console.log(led);
         },
 
       poll: function()
@@ -77,7 +76,7 @@ $(function()
               {
                 this.update(this.transfer, response.transfer);
                 this.update(this.sip, response.sip);
-                // this.update(this.dip, response.dip);
+                this.update(this.dip, response.dip);
               },
             complete: function()
               {
