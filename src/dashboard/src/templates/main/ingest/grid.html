@@ -111,20 +111,22 @@
   </script>
 
   <script type=="text/template" id="metadata-dialog">
-    <form>
+    <form class="form-stacked">
       {% csrf_token %}
       {% for field in form %}
-        <div class="form-item">
+        <div class="form-item clearfix">
           {{ field.errors }}
           {{ field.label_tag }}
-          {% if field.help_text %}
-            <p>{{ field.help_text }}</p>
-          {% endif %}
-          {% if field.name == "rights" or field.name == "description" %}
-            <textarea name="{{ field.name }}" rows="4"><%= {{ field.name }} %></textarea>
-          {% else %}
-            <input type="text" name="{{ field.name }}" value="<%= {{ field.name }} %>" />
-          {% endif %}
+          <div class="input">
+            {% if field.name == "rights" or field.name == "description" %}
+              <textarea class="span9" name="{{ field.name }}" rows="4"><%= {{ field.name }} %></textarea>
+            {% else %}
+              <input class="xlarge span9" type="text" name="{{ field.name }}" value="<%= {{ field.name }} %>" />
+            {% endif %}
+            {% if field.help_text %}
+              <span class="help-block">{{ field.help_text }}</p>
+            {% endif %}
+          </div>
         </div>
       {% endfor %}
     </form>

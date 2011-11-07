@@ -245,7 +245,7 @@ $(function()
           event.stopPropagation();
           event.preventDefault();
 
-          var url = '/ingest/metadata/' + this.model.get('uuid');
+          var url = '/ingest/metadata/' + this.model.get('uuid') + '/';
           var self = this;
 
           var showDialog = function(data)
@@ -254,9 +254,10 @@ $(function()
                 .append(_.template($('#metadata-dialog').html(), data))
                 .dialog({
                   title: 'Dublin Core metadata editor',
-                  width: 640,
+                  width: 610,
                   height: 480,
                   modal: true,
+                  resizable: false,
                   buttons: [
                     {
                       text: 'Close',

@@ -18,7 +18,7 @@ class DublinCoreMetadataForm(forms.Form):
   identifier = forms.CharField(required=False)
   source = forms.CharField(required=False)
   isPartOf = forms.CharField(required=False)
-  language = forms.CharField(required=False)
+  language = forms.CharField(required=False, help_text='Use ISO 3166')
   coverage = forms.CharField(required=False)
   rights = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
 
