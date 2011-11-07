@@ -482,42 +482,6 @@ textarea {
   resize: vertical;
 }
 
-input[disabled],
-select[disabled],
-textarea[disabled],
-input[readonly],
-select[readonly],
-textarea[readonly] {
-  background-color: #f5f5f5;
-  border-color: #ddd;
-  cursor: not-allowed;
-}
-
-.form-item {
-  padding: .5em;
-}
-
-.form-item label {
-  display: block;
-  width: 100%;
-}
-
-.form-item p {
-  font-size: 0.8em;
-  color: #666;
-  margin: 0;
-}
-
-.form-item input,
-.form-item textarea {
-  width: 100%;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 0.2em;
-  margin: 0.2em 0 0 0;
-}
-
 /*
  * Reset jQuery UI dialog
  */
