@@ -1,0 +1,22 @@
+{% extends "layout_fluid.html" %}
+{% load breadcumbs %}
+
+{% block sidebar %}
+  {% include "main/transfer/_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="span12">
+
+      <ul class="breadcrumb">
+        {% breadcrumb_url 'Transfer' main.views.transfer_grid %}
+        {% breadcrumb_url name main.views.transfer_detail uuid %}
+        {% breadcrumb 'Rights' %}
+      </ul>
+
+      <h1>Rights<br /><small>{{ name }}</small></h1>
+
+    </div>
+  </div>
+{% endblock %}

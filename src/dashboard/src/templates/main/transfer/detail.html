@@ -1,14 +1,8 @@
 {% extends "layout_fluid.html" %}
-
-{% block title %}{% endblock %}
-{% block h1 %}{% endblock %}
-{% block page_id %}{% endblock %}
+{% load breadcumbs %}
 
 {% block sidebar %}
-  <h5>Micro-Services</h5>
-  <h5>Metadata</h5>
-  <h5>Rights</h5>
-  <h5>Actions</h5>
+  {% include "main/transfer/_sidebar.html" %}
 {% endblock %}
 
 {% block content %}
@@ -16,13 +10,22 @@
     <div class="span12">
 
       <ul class="breadcrumb">
-        <li><a href="{% url main.views.transfer_grid %}">Transfer</a> <span class="divider">/</span></li>
-        <li class="active">SIP</li>
+        {% breadcrumb_url 'Transfer' main.views.transfer_grid %}
+        {% breadcrumb name %}
       </ul>
 
-      <h1>Submission Information Package<br /><small>{{ uuid }}</small></h1>
+      <h1>Submission Information Package<br /><small>{{ name }}</small></h1>
 
-      <p>In progress... (see ingest pages)</p>
+      <p><strong>UUID:</strong> {{ uuid }}</p>
+
+      {% if is_waiting %}
+        <div class="alert-message block-message">
+          <p>There are micro-services awaiting user decisions.</p>
+          <div class="alert-actions">
+            <a class="btn small" href="{% url main.views.ingest_microservices uuid %}">View micro-services</a>
+          </div>
+        </div>
+      {% endif %}
 
     </div>
   </div>
