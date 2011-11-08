@@ -1,0 +1,17 @@
+{% extends "layout_fluid.html" %}
+
+{% block sidebar %}
+  {% include "main/ingest/_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="span12">
+
+      {% include "main/ingest/_breadcumb.html" %}
+
+      <h1>Rights<br /><small>{{ name }}</small></h1>
+
+    </div>
+  </div>
+{% endblock %}

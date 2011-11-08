@@ -1,0 +1,56 @@
+<h5><a href="{% url main.views.ingest_detail uuid %}">Home</a></h5>
+<h5>Micro-Services</h5>
+<ul>
+  <li><a href="{% url main.views.ingest_microservices uuid %}">List</a></li>
+</ul>
+<h5>Metadata</h5>
+<ul>
+  <li><a href="{% url main.views.ingest_metadata uuid %}">Edit</a></li>
+</ul>
+<h5>Rights</h5>
+<ul>
+  <li><a href="{% url main.views.ingest_rights uuid %}">Edit</a></li>
+</ul>
+<h5>Actions</h5>
+<ul>
+  <li><a class="btn-delete" href="{% url main.views.ingest_delete uuid %}">Delete</a></li>
+</ul>
+
+<div id="modal-delete" class="modal hide fade in">
+  <div class="modal-header">
+    <a href="#" class="close">×</a>
+    <h3>Delete {{ uuid }}</h3>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <form method="post" action="{% url main.views.ingest_delete uuid %}">
+      <a href="#" class="btn cancel">Cancel</a>
+      <button type="submit" class="btn danger delete">Delete</button>
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  $(document).ready(function()
+    {
+      var modal_delete = $('#modal-delete').modal({ keyboard: true, show: false, backdrop: true });
+
+      modal_delete
+        .find('.btn.cancel').click(function(event)
+          {
+            event.preventDefault();
+            modal_delete.modal('hide');
+          });
+
+      $('.btn-delete').click(function(event)
+        {
+          event.preventDefault();
+          modal_delete.modal('show');
+        });
+
+    });
+
+</script>

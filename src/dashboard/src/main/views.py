@@ -22,10 +22,11 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db import connection, transaction
 from django.shortcuts import render_to_response
-from django.http import Http404, HttpResponse, HttpResponseBadRequest
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.utils import simplejson
 from django.views.static import serve
 from dashboard.contrib.mcp.client import MCPClient
+from dashboard.contrib import utils
 from dashboard.main.forms import DublinCoreMetadataForm
 from dashboard.main.models import Task, Job, DublinCore, StandardTaskConfig
 from lxml import etree
@@ -155,23 +156,19 @@ def jobs_explore(request, uuid):
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 def ingest_grid(request):
-
-  form = DublinCoreMetadataForm()
-
   polling_interval = django_settings.POLLING_INTERVAL
   microservices_help = django_settings.MICROSERVICES_HELP
-
   return render_to_response('main/ingest/grid.html', locals())
 
 def ingest_metadata(request, uuid):
-  fields = ['title', 'creator', 'subject', 'description', 'publisher',
-            'contributor', 'date', 'type', 'format', 'identifier',
-            'source', 'isPartOf', 'language', 'coverage', 'rights']
-
   try:
     dc = DublinCore.objects.get_sip_metadata(uuid)
   except ObjectDoesNotExist:
     dc = DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
+
+  fields = ['title', 'creator', 'subject', 'description', 'publisher',
+            'contributor', 'date', 'type', 'format', 'identifier',
+            'source', 'isPartOf', 'language', 'coverage', 'rights']
 
   if request.method == 'POST':
     form = DublinCoreMetadataForm(request.POST)
@@ -179,23 +176,19 @@ def ingest_metadata(request, uuid):
       for item in fields:
         setattr(dc, item, form.cleaned_data[item])
       dc.save()
-      return HttpResponse()
-    else:
-      return HttpResponseBadRequest()
   else:
-    response = {}
+    initial = {}
     for item in fields:
-      response[item] = getattr(dc, item)
+      initial[item] = getattr(dc, item)
+    form = DublinCoreMetadataForm(initial=initial)
+    job = Job.objects.filter(sipuuid=uuid)[0]
+    name = utils.get_directory_name(job.directory)
 
-    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+  return render_to_response('main/ingest/metadata.html', locals())
 
 def transfer_grid(request):
-
-  # form = TransferMetadataForm()
-
   polling_interval = django_settings.POLLING_INTERVAL
   microservices_help = django_settings.MICROSERVICES_HELP
-
   return render_to_response('main/transfer/grid.html', locals())
 
 def transfer_status(request, uuid=None):
@@ -213,7 +206,7 @@ def transfer_status(request, uuid=None):
       for item in obj:
         jobs = get_jobs_by_sipuuid(item['sipuuid'])
         directory = jobs[0].directory
-        item['directory'] = item['sipuuid']#re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
+        item['directory'] = utils.get_directory_name(directory)
         item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
         item['uuid'] = item['sipuuid']
         item['id'] = item['sipuuid']
@@ -270,7 +263,7 @@ def ingest_status(request, uuid=None):
       for item in obj:
         jobs = get_jobs_by_sipuuid(item['sipuuid'])
         directory = jobs[0].directory
-        item['directory'] = item['sipuuid']#re.search(r'^.*/(?P<directory>.*)-[\w]{8}(-[\w]{4}){3}-[\w]{12}$', directory).group('directory')
+        item['directory'] = utils.get_directory_name(directory)
         item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
         item['uuid'] = item['sipuuid']
         item['id'] = item['sipuuid']
@@ -301,6 +294,8 @@ def ingest_status(request, uuid=None):
     return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
   elif request.method == 'DELETE':
     jobs = Job.objects.filter(sipuuid = uuid)
+    jobs.update(hidden=True)
+    """ MCP
     try:
       mcp_client = MCPClient()
       mcp_list = etree.XML(mcp_client.list())
@@ -308,7 +303,7 @@ def ingest_status(request, uuid=None):
         if 0 < len(jobs.filter(jobuuid=uuid.text)):
           client.execute(uuid.text)
     except Exception: pass
-    jobs.update(hidden=True)
+    """
     response = simplejson.JSONEncoder().encode({'removed': True})
     return HttpResponse(response, mimetype='application/json')
 
@@ -419,7 +414,35 @@ def preservation_planning(request):
   return render_to_response('main/preservation_planning.html', locals())
 
 def ingest_detail(request, uuid):
+  job = Job.objects.filter(sipuuid=uuid)[0]
+  name = utils.get_directory_name(job.directory)
   return render_to_response('main/ingest/detail.html', locals())
+
+def ingest_microservices(request, uuid):
+  jobs = Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(jobs[0].directory)
+  return render_to_response('main/ingest/microservices.html', locals())
+
+def ingest_rights(request, uuid):
+  job = Job.objects.filter(sipuuid=uuid)[0]
+  name = utils.get_directory_name(job.directory)
+  return render_to_response('main/ingest/rights.html', locals())
+
+def ingest_delete(request, uuid):
+  jobs = Job.objects.filter(sipuuid=uuid)
+
+  """ MCP
+  try:
+    mcp_client = MCPClient()
+    mcp_list = etree.XML(mcp_client.list())
+    for uuid in mcp_list.findall('Job/UUID'):
+      if 0 < len(jobs.filter(jobuuid=uuid.text)):
+        client.execute(uuid.text)
+  except Exception: pass
+  """
+
+  jobs.update(hidden=True)
+  return HttpResponseRedirect(reverse('dashboard.main.views.ingest_grid'))
 
 def transfer_detail(request, uuid):
   return render_to_response('main/transfer/detail.html', locals())

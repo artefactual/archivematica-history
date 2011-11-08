@@ -18,9 +18,13 @@ urlpatterns = patterns('dashboard.main.views',
   # Ingest
   (r'ingest/$', 'ingest_grid'),
   (r'ingest/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_detail'),
+  (r'ingest/(?P<uuid>' + UUID_REGEX + ')/delete/$', 'ingest_delete'),
+  (r'ingest/(?P<uuid>' + UUID_REGEX + ')/metadata/$', 'ingest_metadata'),
+  (r'ingest/(?P<uuid>' + UUID_REGEX + ')/microservices/$', 'ingest_microservices'),
+  (r'ingest/(?P<uuid>' + UUID_REGEX + ')/rights/$', 'ingest_rights'),
   (r'ingest/status/$', 'ingest_status'),
   (r'ingest/status/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_status'),
-  (r'ingest/metadata/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_metadata'),
+  # (r'ingest/metadata/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_metadata'),
   (r'ingest/normalization_report/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_normalization_report'),
 
   # Jobs and taks (is part of ingest)
