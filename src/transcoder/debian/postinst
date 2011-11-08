@@ -4,6 +4,7 @@ set -e
 
 #source debconf stuff
 . /usr/share/debconf/confmodule
+. /usr/share/dbconfig-common/dpkg/postinst
 
 dbc_dbname=MCP
 dbc_dbuser=archivematica
