@@ -10,6 +10,6 @@ dbc_dbuser=archivematica
 # source dbconfig-common shell library, and call the hook function
 if [ -f /usr/share/dbconfig-common/dpkg/config.mysql ]; then
   . /usr/share/dbconfig-common/dpkg/config.mysql
-  dbc_go archivematica-mcp-server $@
+  dbc_go archivematica-transcoder $@
 fi
 
