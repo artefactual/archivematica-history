@@ -414,8 +414,9 @@ def preservation_planning(request):
   return render_to_response('main/preservation_planning.html', locals())
 
 def ingest_detail(request, uuid):
-  job = Job.objects.filter(sipuuid=uuid)[0]
-  name = utils.get_directory_name(job.directory)
+  jobs = Job.objects.filter(sipuuid=uuid)
+  is_waiting = jobs.filter(currentstep='Awaiting decision').count() > 0
+  name = utils.get_directory_name(jobs[0].directory)
   return render_to_response('main/ingest/detail.html', locals())
 
 def ingest_microservices(request, uuid):
