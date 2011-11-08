@@ -33,8 +33,16 @@ from lxml import etree
 import calendar, os, re, subprocess
 from datetime import datetime
 
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Home
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
 def home(request):
   return render_to_response('home.html', locals())
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Status
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def status(request):
   client = MCPClient()
@@ -47,6 +55,504 @@ def status(request):
   response = {'sip': sip_count, 'transfer': transfer_count, 'dip': dip_count}
 
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Ingest
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def ingest_grid(request):
+  polling_interval = django_settings.POLLING_INTERVAL
+  microservices_help = django_settings.MICROSERVICES_HELP
+  return render_to_response('main/ingest/grid.html', locals())
+
+def ingest_status(request, uuid=None):
+  if request.method == 'GET':
+    # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
+    objects = Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None').filter(unittype__exact = 'unitSIP')
+    mcp_available = False
+    try:
+      client = MCPClient()
+      mcp_status = etree.XML(client.list())
+      mcp_available = True
+    except Exception: pass
+    def encoder(obj):
+      items = []
+      for item in obj:
+        jobs = get_jobs_by_sipuuid(item['sipuuid'])
+        directory = jobs[0].directory
+        item['directory'] = utils.get_directory_name(directory)
+        item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
+        item['uuid'] = item['sipuuid']
+        item['id'] = item['sipuuid']
+        del item['sipuuid']
+        item['jobs'] = []
+        for job in jobs:
+          newJob = {}
+          item['jobs'].append(newJob)
+          newJob['uuid'] = job.jobuuid
+          newJob['microservice'] = job.jobtype #map_known_values(job.jobtype)
+          newJob['currentstep'] = job.currentstep #map_known_values(job.currentstep)
+          newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
+          try: mcp_status
+          except NameError: pass
+          else:
+            xml_unit = mcp_status.xpath('choicesAvailableForUnit[UUID="%s"]' % job.jobuuid)
+            if xml_unit:
+              xml_unit_choices = xml_unit[0].findall('choices/choice')
+              choices = {}
+              for choice in xml_unit_choices:
+                choices[choice.find("chainAvailable").text] = choice.find("description").text
+              newJob['choices'] = choices
+        items.append(item)
+      return items
+    response = {}
+    response['objects'] = objects
+    response['mcp'] = mcp_available
+    return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
+  elif request.method == 'DELETE':
+    jobs = Job.objects.filter(sipuuid = uuid)
+    jobs.update(hidden=True)
+    """ MCP
+    try:
+      mcp_client = MCPClient()
+      mcp_list = etree.XML(mcp_client.list())
+      for uuid in mcp_list.findall('Job/UUID'):
+        if 0 < len(jobs.filter(jobuuid=uuid.text)):
+          client.execute(uuid.text)
+    except Exception: pass
+    """
+    response = simplejson.JSONEncoder().encode({'removed': True})
+    return HttpResponse(response, mimetype='application/json')
+
+def ingest_metadata(request, uuid):
+  try:
+    dc = DublinCore.objects.get_sip_metadata(uuid)
+  except ObjectDoesNotExist:
+    dc = DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
+
+  fields = ['title', 'creator', 'subject', 'description', 'publisher',
+            'contributor', 'date', 'type', 'format', 'identifier',
+            'source', 'isPartOf', 'language', 'coverage', 'rights']
+
+  if request.method == 'POST':
+    form = DublinCoreMetadataForm(request.POST)
+    if form.is_valid():
+      for item in fields:
+        setattr(dc, item, form.cleaned_data[item])
+      dc.save()
+  else:
+    initial = {}
+    for item in fields:
+      initial[item] = getattr(dc, item)
+    form = DublinCoreMetadataForm(initial=initial)
+    job = Job.objects.filter(sipuuid=uuid)[0]
+    name = utils.get_directory_name(job.directory)
+
+  return render_to_response('main/ingest/metadata.html', locals())
+
+def ingest_detail(request, uuid):
+  jobs = Job.objects.filter(sipuuid=uuid)
+  is_waiting = jobs.filter(currentstep='Awaiting decision').count() > 0
+  name = utils.get_directory_name(jobs[0].directory)
+  return render_to_response('main/ingest/detail.html', locals())
+
+def ingest_microservices(request, uuid):
+  jobs = Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(jobs[0].directory)
+  return render_to_response('main/ingest/microservices.html', locals())
+
+def ingest_rights(request, uuid):
+  job = Job.objects.filter(sipuuid=uuid)[0]
+  name = utils.get_directory_name(job.directory)
+  return render_to_response('main/ingest/rights.html', locals())
+
+def ingest_delete(request, uuid):
+  jobs = Job.objects.filter(sipuuid=uuid)
+
+  """ MCP
+  try:
+    mcp_client = MCPClient()
+    mcp_list = etree.XML(mcp_client.list())
+    for uuid in mcp_list.findall('Job/UUID'):
+      if 0 < len(jobs.filter(jobuuid=uuid.text)):
+        client.execute(uuid.text)
+  except Exception: pass
+  """
+
+  jobs.update(hidden=True)
+  return HttpResponseRedirect(reverse('dashboard.main.views.ingest_grid'))
+
+def ingest_normalization_report(request, uuid):
+  query = """
+    SELECT
+
+      Tasks.fileUUID AS U,
+      Tasks.fileName,
+
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.stdOut LIKE '%%[Command]%%')
+      AS 'Preservation normalization attempted',
+
+      (
+        SELECT Tasks.exitCode
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.fileUUID = U
+      ) != 0
+      AS 'Preservation normalization failed',
+
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+          Tasks.stdOut LIKE '%%Already in preservation format%%')
+      AS 'Already in preservation format',
+
+      Tasks.fileUUID NOT IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+          Tasks.stdOut LIKE '%%description: Copying File.%%') AND
+          Tasks.fileUUID IN (
+            SELECT Tasks.fileUUID
+            FROM Tasks
+            JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+            WHERE
+              Jobs.SIPUUID = %s AND
+              Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+              Tasks.stdOut LIKE '%%[Command]%%') AND
+          Tasks.fileUUID NOT IN (
+            SELECT Tasks.fileUUID
+            FROM Tasks
+              JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+            WHERE
+              Jobs.SIPUUID = %s AND
+              Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+              Tasks.stdOut LIKE '%%Not including %% in DIP.%%')
+      AS 'Access normalization attempted',
+
+      (
+        SELECT Tasks.exitCode
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+          Tasks.fileUUID = U
+      ) != 0
+      AS 'Access normalization failed',
+
+      Tasks.fileUUID IN (
+        SELECT Tasks.fileUUID
+        FROM Tasks
+        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+        WHERE
+          Jobs.SIPUUID = %s AND
+          Tasks.exitCode = 0 AND
+          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+          Tasks.stdOut LIKE '%%Already in access format%%')
+      AS 'Already in access format'
+
+    FROM Tasks
+    JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+    WHERE
+      Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+      Jobs.SIPUUID = %s
+    ORDER BY Tasks.fileName"""
+
+  cursor = connection.cursor()
+  cursor.execute(query, (
+    uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid
+  ))
+  objects = cursor.fetchall()
+
+  return render_to_response('main/normalization_report.html', locals())
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Transfer
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def transfer_grid(request):
+  polling_interval = django_settings.POLLING_INTERVAL
+  microservices_help = django_settings.MICROSERVICES_HELP
+  return render_to_response('main/transfer/grid.html', locals())
+
+def transfer_status(request, uuid=None):
+  if request.method == 'GET':
+    # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
+    objects = Job.objects.filter(hidden=False, unittype__exact='unitTransfer').values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
+    mcp_available = False
+    try:
+      client = MCPClient()
+      mcp_status = etree.XML(client.list())
+      mcp_available = True
+    except Exception: pass
+    def encoder(obj):
+      items = []
+      for item in obj:
+        jobs = get_jobs_by_sipuuid(item['sipuuid'])
+        directory = jobs[0].directory
+        item['directory'] = utils.get_directory_name(directory)
+        item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
+        item['uuid'] = item['sipuuid']
+        item['id'] = item['sipuuid']
+        del item['sipuuid']
+        item['jobs'] = []
+        for job in jobs:
+          newJob = {}
+          item['jobs'].append(newJob)
+          newJob['uuid'] = job.jobuuid
+          newJob['microservice'] = job.jobtype #map_known_values(job.jobtype)
+          newJob['currentstep'] = job.currentstep #map_known_values(job.currentstep)
+          newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
+          try: mcp_status
+          except NameError: pass
+          else:
+            xml_unit = mcp_status.xpath('choicesAvailableForUnit[UUID="%s"]' % job.jobuuid)
+            if xml_unit:
+              xml_unit_choices = xml_unit[0].findall('choices/choice')
+              choices = {}
+              for choice in xml_unit_choices:
+                choices[choice.find("chainAvailable").text] = choice.find("description").text
+              newJob['choices'] = choices
+        items.append(item)
+      return items
+    response = {}
+    response['objects'] = objects
+    response['mcp'] = mcp_available
+    return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
+  elif request.method == 'DELETE':
+    jobs = Job.objects.filter(sipuuid = uuid)
+    try:
+      mcp_client = MCPClient()
+      mcp_list = etree.XML(mcp_client.list())
+      for uuid in mcp_list.findall('Job/UUID'):
+        if 0 < len(jobs.filter(jobuuid=uuid.text)):
+          client.execute(uuid.text)
+    except Exception: pass
+    jobs.update(hidden=True)
+    response = simplejson.JSONEncoder().encode({'removed': True})
+    return HttpResponse(response, mimetype='application/json')
+
+def transfer_detail(request, uuid):
+  return render_to_response('main/transfer/detail.html', locals())
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Archival storage
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def archival_storage(request, path=None):
+  document = '/var/archivematica/sharedDirectory/www/index.html'
+  # User requests a file
+  if path is not None:
+    return serve(request, path, document_root=os.path.dirname(document))
+  total_size = 0
+  # Browse contents parsing index.html static file, generated by storeAIP.py
+  try:
+    tree = etree.parse(document)
+  except IOError:
+    return render_to_response('main/archival_storage.html', locals())
+  tree = tree.findall('body/div')
+  sips = []
+  for item in tree:
+    sip = {}
+    sip['href'] = item.find('p[@class="name"]/a').attrib['href']
+    sip['name'] = item.find('p[@class="name"]/a').text
+    sip['uuid'] = item.find('p[@class="uuid"]').text
+    size = os.path.getsize(os.path.join(os.path.dirname(document), sip['href'])) / float(1024) / float(1024)
+    total_size = total_size + size
+    sip['size'] = '{0:.2f}'.format(size)
+    try:
+      date = datetime.strptime(item.find('p[@class="date"]').text.split('.')[0], '%Y-%m-%dT%H:%M:%S')
+      sip['date'] = date.isoformat(' ')
+    except:
+      sip['date'] = ''
+    sips.append(sip)
+    order_by = request.GET.get('order_by', 'name');
+    sort_by = request.GET.get('sort_by', 'up');
+    def sort_aips(sip):
+      value = 0
+      if 'name' == order_by:
+        value = sip['name'].lower()
+      else:
+        value = sip[order_by]
+      return value
+    sips = sorted(sips, key = sort_aips)
+    if sort_by == 'down':
+      sips.reverse()
+  total_size = '{0:.2f}'.format(total_size)
+  return render_to_response('main/archival_storage.html', locals())
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Preservation planning
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def preservation_planning(request):
+  query="""SELECT
+      Groups.description,
+      FIBE.Extension,
+      CC.classification,
+      CT.TYPE,
+      CR.countAttempts,
+      CR.countOK,
+      CR.countNotOK,
+      CR.countAttempts - (CR.countOK + CR.countNotOK) AS countIncomplete,
+      Commands.PK AS CommandPK,
+      Commands.description,
+      Commands.command
+    FROM FileIDsByExtension AS FIBE
+    RIGHT OUTER JOIN FileIDs ON FIBE.FileIDs = FileIDs.pk
+    LEFT OUTER JOIN FileIDGroupMembers AS FIGM ON FIGM.fileID = FileIDs.pk
+    LEFT OUTER JOIN Groups on Groups.pk = FIGM.groupID
+    JOIN CommandRelationships AS CR ON FileIDs.pk = CR.FileID
+    JOIN Commands ON CR.command = Commands.pk
+    JOIN CommandClassifications AS CC on CR.commandClassification = CC.pk
+    JOIN CommandTypes AS CT ON Commands.commandType = CT.pk
+    WHERE
+      FIBE.Extension IS NOT NULL
+      AND FIBE.Extension NOT IN ('mboxi', 'pst')
+      AND CC.classification IN ('access', 'preservation')
+    ORDER BY Groups.description, FIBE.Extension, CC.classification"""
+
+  cursor = connection.cursor()
+  cursor.execute(query)
+  planning = cursor.fetchall()
+
+  url = {
+    'Audio': 'http://archivematica.org/wiki/index.php?title=Audio',
+    'Email': 'http://archivematica.org/wiki/index.php?title=Email',
+    'Office Open XML': 'http://archivematica.org/wiki/index.php?title=Microsoft_Office_Open_XML',
+    'Plain text': 'http://archivematica.org/wiki/index.php?title=Plain_text',
+    'Portable Document Format': 'http://archivematica.org/wiki/index.php?title=Portable_Document_Format',
+    'Presentation': 'http://archivematica.org/wiki/index.php?title=Presentation_files',
+    'Raster Image': 'http://archivematica.org/wiki/index.php?title=Raster_images',
+    'Raw Camera Image': 'http://archivematica.org/wiki/index.php?title=Raw_camera_files',
+    'Spreadsheet': 'http://archivematica.org/wiki/index.php?title=Spreadsheets',
+    'Vector Image': 'http://archivematica.org/wiki/index.php?title=Vector_images',
+    'Video': 'http://archivematica.org/wiki/index.php?title=Video',
+    'Word Processing': 'http://archivematica.org/wiki/index.php?title=Word_processing_files'
+  }
+
+  file_types = []
+  last_type = ''
+  for item in planning:
+    if last_type == item[0]:
+      row = file_types.pop()
+    else:
+      row = {}
+      row['type'] = last_type = item[0] # File type
+      if row['type'] in url:
+        row['url'] = url[row['type']]
+      row['extensions'] = []
+    row['extensions'].append(item) # Extensions
+    file_types.append(row)
+
+  cursor.close()
+
+  return render_to_response('main/preservation_planning.html', locals())
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Access
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def access(request):
+  return render_to_response('main/access.html', locals())
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Settings
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def settings(request):
+  settings = StandardTaskConfig.objects.all()
+  return render_to_response('main/settings.html', locals())
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Misc
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def tasks(request, uuid):
+  job = Job.objects.get(jobuuid=uuid)
+  objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')
+  return render_to_response('main/tasks.html', locals())
+
+def map_known_values(value):
+  #changes should be made in the database, not this map
+  map = {
+    # currentStep
+    'completedSuccessfully': 'Completed successfully',
+    'completedUnsuccessfully': 'Failed',
+    'exeCommand': 'Executing command(s)',
+    'verificationCommand': 'Executing command(s)',
+    'requiresAprroval': 'Requires approval',
+    'requiresApproval': 'Requires approval',
+    # jobType
+    'acquireSIP': 'Acquire SIP',
+    'addDCToMETS': 'Add DC to METS',
+    'appraiseSIP': 'Appraise SIP',
+    'assignSIPUUID': 'Asign SIP UUID',
+    'assignUUID': 'Assign file UUIDs and checksums',
+    'bagit': 'Bagit',
+    'cleanupAIPPostBagit': 'Cleanup AIP post bagit',
+    'compileMETS': 'Compile METS',
+    'copyMETSToDIP': 'Copy METS to DIP',
+    'createAIPChecksum': 'Create AIP checksum',
+    'createDIPDirectory': 'Create DIP directory',
+    'createOrMoveDC': 'Create or move DC',
+    'createSIPBackup': 'Create SIP backup',
+    'detoxFileNames': 'Detox filenames',
+    'extractPackage': 'Extract package',
+    'FITS': 'FITS',
+    'normalize': 'Normalize',
+    'Normalization Failed': 'Normalization failed',
+    'quarantine': 'Place in quarantine',
+    'reviewSIP': 'Review SIP',
+    'scanForRemovedFilesPostAppraiseSIPForPreservation': 'Scan for removed files post appraise SIP for preservation',
+    'scanForRemovedFilesPostAppraiseSIPForSubmission': 'Scan for removed files post appraise SIP for submission',
+    'scanWithClamAV': 'Scan with ClamAV',
+    'seperateDIP': 'Seperate DIP',
+    'storeAIP': 'Store AIP',
+    'unquarantine': 'Remove from Quarantine',
+    'uploadDIP': 'Upload DIP',
+    'verifyChecksum': 'Verify checksum',
+    'verifyMetadataDirectoryChecksums': 'Verify metadata directory checksums',
+    'verifySIPCompliance': 'Verify SIP compliance',
+  }
+  if value in map:
+    return map[value]
+  else:
+    return value
+
+def get_jobs_by_sipuuid(uuid):
+  jobs = Job.objects.filter(sipuuid = uuid).order_by('-createdtime')
+  priorities = {
+    'completedUnsuccessfully': 0,
+    'requiresAprroval': 1,
+    'requiresApproval': 1,
+    'exeCommand': 2,
+    'verificationCommand': 3,
+    'completedSuccessfully': 4,
+    'cleanupSuccessfulCommand': 5,
+  }
+  def get_priority(job):
+    try: return priorities[job.currentstep]
+    except Exception: return 0
+  return sorted(jobs, key = get_priority) # key = lambda job: priorities[job.currentstep]
 
 def jobs_manual_normalization(request, uuid):
   job = Job.objects.get(jobuuid=uuid)
@@ -154,473 +660,3 @@ def jobs_explore(request, uuid):
       newItem['size'] = os.path.getsize(os.path.join(directory, item))
     contents.append(newItem)
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
-
-def ingest_grid(request):
-  polling_interval = django_settings.POLLING_INTERVAL
-  microservices_help = django_settings.MICROSERVICES_HELP
-  return render_to_response('main/ingest/grid.html', locals())
-
-def ingest_metadata(request, uuid):
-  try:
-    dc = DublinCore.objects.get_sip_metadata(uuid)
-  except ObjectDoesNotExist:
-    dc = DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
-
-  fields = ['title', 'creator', 'subject', 'description', 'publisher',
-            'contributor', 'date', 'type', 'format', 'identifier',
-            'source', 'isPartOf', 'language', 'coverage', 'rights']
-
-  if request.method == 'POST':
-    form = DublinCoreMetadataForm(request.POST)
-    if form.is_valid():
-      for item in fields:
-        setattr(dc, item, form.cleaned_data[item])
-      dc.save()
-  else:
-    initial = {}
-    for item in fields:
-      initial[item] = getattr(dc, item)
-    form = DublinCoreMetadataForm(initial=initial)
-    job = Job.objects.filter(sipuuid=uuid)[0]
-    name = utils.get_directory_name(job.directory)
-
-  return render_to_response('main/ingest/metadata.html', locals())
-
-def transfer_grid(request):
-  polling_interval = django_settings.POLLING_INTERVAL
-  microservices_help = django_settings.MICROSERVICES_HELP
-  return render_to_response('main/transfer/grid.html', locals())
-
-def transfer_status(request, uuid=None):
-  if request.method == 'GET':
-    # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-    objects = Job.objects.filter(hidden=False, unittype__exact='unitTransfer').values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
-    mcp_available = False
-    try:
-      client = MCPClient()
-      mcp_status = etree.XML(client.list())
-      mcp_available = True
-    except Exception: pass
-    def encoder(obj):
-      items = []
-      for item in obj:
-        jobs = get_jobs_by_sipuuid(item['sipuuid'])
-        directory = jobs[0].directory
-        item['directory'] = utils.get_directory_name(directory)
-        item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
-        item['uuid'] = item['sipuuid']
-        item['id'] = item['sipuuid']
-        del item['sipuuid']
-        item['jobs'] = []
-        for job in jobs:
-          newJob = {}
-          item['jobs'].append(newJob)
-          newJob['uuid'] = job.jobuuid
-          newJob['microservice'] = job.jobtype #map_known_values(job.jobtype)
-          newJob['currentstep'] = job.currentstep #map_known_values(job.currentstep)
-          newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
-          try: mcp_status
-          except NameError: pass
-          else:
-            xml_unit = mcp_status.xpath('choicesAvailableForUnit[UUID="%s"]' % job.jobuuid)
-            if xml_unit:
-              xml_unit_choices = xml_unit[0].findall('choices/choice')
-              choices = {}
-              for choice in xml_unit_choices:
-                choices[choice.find("chainAvailable").text] = choice.find("description").text
-              newJob['choices'] = choices
-        items.append(item)
-      return items
-    response = {}
-    response['objects'] = objects
-    response['mcp'] = mcp_available
-    return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
-  elif request.method == 'DELETE':
-    jobs = Job.objects.filter(sipuuid = uuid)
-    try:
-      mcp_client = MCPClient()
-      mcp_list = etree.XML(mcp_client.list())
-      for uuid in mcp_list.findall('Job/UUID'):
-        if 0 < len(jobs.filter(jobuuid=uuid.text)):
-          client.execute(uuid.text)
-    except Exception: pass
-    jobs.update(hidden=True)
-    response = simplejson.JSONEncoder().encode({'removed': True})
-    return HttpResponse(response, mimetype='application/json')
-
-def ingest_status(request, uuid=None):
-  if request.method == 'GET':
-    # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-    objects = Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None').filter(unittype__exact = 'unitSIP')
-    mcp_available = False
-    try:
-      client = MCPClient()
-      mcp_status = etree.XML(client.list())
-      mcp_available = True
-    except Exception: pass
-    def encoder(obj):
-      items = []
-      for item in obj:
-        jobs = get_jobs_by_sipuuid(item['sipuuid'])
-        directory = jobs[0].directory
-        item['directory'] = utils.get_directory_name(directory)
-        item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
-        item['uuid'] = item['sipuuid']
-        item['id'] = item['sipuuid']
-        del item['sipuuid']
-        item['jobs'] = []
-        for job in jobs:
-          newJob = {}
-          item['jobs'].append(newJob)
-          newJob['uuid'] = job.jobuuid
-          newJob['microservice'] = job.jobtype #map_known_values(job.jobtype)
-          newJob['currentstep'] = job.currentstep #map_known_values(job.currentstep)
-          newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
-          try: mcp_status
-          except NameError: pass
-          else:
-            xml_unit = mcp_status.xpath('choicesAvailableForUnit[UUID="%s"]' % job.jobuuid)
-            if xml_unit:
-              xml_unit_choices = xml_unit[0].findall('choices/choice')
-              choices = {}
-              for choice in xml_unit_choices:
-                choices[choice.find("chainAvailable").text] = choice.find("description").text
-              newJob['choices'] = choices
-        items.append(item)
-      return items
-    response = {}
-    response['objects'] = objects
-    response['mcp'] = mcp_available
-    return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
-  elif request.method == 'DELETE':
-    jobs = Job.objects.filter(sipuuid = uuid)
-    jobs.update(hidden=True)
-    """ MCP
-    try:
-      mcp_client = MCPClient()
-      mcp_list = etree.XML(mcp_client.list())
-      for uuid in mcp_list.findall('Job/UUID'):
-        if 0 < len(jobs.filter(jobuuid=uuid.text)):
-          client.execute(uuid.text)
-    except Exception: pass
-    """
-    response = simplejson.JSONEncoder().encode({'removed': True})
-    return HttpResponse(response, mimetype='application/json')
-
-def archival_storage(request, path=None):
-  document = '/var/archivematica/sharedDirectory/www/index.html'
-  # User requests a file
-  if path is not None:
-    return serve(request, path, document_root=os.path.dirname(document))
-  total_size = 0
-  # Browse contents parsing index.html static file, generated by storeAIP.py
-  try:
-    tree = etree.parse(document)
-  except IOError:
-    return render_to_response('main/archival_storage.html', locals())
-  tree = tree.findall('body/div')
-  sips = []
-  for item in tree:
-    sip = {}
-    sip['href'] = item.find('p[@class="name"]/a').attrib['href']
-    sip['name'] = item.find('p[@class="name"]/a').text
-    sip['uuid'] = item.find('p[@class="uuid"]').text
-    size = os.path.getsize(os.path.join(os.path.dirname(document), sip['href'])) / float(1024) / float(1024)
-    total_size = total_size + size
-    sip['size'] = '{0:.2f}'.format(size)
-    try:
-      date = datetime.strptime(item.find('p[@class="date"]').text.split('.')[0], '%Y-%m-%dT%H:%M:%S')
-      sip['date'] = date.isoformat(' ')
-    except:
-      sip['date'] = ''
-    sips.append(sip)
-    order_by = request.GET.get('order_by', 'name');
-    sort_by = request.GET.get('sort_by', 'up');
-    def sort_aips(sip):
-      value = 0
-      if 'name' == order_by:
-        value = sip['name'].lower()
-      else:
-        value = sip[order_by]
-      return value
-    sips = sorted(sips, key = sort_aips)
-    if sort_by == 'down':
-      sips.reverse()
-  total_size = '{0:.2f}'.format(total_size)
-  return render_to_response('main/archival_storage.html', locals())
-
-def preservation_planning(request):
-  query="""SELECT
-      Groups.description,
-      FIBE.Extension,
-      CC.classification,
-      CT.TYPE,
-      CR.countAttempts,
-      CR.countOK,
-      CR.countNotOK,
-      CR.countAttempts - (CR.countOK + CR.countNotOK) AS countIncomplete,
-      Commands.PK AS CommandPK,
-      Commands.description,
-      Commands.command
-    FROM FileIDsByExtension AS FIBE
-    RIGHT OUTER JOIN FileIDs ON FIBE.FileIDs = FileIDs.pk
-    LEFT OUTER JOIN FileIDGroupMembers AS FIGM ON FIGM.fileID = FileIDs.pk
-    LEFT OUTER JOIN Groups on Groups.pk = FIGM.groupID
-    JOIN CommandRelationships AS CR ON FileIDs.pk = CR.FileID
-    JOIN Commands ON CR.command = Commands.pk
-    JOIN CommandClassifications AS CC on CR.commandClassification = CC.pk
-    JOIN CommandTypes AS CT ON Commands.commandType = CT.pk
-    WHERE
-      FIBE.Extension IS NOT NULL
-      AND FIBE.Extension NOT IN ('mboxi', 'pst')
-      AND CC.classification IN ('access', 'preservation')
-    ORDER BY Groups.description, FIBE.Extension, CC.classification"""
-
-  cursor = connection.cursor()
-  cursor.execute(query)
-  planning = cursor.fetchall()
-
-  url = {
-    'Audio': 'http://archivematica.org/wiki/index.php?title=Audio',
-    'Email': 'http://archivematica.org/wiki/index.php?title=Email',
-    'Office Open XML': 'http://archivematica.org/wiki/index.php?title=Microsoft_Office_Open_XML',
-    'Plain text': 'http://archivematica.org/wiki/index.php?title=Plain_text',
-    'Portable Document Format': 'http://archivematica.org/wiki/index.php?title=Portable_Document_Format',
-    'Presentation': 'http://archivematica.org/wiki/index.php?title=Presentation_files',
-    'Raster Image': 'http://archivematica.org/wiki/index.php?title=Raster_images',
-    'Raw Camera Image': 'http://archivematica.org/wiki/index.php?title=Raw_camera_files',
-    'Spreadsheet': 'http://archivematica.org/wiki/index.php?title=Spreadsheets',
-    'Vector Image': 'http://archivematica.org/wiki/index.php?title=Vector_images',
-    'Video': 'http://archivematica.org/wiki/index.php?title=Video',
-    'Word Processing': 'http://archivematica.org/wiki/index.php?title=Word_processing_files'
-  }
-
-  file_types = []
-  last_type = ''
-  for item in planning:
-    if last_type == item[0]:
-      row = file_types.pop()
-    else:
-      row = {}
-      row['type'] = last_type = item[0] # File type
-      if row['type'] in url:
-        row['url'] = url[row['type']]
-      row['extensions'] = []
-    row['extensions'].append(item) # Extensions
-    file_types.append(row)
-
-  cursor.close()
-
-  return render_to_response('main/preservation_planning.html', locals())
-
-def ingest_detail(request, uuid):
-  jobs = Job.objects.filter(sipuuid=uuid)
-  is_waiting = jobs.filter(currentstep='Awaiting decision').count() > 0
-  name = utils.get_directory_name(jobs[0].directory)
-  return render_to_response('main/ingest/detail.html', locals())
-
-def ingest_microservices(request, uuid):
-  jobs = Job.objects.filter(sipuuid=uuid)
-  name = utils.get_directory_name(jobs[0].directory)
-  return render_to_response('main/ingest/microservices.html', locals())
-
-def ingest_rights(request, uuid):
-  job = Job.objects.filter(sipuuid=uuid)[0]
-  name = utils.get_directory_name(job.directory)
-  return render_to_response('main/ingest/rights.html', locals())
-
-def ingest_delete(request, uuid):
-  jobs = Job.objects.filter(sipuuid=uuid)
-
-  """ MCP
-  try:
-    mcp_client = MCPClient()
-    mcp_list = etree.XML(mcp_client.list())
-    for uuid in mcp_list.findall('Job/UUID'):
-      if 0 < len(jobs.filter(jobuuid=uuid.text)):
-        client.execute(uuid.text)
-  except Exception: pass
-  """
-
-  jobs.update(hidden=True)
-  return HttpResponseRedirect(reverse('dashboard.main.views.ingest_grid'))
-
-def transfer_detail(request, uuid):
-  return render_to_response('main/transfer/detail.html', locals())
-
-def ingest_normalization_report(request, uuid):
-  query = """
-    SELECT
-
-      Tasks.fileUUID AS U,
-      Tasks.fileName,
-
-      Tasks.fileUUID IN (
-        SELECT Tasks.fileUUID
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.stdOut LIKE '%%[Command]%%')
-      AS 'Preservation normalization attempted',
-
-      (
-        SELECT Tasks.exitCode
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.fileUUID = U
-      ) != 0
-      AS 'Preservation normalization failed',
-
-      Tasks.fileUUID IN (
-        SELECT Tasks.fileUUID
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exitCode = 0 AND
-          Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-          Tasks.stdOut LIKE '%%Already in preservation format%%')
-      AS 'Already in preservation format',
-
-      Tasks.fileUUID NOT IN (
-        SELECT Tasks.fileUUID
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
-          Tasks.stdOut LIKE '%%description: Copying File.%%') AND
-          Tasks.fileUUID IN (
-            SELECT Tasks.fileUUID
-            FROM Tasks
-            JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-            WHERE
-              Jobs.SIPUUID = %s AND
-              Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
-              Tasks.stdOut LIKE '%%[Command]%%') AND
-          Tasks.fileUUID NOT IN (
-            SELECT Tasks.fileUUID
-            FROM Tasks
-              JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-            WHERE
-              Jobs.SIPUUID = %s AND
-              Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
-              Tasks.stdOut LIKE '%%Not including %% in DIP.%%')
-      AS 'Access normalization attempted',
-
-      (
-        SELECT Tasks.exitCode
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
-          Tasks.fileUUID = U
-      ) != 0
-      AS 'Access normalization failed',
-
-      Tasks.fileUUID IN (
-        SELECT Tasks.fileUUID
-        FROM Tasks
-        JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-        WHERE
-          Jobs.SIPUUID = %s AND
-          Tasks.exitCode = 0 AND
-          Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
-          Tasks.stdOut LIKE '%%Already in access format%%')
-      AS 'Already in access format'
-
-    FROM Tasks
-    JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-    WHERE
-      Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-      Jobs.SIPUUID = %s
-    ORDER BY Tasks.fileName"""
-
-  cursor = connection.cursor()
-  cursor.execute(query, (
-    uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid
-  ))
-  objects = cursor.fetchall()
-
-  return render_to_response('main/normalization_report.html', locals())
-
-def tasks(request, uuid):
-  job = Job.objects.get(jobuuid=uuid)
-  objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')
-  return render_to_response('main/tasks.html', locals())
-
-def map_known_values(value):
-  #changes should be made in the database, not this map
-  map = {
-    # currentStep
-    'completedSuccessfully': 'Completed successfully',
-    'completedUnsuccessfully': 'Failed',
-    'exeCommand': 'Executing command(s)',
-    'verificationCommand': 'Executing command(s)',
-    'requiresAprroval': 'Requires approval',
-    'requiresApproval': 'Requires approval',
-    # jobType
-    'acquireSIP': 'Acquire SIP',
-    'addDCToMETS': 'Add DC to METS',
-    'appraiseSIP': 'Appraise SIP',
-    'assignSIPUUID': 'Asign SIP UUID',
-    'assignUUID': 'Assign file UUIDs and checksums',
-    'bagit': 'Bagit',
-    'cleanupAIPPostBagit': 'Cleanup AIP post bagit',
-    'compileMETS': 'Compile METS',
-    'copyMETSToDIP': 'Copy METS to DIP',
-    'createAIPChecksum': 'Create AIP checksum',
-    'createDIPDirectory': 'Create DIP directory',
-    'createOrMoveDC': 'Create or move DC',
-    'createSIPBackup': 'Create SIP backup',
-    'detoxFileNames': 'Detox filenames',
-    'extractPackage': 'Extract package',
-    'FITS': 'FITS',
-    'normalize': 'Normalize',
-    'Normalization Failed': 'Normalization failed',
-    'quarantine': 'Place in quarantine',
-    'reviewSIP': 'Review SIP',
-    'scanForRemovedFilesPostAppraiseSIPForPreservation': 'Scan for removed files post appraise SIP for preservation',
-    'scanForRemovedFilesPostAppraiseSIPForSubmission': 'Scan for removed files post appraise SIP for submission',
-    'scanWithClamAV': 'Scan with ClamAV',
-    'seperateDIP': 'Seperate DIP',
-    'storeAIP': 'Store AIP',
-    'unquarantine': 'Remove from Quarantine',
-    'uploadDIP': 'Upload DIP',
-    'verifyChecksum': 'Verify checksum',
-    'verifyMetadataDirectoryChecksums': 'Verify metadata directory checksums',
-    'verifySIPCompliance': 'Verify SIP compliance',
-  }
-  if value in map:
-    return map[value]
-  else:
-    return value
-
-def get_jobs_by_sipuuid(uuid):
-  jobs = Job.objects.filter(sipuuid = uuid).order_by('-createdtime')
-  priorities = {
-    'completedUnsuccessfully': 0,
-    'requiresAprroval': 1,
-    'requiresApproval': 1,
-    'exeCommand': 2,
-    'verificationCommand': 3,
-    'completedSuccessfully': 4,
-    'cleanupSuccessfulCommand': 5,
-  }
-  def get_priority(job):
-    try: return priorities[job.currentstep]
-    except Exception: return 0
-  return sorted(jobs, key = get_priority) # key = lambda job: priorities[job.currentstep]
-
-def access(request):
-  return render_to_response('main/access.html', locals())
-
-def settings(request):
-  settings = StandardTaskConfig.objects.all()
-  return render_to_response('main/settings.html', locals())
