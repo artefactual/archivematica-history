@@ -161,10 +161,15 @@ def ingest_microservices(request, uuid):
   name = utils.get_directory_name(jobs[0].directory)
   return render_to_response('main/ingest/microservices.html', locals())
 
-def ingest_rights(request, uuid):
+def ingest_rights_list(request, uuid):
   job = Job.objects.filter(sipuuid=uuid)[0]
   name = utils.get_directory_name(job.directory)
-  return render_to_response('main/ingest/rights.html', locals())
+  return render_to_response('main/ingest/rights_list.html', locals())
+
+def ingest_rights_edit(request, uuid, id):
+  job = Job.objects.filter(sipuuid=uuid)[0]
+  name = utils.get_directory_name(job.directory)
+  return render_to_response('main/ingest/rights_edit.html', locals())
 
 def ingest_delete(request, uuid):
   jobs = Job.objects.filter(sipuuid=uuid)
@@ -352,6 +357,37 @@ def transfer_status(request, uuid=None):
 
 def transfer_detail(request, uuid):
   return render_to_response('main/transfer/detail.html', locals())
+
+def transfer_microservices(request, uuid):
+  jobs = Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(jobs[0].directory)
+  return render_to_response('main/transfer/microservices.html', locals())
+
+def transfer_rights_list(request, uuid):
+  job = Job.objects.filter(sipuuid=uuid)[0]
+  name = utils.get_directory_name(job.directory)
+  return render_to_response('main/transfer/rights_list.html', locals())
+
+def transfer_rights_edit(request, uuid, id):
+  job = Job.objects.filter(sipuuid=uuid)[0]
+  name = utils.get_directory_name(job.directory)
+  return render_to_response('main/transfer/rights_edit.html', locals())
+
+def transfer_delete(request, uuid):
+  jobs = Job.objects.filter(sipuuid=uuid)
+
+  """ MCP
+  try:
+    mcp_client = MCPClient()
+    mcp_list = etree.XML(mcp_client.list())
+    for uuid in mcp_list.findall('Job/UUID'):
+      if 0 < len(jobs.filter(jobuuid=uuid.text)):
+        client.execute(uuid.text)
+  except Exception: pass
+  """
+
+  jobs.update(hidden=True)
+  return HttpResponseRedirect(reverse('dashboard.main.views.ingest_grid'))
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Archival storage

@@ -2,7 +2,7 @@ from django.template import Node, Library
 
 register = Library()
 
-@register.filter('percentage')
+@register.filter
 def percentage(value, total):
   try:
     percentage = float(value) / float(total) * 100
