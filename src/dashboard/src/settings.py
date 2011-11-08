@@ -165,6 +165,9 @@ else:
   MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
   INSTALLED_APPS += ('debug_toolbar',)
   INTERNAL_IPS = ('127.0.0.1', '192.168.82.1',)
+  DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+  }
 
 # Dashboard internal settings
 MCP_SERVER = ('127.0.0.1', 4730) # localhost:4730

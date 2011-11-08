@@ -1,34 +1,27 @@
 from django import forms
 from django.forms import ModelForm
-from django.forms.widgets import Textarea
+from django.forms.widgets import TextInput, Textarea
 
 class DublinCoreMetadataForm(forms.Form):
 
-  TEXTAREA_ATTRS = {'rows':'4'}
+  TEXTAREA_ATTRS = {'rows': '4', 'class': 'span11'}
+  INPUT_ATTRS = {'class': 'span11'}
 
-  title = forms.CharField(required=False)
-  creator = forms.CharField(required=False)
-  subject = forms.CharField(required=False)
+  title = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
+  creator = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
+  subject = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
   description = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
-  publisher = forms.CharField(required=False)
-  contributor = forms.CharField(required=False)
-  date = forms.DateField(required=False, help_text='Use ISO 8061 (YYYY-MM-DD)')
-  type = forms.CharField(required=False)
-  format = forms.CharField(required=False)
-  identifier = forms.CharField(required=False)
-  source = forms.CharField(required=False)
-  isPartOf = forms.CharField(required=False)
-  language = forms.CharField(required=False, help_text='Use ISO 3166')
-  coverage = forms.CharField(required=False)
+  publisher = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
+  contributor = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
+  date = forms.DateField(required=False, help_text='Use ISO 8061 (YYYY-MM-DD)', widget=TextInput(attrs=INPUT_ATTRS))
+  type = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
+  format = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
+  identifier = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
+  source = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
+  isPartOf = forms.CharField(required=True, label='isPartOf', widget=TextInput(attrs=INPUT_ATTRS))
+  language = forms.CharField(required=False, help_text='Use ISO 3166', widget=TextInput(attrs=INPUT_ATTRS))
+  coverage = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
   rights = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
-
-  """
-  This form is intended to use for a js template system
-  But Django forms.py is escaping all the chars
-  def set_initial_value(self):
-    for name, field in self.fields.items():
-      field.initial = '<%= ' + name + ' %>'
-  """
 
 class TransferMetadataForm(forms.Form):
   accession_identifier = forms.CharField()

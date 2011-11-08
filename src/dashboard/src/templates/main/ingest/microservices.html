@@ -1,0 +1,30 @@
+{% extends "layout_fluid.html" %}
+
+{% block sidebar %}
+  {% include "main/ingest/_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="span12">
+
+      {% include "main/ingest/_breadcumb.html" %}
+
+      <h1>Micro-Services<br /><small>{{ name }}</small></h1>
+
+      {% regroup jobs by microservicegroup as groups %}
+
+      {% for item in groups %}
+        <div>
+          {{ item.grouper }}<br />
+          <ul>
+            {% for i in item.list %}
+              <li><strong>{{ i.jobtype }}:</strong> {{ i.currentstep }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+{% endblock %}

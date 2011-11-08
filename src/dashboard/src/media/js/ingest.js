@@ -84,10 +84,10 @@ $(function()
       template: _.template($('#sip-template').html()),
 
       events: {
-        'click .sip-row': 'toggleJobs',
+        'click .sip-row': 'openPanel',
         'click .sip-row > .sip-detail-actions > .btn_show_panel': 'openPanel',
+        'click .sip-row > .sip-detail-actions > .btn_show_jobs': 'toggleJobs',
         'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove',
-        'click .sip-row > .sip-detail-actions > .btn_edit_metadata': 'openMetadataEditor'
       },
 
       initialize: function()
@@ -141,17 +141,14 @@ $(function()
       openPanel: function(event)
         {
           event.preventDefault();
-          event.stopPropagation();
 
           window.location = '/ingest/' + this.model.get('uuid') + '/';
         },
 
       toggleJobs: function(event)
         {
-          if (event)
-          {
-            event.preventDefault();
-          }
+          event.preventDefault();
+          event.stopPropagation();
 
           console.log(event.which);
 
