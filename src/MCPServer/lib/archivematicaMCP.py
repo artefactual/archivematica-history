@@ -159,7 +159,7 @@ def createUnitAndJobChainThreaded(path, config):
     t.daemon = True
     while(limitTaskThreads <= threading.activeCount()):
         print threading.activeCount().__str__()
-        print "waiting on thread count", threading.activeCount()
+        print "DEBUG createUnitAndJobChainThreaded waiting on thread count", threading.activeCount()
         time.sleep(4)
     t.start() 
     
