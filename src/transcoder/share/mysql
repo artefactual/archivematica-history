@@ -1471,13 +1471,13 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
-    ('ffmpeg -i "%fileFullName%"  -ac `ffprobe "%fileFullName%" -show_streams 2>&1 | grep "codec_type=audio" -c` -ac 2 -ar 44100 "%outputDirectory%%prefix%%fileName%%postfix%.mpg"'),
-    '%outputDirectory%%prefix%%fileName%%postfix%.mpg',
+    ('ffmpeg -i "%fileFullName%" -vcodec libx264 -vpre normal -b 3000k "%outputDirectory%%prefix%%fileName%%postfix%.mp4"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.mp4',
     @ffmpegEventDetailCommandID,
     @standardVerificationCommand,
-    ('Transcoding to mpg with ffmpeg')
+    ('Transcoding to mp4 with ffmpeg')
 );
-set @ffmpegToMPGCommandID = LAST_INSERT_ID();
+set @ffmpegToMP4CommandID = LAST_INSERT_ID();
 
 INSERT INTO Commands 
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
@@ -1527,7 +1527,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
@@ -1557,7 +1557,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
@@ -1595,7 +1595,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
@@ -1634,7 +1634,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
@@ -1673,7 +1673,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
@@ -1712,7 +1712,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
@@ -1751,7 +1751,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
@@ -1790,7 +1790,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
@@ -1829,7 +1829,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
@@ -1868,7 +1868,7 @@ INSERT INTO CommandRelationships
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
-    @ffmpegToMPGCommandID,
+    @ffmpegToMP4CommandID,
     @fileID
 );
 
