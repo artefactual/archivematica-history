@@ -183,6 +183,7 @@ class SIPWatch(pyinotify.ProcessEvent):
         rr = self.wm.rm_watch(wdrm, rec=False)
         print "rr: ", rr    
         print self.wm
+        #self.notifier.stop()
         
         
 class transferWatch(pyinotify.ProcessEvent):

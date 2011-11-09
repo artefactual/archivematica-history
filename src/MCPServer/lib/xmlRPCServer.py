@@ -28,22 +28,6 @@ import gearman
 import cPickle
 from socket import gethostname
 
-a = """
-def startXMLRPCServer():
-    global xmlRPCServerServer
-    try:
-        server = SimpleXMLRPCServer( (archivematicaMCP.config.get('MCPServer', 'MCPArchivematicaXMLClients'), archivematicaMCP.config.getint('MCPServer', "MCPArchivematicaXMLPort")), logRequests=False)
-        xmlRPCServerServer = server 
-        server.register_function(getJobsAwaitingApproval)
-        server.register_function(approveJob)
-        server.serve_forever()
-    except Exception as inst:
-        print "DEBUG EXCEPTION! xml rpc"
-        print type(inst)     # the exception instance
-        print inst.args      # arguments stored in .args
-        archivematicaMCP.signal_handler(type(inst), inst.args)
-    print "DEBUG EXCEPTION! xml rpc2"
-    """    
 
 def getJobsAwaitingApproval():
     ret = etree.Element("choicesAvailableForUnits")
@@ -60,7 +44,7 @@ def approveJob(jobUUID, chain):
 
 def gearmanApproveJob(gearman_worker, gearman_job):
     try:
-        execute = gearman_job.task
+        #execute = gearman_job.task
         data = cPickle.loads(gearman_job.data)
         jobUUID = data["jobUUID"]
         chain = data["chain"]
@@ -71,8 +55,8 @@ def gearmanApproveJob(gearman_worker, gearman_job):
 
 def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
     try:
-        print "DEBUG - getting list of jobs"
-        execute = gearman_job.task
+        #print "DEBUG - getting list of jobs"
+        #execute = gearman_job.task
         return cPickle.dumps(getJobsAwaitingApproval())
     #catch OS errors
     except:

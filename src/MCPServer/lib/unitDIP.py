@@ -48,14 +48,14 @@ class unitDIP(unit):
             directory = directory.replace( currentPath, "%SIPDirectory%", 1)
             for file in files:
                 filePath = os.path.join(directory, file)
-                print filePath
+                #print filePath
                 self.fileList[filePath] = unitFile(filePath)
         
         sql = """SELECT  fileUUID, currentLocation FROM Files WHERE sipUUID =  '""" + self.UUID + "'" #AND Files.removedTime = 0; TODO
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:
-            print row
+            #print row
             UUID = row[0]
             currentPath = row[1]
             if currentPath in self.fileList:
