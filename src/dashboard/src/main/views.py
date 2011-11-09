@@ -27,7 +27,7 @@ from django.utils import simplejson
 from django.views.static import serve
 from dashboard.contrib.mcp.client import MCPClient
 from dashboard.contrib import utils
-from dashboard.main.forms import DublinCoreMetadataForm
+from dashboard.main.forms import DublinCoreMetadataForm, SettingsForm
 from dashboard.main.models import Task, Job, DublinCore, StandardTaskConfig
 from lxml import etree
 import calendar, os, re, subprocess
@@ -166,7 +166,7 @@ def ingest_rights_list(request, uuid):
   name = utils.get_directory_name(job.directory)
   return render_to_response('main/ingest/rights_list.html', locals())
 
-def ingest_rights_edit(request, uuid, id):
+def ingest_rights_edit(request, uuid, id=None):
   job = Job.objects.filter(sipuuid=uuid)[0]
   name = utils.get_directory_name(job.directory)
   return render_to_response('main/ingest/rights_edit.html', locals())
@@ -368,7 +368,7 @@ def transfer_rights_list(request, uuid):
   name = utils.get_directory_name(job.directory)
   return render_to_response('main/transfer/rights_list.html', locals())
 
-def transfer_rights_edit(request, uuid, id):
+def transfer_rights_edit(request, uuid, id=None):
   job = Job.objects.filter(sipuuid=uuid)[0]
   name = utils.get_directory_name(job.directory)
   return render_to_response('main/transfer/rights_edit.html', locals())
@@ -514,9 +514,26 @@ def access(request):
       Settings
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
-def settings(request):
+def settings_list(request):
   settings = StandardTaskConfig.objects.all()
-  return render_to_response('main/settings.html', locals())
+  return render_to_response('main/settings/list.html', locals())
+
+def settings_edit(request, id):
+  try:
+    setting = StandardTaskConfig.objects.get(id=id)
+  except ObjectDoesNotExist:
+    raise Http404
+
+  if request.method == 'POST':
+    form = SettingsForm(request.POST)
+    if form.is_valid():
+      setting.arguments = form.cleaned_data['arguments']
+      setting.save()
+      return HttpResponseRedirect(reverse('dashboard.main.views.settings_list'))
+  else:
+    form = SettingsForm(initial={'arguments': setting.arguments})
+
+  return render_to_response('main/settings/edit.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc
