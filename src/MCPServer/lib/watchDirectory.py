@@ -37,6 +37,7 @@ from archivematicaMCP import debug
 #depends on OS whether you need one line or other. I think Events.Codes is older.
 mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
 maskForCopied = pyinotify.IN_CREATE | pyinotify.IN_MODIFY
+createNotifiers = {}
 #mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
 
 #Used to monitor directories copied to the MCP, to act when they are done copying.
@@ -64,8 +65,9 @@ class archivematicaWatchDirectoryTimer():
         self.timerLock.acquire()
         #print "time expired", self
         wd = self.watchManager.get_wd(self.path)
-        self.watchManager.rm_watch(wd, rec=True) 
+        self.watchManager.rm_watch(wd, rec=True)
         self.watchDirectoryProcessEvent.process_IN_MOVED_TO(self.event)
+        createNotifiers.pop(self.path).stop()
 
 #Used to monitor directories copied to the MCP, to see when they are done copying.
 class directoryCreated(ProcessEvent):
@@ -96,6 +98,7 @@ class watchDirectoryProcessEvent(ProcessEvent):
                 wm = WatchManager()
                 notifier = ThreadedNotifier(wm, directoryCreated(self, event, wm, os.path.join(event.path, event.name)))
                 wdd = wm.add_watch(os.path.join(event.path, event.name), maskForCopied, rec=True, auto_add=True)
+                createNotifiers[os.path.join(event.path, event.name)] = notifier
                 notifier.start()
             else:
                 print "Warning: %s was created. It is a file, not a directory."
@@ -126,8 +129,8 @@ class archivematicaWatchDirectory:
         wm = WatchManager()
         
         #wm.add_watch(directory, , proc_fun=MyProcessing())
-        if debug:
-            mask = pyinotify.ALL_EVENTS
+        #if debug:
+        #    mask = pyinotify.ALL_EVENTS
         notifier = ThreadedNotifier(wm, watchDirectoryProcessEvent(variables, callBackFunction))
         wdd = wm.add_watch(directory, mask, rec=False)
         notifier.start()

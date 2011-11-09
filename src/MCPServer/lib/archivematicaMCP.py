@@ -68,6 +68,7 @@ global xmlRPCServerServer
 
 config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
 config.read("/etc/archivematica/MCPServer/serverConfig.conf")
+
 # archivematicaRD = replacementDics(config)
 
 #time to sleep to allow db to be updated with the new location of a SIP
@@ -86,7 +87,8 @@ watchedDirectories = []
 limitTaskThreads = config.getint('Protocol', "limitTaskThreads")
 limitTaskThreadsSleep = config.getfloat('Protocol', "limitTaskThreadsSleep")
 limitGearmanConnectionsSemaphore = threading.Semaphore(value=config.getint('Protocol', "limitGearmanConnections"))
-debug = True
+reservedAsTaskProcessingThreads = config.getint('Protocol', "reservedAsTaskProcessingThreads")
+debug = False
 
 def isUUID(uuid):
     split = uuid.split("-")
@@ -129,7 +131,7 @@ def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
         print "DEBUG creating sip", path, UUID
     return UUID
 
-def createUnitAndJobChain(path, config):
+def createUnitAndJobChain(path, config, terminate=False):
     print path, config
     unit = None
     if os.path.isdir(path):
@@ -149,20 +151,25 @@ def createUnitAndJobChain(path, config):
     else:
         return
     jobChain(unit, config[1])
+    if terminate:
+        exit(0)
 
 def createUnitAndJobChainThreaded(path, config):
     #createUnitAndJobChain(path, config)
     #return
-
-    print "DEBGUG alert watch path: ", path
-    t = threading.Thread(target=createUnitAndJobChain, args=(path, config))
-    t.daemon = True
-    while(limitTaskThreads <= threading.activeCount()):
-        print threading.activeCount().__str__()
-        print "DEBUG createUnitAndJobChainThreaded waiting on thread count", threading.activeCount()
-        time.sleep(4)
-    t.start() 
-    
+    try:   
+        print "DEBGUG alert watch path: ", path
+        t = threading.Thread(target=createUnitAndJobChain, args=(path, config), kwargs={"terminate":True})
+        t.daemon = True
+        while(limitTaskThreads <= threading.activeCount() + reservedAsTaskProcessingThreads ):
+            print threading.activeCount().__str__()
+            print "DEBUG createUnitAndJobChainThreaded waiting on thread count", threading.activeCount()
+            time.sleep(4)
+        t.start() 
+    except Exception as inst:
+            print "DEBUG EXCEPTION!"
+            print type(inst)     # the exception instance
+            print inst.args 
 
 def watchDirectories():
     rows = []
@@ -199,25 +206,16 @@ def watchDirectories():
     
 def signal_handler(signalReceived, frame):
     print signalReceived, frame
-    try:
-        xmlRPCServer.xmlRPCServerServer.server_close()
-    except Exception as inst:
-            print "DEBUG EXCEPTION!"
-            print type(inst)     # the exception instance
-            print inst.args 
     threads = threading.enumerate()
-    mt = None
     for thread in threads:
-        if isinstance(thread, threading.Thread):
-            print "stopping: ", type(thread), thread
+        if False and isinstance(thread, threading.Thread):
             try:
-                thread.__stop()
+                print "not stopping: ", type(thread), thread
             except Exception as inst:
                 print "DEBUG EXCEPTION!"
                 print type(inst)     # the exception instance
                 print inst.args
-        if isinstance(thread, ThreadedNotifier):
-            
+        elif isinstance(thread, pyinotify.ThreadedNotifier):
             print "stopping: ", type(thread), thread
             try:
                 thread.stop()
@@ -236,7 +234,7 @@ def debugMonitor():
         print "\tThreadCount: ", threading.activeCount()
         print "\tDate Time: ", databaseInterface.getUTCDate()
         print "</DEBUG>"
-        time.sleep(30)
+        time.sleep(10)
         
 def flushOutputs():
     while True:
@@ -245,6 +243,8 @@ def flushOutputs():
         time.sleep(5)
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
     if True:
         import getpass
         print "user: ", getpass.getuser()
@@ -257,10 +257,8 @@ if __name__ == '__main__':
         t = threading.Thread(target=flushOutputs)
         t.daemon = True
         t.start() 
-        
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
+    
+    watchDirectories()    
     transferD.main()
-    watchDirectories()
     xmlRPCServer.startXMLRPCServer()
     
