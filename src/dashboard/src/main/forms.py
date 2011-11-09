@@ -30,4 +30,9 @@ class TransferMetadataForm(forms.Form):
   description = forms.CharField()
   notes = forms.CharField()
 
+class SettingsForm(forms.Form):
+
+  TEXTAREA_ATTRS = {'rows': '4', 'class': 'span11'}
+
+  arguments = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
 # ...
