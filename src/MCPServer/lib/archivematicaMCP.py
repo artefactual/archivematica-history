@@ -89,6 +89,7 @@ limitTaskThreadsSleep = config.getfloat('Protocol', "limitTaskThreadsSleep")
 limitGearmanConnectionsSemaphore = threading.Semaphore(value=config.getint('Protocol', "limitGearmanConnections"))
 reservedAsTaskProcessingThreads = config.getint('Protocol', "reservedAsTaskProcessingThreads")
 debug = False
+stopSignalReceived = False
 
 def isUUID(uuid):
     split = uuid.split("-")
@@ -162,6 +163,8 @@ def createUnitAndJobChainThreaded(path, config):
         t = threading.Thread(target=createUnitAndJobChain, args=(path, config), kwargs={"terminate":True})
         t.daemon = True
         while(limitTaskThreads <= threading.activeCount() + reservedAsTaskProcessingThreads ):
+            if stopSignalReceived:
+                exit(0)
             print threading.activeCount().__str__()
             print "DEBUG createUnitAndJobChainThreaded waiting on thread count", threading.activeCount()
             time.sleep(4)
@@ -206,6 +209,8 @@ def watchDirectories():
     
 def signal_handler(signalReceived, frame):
     print signalReceived, frame
+    global stopSignalReceived 
+    stopSignalReceived = True
     threads = threading.enumerate()
     for thread in threads:
         if False and isinstance(thread, threading.Thread):

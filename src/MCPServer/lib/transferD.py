@@ -52,7 +52,7 @@ import databaseInterface
 from databaseFunctions import fileWasRemoved
 
 #Local Variables
-mask = pyinotify.IN_CREATE | pyinotify.IN_MODIFY | pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO | pyinotify.IN_DELETE | pyinotify.IN_MOVE_SELF
+mask = pyinotify.IN_CREATE | pyinotify.IN_MODIFY | pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO | pyinotify.IN_DELETE | pyinotify.IN_MOVE_SELF | pyinotify.IN_DELETE_SELF
 #wm = pyinotify.WatchManager()
 movedFrom = {} #cookie
 movedFromLock = threading.Lock()
@@ -67,9 +67,6 @@ def timerExpired(event, utcDate):
             fileWasRemoved(fileUUID, utcDate = utcDate, eventOutcomeDetailNote = "removed from: " + oldLocation)
     else: 
         movedFromLock.release()
-
-
-
 
 class SIPWatch(pyinotify.ProcessEvent):
     def __init__(self, unit, wm):
@@ -164,6 +161,10 @@ class SIPWatch(pyinotify.ProcessEvent):
         sqlLock.release()
         for fileUUID, currentLocation in filesMoved:
             fileWasRemoved(fileUUID, eventOutcomeDetailNote = "removed from: " + currentLocation)
+            
+        if event.pathname + "/" ==  self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1):
+            print "stopped notifier for: ", self.unit.currentPath
+            self.notifier.stop()
     
     def process_IN_MOVE_SELF(self, event):
         print event
@@ -184,6 +185,15 @@ class SIPWatch(pyinotify.ProcessEvent):
         print "rr: ", rr    
         print self.wm
         #self.notifier.stop()
+        if recrm ==  self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1):
+            print "stopped notifier for: ", self.unit.currentPath
+            self.notifier.stop()
+            
+    def process_IN_DELETE_SELF(self, event):
+        if event.pathname + "/" ==  self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1):
+            print "stopped notifier for: ", self.unit.currentPath
+            self.notifier.stop()
+
         
         
 class transferWatch(pyinotify.ProcessEvent):
@@ -287,7 +297,7 @@ class transferWatch(pyinotify.ProcessEvent):
         sqlLock.release()
         for fileUUID, currentLocation in filesMoved:
             fileWasRemoved(fileUUID, eventOutcomeDetailNote = "removed from: " + currentLocation)
-    
+   
     def process_IN_MOVE_SELF(self, event):
         print event
         print "Transfer IN_MOVE_SELF"
@@ -306,7 +316,16 @@ class transferWatch(pyinotify.ProcessEvent):
         rr = self.wm.rm_watch(wdrm, rec=False)
         print "rr: ", rr    
         print self.wm
-        #self.notifier.stop()
+        
+        if recrm ==  self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1):
+            print "stopped notifier for: ", self.unit.currentPath
+            self.notifier.stop()
+    
+    def process_IN_DELETE_SELF(self, event):
+        if event.pathname + "/" ==  self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1):
+            print "stopped notifier for: ", self.unit.currentPath
+            self.notifier.stop()
+                
         
 def addWatchForTransfer(path, unit):    
     wm = pyinotify.WatchManager()
@@ -357,7 +376,6 @@ def loadExistingFiles():
 
 class SIPCreationWatch(pyinotify.ProcessEvent):
     "watches for new sips/completed transfers"
-    
     def __init__(self):
         self.sips = {}
     

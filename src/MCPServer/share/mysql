@@ -708,20 +708,6 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
 SET @microserviceGroup  = 'Store AIP';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'removeWithAsterisk_v0.0', '"%sharedPath%SIPbackups/" "-%SIPUUID%/"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Remove the SIP Backup.');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, NULL);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'storeAIP_v0.0', '"%AIPsStore%" "%SIPDirectory%%SIPName%-%SIPUUID%.zip" "%SIPUUID%" "%sharedPath%www/index.html" "%SIPName%" "%date%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
@@ -1633,20 +1619,6 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Include default SIP processingMCP.xml');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-SET @microserviceGroup  = 'Create SIP backup';
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '-R --preserve=mode,ownership,timestamps "%SIPDirectory%" "%sharedPath%SIPbackups/."');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Create SIP backup');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
