@@ -64,34 +64,32 @@ function zip ($source, $destination)
 $cfg = array(
   'format' => 'http://purl.org/net/sword-types/METSArchivematicaDIP',
   'contenttype' => 'application/zip',
-  'obo' => null,
-  // Use qubit_dev.php instead of index.php if you want to switch on the debug mode
-  'url' => 'http://localhost/ica-atom/index.php/sword/deposit/archivematica');
+  'obo' => null);
 
 if ('cli' !== php_sapi_name())
 {
   die("This script was designed for php-cli.\n");
 }
 
-if (4 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
+if (5 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
 {
    die(<<<content
     Usage:
-      $argv[0] USERNAME PASSWORD DIRECTORY
+      $argv[0] URL USERNAME PASSWORD DIRECTORY
 
 content
   );
 }
 
-$cfg['username'] = $argv[1];
-$cfg['password'] = $argv[2];
+$cfg['url'] = $argv[1];
+$cfg['username'] = $argv[2];
+$cfg['password'] = $argv[3];
 
-$directory = $argv[3];
+$directory = $argv[4];
 
-if ('debug' == @$argv[4])
+if ('debug' == @$argv[5])
 {
   $cfg['url'] = str_replace('index.php', 'qubit_dev.php', $cfg['url']);
-  $cfg['debug'] = true;
 }
 
 if (false == file_exists($directory) || false == is_readable($directory))
