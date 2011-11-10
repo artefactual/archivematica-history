@@ -433,7 +433,7 @@ def createFileSec(directoryPath, structMapDiv):
 <Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
 </file>"""
                 
-                file = newChild(globalFileGrps[use], "file", sets=[("FILEID",FILEID), ("GROUPID",GROUPID)])
+                file = newChild(globalFileGrps[use], "file", sets=[("ID",FILEID), ("GROUPID",GROUPID)])
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
                 Flocat = newChild(file, "Flocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("locType","other"), ("otherLocType", "system")])
                 if includeAmdSec:
