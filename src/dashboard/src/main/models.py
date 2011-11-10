@@ -1,11 +1,6 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#     * Rearrange models' order
-#     * Make sure each model has one field with primary_key=True
+# This Django model module was auto-generated and then updated manually
+# Needs some cleanups, make sure each model has its primary_key=True
 # Feel free to rename the models, but don't rename db_table values or field names.
-#
-# Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
-# into your database.
 
 from django.db import models
 
@@ -90,3 +85,88 @@ class JobStepCompleted(models.Model):
 
   class Meta:
     db_table = u'jobStepCompleted'
+
+class RightsStatement(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  rightsstatementidentifier = models.TextField(db_column='rightsStatementIdentifier', blank=True)
+  rightsstatementtype = models.TextField(db_column='rightsStatementType', blank=True)
+  rightsstatementivalue = models.TextField(db_column='rightsStatementValue', blank=True)
+  rightsbasis = models.TextField(db_column='rightsBasis', blank=True)
+  copyrightinformation = models.TextField(db_column='copyrightInformation', blank=True)
+  copyrightstatus = models.TextField(db_column='copyrightStatus', blank=True)
+  copyrightjurisdiction = models.TextField(db_column='copyrightJurisdiction', blank=True)
+  copyrightstatusdeterminationdate = models.TextField(db_column='copyrightStatusDeterminationDate', blank=True)
+  licenseinformation = models.TextField(db_column='licenseInformation', blank=True)
+  licenseidentifier = models.TextField(db_column='licenseIdentifier', blank=True)
+  licenseidentifiertype = models.TextField(db_column='licenseIdentifierType', blank=True)
+  licenseidentifiervalue = models.TextField(db_column='licenseIdentifierValue', blank=True)
+  licenseterms = models.TextField(db_column='licenseTerms', blank=True)
+
+  class Meta:
+    db_table = u'RightsStatement'
+
+class RightsStatementCopyrightNote(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+  copyrightnote = models.TextField(db_column='copyrightNote', blank=True)
+
+  class Meta:
+    db_table = u'RightsStatementCopyrightNote'
+
+class RightsStatementLicenseNote(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+  licensenote = models.TextField(db_column='licenseNote', blank=True)
+
+  class Meta:
+    db_table = u'RightsStatementLicenseNote'
+
+class RightsStatementLinkingAgentIdentifier(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+  linkingagentidentifiertype = models.TextField(db_column='linkingAgentIdentifierType', blank=True)
+  linkingagentidentifiervalue = models.TextField(db_column='linkingAgentIdentifierValue', blank=True)
+
+  class Meta:
+    db_table = u'RightsStatementLinkingAgentIdentifier'
+
+class RightsStatementLinkingAgentIdentifierLinkingAgentRole(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  linkingagent = models.ForeignKey(RightsStatementLinkingAgentIdentifier, db_column='fkRightsStatementLinkingAgentIdentifier')
+  linkingagentrole = models.TextField(db_column='linkingAgentRole', blank=True)
+
+  class Meta:
+    db_table = u'RightsStatementLinkingAgentIdentifierLinkingAgentRole'
+
+class RightsStatementRightsGranted(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+
+  class Meta:
+    db_table = u'RightsStatementRightsGranted'
+
+class RightsStatementRightsGrantedRestriction(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  rightsgranted = models.ForeignKey(RightsStatementRightsGranted, db_column='fkRightsStatementRightsGranted')
+  rightsgrantednote = models.TextField(db_column='rightsGrantedNote', blank=True)
+
+  class Meta:
+    db_table = u'RightsStatementRightsGrantedRestriction'
+
+class RightsStatementStatuteInformation(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+  statutejurisdiction = models.TextField(db_column='statuteJurisdiction', blank=True)
+  statutecitation = models.TextField(db_column='statuteCitation', blank=True)
+  statuteinformationdeterminationdate = models.TextField(db_column='statuteInformationDeterminationDate', blank=True)
+
+  class Meta:
+    db_table = u'RightsStatementStatuteInformation'
+
+class RightsStatementStatuteInformationNote(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  statuteinformation = models.ForeignKey(RightsStatementStatuteInformation, db_column='fkRightsStatementStatuteInformation')
+  statutenote = models.TextField(db_column='statuteNote', blank=True)
+
+  class Meta:
+    db_table = u'RightsStatementStatuteInformationNote'
