@@ -29,23 +29,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from fileOperations import updateFileLocation
 from fileOperations import renameAsSudo
-
-a = """
-target = sys.argv[1]
-if not os.path.isdir(target):
-    print >>sys.stderr, "Directory doesn't exist: ", target
-    os.mkdir(target)
-if os.listdir(target) == []:
-    print >>sys.stderr, "Directory is empty: ", target
-    fileName = os.path.join(target, "submission documentation.log")
-    f = open(fileName, 'a')
-    f.write("No submission documentation added")
-    f.close()
-    os.chmod(fileName, 488)
-else:
-    exit(0)
-"""
-    
+   
 def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIPUUID, date, copy=False):
     #exitCode = 435
     exitCode = 179
