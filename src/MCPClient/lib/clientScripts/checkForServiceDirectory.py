@@ -40,7 +40,7 @@ def something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date):
         for file in files:
             accessPath = os.path.join(path, file)
             sql = "UPDATE Files SET fileGrpUse='service' WHERE currentLocation =  '" + accessPath.replace(SIPDirectory, "%SIPDirectory%", 1) + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
-            print sql
+            #print sql
             rows = databaseInterface.runSQL(sql)
             
             a = """
