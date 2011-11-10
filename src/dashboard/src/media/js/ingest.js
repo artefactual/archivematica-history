@@ -150,8 +150,6 @@ $(function()
           event.preventDefault();
           event.stopPropagation();
 
-          console.log(event.which);
-
           if (this.$jobContainer.is(':visible'))
           {
             this.$jobContainer.slideUp('fast');
