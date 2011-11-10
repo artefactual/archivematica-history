@@ -24,107 +24,84 @@
 
 import os
 import sys
+import uuid
 from optparse import OptionParser
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
-from fileOperations import updateFileLocation
-from fileOperations import renameAsSudo
-   
-def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIPUUID, date, copy=False):
+from databaseFunctions import insertIntoDerivations
+
+    
+def something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date):
     #exitCode = 435
-    exitCode = 179
+    exitCode = 0
     print SIPDirectory
     #For every file, & directory Try to find the matching file & directory in the objects directory
-    for (path, dirs, files) in os.walk(accessDirectory):
+    for (path, dirs, files) in os.walk(serviceDirectory):
         for file in files:
             accessPath = os.path.join(path, file)
-            objectPath = accessPath.replace(accessDirectory, objectsDirectory, 1)
+            sql = "UPDATE Files SET fileGrpUse='service' WHERE currentLocation =  '" + accessPath.replace(SIPDirectory, "%SIPDirectory%", 1) + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
+            print sql
+            rows = databaseInterface.runSQL(sql)
+            
+            a = """
+            (04:26:24 PM) berwin22: epmclellan: would service files have a derivation relationship to the original?
+            (04:26:36 PM) epmclellan: yes
+            (04:26:42 PM) berwin22: thanks
+            (05:01:58 PM) epmclellan: berwin22: why do you ask? ^
+            second thought = no
+            ----
+            objectPath = accessPath.replace(serviceDirectory, objectsDirectory, 1)
             objectName = os.path.basename(objectPath)
             objectNameExtensionIndex = objectName.rfind(".")
-            
+
             if objectNameExtensionIndex != -1:
                 objectName = objectName[:objectNameExtensionIndex + 1]
                 objectNameLike = os.path.join( os.path.dirname(objectPath), objectName).replace(SIPDirectory, "%SIPDirectory%", 1)
+                
+                sql = "SELECT fileUUID FROM Files WHERE currentLocation =  '" + accessPath.replace(SIPDirectory, "%SIPDirectory%", 1) + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
+                fileUUID = databaseInterface.queryAllSQL(sql)[0][0]
                 #sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation LIKE  '%s%' AND removedTime = 0 AND SIPUUID = '%s'" % (objectNameLike, SIPUUID)
                 #ValueError: unsupported format character ''' (0x27) at index 76
                 sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation LIKE  '" + objectNameLike + "%' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'" 
-                c, sqlLock = databaseInterface.querySQL(sql) 
+                rows = databaseInterface.queryAllSQL(sql) 
                 row = c.fetchone()
                 if not row:
-                    print >>sys.stderr, ""
-                update = []
-                while row != None:
-                    print row
+                    print >>sys.stderr, "No original file for: ", accessPath
+                    exitCode += 1
+                    continue
+                for row in rows:
                     objectUUID = row[0]
                     objectPath = row[1]
                     dipPath = os.path.join(DIPDirectory,  "objects", "%s-%s" % (objectUUID, os.path.basename(accessPath))) 
                     if copy:
                         print "TODO - copy not supported yet"
                     else:
-                        #
-                        dest = dipPath
-                        renameAsSudo(accessPath, dest)
-                        
-                        src = accessPath.replace(SIPDirectory, "%SIPDirectory%") 
-                        dst = dest.replace(SIPDirectory, "%SIPDirectory%")
-                        update.append((src, dst))
-                        
-                        #                            
-                    row = c.fetchone()
-                sqlLock.release()
-                for src, dst in update:
-                    eventDetail = ""
-                    eventOutcomeDetailNote = "moved from=\"" + src + "\"; moved to=\"" + dst + "\""
-                    updateFileLocation(src, dst, "movement", date, eventDetail, sipUUID=SIPUUID, eventOutcomeDetailNote = eventOutcomeDetailNote)
-                
-                
-                
-                
-                    
-         
-
-        #when the matching access/orig file is found 
-            #create relationship
-            #move/copy the access file to the DIP directory, with the orig's file uuid at the start of the file name.
-            
+                        insertIntoDerivations(sourceFileUUID=objectUUID, derivedFileUUID=fileUUID, relatedEventUUID=uuid.uuid4().__str__()) """
     return exitCode
     
 
 
 if __name__ == '__main__':
     parser = OptionParser()
-    #'--SIPDirectory "%SIPDirectory%" --accessDirectory "objects/access/" --objectsDirectory "objects" --DIPDirectory "DIP" -c'
+    #'--SIPDirectory "%SIPDirectory%" --serviceDirectory "objects/service/" --objectsDirectory "objects/" --SIPUUID "%SIPUUID%" --date "%date%"' );
     parser.add_option("-s",  "--SIPDirectory", action="store", dest="SIPDirectory", default="")
     parser.add_option("-u",  "--SIPUUID", action="store", dest="SIPUUID", default="")
-    parser.add_option("-a",  "--accessDirectory", action="store", dest="accessDirectory", default="")
+    parser.add_option("-a",  "--serviceDirectory", action="store", dest="serviceDirectory", default="")
     parser.add_option("-o",  "--objectsDirectory", action="store", dest="objectsDirectory", default="")
-    parser.add_option("-d",  "--DIPDirectory", action="store", dest="DIPDirectory", default="")
     parser.add_option("-t",  "--date", action="store", dest="date", default="")
-    parser.add_option('-c', '--copy', dest='copy', action='store_true')
 
     (opts, args) = parser.parse_args()
     
     SIPDirectory = opts.SIPDirectory
-    accessDirectory = os.path.join(SIPDirectory, opts.accessDirectory)
+    serviceDirectory = os.path.join(SIPDirectory, opts.serviceDirectory)
     objectsDirectory = os.path.join(SIPDirectory, opts.objectsDirectory)
-    DIPDirectory = os.path.join(SIPDirectory, opts.DIPDirectory)
     SIPUUID = opts.SIPUUID
     date = opts.date
-    copy = opts.copy
     
-    if not os.path.isdir(accessDirectory):
-        print "no access directory in this sip"
+    if not os.path.isdir(serviceDirectory):
+        print "no service directory in this sip"
         exit(0)
     
-            
-    try:
-        if not os.path.isdir(DIPDirectory):
-            os.mkdir(DIPDirectory)
-        if not os.path.isdir(os.path.join(DIPDirectory, "objects")):
-            os.mkdir(os.path.join(DIPDirectory, "objects"))
-    except:
-        print "error creating DIP directory"
-    
-    exitCode = something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIPUUID, date, copy)
+    exitCode = something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date)
     exit(exitCode)
       

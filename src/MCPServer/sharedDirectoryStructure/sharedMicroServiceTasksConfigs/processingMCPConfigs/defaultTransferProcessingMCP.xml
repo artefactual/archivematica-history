@@ -1,6 +1,10 @@
 <processingMCP>
     <preconfiguredChoices>
         <preconfiguredChoice>
+            <appliesTo>Workflow decision - send transfer to quarantine</appliesTo>
+            <goToChain>Skip quarantine</goToChain>
+        </preconfiguredChoice>
+        <preconfiguredChoice>
             <appliesTo>Remove from quarantine</appliesTo>
             <goToChain>Unquarantine</goToChain>
             <delay unitCtime="yes">50</delay>
