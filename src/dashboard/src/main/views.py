@@ -21,6 +21,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db import connection, transaction
+from django.forms.models import modelformset_factory, inlineformset_factory
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.utils import simplejson
@@ -388,27 +389,31 @@ def transfer_rights_list(request, uuid, jobs, name):
 @load_jobs # Adds jobs, name
 def transfer_rights_add(request, uuid, jobs, name):
 
-  from django.forms.models import modelformset_factory, inlineformset_factory
-
   # Copyright note formset
   CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote,
                                                form=forms.RightsCopyrightNoteForm, extra=1, max_num=1, can_delete=False)
-  copyright_note_formset = CopyrightNoteFormSet()
 
   # License note formset
   LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote,
                                                form=forms.RightsLicenseNoteForm, extra=1, max_num=1, can_delete=False)
-  license_note_formset = CopyrightNoteFormSet()
 
-  """
+  # Rights statement form
+  form = forms.RightsForm()
+
   if request.method == 'POST':
+    copyright_note_formset = CopyrightNoteFormSet(request.POST, request.FILES)
+    license_note_formset = CopyrightNoteFormSet(request.POST, request.FILES)
     form = forms.RightsForm(request.POST)
     if form.is_valid():
+      copyright_note_formset.save()
+      license_note_formset.save()
       form.save()
       return HttpResponseRedirect(reverse('dashboard.main.views.transfer_rights_list', args=[uuid]))
   else:
+    copyright_note_formset = CopyrightNoteFormSet()
+    license_note_formset = CopyrightNoteFormSet()
     form = forms.RightsForm()
-  """
+
   return render_to_response('main/transfer/rights_edit.html', locals())
 
 @load_jobs # Adds jobs, name
