@@ -35,4 +35,6 @@ class SettingsForm(forms.Form):
   TEXTAREA_ATTRS = {'rows': '4', 'class': 'span11'}
 
   arguments = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
-# ...
+
+class RightsForm(forms.Form):
+  identifier = forms.CharField()

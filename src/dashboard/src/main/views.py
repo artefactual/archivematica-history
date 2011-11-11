@@ -24,14 +24,30 @@ from django.db import connection, transaction
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.utils import simplejson
+from django.utils.functional import wraps
 from django.views.static import serve
 from dashboard.contrib.mcp.client import MCPClient
 from dashboard.contrib import utils
-from dashboard.main.forms import DublinCoreMetadataForm, SettingsForm
-from dashboard.main.models import Task, Job, DublinCore, StandardTaskConfig
+from dashboard.main import forms
+from dashboard.main import models
 from lxml import etree
 import calendar, os, re, subprocess
 from datetime import datetime
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Utils
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def load_jobs(view):
+  @wraps(view)
+  def inner(request, uuid, *args, **kwargs):
+    jobs = models.Job.objects.filter(sipuuid=uuid)
+    if 0 == jobs.count:
+      raise Http404
+    kwargs['jobs'] = jobs
+    kwargs['name'] = utils.get_directory_name(jobs[0])
+    return view(request, uuid, *args, **kwargs)
+  return inner
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Home
@@ -68,7 +84,7 @@ def ingest_grid(request):
 def ingest_status(request, uuid=None):
   if request.method == 'GET':
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-    objects = Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None').filter(unittype__exact = 'unitSIP')
+    objects = models.Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None').filter(unittype__exact = 'unitSIP')
     mcp_available = False
     try:
       client = MCPClient()
@@ -79,8 +95,7 @@ def ingest_status(request, uuid=None):
       items = []
       for item in obj:
         jobs = get_jobs_by_sipuuid(item['sipuuid'])
-        directory = jobs[0].directory
-        item['directory'] = utils.get_directory_name(directory)
+        item['directory'] = utils.get_directory_name(jobs[0])
         item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
         item['uuid'] = item['sipuuid']
         item['id'] = item['sipuuid']
@@ -110,7 +125,7 @@ def ingest_status(request, uuid=None):
     response['mcp'] = mcp_available
     return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
   elif request.method == 'DELETE':
-    jobs = Job.objects.filter(sipuuid = uuid)
+    jobs = models.Job.objects.filter(sipuuid=uuid)
     jobs.update(hidden=True)
     """ MCP
     try:
@@ -126,16 +141,16 @@ def ingest_status(request, uuid=None):
 
 def ingest_metadata(request, uuid):
   try:
-    dc = DublinCore.objects.get_sip_metadata(uuid)
+    dc = models.DublinCore.objects.get_sip_metadata(uuid)
   except ObjectDoesNotExist:
-    dc = DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
+    dc = models.DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
 
   fields = ['title', 'creator', 'subject', 'description', 'publisher',
             'contributor', 'date', 'type', 'format', 'identifier',
             'source', 'isPartOf', 'language', 'coverage', 'rights']
 
   if request.method == 'POST':
-    form = DublinCoreMetadataForm(request.POST)
+    form = forms.DublinCoreMetadataForm(request.POST)
     if form.is_valid():
       for item in fields:
         setattr(dc, item, form.cleaned_data[item])
@@ -144,31 +159,31 @@ def ingest_metadata(request, uuid):
     initial = {}
     for item in fields:
       initial[item] = getattr(dc, item)
-    form = DublinCoreMetadataForm(initial=initial)
-    job = Job.objects.filter(sipuuid=uuid)[0]
-    name = utils.get_directory_name(job.directory)
+    form = forms.DublinCoreMetadataForm(initial=initial)
+    jobs = models.Job.objects.filter(sipuuid=uuid)
+    name = utils.get_directory_name(jobs[0])
 
   return render_to_response('main/ingest/metadata.html', locals())
 
 def ingest_detail(request, uuid):
-  jobs = Job.objects.filter(sipuuid=uuid)
+  jobs = models.Job.objects.filter(sipuuid=uuid)
   is_waiting = jobs.filter(currentstep='Awaiting decision').count() > 0
-  name = utils.get_directory_name(jobs[0].directory)
+  name = utils.get_directory_name(jobs[0])
   return render_to_response('main/ingest/detail.html', locals())
 
 def ingest_microservices(request, uuid):
-  jobs = Job.objects.filter(sipuuid=uuid)
-  name = utils.get_directory_name(jobs[0].directory)
+  jobs = models.Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(jobs[0])
   return render_to_response('main/ingest/microservices.html', locals())
 
 def ingest_rights_list(request, uuid):
-  job = Job.objects.filter(sipuuid=uuid)[0]
-  name = utils.get_directory_name(job.directory)
+  jobs = models.Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(jobs[0])
   return render_to_response('main/ingest/rights_list.html', locals())
 
 def ingest_rights_edit(request, uuid, id=None):
-  job = Job.objects.filter(sipuuid=uuid)[0]
-  name = utils.get_directory_name(job.directory)
+  jobs = models.Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(job[0])
   return render_to_response('main/ingest/rights_edit.html', locals())
 
 def ingest_delete(request, uuid):
@@ -301,7 +316,7 @@ def transfer_grid(request):
 def transfer_status(request, uuid=None):
   if request.method == 'GET':
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-    objects = Job.objects.filter(hidden=False, unittype__exact='unitTransfer').values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
+    objects = models.Job.objects.filter(hidden=False, unittype__exact='unitTransfer').values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
     mcp_available = False
     try:
       client = MCPClient()
@@ -312,8 +327,7 @@ def transfer_status(request, uuid=None):
       items = []
       for item in obj:
         jobs = get_jobs_by_sipuuid(item['sipuuid'])
-        directory = jobs[0].directory
-        item['directory'] = utils.get_directory_name(directory)
+        item['directory'] = utils.get_directory_name(jobs[0])
         item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
         item['uuid'] = item['sipuuid']
         item['id'] = item['sipuuid']
@@ -343,7 +357,7 @@ def transfer_status(request, uuid=None):
     response['mcp'] = mcp_available
     return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
   elif request.method == 'DELETE':
-    jobs = Job.objects.filter(sipuuid = uuid)
+    jobs = models.Job.objects.filter(sipuuid=uuid)
     try:
       mcp_client = MCPClient()
       mcp_list = etree.XML(mcp_client.list())
@@ -356,25 +370,41 @@ def transfer_status(request, uuid=None):
     return HttpResponse(response, mimetype='application/json')
 
 def transfer_detail(request, uuid):
+  jobs = models.Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(jobs[0])
   return render_to_response('main/transfer/detail.html', locals())
 
 def transfer_microservices(request, uuid):
-  jobs = Job.objects.filter(sipuuid=uuid)
-  name = utils.get_directory_name(jobs[0].directory)
+  jobs = models.Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(jobs[0])
   return render_to_response('main/transfer/microservices.html', locals())
 
-def transfer_rights_list(request, uuid):
-  job = Job.objects.filter(sipuuid=uuid)[0]
-  name = utils.get_directory_name(job.directory)
+@load_jobs
+def transfer_rights_list(request, uuid, jobs, name):
+  rights = models.RightsStatementLinkingAgentIdentifier.objects.all()
   return render_to_response('main/transfer/rights_list.html', locals())
 
-def transfer_rights_edit(request, uuid, id=None):
-  job = Job.objects.filter(sipuuid=uuid)[0]
-  name = utils.get_directory_name(job.directory)
+@load_jobs
+def transfer_rights_edit(request, uuid, jobs, name, id=None):
+  if id:
+    try:
+      right = models.RightsStatementLinkingAgentIdentifier.objects.get(id=id)
+    except ObjectDoesNotExist:
+      raise Http404
+  else:
+    right = models.RightsStatementLinkingAgentIdentifier()
+
+  if request.method == 'POST':
+    form = forms.RightsForm(request.POST)
+    if form.is_valid():
+      return HttpResponseRedirect(reverse('dashboard.main.views.transfer_rights_list', args=[uuid]))
+  else:
+    form = forms.RightsForm()
+
   return render_to_response('main/transfer/rights_edit.html', locals())
 
 def transfer_delete(request, uuid):
-  jobs = Job.objects.filter(sipuuid=uuid)
+  jobs = models.Job.objects.filter(sipuuid=uuid)
 
   """ MCP
   try:
@@ -515,23 +545,23 @@ def access(request):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def settings_list(request):
-  settings = StandardTaskConfig.objects.all()
+  settings = models.StandardTaskConfig.objects.all()
   return render_to_response('main/settings/list.html', locals())
 
 def settings_edit(request, id):
   try:
-    setting = StandardTaskConfig.objects.get(id=id)
+    setting = models.StandardTaskConfig.objects.get(id=id)
   except ObjectDoesNotExist:
     raise Http404
 
   if request.method == 'POST':
-    form = SettingsForm(request.POST)
+    form = forms.SettingsForm(request.POST)
     if form.is_valid():
       setting.arguments = form.cleaned_data['arguments']
       setting.save()
       return HttpResponseRedirect(reverse('dashboard.main.views.settings_list'))
   else:
-    form = SettingsForm(initial={'arguments': setting.arguments})
+    form = forms.SettingsForm(initial={'arguments': setting.arguments})
 
   return render_to_response('main/settings/edit.html', locals())
 
@@ -540,7 +570,7 @@ def settings_edit(request, id):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def tasks(request, uuid):
-  job = Job.objects.get(jobuuid=uuid)
+  job = models.Job.objects.get(jobuuid=uuid)
   objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')
   return render_to_response('main/tasks.html', locals())
 
@@ -592,7 +622,7 @@ def map_known_values(value):
     return value
 
 def get_jobs_by_sipuuid(uuid):
-  jobs = Job.objects.filter(sipuuid = uuid).order_by('-createdtime')
+  jobs = models.Job.objects.filter(sipuuid=uuid).order_by('-createdtime')
   priorities = {
     'completedUnsuccessfully': 0,
     'requiresAprroval': 1,
@@ -608,7 +638,7 @@ def get_jobs_by_sipuuid(uuid):
   return sorted(jobs, key = get_priority) # key = lambda job: priorities[job.currentstep]
 
 def jobs_manual_normalization(request, uuid):
-  job = Job.objects.get(jobuuid=uuid)
+  job = models.Job.objects.get(jobuuid=uuid)
 
   try:
     changes = simplejson.loads(request.POST.get('changes'))
@@ -649,7 +679,7 @@ def jobs_manual_normalization(request, uuid):
 
 def jobs_list_objects(request, uuid):
   response = []
-  job = Job.objects.get(jobuuid=uuid)
+  job = models.Job.objects.get(jobuuid=uuid)
 
   for root, dirs, files in os.walk(job.directory + '/objects', False):
     for name in files:
@@ -660,7 +690,7 @@ def jobs_list_objects(request, uuid):
 
 def jobs_explore(request, uuid):
   # Database query
-  job = Job.objects.get(jobuuid=uuid)
+  job = models.Job.objects.get(jobuuid=uuid)
   # Prepare response object
   contents = []
   response = {}

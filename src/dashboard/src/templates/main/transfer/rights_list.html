@@ -17,6 +17,32 @@
 
       <h1>Rights<br /><small>{{ name }}</small></h1>
 
+      {% if rights %}
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Right</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in rights %}
+              <tr>
+                <td><a class="btn small" href="{% url main.views.transfer_rights_edit uuid item.id %}">Edit</a></td>
+                <td>{{ item }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="alert-message block-message info">
+          <p>No rights, do you want to add?</p>
+          <div class="alert-actions">
+            <a class="btn small" href="{% url main.views.transfer_rights_edit uuid %}">Add</a>
+          </div>
+        </div>
+      {% endif %}
+
     </div>
   </div>
 {% endblock %}
