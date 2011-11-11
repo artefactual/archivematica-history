@@ -1,12 +1,13 @@
 from django import forms
 from django.forms import ModelForm
+from django.forms.models import modelformset_factory
 from django.forms.widgets import TextInput, Textarea
 from dashboard.main import models
 
-class DublinCoreMetadataForm(forms.Form):
+TEXTAREA_ATTRS = {'rows': '4', 'class': 'span11'}
+INPUT_ATTRS = {'class': 'span11'}
 
-  TEXTAREA_ATTRS = {'rows': '4', 'class': 'span11'}
-  INPUT_ATTRS = {'class': 'span11'}
+class DublinCoreMetadataForm(forms.Form):
 
   title = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
   creator = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
@@ -32,11 +33,31 @@ class TransferMetadataForm(forms.Form):
   notes = forms.CharField()
 
 class SettingsForm(forms.Form):
-
-  TEXTAREA_ATTRS = {'rows': '4', 'class': 'span11'}
-
   arguments = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
 
 class RightsForm(ModelForm):
   class Meta:
     model = models.RightsStatement
+    #fields = (
+    #  'rightsstatementidentifier',)
+    exclude = ('id',)
+    widgets = {
+      'rightsstatementidentifier': TextInput(attrs=INPUT_ATTRS), }
+
+class RightsCopyrightNoteForm(ModelForm):
+  class Meta:
+    model = models.RightsStatementCopyrightNote
+    exclude = ('id',)
+    widgets = {
+      'copyrightnote': Textarea(attrs=TEXTAREA_ATTRS), }
+
+class RightsLicenseNoteForm(ModelForm):
+  class Meta:
+    model = models.RightsStatementLicenseNote
+    exclude = ('id',)
+    widgets = {
+      'licensenote': Textarea(attrs=TEXTAREA_ATTRS), }
+
+#class RightsLinkingAgent(ModelForm):
+#  class Meta:
+#    model = models.RightsStatementLinkingAgentIdentifier

@@ -89,8 +89,8 @@ class JobStepCompleted(models.Model):
 class RightsStatement(models.Model):
   id = models.IntegerField(primary_key=True, db_column='pk')
   rightsstatementidentifier = models.TextField(db_column='rightsStatementIdentifier', blank=True, verbose_name='Identifier')
-  rightsstatementtype = models.TextField(db_column='rightsStatementType', blank=True, verbose_name='Type')
-  rightsstatementivalue = models.TextField(db_column='rightsStatementValue', blank=True, verbose_name='Value')
+  rightsstatementidentifiertype = models.TextField(db_column='rightsStatementIdentifierType', blank=True, verbose_name='Type')
+  rightsstatementidentifiervalue = models.TextField(db_column='rightsStatementIdentifierValue', blank=True, verbose_name='Value')
   rightsbasis = models.TextField(db_column='rightsBasis', blank=True)
   copyrightinformation = models.TextField(db_column='copyrightInformation', blank=True)
   copyrightstatus = models.TextField(db_column='copyrightStatus', blank=True)
@@ -108,7 +108,7 @@ class RightsStatement(models.Model):
 class RightsStatementCopyrightNote(models.Model):
   id = models.IntegerField(primary_key=True, db_column='pk')
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
-  copyrightnote = models.TextField(db_column='copyrightNote', blank=True)
+  copyrightnote = models.TextField(db_column='copyrightNote', blank=True, verbose_name='Note')
 
   class Meta:
     db_table = u'RightsStatementCopyrightNote'
@@ -124,6 +124,7 @@ class RightsStatementLicenseNote(models.Model):
 class RightsStatementLinkingAgentIdentifier(models.Model):
   id = models.IntegerField(primary_key=True, db_column='pk')
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+  # rightsstatement = models.ManyToManyField(RightsStatement, db_column='fkRightsStatement')
   linkingagentidentifiertype = models.TextField(db_column='linkingAgentIdentifierType', blank=True)
   linkingagentidentifiervalue = models.TextField(db_column='linkingAgentIdentifierValue', blank=True)
 

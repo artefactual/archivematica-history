@@ -38,6 +38,7 @@ from datetime import datetime
       Utils
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
+# Try to update context instead of sending new params
 def load_jobs(view):
   @wraps(view)
   def inner(request, uuid, *args, **kwargs):
@@ -385,24 +386,51 @@ def transfer_rights_list(request, uuid, jobs, name):
   return render_to_response('main/transfer/rights_list.html', locals())
 
 @load_jobs # Adds jobs, name
-def transfer_rights_edit(request, uuid, jobs, name, id=None):
-  if id:
-    try:
-      right = models.RightsStatementLinkingAgentIdentifier.objects.get(id=id)
-    except ObjectDoesNotExist:
-      raise Http404
+def transfer_rights_add(request, uuid, jobs, name):
+
+  from django.forms.models import modelformset_factory, inlineformset_factory
+
+  # Copyright note formset
+  CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote,
+                                               form=forms.RightsCopyrightNoteForm, extra=1, max_num=1, can_delete=False)
+  copyright_note_formset = CopyrightNoteFormSet()
+
+  # License note formset
+  LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote,
+                                               form=forms.RightsLicenseNoteForm, extra=1, max_num=1, can_delete=False)
+  license_note_formset = CopyrightNoteFormSet()
+
+  """
+  if request.method == 'POST':
+    form = forms.RightsForm(request.POST)
+    if form.is_valid():
+      form.save()
+      return HttpResponseRedirect(reverse('dashboard.main.views.transfer_rights_list', args=[uuid]))
   else:
-    right = models.RightsStatementLinkingAgentIdentifier()
+    form = forms.RightsForm()
+  """
+  return render_to_response('main/transfer/rights_edit.html', locals())
+
+@load_jobs # Adds jobs, name
+def transfer_rights_edit(request, uuid, jobs, name, id):
+  try:
+    right = models.RightsStatementLinkingAgentIdentifier.objects.get(id=id)
+  except ObjectDoesNotExist:
+    raise Http404
 
   if request.method == 'POST':
     form = forms.RightsForm(request.POST, instance=right)
     if form.is_valid():
-      # TODO: save
+      form.save()
       return HttpResponseRedirect(reverse('dashboard.main.views.transfer_rights_list', args=[uuid]))
   else:
     form = forms.RightsForm(instance=right)
 
   return render_to_response('main/transfer/rights_edit.html', locals())
+
+@load_jobs # Adds jobs, name
+def transfer_rights_delete(request, uuid, jobs, name, id):
+  return HttpResponse()
 
 def transfer_delete(request, uuid):
   jobs = models.Job.objects.filter(sipuuid=uuid)
