@@ -23,11 +23,10 @@
         <form class="form-stacked" method="post" action="{% url main.views.transfer_rights_add uuid %}">
       {% endif %}
 
-        {% comment %}
-          {% include "_form.html" %}
-        {% endcomment %}
+        {% include "_form.html" %}
 
         <fieldset>
+          {{ copyright_note_formset.management_form }}
           <legend>Copyright notes</legend>
           {% for item in copyright_note_formset %}
             <table>
@@ -37,6 +36,7 @@
         </fieldset>
 
         <fieldset>
+          {{ license_note_formset.management_form }}
           <legend>License notes</legend>
           {% for item in license_note_formset %}
             <table>
