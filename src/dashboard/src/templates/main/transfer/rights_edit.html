@@ -20,10 +20,30 @@
       {% if id %}
         <form class="form-stacked" method="post" action="{% url main.views.transfer_rights_edit uuid id %}">
       {% else %}
-        <form class="form-stacked" method="post" action="{% url main.views.transfer_rights_edit uuid %}">
+        <form class="form-stacked" method="post" action="{% url main.views.transfer_rights_add uuid %}">
       {% endif %}
 
-        {% include "_form.html" %}
+        {% comment %}
+          {% include "_form.html" %}
+        {% endcomment %}
+
+        <fieldset>
+          <legend>Copyright notes</legend>
+          {% for item in copyright_note_formset %}
+            <table>
+              {{ item.as_table }}
+            </table>
+          {% endfor %}
+        </fieldset>
+
+        <fieldset>
+          <legend>License notes</legend>
+          {% for item in license_note_formset %}
+            <table>
+              {{ item.as_table }}
+            </table>
+          {% endfor %}
+        </fieldset>
 
         <div class="actions">
           {% if id %}

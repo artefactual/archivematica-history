@@ -28,7 +28,10 @@
           <tbody>
             {% for item in rights %}
               <tr>
-                <td><a class="btn small" href="{% url main.views.transfer_rights_edit uuid item.id %}">Edit</a></td>
+                <td>
+                  <a class="btn small" href="{% url main.views.transfer_rights_edit uuid item.id %}">Edit</a>
+                  <a class="btn small" href="{% url main.views.transfer_rights_delete uuid item.id %}">Delete</a>
+                </td>
                 <td>{{ item.rightsstatementidentifier }}</td>
               </tr>
             {% endfor %}
@@ -38,7 +41,7 @@
         <div class="alert-message block-message info">
           <p>No rights, do you want to add?</p>
           <div class="alert-actions">
-            <a class="btn small" href="{% url main.views.transfer_rights_edit uuid %}">Add</a>
+            <a class="btn small" href="{% url main.views.transfer_rights_add uuid %}">Add</a>
           </div>
         </div>
       {% endif %}
