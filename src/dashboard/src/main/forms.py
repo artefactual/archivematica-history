@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.forms.widgets import TextInput, Textarea
+from dashboard.main import models
 
 class DublinCoreMetadataForm(forms.Form):
 
@@ -36,5 +37,6 @@ class SettingsForm(forms.Form):
 
   arguments = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
 
-class RightsForm(forms.Form):
-  identifier = forms.CharField()
+class RightsForm(ModelForm):
+  class Meta:
+    model = models.RightsStatement

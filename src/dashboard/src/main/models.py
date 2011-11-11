@@ -88,9 +88,9 @@ class JobStepCompleted(models.Model):
 
 class RightsStatement(models.Model):
   id = models.IntegerField(primary_key=True, db_column='pk')
-  rightsstatementidentifier = models.TextField(db_column='rightsStatementIdentifier', blank=True)
-  rightsstatementtype = models.TextField(db_column='rightsStatementType', blank=True)
-  rightsstatementivalue = models.TextField(db_column='rightsStatementValue', blank=True)
+  rightsstatementidentifier = models.TextField(db_column='rightsStatementIdentifier', blank=True, verbose_name='Identifier')
+  rightsstatementtype = models.TextField(db_column='rightsStatementType', blank=True, verbose_name='Type')
+  rightsstatementivalue = models.TextField(db_column='rightsStatementValue', blank=True, verbose_name='Value')
   rightsbasis = models.TextField(db_column='rightsBasis', blank=True)
   copyrightinformation = models.TextField(db_column='copyrightInformation', blank=True)
   copyrightstatus = models.TextField(db_column='copyrightStatus', blank=True)

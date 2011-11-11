@@ -21,15 +21,15 @@
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Right</th>
+              <th>Actions</th>
+              <th>Identifier</th>
             </tr>
           </thead>
           <tbody>
             {% for item in rights %}
               <tr>
                 <td><a class="btn small" href="{% url main.views.transfer_rights_edit uuid item.id %}">Edit</a></td>
-                <td>{{ item }}</td>
+                <td>{{ item.rightsstatementidentifier }}</td>
               </tr>
             {% endfor %}
           </tbody>

@@ -379,12 +379,12 @@ def transfer_microservices(request, uuid):
   name = utils.get_directory_name(jobs[0])
   return render_to_response('main/transfer/microservices.html', locals())
 
-@load_jobs
+@load_jobs # Adds jobs, name
 def transfer_rights_list(request, uuid, jobs, name):
   rights = models.RightsStatementLinkingAgentIdentifier.objects.all()
   return render_to_response('main/transfer/rights_list.html', locals())
 
-@load_jobs
+@load_jobs # Adds jobs, name
 def transfer_rights_edit(request, uuid, jobs, name, id=None):
   if id:
     try:
@@ -395,11 +395,12 @@ def transfer_rights_edit(request, uuid, jobs, name, id=None):
     right = models.RightsStatementLinkingAgentIdentifier()
 
   if request.method == 'POST':
-    form = forms.RightsForm(request.POST)
+    form = forms.RightsForm(request.POST, instance=right)
     if form.is_valid():
+      # TODO: save
       return HttpResponseRedirect(reverse('dashboard.main.views.transfer_rights_list', args=[uuid]))
   else:
-    form = forms.RightsForm()
+    form = forms.RightsForm(instance=right)
 
   return render_to_response('main/transfer/rights_edit.html', locals())
 
