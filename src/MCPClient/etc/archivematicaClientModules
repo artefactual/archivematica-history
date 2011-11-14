@@ -75,5 +75,5 @@ checkForServiceDirectory_v0.0 = %clientScriptsDirectory%checkForServiceDirectory
 archivematicaSetTransferType_v0.0 = %clientScriptsDirectory%archivematicaSetTransferType.py
 createSIPfromTransferObjects_v0.0 = %clientScriptsDirectory%createSIPfromTransferObjects.py
 checkTransferDirectoryForObjects_v0.0 = %clientScriptsDirectory%checkTransferDirectoryForObjects.py
-
+copyTransferSubmissionDocumentation_v0.0 = %clientScriptsDirectory%copyTransferSubmissionDocumentation.py
 

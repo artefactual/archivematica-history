@@ -41,42 +41,7 @@ def something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date):
             accessPath = os.path.join(path, file)
             sql = "UPDATE Files SET fileGrpUse='service' WHERE currentLocation =  '" + accessPath.replace(SIPDirectory, "%SIPDirectory%", 1) + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
             #print sql
-            rows = databaseInterface.runSQL(sql)
-            
-            a = """
-            (04:26:24 PM) berwin22: epmclellan: would service files have a derivation relationship to the original?
-            (04:26:36 PM) epmclellan: yes
-            (04:26:42 PM) berwin22: thanks
-            (05:01:58 PM) epmclellan: berwin22: why do you ask? ^
-            second thought = no
-            ----
-            objectPath = accessPath.replace(serviceDirectory, objectsDirectory, 1)
-            objectName = os.path.basename(objectPath)
-            objectNameExtensionIndex = objectName.rfind(".")
-
-            if objectNameExtensionIndex != -1:
-                objectName = objectName[:objectNameExtensionIndex + 1]
-                objectNameLike = os.path.join( os.path.dirname(objectPath), objectName).replace(SIPDirectory, "%SIPDirectory%", 1)
-                
-                sql = "SELECT fileUUID FROM Files WHERE currentLocation =  '" + accessPath.replace(SIPDirectory, "%SIPDirectory%", 1) + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
-                fileUUID = databaseInterface.queryAllSQL(sql)[0][0]
-                #sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation LIKE  '%s%' AND removedTime = 0 AND SIPUUID = '%s'" % (objectNameLike, SIPUUID)
-                #ValueError: unsupported format character ''' (0x27) at index 76
-                sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation LIKE  '" + objectNameLike + "%' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'" 
-                rows = databaseInterface.queryAllSQL(sql) 
-                row = c.fetchone()
-                if not row:
-                    print >>sys.stderr, "No original file for: ", accessPath
-                    exitCode += 1
-                    continue
-                for row in rows:
-                    objectUUID = row[0]
-                    objectPath = row[1]
-                    dipPath = os.path.join(DIPDirectory,  "objects", "%s-%s" % (objectUUID, os.path.basename(accessPath))) 
-                    if copy:
-                        print "TODO - copy not supported yet"
-                    else:
-                        insertIntoDerivations(sourceFileUUID=objectUUID, derivedFileUUID=fileUUID, relatedEventUUID=uuid.uuid4().__str__()) """
+            rows = databaseInterface.runSQL(sql)           
     return exitCode
     
 
