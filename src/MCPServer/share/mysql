@@ -797,6 +797,8 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+-- 7z a -bd -t7z -y -m0=lzma -mx=9 %SIPNAME%-%SIPUUID%.7z %SIPDIR% 
+-- Also modify extraction command in store AIP
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -1024,7 +1026,21 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      @MoveSubmissionDocumentationintoobjectsdirectoryTask, 'Move Submission Documentation into objects directory');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copyTransferSubmissionDocumentation_v0.0', '"%SIPUUID%" "%SIPDirectory%metadata/submissionDocumentation" "%sharedPath%"');
+SET @MoveTransferSubmissionDocumentationTask = LAST_INSERT_ID();
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @MoveTransferSubmissionDocumentationTask, 'Copy Transfer Submission Documentation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -1333,6 +1349,15 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @MoveTransferSubmissionDocumentationTask, 'Copy Transfer Submission Documentation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
