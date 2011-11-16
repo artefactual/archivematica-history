@@ -36,9 +36,10 @@ import databaseInterface
 #-previous chain links
 class jobChain:
     def __init__(self, unit, chainPK):
+        print "jobChain",  unit, chainPK
         self.unit = unit
         self.pk = chainPK
-        sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__() 
+        sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__()
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:

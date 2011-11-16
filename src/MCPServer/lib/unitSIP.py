@@ -67,8 +67,7 @@ class unitSIP(unit):
             else:
                 print >>sys.stderr, self.fileList
                 eventDetail = "SIP {" + self.UUID + "} has file {" + UUID + "}\"" + currentPath + "\" in the database, but file doesn't exist in the file system."
-                print >>sys.stderr, "!!!", eventDetail, "!!!"
-                #insertIntoEvents(fileUUID=UUID, eventIdentifierUUID=uuid.uuid4().__str__(), eventType="MCP warning", eventDetail=eventDetail)  
+                print >>sys.stderr, "!!!", eventDetail, "!!!"  
             row = c.fetchone()
         sqlLock.release()
         

@@ -156,7 +156,9 @@ def fileWasRemoved(fileUUID, utcDate=databaseInterface.getUTCDate(), eventDetail
        "SET removedTime='" + utcDate + "', currentLocation=NULL " + \
        "WHERE fileUUID='" + fileUUID + "'" )
         
-def createSIP(path, UUID=uuid.uuid4().__str__()):
+def createSIP(path, UUID=None):
+    if UUID == None:
+        UUID = uuid.uuid4().__str__()
     print "Creating SIP:", UUID, "-", path
     sql = """INSERT INTO SIPs (sipUUID, currentPath)
         VALUES ('""" + UUID + databaseInterface.separator + path + "');"

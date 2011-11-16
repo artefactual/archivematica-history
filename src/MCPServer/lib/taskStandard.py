@@ -41,7 +41,9 @@ from fileOperations import writeToFile
 class taskStandard():
     """A task is an instance of a command, operating on an entire directory, or a single file."""
     
-    def __init__(self, linkTaskManager, execute, arguments, standardOutputFile, standardErrorFile, outputLock=None, UUID=uuid.uuid4().__str__()):
+    def __init__(self, linkTaskManager, execute, arguments, standardOutputFile, standardErrorFile, outputLock=None, UUID=None):
+        if UUID == None:
+            UUID = uuid.uuid4().__str__()
         self.UUID = UUID
         self.linkTaskManager = linkTaskManager
         self.execute = execute
