@@ -22,6 +22,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 import archivematicaMCP
+import sys
 from linkTaskManagerChoice import choicesAvailableForUnits
 import lxml.etree as etree
 import gearman
@@ -50,16 +51,24 @@ def gearmanApproveJob(gearman_worker, gearman_job):
         chain = data["chain"]
         return cPickle.dumps(approveJob(jobUUID, chain))
     #catch OS errors
-    except:
+    except Exception as inst:
+        print >>sys.stderr, "DEBUG EXCEPTION! gearmanApproveJob"
+        print >>sys.stderr, type(inst)     # the exception instance
+        print >>sys.stderr, inst.args 
         return None
 
 def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
     try:
         #print "DEBUG - getting list of jobs"
         #execute = gearman_job.task
-        return cPickle.dumps(getJobsAwaitingApproval())
+        ret = cPickle.dumps(getJobsAwaitingApproval())
+        #print ret
+        return ret
     #catch OS errors
-    except:
+    except Exception as inst:
+        print >>sys.stderr, "DEBUG EXCEPTION! gearmanGetJobsAwaitingApproval"
+        print >>sys.stderr, type(inst)     # the exception instance
+        print >>sys.stderr, inst.args 
         return None
 
 

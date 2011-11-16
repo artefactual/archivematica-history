@@ -708,7 +708,21 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
 SET @microserviceGroup  = 'Store AIP';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'storeAIP_v0.0', '"%AIPsStore%" "%SIPDirectory%%SIPName%-%SIPUUID%.zip" "%SIPUUID%" "%sharedPath%www/index.html" "%SIPName%" "%date%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'remove_v0.0', '-R "%SIPDirectory%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Remove the processing directory');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'storeAIP_v0.0', '"%AIPsStore%" "%SIPDirectory%%SIPName%-%SIPUUID%.7z" "%SIPUUID%" "%sharedPath%www/index.html" "%SIPName%" "%date%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Store the AIP');
@@ -772,7 +786,7 @@ SET @microserviceGroup  = 'Prepare AIP';
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'remove_v0.0', '-R "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'remove_v0.0', '-R "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Removed bagged files.');
@@ -786,7 +800,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'setFilePermission_v0.0', '775 "%SIPDirectory%%SIPName%-%SIPUUID%.zip"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'setFilePermission_v0.0', '775 "%SIPDirectory%%SIPName%-%SIPUUID%.7z"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Set bag file permissions');
@@ -797,12 +811,24 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
--- 7z a -bd -t7z -y -m0=lzma -mx=9 %SIPNAME%-%SIPUUID%.7z %SIPDIR% 
 -- Also modify extraction command in store AIP
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, '7z_v0.0', 'a -bd -t7z -y -m0=lzma -mx=9 "%SIPDirectory%%SIPName%-%SIPUUID%.7z" "%SIPDirectory%%SIPName%-%SIPUUID%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Compress AIP');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+set @PrepareAIPMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'bagit_v0.0', 'create "%SIPDirectory%%SIPName%-%SIPUUID%.zip" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" --writer zip --payloadmanifestalgorithm "sha512"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'bagit_v0.0', 'create "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" --writer filesystem --payloadmanifestalgorithm "sha512"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Prepare AIP');
