@@ -26,6 +26,7 @@
 [supportedCommandsSpecial]
 upload-qubit_v0.0 = upload-qubit
 storeAIP_v0.0 = %clientScriptsDirectory%storeAIP.py
+7z_v0.0 = /usr/bin/7z
 
 [supportedCommands]
 echo_v0.0 = /bin/echo
