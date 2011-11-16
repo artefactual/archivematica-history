@@ -114,11 +114,13 @@ def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
     
     if UUID == "":
         #Find it in the database
-        sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "'"
+        sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "';"
         #if waitSleep != 0:
             #time.sleep(waitSleep) #let db be updated by the microservice that moved it.
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
+        if not row:
+            print "Not opening existing SIP:", UUID, "-", path
         while row != None:
             UUID = row[0]
             print "Opening existing SIP:", UUID, "-", path
@@ -133,7 +135,7 @@ def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
     return UUID
 
 def createUnitAndJobChain(path, config, terminate=False):
-    print path, config
+    print "createUnitAndJobChain", path, config
     unit = None
     if os.path.isdir(path):
         if config[3] == "SIP":
@@ -164,6 +166,7 @@ def createUnitAndJobChainThreaded(path, config):
         t.daemon = True
         while(limitTaskThreads <= threading.activeCount() + reservedAsTaskProcessingThreads ):
             if stopSignalReceived:
+                print "Signal was received; stopping createUnitAndJobChainThreaded(path, config)"
                 exit(0)
             print threading.activeCount().__str__()
             print "DEBUG createUnitAndJobChainThreaded waiting on thread count", threading.activeCount()
@@ -230,6 +233,8 @@ def signal_handler(signalReceived, frame):
                 print inst.args 
         else:
             print "not stopping: ", type(thread), thread
+    sys.stdout.flush()
+    sys.stderr.flush()
     sys.exit(0)
     exit(0)
 
@@ -238,6 +243,11 @@ def debugMonitor():
         print "<DEBUG>"
         print "\tThreadCount: ", threading.activeCount()
         print "\tDate Time: ", databaseInterface.getUTCDate()
+        if databaseInterface.sqlLock.acquire(False):
+            databaseInterface.sqlLock.release()
+            print "\tSQL Lock: Unlocked"
+        else:
+            print "\tSQL Lock: Locked"
         print "</DEBUG>"
         time.sleep(10)
         

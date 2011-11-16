@@ -93,6 +93,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
         sleep 1
         sudo stop archivematica-mcp-server
         sleep 3
+        sudo rm /tmp/archivematicaMCP*
         sudo start archivematica-mcp-server
         sudo start archivematica-mcp-client
         sudo apache2ctl restart
