@@ -174,6 +174,7 @@ $(function()
       remove: function(event)
         {
           event.preventDefault();
+          event.stopPropagation();
 
           $(this.el).addClass('sip-removing');
 
