@@ -2553,11 +2553,8 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      @SetcompletedtransferpermisssionsTask, 'Set completed transfer permisssions');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, @setFilePermissionsTaskConfig, @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
