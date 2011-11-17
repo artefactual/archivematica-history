@@ -75,6 +75,10 @@ class singleinstance(object):
         except OSError:
             pidRunning = False
         self.__init__(self.pidPath)
+        if self.pid != str(os.getpid()):
+            time.sleep(timeToSleep)
+            self.kill(level, timeToSleep)
+            
         
 
 if __name__ == "__main__":

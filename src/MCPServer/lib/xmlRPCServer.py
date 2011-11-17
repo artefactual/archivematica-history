@@ -49,13 +49,16 @@ def gearmanApproveJob(gearman_worker, gearman_job):
         data = cPickle.loads(gearman_job.data)
         jobUUID = data["jobUUID"]
         chain = data["chain"]
-        return cPickle.dumps(approveJob(jobUUID, chain))
+        ret = cPickle.dumps(approveJob(jobUUID, chain))
+        if not ret:
+            ret = ""
+        return ""
     #catch OS errors
     except Exception as inst:
         print >>sys.stderr, "DEBUG EXCEPTION! gearmanApproveJob"
         print >>sys.stderr, type(inst)     # the exception instance
         print >>sys.stderr, inst.args 
-        return None
+        return ""
 
 def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
     try:
@@ -63,13 +66,15 @@ def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
         #execute = gearman_job.task
         ret = cPickle.dumps(getJobsAwaitingApproval())
         #print ret
+        if not ret:
+            ret = ""
         return ret
     #catch OS errors
     except Exception as inst:
         print >>sys.stderr, "DEBUG EXCEPTION! gearmanGetJobsAwaitingApproval"
         print >>sys.stderr, type(inst)     # the exception instance
         print >>sys.stderr, inst.args 
-        return None
+        return ""
 
 
 def startXMLRPCServer(): 
