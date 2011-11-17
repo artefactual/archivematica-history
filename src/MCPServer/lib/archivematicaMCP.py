@@ -263,8 +263,8 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_handler)
     si = singleinstance(config.get('MCPServer', "singleInstancePIDFile"))
     if si.alreadyrunning():
-        print >>sys.stderr, "Another instance is already running. Exiting."
-        sys.exit(1)
+        print >>sys.stderr, "Another instance is already running. Killing PID:", si.pid
+        si.kill()
     elif False: #testing single instance stuff
         while 1:
             print "psudo run"
