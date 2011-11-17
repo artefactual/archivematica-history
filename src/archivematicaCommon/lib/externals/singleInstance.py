@@ -2,8 +2,12 @@
 #Author Larry Bates http://code.activestate.com/recipes/users/651848/ 
 #Source {{{ http://code.activestate.com/recipes/546512/ (r1)
 
+#Modified for archivematica - added Kill method
+
 import commands
 import os
+import sys
+import time
 
 class singleinstance(object):
     '''
@@ -26,7 +30,10 @@ class singleinstance(object):
             #
             # Make sure it is not a "stale" pidFile
             #
-            pid=open(pidPath, 'r').read().strip()
+            pidFile=open(pidPath, 'r')
+            pid = pidFile.read().strip()
+            self.pid = pid
+            pidFile.close()
             #
             # Check list of running pids, if not running it is stale so
             # overwrite
@@ -47,7 +54,9 @@ class singleinstance(object):
             # running.
             #
             fp=open(pidPath, 'w')
-            fp.write(str(os.getpid()))
+            pid = str(os.getpid())
+            self.pid = pid
+            fp.write(pid)
             fp.close()
 
     def alreadyrunning(self):
@@ -56,6 +65,17 @@ class singleinstance(object):
     def __del__(self):
         if not self.lasterror:
             os.unlink(self.pidPath)
+    
+    def kill(self,level=9, timeToSleep=2):
+        if self.pid == str(os.getpid()):
+            print >>sys.stderr, "Killing self"
+        try:
+            os.kill(int(self.pid), level)
+            time.sleep(timeToSleep)
+        except OSError:
+            pidRunning = False
+        self.__init__(self.pidPath)
+        
 
 if __name__ == "__main__":
     #
