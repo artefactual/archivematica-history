@@ -63,6 +63,7 @@ import lxml.etree as etree
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import databaseFunctions
+from externals.singleInstance import singleinstance
 
 global xmlRPCServerServer
 
@@ -260,6 +261,15 @@ def flushOutputs():
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
+    si = singleinstance(config.get('MCPServer', "singleInstancePIDFile"))
+    if si.alreadyrunning():
+        print >>sys.stderr, "Another instance is already running. Exiting."
+        sys.exit(1)
+    elif False: #testing single instance stuff
+        while 1:
+            print "psudo run"
+            time.sleep(3)
+        
     if True:
         import getpass
         print "user: ", getpass.getuser()
