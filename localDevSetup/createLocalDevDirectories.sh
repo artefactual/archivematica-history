@@ -44,7 +44,9 @@ sudo ln "${svnDir}src/transcoder/bin/transcoder" "/usr/bin/"
 sudo ln "${svnDir}src/sanitizeNames/bin/sanitizeNames" "/usr/bin/"
 
 
-sudo mv /usr/share/fits/xml/fits.xml /usr/share/fits/xml/fits.xml.backup
+if [ ! -e /usr/share/fits/xml/fits.xmlbackup ]; then
+sudo cp /usr/share/fits/xml/fits.xml /usr/share/fits/xml/fits.xmlbackup
+fi
 sudo ln "${svnDir}externals/fits/archivematicaConfigs/fits.xml" /usr/share/fits/xml/
 sudo chmod 775 /usr/share/fits/xml/fits.xml
 

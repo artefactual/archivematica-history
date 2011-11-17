@@ -71,6 +71,7 @@ verifyChecksumsInFileSecOfDspaceMETSFiles_v0.0 = %clientScriptsDirectory%verifyC
 moveDspaceLicenseFilesToDSpaceLicenses_v0.0 = %clientScriptsDirectory%moveDspaceLicenseFilesToDSpaceLicenses.py
 identifyDspaceLicenseFiles_v0.0 = %clientScriptsDirectory%identifyDspaceLicenseFiles.py
 identifyDspaceTextFiles_v0.0 = %clientScriptsDirectory%identifyDspaceTextFiles.py
+identifyDspaceMETSFiles_v0.0 = %clientScriptsDirectory%identifyDspaceMETSFiles.py
 moveDspaceMetsFilesToDSpaceMETS_v0.0 = %clientScriptsDirectory%moveDspaceMetsFilesToDSpaceMETS.py
 checkForAccessDirectory_v0.0 = %clientScriptsDirectory%checkForAccessDirectory.py
 checkForServiceDirectory_v0.0 = %clientScriptsDirectory%checkForServiceDirectory.py

@@ -29,6 +29,7 @@ class unitFile(unit):
     def __init__(self, currentPath, UUID="None"):
         self.currentPath = currentPath.__str__()
         self.UUID = UUID
+        self.fileGrpUse = None
         
     def getReplacementDic(self):
         # self.currentPath = currentPath.__str__()
@@ -37,6 +38,7 @@ class unitFile(unit):
         
         ret = {\
                "%relativeLocation%": self.currentPath, \
-               "%fileUUID%": self.UUID
+               "%fileUUID%": self.UUID, \
+               "%fileGrpUse%": self.fileGrpUse.__str__()
         }
         return ret

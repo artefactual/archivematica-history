@@ -1,6 +1,6 @@
-sudo rm /usr/share/fits/xml/fits.xml
-sudo mv /usr/share/fits/xml/fits.xml.backup /usr/share/fits/xml/fits.xml
-
+if [ -e /usr/share/fits/xml/fits.xmlbackup ]; then
+    sudo rm /usr/share/fits/xml/fits.xml
+fi
 
 sudo rm -r /usr/lib/archivematica
 sudo rm -r /etc/archivematica
