@@ -96,7 +96,7 @@ if __name__ == '__main__':
                 newfile = newfile.replace(objectsDirectory, relativeReplacement, 1)
                 print oldfile, " -> ", newfile 
                 
-                if groupType == "%sipDirectory%":
+                if groupType == "%SIPDirectory%":
                     updateFileLocation(oldfile, newfile, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=None, sipUUID=sipUUID)
                 elif groupType == "%transferDirectory%":
                     updateFileLocation(oldfile, newfile, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=None, transferUUID=sipUUID)
