@@ -70,6 +70,7 @@ copyTransfersMetadataAndLogs_v0.0 = %clientScriptsDirectory%copyTransfersMetadat
 verifyChecksumsInFileSecOfDspaceMETSFiles_v0.0 = %clientScriptsDirectory%verifyChecksumsInFileSecOfDspaceMETSFiles.py
 moveDspaceLicenseFilesToDSpaceLicenses_v0.0 = %clientScriptsDirectory%moveDspaceLicenseFilesToDSpaceLicenses.py
 identifyDspaceLicenseFiles_v0.0 = %clientScriptsDirectory%identifyDspaceLicenseFiles.py
+identifyDspaceTextFiles_v0.0 = %clientScriptsDirectory%identifyDspaceTextFiles.py
 moveDspaceMetsFilesToDSpaceMETS_v0.0 = %clientScriptsDirectory%moveDspaceMetsFilesToDSpaceMETS.py
 checkForAccessDirectory_v0.0 = %clientScriptsDirectory%checkForAccessDirectory.py
 checkForServiceDirectory_v0.0 = %clientScriptsDirectory%checkForServiceDirectory.py
