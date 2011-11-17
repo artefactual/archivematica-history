@@ -199,7 +199,8 @@ if __name__ == '__main__':
     parser.add_option("-d",  "--date",   action="store", dest="date", default="")
     parser.add_option("-s",  "--sipUUID",   action="store", dest="sipUUID", default="")
     parser.add_option("-p",  "--sipPath",   action="store", dest="sipPath", default="")
-    
+    parser.add_option("-g",  "--fileGrpUse",   action="store", dest="fileGrpUse", default="")
+        
     (opts, args) = parser.parse_args()
     
     filename = opts.inputFile
@@ -209,6 +210,11 @@ if __name__ == '__main__':
     if opts.excludeDirectory != "":
         if filename.startswith(opts.excludeDirectory):
             print "skipping file in exclude directory: ", filename
+            exit(0)
+            
+    #can move into if opts.commandClassifications == "preservation/access": to isolate for those functions 
+    if opts.fileGrpUse in ["DSPACEMETS", "service"]:
+            print "file's fileGrpUse in exclusion list, skipping"
             exit(0)
             
     setFileIn(fileIn=filename)

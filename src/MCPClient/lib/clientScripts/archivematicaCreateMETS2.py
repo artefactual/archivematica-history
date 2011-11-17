@@ -138,7 +138,7 @@ def getDublinCore(type, id):
     sqlLock.release()
     return ret
 
-def createDMDSec(type, id):
+def createDublincoreDMDSec(type, id):
     dc = getDublinCore(type, id)
     if dc == None:
         return None
@@ -150,6 +150,21 @@ def createDMDSec(type, id):
     mdWrap = newChild(dmdSec, "mdWrap")
     xmlData = newChild(mdWrap, "xmlData")
     xmlData.append(dc)
+    return (dmdSec, ID)
+
+def createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR):
+    global globalDmdSecCounter
+    globalDmdSecCounter += 1
+    dmdSec = etree.Element("dmdSec")
+    ID = "dmdSec_" + globalDmdSecCounter.__str__()
+    dmdSec.set("ID", ID)
+    XPTR = "xpoint(id("
+    tree = etree.parse(itemdirectoryPath)
+    root = tree.getroot()
+    for item in root.findall("{http://www.loc.gov/METS/}dmdSec"):
+        XPTR = "%s %s" % (XPTR, item.get("ID"))
+    XPTR = XPTR.replace(" ", "'", 1) + "'))"
+    newChild(dmdSec, "mdRef", text=None, sets=[("LABEL", LABEL), (xlinkBNS +"href", directoryPathSTR), ("locType","other"), ("otherLocType", "system"), ("XPTR", XPTR)])
     return (dmdSec, ID)
     
 def createDigiprovMD(fileUUID):
@@ -387,14 +402,14 @@ def createFileSec(directoryPath, structMapDiv):
             
             filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
             directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath, "", 1)
-            #print filename, directoryPathSTR 
-            
+            #print filename, directoryPathSTR
             
             
             FILEID="%s-%s" % (item, myuuid)
             
                 
             #<fptr FILEID="file1-UUID"/>
+            
             newChild(structMapDiv, "fptr", sets=[("FILEID",FILEID)])
             
             GROUPID=""
@@ -410,7 +425,7 @@ def createFileSec(directoryPath, structMapDiv):
                     row = c.fetchone()
                 sqlLock.release()
                 
-            elif use == "license" or use == "text":
+            elif use == "license" or use == "text" or use == "DSPACEMETS":
                 sql = """SELECT originalLocation FROM Files where fileUUID = '%s'""" % (myuuid)
                 originalLocation = databaseInterface.queryAllSQL(sql)[0][0]
                 sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND originalLocation LIKE '%s/%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(os.path.dirname(originalLocation)).replace("%", "%%"))
@@ -432,10 +447,25 @@ def createFileSec(directoryPath, structMapDiv):
                     GROUPID = "Group-%s" % (row[0])
                     row = c.fetchone()
                 sqlLock.release()
-        
+            
+            if use == "DSPACEMETS":
+                #skipAMDSec = True
+                skipAMDSec = False
+                use = "submissionDocumentation" 
+                if GROUPID=="": #is an AIP identifier
+                    GROUPID = myuuid
+                LABEL = "mets.xml-%s" % (GROUPID)
+                dmdSec, ID = createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR)
+                dmdSecs.append(dmdSec)
+            else:
+                skipAMDSec = False
+            
             if GROUPID=="":
                 globalErrorCount += 1
                 print >>sys.stderr, "No groupID for file: \"", directoryPathSTR, "\""
+                
+            
+                
             
             if use not in globalFileGrps:
                 print >>sys.stderr, "Invalid use: \"", use, "\""
@@ -448,7 +478,7 @@ def createFileSec(directoryPath, structMapDiv):
                 file = newChild(globalFileGrps[use], "file", sets=[("ID",FILEID), ("GROUPID",GROUPID)])
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
                 Flocat = newChild(file, "Flocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("locType","other"), ("otherLocType", "system")])
-                if includeAmdSec:
+                if includeAmdSec and not skipAMDSec:
                     AMD, AMDID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier)
                     global amdSecs
                     amdSecs.append(AMD)
@@ -490,7 +520,7 @@ if __name__ == '__main__':
     structMap = etree.Element("structMap")
     structMap.set("TYPE", "physical")
     structMapDiv = newChild(structMap, "div", sets=[("TYPE","directory"), ("LABEL","%s-%s" % (os.path.basename(baseDirectoryPath[:-1]), fileGroupIdentifier))])
-    #dmdSec, dmdSecID = createDMDSec(SIP)
+    #dmdSec, dmdSecID = createDublincoreDMDSec(SIP)
     structMapDiv = newChild(structMapDiv, "div", sets=[("TYPE","directory"), ("LABEL","objects") ])
     createFileSec(os.path.join(baseDirectoryPath, "objects"), structMapDiv)
     
@@ -506,12 +536,14 @@ if __name__ == '__main__':
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
     
     
-    dc = createDMDSec(SIPMetadataAppliesToType, fileGroupIdentifier)
+    dc = createDublincoreDMDSec(SIPMetadataAppliesToType, fileGroupIdentifier)
     if dc != None:
         (dmdSec, ID) = dc
         structMapDiv.set("DMDID", ID)
         root.append(dmdSec)
-        
+    
+    for dmdSec in dmdSecs:
+        root.append(dmdSec)
     
     for amdSec in amdSecs:
         root.append(amdSec)

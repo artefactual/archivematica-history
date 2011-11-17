@@ -18,27 +18,18 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage MCPServer
+# @subpackage Ingest
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+import sys
+import MySQLdb
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
 
-from unit import unit
+           
 
-class unitFile(unit):
-    """For objects representing a File"""
-    def __init__(self, currentPath, UUID="None"):
-        self.currentPath = currentPath.__str__()
-        self.UUID = UUID
-        self.fileGrpUse = None
-        
-    def getReplacementDic(self):
-        # self.currentPath = currentPath.__str__()
-        # self.UUID = uuid.uuid4().__str__()
-        #Pre do some variables, that other variables rely on, because dictionaries don't maintain order
-        
-        ret = {\
-               "%relativeLocation%": self.currentPath, \
-               "%fileUUID%": self.UUID, \
-               "%fileGrpUse%": self.fileGrpUse.__str__()
-        }
-        return ret
+
+if __name__ == '__main__':
+    metsFileUUID =  sys.argv[1]
+    sql = """UPDATE Files SET fileGrpUse = 'DSPACEMETS' WHERE fileUUID = '%s';""" % (MySQLdb.escape_string(metsFileUUID))
+    databaseInterface.runSQL(sql)

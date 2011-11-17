@@ -259,6 +259,12 @@ if __name__ == '__main__':
     date = sys.argv[3]
     eventUUID = sys.argv[4]
     fileUUID  = sys.argv[5]
+    fileGrpUse = sys.argv[6]
+    
+    if fileGrpUse in ["DSPACEMETS"]:
+        print "file's fileGrpUse in exclusion list, skipping"
+        exit(0)
+        
     
     tempFile="/tmp/" + uuid.uuid4().__str__()
     
