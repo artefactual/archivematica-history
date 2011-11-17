@@ -42,6 +42,9 @@ class jobChain:
         sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__()
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
+        if row == None:
+            sqlLock.release()
+            return None
         while row != None:
             print row
             #self.pk = row[0]
@@ -50,6 +53,8 @@ class jobChain:
             row = c.fetchone()
         sqlLock.release()
         self.currentLink = jobChainLink(self, self.startingChainLink, unit)
+        if self.currentLink == None:
+            return None
         
     def nextChainLink(self, pk):
         if pk != None:
