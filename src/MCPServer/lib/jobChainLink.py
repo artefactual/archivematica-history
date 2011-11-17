@@ -43,6 +43,8 @@ constLoadMagicLink = 4
 
 class jobChainLink:
     def __init__(self, jobChain, jobChainLinkPK, unit):
+        if jobChainLinkPK == None:
+            return None
         self.UUID = uuid.uuid4().__str__()
         self.jobChain = jobChain
         self.pk = jobChainLinkPK

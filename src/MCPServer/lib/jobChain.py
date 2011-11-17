@@ -37,6 +37,8 @@ import databaseInterface
 class jobChain:
     def __init__(self, unit, chainPK):
         print "jobChain",  unit, chainPK
+        if chainPK == None:
+            return None
         self.unit = unit
         self.pk = chainPK
         sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__()

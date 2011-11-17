@@ -89,9 +89,9 @@ echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
-        sudo stop archivematica-mcp-client
+        sudo kill -9 `cat /tmp/archivematicaMCPServerPID`
         sleep 1
-        sudo stop archivematica-mcp-server
+        sudo stop archivematica-mcp-client
         sleep 3
         sudo rm /tmp/archivematicaMCP*
         sudo start archivematica-mcp-server
