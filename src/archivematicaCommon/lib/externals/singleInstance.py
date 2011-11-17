@@ -62,9 +62,9 @@ class singleinstance(object):
     def alreadyrunning(self):
         return self.lasterror
 
-    def __del__(self):
-        if not self.lasterror:
-            os.unlink(self.pidPath)
+    #def __del__(self):
+    #    if not self.lasterror:
+    #        os.unlink(self.pidPath)
     
     def kill(self,level=9, timeToSleep=2):
         if self.pid == str(os.getpid()):
@@ -76,6 +76,8 @@ class singleinstance(object):
             pidRunning = False
         self.__init__(self.pidPath)
         if self.pid != str(os.getpid()):
+            print self.pid
+            print self.pid, "is not", str(os.getpid())
             time.sleep(timeToSleep)
             self.kill(level, timeToSleep)
             

@@ -269,6 +269,7 @@ if __name__ == '__main__':
         while 1:
             print "psudo run"
             time.sleep(3)
+    print "This PID: ", si.pid
         
     if True:
         import getpass
