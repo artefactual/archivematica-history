@@ -55,7 +55,7 @@ globalMets = root = etree.Element( "mets", \
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
 
 globalFileGrps = {}
-globalFileGrpsUses = ["original", "submissionDocumentation", "preservation", "service", "access", "license", "plaintext"]
+globalFileGrpsUses = ["original", "submissionDocumentation", "preservation", "service", "access", "license", "text"]
 for use in globalFileGrpsUses:
     grp = etree.Element("fileGrp")
     grp.set("USE", use) 
@@ -410,7 +410,7 @@ def createFileSec(directoryPath, structMapDiv):
                     row = c.fetchone()
                 sqlLock.release()
                 
-            elif use == "license":
+            elif use == "license" or use == "text":
                 sql = """SELECT originalLocation FROM Files where fileUUID = '%s'""" % (myuuid)
                 originalLocation = databaseInterface.queryAllSQL(sql)[0][0]
                 sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND originalLocation LIKE '%s/%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(os.path.dirname(originalLocation)).replace("%", "%%"))

@@ -946,7 +946,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @NormalizesubmissiondocumentationTask, 'Normalize submission documentation to preservation format');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -960,7 +960,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @CharacterizeandextractsubmissiondocumentationmetadataTask, 'Characterize and extract metadata on submission documentation');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -1291,7 +1291,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @NormalizesubmissiondocumentationTask, 'Normalize submission documentation to preservation format');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -1302,7 +1302,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @CharacterizeandextractsubmissiondocumentationmetadataTask, 'Characterize and extract metadata on submission documentation');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -2538,6 +2538,20 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      LAST_INSERT_ID(), 'Identify DSpace license files');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    ('mets.xml', NULL, 'objects', FALSE, NULL, NULL, 'identifyDspaceTextFiles_v0.0', '"%relativeLocation%" "%date%" "%taskUUID%" "%SIPDirectory%" "%SIPUUID%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (1,      LAST_INSERT_ID(), 'Identify DSpace text files');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
