@@ -2521,7 +2521,8 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 SET @microserviceGroup  = 'Transfer arrangement';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    ('mets.xml', NULL, 'objects', FALSE, NULL, NULL, 'moveDspaceMetsFilesToDSpaceMETS_v0.0', '"%relativeLocation%" "%date%" "%taskUUID%" "%SIPDirectory%" "%fileUUID%"');
+    ('mets.xml', NULL, 'objects', FALSE, NULL, NULL, 'moveDspaceMetsFilesToDSpaceMETS_v0.0', '"%relativeLocation%" "%date%" "%taskUUID%" "%SIPDirectory%" "%SIPUUID%"');
+-- ('mets.xml', NULL, 'objects', FALSE, NULL, NULL, 'moveDspaceMetsFilesToDSpaceMETS_v0.0', '"%relativeLocation%" "%date%" "%taskUUID%" "%SIPDirectory%" "%fileUUID%"')
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      LAST_INSERT_ID(), 'Move DSpace Mets.xml files to DSpaceMETS directory');
@@ -2752,7 +2753,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, @WorkflowdecisionsendtransfertoquarantineDspace17TransferMagicChainLink, NULL);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (3,      LAST_INSERT_ID(), 'Designate to process as a standard transfer.');
+    (3,      LAST_INSERT_ID(), 'Designate to process as a DSpace1.7 transfer.');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
