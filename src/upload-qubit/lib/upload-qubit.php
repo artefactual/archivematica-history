@@ -75,7 +75,10 @@ if (5 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
 {
    die(<<<content
     Usage:
-      $argv[0] URL USERNAME PASSWORD DIRECTORY
+      $argv[0] TYPE URL USERNAME PASSWORD DIRECTORY
+
+    Example:
+      $argv[0] attached http://localhost/ica-atom/index.php/;sword/deposit/foo-bar-fonds foo@bar.com 12345 ~/foobarDIP
 
 content
   );
@@ -166,6 +169,17 @@ if (unlink($file))
 if ($deposit->sac_status == 201)
 {
   fwrite(STDOUT, "[OK] Package uploaded successfully.\n");
+  fwrite(STDOUT, "[OK] URL: " . $deposit->sac_content_src . "\n");
+  exit(0);
+}
+// For some reason php-curl returns 302 when
+// the server response status code is 202 (Accepted)
+// but only if including Content-Location header
+else if ($deposit->sac_status == 202 || $deposit->sac_status == 302)
+{
+  fwrite(STDOUT, "[OK] Package uploaded successfully.\n");
+  fwrite(STDOUT, "[OK] The job was accepted by the server.\n");
+  fwrite(STDOUT, "[OK] URL: " . $deposit->sac_content_src . "\n");
   exit(0);
 }
 else
