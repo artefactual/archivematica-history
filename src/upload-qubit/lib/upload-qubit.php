@@ -18,7 +18,7 @@
 
 error_reporting(E_ALL ^ E_NOTICE);
 
-function zip ($source, $destination)
+function zip($source, $destination)
 {
   if (extension_loaded('zip') === true)
   {
@@ -61,57 +61,112 @@ function zip ($source, $destination)
   return false;
 }
 
-$cfg = array(
-  'format' => 'http://purl.org/net/sword-types/METSArchivematicaDIP',
-  'contenttype' => 'application/zip',
-  'obo' => null);
-
-if ('cli' !== php_sapi_name())
+function help()
 {
-  die("This script was designed for php-cli.\n");
-}
+  $script_name = pathinfo($argv[0]);
+  $script_name = $script_name['basename'];
 
-if (5 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
-{
-   die(<<<content
+  die(<<<content
+
     Usage:
-      $argv[0] TYPE URL USERNAME PASSWORD DIRECTORY
 
-    Example:
-      $argv[0] attached http://localhost/ica-atom/index.php/;sword/deposit/foo-bar-fonds foo@bar.com 12345 ~/foobarDIP
+      1: The directory will be zipped and sent within the deposit request
+
+         $script_name attached URL USERNAME PASSWORD DIRECTORY [debug]
+
+         Example:
+           $ $script_name attached http://.../index.php/sword/deposit/foo-bar-fonds foo@bar.com 12345 ~/foobarDIP
+
+      2. The directory will be sent by rsync and then referenced in the deposit request
+
+         $script_name referenced URL USERNAME PASSWORD DIRECTORY LOCATION [debug]
+
+         Example:
+           $ $script_name referenced http://.../index.php/sword/deposit/foo-bar-fonds foo@bar.com 12345 file:///foobar_directory/
+
 
 content
   );
 }
 
-$cfg['url'] = $argv[1];
-$cfg['username'] = $argv[2];
-$cfg['password'] = $argv[3];
+// Defaults
+$cfg = array(
+  'format' => 'http://purl.org/net/sword-types/METSArchivematicaDIP',
+  'contenttype' => 'application/zip',
+  'noop' => false,
+  'debug' => false,
+  'obo' => null);
 
-$directory = $argv[4];
-
-if ('debug' == @$argv[5])
+// CLI check
+if ('cli' !== php_sapi_name())
 {
-  $cfg['url'] = str_replace('index.php', 'qubit_dev.php', $cfg['url']);
+  die("This script was designed for php-cli.\n");
 }
 
+// Arguments check
+if (5 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
+{
+  help();
+}
+
+// Upload method: attached | referenced (see --help)
+if ('attached' == $argv[1])
+{
+  $cfg['action'] = 'attached';
+  $cfg['url'] = $argv[2];
+  $cfg['username'] = $argv[3];
+  $cfg['password'] = $argv[4];
+  $cfg['directory'] = $argv[5];
+}
+else if ('referenced' == $argv[1])
+{
+  $cfg['action'] = 'referenced';
+  $cfg['url'] = $argv[2];
+  $cfg['username'] = $argv[3];
+  $cfg['password'] = $argv[4];
+  $cfg['directory'] = $argv[5];
+  $cfg['location'] = $argv[6];
+}
+else
+{
+  help();
+}
+
+// Last parameter is optional, "debug", always last position
+if (in_array($argv[count($argv) - 1], array('debug', '--debug'))
+{
+  $cfg['url'] = str_replace('index.php', 'qubit_dev.php', $cfg['url']);
+  $cfg['debug'] = true;
+
+  // More PHP verbosity
+  error_reporting(E_ALL);
+}
+
+// Check if directory exist
 if (false == file_exists($directory) || false == is_readable($directory))
 {
   fwrite(STDERR, "Given directory could not be found or is not readable.\n");
   exit(1);
 }
 
-$file = tempnam('/tmp', 'dip');
-
-if (!zip($directory, $file))
+if ('attached' == $cfg['action'])
 {
-  fwrite(STDOUT, "[!!] Error creating zip file.\n");
-  exit(1);
+  $file = tempnam('/tmp', 'dip');
+
+  if (!zip($directory, $file))
+  {
+    fwrite(STDOUT, "[!!] Error creating zip file.\n");
+    exit(1);
+  }
+
+  $cfg['file'] = $file;
+
+  fwrite(STDOUT, "[OK] " . $file . " was generated. Sending to ICA-AtoM.\n");
 }
-
-$cfg['file'] = $file;
-
-fwrite(STDOUT, "[OK] " . $file . " was generated. Sending to ICA-AtoM.\n");
+else if ('referenced' == $cfg['action'])
+{
+  
+}
 
 require(dirname(__FILE__).'/swordapp-php-library/swordappclient.php');
 $client = new SWORDAPPClient();
@@ -125,7 +180,9 @@ try
     $cfg['obo'],
     $cfg['file'],
     $cfg['format'],
-    $cfg['contenttype']);
+    $cfg['contenttype'],
+    $cfg['noop'],
+    $cfg['debug']);
 }
 catch (Exception $e)
 {
@@ -185,6 +242,15 @@ else if ($deposit->sac_status == 202 || $deposit->sac_status == 302)
 else
 {
   fwrite(STDERR, "[!!] Package could not be uploaded (" . $deposit->sac_status . ").\n");
-  fwrite(STDERR, "[!!] You should switch on the debug mode to get a detailed error report.\n");
+
+  if (isset($cfg['debug']))
+  {
+    var_dump($deposit);
+  }
+  else
+  {
+    fwrite(STDERR, "[!!] You should switch on the debug mode to get a detailed error report.\n");
+  }
+
   exit(1);
 }
