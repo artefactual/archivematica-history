@@ -637,70 +637,135 @@ INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroService
 set @rejectSIPMicroServiceChain = LAST_INSERT_ID();
 
 -- <uploadDIP> --
-SET @microserviceGroup  = 'Upload DIP';
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%uploadedDIPs/."');
 
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(),  'Move to the uploadedDIPs directory');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL); 
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, NULL);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
+  -- START :: Move DIP to uploadedDIPs directory --
 
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', 'http://localhost/ica-atom/index.php/sword/deposit/archivematica demo@example.com demo "%SIPDirectory%" "%SIPName%-%SIPUUID%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'uploadDIP');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
+    SET @microserviceGroup  = 'Upload DIP';
 
--- disabled, because it uses the SIP uuid and updates the SIP/AIP directory location with that of the DIP --
-/*
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, @moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-*/
+    INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+      VALUES
+      (NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%watchDirectoryPath%uploadedDIPs/."');
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Upload DIP');
-set @MicroServiceChain = LAST_INSERT_ID();
+    INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+      VALUES
+      (0, LAST_INSERT_ID(), 'Move to the uploadedDIPs directory');
 
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (2,      LAST_INSERT_ID(), 'uploadDIP');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @MicroServiceChain);
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
+    INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+      VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL); 
 
+    SET @MicroServiceChainLink = LAST_INSERT_ID();
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'uploadDIP');
-set @MicroServiceChain = LAST_INSERT_ID();
+    INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+      VALUES (@MicroServiceChainLink, 0, NULL);
 
-INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
-    VALUES ('%watchDirectoryPath%uploadDIP/', @MicroServiceChain, @expectedTypeDIP);
+    SET @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+  -- END :: Move DIP to uploadedDIPs directory
+
+  -- START :: Upload DIP method 1 --
+
+    INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+      VALUES
+      (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', 'attached http://localhost/ica-atom/index.php/sword/deposit/archivematica demo@example.com demo "%SIPDirectory%" "%SIPName%-%SIPUUID%"');
+
+    INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+      VALUES
+      (0, LAST_INSERT_ID(), 'uploadDIPAttached');
+
+    INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+      VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+
+    SET @MicroServiceChainLink = LAST_INSERT_ID();
+
+    INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+      VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+
+    -- SET @NextMicroServiceChainLink = @MicroServiceChainLink; --
+
+    -- Disabled, because it uses the SIP uuid and updates the SIP/AIP directory location with that of the DIP --
+    /*
+      INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+        VALUES (@microserviceGroup, @moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
+
+      SET @MicroServiceChainLink = LAST_INSERT_ID();
+
+      INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+        VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+
+      SET @NextMicroServiceChainLink = @MicroServiceChainLink;
+    */
+
+    INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink, 'Upload DIP (attached)');
+
+    SET @MicroServiceChain = LAST_INSERT_ID();
+
+  -- END :: Upload DIP method 1 --
+
+  -- START :: Upload DIP method 2 --
+
+    INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+      VALUES
+      (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', 'referenced TODO');
+
+    INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+      VALUES
+      (0, LAST_INSERT_ID(), 'uploadDIPReferenced');
+
+    INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+      VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+
+    SET @MicroServiceChainLink = LAST_INSERT_ID();
+
+    INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+      VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+
+    -- SET @NextMicroServiceChainLink = @MicroServiceChainLink; --
+
+    INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink, 'Upload DIP (referenced )');
+
+    SET @AltMicroServiceChain = LAST_INSERT_ID();
+
+  -- END :: Upload DIP method 2 --
+
+  -- START :: uploadDIP main --
+
+    INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+      VALUES
+      (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
+
+    INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+      VALUES
+      (2, LAST_INSERT_ID(), 'uploadDIP');
+
+    INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+      VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+
+    SET @MicroServiceChainLink = LAST_INSERT_ID();
+
+    -- Choices --
+
+    INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+      VALUES
+      (@MicroServiceChainLink, @MicroServiceChain);
+
+    INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+      VALUES
+      (@MicroServiceChainLink, @AltMicroServiceChain);
+
+    INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+      VALUES
+      (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+
+    SET @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+    INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'uploadDIP');
+
+    SET @MicroServiceChain = LAST_INSERT_ID();
+
+    INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
+      VALUES ('%watchDirectoryPath%uploadDIP/', @MicroServiceChain, @expectedTypeDIP);
+
+  -- END :: uploadDIP main --
 
 -- </uploadDIP> --
 
