@@ -64,7 +64,7 @@ function zip($source, $destination)
 function help()
 {
   $script_name = pathinfo($argv[0]);
-  $script_name = $script_name['basename'];
+  $script_name = $script_name['basename'] ? $script_name['basename'] : 'upload-qubit';
 
   die(<<<content
 
@@ -72,17 +72,27 @@ function help()
 
       1: The directory will be zipped and sent within the deposit request
 
-         $script_name attached URL USERNAME PASSWORD DIRECTORY [debug]
+         Syntax:
+         \033[0;32m  $script_name attached URL USERNAME PASSWORD DIRECTORY [debug]  \033[0m
 
          Example:
-           $ $script_name attached http://.../index.php/sword/deposit/foo-bar-fonds foo@bar.com 12345 ~/foobarDIP
+           $ $script_name attached \
+             http://.../index.php/sword/deposit/foo-bar-fonds \
+             foo@bar.com 12345 \
+             ~/foobarDIP
 
       2. The directory will be sent by rsync and then referenced in the deposit request
 
-         $script_name referenced URL USERNAME PASSWORD DIRECTORY LOCATION [debug]
+         Syntax:
+         \033[0;32m  $script_name referenced URL USERNAME PASSWORD DIRECTORY REMOTE_SSH REMOTE_LOCATION [debug]  \033[0m
 
          Example:
-           $ $script_name referenced http://.../index.php/sword/deposit/foo-bar-fonds foo@bar.com 12345 file:///foobar_directory/
+           $ $script_name referenced \
+             http://.../index.php/sword/deposit/foo-bar-fonds \
+             foo@bar.com 12345 \
+             ~/foobarDIP \
+             "ssh -l username -p 22" \
+             "peanut.com:/tmp"
 
 
 content
@@ -113,6 +123,7 @@ if (5 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
 if ('attached' == $argv[1])
 {
   $cfg['action'] = 'attached';
+
   $cfg['url'] = $argv[2];
   $cfg['username'] = $argv[3];
   $cfg['password'] = $argv[4];
@@ -121,19 +132,21 @@ if ('attached' == $argv[1])
 else if ('referenced' == $argv[1])
 {
   $cfg['action'] = 'referenced';
+
   $cfg['url'] = $argv[2];
   $cfg['username'] = $argv[3];
   $cfg['password'] = $argv[4];
   $cfg['directory'] = $argv[5];
-  $cfg['location'] = $argv[6];
+  $cfg['remote_ssh'] = $argv[6];
+  $cfg['remote_location'] = $argv[7];
 }
 else
 {
   help();
 }
 
-// Last parameter is optional, "debug", always last position
-if (in_array($argv[count($argv) - 1], array('debug', '--debug'))
+// Debug mode, last parameter and optional
+if (in_array($argv[count($argv) - 1], array('debug', '--debug')))
 {
   $cfg['url'] = str_replace('index.php', 'qubit_dev.php', $cfg['url']);
   $cfg['debug'] = true;
@@ -143,7 +156,7 @@ if (in_array($argv[count($argv) - 1], array('debug', '--debug'))
 }
 
 // Check if directory exist
-if (false == file_exists($directory) || false == is_readable($directory))
+if (false == file_exists($cfg['directory']) || false == is_readable($cfg['directory']))
 {
   fwrite(STDERR, "Given directory could not be found or is not readable.\n");
   exit(1);
@@ -155,25 +168,16 @@ if ('attached' == $cfg['action'])
 
   if (!zip($directory, $file))
   {
-    fwrite(STDOUT, "[!!] Error creating zip file.\n");
+    fwrite(STDERR, "[!!] Error creating zip file.\n");
     exit(1);
   }
 
   $cfg['file'] = $file;
 
-  fwrite(STDOUT, "[OK] " . $file . " was generated. Sending to ICA-AtoM.\n");
-}
-else if ('referenced' == $cfg['action'])
-{
-  
-}
+  fwrite(STDOUT, "[OK] " . $file . " was generated.\n");
 
-require(dirname(__FILE__).'/swordapp-php-library/swordappclient.php');
-$client = new SWORDAPPClient();
-
-try
-{
-  $deposit = $client->deposit(
+  $client_deposit_method = 'deposit';
+  $client_deposit_parameters = array(
     $cfg['url'],
     $cfg['username'],
     $cfg['password'],
@@ -183,6 +187,62 @@ try
     $cfg['contenttype'],
     $cfg['noop'],
     $cfg['debug']);
+}
+else if ('referenced' == $cfg['action'])
+{
+  // Rsync
+  // -a =
+  //    -r = recursive
+  //    -l = recreate symlinks on destination
+  //    -p = set same permissions
+  //    -t = transfer modification times
+  //    -g = set same group owner on destination
+  //    -o = set same user owner on destination (if possible, super-user)
+  //    --devices = transfer character and block device files (only super-user)
+  //    --specials = transfer special files like sockets and fifos
+  // -z = compress
+  // --partial = our best friend! resume transfers
+  $command = sprintf('rsync -r -t -g -o -z --partial -e "%s" %s %s',
+                      $cfg['remote_ssh'],
+                      $cfg['file'],
+                      $cfg['remote_location']);
+
+  fwrite(STDOUT, "[OK] Running rsync.\n");
+  exec($command, $output, $ret);
+
+  if (0 == $ret)
+  {
+    fwrite(STDOUT, "[OK] Package sent with rsync successfully.\n");
+  }
+  else
+  {
+    fwrite(STDERR, "[!!] Rsync failed, exit code $ret (see rsync man page, EXIT VALUES).\n");
+    exit(1);
+  }
+
+  $client_deposit_method = 'depositByReference';
+  $client_deposit_parameters = array(
+    $cfg['url'],
+    $cfg['username'],
+    $cfg['password'],
+    $cfg['obo'],
+    'file://' . $cfg['file'],
+    $cfg['format'],
+    $cfg['contenttype'],
+    $cfg['noop'],
+    $cfg['debug']);
+}
+
+require(dirname(__FILE__).'/swordapp-php-library/swordappclient.php');
+$client = new SWORDAPPClient();
+
+try
+{
+  // Call $client->deposit() or $client->depositByReference()
+  // based in $client_deposit_method value
+  $deposit = call_user_func(
+    array($client, $client_deposit_method),
+    $client_deposit_parameters);
 }
 catch (Exception $e)
 {
