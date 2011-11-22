@@ -37,14 +37,8 @@ from createXmlEventsAssist import createOrganizationAgent
 #from archivematicaCreateMETS2 import escape
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
-from archivematicaFunctions import getTagged
+from archivematicaFunctions import escape
 
-def escape(string):
-    print >>sys.stderr, type(string), string
-    #string = quoteattr(string)
-    print >>sys.stderr, type(string), string
-    string = string.decode('utf-8')
-    return string
 
 UUIDsDic={}
 amdSec=[]
