@@ -166,7 +166,7 @@ if ('attached' == $cfg['action'])
 {
   $file = tempnam('/tmp', 'dip');
 
-  if (!zip($directory, $file))
+  if (!zip($cfg['directory'], $file))
   {
     fwrite(STDERR, "[!!] Error creating zip file.\n");
     exit(1);
@@ -204,7 +204,7 @@ else if ('referenced' == $cfg['action'])
   // --partial = our best friend! resume transfers
   $command = sprintf('rsync -r -t -g -o -z --partial -e "%s" %s %s',
                       $cfg['remote_ssh'],
-                      $cfg['file'],
+                      $cfg['directory'],
                       $cfg['remote_location']);
 
   fwrite(STDOUT, "[OK] Running rsync.\n");
@@ -226,7 +226,7 @@ else if ('referenced' == $cfg['action'])
     $cfg['username'],
     $cfg['password'],
     $cfg['obo'],
-    'file://' . $cfg['file'],
+    'file://' . $cfg['directory'],
     $cfg['format'],
     $cfg['contenttype'],
     $cfg['noop'],
@@ -240,7 +240,7 @@ try
 {
   // Call $client->deposit() or $client->depositByReference()
   // based in $client_deposit_method value
-  $deposit = call_user_func(
+  $deposit = call_user_func_array(
     array($client, $client_deposit_method),
     $client_deposit_parameters);
 }
@@ -278,7 +278,8 @@ catch (Exception $e)
   exit(1);
 }
 
-if (unlink($file))
+// If attached we can remove the generated zip safely
+if ('attached' == $cfg['action'] && unlink($file))
 {
   fwrite(STDOUT, "[OK] " . $file . " was removed.\n");
 }
@@ -302,15 +303,15 @@ else if ($deposit->sac_status == 202 || $deposit->sac_status == 302)
 else
 {
   fwrite(STDERR, "[!!] Package could not be uploaded (" . $deposit->sac_status . ").\n");
-
-  if (isset($cfg['debug']))
-  {
-    var_dump($deposit);
-  }
-  else
-  {
-    fwrite(STDERR, "[!!] You should switch on the debug mode to get a detailed error report.\n");
-  }
-
-  exit(1);
 }
+
+if (true == @$cfg['debug'])
+{
+  var_dump($deposit);
+}
+else
+{
+  fwrite(STDERR, "[!!] You should switch on the debug mode to get a detailed error report.\n");
+}
+
+exit(1);
