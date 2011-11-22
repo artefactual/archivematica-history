@@ -190,7 +190,7 @@ def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIde
     
     if eventOutcomeDetailNote == "":
         eventOutcomeDetailNote = "Original name=\"" + src + "\"; cleaned up name=\"" + dst + "\""
-        eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
+        #eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
     
     #CREATE THE EVENT
     if not fileUUID:

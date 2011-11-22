@@ -29,6 +29,7 @@ import sys
 import MySQLdb
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
+from archivematicaFunctions import escape
 
 from optparse import OptionParser
 parser = OptionParser()
@@ -85,10 +86,7 @@ globalDigiprovMDCounter = 0
 ##group of the object and it's related access, license
 
 
-def escape(string):
-    string = quoteattr(string)
-    string = string.encode('utf-8')
-    return string
+
     
 
 #move to common
@@ -254,7 +252,7 @@ def createDigiprovMD(fileUUID):
     if not row:
         print >>sys.stderr, "Error no fits."
     while row != None:
-        etree.SubElement(object, "originalName").text = row[0]
+        etree.SubElement(object, "originalName").text = escape(row[0])
         row = c.fetchone()
     sqlLock.release()
     
@@ -313,12 +311,12 @@ def createDigiprovMD(fileUUID):
         
         etree.SubElement(event, "eventType").text = row[3]
         etree.SubElement(event, "eventDateTime").text = row[4].__str__()
-        etree.SubElement(event, "eventDetail").text = row[5]
+        etree.SubElement(event, "eventDetail").text = escape(row[5])
         
         eventOutcomeInformation  = etree.SubElement(event, "eventOutcomeInformation")
         etree.SubElement(eventOutcomeInformation, "eventOutcome").text = row[6]
         eventOutcomeDetail = etree.SubElement(eventOutcomeInformation, "eventOutcomeDetail")
-        etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = row[7]
+        etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = escape(row[7])
         row = c.fetchone()
     sqlLock.release()
     
