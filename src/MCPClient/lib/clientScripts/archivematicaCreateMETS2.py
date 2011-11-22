@@ -23,7 +23,7 @@
 # @version svn: $Id$
 from archivematicaXMLNamesSpace import *
 import lxml.etree as etree
-from xml.sax.saxutils import quoteattr as xml_quoteattr
+from xml.sax.saxutils import quoteattr
 import os
 import sys
 import MySQLdb
@@ -85,7 +85,11 @@ globalDigiprovMDCounter = 0
 ##group of the object and it's related access, license
 
 
-
+def escape(string):
+    string = quoteattr(string)
+    string = string.encode('utf-8')
+    return string
+    
 
 #move to common
 def newChild(parent, tag, text=None, tailText=None, sets=[]):
@@ -400,7 +404,7 @@ def createFileSec(directoryPath, structMapDiv):
                 row = c.fetchone()
             sqlLock.release()
             
-            filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
+            filename = ''.join(quoteattr(item).split("\"")[1:-1])
             directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath, "", 1)
             #print filename, directoryPathSTR
             

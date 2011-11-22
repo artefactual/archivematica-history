@@ -30,13 +30,21 @@ import sys
 import lxml.etree as etree
 import string
 import MySQLdb
-from xml.sax.saxutils import quoteattr as xml_quoteattr
+from xml.sax.saxutils import quoteattr
 from datetime import datetime
 from createXmlEventsAssist import createArchivematicaAgent 
 from createXmlEventsAssist import createOrganizationAgent
+#from archivematicaCreateMETS2 import escape
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from archivematicaFunctions import getTagged
+
+def escape(string):
+    print >>sys.stderr, type(string), string
+    #string = quoteattr(string)
+    print >>sys.stderr, type(string), string
+    string = string.decode('utf-8')
+    return string
 
 UUIDsDic={}
 amdSec=[]
@@ -253,8 +261,8 @@ def createFileSec(path, parentBranch, structMapParent):
         createFileSec(os.path.join(path, "objects/"), currentBranch, div)
         doneFirstRun = False
     filename = os.path.basename(pathSTR)
-    parentBranch.set("ID", filename)
-    structMapParent.set("LABEL", filename)
+    parentBranch.set("ID", escape(filename))
+    structMapParent.set("LABEL", escape(filename))
     structMapParent.set("TYPE", "directory")
     
     if doneFirstRun:
@@ -290,22 +298,24 @@ def createFileSec(path, parentBranch, structMapParent):
                 
                 fileI = etree.SubElement( parentBranch, xlinkBNS + "fits", nsmap=NSMAP)
 
-                filename = ''.join(xml_quoteattr(item).split("\"")[1:-1])
+                filename = ''.join(quoteattr(item).split("\"")[1:-1])
                 #filename = replace /tmp/"UUID" with /objects/
-
-                fileI.set("ID", "file-" + item.__str__() + "-"    + myuuid.__str__())
+                
+                ID = "file-" + item.__str__() + "-"    + myuuid.__str__()
+                fileI.set("ID", escape(ID))
                 if includeAmdSec:
                     fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())            
 
                 Flocat = newChild(fileI, "Flocat")
-                Flocat.set(xlinkBNS + "href", pathSTR )
+                Flocat.set(xlinkBNS + "href", escape(pathSTR) )
                 Flocat.set("locType", "other")
                 Flocat.set("otherLocType", "system")
 
                 # structMap file
                 div = newChild(structMapParent, "div")
                 fptr = newChild(div, "fptr")
-                fptr.set("FILEID","file-" + item.__str__() + "-" + myuuid.__str__())
+                FILEID = "file-" + item.__str__() + "-" + myuuid.__str__()
+                fptr.set("FILEID", escape(FILEID))
          
 if __name__ == '__main__':
     root = etree.Element( "mets", \
@@ -320,15 +330,15 @@ if __name__ == '__main__':
     if includeAmdSec:
         amdSec = newChild(root, "amdSec")
 
-    fileSec = etree.Element("fileSec")
-    fileSec.tail = "\n"
-    root.append(fileSec)
+    #fileSec = etree.Element("fileSec")
+    #fileSec.tail = "\n"
+    #root.append(fileSec)
 
     sipFileGrp = etree.Element("fileGrp")
     sipFileGrp.tail = "\n"
     sipFileGrp.set("ID", sys.argv[2].__str__())
     sipFileGrp.set("USE", "Objects package")
-    fileSec.append(sipFileGrp)
+    #fileSec.append(sipFileGrp)
 
     structMap = newChild(root, "structMap")
     structMapDiv = newChild(structMap, "div")
