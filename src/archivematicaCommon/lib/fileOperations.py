@@ -177,9 +177,9 @@ def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIde
     if not fileUUID or fileUUID == "None":
         sql = "Need to define transferUUID or sipUUID"
         if sipUUID:
-            sql = "SELECT Files.fileUUID FROM Files WHERE Files.currentLocation = '" + MySQLdb.escape_string(src) + "' AND Files.sipUUID = '" + sipUUID + "';"
+            sql = "SELECT Files.fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(src) + "' AND Files.sipUUID = '" + sipUUID + "';"
         elif transferUUID:
-            sql = "SELECT Files.fileUUID FROM Files WHERE Files.currentLocation = '" + MySQLdb.escape_string(src) + "' AND Files.transferUUID = '" + transferUUID + "';"  
+            sql = "SELECT Files.fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(src) + "' AND Files.transferUUID = '" + transferUUID + "';"  
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:
