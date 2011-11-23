@@ -22,127 +22,59 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#!/usr/bin/python -OO
 
 import sys
-import os.path
 import os
-import logging
-import subprocess
-import shlex
 import uuid
-import lxml.etree as etree
+import MySQLdb
 
-## This will need to get changed somehow to be more proper
-sys.path.append('/usr/lib/archivematica/MCPClient/clientScripts')
-from fileAddedToSIP import addFileToSIP
-from archivematicaFunctions import appendEventToFile 
-from archivematicaFunctions import getTagged
-from createXmlEventsAssist import createEvent
-from createXmlEventsAssist import createOutcomeInformation
-from createXmlEventsAssist import createOrganizationAgent
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from databaseFunctions import insertIntoEvents
+from databaseFunctions import insertIntoDerivations
+from fileOperations import addFileToSIP
+from fileOperations import updateSizeAndChecksum
+import databaseInterface
 
-def xmlCreateRelationship(relationshipType, relationshipSubType, relatedObjectIdentifierValue, relatedEventIdentifierValue, relatedObjectIdentifierType="UUID", relatedEventIdentifierType="UUID"):
-    ret = etree.Element("relationship")
-    etree.SubElement(ret, "relationshipType").text = relationshipType
-    etree.SubElement(ret, "relationshipSubType").text = relationshipSubType
     
-    relatedObjectIdentification = etree.SubElement(ret, "relatedObjectIdentification")        
-    etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierType").text = relatedObjectIdentifierType
-    etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = relatedObjectIdentifierValue
-    relatedEventIdentification = etree.SubElement(ret, "relatedEventIdentification")
-    etree.SubElement(relatedEventIdentification, "relatedEventIdentifierType").text = relatedEventIdentifierType
-    etree.SubElement(relatedEventIdentification, "relatedEventIdentifierValue").text = relatedEventIdentifierValue
-    return ret
+def xmlCreateFileAssociationBetween(originalFileFullPath, outputFromNormalizationFileFullPath, SIPFullPath, sipUUID, eventDetailText, eventOutcomeDetailNote, outputFileUUID=""):
+    #assign file UUID
     
-
-def xmlNormalize(outputFileUUID, outputFileName, eventDetailText, fileUUID, objectsPath, eventUUID, edate, logsPath, linkingAgentIdentifier=None):
-    #Create Normalization event in the original xml document. 
-    eventXML = createEvent( eventUUID, "normalization", \
-                            eventDetailText=eventDetailText, \
-                            eOutcomeInformation = createOutcomeInformation(os.path.basename(outputFileName)), \
-                            eventDateTime = edate, \
-                            linkingAgentIdentifier = linkingAgentIdentifier)
-    appendEventToFile(logsPath, fileUUID, eventXML)
-    
-    #Create new document using the add file script
-    addFileToSIP( objectsPath, logsPath, outputFileName, outputFileUUID, "creation", edate, edate, eventOutcomeDetailNote=outputFileName)
-    
-    xmlCreateFileAssociation(outputFileUUID, outputFileName, fileUUID, objectsPath, eventUUID, edate, logsPath)
-    
-def xmlCreateFileAssociation(outputFileUUID, outputFileName, fileUUID, objectsPath, eventUUID, edate, logsPath):
-    #print >>sys.stderr, "adding linking information"
-    originalFileXML = etree.parse( logsPath + "fileMeta/" + fileUUID + ".xml" ).getroot()
-    outputFileXML = etree.parse( logsPath + "fileMeta/" + outputFileUUID + ".xml" ).getroot()
-
-    #open the newly created document and add association
-    relationship = xmlCreateRelationship("derivation", "is source of", relatedObjectIdentifierValue=outputFileUUID, relatedEventIdentifierValue=eventUUID)
-    object = getTagged(originalFileXML, "object")[0]
-    object.append(relationship)
-
-    #print(etree.tostring(originalFileXML, pretty_print=True))
-    #print(etree.tostring(relationship, pretty_print=True))
-    
-    #open the original document, and create the associated entry.
-    relationship = xmlCreateRelationship("derivation", "has source", relatedObjectIdentifierValue=fileUUID, relatedEventIdentifierValue=eventUUID)
-    object = getTagged(outputFileXML, "object")[0]
-    object.append(relationship)
-
-    etree.ElementTree(originalFileXML).write(logsPath + "fileMeta/" + fileUUID + ".xml")
-    etree.ElementTree(outputFileXML).write(logsPath + "fileMeta/" + outputFileUUID + ".xml")
-    
-def xmlCreateFileAssociationBetween(originalFileFullPath, outputFromNormalizationFileFullPath, SIPFullPath, eventDetailText, objects="objects/", outputFileUUID="", eventUUID="", edate=""):
-    import uuid
-    from datetime import datetime
-    
-    sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-    from archivematicaMCPFileUUID import getUUIDOfFile
-    
-    
-    objectsPath = (SIPFullPath + objects)
-    logsPath =  (SIPFullPath + "logs/")
-    linkingAgentIdentifier = createOrganizationAgent()
-    
+    date = databaseInterface.getUTCDate()
     if outputFileUUID == "":
-        if eventUUID != "":
-            outputFileUUID = eventUUID
-        else:
-             outputFileUUID = uuid.uuid4().__str__() 
-    if eventUUID == "":
-        eventUUID = outputFileUUID 
-    if edate == "":
-        edate =  datetime.utcnow().isoformat('T')
-    
-    sourceRelative = originalFileFullPath.replace(objectsPath, objects, 1)
-    sourceUUID = getUUIDOfFile( logsPath + "FileUUIDs.log", objectsPath, originalFileFullPath, logsPath + "fileMeta/" )
-    
-    xmlNormalize(outputFileUUID, outputFromNormalizationFileFullPath, eventDetailText, sourceUUID, objectsPath, eventUUID, edate, logsPath, linkingAgentIdentifier=None)
+        outputFileUUID = uuid.uuid4().__str__()
    
+    originalFilePathRelativeToSIP = originalFileFullPath.replace(SIPFullPath,"%SIPDirectory%", 1)
+    sql = "SELECT Files.fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(originalFilePathRelativeToSIP) + "' AND Files.sipUUID = '" + sipUUID + "';"
+    print sql
+    rows = databaseInterface.queryAllSQL(sql)
+    print rows
+    fileUUID = rows[0][0]    
+    
+    
+    filePathRelativeToSIP = outputFromNormalizationFileFullPath.replace(SIPFullPath,"%SIPDirectory%", 1)
+    addFileToSIP(filePathRelativeToSIP, outputFileUUID, sipUUID, uuid.uuid4().__str__(), date, sourceType="derivation", use="preservation")
+    updateSizeAndChecksum(outputFileUUID, outputFromNormalizationFileFullPath, date, uuid.uuid4().__str__())
+    
+    taskUUID = uuid.uuid4().__str__()
+    insertIntoEvents(fileUUID=fileUUID, \
+               eventIdentifierUUID=taskUUID, \
+               eventType="normalization", \
+               eventDateTime=date, \
+               eventDetail=eventDetailText, \
+               eventOutcome="", \
+               eventOutcomeDetailNote=eventOutcomeDetailNote)
+    
+    insertIntoDerivations(sourceFileUUID=fileUUID, derivedFileUUID=outputFileUUID, relatedEventUUID=taskUUID)
 
-testxmlNormalize="""
-# Main program
-if __name__ == '__main__':
-    outputFileUUID = sys.argv[1]
-    outputFileName = sys.argv[2]
-    fileUUID = sys.argv[3] 
-    objectsPath = sys.argv[4] 
-    eventUUID = sys.argv[5] 
-    edate = sys.argv[6] 
-    logsPath = sys.argv[7]
-    command =  sys.argv[8]
-    xmlNormalize(outputFileUUID, outputFileName, command, fileUUID, objectsPath, eventUUID, edate, logsPath)
-"""
-
-#testxmlCreateFileAssociationBetween = 
+ 
 if __name__ == '__main__':
     originalFileFullPath = sys.argv[1]
     outputFromNormalizationFileFullPath = sys.argv[2]
     SIPFullPath = sys.argv[3] 
-    eventDetailText = sys.argv[4] 
-    xmlCreateFileAssociationBetween(originalFileFullPath, outputFromNormalizationFileFullPath, SIPFullPath, eventDetailText)
-
-
-#if __name__ == '__main__':
-    #exec testxmlCreateFileAssociationBetween
+    SIPUUID = sys.argv[4]
+    eventDetailText = sys.argv[5] 
+    eventOutcomeDetailNote = sys.argv[6]
     
-    
+    for arg in [originalFileFullPath, outputFromNormalizationFileFullPath, SIPFullPath, SIPUUID, eventDetailText, eventOutcomeDetailNote]:
+        print arg 
+    xmlCreateFileAssociationBetween(originalFileFullPath, outputFromNormalizationFileFullPath, SIPFullPath, SIPUUID, eventDetailText, eventOutcomeDetailNote)
