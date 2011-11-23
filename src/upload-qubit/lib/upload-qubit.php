@@ -29,6 +29,7 @@ function zip($source, $destination)
       if ($zip->open($destination, ZIPARCHIVE::CREATE) === true)
       {
         $source = realpath($source);
+        $parent = dirname($source);
 
         if (is_dir($source) === true)
         {
@@ -38,13 +39,18 @@ function zip($source, $destination)
           {
             $file = realpath($file);
 
+            if ($parent == $file)
+            {
+              continue;
+            }
+
             if (is_dir($file) === true)
             {
-              $zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
+              $zip->addEmptyDir(str_replace($source . DIRECTORY_SEPARATOR, '', $file . DIRECTORY_SEPARATOR));
             }
             else if (is_file($file) === true)
             {
-              $zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
+              $zip->addFromString(str_replace($source . DIRECTORY_SEPARATOR, '', $file), file_get_contents($file));
             }
           }
         }
@@ -70,7 +76,7 @@ function help()
 
     Usage:
 
-      1: The directory will be zipped and sent within the deposit request
+      1: [attached] The directory will be zipped and sent within the deposit request
 
          Syntax:
          \033[0;32m  $script_name attached URL USERNAME PASSWORD DIRECTORY [debug]  \033[0m
@@ -79,9 +85,20 @@ function help()
            $ $script_name attached \
              http://.../index.php/sword/deposit/foo-bar-fonds \
              foo@bar.com 12345 \
-             ~/foobarDIP
+             /tmp/foobarDIP
 
-      2. The directory will be sent by rsync and then referenced in the deposit request
+      2. [referenced] Deposit by reference, the location is referenced
+
+         Syntax:
+         \033[0;32m  $script_name referenced URL USERNAME PASSWORD DIRECTORY [debug]  \033[0m
+
+         Example:
+           $ $script_name referenced \
+             http://.../index.php/sword/deposit/foo-bar-fonds \
+             foo@bar.com 12345 \
+             /tmp/foobarDIP
+
+      3. [referenced-rsync] Deposit by reference, the directory will be sent using rsync
 
          Syntax:
          \033[0;32m  $script_name referenced URL USERNAME PASSWORD DIRECTORY REMOTE_SSH REMOTE_LOCATION [debug]  \033[0m
@@ -90,7 +107,7 @@ function help()
            $ $script_name referenced \
              http://.../index.php/sword/deposit/foo-bar-fonds \
              foo@bar.com 12345 \
-             ~/foobarDIP \
+             /tmp/foobarDIP \
              "ssh -l username -p 22" \
              "peanut.com:/tmp"
 
@@ -119,7 +136,7 @@ if (5 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
   help();
 }
 
-// Upload method: attached | referenced (see --help)
+// Parse arguments
 if ('attached' == $argv[1])
 {
   $cfg['action'] = 'attached';
@@ -132,6 +149,15 @@ if ('attached' == $argv[1])
 else if ('referenced' == $argv[1])
 {
   $cfg['action'] = 'referenced';
+
+  $cfg['url'] = $argv[2];
+  $cfg['username'] = $argv[3];
+  $cfg['password'] = $argv[4];
+  $cfg['directory'] = $argv[5];
+}
+else if ('referenced-rsync' == $argv[1])
+{
+  $cfg['action'] = 'referenced-rsync';
 
   $cfg['url'] = $argv[2];
   $cfg['username'] = $argv[3];
@@ -158,14 +184,16 @@ if (in_array($argv[count($argv) - 1], array('debug', '--debug')))
 // Check if directory exist
 if (false == file_exists($cfg['directory']) || false == is_readable($cfg['directory']))
 {
-  fwrite(STDERR, "Given directory could not be found or is not readable.\n");
+  fwrite(STDERR, "[!!] Given directory could not be found or is not readable:\n");
+  fwrite(STDERR, '[!!] ' . $cfg['directory'] . "\n");
   exit(1);
 }
 
 if ('attached' == $cfg['action'])
 {
-  $file = tempnam('/tmp', 'dip');
+  fwrite(STDOUT, "[OK] Creating ZIP file.\n");
 
+  $file = tempnam('/tmp', 'dip');
   if (!zip($cfg['directory'], $file))
   {
     fwrite(STDERR, "[!!] Error creating zip file.\n");
@@ -176,6 +204,8 @@ if ('attached' == $cfg['action'])
 
   fwrite(STDOUT, "[OK] " . $file . " was generated.\n");
 
+  // Call sword-php-library
+  fwrite(STDOUT, "[OK] The package will be send within the deposit request.\n");
   $client_deposit_method = 'deposit';
   $client_deposit_parameters = array(
     $cfg['url'],
@@ -189,6 +219,22 @@ if ('attached' == $cfg['action'])
     $cfg['debug']);
 }
 else if ('referenced' == $cfg['action'])
+{
+  // Call sword-php-library
+  fwrite(STDOUT, "[OK] The package will be deposited by reference.\n");
+  $client_deposit_method = 'depositByReference';
+  $client_deposit_parameters = array(
+    $cfg['url'],
+    $cfg['username'],
+    $cfg['password'],
+    $cfg['obo'],
+    'file://' . $cfg['directory'],
+    $cfg['format'],
+    $cfg['contenttype'],
+    $cfg['noop'],
+    $cfg['debug']);
+}
+else if ('referenced-rsync' == $cfg['action'])
 {
   // Rsync
   // -a =
@@ -207,12 +253,20 @@ else if ('referenced' == $cfg['action'])
                       $cfg['directory'],
                       $cfg['remote_location']);
 
-  fwrite(STDOUT, "[OK] Running rsync.\n");
+  fwrite(STDOUT, '[OK] Running rsync' . ($cfg['debug'] ? ": $command." : '.') . "\n");
+
   exec($command, $output, $ret);
 
   if (0 == $ret)
   {
     fwrite(STDOUT, "[OK] Package sent with rsync successfully.\n");
+  }
+  // Rsync exit code gives us some hope if we retry
+  // Exit code 200
+  else if (in_array($ret, array(10, 11, 12, 30)))
+  {
+    fwrite(STDERR, "[!!] Rsync failed, exit code $ret (retry, please).\n");
+    exit(200);
   }
   else
   {
@@ -220,6 +274,8 @@ else if ('referenced' == $cfg['action'])
     exit(1);
   }
 
+  // Call sword-php-library
+  fwrite(STDOUT, "[OK] The package will be deposited by reference.\n");
   $client_deposit_method = 'depositByReference';
   $client_deposit_parameters = array(
     $cfg['url'],
@@ -233,6 +289,7 @@ else if ('referenced' == $cfg['action'])
     $cfg['debug']);
 }
 
+require(dirname(__FILE__).'/HttpResponseCodes.class.php');
 require(dirname(__FILE__).'/swordapp-php-library/swordappclient.php');
 $client = new SWORDAPPClient();
 
@@ -246,36 +303,16 @@ try
 }
 catch (Exception $e)
 {
-  fwrite(STDERR, "[!!] Package could not be deposited:\n");
+  fwrite(STDERR, "[!!] Exception thrown in sword-php-library:\n");
   fwrite(STDERR, "[!!] " . $e->getMessage() . "\n");
 
-  if (isset($e->data['status']))
+  if (!in_array($e->data['status'], array(200, 201, 302)))
   {
-    require(dirname(__FILE__).'/HttpResponseCodes.class.php');
     fwrite(STDERR, '[!!] HTTP response status code: ' . HttpResponseCodes::getMessage($e->data['status']) . "\n");
-
-    if ('404' == $e->data['status'])
-    {
-      fwrite(STDERR, "[!!] Please check that qtSwordPlugin is enabled.\n");
-      fwrite(STDERR, "[!!] Please check that the next resource exists: " . $cfg['url'] . "\n");
-    }
-    else if ('401' == $e->data['status'])
-    {
-      fwrite(STDERR, "[!!] Bad username/password?\n");
-    }
-  }
-
-  if (isset($e->data['response']) && 0 < strlen($e->data['response']))
-  {
-    fwrite(STDERR, "[!!] ----- Server response -----\n");
     fwrite(STDERR, $e->data['response']);
-  }
-  else
-  {
-    fwrite(STDERR, "[!!] You should switch on the debug mode to get a detailed error report.\n");
-  }
 
-  exit(1);
+    exit(1);
+  }
 }
 
 // If attached we can remove the generated zip safely
@@ -286,7 +323,7 @@ if ('attached' == $cfg['action'] && unlink($file))
 
 if ($deposit->sac_status == 201)
 {
-  fwrite(STDOUT, "[OK] Package uploaded successfully.\n");
+  fwrite(STDOUT, "[OK] Package uploaded successfully (synchronous mode).\n");
   fwrite(STDOUT, "[OK] URL: " . $deposit->sac_content_src . "\n");
   exit(0);
 }
@@ -295,19 +332,22 @@ if ($deposit->sac_status == 201)
 // but only if including Content-Location header
 else if ($deposit->sac_status == 202 || $deposit->sac_status == 302)
 {
-  fwrite(STDOUT, "[OK] Package uploaded successfully.\n");
+  fwrite(STDOUT, "[OK] Package uploaded successfully (asynchronous mode).\n");
   fwrite(STDOUT, "[OK] The job was accepted by the server.\n");
   fwrite(STDOUT, "[OK] URL: " . $deposit->sac_content_src . "\n");
   exit(0);
 }
 else
 {
-  fwrite(STDERR, "[!!] Package could not be uploaded (" . $deposit->sac_status . ").\n");
+  fwrite(STDERR, "[!!] Package could not be uploaded.\n");
+  fwrite(STDERR, "[!!] HTTP status message: $deposit->sac_statusmessage.\n");
+  fwrite(STDERR, "[!!] Summary: \"$deposit->sac_summary\".\n");
 }
 
 if (true == @$cfg['debug'])
 {
   var_dump($deposit);
+  echo "\n";
 }
 else
 {
