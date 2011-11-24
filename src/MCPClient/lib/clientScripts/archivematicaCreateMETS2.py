@@ -354,8 +354,8 @@ def getRights(fileUUID, filePath, use, type, id):
 def getAMDSec(fileUUID, filePath, use, type, id):
     global globalAmdSecCounter
     globalAmdSecCounter += 1
-    AMDID = "AMDSec-%s" % (globalAmdSecCounter.__str__()) 
-    AMD = etree.Element("AMDSec")
+    AMDID = "amdSec-%s" % (globalAmdSecCounter.__str__()) 
+    AMD = etree.Element("amdSec")
     AMD.set("ID", AMDID)
     ret = (AMD, AMDID)
     #tech MD
@@ -473,10 +473,6 @@ def createFileSec(directoryPath, structMapDiv):
                 print >>sys.stderr, "Invalid use: \"", use, "\""
                 globalErrorCount += 1
             else:                
-                file = """<file ID="file1-UUID" GROUPID="G1" ADMID="amdSec_01">
-<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
-</file>"""
-                
                 file = newChild(globalFileGrps[use], "file", sets=[("ID",FILEID), ("GROUPID",GROUPID)])
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
                 Flocat = newChild(file, "Flocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("locType","other"), ("otherLocType", "system")])
