@@ -572,6 +572,7 @@ def preservation_planning(request):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def access(request):
+  access = models.Access.objects.all()
   return render_to_response('main/access.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

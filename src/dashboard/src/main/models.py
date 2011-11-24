@@ -4,6 +4,22 @@
 
 from django.db import models
 
+from dashboard.contrib import utils
+import dashboard.main
+
+class Access(models.Model):
+  id = models.IntegerField(primary_key=True, db_column='pk')
+  sipuuid = models.CharField(max_length=150, db_column='SIPUUID', blank=True)
+  resource = models.TextField(db_column='resource', blank=True)
+  createdtime = models.DateTimeField(db_column='createdTime')
+
+  class Meta:
+    db_table = u'Accesses'
+
+  def get_title(self):
+    job = dashboard.main.models.Job.objects.get(sipuuid=self.sipuuid)
+    return utils.get_directory_name(job)
+
 class DublinCoreManager(models.Manager):
 
   def get_sip_metadata(self, uuid):

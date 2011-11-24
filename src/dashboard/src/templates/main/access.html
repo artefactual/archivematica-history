@@ -21,5 +21,22 @@
 {% endblock %}
 
 {% block content %}
-
+  <table>
+    <thead>
+      <th>AIP</th>
+      <th>DIP URL</th>
+      <th>Upload date</th>
+      <th>Upload status</th>
+    </thead>
+    <tbody>
+      {% for item in access %}
+        <tr>
+          <td><a href="{% url main.views.ingest_detail item.sipuuid %}">{{ item.get_title }}</a></th>
+          <td><a href="{{ item.resource }}">{{ item.resource }}</a></th>
+          <td>{{ item.createdtime }}</th>
+          <td>N/A</th>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
