@@ -17,8 +17,11 @@ class Access(models.Model):
     db_table = u'Accesses'
 
   def get_title(self):
-    jobs = dashboard.main.models.Job.objects.filter(sipuuid=self.sipuuid)
-    return utils.get_directory_name(jobs[0])
+    try:
+      jobs = dashboard.main.models.Job.objects.filter(sipuuid=self.sipuuid)
+      return utils.get_directory_name(jobs[0])
+    except:
+      return 'N/A'
 
 class DublinCoreManager(models.Manager):
 
