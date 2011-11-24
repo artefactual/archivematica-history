@@ -96,6 +96,9 @@ echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
 
+        # We need git
+        sudo apt-get --quiet --quiet --yes install git-core
+
         # Contents:
         #  - Directory: /var/www/ica-atom
         #  - Directory: ~/qubit-git (origin: github.com/sevein/qubit, branch: experimental)
