@@ -17,8 +17,8 @@ class Access(models.Model):
     db_table = u'Accesses'
 
   def get_title(self):
-    job = dashboard.main.models.Job.objects.get(sipuuid=self.sipuuid)
-    return utils.get_directory_name(job)
+    jobs = dashboard.main.models.Job.objects.filter(sipuuid=self.sipuuid)
+    return utils.get_directory_name(jobs[0])
 
 class DublinCoreManager(models.Manager):
 
