@@ -74,6 +74,7 @@ global globalDmdSecCounter
 globalDmdSecCounter = 0
 global globalAmdSecCounter
 globalAmdSecCounter = 0
+global globalTechMDCounter
 globalTechMDCounter = 0
 global globalRightsMDCounter
 globalRightsMDCounter = 0
@@ -168,16 +169,18 @@ def createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR):
     XPTR = XPTR.replace(" ", "'", 1) + "'))"
     newChild(dmdSec, "mdRef", text=None, sets=[("LABEL", LABEL), (xlinkBNS +"href", directoryPathSTR), ("locType","other"), ("otherLocType", "system"), ("XPTR", XPTR)])
     return (dmdSec, ID)
-    
-def createDigiprovMD(fileUUID):
-    ret = etree.Element("digiprovMD")
-    digiprovMD = ret #newChild(amdSec, "digiprovMD")
+
+
+def createTechMD(fileUUID):    
+    ret = etree.Element("techMD")
+    techMD = ret #newChild(amdSec, "digiprovMD")
     #digiprovMD.set("ID", "digiprov-"+ os.path.basename(filename) + "-" + fileUUID)
-    global globalDigiprovMDCounter
-    globalDigiprovMDCounter += 1
-    digiprovMD.set("ID", "digiprovMD_"+ globalDigiprovMDCounter.__str__())
-    mdWrap = newChild(digiprovMD,"mdWrap")
-    mdWrap.set("MDTYPE", "PREMIS")
+    global globalTechMDCounter
+    globalTechMDCounter += 1
+    techMD.set("ID", "techMD_"+ globalTechMDCounter.__str__())
+    
+    mdWrap = newChild(techMD,"mdWrap")
+    mdWrap.set("MDTYPE", "PREMIS:OBJECT")
     xmlData = newChild(mdWrap, "xmlData")
     premis = etree.SubElement( xmlData, premisBNS + "premis", nsmap=NSMAP, \
         attrib = { "{" + xsiNS + "}schemaLocation" : "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" })
@@ -255,7 +258,8 @@ def createDigiprovMD(fileUUID):
         etree.SubElement(object, "originalName").text = escape(row[0])
         row = c.fetchone()
     sqlLock.release()
-    
+
+    #Derivations     
     sql = "SELECT sourceFileUUID, derivedFileUUID, relatedEventUUID FROM Derivations WHERE sourceFileUUID = '" + fileUUID + "';"
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
@@ -265,16 +269,16 @@ def createDigiprovMD(fileUUID):
         etree.SubElement(relationship, "relationshipSubType").text = "is source of"
         
         relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
+        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentificationType").text = "UUID"
         etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[1]
         
         relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
-        etree.SubElement(relatedEventIdentification, "relatedEventIdentification").text = "UUID"
+        etree.SubElement(relatedEventIdentification, "relatedEventIdentificationType").text = "UUID"
         etree.SubElement(relatedEventIdentification, "relatedEventIdentifierValue").text = row[2]
 
         row = c.fetchone()
     sqlLock.release()
-
+    
     sql = "SELECT sourceFileUUID, derivedFileUUID, relatedEventUUID FROM Derivations WHERE derivedFileUUID = '" + fileUUID + "';"
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
@@ -284,26 +288,34 @@ def createDigiprovMD(fileUUID):
         etree.SubElement(relationship, "relationshipSubType").text = "has source"
         
         relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
+        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentificationType").text = "UUID"
         etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[0]
         
         relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
-        etree.SubElement(relatedEventIdentification, "relatedEventIdentification").text = "UUID"
+        etree.SubElement(relatedEventIdentification, "relatedEventIdentificationType").text = "UUID"
         etree.SubElement(relatedEventIdentification, "relatedEventIdentifierValue").text = row[2]
 
         row = c.fetchone()
     sqlLock.release()
-
+    return ret
     
+def createDigiprovMD(fileUUID):
+    ret = etree.Element("digiprovMD")
+    digiprovMD = ret #newChild(amdSec, "digiprovMD")
+    #digiprovMD.set("ID", "digiprov-"+ os.path.basename(filename) + "-" + fileUUID)
+    global globalDigiprovMDCounter
+    globalDigiprovMDCounter += 1
+    digiprovMD.set("ID", "digiprovMD_"+ globalDigiprovMDCounter.__str__())
     #EVENTS
-    #premis.append(events)
-    events = etree.SubElement(premis, "events")
+
     #| pk  | fileUUID | eventIdentifierUUID | eventType | eventDateTime | eventDetail | eventOutcome | eventOutcomeDetailNote | linkingAgentIdentifier |
     sql = "SELECT * FROM Events WHERE fileUUID = '" + fileUUID + "';"
-    c, sqlLock = databaseInterface.querySQL(sql) 
-    row = c.fetchone()
-    while row != None:
-        event = etree.SubElement(events, "event")
+    rows = databaseInterface.queryAllSQL(sql) 
+    for row in rows:
+        mdWrap = newChild(digiprovMD,"mdWrap")
+        mdWrap.set("MDTYPE", "PREMIS:EVENT")
+        xmlData = newChild(mdWrap,"xmlData")
+        event = etree.SubElement(xmlData, "event")
         
         eventIdentifier = etree.SubElement(event, "eventIdentifier")
         etree.SubElement(eventIdentifier, "eventIdentifierType").text = "UUID"
@@ -317,10 +329,8 @@ def createDigiprovMD(fileUUID):
         etree.SubElement(eventOutcomeInformation, "eventOutcome").text = row[6]
         eventOutcomeDetail = etree.SubElement(eventOutcomeInformation, "eventOutcomeDetail")
         etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = escape(row[7])
-        row = c.fetchone()
-    sqlLock.release()
-    
-    for event in events:
+        
+        #linkingAgentIdentifier
         sql = """SELECT agentIdentifierType, agentIdentifierValue, agentName, agentType FROM Agents;"""
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
@@ -330,19 +340,23 @@ def createDigiprovMD(fileUUID):
             etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierValue").text = row[1]
             row = c.fetchone()
         sqlLock.release()
-   
+    
+
     
     #AGENTS
     sql = """SELECT agentIdentifierType, agentIdentifierValue, agentName, agentType FROM Agents;"""
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:
-        agents = etree.SubElement(premis, "agents")
-        #createAgent(agentIdentifierType, agentIdentifierValue, agentName, agentType)
-        agents.append(createAgent(row[0], row[1], row[2], row[3]))
+        mdWrap = newChild(digiprovMD,"mdWrap")
+        mdWrap.set("MDTYPE", "PREMIS:AGENT")
+        xmlData = newChild(mdWrap,"xmlData")
+        #agents = etree.SubElement(xmlData, "agents")
+        xmlData.append(createAgent(row[0], row[1], row[2], row[3]))
         row = c.fetchone()
     sqlLock.release()
     return ret
+
     
 def getRights(fileUUID, filePath, use, type, id):
     ret = []
@@ -360,6 +374,7 @@ def getAMDSec(fileUUID, filePath, use, type, id):
     ret = (AMD, AMDID)
     #tech MD
     #digiprob MD
+    AMD.append(createTechMD(fileUUID))
     AMD.append(createDigiprovMD(fileUUID))
     
     if use == "original":
