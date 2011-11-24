@@ -304,15 +304,21 @@ try
 catch (Exception $e)
 {
   fwrite(STDERR, "[!!] Exception thrown in sword-php-library:\n");
-  fwrite(STDERR, "[!!] " . $e->getMessage() . "\n");
+  fwrite(STDERR, "[!!] --> " . $e->getMessage() . "\n");
 
-  if (!in_array($e->data['status'], array(200, 201, 302)))
+  fwrite(STDERR, '[!!] HTTP response status code: ' . HttpResponseCodes::getMessage($e->data['status']) . "\n");
+
+  if (in_array($e->data['status'], array(200, 201, 302)))
   {
-    fwrite(STDERR, '[!!] HTTP response status code: ' . HttpResponseCodes::getMessage($e->data['status']) . "\n");
-    fwrite(STDERR, $e->data['response']);
-
-    exit(1);
+    fwrite(STDERR, "[!!] However, the package was deposited successfully.\n");
   }
+
+  if ($cfg['debug'])
+  {
+    fwrite(STDERR, $e->data['response']);
+  }
+
+  exit(1);
 }
 
 // If attached we can remove the generated zip safely
@@ -336,6 +342,12 @@ else if ($deposit->sac_status == 202 || $deposit->sac_status == 302)
   fwrite(STDOUT, "[OK] The job was accepted by the server.\n");
   fwrite(STDOUT, "[OK] URL: " . $deposit->sac_content_src . "\n");
   exit(0);
+}
+else if ($deposit->sac_status == 404)
+{
+  fwrite(STDERR, "[!!] 404 error.\n");
+  fwrite(STDERR, "[!!] - Check that qtSwordPlugin is enabled.\n");
+  fwrite(STDERR, "[!!] - Exists an information object with slug value 'archivematica'.\n");
 }
 else
 {

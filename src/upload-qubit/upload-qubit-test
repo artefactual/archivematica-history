@@ -20,7 +20,7 @@ if [ "$1" = "1" ]; then
     attached \
     ${URL} \
     ${LOGIN} \
-    ${DIP} debug
+    ${DIP}
 
 elif [ "$1" = "2" ]; then
 
