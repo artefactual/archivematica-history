@@ -79,7 +79,7 @@ function help()
       1: [attached] The directory will be zipped and sent within the deposit request
 
          Syntax:
-         \033[0;32m  $script_name attached URL USERNAME PASSWORD DIRECTORY [debug]  \033[0m
+         \033[0;32m  $script_name attached URL USERNAME PASSWORD DIRECTORY UUID [debug]  \033[0m
 
          Example:
            $ $script_name attached \
@@ -90,7 +90,7 @@ function help()
       2. [referenced] Deposit by reference, the location is referenced
 
          Syntax:
-         \033[0;32m  $script_name referenced URL USERNAME PASSWORD DIRECTORY [debug]  \033[0m
+         \033[0;32m  $script_name referenced URL USERNAME PASSWORD DIRECTORY UUID [debug]  \033[0m
 
          Example:
            $ $script_name referenced \
@@ -101,7 +101,7 @@ function help()
       3. [referenced-rsync] Deposit by reference, the directory will be sent using rsync
 
          Syntax:
-         \033[0;32m  $script_name referenced URL USERNAME PASSWORD DIRECTORY REMOTE_SSH REMOTE_LOCATION [debug]  \033[0m
+         \033[0;32m  $script_name referenced URL USERNAME PASSWORD DIRECTORY UUID REMOTE_SSH REMOTE_LOCATION [debug]  \033[0m
 
          Example:
            $ $script_name referenced \
@@ -114,6 +114,42 @@ function help()
 
 content
   );
+}
+
+function updateDatabase($URL = "")
+{
+  global $cfg;
+
+  // TODO: Load credentials form the Archivematica configuration files or use Python db-wrapper
+  $link = mysql_connect('localhost:3306', 'demo', 'demo');
+
+  if (!$link)
+  {
+    fwrite(STDERR, "[!!] Database update failed: connection could not be established.\n");
+    return;
+  }
+
+  $db_selected = mysql_select_db('MCP');
+
+  if (!$db_selected)
+  {
+    fwrite(STDERR, "[!!] Database update failed: database not found.\n");
+    return;
+  }
+
+  $sql_command = vsprintf('INSERT INTO Accesses (SIPUUID, resource) VALUES ("%s", "%s")', array(
+                            mysql_real_escape_string($cfg['uuid']),
+                            mysql_real_escape_string($URL)));
+
+  if (!mysql_query($sql_command))
+  {
+    fwrite(STDERR, "[!!] Database update failed: $sql_command.\n");
+    return;
+  }
+  
+  echo mysql_insert_id();
+
+  fwrite(STDIN, "[OK] Database updated!\n");
 }
 
 // Defaults
@@ -131,7 +167,7 @@ if ('cli' !== php_sapi_name())
 }
 
 // Arguments check
-if (5 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
+if (6 > $argc || in_array(@$argv[1], array('--help', '-help', '-h', '-?')))
 {
   help();
 }
@@ -145,6 +181,7 @@ if ('attached' == $argv[1])
   $cfg['username'] = $argv[3];
   $cfg['password'] = $argv[4];
   $cfg['directory'] = $argv[5];
+  $cfg['uuid'] = $argv[6];
 }
 else if ('referenced' == $argv[1])
 {
@@ -154,6 +191,7 @@ else if ('referenced' == $argv[1])
   $cfg['username'] = $argv[3];
   $cfg['password'] = $argv[4];
   $cfg['directory'] = $argv[5];
+  $cfg['uuid'] = $argv[6];
 }
 else if ('referenced-rsync' == $argv[1])
 {
@@ -163,8 +201,9 @@ else if ('referenced-rsync' == $argv[1])
   $cfg['username'] = $argv[3];
   $cfg['password'] = $argv[4];
   $cfg['directory'] = $argv[5];
-  $cfg['remote_ssh'] = $argv[6];
-  $cfg['remote_location'] = $argv[7];
+  $cfg['uuid'] = $argv[6];
+  $cfg['remote_ssh'] = $argv[7];
+  $cfg['remote_location'] = $argv[8];
 }
 else
 {
@@ -311,6 +350,9 @@ catch (Exception $e)
   if (in_array($e->data['status'], array(200, 201, 302)))
   {
     fwrite(STDERR, "[!!] However, the package was deposited successfully.\n");
+    fwrite(STDERR, "[!!] New deposit URL could not be found.\n");
+
+    updateDatabase();
   }
 
   if ($cfg['debug'])
@@ -331,6 +373,7 @@ if ($deposit->sac_status == 201)
 {
   fwrite(STDOUT, "[OK] Package uploaded successfully (synchronous mode).\n");
   fwrite(STDOUT, "[OK] URL: " . $deposit->sac_content_src . "\n");
+  updateDatabase($deposit->sac_content_src);
   exit(0);
 }
 // For some reason php-curl returns 302 when
@@ -341,6 +384,7 @@ else if ($deposit->sac_status == 202 || $deposit->sac_status == 302)
   fwrite(STDOUT, "[OK] Package uploaded successfully (asynchronous mode).\n");
   fwrite(STDOUT, "[OK] The job was accepted by the server.\n");
   fwrite(STDOUT, "[OK] URL: " . $deposit->sac_content_src . "\n");
+  updateDatabase($deposit->sac_content_src);
   exit(0);
 }
 else if ($deposit->sac_status == 404)
