@@ -477,10 +477,10 @@ def createFileSec(directoryPath, structMapDiv):
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
                 Flocat = newChild(file, "Flocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("locType","other"), ("otherLocType", "system")])
                 if includeAmdSec and not skipAMDSec:
-                    AMD, AMDID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier)
+                    AMD, ADMID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier)
                     global amdSecs
                     amdSecs.append(AMD)
-                    file.set("AMDID", AMDID)
+                    file.set("ADMID", ADMID)
                 
             
             
