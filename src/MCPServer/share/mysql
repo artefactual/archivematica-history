@@ -22,8 +22,8 @@
 # @version svn: $Id$
 */
 
-DROP TABLE IF EXISTS Access;
-CREATE TABLE Access (
+DROP TABLE IF EXISTS Accesses;
+CREATE TABLE Accesses (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     SIPUUID VARCHAR(50),
     resource LONGTEXT,
