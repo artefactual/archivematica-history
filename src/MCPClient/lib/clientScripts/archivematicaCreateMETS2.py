@@ -211,7 +211,7 @@ def createDigiprovMD(fileUUID):
     
     etree.SubElement(object, "size").text = fileSize
     
-    sql = "SELECT * FROM FilesIDs WHERE fileUUID = '%s';" % (fileUUID)
+    sql = "SELECT formatName, formatVersion, formatRegistryName, formatRegistryKey FROM FilesIDs WHERE fileUUID = '%s';" % (fileUUID)
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     if not row:
@@ -224,12 +224,12 @@ def createDigiprovMD(fileUUID):
         #fileUUID = row[0] 
         
         formatDesignation = etree.SubElement(format, "formatDesignation")
-        etree.SubElement(formatDesignation, "formatName").text = row[1]
-        etree.SubElement(formatDesignation, "formatVersion").text = row[2] 
+        etree.SubElement(formatDesignation, "formatName").text = row[0]
+        etree.SubElement(formatDesignation, "formatVersion").text = row[1] 
 
         formatRegistry = etree.SubElement(format, "formatRegistry")
-        etree.SubElement(formatRegistry, "formatRegistryName").text = row[3]
-        etree.SubElement(formatRegistry, "formatRegistryKey").text = row[4]
+        etree.SubElement(formatRegistry, "formatRegistryName").text = row[2]
+        etree.SubElement(formatRegistry, "formatRegistryKey").text = row[3]
         row = c.fetchone()
     sqlLock.release()
     
