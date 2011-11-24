@@ -34,7 +34,7 @@ CREATE TABLE Agents (
 set @archivematicaAgent = 1;
 set @organizationAgent = 2;
 INSERT INTO Agents (pk, agentIdentifierType, agentIdentifierValue, agentName, agentType)
-    VALUES (@archivematicaAgent, 'preservation system', 'Archivematica-0.7', 'Archivematica', 'software'),
+    VALUES (@archivematicaAgent, 'preservation system', 'Archivematica-0.8', 'Archivematica', 'software'),
     (@organizationAgent, 'repository code', 'ORG', 'Your Organization Name Here', 'organization')
 ;
 
