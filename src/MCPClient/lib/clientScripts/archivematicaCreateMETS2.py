@@ -209,7 +209,7 @@ def createDigiprovMD(fileUUID):
     etree.SubElement(fixity, "messageDigestAlgorithm").text = "sha256"
     etree.SubElement(fixity, "messageDigest").text = checksum
     
-    etree.SubElement(object, "size").text = fileSize
+    etree.SubElement(objectCharacteristics, "size").text = fileSize
     
     sql = "SELECT formatName, formatVersion, formatRegistryName, formatRegistryKey FROM FilesIDs WHERE fileUUID = '%s';" % (fileUUID)
     c, sqlLock = databaseInterface.querySQL(sql) 
@@ -256,7 +256,7 @@ def createDigiprovMD(fileUUID):
         row = c.fetchone()
     sqlLock.release()
     
-    sql = "SELECT * FROM Derivations WHERE sourceFileUUID = '" + fileUUID + "';"
+    sql = "SELECT sourceFileUUID, derivedFileUUID, relatedEventUUID FROM Derivations WHERE sourceFileUUID = '" + fileUUID + "';"
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:
@@ -266,16 +266,16 @@ def createDigiprovMD(fileUUID):
         
         relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
         etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[2]
+        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[1]
         
         relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
-        etree.SubElement(relatedEventIdentification, "relatedObjectIdentification").text = "UUID"
-        etree.SubElement(relatedEventIdentification, "relatedObjectIdentifierValue").text = row[3]
+        etree.SubElement(relatedEventIdentification, "relatedEventIdentification").text = "UUID"
+        etree.SubElement(relatedEventIdentification, "relatedEventIdentifierValue").text = row[2]
 
         row = c.fetchone()
     sqlLock.release()
 
-    sql = "SELECT * FROM Derivations WHERE derivedFileUUID = '" + fileUUID + "';"
+    sql = "SELECT sourceFileUUID, derivedFileUUID, relatedEventUUID FROM Derivations WHERE derivedFileUUID = '" + fileUUID + "';"
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:
@@ -285,11 +285,11 @@ def createDigiprovMD(fileUUID):
         
         relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
         etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[1]
+        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[0]
         
         relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
-        etree.SubElement(relatedEventIdentification, "relatedObjectIdentification").text = "UUID"
-        etree.SubElement(relatedEventIdentification, "relatedObjectIdentifierValue").text = row[3]
+        etree.SubElement(relatedEventIdentification, "relatedEventIdentification").text = "UUID"
+        etree.SubElement(relatedEventIdentification, "relatedEventIdentifierValue").text = row[2]
 
         row = c.fetchone()
     sqlLock.release()
