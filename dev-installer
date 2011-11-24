@@ -35,18 +35,18 @@ else
 fi
 
 
-part="install gearman"
+part="install Gearman"
 echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
         sudo apt-get install gearman python-setuptools python-gearman
-		sudo easy_install gearman
+        sudo easy_install gearman
 else
         echo "Not going to ${part}"
 fi
 
-part="install/update mysql"
+part="install/update MySQL"
 echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
@@ -91,6 +91,47 @@ else
         echo "Not going to ${part}"
 fi
 
+part="reinstall ICA-AtoM"
+echo -n "\"Would you like to ${part}?\" (y/N) "
+read a
+if [[ $a == "Y" || $a == "y" ]]; then
+
+        # Contents:
+        #  - Directory: /var/www/ica-atom
+        #  - Directory: ~/qubit-git (origin: github.com/sevein/qubit, branch: experimental)
+        #  - Database: qubit
+
+	# Working directory
+	WDIR=$(pwd)
+
+	# Remove
+	sudo rm -rf /var/www/ica-atom
+	sudo rm -rf ${WDIR}/qubit-git
+	sudo rm -rf ${WDIR}/ica-atom-svn # Old name
+
+	# Clone git repository, create bran experimental from original/experimental
+	git clone git://github.com/sevein/qubit.git ${WDIR}/qubit-git
+        cd ${WDIR}/qubit-git
+        git checkout --track origin/experimental
+        cd ${WDIR}
+        
+	# Link
+	sudo ln -sf ${WDIR}/qubit-git /var/www/ica-atom
+
+	# Permissions
+	sudo chown -R www-data:www-data ${WDIR}/qubit-git
+
+	# Restart database
+	echo "Enter mysql root password (hit enter if blank)"
+	mysql -u root -p --execute="DROP DATABASE IF EXISTS qubit; CREATE DATABASE qubit CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+
+	# Restart Apache (not really needed)
+	sudo apache2ctl restart
+
+else
+        echo "Not going to ${part}."
+fi
+
 part="reinstall archivematica upstart services - requires restart"
 echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
@@ -100,41 +141,17 @@ if [[ $a == "Y" || $a == "y" ]]; then
         sleep 1
         sudo stop archivematica-mcp-server
         sleep 3
-        sudo rm /etc/init/archivematica-mcp-server.conf /etc/init/archivematica-mcp-client.conf
+        sudo stop qubit-sword
+        sudo rm \
+          /etc/init/archivematica-mcp-server.conf \
+          /etc/init/archivematica-mcp-client.conf \
+          /etc/init/qubit-sword.conf
         sudo ln src/MCPServer/init/archivematica-mcp-server.conf /etc/init/
         sudo ln src/MCPClient/init/archivematica-mcp-client.conf /etc/init/
+        sudo ln qubit-git/init/qubit-sword.conf /etc/init/
 else
         echo "Not going to ${part}."
 fi
-
-part="reinstall ica-atom"
-echo -n "\"Would you like to ${part}?\" (y/N) "
-read a
-if [[ $a == "Y" || $a == "y" ]]; then
-    #download and export
-    sudo rm /var/www/ica-atom -rf
-    svn checkout http://qubit-toolkit.googlecode.com/svn/trunk ica-atom-svn
-    #sudo svn export ica-atom-svn /var/www/ica-atom
-    sudo ln -sf `pwd`/ica-atom-svn/ /var/www/ica-atom
-    #rm ica-atom-svn -rf    
-
-    #delete & create "qubit" database
-
-    #fix ownership
-    sudo chown -R www-data:www-data ica-atom-svn/
-    sudo chmod 777 -R ica-atom-svn
-
-    # Not needed anymore, feel free to remove it
-    # cp ica-atom-svn/apps/qubit/config/settings.yml.tmpl ica-atom-svn/apps/qubit/config/settings.yml
-
-    # sudo mysqladmin drop qubit
-    echo "enter mysql root password (hit enter if blank)"
-    mysql -u root -p --execute="CREATE DATABASE qubit CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-    sudo apache2ctl restart
-else
-        echo "Not going to ${part}."
-fi
-
 
 exit
 
