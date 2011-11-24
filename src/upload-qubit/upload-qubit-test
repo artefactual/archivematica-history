@@ -8,7 +8,7 @@ URL="http://localhost/ica-atom/index.php/sword/deposit/archivematica"
 LOGIN="demo@example.com demo"
 
 # DIP path
-DIP="~/PeanutDIP"
+DIP="${HOME}/archivematica/sampledata/PeanutDIP"
 
 # If you are using "referenced-rsync" mode
 RSYNC_CMD="ssh -l YOURUSERNAME -p 22"
