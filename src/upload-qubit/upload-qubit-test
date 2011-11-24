@@ -7,8 +7,11 @@ UPLOAD_QUBIT_PATH="${HOME}/archivematica/src/upload-qubit/upload-qubit"
 URL="http://localhost/ica-atom/index.php/sword/deposit/archivematica"
 LOGIN="demo@example.com demo"
 
-# DIP path
+# DIP path and UUID
 DIP="${HOME}/archivematica/sampledata/PeanutDIP"
+
+# Example UUID (upload-qubit.php will put this into the MCP.access table)
+UUID="be495e18-54a0-4451-b02f-401ae9146c0b"
 
 # If you are using "referenced-rsync" mode
 RSYNC_CMD="ssh -l YOURUSERNAME -p 22"
@@ -20,7 +23,8 @@ if [ "$1" = "1" ]; then
     attached \
     ${URL} \
     ${LOGIN} \
-    ${DIP}
+    ${DIP} \
+    ${UUID}
 
 elif [ "$1" = "2" ]; then
 
@@ -28,7 +32,8 @@ elif [ "$1" = "2" ]; then
     referenced \
     ${URL} \
     ${LOGIN} \
-    ${DIP}
+    ${DIP} \
+    ${UUID}
 
 elif [ "$1" = "3" ]; then
 
@@ -37,6 +42,7 @@ elif [ "$1" = "3" ]; then
     ${URL} \
     ${LOGIN} \
     ${DIP} \
+    ${UUID} \
     ${RSYNC_CMD} \
     ${RSYNC_TO}
 
