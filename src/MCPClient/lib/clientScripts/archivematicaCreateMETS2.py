@@ -205,7 +205,7 @@ def createDigiprovMD(fileUUID):
     objectCharacteristics = etree.SubElement(object, "objectCharacteristics")
     etree.SubElement(objectCharacteristics, "compositionLevel").text = "0"
     
-    fixity = etree.SubElement(object, "fixity")
+    fixity = etree.SubElement(objectCharacteristics, "fixity")
     etree.SubElement(fixity, "messageDigestAlgorithm").text = "sha256"
     etree.SubElement(fixity, "messageDigest").text = checksum
     
@@ -215,12 +215,12 @@ def createDigiprovMD(fileUUID):
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     if not row:
-        format = etree.SubElement(object, "format")
+        format = etree.SubElement(objectCharacteristics, "format")
         formatDesignation = etree.SubElement(format, "formatDesignation")
         etree.SubElement(formatDesignation, "formatName").text = "Unknown"
     while row != None:
         print row
-        format = etree.SubElement(object, "format")
+        format = etree.SubElement(objectCharacteristics, "format")
         #fileUUID = row[0] 
         
         formatDesignation = etree.SubElement(format, "formatDesignation")
@@ -233,7 +233,7 @@ def createDigiprovMD(fileUUID):
         row = c.fetchone()
     sqlLock.release()
     
-    objectCharacteristicsExtension = etree.SubElement(premis, "objectCharacteristicsExtension")
+    objectCharacteristicsExtension = etree.SubElement(objectCharacteristics, "objectCharacteristicsExtension")
     
     sql = "SELECT FilesFits.FITSxml FROM FilesFits WHERE fileUUID = '" + fileUUID + "';"
     c, sqlLock = databaseInterface.querySQL(sql) 
@@ -261,8 +261,8 @@ def createDigiprovMD(fileUUID):
     row = c.fetchone()
     while row != None:
         relationship = etree.SubElement(object, "relationship")
-        etree.SubElement(object, "relationshipType").text = "derivation"
-        etree.SubElement(object, "relationshipSubType").text = "is source of"
+        etree.SubElement(relationship, "relationshipType").text = "derivation"
+        etree.SubElement(relationship, "relationshipSubType").text = "is source of"
         
         relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
         etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
@@ -280,8 +280,8 @@ def createDigiprovMD(fileUUID):
     row = c.fetchone()
     while row != None:
         relationship = etree.SubElement(object, "relationship")
-        etree.SubElement(object, "relationshipType").text = "derivation"
-        etree.SubElement(object, "relationshipSubType").text = "has source"
+        etree.SubElement(relationship, "relationshipType").text = "derivation"
+        etree.SubElement(relationship, "relationshipSubType").text = "has source"
         
         relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
         etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
