@@ -147,8 +147,6 @@ function updateDatabase($URL = "")
     return;
   }
   
-  echo mysql_insert_id();
-
   fwrite(STDIN, "[OK] Database updated!\n");
 }
 
