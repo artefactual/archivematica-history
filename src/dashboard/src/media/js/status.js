@@ -29,7 +29,7 @@ $(function()
 
           this.transfer = this.$('ul.nav > li').eq(1);
           this.sip = this.$('ul.nav > li').eq(2);
-          this.dip = this.$('ul.nav > li').eq(5);
+          // this.dip = this.$('ul.nav > li').eq(5);
         },
 
       render: function()
