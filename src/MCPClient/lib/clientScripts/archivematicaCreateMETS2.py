@@ -51,9 +51,7 @@ fileGroupType = opts.fileGroupType
 includeAmdSec = opts.amdSec 
 
 #Global Variables
-globalMets = root = etree.Element( "mets", \
-    nsmap = NSMAP, \
-    attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
+
 
 globalFileGrps = {}
 globalFileGrpsUses = ["original", "submissionDocumentation", "preservation", "service", "access", "license", "text"]
@@ -122,6 +120,7 @@ def getDublinCore(type, id):
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     if row == None:
+        sqlLock.release()
         return None
     ret = etree.Element( "dublincore" )
     while row != None:
@@ -182,7 +181,7 @@ def createTechMD(fileUUID):
     mdWrap = newChild(techMD,"mdWrap")
     mdWrap.set("MDTYPE", "PREMIS:OBJECT")
     xmlData = newChild(mdWrap, "xmlData")
-    premis = etree.SubElement( xmlData, premisBNS + "premis", nsmap=NSMAP, \
+    premis = etree.SubElement( xmlData, "premis", nsmap={None: premisNS}, \
         attrib = { "{" + xsiNS + "}schemaLocation" : "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" })
     premis.set("version", "2.0")
 
@@ -300,22 +299,24 @@ def createTechMD(fileUUID):
     return ret
     
 def createDigiprovMD(fileUUID):
-    ret = etree.Element("digiprovMD")
-    digiprovMD = ret #newChild(amdSec, "digiprovMD")
-    #digiprovMD.set("ID", "digiprov-"+ os.path.basename(filename) + "-" + fileUUID)
-    global globalDigiprovMDCounter
-    globalDigiprovMDCounter += 1
-    digiprovMD.set("ID", "digiprovMD_"+ globalDigiprovMDCounter.__str__())
+    ret = []
     #EVENTS
 
     #| pk  | fileUUID | eventIdentifierUUID | eventType | eventDateTime | eventDetail | eventOutcome | eventOutcomeDetailNote | linkingAgentIdentifier |
     sql = "SELECT * FROM Events WHERE fileUUID = '" + fileUUID + "';"
     rows = databaseInterface.queryAllSQL(sql) 
     for row in rows:
+        digiprovMD = etree.Element("digiprovMD")
+        ret.append(digiprovMD) #newChild(amdSec, "digiprovMD")
+        #digiprovMD.set("ID", "digiprov-"+ os.path.basename(filename) + "-" + fileUUID)
+        global globalDigiprovMDCounter
+        globalDigiprovMDCounter += 1
+        digiprovMD.set("ID", "digiprovMD_"+ globalDigiprovMDCounter.__str__())
+
         mdWrap = newChild(digiprovMD,"mdWrap")
         mdWrap.set("MDTYPE", "PREMIS:EVENT")
         xmlData = newChild(mdWrap,"xmlData")
-        event = etree.SubElement(xmlData, "event")
+        event = etree.SubElement(xmlData, "event", nsmap={None: premisNS})
         
         eventIdentifier = etree.SubElement(event, "eventIdentifier")
         etree.SubElement(eventIdentifier, "eventIdentifierType").text = "UUID"
@@ -340,14 +341,20 @@ def createDigiprovMD(fileUUID):
             etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierValue").text = row[1]
             row = c.fetchone()
         sqlLock.release()
-    
+    return ret
 
-    
+def createDigiprovMDAgents():
+    ret = []
     #AGENTS
     sql = """SELECT agentIdentifierType, agentIdentifierValue, agentName, agentType FROM Agents;"""
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:
+        global globalDigiprovMDCounter
+        globalDigiprovMDCounter += 1
+        digiprovMD = etree.Element("digiprovMD")
+        digiprovMD.set("ID", "digiprovMD_"+ globalDigiprovMDCounter.__str__())
+        ret.append(digiprovMD) #newChild(amdSec, "digiprovMD")
         mdWrap = newChild(digiprovMD,"mdWrap")
         mdWrap.set("MDTYPE", "PREMIS:AGENT")
         xmlData = newChild(mdWrap,"xmlData")
@@ -356,7 +363,6 @@ def createDigiprovMD(fileUUID):
         row = c.fetchone()
     sqlLock.release()
     return ret
-
     
 def getRights(fileUUID, filePath, use, type, id):
     ret = []
@@ -375,7 +381,11 @@ def getAMDSec(fileUUID, filePath, use, type, id):
     #tech MD
     #digiprob MD
     AMD.append(createTechMD(fileUUID))
-    AMD.append(createDigiprovMD(fileUUID))
+    for a in createDigiprovMD(fileUUID):
+        AMD.append(a)
+    
+    for a in createDigiprovMDAgents():
+        AMD.append(a)
     
     if use == "original":
         #rights MD (repeatable)
@@ -490,7 +500,7 @@ def createFileSec(directoryPath, structMapDiv):
             else:                
                 file = newChild(globalFileGrps[use], "file", sets=[("ID",FILEID), ("GROUPID",GROUPID)])
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
-                Flocat = newChild(file, "Flocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("locType","other"), ("otherLocType", "system")])
+                Flocat = newChild(file, "FLocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("LOCTYPE","OTHER"), ("OTHERLOCTYPE", "SYSTEM")])
                 if includeAmdSec and not skipAMDSec:
                     AMD, ADMID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier)
                     global amdSecs
@@ -544,9 +554,12 @@ if __name__ == '__main__':
         if len(grp) > 0:
             fileSec.append(grp)
     
+    rootNSMap = {None: metsNS}
+    rootNSMap.update(NSMAP)
     root = etree.Element( "mets", \
-    nsmap = NSMAP, \
+    nsmap = rootNSMap, \
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
+
     
     
     dc = createDublincoreDMDSec(SIPMetadataAppliesToType, fileGroupIdentifier)
@@ -570,7 +583,8 @@ if __name__ == '__main__':
     #<div TYPE="directory" LABEL="objects" DMDID="dmdSec_01">
     #Recursive function for creating structmap and fileSec
     tree = etree.ElementTree(root)
-    tree.write(XMLFile)
+    #tree.write(XMLFile)
+    tree.write(XMLFile, pretty_print=True, xml_declaration=True)
     
     writeTestXMLFile = True
     if writeTestXMLFile:
@@ -593,7 +607,7 @@ if __name__ == '__main__':
 
 
 </body>
-</html>""" % (cgi.escape(etree.tostring(root, pretty_print=True)))
+</html>""" % (cgi.escape(etree.tostring(root, pretty_print=True, xml_declaration=True)))
         f = open(fileName, 'w')
         f.write(fileContents)
         f.close
