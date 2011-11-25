@@ -27,6 +27,7 @@
       <th>DIP URL</th>
       <th>Upload date</th>
       <th>Upload status</th>
+      <th>Actions</th>
     </thead>
     <tbody>
       {% for item in access %}
@@ -35,6 +36,7 @@
           <td><a href="{{ item.resource }}">{{ item.resource }}</a></th>
           <td>{{ item.createdtime }}</th>
           <td>N/A</th>
+          <td><a class="btn danger small" href="{% url main.views.access_delete item.pk %}">Delete</a></td>
         </tr>
       {% endfor %}
     </tbody>

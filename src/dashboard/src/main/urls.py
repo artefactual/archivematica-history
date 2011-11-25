@@ -49,7 +49,8 @@ urlpatterns = patterns('dashboard.main.views',
   (r'preservation-planning/$', 'preservation_planning'),
 
   # Access
-  (r'access/$', 'access'),
+  (r'access/$', 'access_list'),
+  (r'access/(?P<id>\d+)/delete/$', 'access_delete'),
 
   # Settings
   (r'settings/$', 'settings_list'),

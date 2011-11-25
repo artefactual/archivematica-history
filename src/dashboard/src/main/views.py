@@ -22,7 +22,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db import connection, transaction
 from django.forms.models import modelformset_factory, inlineformset_factory
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.utils import simplejson
 from django.utils.functional import wraps
@@ -395,23 +395,27 @@ def transfer_rights_add(request, uuid, jobs, name):
 
   # License note formset
   LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote,
-                                               form=forms.RightsLicenseNoteForm, extra=1, max_num=1, can_delete=False)
+                                             form=forms.RightsLicenseNoteForm, extra=1, max_num=1, can_delete=False)
 
   # Rights statement form
   form = forms.RightsForm()
 
   if request.method == 'POST':
-    copyright_note_formset = CopyrightNoteFormSet(request.POST, request.FILES)
-    license_note_formset = CopyrightNoteFormSet(request.POST, request.FILES)
     form = forms.RightsForm(request.POST)
-    if form.is_valid():
-      copyright_note_formset.save()
-      license_note_formset.save()
-      form.save()
+    copyright_note_formset = CopyrightNoteFormSet(request.POST, request.FILES)
+    license_note_formset = LicenseNoteFormSet(request.POST, request.FILES)
+    if form.is_valid() and copyright_note_formset.is_valid() and license_note_formset.is_valid():
+      fo = form.save()
+      cn = copyright_note_formset.save(commit=False)
+      cn.fkRightsStatement = fo.id
+      cn.save()
+      ln = license_note_formset.save(commit=False)
+      ln.fkRightsStatement = fo.id
+      ln.save()
       return HttpResponseRedirect(reverse('dashboard.main.views.transfer_rights_list', args=[uuid]))
   else:
     copyright_note_formset = CopyrightNoteFormSet()
-    license_note_formset = CopyrightNoteFormSet()
+    license_note_formset = LicenseNoteFormSet()
     form = forms.RightsForm()
 
   return render_to_response('main/transfer/rights_edit.html', locals())
@@ -423,13 +427,10 @@ def transfer_rights_edit(request, uuid, jobs, name, id):
   except ObjectDoesNotExist:
     raise Http404
 
-  if request.method == 'POST':
-    form = forms.RightsForm(request.POST, instance=right)
-    if form.is_valid():
-      form.save()
-      return HttpResponseRedirect(reverse('dashboard.main.views.transfer_rights_list', args=[uuid]))
-  else:
-    form = forms.RightsForm(instance=right)
+  form = forms.RightsForm(request.POST or None, instance=right)
+  if form.is_valid():
+    form.save()
+    return HttpResponseRedirect(reverse('dashboard.main.views.transfer_rights_list', args=[uuid]))
 
   return render_to_response('main/transfer/rights_edit.html', locals())
 
@@ -571,9 +572,14 @@ def preservation_planning(request):
       Access
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
-def access(request):
+def access_list(request):
   access = models.Access.objects.all()
   return render_to_response('main/access.html', locals())
+
+def access_delete(request, id):
+  access = get_object_or_404(models.Access, pk=id)
+  access.delete()
+  return HttpResponseRedirect(reverse('dashboard.main.views.access_list'))
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Settings
