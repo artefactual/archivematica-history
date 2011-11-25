@@ -125,7 +125,7 @@ class RightsStatement(models.Model):
     db_table = u'RightsStatement'
 
 class RightsStatementCopyrightNote(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.IntegerField(primary_key=True, db_column='pk', editable=False)
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
   copyrightnote = models.TextField(db_column='copyrightNote', blank=True, verbose_name='Note')
 
@@ -133,7 +133,7 @@ class RightsStatementCopyrightNote(models.Model):
     db_table = u'RightsStatementCopyrightNote'
 
 class RightsStatementLicenseNote(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.IntegerField(primary_key=True, db_column='pk', editable=False)
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
   licensenote = models.TextField(db_column='licenseNote', blank=True)
 
