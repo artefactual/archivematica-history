@@ -1,5 +1,5 @@
 #!/usr/bin/python -OO
-#
+
 # This file is part of Archivematica.
 #
 # Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
@@ -18,31 +18,26 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage Ingest
+# @subpackage archivematicaCommon
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+import os
+import sys
+requiredDirectories = ["objects", \
+                       "logs", \
+                       "metadata",\
+                       "metadata/submissionDocumentation"]
+
+def createStructuredDirectory(SIPDir):
+    for directory in requiredDirectories:
+        path = os.path.join(SIPDir, directory)
+        if not os.path.isdir(path):
+            os.makedirs(path)
+
+if __name__ == '__main__':
+    SIPDir = sys.argv[1]
+    createStructuredDirectory(SIPDir)
 
 
-dctermsNS = "http://purl.org/dc/terms/"
-xsiNS = "http://www.w3.org/2001/XMLSchema-instance"
-metsNS = "http://www.loc.gov/METS/"
-premisNS = "info:lc/xmlns/premis-v2"
-dctermsNS = "http://purl.org/dc/terms/"
-fitsNS = "http://hul.harvard.edu/ois/xml/ns/fits/fits_output"
-xlinkNS = "http://www.w3.org/1999/xlink"
 
-
-dctermsBNS = "{" + dctermsNS + "}"
-xsiBNS = "{" + xsiNS + "}"
-metsBNS = "{" + metsNS + "}"
-premisBNS = "{" + premisNS + "}"
-dctermsBNS = "{" + dctermsNS + "}"
-fitsBNS = "{" + fitsNS + "}"
-xlinkBNS = "{" + xlinkNS + "}"
-
-NSMAP = { "dcterms" : dctermsNS, \
-"xsi" : xsiNS, \
-"premis" : premisNS, \
-"dcterms" : dctermsNS, \
-"xlink": xlinkNS }
-
+    
