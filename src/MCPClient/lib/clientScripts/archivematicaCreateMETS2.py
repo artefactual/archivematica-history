@@ -571,4 +571,31 @@ if __name__ == '__main__':
     #Recursive function for creating structmap and fileSec
     tree = etree.ElementTree(root)
     tree.write(XMLFile)
+    
+    writeTestXMLFile = True
+    if writeTestXMLFile:
+        import cgi
+        fileName = XMLFile + ".validatorTester.html"
+        fileContents = """<html>
+<body>
+
+  <form method="post" action="http://pim.fcla.edu/validate/results">
+
+    <label for="document">Enter XML Document:</label>
+    <br/>
+    <textarea id="directinput" rows="12" cols="76" name="document">%s</textarea>
+    
+    <br/>
+    <br/>
+    <input type="submit" value="Validate" />
+    <br/>
+  </form>
+
+
+</body>
+</html>""" % (cgi.escape(etree.tostring(root, pretty_print=True)))
+        f = open(fileName, 'w')
+        f.write(fileContents)
+        f.close
+    
     exit(globalErrorCount) 
