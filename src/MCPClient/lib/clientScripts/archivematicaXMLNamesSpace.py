@@ -42,7 +42,6 @@ xlinkBNS = "{" + xlinkNS + "}"
 
 NSMAP = { "dcterms" : dctermsNS, \
 "xsi" : xsiNS, \
-"premis" : premisNS, \
 "dcterms" : dctermsNS, \
 "xlink": xlinkNS }
 
