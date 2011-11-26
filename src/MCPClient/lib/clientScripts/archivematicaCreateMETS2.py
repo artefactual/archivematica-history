@@ -244,8 +244,10 @@ def createTechMD(fileUUID):
     row = c.fetchone()
     #if not row:
     #    print >>sys.stderr, "Error no fits.", fileUUID
+    parser = etree.XMLParser(remove_blank_text=True)
     while row != None:
-        fits = etree.fromstring(row[0])
+        #fits = etree.fromstring(row[0])
+        fits = etree.XML(row[0], parser)
         objectCharacteristicsExtension.append(fits)
         row = c.fetchone()
     sqlLock.release()
