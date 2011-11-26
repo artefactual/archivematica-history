@@ -181,9 +181,11 @@ def createTechMD(fileUUID):
     mdWrap = newChild(techMD,"mdWrap")
     mdWrap.set("MDTYPE", "PREMIS:OBJECT")
     xmlData = newChild(mdWrap, "xmlData")
-    premis = etree.SubElement( xmlData, "premis", nsmap={None: premisNS}, \
-        attrib = { "{" + xsiNS + "}schemaLocation" : "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" })
-    premis.set("version", "2.0")
+    #premis = etree.SubElement( xmlData, "premis", nsmap={None: premisNS}, \
+    #    attrib = { "{" + xsiNS + "}schemaLocation" : "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" })
+    #premis.set("version", "2.0")
+
+    #premis = etree.SubElement( xmlData, "premis", attrib = {xsiBNS+"type": "premis:file"})
 
     sql = "SELECT fileSize, checksum FROM Files WHERE fileUUID = '%s';" % (fileUUID)
     c, sqlLock = databaseInterface.querySQL(sql) 
@@ -193,49 +195,49 @@ def createTechMD(fileUUID):
         checksum = row[1].__str__()
         row = c.fetchone()
     sqlLock.release()
-
-        
+   
     #OBJECT
-    object = etree.SubElement(premis, "object")
+    object = etree.SubElement(xmlData, premisBNS+"object", nsmap={None: premisNS})
+    object.set( xsiBNS+"type", "premis:file")
     
-    objectIdentifier = etree.SubElement(object, "objectIdentifier")
-    etree.SubElement(objectIdentifier, "objectIdentifierType").text = "UUID"
-    etree.SubElement(objectIdentifier, "objectIdentifierValue").text = fileUUID
+    objectIdentifier = etree.SubElement(object, premisBNS+"objectIdentifier")
+    etree.SubElement(objectIdentifier, premisBNS+"objectIdentifierType").text = "UUID"
+    etree.SubElement(objectIdentifier, premisBNS+"objectIdentifierValue").text = fileUUID
     
-    etree.SubElement(object, "objectCategory").text = "file"
+    #etree.SubElement(object, premisBNS+"objectCategory").text = "file"
     
-    objectCharacteristics = etree.SubElement(object, "objectCharacteristics")
-    etree.SubElement(objectCharacteristics, "compositionLevel").text = "0"
+    objectCharacteristics = etree.SubElement(object, premisBNS+"objectCharacteristics")
+    etree.SubElement(objectCharacteristics, premisBNS+"compositionLevel").text = "0"
     
-    fixity = etree.SubElement(objectCharacteristics, "fixity")
-    etree.SubElement(fixity, "messageDigestAlgorithm").text = "sha256"
-    etree.SubElement(fixity, "messageDigest").text = checksum
+    fixity = etree.SubElement(objectCharacteristics, premisBNS+"fixity")
+    etree.SubElement(fixity, premisBNS+"messageDigestAlgorithm").text = "sha256"
+    etree.SubElement(fixity, premisBNS+"messageDigest").text = checksum
     
-    etree.SubElement(objectCharacteristics, "size").text = fileSize
+    etree.SubElement(objectCharacteristics, premisBNS+"size").text = fileSize
     
     sql = "SELECT formatName, formatVersion, formatRegistryName, formatRegistryKey FROM FilesIDs WHERE fileUUID = '%s';" % (fileUUID)
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     if not row:
-        format = etree.SubElement(objectCharacteristics, "format")
-        formatDesignation = etree.SubElement(format, "formatDesignation")
-        etree.SubElement(formatDesignation, "formatName").text = "Unknown"
+        format = etree.SubElement(objectCharacteristics, premisBNS+"format")
+        formatDesignation = etree.SubElement(format, premisBNS+"formatDesignation")
+        etree.SubElement(formatDesignation, premisBNS+"formatName").text = "Unknown"
     while row != None:
         print row
-        format = etree.SubElement(objectCharacteristics, "format")
+        format = etree.SubElement(objectCharacteristics, premisBNS+"format")
         #fileUUID = row[0] 
         
-        formatDesignation = etree.SubElement(format, "formatDesignation")
-        etree.SubElement(formatDesignation, "formatName").text = row[0]
-        etree.SubElement(formatDesignation, "formatVersion").text = row[1] 
+        formatDesignation = etree.SubElement(format, premisBNS+"formatDesignation")
+        etree.SubElement(formatDesignation, premisBNS+"formatName").text = row[0]
+        etree.SubElement(formatDesignation, premisBNS+"formatVersion").text = row[1] 
 
-        formatRegistry = etree.SubElement(format, "formatRegistry")
-        etree.SubElement(formatRegistry, "formatRegistryName").text = row[2]
-        etree.SubElement(formatRegistry, "formatRegistryKey").text = row[3]
+        formatRegistry = etree.SubElement(format, premisBNS+"formatRegistry")
+        etree.SubElement(formatRegistry, premisBNS+"formatRegistryName").text = row[2]
+        etree.SubElement(formatRegistry, premisBNS+"formatRegistryKey").text = row[3]
         row = c.fetchone()
     sqlLock.release()
     
-    objectCharacteristicsExtension = etree.SubElement(objectCharacteristics, "objectCharacteristicsExtension")
+    objectCharacteristicsExtension = etree.SubElement(objectCharacteristics, premisBNS+"objectCharacteristicsExtension")
     
     sql = "SELECT FilesFits.FITSxml FROM FilesFits WHERE fileUUID = '" + fileUUID + "';"
     c, sqlLock = databaseInterface.querySQL(sql) 
@@ -254,7 +256,7 @@ def createTechMD(fileUUID):
     if not row:
         print >>sys.stderr, "Error no fits."
     while row != None:
-        etree.SubElement(object, "originalName").text = escape(row[0])
+        etree.SubElement(object, premisBNS+"originalName").text = escape(row[0])
         row = c.fetchone()
     sqlLock.release()
 
@@ -263,17 +265,17 @@ def createTechMD(fileUUID):
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:
-        relationship = etree.SubElement(object, "relationship")
-        etree.SubElement(relationship, "relationshipType").text = "derivation"
-        etree.SubElement(relationship, "relationshipSubType").text = "is source of"
+        relationship = etree.SubElement(object, premisBNS+"relationship")
+        etree.SubElement(relationship, premisBNS+"relationshipType").text = "derivation"
+        etree.SubElement(relationship, premisBNS+"relationshipSubType").text = "is source of"
         
-        relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentificationType").text = "UUID"
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[1]
+        relatedObjectIdentification = etree.SubElement(relationship, premisBNS+"relatedObjectIdentification")
+        etree.SubElement(relatedObjectIdentification, premisBNS+"relatedObjectIdentifierType").text = "UUID"
+        etree.SubElement(relatedObjectIdentification, premisBNS+"relatedObjectIdentifierValue").text = row[1]
         
-        relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
-        etree.SubElement(relatedEventIdentification, "relatedEventIdentificationType").text = "UUID"
-        etree.SubElement(relatedEventIdentification, "relatedEventIdentifierValue").text = row[2]
+        relatedEventIdentification = etree.SubElement(relationship, premisBNS+"relatedEventIdentification")
+        etree.SubElement(relatedEventIdentification, premisBNS+"relatedEventIdentifierType").text = "UUID"
+        etree.SubElement(relatedEventIdentification, premisBNS+"relatedEventIdentifierValue").text = row[2]
 
         row = c.fetchone()
     sqlLock.release()
@@ -282,17 +284,17 @@ def createTechMD(fileUUID):
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:
-        relationship = etree.SubElement(object, "relationship")
-        etree.SubElement(relationship, "relationshipType").text = "derivation"
-        etree.SubElement(relationship, "relationshipSubType").text = "has source"
+        relationship = etree.SubElement(object, premisBNS+"relationship")
+        etree.SubElement(relationship, premisBNS+"relationshipType").text = "derivation"
+        etree.SubElement(relationship, premisBNS+"relationshipSubType").text = "has source"
         
-        relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentificationType").text = "UUID"
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[0]
+        relatedObjectIdentification = etree.SubElement(relationship, premisBNS+"relatedObjectIdentification")
+        etree.SubElement(relatedObjectIdentification, premisBNS+"relatedObjectIdentifierType").text = "UUID"
+        etree.SubElement(relatedObjectIdentification, premisBNS+"relatedObjectIdentifierValue").text = row[0]
         
-        relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
-        etree.SubElement(relatedEventIdentification, "relatedEventIdentificationType").text = "UUID"
-        etree.SubElement(relatedEventIdentification, "relatedEventIdentifierValue").text = row[2]
+        relatedEventIdentification = etree.SubElement(relationship, premisBNS+"relatedEventIdentification")
+        etree.SubElement(relatedEventIdentification, premisBNS+"relatedEventIdentifierType").text = "UUID"
+        etree.SubElement(relatedEventIdentification, premisBNS+"relatedEventIdentifierValue").text = row[2]
 
         row = c.fetchone()
     sqlLock.release()
@@ -533,6 +535,9 @@ def createFileSec(directoryPath, structMapDiv):
             
             
 if __name__ == '__main__':
+    while False: #used to stall the mcp and stop the client for testing this module
+        import time
+        time.sleep(10)
     if False: #True: #insert sample dc for testing
         sql = """ INSERT INTO Dublincore (metadataAppliesToType, metadataAppliesToidentifier, title, creator, subject, description, publisher, contributor, date, type, format, identifier, source, isPartOf, language, coverage, rights)
             VALUES (1, '%s', "title3", "creator4", "subject5", "description6", "publisher7", "contributor8", "date9", "type0", "format11", "identifier12", "source13", "isPartOf14", "language15", "coverage16", "rights17"); """ % (fileGroupIdentifier)
