@@ -23,25 +23,22 @@
 # @version svn: $Id$
 
 
-dctermsNS = "http://purl.org/dc/terms/"
 xsiNS = "http://www.w3.org/2001/XMLSchema-instance"
 metsNS = "http://www.loc.gov/METS/"
 premisNS = "info:lc/xmlns/premis-v2"
 dctermsNS = "http://purl.org/dc/terms/"
 fitsNS = "http://hul.harvard.edu/ois/xml/ns/fits/fits_output"
 xlinkNS = "http://www.w3.org/1999/xlink"
+dcNS="http://purl.org/dc/elements/1.1/"
 
-
+dcBNS = "{" + dcNS + "}" 
 dctermsBNS = "{" + dctermsNS + "}"
 xsiBNS = "{" + xsiNS + "}"
 metsBNS = "{" + metsNS + "}"
 premisBNS = "{" + premisNS + "}"
-dctermsBNS = "{" + dctermsNS + "}"
 fitsBNS = "{" + fitsNS + "}"
 xlinkBNS = "{" + xlinkNS + "}"
 
-NSMAP = { "dcterms" : dctermsNS, \
-"xsi" : xsiNS, \
-"dcterms" : dctermsNS, \
+NSMAP = { "xsi" : xsiNS, \
 "xlink": xlinkNS }
 
