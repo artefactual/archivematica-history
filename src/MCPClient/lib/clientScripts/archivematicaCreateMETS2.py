@@ -122,7 +122,8 @@ def getDublinCore(type, id):
     if row == None:
         sqlLock.release()
         return None
-    ret = etree.Element( "dublincore" )
+    ret = etree.Element( "dublincore", nsmap = {None: dcNS, "dcterms": dctermsNS} )
+    dctermsElements= ["isPartOf"]
     while row != None:
         key = ["title", "creator", "subject", "description", "publisher", "contributor", "date", "type", "format", "identifier", "source", "isPartOf", "language", "coverage", "rights"]
         #title, creator, subject, description, publisher, contributor, date, type, format, identifier, source, isPartOf, language, coverage, rights = row
@@ -133,7 +134,10 @@ def getDublinCore(type, id):
                 txt = row[i].__str__()
             else:
                 txt = ""
-            newChild(ret, term, text=txt)
+            if term in dctermsElements:
+                etree.SubElement(ret, dctermsBNS + term).text = txt
+            else:
+                newChild(ret, term, text=txt)
             i+=1
             
         row = c.fetchone()
@@ -150,6 +154,7 @@ def createDublincoreDMDSec(type, id):
     ID = "dmdSec_" + globalDmdSecCounter.__str__()
     dmdSec.set("ID", ID)
     mdWrap = newChild(dmdSec, "mdWrap")
+    mdWrap.set("MDTYPE", "DC")
     xmlData = newChild(mdWrap, "xmlData")
     xmlData.append(dc)
     return (dmdSec, ID)
