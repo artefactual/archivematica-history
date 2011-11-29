@@ -1616,7 +1616,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 SET @checkForAccessDirectoryCopyToDIPTask = LAST_INSERT_ID();
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'checkForAccessDirectory_v0.0', '--SIPDirectory "%SIPDirectory%" --accessDirectory "objects/Access/" --objectsDirectory "objects/" --DIPDirectory "DIP" --SIPUUID "%SIPUUID%" --date "%date%"' );
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'checkForAccessDirectory_v0.0', '--SIPDirectory "%SIPDirectory%" --accessDirectory "objects/access/" --objectsDirectory "objects/" --DIPDirectory "DIP" --SIPUUID "%SIPUUID%" --date "%date%"' );
 SET @checkForAccessDirectoryMoveToDIPTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
@@ -1633,7 +1633,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'checkForServiceDirectory_v0.0', '--SIPDirectory "%SIPDirectory%" --serviceDirectory "objects/Service/" --objectsDirectory "objects/" --SIPUUID "%SIPUUID%" --date "%date%"' );
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'checkForServiceDirectory_v0.0', '--SIPDirectory "%SIPDirectory%" --serviceDirectory "objects/service/" --objectsDirectory "objects/" --SIPUUID "%SIPUUID%" --date "%date%"' );
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,     LAST_INSERT_ID(), 'Check for Service directory');
