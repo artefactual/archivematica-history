@@ -65,172 +65,9 @@ def newChild(parent, tag, text=None, tailText=None):
     child = etree.Element(tag)
     parent.append(child)
     child.text = text
-    if not parent.text:
-        parent.text = "\n"
-    if tailText:
-        child.tail = tailText
-    else :
-        child.tail = "\n"     
     return child
 
-def createDigiprovMD(uuid, filename, fileUUID) :
-    digiprovMD = newChild(amdSec, "digiprovMD")
-    digiprovMD.set("ID", "digiprov-"+ os.path.basename(filename) + "-" + uuid)
-    mdWrap = newChild(digiprovMD,"mdWrap")
-    mdWrap.set("MDTYPE", "PREMIS")
-    xmlData = newChild(mdWrap, "xmlData")
-    premis = etree.SubElement( xmlData, premisBNS + "premis", nsmap=NSMAP, \
-        attrib = { "{" + xsiNS + "}schemaLocation" : "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" })
-    premis.set("version", "2.0")
 
-    sql = "SELECT fileSize, checksum FROM Files WHERE fileUUID = '%s';" % (fileUUID)
-    c, sqlLock = databaseInterface.querySQL(sql) 
-    row = c.fetchone()
-    while row != None:
-        fileSize = row[0].__str__()
-        checksum = row[1].__str__()
-        row = c.fetchone()
-    sqlLock.release()
-
-        
-    #OBJECT
-    object = etree.SubElement(premis, "object")
-    
-    objectIdentifier = etree.SubElement(object, "objectIdentifier")
-    etree.SubElement(objectIdentifier, "objectIdentifierType").text = "UUID"
-    etree.SubElement(objectIdentifier, "objectIdentifierValue").text = uuid
-    
-    etree.SubElement(object, "objectCategory").text = "file"
-    
-    objectCharacteristics = etree.SubElement(object, "objectCharacteristics")
-    etree.SubElement(objectCharacteristics, "compositionLevel").text = "0"
-    
-    fixity = etree.SubElement(object, "fixity")
-    etree.SubElement(fixity, "messageDigestAlgorithm").text = "sha256"
-    etree.SubElement(fixity, "messageDigest").text = checksum
-    
-    etree.SubElement(object, "size").text = fileSize
-    
-    sql = "SELECT * FROM FilesIDs WHERE fileUUID = '%s';" % (fileUUID)
-    c, sqlLock = databaseInterface.querySQL(sql) 
-    row = c.fetchone()
-    if not row:
-        format = etree.SubElement(object, "format")
-        formatDesignation = etree.SubElement(format, "formatDesignation")
-        etree.SubElement(formatDesignation, "formatName").text = "Unknown"
-    while row != None:
-        print row
-        format = etree.SubElement(object, "format")
-        #fileUUID = row[0] 
-        
-        formatDesignation = etree.SubElement(format, "formatDesignation")
-        etree.SubElement(formatDesignation, "formatName").text = row[1]
-        etree.SubElement(formatDesignation, "formatVersion").text = row[2] 
-
-        formatRegistry = etree.SubElement(format, "formatRegistry")
-        etree.SubElement(formatRegistry, "formatRegistryName").text = row[3]
-        etree.SubElement(formatRegistry, "formatRegistryKey").text = row[4]
-        row = c.fetchone()
-    sqlLock.release()
-    
-    objectCharacteristicsExtension = etree.SubElement(premis, "objectCharacteristicsExtension")
-    
-    sql = "SELECT FilesFits.FITSxml FROM FilesFits WHERE fileUUID = '" + fileUUID + "';"
-    c, sqlLock = databaseInterface.querySQL(sql) 
-    row = c.fetchone()
-    if not row:
-        print >>sys.stderr, "Error no fits."
-    while row != None:
-        fits = etree.fromstring(row[0])
-        objectCharacteristicsExtension.append(fits)
-        row = c.fetchone()
-    sqlLock.release()
-    
-    sql = "SELECT Files.originalLocation FROM Files WHERE Files.fileUUID = '" + fileUUID + "';"
-    c, sqlLock = databaseInterface.querySQL(sql) 
-    row = c.fetchone()
-    if not row:
-        print >>sys.stderr, "Error no fits."
-    while row != None:
-        etree.SubElement(object, "originalName").text = row[0]
-        row = c.fetchone()
-    sqlLock.release()
-    
-    sql = "SELECT * FROM Derivations WHERE sourceFileUUID = '" + fileUUID + "';"
-    c, sqlLock = databaseInterface.querySQL(sql) 
-    row = c.fetchone()
-    while row != None:
-        relationship = etree.SubElement(object, "relationship")
-        etree.SubElement(object, "relationshipType").text = "derivation"
-        etree.SubElement(object, "relationshipSubType").text = "is source of"
-        
-        relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[2]
-        
-        relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
-        etree.SubElement(relatedEventIdentification, "relatedObjectIdentification").text = "UUID"
-        etree.SubElement(relatedEventIdentification, "relatedObjectIdentifierValue").text = row[3]
-
-        row = c.fetchone()
-    sqlLock.release()
-
-    sql = "SELECT * FROM Derivations WHERE derivedFileUUID = '" + fileUUID + "';"
-    c, sqlLock = databaseInterface.querySQL(sql) 
-    row = c.fetchone()
-    while row != None:
-        relationship = etree.SubElement(object, "relationship")
-        etree.SubElement(object, "relationshipType").text = "derivation"
-        etree.SubElement(object, "relationshipSubType").text = "has source"
-        
-        relatedObjectIdentification = etree.SubElement(relationship, "relatedObjectIdentification")
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentification").text = "UUID"
-        etree.SubElement(relatedObjectIdentification, "relatedObjectIdentifierValue").text = row[1]
-        
-        relatedEventIdentification = etree.SubElement(relationship, "relatedEventIdentification")
-        etree.SubElement(relatedEventIdentification, "relatedObjectIdentification").text = "UUID"
-        etree.SubElement(relatedEventIdentification, "relatedObjectIdentifierValue").text = row[3]
-
-        row = c.fetchone()
-    sqlLock.release()
-
-    
-    #EVENTS
-    #premis.append(events)
-    events = etree.SubElement(premis, "events")
-    #| pk  | fileUUID | eventIdentifierUUID | eventType | eventDateTime | eventDetail | eventOutcome | eventOutcomeDetailNote | linkingAgentIdentifier |
-    sql = "SELECT * FROM Events WHERE fileUUID = '" + fileUUID + "';"
-    c, sqlLock = databaseInterface.querySQL(sql) 
-    row = c.fetchone()
-    while row != None:
-        event = etree.SubElement(events, "event")
-        
-        eventIdentifier = etree.SubElement(event, "eventIdentifier")
-        etree.SubElement(eventIdentifier, "eventIdentifierType").text = "UUID"
-        etree.SubElement(eventIdentifier, "eventIdentifierValue").text = row[2] 
-        
-        etree.SubElement(event, "eventType").text = row[3]
-        etree.SubElement(event, "eventDateTime").text = row[4].__str__()
-        etree.SubElement(event, "eventDetail").text = row[5]
-        
-        eventOutcomeInformation  = etree.SubElement(event, "eventOutcomeInformation")
-        etree.SubElement(eventOutcomeInformation, "eventOutcome").text = row[6]
-        eventOutcomeDetail = etree.SubElement(eventOutcomeInformation, "eventOutcomeDetail")
-        etree.SubElement(eventOutcomeDetail, "eventOutcomeDetailNote").text = row[7]
-        
-        linkingAgentIdentifier = etree.SubElement(event, "linkingAgentIdentifier")
-        etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierType").text = "repository code"
-        etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierType").text = "TODO"
-        row = c.fetchone()
-    sqlLock.release()
-   
-    
-    #AGENTS
-    agents = etree.SubElement(premis, "agents")
-    agents.append(createArchivematicaAgent())
-    agents.append(createOrganizationAgent())
-    
- 
 
 #Do /SIP-UUID/
 #Force only /SIP-UUID/objects
@@ -246,7 +83,7 @@ def createFileSec(path, parentBranch, structMapParent):
     #if pathSTR + "/" == basePath: #if it's the very first run through (recursive function)
     if path == basePath: #if it's the very first run through (recursive function)
         pathSTR = os.path.basename(os.path.dirname(basePath))
-        structMapParent.set("DMDID", "SIP-description")
+        #structMapParent.set("DMDID", "SIP-description")
         
         currentBranch = newChild(parentBranch, "fileGrp")
         currentBranch.set("USE", "directory")
@@ -256,8 +93,9 @@ def createFileSec(path, parentBranch, structMapParent):
         doneFirstRun = False
     filename = os.path.basename(pathSTR)
     parentBranch.set("ID", escape(filename))
-    structMapParent.set("LABEL", escape(filename))
     structMapParent.set("TYPE", "directory")
+    structMapParent.set("LABEL", escape(filename))
+    
     
     if doneFirstRun:
         for item in os.listdir(path):
@@ -306,41 +144,41 @@ def createFileSec(path, parentBranch, structMapParent):
                 Flocat.set("otherLocType", "system")
 
                 # structMap file
-                div = newChild(structMapParent, "div")
-                fptr = newChild(div, "fptr")
+                #div = newChild(structMapParent, "div")
+                fptr = newChild(structMapParent, "fptr")
                 FILEID = "file-" + item.__str__() + "-" + myuuid.__str__()
                 fptr.set("FILEID", escape(FILEID))
          
 if __name__ == '__main__':
     root = etree.Element( "mets", \
-    nsmap = NSMAP, \
-    attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
+    nsmap = {None: metsNS}, \
+    attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd" } )
 
     #cd /tmp/$UUID; 
     opath = os.getcwd()
     os.chdir(basePath)
     path = basePath
 
-    if includeAmdSec:
-        amdSec = newChild(root, "amdSec")
+    #if includeAmdSec:
+    #    amdSec = newChild(root, "amdSec")
 
     #fileSec = etree.Element("fileSec")
     #fileSec.tail = "\n"
     #root.append(fileSec)
 
     sipFileGrp = etree.Element("fileGrp")
-    sipFileGrp.tail = "\n"
     sipFileGrp.set("ID", sys.argv[2].__str__())
     sipFileGrp.set("USE", "Objects package")
     #fileSec.append(sipFileGrp)
 
     structMap = newChild(root, "structMap")
+    structMap.set("TYPE", "physical")
     structMapDiv = newChild(structMap, "div")
     
     createFileSec(path, sipFileGrp, structMapDiv)
 
     tree = etree.ElementTree(root)
-    tree.write(XMLFile)
+    tree.write(XMLFile, pretty_print=True, xml_declaration=True)
 
     # Restore original path
     os.chdir(opath)
