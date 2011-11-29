@@ -383,7 +383,7 @@ def getRights(fileUUID, filePath, use, type, id):
 def getAMDSec(fileUUID, filePath, use, type, id):
     global globalAmdSecCounter
     globalAmdSecCounter += 1
-    AMDID = "amdSec-%s" % (globalAmdSecCounter.__str__()) 
+    AMDID = "amdSec_%s" % (globalAmdSecCounter.__str__()) 
     AMD = etree.Element("amdSec")
     AMD.set("ID", AMDID)
     ret = (AMD, AMDID)
