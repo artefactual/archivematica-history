@@ -473,7 +473,7 @@ def createFileSec(directoryPath, structMapDiv):
                 sqlLock.release()
                 
             elif use == "service":
-                fileFileIDPath = itemdirectoryPath.replace(baseDirectoryPath + "objects/Service/", baseDirectoryPathString + "objects/")
+                fileFileIDPath = itemdirectoryPath.replace(baseDirectoryPath + "objects/service/", baseDirectoryPathString + "objects/")
                 objectNameExtensionIndex = fileFileIDPath.rfind(".")
                 fileFileIDPath = fileFileIDPath[:objectNameExtensionIndex + 1]
                 sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND currentLocation LIKE '%s%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(fileFileIDPath.replace("%", "%%")))
