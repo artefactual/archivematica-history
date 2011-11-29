@@ -165,7 +165,7 @@ def createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR):
     dmdSec = etree.Element("dmdSec")
     ID = "dmdSec_" + globalDmdSecCounter.__str__()
     dmdSec.set("ID", ID)
-    XPTR = "xpoint(id("
+    XPTR = "xpointer(id("
     tree = etree.parse(itemdirectoryPath)
     root = tree.getroot()
     for item in root.findall("{http://www.loc.gov/METS/}dmdSec"):
