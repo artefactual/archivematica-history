@@ -171,7 +171,7 @@ def createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR):
     for item in root.findall("{http://www.loc.gov/METS/}dmdSec"):
         XPTR = "%s %s" % (XPTR, item.get("ID"))
     XPTR = XPTR.replace(" ", "'", 1) + "'))"
-    newChild(dmdSec, "mdRef", text=None, sets=[("LABEL", LABEL), (xlinkBNS +"href", directoryPathSTR), ("LOCTYPE","OTHER"), ("OTHERLOCTYPE", "SYSTEM"), ("XPTR", XPTR)])
+    newChild(dmdSec, "mdRef", text=None, sets=[("LABEL", LABEL), (xlinkBNS +"href", directoryPathSTR), ("MDTYPE", "OTHER"), ("LOCTYPE","OTHER"), ("OTHERLOCTYPE", "SYSTEM"), ("XPTR", XPTR)])
     return (dmdSec, ID)
 
 
