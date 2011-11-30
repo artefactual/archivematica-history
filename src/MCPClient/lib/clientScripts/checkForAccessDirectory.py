@@ -51,7 +51,8 @@ def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIP
                 c, sqlLock = databaseInterface.querySQL(sql) 
                 row = c.fetchone()
                 if not row:
-                    print >>sys.stderr, ""
+                    print >>sys.stderr, "No correspoding object for:", objectNameLike
+                    exitCode = 1
                 update = []
                 while row != None:
                     print row
