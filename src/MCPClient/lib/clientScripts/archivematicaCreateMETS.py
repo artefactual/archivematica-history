@@ -85,73 +85,78 @@ def createFileSec(path, parentBranch, structMapParent):
         pathSTR = os.path.basename(os.path.dirname(basePath))
         #structMapParent.set("DMDID", "SIP-description")
         
-        currentBranch = newChild(parentBranch, "fileGrp")
-        currentBranch.set("USE", "directory")
+        #currentBranch = newChild(parentBranch, "fileGrp")
+        #currentBranch.set("USE", "directory")
         # structMap directory
         div = newChild(structMapParent, "div")
-        createFileSec(os.path.join(path, "objects/"), currentBranch, div)
+        createFileSec(os.path.join(path, "objects/"), parentBranch, div)
         doneFirstRun = False
     filename = os.path.basename(pathSTR)
-    parentBranch.set("ID", escape(filename))
+    
     structMapParent.set("TYPE", "directory")
     structMapParent.set("LABEL", escape(filename))
     
     
     if doneFirstRun:
-        for item in os.listdir(path):
-            itempath = os.path.join(path, item)
-            if os.path.isdir(itempath):
-                currentBranch = newChild(parentBranch, "fileGrp")
-                currentBranch.set("USE", "directory")
-                # structMap directory
-                div = newChild(structMapParent, "div")
-
-                createFileSec(os.path.join(path, item), currentBranch, div)        
-            elif os.path.isfile(itempath):
-                #myuuid = uuid.uuid4()
-                myuuid=""
-                #pathSTR = itempath.replace(basePath + "objects", "objects", 1)
-                pathSTR = itempath.replace(basePath, basePathString, 1)
-                
-                sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupIdentifier, SIPUUID, MySQLdb.escape_string(pathSTR))
-                c, sqlLock = databaseInterface.querySQL(sql) 
-                row = c.fetchone()
-                if row == None:
-                    print >>sys.stderr, "No uuid for file: \"", pathSTR, "\""
-                while row != None:
-                    myuuid = row[0]
+        for doDirectories in [False, True]:
+            for item in os.listdir(path):                 
+                itempath = os.path.join(path, item)
+                if os.path.isdir(itempath):
+                    if not doDirectories:
+                        continue
+                    #currentBranch = newChild(parentBranch, "fileGrp")
+                    #currentBranch.set("USE", "directory")
+                    # structMap directory
+                    div = newChild(structMapParent, "div")
+    
+                    createFileSec(os.path.join(path, item), parentBranch, div)        
+                elif os.path.isfile(itempath):
+                    if doDirectories:
+                        continue
+                    #myuuid = uuid.uuid4()
+                    myuuid=""
+                    #pathSTR = itempath.replace(basePath + "objects", "objects", 1)
+                    pathSTR = itempath.replace(basePath, basePathString, 1)
+                    
+                    sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupIdentifier, SIPUUID, MySQLdb.escape_string(pathSTR))
+                    c, sqlLock = databaseInterface.querySQL(sql) 
                     row = c.fetchone()
-                sqlLock.release()
-                
-                if includeAmdSec:
-                    createDigiprovMD(myuuid, itempath, myuuid)
-                
-                pathSTR = itempath.replace(basePath, "", 1)
-                
-                fileI = etree.SubElement( parentBranch, xlinkBNS + "fits", nsmap=NSMAP)
-
-                filename = ''.join(quoteattr(item).split("\"")[1:-1])
-                #filename = replace /tmp/"UUID" with /objects/
-                
-                ID = "file-" + item.__str__() + "-"    + myuuid.__str__()
-                fileI.set("ID", escape(ID))
-                if includeAmdSec:
-                    fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())            
-
-                Flocat = newChild(fileI, "Flocat")
-                Flocat.set(xlinkBNS + "href", escape(pathSTR) )
-                Flocat.set("locType", "other")
-                Flocat.set("otherLocType", "system")
-
-                # structMap file
-                #div = newChild(structMapParent, "div")
-                fptr = newChild(structMapParent, "fptr")
-                FILEID = "file-" + item.__str__() + "-" + myuuid.__str__()
-                fptr.set("FILEID", escape(FILEID))
+                    if row == None:
+                        print >>sys.stderr, "No uuid for file: \"", pathSTR, "\""
+                    while row != None:
+                        myuuid = row[0]
+                        row = c.fetchone()
+                    sqlLock.release()
+                    
+                    if includeAmdSec:
+                        createDigiprovMD(myuuid, itempath, myuuid)
+                    
+                    pathSTR = itempath.replace(basePath, "", 1)
+                    
+                    fileI = etree.SubElement( parentBranch, "file")
+    
+                    filename = ''.join(quoteattr(item).split("\"")[1:-1])
+                    #filename = replace /tmp/"UUID" with /objects/
+                    
+                    ID = "file-" + myuuid.__str__()
+                    fileI.set("ID", escape(ID))
+                    if includeAmdSec:
+                        fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())            
+    
+                    Flocat = newChild(fileI, "FLocat")
+                    Flocat.set(xlinkBNS + "href", escape(pathSTR) )
+                    Flocat.set("LOCTYPE", "OTHER")
+                    Flocat.set("OTHERLOCTYPE", "SYSTEM")
+    
+                    # structMap file
+                    #div = newChild(structMapParent, "div")
+                    fptr = newChild(structMapParent, "fptr")
+                    FILEID = "file-" + myuuid.__str__()
+                    fptr.set("FILEID", escape(FILEID))
          
 if __name__ == '__main__':
     root = etree.Element( "mets", \
-    nsmap = {None: metsNS}, \
+    nsmap = {None: metsNS, "xlink": xlinkNS}, \
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd" } )
 
     #cd /tmp/$UUID; 
@@ -162,14 +167,12 @@ if __name__ == '__main__':
     #if includeAmdSec:
     #    amdSec = newChild(root, "amdSec")
 
-    #fileSec = etree.Element("fileSec")
+    fileSec = etree.Element("fileSec")
     #fileSec.tail = "\n"
-    #root.append(fileSec)
+    root.append(fileSec)
 
-    sipFileGrp = etree.Element("fileGrp")
-    sipFileGrp.set("ID", sys.argv[2].__str__())
-    sipFileGrp.set("USE", "Objects package")
-    #fileSec.append(sipFileGrp)
+    sipFileGrp = etree.SubElement(fileSec, "fileGrp")
+    sipFileGrp.set("USE", "original")
 
     structMap = newChild(root, "structMap")
     structMap.set("TYPE", "physical")
