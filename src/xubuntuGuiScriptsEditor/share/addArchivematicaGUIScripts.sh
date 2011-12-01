@@ -64,8 +64,8 @@ fi
 "$add" \
     --icon="accessories-calculator" \
     --name="Set Ownership and Permissions" \
-    --command="gksudo \"sh -c 'chmod -R 770 \"%F\"; chown -R archivematica:archivematica \"%F\"'\"" \
-    --description="Set ownership to archivematica:archivematica and permissions to 770" \
+    --command="gksudo \"sh -c 'chmod -R 777 \"%F\"; chown -R archivematica:archivematica \"%F\"'\"" \
+    --description="Set ownership to archivematica:archivematica and permissions to 777" \
     --directories --audioFiles --imageFiles --otherFiles --textFiles --videoFiles
 
 "$add" \
