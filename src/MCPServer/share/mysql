@@ -91,11 +91,13 @@ CREATE TABLE Dublincore (
 DROP TABLE IF EXISTS RightsStatement;
 CREATE TABLE RightsStatement ( 
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    metadataAppliesToType  INT,
+    Foreign Key (metadataAppliesToType) references MetadataAppliesToTypes(pk),
+    metadataAppliesToidentifier      VARCHAR(50),
     rightsStatementIdentifier LONGTEXT NOT NULL,
     rightsStatementIdentifierType LONGTEXT NOT NULL,
     rightsStatementIdentifierValue LONGTEXT NOT NULL,
     rightsBasis LONGTEXT NOT NULL,
-    copyrightInformation LONGTEXT,
     copyrightStatus LONGTEXT NOT NULL,
     copyrightJurisdiction LONGTEXT NOT NULL,
     copyrightStatusDeterminationDate LONGTEXT,
