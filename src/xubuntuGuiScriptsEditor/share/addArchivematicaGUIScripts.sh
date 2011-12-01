@@ -15,22 +15,22 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage 
+# @subpackage
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#rm /home/$USER/.config/Thunar/uca.xml; ./addArchivematicaGUIScripts.sh 
+#rm /home/$USER/.config/Thunar/uca.xml; ./addArchivematicaGUIScripts.sh
 
 set -e
 add="`dirname $0`/src/add.sh"
 UCA="/home/$USER/.config/Thunar/uca.xml"
 if [ -f "$UCA" ]
 then
-	echo "Appending for file $UCA." 
+	echo "Appending for file $UCA."
 else
 	echo "Creating $UCA."
 	echo "<actions>"  > "$UCA"
-	echo "</actions>" >> "$UCA" 
+	echo "</actions>" >> "$UCA"
 fi
 
 "$add" \
@@ -38,8 +38,8 @@ fi
     --name="Create a structured directory" \
     --command="/usr/lib/archivematica/archivematicaCommon/archivematicaCreateStructuredDirectory.sh %d" \
     --description="Creates a structured directory for archivematica processing" \
-    --directories 
-    
+    --directories
+
 "$add" \
 	--icon="accessories-calculator" \
 	--name="Restructure For Compliance" \
@@ -64,7 +64,7 @@ fi
 "$add" \
     --icon="accessories-calculator" \
     --name="Set Ownership and Permissions" \
-    --command="gksudo \"chown -R archivematica:archivematica %F\" && gksudo \"chmod -R 770 %F\"" \
+    --command="gksudo \"sh -c 'chmod -R 770 \"%F\"; chown -R archivematica:archivematica \"%F\"'\"" \
     --description="Set ownership to archivematica:archivematica and permissions to 770" \
     --directories --audioFiles --imageFiles --otherFiles --textFiles --videoFiles
 
@@ -74,7 +74,7 @@ fi
     --command="xfce4-terminal --default-working-directory=%d" \
     --description="Opens a terminal at this directory" \
     --directories --audioFiles --imageFiles --otherFiles --textFiles --videoFiles
-    
+
 #"$add" \
 #    --icon="accessories-calculator" \
 #    --name="Save path to clipboard" \
@@ -82,6 +82,3 @@ fi
 #    --description="" \
 #    --directories --audioFiles --imageFiles --otherFiles --textFiles --videoFiles
 #http://forum.xfce.org/viewtopic.php?id=3215
-	
-
-
