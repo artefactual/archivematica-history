@@ -51,7 +51,7 @@ def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIP
                 c, sqlLock = databaseInterface.querySQL(sql) 
                 row = c.fetchone()
                 if not row:
-                    print >>sys.stderr, "No correspoding object for:", objectNameLike
+                    print >>sys.stderr, "No corresponding object for:", accessPath.replace(SIPDirectory, "%SIPDirectory%", 1)
                     exitCode = 1
                 update = []
                 while row != None:
@@ -77,17 +77,6 @@ def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIP
                     eventDetail = ""
                     eventOutcomeDetailNote = "moved from=\"" + src + "\"; moved to=\"" + dst + "\""
                     updateFileLocation(src, dst, "movement", date, eventDetail, sipUUID=SIPUUID, eventOutcomeDetailNote = eventOutcomeDetailNote)
-                
-                
-                
-                
-                    
-         
-
-        #when the matching access/orig file is found 
-            #create relationship
-            #move/copy the access file to the DIP directory, with the orig's file uuid at the start of the file name.
-            
     return exitCode
     
 
