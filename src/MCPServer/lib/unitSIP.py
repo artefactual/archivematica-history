@@ -129,6 +129,7 @@ class unitSIP(unit):
         "%checksumsNoExtention%":archivematicaMCP.config.get('MCPServer', "checksumsNoExtention"), \
         "%watchDirectoryPath%":archivematicaMCP.config.get('MCPServer', "watchDirectoryPath"), \
         "%AIPsStore%":archivematicaMCP.config.get('MCPServer', "AIPsStore"), \
+        "%AIPCompressionLevel%":archivematicaMCP.config.get('MCPServer', "AIPCompressionLevel"), \
         "%rejectedDirectory%":archivematicaMCP.config.get('MCPServer', "rejectedDirectory"), \
         "%SIPUUID%":SIPUUID, \
         "%SIPName%":SIPName \
