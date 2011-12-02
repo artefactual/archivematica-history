@@ -40,7 +40,9 @@ echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
         echo "Going to ${part} ..."
-        sudo apt-get install gearman python-setuptools python-gearman
+        sudo apt-get install gearman 
+	sudo apt-get install python-setuptools 
+	sudo apt-get install python-gearman
         sudo easy_install gearman
 else
         echo "Not going to ${part}"
