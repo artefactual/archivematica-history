@@ -79,4 +79,5 @@ archivematicaSetTransferType_v0.0 = %clientScriptsDirectory%archivematicaSetTran
 createSIPfromTransferObjects_v0.0 = %clientScriptsDirectory%createSIPfromTransferObjects.py
 checkTransferDirectoryForObjects_v0.0 = %clientScriptsDirectory%checkTransferDirectoryForObjects.py
 copyTransferSubmissionDocumentation_v0.0 = %clientScriptsDirectory%copyTransferSubmissionDocumentation.py
+removeEmptyDirectories_v0.0 = %clientScriptsDirectory%removeEmptyDirectories.py
 
