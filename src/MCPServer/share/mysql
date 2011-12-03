@@ -824,7 +824,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 -- Also modify extraction command in store AIP
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, '7z_v0.0', 'a -bd -t7z -y -m0=lzma -mx=%AIPCompressionLevel% "%SIPDirectory%%SIPName%-%SIPUUID%.7z" "%SIPDirectory%%SIPName%-%SIPUUID%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, '7z_v0.0', 'a -bd -t7z -y -m0=%AIPCompressionAlgorithm% -mx=%AIPCompressionLevel% "%SIPDirectory%%SIPName%-%SIPUUID%.7z" "%SIPDirectory%%SIPName%-%SIPUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Compress AIP');
