@@ -52,7 +52,7 @@ def xmlCreateFileAssociationBetween(originalFileFullPath, outputFromNormalizatio
     
     
     filePathRelativeToSIP = outputFromNormalizationFileFullPath.replace(SIPFullPath,"%SIPDirectory%", 1)
-    addFileToSIP(filePathRelativeToSIP, outputFileUUID, sipUUID, uuid.uuid4().__str__(), date, sourceType="derivation", use="preservation")
+    addFileToSIP(filePathRelativeToSIP, outputFileUUID, sipUUID, uuid.uuid4().__str__(), date, sourceType="creation", use="preservation")
     updateSizeAndChecksum(outputFileUUID, outputFromNormalizationFileFullPath, date, uuid.uuid4().__str__())
     
     taskUUID = uuid.uuid4().__str__()

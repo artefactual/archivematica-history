@@ -77,7 +77,7 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, relativeDirectory="./")
     #insertIntoEvents(fileUUID="", eventIdentifierUUID="", eventType="", eventDateTime=databaseInterface.getUTCDate(), eventDetail="", eventOutcome="", eventOutcomeDetailNote="")
     databaseFunctions.insertIntoEvents(fileUUID=fileUUID, \
                  eventIdentifierUUID=eventIdentifierUUID, \
-                 eventType="verify checksum", \
+                 eventType="fixity check", \
                  eventDateTime=date, \
                  eventOutcome=eventOutcome, \
                  eventOutcomeDetailNote=eventOutcomeDetailNote, \
