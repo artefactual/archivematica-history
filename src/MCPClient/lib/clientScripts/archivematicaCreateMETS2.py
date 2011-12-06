@@ -123,6 +123,7 @@ def getDublinCore(type, id):
         sqlLock.release()
         return None
     ret = etree.Element( "dublincore", nsmap = {None: dcNS, "dcterms": dctermsNS} )
+    ret.set(xsiBNS+"schemaLocation", dcNS + " http://dublincore.org/schemas/xmls/qdc/dc.xsd " + dctermsNS + " http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd")
     dctermsElements= ["isPartOf"]
     while row != None:
         key = ["title", "creator", "subject", "description", "publisher", "contributor", "date", "type", "format", "identifier", "source", "isPartOf", "language", "coverage", "rights"]
@@ -573,7 +574,7 @@ if __name__ == '__main__':
     rootNSMap.update(NSMAP)
     root = etree.Element( "mets", \
     nsmap = rootNSMap, \
-    attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd" } )
+    attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" } )
 
     
     
