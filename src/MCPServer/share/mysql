@@ -796,7 +796,7 @@ SET @microserviceGroup  = 'Prepare AIP';
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'remove_v0.0', '-R "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'remove_v0.0', '-R "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Removed bagged files.');
@@ -838,7 +838,7 @@ set @PrepareAIPMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'bagit_v0.0', 'create "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.xml" "%SIPDirectory%metadata/" --writer filesystem --payloadmanifestalgorithm "sha512"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'bagit_v0.0', 'create "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%metadata/" --writer filesystem --payloadmanifestalgorithm "sha512"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Prepare AIP');
@@ -876,7 +876,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '"%SIPDirectory%METS.xml" "%SIPDirectory%DIP/METS.xml"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '"%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%DIP/METS.xml"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Copy METS to DIP directory');
@@ -905,7 +905,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'createMETS_v2.0', '--amdSec --baseDirectoryPath "%SIPDirectory%" --baseDirectoryPathString "SIPDirectory" --fileGroupIdentifier "%SIPUUID%" --fileGroupType "sipUUID" --xmlFile "%SIPDirectory%METS.xml"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'createMETS_v2.0', '--amdSec --baseDirectoryPath "%SIPDirectory%" --baseDirectoryPathString "SIPDirectory" --fileGroupIdentifier "%SIPUUID%" --fileGroupType "sipUUID" --xmlFile "%SIPDirectory%METS.%SIPUUID%.xml"');
 SET @GenerateMETSxmldocumentTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
