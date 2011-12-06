@@ -94,7 +94,7 @@ def onceNormalized(command):
             #Add the new file to the sip
             filePathRelativeToSIP = ef.replace(opts.sipPath, "%SIPDirectory%", 1)
             # addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion"):
-            addFileToSIP(filePathRelativeToSIP, outputFileUUID, opts.sipUUID, uuid.uuid4().__str__(), opts.date, sourceType="derivation", use="preservation")
+            addFileToSIP(filePathRelativeToSIP, outputFileUUID, opts.sipUUID, uuid.uuid4().__str__(), opts.date, sourceType="creation", use="preservation")
             #Calculate new file checksum
             print >>sys.stderr, "TODO: calculate new file checksum"
             #Add event information to current file

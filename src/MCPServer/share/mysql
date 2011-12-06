@@ -2142,11 +2142,11 @@ set @SkipQuarantineMicroServiceChain = LAST_INSERT_ID();
 SET @microserviceGroup  = 'Quarantine';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES -- --eventDetail --eventOutcome --eventOutcomeDetailNote --
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'createEvent_v0.0', '--eventType "unquarantined" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --eventDateTime "%jobCreatedDate%"');
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'createEvent_v0.0', '--eventType "unquarantine" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --eventDateTime "%jobCreatedDate%"');
 SET @CreateunquarantinedPREMISeventsTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      @CreateunquarantinedPREMISeventsTask, 'Create unquarantined PREMIS events');
+    (1,      @CreateunquarantinedPREMISeventsTask, 'Create unquarantine PREMIS events');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -2221,7 +2221,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 SET @MovetoquarantinedTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      @MovetoquarantinedTask, 'Move to quarantined');
+    (0,      @MovetoquarantinedTask, 'Move to quarantine');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -2245,11 +2245,11 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES -- --eventDetail --eventOutcome --eventOutcomeDetailNote --
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'createEvent_v0.0', '--eventType "quarantined" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --eventDateTime "%jobCreatedDate%"');
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'createEvent_v0.0', '--eventType "quarantine" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --eventDateTime "%jobCreatedDate%"');
 SET  @CreatequarantinedPREMISeventsTask= LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,     @CreatequarantinedPREMISeventsTask , 'Create quarantined PREMIS events');
+    (1,     @CreatequarantinedPREMISeventsTask , 'Create quarantine PREMIS events');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -2723,7 +2723,7 @@ set @SkipQuarantineMicroServiceChain = LAST_INSERT_ID();
 SET @microserviceGroup  = 'Quarantine';
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      @CreateunquarantinedPREMISeventsTask, 'Create unquarantined PREMIS events');
+    (1,      @CreateunquarantinedPREMISeventsTask, 'Create unquarantine PREMIS events');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -2805,7 +2805,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,     @CreatequarantinedPREMISeventsTask , 'Create quarantined PREMIS events');
+    (1,     @CreatequarantinedPREMISeventsTask , 'Create quarantine PREMIS events');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
