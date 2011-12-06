@@ -47,13 +47,6 @@ def updateSizeAndChecksum(fileUUID, filePath, date, eventIdentifierUUID):
                      eventDateTime=date, \
                      eventDetail="program=\"python\"; module=\"hashlib.sha256()\"", \
                      eventOutcomeDetailNote=checksum)  
-    
-    insertIntoEvents(fileUUID=fileUUID, \
-                 eventIdentifierUUID=uuid.uuid4().__str__(), \
-                 eventType="file size calculation", \
-                 eventDateTime=date, \
-                 eventDetail="program=\"python\"; module=\"os.path.getsize()\"", \
-                 eventOutcomeDetailNote=fileSize)  
 
 
 def addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="ingestion", eventDetail="", use="original"):
