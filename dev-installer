@@ -98,33 +98,35 @@ echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
 
-        # We need git
-        sudo apt-get --quiet --quiet --yes install git-core
-
-        # Contents:
-        #  - Directory: /var/www/ica-atom
-        #  - Directory: ~/qubit-git (origin: github.com/sevein/qubit, branch: experimental)
-        #  - Database: qubit
+        # { GIT }
+        # sudo apt-get --quiet --quiet --yes install git-core
+        # { SVN }
+        sudo apt-get --quiet --quiet --yes install subversion
 
 	# Working directory
 	WDIR=$(pwd)
 
 	# Remove
 	sudo rm -rf /var/www/ica-atom
-	sudo rm -rf ${WDIR}/qubit-git
+	sudo rm -rf ${WDIR}/qubit-git # Old name
 	sudo rm -rf ${WDIR}/ica-atom-svn # Old name
+        sudo rm -rf ${WDIR}/qubit-svn
 
+        # { GIT }
 	# Clone git repository, create bran experimental from original/experimental
-	git clone git://github.com/sevein/qubit.git ${WDIR}/qubit-git
-        cd ${WDIR}/qubit-git
-        git checkout --track origin/experimental
-        cd ${WDIR}
-        
+	# git clone git://github.com/sevein/qubit.git ${WDIR}/qubit-git
+        # cd ${WDIR}/qubit-git
+        # git checkout --track origin/experimental
+        # cd ${WDIR}
+        # { SVN }
+        # Checkout SVN repo
+        svn checkout http://qubit-toolkit.googlecode.com/svn/trunk ${WDIR}/qubit-svn
+
 	# Link
-	sudo ln -sf ${WDIR}/qubit-git /var/www/ica-atom
+	sudo ln -sf ${WDIR}/qubit-svn /var/www/ica-atom
 
 	# Permissions
-	sudo chown -R www-data:www-data ${WDIR}/qubit-git
+	sudo chown -R www-data:www-data ${WDIR}/qubit-svn
 
 	# Restart database
 	echo "Enter mysql root password (hit enter if blank)"
@@ -153,7 +155,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
           /etc/init/qubit-sword.conf
         sudo ln src/MCPServer/init/archivematica-mcp-server.conf /etc/init/
         sudo ln src/MCPClient/init/archivematica-mcp-client.conf /etc/init/
-        sudo ln qubit-git/init/qubit-sword.conf /etc/init/
+        sudo ln qubit-svn/init/qubit-sword.conf /etc/init/
 else
         echo "Not going to ${part}."
 fi
