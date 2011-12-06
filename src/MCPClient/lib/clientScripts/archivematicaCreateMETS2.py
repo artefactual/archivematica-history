@@ -205,8 +205,7 @@ def createTechMD(fileUUID):
     #OBJECT
     object = etree.SubElement(xmlData, "object", nsmap={None: premisNS})
     object.set( xsiBNS+"type", "file")
-    #xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd"
-    object.set(xsiBNS+"schemaLocation", "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd")
+    object.set(xsiBNS+"schemaLocation", "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-1.xsd")
     
     objectIdentifier = etree.SubElement(object, "objectIdentifier")
     etree.SubElement(objectIdentifier, "objectIdentifierType").text = "UUID"
@@ -329,7 +328,7 @@ def createDigiprovMD(fileUUID):
         mdWrap.set("MDTYPE", "PREMIS:EVENT")
         xmlData = newChild(mdWrap,"xmlData")
         event = etree.SubElement(xmlData, "event", nsmap={None: premisNS})
-        event.set(xsiBNS+"schemaLocation", "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd")
+        event.set(xsiBNS+"schemaLocation", "info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-1.xsd")
         
         eventIdentifier = etree.SubElement(event, "eventIdentifier")
         etree.SubElement(eventIdentifier, "eventIdentifierType").text = "UUID"

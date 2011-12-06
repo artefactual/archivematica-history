@@ -2428,6 +2428,15 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+-- move to processing directory --
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, @moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Do not create transfer backup');
+set @DoNotCreateTransferBackupMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -2443,6 +2452,82 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+-- move to processing directory --
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, @moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create transfer backup');
+set @CreateTransferBackupMicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (2,      LAST_INSERT_ID(), 'Workflow decision - create transfer backup');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @CreateTransferBackupMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @DoNotCreateTransferBackupMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+set @WorkflowdecisioncreateTransferBackupDefaultTransferMagicChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, NULL, NULL);
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (4,      LAST_INSERT_ID(), 'Find type to process as');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'create transfer backup ?');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
+    VALUES ('%watchDirectoryPath%workFlowDecisions/createTransferBackup/', @MicroServiceChain, @expectedTypeTransfer);
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/workFlowDecisions/createTransferBackup/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
+Set @MovetoworkFlowDecisionsquarantineSIPdirectory = LAST_INSERT_ID();
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @MovetoworkFlowDecisionsquarantineSIPdirectory, 'Move to workFlowDecisions-createTransferBackup directory');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, @WorkflowdecisioncreateTransferBackupDefaultTransferMagicChainLink, NULL);
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (3,      LAST_INSERT_ID(), 'Designate to process as a standard transfer.');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 -- Rename with transfer UUID --
 SET @microserviceGroup  = 'Rename with transfer UUID';
