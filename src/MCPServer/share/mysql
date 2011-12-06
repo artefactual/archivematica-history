@@ -876,7 +876,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '"%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%DIP/METS.xml"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '"%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%DIP/METS.%SIPUUID%.xml"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Copy METS to DIP directory');
