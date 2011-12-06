@@ -23,12 +23,12 @@
 databaseName="MCP"
 username="demo"
 password="demo"
-sudo mysqladmin create "$databaseName"
-#sudo mysql "$databaseName"
-sudo mysql --execute="source ./mysql" "$databaseName"
-sudo mysql --execute="CREATE USER '${username}'@'localhost' IDENTIFIED BY '${password}'"
-sudo mysql --execute="GRANT SELECT, UPDATE, INSERT ON ${databaseName}.* TO '${username}'@'localhost'"
 
+sudo mysqladmin create "$databaseName"
+
+mysql -hlocalhost -uroot --execute="source ./mysql" "$databaseName"
+mysql -hlocalhost -uroot --execute="CREATE USER '${username}'@'localhost' IDENTIFIED BY '${password}'"
+mysql -hlocalhost -uroot --execute="GRANT SELECT, UPDATE, INSERT ON ${databaseName}.* TO '${username}'@'localhost'"
 
 #to delete the database and all of it's contents
 # sudo mysqladmin drop MCP
