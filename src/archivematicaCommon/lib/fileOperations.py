@@ -57,7 +57,7 @@ def addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, d
                    eventDateTime=date, \
                    eventDetail=eventDetail, \
                    eventOutcome="", \
-                   eventOutcomeDetailNote=filePathRelativeToSIP)
+                   eventOutcomeDetailNote="")
 
 def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion", use="original"):
     insertIntoFiles(fileUUID, filePathRelativeToSIP, date, sipUUID=sipUUID, use=use)
@@ -67,7 +67,7 @@ def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourc
                    eventDateTime=date, \
                    eventDetail="", \
                    eventOutcome="", \
-                   eventOutcomeDetailNote=filePathRelativeToSIP)
+                   eventOutcomeDetailNote="")
 
 #Used to write to file
 #@output - the text to append to the file
