@@ -449,6 +449,8 @@ def createFileSec(directoryPath, structMapDiv):
             
             
             FILEID="%s-%s" % (item, myuuid)
+            if FILEID[0].isdigit():
+                FILEID = "_" + FILEID
             
                 
             #<fptr FILEID="file1-UUID"/>
@@ -515,9 +517,6 @@ def createFileSec(directoryPath, structMapDiv):
             if GROUPID=="":
                 globalErrorCount += 1
                 print >>sys.stderr, "No groupID for file: \"", directoryPathSTR, "\""
-                
-            
-                
             
             if use not in globalFileGrps:
                 print >>sys.stderr, "Invalid use: \"", use, "\""
