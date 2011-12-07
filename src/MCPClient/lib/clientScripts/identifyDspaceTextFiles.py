@@ -54,7 +54,7 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, transferDirectory, tran
                             fileFullPath = os.path.join(relativeDirectory, fileLocation)
                            
                             dbLocation = fileFullPath.replace(transferDirectory, "%transferDirectory%")
-                            sql = """UPDATE Files SET fileGrpUse = 'text' WHERE currentLocation = '%s' AND transferUUID = '%s';""" % (MySQLdb.escape_string(dbLocation), transferUUID)
+                            sql = """UPDATE Files SET fileGrpUse = 'text/ocr' WHERE currentLocation = '%s' AND transferUUID = '%s';""" % (MySQLdb.escape_string(dbLocation), transferUUID)
                             databaseInterface.runSQL(sql)
     return exitCode
              

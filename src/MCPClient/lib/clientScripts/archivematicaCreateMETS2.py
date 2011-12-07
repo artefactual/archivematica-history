@@ -54,7 +54,7 @@ includeAmdSec = opts.amdSec
 
 
 globalFileGrps = {}
-globalFileGrpsUses = ["original", "submissionDocumentation", "preservation", "service", "access", "license", "text"]
+globalFileGrpsUses = ["original", "submissionDocumentation", "preservation", "service", "access", "license", "text/ocr"]
 for use in globalFileGrpsUses:
     grp = etree.Element("fileGrp")
     grp.set("USE", use) 
@@ -468,7 +468,7 @@ def createFileSec(directoryPath, structMapDiv):
                     row = c.fetchone()
                 sqlLock.release()
                 
-            elif use == "license" or use == "text" or use == "DSPACEMETS":
+            elif use == "license" or use == "text/ocr" or use == "DSPACEMETS":
                 sql = """SELECT originalLocation FROM Files where fileUUID = '%s'""" % (myuuid)
                 originalLocation = databaseInterface.queryAllSQL(sql)[0][0]
                 sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND originalLocation LIKE '%s/%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(os.path.dirname(originalLocation)).replace("%", "%%"))
