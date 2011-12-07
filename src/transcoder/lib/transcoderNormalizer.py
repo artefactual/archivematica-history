@@ -76,6 +76,7 @@ def onceNormalized(command):
         print >>sys.stderr, "Error - output file does not exist [" + command.outputLocation + "]"
         command.exitCode = -2
              
+    derivationEventUUID = uuid.uuid4.__str__()
     for ef in transcodedFiles:
         global outputFileUUID
         global replacementDic
@@ -98,7 +99,6 @@ def onceNormalized(command):
             #Calculate new file checksum
             print >>sys.stderr, "TODO: calculate new file checksum"
             #Add event information to current file
-            derivationEventUUID = uuid.uuid4.__str__()
             insertIntoEvents(fileUUID=opts.fileUUID, \
                eventIdentifierUUID=derivationEventUUID, \
                eventType="normalization", \
