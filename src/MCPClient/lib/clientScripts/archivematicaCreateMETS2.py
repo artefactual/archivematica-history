@@ -413,6 +413,8 @@ def getAMDSec(fileUUID, filePath, use, type, id):
 #<file ID="file1-UUID" GROUPID="G1" DMDID="dmdSec_02" ADMID="amdSec_01">
 def createFileSec(directoryPath, structMapDiv):
     delayed = []
+    filesInThisDirectory = [] 
+    dspaceMetsDMDID = None
     for item in os.listdir(directoryPath):
         itemdirectoryPath = os.path.join(directoryPath, item)
         if os.path.isdir(itemdirectoryPath):
@@ -490,12 +492,21 @@ def createFileSec(directoryPath, structMapDiv):
             if use == "DSPACEMETS":
                 #skipAMDSec = True
                 skipAMDSec = False
-                use = "submissionDocumentation" 
+                use = "submissionDocumentation"
+                
+                admidApplyTo = None
                 if GROUPID=="": #is an AIP identifier
                     GROUPID = myuuid
+                    admidApplyTo = structMapDiv.getparent()
+                    
+                    
                 LABEL = "mets.xml-%s" % (GROUPID)
                 dmdSec, ID = createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR)
                 dmdSecs.append(dmdSec)
+                if admidApplyTo != None:
+                    admidApplyTo.set("ADMID", ID)
+                else:
+                    dspaceMetsDMDID = ID
             else:
                 skipAMDSec = False
             
@@ -511,6 +522,8 @@ def createFileSec(directoryPath, structMapDiv):
                 globalErrorCount += 1
             else:                
                 file = newChild(globalFileGrps[use], "file", sets=[("ID",FILEID), ("GROUPID",GROUPID)])
+                if use == "original":
+                    filesInThisDirectory.append(file)
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
                 Flocat = newChild(file, "FLocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("LOCTYPE","OTHER"), ("OTHERLOCTYPE", "SYSTEM")])
                 if includeAmdSec and not skipAMDSec:
@@ -539,6 +552,9 @@ def createFileSec(directoryPath, structMapDiv):
             #div = newChild(structMapDiv, "div")
             #fptr = newChild(div, "fptr")
             #fptr.set("FILEID","file-" + item.__str__() + "-" + myuuid.__str__())
+    if dspaceMetsDMDID != None:
+        for file in filesInThisDirectory:
+            file.set("ADMID", file.get("ADMID") + " " + dspaceMetsDMDID)
     for item in delayed:
         itemdirectoryPath = os.path.join(directoryPath, item)
         createFileSec(itemdirectoryPath, newChild(structMapDiv, "div", sets=[("TYPE","directory"), ("LABEL",item)]))
