@@ -8,7 +8,7 @@ from dashboard.contrib import utils
 import dashboard.main
 
 class Access(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   sipuuid = models.CharField(max_length=150, db_column='SIPUUID', blank=True)
   resource = models.TextField(db_column='resource', blank=True)
   createdtime = models.DateTimeField(db_column='createdTime')
@@ -29,7 +29,7 @@ class DublinCoreManager(models.Manager):
     return DublinCore.objects.get(metadataappliestotype__exact=1, metadataappliestoidentifier__exact=uuid)
 
 class DublinCore(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   metadataappliestotype = models.IntegerField(db_column='metadataAppliesToType')
   metadataappliestoidentifier = models.CharField(max_length=50, blank=True, db_column='metadataAppliesToidentifier')
   title = models.TextField(db_column='title', blank=True)
@@ -69,7 +69,7 @@ class Job(models.Model):
     db_table = u'Jobs'
 
 class StandardTaskConfig(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   execute = models.TextField(db_column='execute', blank=True)
   arguments = models.TextField(db_column='arguments', blank=True)
 
@@ -96,7 +96,7 @@ class Task(models.Model):
     db_table = u'Tasks'
 
 class JobStepCompleted(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   # jobuuid = models.CharField(max_length=50, db_column='jobUUID', blank=True)
   job = models.ForeignKey(Job, db_column='jobuuid', to_field = 'jobuuid')
   completedtime = models.DateTimeField(db_column='completedTime')
@@ -106,7 +106,7 @@ class JobStepCompleted(models.Model):
     db_table = u'jobStepCompleted'
 
 class RightsStatement(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   rightsstatementidentifier = models.TextField(db_column='rightsStatementIdentifier', blank=True, verbose_name='Identifier')
   rightsstatementidentifiertype = models.TextField(db_column='rightsStatementIdentifierType', blank=True, verbose_name='Type')
   rightsstatementidentifiervalue = models.TextField(db_column='rightsStatementIdentifierValue', blank=True, verbose_name='Value')
@@ -125,7 +125,7 @@ class RightsStatement(models.Model):
     db_table = u'RightsStatement'
 
 class RightsStatementCopyrightNote(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk', editable=False)
+  id = models.AutoField(primary_key=True, db_column='pk', editable=False)
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
   copyrightnote = models.TextField(db_column='copyrightNote', blank=True, verbose_name='Note')
 
@@ -133,7 +133,7 @@ class RightsStatementCopyrightNote(models.Model):
     db_table = u'RightsStatementCopyrightNote'
 
 class RightsStatementLicenseNote(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk', editable=False)
+  id = models.AutoField(primary_key=True, db_column='pk', editable=False)
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
   licensenote = models.TextField(db_column='licenseNote', blank=True)
 
@@ -141,7 +141,7 @@ class RightsStatementLicenseNote(models.Model):
     db_table = u'RightsStatementLicenseNote'
 
 class RightsStatementLinkingAgentIdentifier(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
   # rightsstatement = models.ManyToManyField(RightsStatement, db_column='fkRightsStatement')
   linkingagentidentifiertype = models.TextField(db_column='linkingAgentIdentifierType', blank=True)
@@ -151,7 +151,7 @@ class RightsStatementLinkingAgentIdentifier(models.Model):
     db_table = u'RightsStatementLinkingAgentIdentifier'
 
 class RightsStatementLinkingAgentIdentifierLinkingAgentRole(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   linkingagent = models.ForeignKey(RightsStatementLinkingAgentIdentifier, db_column='fkRightsStatementLinkingAgentIdentifier')
   linkingagentrole = models.TextField(db_column='linkingAgentRole', blank=True)
 
@@ -159,14 +159,14 @@ class RightsStatementLinkingAgentIdentifierLinkingAgentRole(models.Model):
     db_table = u'RightsStatementLinkingAgentIdentifierLinkingAgentRole'
 
 class RightsStatementRightsGranted(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
 
   class Meta:
     db_table = u'RightsStatementRightsGranted'
 
 class RightsStatementRightsGrantedRestriction(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   rightsgranted = models.ForeignKey(RightsStatementRightsGranted, db_column='fkRightsStatementRightsGranted')
   rightsgrantednote = models.TextField(db_column='rightsGrantedNote', blank=True)
 
@@ -174,7 +174,7 @@ class RightsStatementRightsGrantedRestriction(models.Model):
     db_table = u'RightsStatementRightsGrantedRestriction'
 
 class RightsStatementStatuteInformation(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
   statutejurisdiction = models.TextField(db_column='statuteJurisdiction', blank=True)
   statutecitation = models.TextField(db_column='statuteCitation', blank=True)
@@ -184,7 +184,7 @@ class RightsStatementStatuteInformation(models.Model):
     db_table = u'RightsStatementStatuteInformation'
 
 class RightsStatementStatuteInformationNote(models.Model):
-  id = models.IntegerField(primary_key=True, db_column='pk')
+  id = models.AutoField(primary_key=True, db_column='pk')
   statuteinformation = models.ForeignKey(RightsStatementStatuteInformation, db_column='fkRightsStatementStatuteInformation')
   statutenote = models.TextField(db_column='statuteNote', blank=True)
 
