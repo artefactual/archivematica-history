@@ -1,0 +1,45 @@
+{% extends "layout_fluid.html" %}
+{% load breadcumbs %}
+
+{% block sidebar %}
+  {% include "main/transfer/_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="span12">
+
+      <ul class="breadcrumb">
+        {% breadcrumb_url 'Transfer' main.views.transfer_grid %}
+        {% breadcrumb_url name main.views.transfer_detail uuid %}
+        {% breadcrumb 'Rights' %}
+      </ul>
+
+{{ a }}
+
+      <h1>Rights<br /><small>{{ name }}</small></h1>
+
+      {% if id %}
+        <form class="form-stacked" method="post" action="{% url main.views.ingest_rights_edit uuid id %}">
+      {% else %}
+        <form class="form-stacked" method="post" action="{% url main.views.ingest_rights_edit uuid %}">
+      {% endif %}
+
+        {% include "_form.html" %}
+
+        {% include "formset_table.html" with formset=copyrightNoteFormset %}
+        {% include "formset_table.html" with formset=licenseNoteFormset %}
+
+        <div class="actions">
+          {% if id %}
+            <button type="submit" class="btn primary">Edit</button>
+          {% else %}
+            <button type="submit" class="btn primary">Add</button>
+          {% endif %}
+          <a href="{% url main.views.ingest_rights_list uuid %}" class="btn">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+{% endblock %}
