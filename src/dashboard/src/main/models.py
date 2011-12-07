@@ -111,7 +111,7 @@ class RightsStatement(models.Model):
   rightsstatementidentifiertype = models.TextField(db_column='rightsStatementIdentifierType', blank=True, verbose_name='Type')
   rightsstatementidentifiervalue = models.TextField(db_column='rightsStatementIdentifierValue', blank=True, verbose_name='Value')
   rightsbasis = models.TextField(db_column='rightsBasis', blank=True)
-  copyrightinformation = models.TextField(db_column='copyrightInformation', blank=True)
+  #copyrightinformation = models.TextField(db_column='copyrightInformation', blank=True)
   copyrightstatus = models.TextField(db_column='copyrightStatus', blank=True)
   copyrightjurisdiction = models.TextField(db_column='copyrightJurisdiction', blank=True)
   copyrightstatusdeterminationdate = models.TextField(db_column='copyrightStatusDeterminationDate', blank=True)
