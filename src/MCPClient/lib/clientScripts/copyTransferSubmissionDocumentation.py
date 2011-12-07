@@ -35,6 +35,7 @@ if __name__ == '__main__':
     sharedPath = sys.argv[3]
     
     sql = """SELECT Transfers.currentLocation FROM Transfers WHERE Transfers.transferUUID IN (SELECT transferUUID FROM Files WHERE  removedTime = 0 AND sipUUID =  '%s');""" % (sipUUID)
+    print sql
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     while row != None:
