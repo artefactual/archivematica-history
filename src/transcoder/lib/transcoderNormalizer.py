@@ -98,8 +98,9 @@ def onceNormalized(command):
             #Calculate new file checksum
             print >>sys.stderr, "TODO: calculate new file checksum"
             #Add event information to current file
+            derivationEventUUID = uuid.uuid4.__str__()
             insertIntoEvents(fileUUID=opts.fileUUID, \
-               eventIdentifierUUID=opts.taskUUID, \
+               eventIdentifierUUID=derivationEventUUID, \
                eventType="normalization", \
                eventDateTime=opts.date, \
                eventDetail="", \
@@ -109,7 +110,7 @@ def onceNormalized(command):
             updateSizeAndChecksum(outputFileUUID, ef, opts.date, uuid.uuid4().__str__())
             
             #Add linking information between files
-            insertIntoDerivations(sourceFileUUID=opts.fileUUID, derivedFileUUID=outputFileUUID, relatedEventUUID=opts.taskUUID)
+            insertIntoDerivations(sourceFileUUID=opts.fileUUID, derivedFileUUID=outputFileUUID, relatedEventUUID=derivationEventUUID)
             
             outputFileUUID = uuid.uuid4().__str__() 
             replacementDic["%postfix%"] = "-" + outputFileUUID             
