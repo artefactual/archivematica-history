@@ -187,7 +187,13 @@ def ingest_rights_edit(request, uuid, id=None):
   jobs = models.Job.objects.filter(sipuuid=uuid)
   name = utils.get_directory_name(jobs[0])
 
-  form = forms.RightsForm(request.POST)
+  if id:
+    viewRights = models.RightsStatement.objects.get(pk=id)
+    form = forms.RightsForm(instance=viewRights)
+  else:
+    form = forms.RightsForm(request.POST)
+    if request.method != 'POST':
+      viewRights = models.RightsStatement()
 
   # create inline formsets for child elements
   CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=1)
@@ -201,9 +207,8 @@ def ingest_rights_edit(request, uuid, id=None):
     licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
     licenseNoteFormset.save()
   else:
-    newRights = models.RightsStatement()
-    copyrightNoteFormset = CopyrightNoteFormSet(instance=newRights)
-    licenseNoteFormset = LicenseNoteFormSet(instance=newRights)
+    copyrightNoteFormset = CopyrightNoteFormSet(instance=viewRights)
+    licenseNoteFormset = LicenseNoteFormSet(instance=viewRights)
 
   return render_to_response('main/ingest/rights_edit.html', locals())
 
