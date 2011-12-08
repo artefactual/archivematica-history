@@ -200,7 +200,8 @@ def ingest_rights_edit(request, uuid, id=None):
     form = forms.RightsForm(request.POST)
     if request.method != 'POST':
       viewRights = models.RightsStatement()
-    show_notes = max_notes
+    extra_copyright_notes = max_notes
+    extra_license_notes = max_notes
 
   # create inline formsets for child elements
   CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes)
