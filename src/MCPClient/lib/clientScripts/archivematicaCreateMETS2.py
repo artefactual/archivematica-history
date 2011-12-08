@@ -590,7 +590,7 @@ if __name__ == '__main__':
     rootNSMap.update(NSMAP)
     root = etree.Element( "mets", \
     nsmap = rootNSMap, \
-    attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd" } )
+    attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd" } )
 
     
     
