@@ -34,6 +34,7 @@ from dashboard.main import models
 from lxml import etree
 import calendar, os, re, subprocess
 from datetime import datetime
+from django.shortcuts import redirect
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Utils
@@ -187,17 +188,23 @@ def ingest_rights_edit(request, uuid, id=None):
   jobs = models.Job.objects.filter(sipuuid=uuid)
   name = utils.get_directory_name(jobs[0])
 
+  max_notes = 1
+
   if id:
     viewRights = models.RightsStatement.objects.get(pk=id)
     form = forms.RightsForm(instance=viewRights)
+    # determine how many empty forms should be shown for children
+    extra_copyright_notes = max_notes - len(models.RightsStatementCopyrightNote.objects.filter(rightsstatement=viewRights))
+    extra_license_notes = max_notes - len(models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights))
   else:
     form = forms.RightsForm(request.POST)
     if request.method != 'POST':
       viewRights = models.RightsStatement()
+    show_notes = max_notes
 
   # create inline formsets for child elements
-  CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=1)
-  LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote, extra=1)
+  CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes)
+  LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote, extra=extra_license_notes)
 
   # handle form creation/saving
   if request.method == 'POST':
@@ -206,6 +213,7 @@ def ingest_rights_edit(request, uuid, id=None):
     copyrightNoteFormset.save() 
     licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
     licenseNoteFormset.save()
+    return redirect('/ingest/' + uuid + '/rights/' + str(createdRights.id))
   else:
     copyrightNoteFormset = CopyrightNoteFormSet(instance=viewRights)
     licenseNoteFormset = LicenseNoteFormSet(instance=viewRights)
