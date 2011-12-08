@@ -98,6 +98,8 @@ echo -n "\"Would you like to ${part}?\" (y/N) "
 read a
 if [[ $a == "Y" || $a == "y" ]]; then
 
+        sudo apt-get --quiet --quiet --yes install php5-gearman
+
         # { GIT }
         # sudo apt-get --quiet --quiet --yes install git-core
         # { SVN }
