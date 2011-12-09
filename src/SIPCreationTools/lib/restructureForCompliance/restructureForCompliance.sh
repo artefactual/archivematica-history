@@ -26,17 +26,16 @@ target=$1
 
 if [ -d "$target" ]; then
 	temp="/tmp/`uuid`"
-	targetBasename=`basename "$target"`
-	targetDirname=`dirname "$target"`
+	mkdir "$temp"
+
+	mv "$target"/* "$temp/."
 	
-	mv "$target" "$temp"
-	
-	mkdir "$target"
 	mkdir "${target}logs"
 	mkdir "${target}logs/fileMeta"
 	mkdir "${target}metadata"
 	mkdir "${target}metadata/submissionDocumentation"
-	mv "$temp" "${target}objects" 
+	mkdir "${target}objects"
+	mv "$temp"/* "${target}objects/." 
 else
 	echo Error: Needs SIP directory as argument 1>&2
 	exit 1
