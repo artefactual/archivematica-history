@@ -192,9 +192,9 @@ class RightsStatementRightsGrantedRestriction(models.Model):
 class RightsStatementStatuteInformation(models.Model):
   id = models.AutoField(primary_key=True, db_column='pk')
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
-  statutejurisdiction = models.TextField(db_column='statuteJurisdiction', blank=True)
-  statutecitation = models.TextField(db_column='statuteCitation', blank=True)
-  statuteinformationdeterminationdate = models.TextField(db_column='statuteInformationDeterminationDate', blank=True)
+  statutejurisdiction = models.TextField(db_column='statuteJurisdiction', verbose_name='Statute jurisdiction', blank=True)
+  statutecitation = models.TextField(db_column='statuteCitation', verbose_name='Statute citation', blank=True)
+  statuteinformationdeterminationdate = models.TextField(db_column='statuteInformationDeterminationDate', verbose_name='Statute determination date', blank=True)
 
   class Meta:
     db_table = u'RightsStatementStatuteInformation'
