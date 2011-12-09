@@ -113,10 +113,10 @@ def createAgent(agentIdentifierType, agentIdentifierValue, agentName, agentType)
 SIPMetadataAppliesToType = 1
 TransferMetadataAppliesToType = 2
 FileMetadataAppliesToType = 3
-def getDublinCore(type, id):
+def getDublinCore(type_, id):
     sql = """SELECT     title, creator, subject, description, publisher, contributor, date, type, format, identifier, source, isPartOf, language, coverage, rights 
     FROM Dublincore WHERE metadataAppliesToType = %s AND metadataAppliesToidentifier = '%s';""" % \
-    (type.__str__(), id.__str__())
+    (type_.__str__(), id.__str__())
     c, sqlLock = databaseInterface.querySQL(sql) 
     row = c.fetchone()
     if row == None:
@@ -132,12 +132,13 @@ def getDublinCore(type, id):
         i = 0
         for term in key:
             if row[i] != None:
-                txt = row[i].__str__()
+                txt = escape(row[i].__str__())
             else:
                 txt = ""
             if term in dctermsElements:
                 etree.SubElement(ret, dctermsBNS + term).text = txt
             else:
+                print term, ": ", txt
                 newChild(ret, term, text=txt)
             i+=1
             
