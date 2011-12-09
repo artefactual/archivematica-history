@@ -556,7 +556,7 @@ def createFileSec(directoryPath, structMapDiv):
             #fptr.set("FILEID","file-" + item.__str__() + "-" + myuuid.__str__())
     if dspaceMetsDMDID != None:
         for file in filesInThisDirectory:
-            file.set("ADMID", file.get("ADMID") + " " + dspaceMetsDMDID)
+            file.set("DMDID", dspaceMetsDMDID)
     for item in delayed:
         itemdirectoryPath = os.path.join(directoryPath, item)
         createFileSec(itemdirectoryPath, newChild(structMapDiv, "div", sets=[("TYPE","directory"), ("LABEL",item)]))
