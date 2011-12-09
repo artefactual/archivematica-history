@@ -39,7 +39,7 @@ class RightsForm(ModelForm):
     model = models.RightsStatement
     #fields = (
     #  'rightsstatementidentifier',)
-    exclude = ('id',)
+    exclude = ('id', 'rightsstatementidentifier', 'rightsstatementidentifiertype', 'rightsstatementidentifiervalue',)
     widgets = {
       'rightsstatementidentifier': TextInput(attrs=INPUT_ATTRS), }
 
@@ -54,6 +54,11 @@ class RightsLicenseNoteForm(ModelForm):
     model = models.RightsStatementLicenseNote
     widgets = {
       'licensenote': Textarea(attrs=TEXTAREA_ATTRS), }
+
+class RightsStatementLinkingAgentIdentifierForm(ModelForm):
+  class Meta:
+    model = models.RightsStatementLinkingAgentIdentifier
+    exclude = ('linkingagentidentifiertype',)
 
 #class RightsLinkingAgent(ModelForm):
 #  class Meta:

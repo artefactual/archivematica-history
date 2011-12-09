@@ -19,14 +19,29 @@
 
       <h1>Rights<br /><small>{{ name }}</small></h1>
 
+      {% if request.method == 'POST' %}
+        {% if form.is_valid %}
+          <div class="alert-message success">
+            <p><strong>Saved!</p>
+          </div>
+        {% else %}
+          <div class="alert-message error">
+            <p>Something wrong happened.</p>
+          </div>
+        {% endif %}
+      {% endif %}
+
       {% if id %}
         <form class="form-stacked" method="post" action="{% url main.views.ingest_rights_edit uuid id %}">
       {% else %}
         <form class="form-stacked" method="post" action="{% url main.views.ingest_rights_edit uuid %}">
       {% endif %}
 
+        {{ grantFormset }}
+
         {% include "_form.html" %}
 
+        {{ agentFormset }}
         {% include "formset_table.html" with formset=copyrightNoteFormset %}
         {% include "formset_table.html" with formset=licenseNoteFormset %}
 
