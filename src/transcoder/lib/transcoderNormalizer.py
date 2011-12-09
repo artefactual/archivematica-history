@@ -76,7 +76,7 @@ def onceNormalized(command):
         print >>sys.stderr, "Error - output file does not exist [" + command.outputLocation + "]"
         command.exitCode = -2
              
-    derivationEventUUID = uuid.uuid4.__str__()
+    derivationEventUUID = uuid.uuid4().__str__()
     for ef in transcodedFiles:
         global outputFileUUID
         global replacementDic
