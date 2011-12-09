@@ -116,6 +116,16 @@ class RightsStatement(models.Model):
   class Meta:
     db_table = u'RightsStatement'
 
+class RightsStatementCopyright(models.Model):
+  id = models.AutoField(primary_key=True, db_column='pk', editable=False)
+  rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+  copyrightstatus = models.TextField(db_column='copyrightStatus', blank=True, verbose_name='Copyright status')
+  copyrightjurisdiction = models.TextField(db_column='copyrightJurisdiction', blank=True, verbose_name='Copyright jurisdiction')
+  copyrightstatusdeterminationdate = models.TextField(db_column='copyrightStatusDeterminationDate', blank=True, verbose_name='Copyright determination date')
+
+  class Meta:
+    db_table = u'RightsStatementCopyright'
+
 class RightsStatementCopyrightNote(models.Model):
   id = models.AutoField(primary_key=True, db_column='pk', editable=False)
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
