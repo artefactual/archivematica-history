@@ -49,6 +49,12 @@ class RightsCopyrightNoteForm(ModelForm):
     widgets = {
       'copyrightnote': Textarea(attrs=TEXTAREA_ATTRS), }
 
+class RightsLicenseForm(ModelForm):
+  class Meta:
+    model = models.RightsStatementLicense
+    widgets = {
+      'licenseidentifier': TextInput(attrs=INPUT_ATTRS), 'licenseterms': TextInput(attrs=INPUT_ATTRS), }
+
 class RightsLicenseNoteForm(ModelForm):
   class Meta:
     model = models.RightsStatementLicenseNote
