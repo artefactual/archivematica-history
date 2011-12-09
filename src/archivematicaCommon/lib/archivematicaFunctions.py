@@ -107,6 +107,14 @@ def escapeForCommand(str):
     #print >>sys.stderr, str, " -> escapedto:\t ", ret
     return ret
 
+def escapeForCommand2(str):
+    ret = str
+    ret = ret.replace("\\", "\\\\")
+    ret = ret.replace("\"", "\\\"")
+    #ret = ret.replace("'", "\\'")
+    ret = ret.replace("$", "\\$")
+    return ret
+
 def escape(string):
     string = string.decode('utf-8')
     return string
