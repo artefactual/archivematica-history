@@ -234,6 +234,8 @@ def ingest_rights_edit(request, uuid, id=None):
     copyrightFormset.save() 
     copyrightNoteFormset = CopyrightNoteFormSet(request.POST, instance=createdRights)
     copyrightNoteFormset.save() 
+    statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
+    statuteFormset.save()
     licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
     licenseFormset.save()
     licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
