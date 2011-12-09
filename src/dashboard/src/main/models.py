@@ -112,11 +112,6 @@ class RightsStatement(models.Model):
   rightsstatementidentifiervalue = models.TextField(db_column='rightsStatementIdentifierValue', blank=True, verbose_name='Value')
   rightsnotes = models.TextField(db_column='rightsNotes', verbose_name='Rights note(s)', blank=True)
   rightsbasis = models.TextField(db_column='rightsBasis', verbose_name='Basis', blank=True)
-  licenseinformation = models.TextField(db_column='licenseInformation', blank=True)
-  licenseidentifier = models.TextField(db_column='licenseIdentifier', blank=True)
-  licenseidentifiertype = models.TextField(db_column='licenseIdentifierType', blank=True)
-  licenseidentifiervalue = models.TextField(db_column='licenseIdentifierValue', blank=True)
-  licenseterms = models.TextField(db_column='licenseTerms', blank=True)
 
   class Meta:
     db_table = u'RightsStatement'
