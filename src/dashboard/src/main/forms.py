@@ -43,6 +43,12 @@ class RightsForm(ModelForm):
     widgets = {
       'rightsstatementidentifier': TextInput(attrs=INPUT_ATTRS), }
 
+class RightsCopyrightForm(ModelForm):
+  class Meta:
+    model = models.RightsStatementCopyright
+    widgets = {
+      'copyrightstatus': TextInput(attrs=INPUT_ATTRS), 'copyrightjurisdiction': TextInput(attrs=INPUT_ATTRS), 'copyrightstatusdeterminationDate': TextInput(attrs=INPUT_ATTRS), }
+
 class RightsCopyrightNoteForm(ModelForm):
   class Meta:
     model = models.RightsStatementCopyrightNote

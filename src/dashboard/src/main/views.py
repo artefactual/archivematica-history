@@ -216,7 +216,7 @@ def ingest_rights_edit(request, uuid, id=None):
   # create inline formsets for child elements
   GrantFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementRightsGranted, extra=extra_grant_notes, can_delete=False)
   AgentFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLinkingAgentIdentifier, extra=extra_agent_notes, can_delete=False, exclude=('linkingagentidentifiertype'))
-  CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False)
+  CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
   CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes, can_delete=False)
   StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False)
   LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
