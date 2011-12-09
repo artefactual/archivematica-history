@@ -198,6 +198,7 @@ def ingest_rights_edit(request, uuid, id=None):
     extra_agent_notes = max_notes - len(models.RightsStatementLinkingAgentIdentifier.objects.filter(rightsstatement=viewRights))
     extra_copyright_forms = max_notes - len(models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights))
     extra_copyright_notes = max_notes - len(models.RightsStatementCopyrightNote.objects.filter(rightsstatement=viewRights))
+    extra_license_forms = max_notes - len(models.RightsStatementLicense.objects.filter(rightsstatement=viewRights))
     extra_license_notes = max_notes - len(models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights))
   else:
     form = forms.RightsForm(request.POST)
@@ -207,6 +208,7 @@ def ingest_rights_edit(request, uuid, id=None):
     extra_agent_notes = max_notes
     extra_copyright_forms = max_notes
     extra_copyright_notes = max_notes
+    extra_license_forms = max_notes
     extra_license_notes = max_notes
 
   # create inline formsets for child elements
@@ -214,6 +216,7 @@ def ingest_rights_edit(request, uuid, id=None):
   AgentFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLinkingAgentIdentifier, extra=extra_agent_notes, can_delete=False, exclude=('linkingagentidentifiertype'))
   CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False)
   CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes, can_delete=False)
+  LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False)
   LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote, extra=extra_license_notes, can_delete=False)
 
   # handle form creation/saving
@@ -227,6 +230,8 @@ def ingest_rights_edit(request, uuid, id=None):
     copyrightFormset.save() 
     copyrightNoteFormset = CopyrightNoteFormSet(request.POST, instance=createdRights)
     copyrightNoteFormset.save() 
+    licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
+    licenseFormset.save()
     licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
     licenseNoteFormset.save()
     return redirect('/ingest/' + uuid + '/rights/' + str(createdRights.id))
@@ -235,6 +240,7 @@ def ingest_rights_edit(request, uuid, id=None):
     agentFormset = AgentFormSet(instance=viewRights)
     copyrightFormset = CopyrightFormSet(instance=viewRights)
     copyrightNoteFormset = CopyrightNoteFormSet(instance=viewRights)
+    licenseFormset = LicenseFormSet(instance=viewRights)
     licenseNoteFormset = LicenseNoteFormSet(instance=viewRights)
 
   return render_to_response('main/ingest/rights_edit.html', locals())
