@@ -110,7 +110,8 @@ class RightsStatement(models.Model):
   rightsstatementidentifier = models.TextField(db_column='rightsStatementIdentifier', blank=True, verbose_name='Identifier')
   rightsstatementidentifiertype = models.TextField(db_column='rightsStatementIdentifierType', blank=True, verbose_name='Type')
   rightsstatementidentifiervalue = models.TextField(db_column='rightsStatementIdentifierValue', blank=True, verbose_name='Value')
-  rightsbasis = models.TextField(db_column='rightsBasis', blank=True)
+  rightsnotes = models.TextField(db_column='rightsNotes', verbose_name='Rights note(s)', blank=True)
+  rightsbasis = models.TextField(db_column='rightsBasis', verbose_name='Basis', blank=True)
   #copyrightinformation = models.TextField(db_column='copyrightInformation', blank=True)
   copyrightstatus = models.TextField(db_column='copyrightStatus', blank=True)
   copyrightjurisdiction = models.TextField(db_column='copyrightJurisdiction', blank=True)
@@ -127,7 +128,7 @@ class RightsStatement(models.Model):
 class RightsStatementCopyrightNote(models.Model):
   id = models.AutoField(primary_key=True, db_column='pk', editable=False)
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
-  copyrightnote = models.TextField(db_column='copyrightNote', blank=True, verbose_name='Note')
+  copyrightnote = models.TextField(db_column='copyrightNote', blank=True, verbose_name='Copyright note')
 
   class Meta:
     db_table = u'RightsStatementCopyrightNote'
@@ -135,7 +136,7 @@ class RightsStatementCopyrightNote(models.Model):
 class RightsStatementLicenseNote(models.Model):
   id = models.AutoField(primary_key=True, db_column='pk', editable=False)
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
-  licensenote = models.TextField(db_column='licenseNote', blank=True)
+  licensenote = models.TextField(db_column='licenseNote', blank=True, verbose_name='License note')
 
   class Meta:
     db_table = u'RightsStatementLicenseNote'
@@ -145,7 +146,7 @@ class RightsStatementLinkingAgentIdentifier(models.Model):
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
   # rightsstatement = models.ManyToManyField(RightsStatement, db_column='fkRightsStatement')
   linkingagentidentifiertype = models.TextField(db_column='linkingAgentIdentifierType', blank=True)
-  linkingagentidentifiervalue = models.TextField(db_column='linkingAgentIdentifierValue', blank=True)
+  linkingagentidentifiervalue = models.TextField(db_column='linkingAgentIdentifierValue', verbose_name='Rights holder', blank=True)
 
   class Meta:
     db_table = u'RightsStatementLinkingAgentIdentifier'
@@ -161,6 +162,11 @@ class RightsStatementLinkingAgentIdentifierLinkingAgentRole(models.Model):
 class RightsStatementRightsGranted(models.Model):
   id = models.AutoField(primary_key=True, db_column='pk')
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+  act = models.TextField(db_column='act', blank=True)
+  #termofgrant = models.TextField(db_column='termOfGrant', blank=True)
+  restriction = models.TextField(db_column='restriction', blank=True)
+  startdate = models.TextField(db_column='startDate', blank=True)
+  enddate = models.TextField(db_column='endDate', blank=True)
 
   class Meta:
     db_table = u'RightsStatementRightsGranted'
