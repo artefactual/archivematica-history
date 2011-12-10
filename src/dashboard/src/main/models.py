@@ -194,7 +194,7 @@ class RightsStatementStatuteInformation(models.Model):
   rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
   statutejurisdiction = models.TextField(db_column='statuteJurisdiction', verbose_name='Statute jurisdiction', blank=True)
   statutecitation = models.TextField(db_column='statuteCitation', verbose_name='Statute citation', blank=True)
-  statuteinformationdeterminationdate = models.TextField(db_column='statuteInformationDeterminationDate', verbose_name='Statute determination date', blank=True)
+  statutedeterminationdate = models.TextField(db_column='statuteInformationDeterminationDate', verbose_name='Statute determination date', blank=True)
 
   class Meta:
     db_table = u'RightsStatementStatuteInformation'
