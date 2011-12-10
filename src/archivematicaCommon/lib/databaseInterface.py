@@ -32,6 +32,8 @@ from datetime import datetime
 global separator
 separator = "', '"
 
+DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings", charset="utf8")
+
 def getSeparator():
     global separator
     return separator
@@ -56,7 +58,7 @@ def getDeciDate(date):
 sqlLock = threading.Lock()
 sqlLock.acquire()
 global database
-database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings")
+database=MySQLdb.connect(**DB_CONNECTION_OPTS)
 sqlLock.release()
 
 def runSQL(sql):
@@ -70,7 +72,7 @@ def runSQL(sql):
     except MySQLdb.OperationalError, message:  
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
-            database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings")
+            database=MySQLdb.connect(**DB_CONNECTION_OPTS)
             sqlLock.release()
             runSQL(sql)
             return 
@@ -94,7 +96,7 @@ def querySQL(sql):
     except MySQLdb.OperationalError, message:  
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
-            database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings")
+            database=MySQLdb.connect(**DB_CONNECTION_OPTS)
             import time
             time.sleep(10)
             c=database.cursor()
@@ -120,7 +122,7 @@ def queryAllSQL(sql):
     except MySQLdb.OperationalError, message:  
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
-            database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings")
+            database=MySQLdb.connect(**DB_CONNECTION_OPTS)
             import time
             time.sleep(10)
             c=database.cursor()
