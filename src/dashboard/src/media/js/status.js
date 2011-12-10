@@ -5,7 +5,7 @@ copyright 2010-2011 artefactual systems inc. <http://artefactual.com>
 
 archivematica is free software: you can redistribute it and/or modify
 it under the terms of the gnu general public license as published by
-the free software foundation, either version 2 of the license, or
+the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
 archivematica is distributed in the hope that it will be useful,
