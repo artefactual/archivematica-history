@@ -175,8 +175,8 @@ class RightsStatementRightsGranted(models.Model):
   act = models.TextField(db_column='act', blank=True)
   #termofgrant = models.TextField(db_column='termOfGrant', blank=True)
   restriction = models.TextField(db_column='restriction', blank=True)
-  startdate = models.TextField(db_column='startDate', blank=True)
-  enddate = models.TextField(db_column='endDate', blank=True)
+  startdate = models.TextField(db_column='startDate', verbose_name='Start', blank=True)
+  enddate = models.TextField(db_column='endDate', verbose_name='End', blank=True)
 
   class Meta:
     db_table = u'RightsStatementRightsGranted'
