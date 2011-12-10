@@ -214,13 +214,13 @@ def ingest_rights_edit(request, uuid, id=None):
     extra_license_notes = max_notes
 
   # create inline formsets for child elements
-  GrantFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementRightsGranted, extra=extra_grant_notes, can_delete=False)
-  AgentFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLinkingAgentIdentifier, extra=extra_agent_notes, can_delete=False, exclude=('linkingagentidentifiertype'))
+  GrantFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementRightsGranted, extra=extra_grant_notes, can_delete=False, form=forms.RightsGrantedForm)
+  AgentFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLinkingAgentIdentifier, extra=extra_agent_notes, can_delete=False, exclude=('linkingagentidentifiertype'), form=forms.RightsStatementLinkingAgentIdentifierForm)
   CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
-  CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes, can_delete=False)
-  StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False)
+  CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes, can_delete=False, form=forms.RightsCopyrightNoteForm)
+  StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
   LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
-  LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote, extra=extra_license_notes, can_delete=False)
+  LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote, extra=extra_license_notes, can_delete=False, form=forms.RightsLicenseNoteForm)
 
   # handle form creation/saving
   if request.method == 'POST':

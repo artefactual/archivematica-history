@@ -41,19 +41,32 @@ class RightsForm(ModelForm):
     #  'rightsstatementidentifier',)
     exclude = ('id', 'rightsstatementidentifier', 'rightsstatementidentifiertype', 'rightsstatementidentifiervalue',)
     widgets = {
-      'rightsstatementidentifier': TextInput(attrs=INPUT_ATTRS), }
+      'rightsstatementidentifier': TextInput(attrs=INPUT_ATTRS), 'rightsnotes': Textarea(attrs=TEXTAREA_ATTRS), 'rightsbasis': TextInput(attrs=INPUT_ATTRS), }
+
+class RightsGrantedForm(ModelForm):
+  class Meta:
+    model = models.RightsStatementRightsGranted
+
+    widgets = {
+      'act': TextInput(attrs=INPUT_ATTRS), 'restriction': TextInput(attrs=INPUT_ATTRS), 'startdate': TextInput(attrs=INPUT_ATTRS), 'enddate': TextInput(attrs=INPUT_ATTRS), }
 
 class RightsCopyrightForm(ModelForm):
   class Meta:
     model = models.RightsStatementCopyright
     widgets = {
-      'copyrightstatus': TextInput(attrs=INPUT_ATTRS), 'copyrightjurisdiction': TextInput(attrs=INPUT_ATTRS), 'copyrightstatusdeterminationDate': TextInput(attrs=INPUT_ATTRS), }
+      'copyrightstatus': TextInput(attrs=INPUT_ATTRS), 'copyrightjurisdiction': TextInput(attrs=INPUT_ATTRS), 'copyrightstatusdeterminationdate': TextInput(attrs=INPUT_ATTRS), }
 
 class RightsCopyrightNoteForm(ModelForm):
   class Meta:
     model = models.RightsStatementCopyrightNote
     widgets = {
       'copyrightnote': Textarea(attrs=TEXTAREA_ATTRS), }
+
+class RightsStatuteForm(ModelForm):
+  class Meta:
+    model = models.RightsStatementStatuteInformation
+    widgets = {
+      'statutejurisdiction': TextInput(attrs=INPUT_ATTRS), 'statutecitation': TextInput(attrs=INPUT_ATTRS), 'statutedeterminationdate': TextInput(attrs=INPUT_ATTRS), }
 
 class RightsLicenseForm(ModelForm):
   class Meta:
@@ -71,6 +84,8 @@ class RightsStatementLinkingAgentIdentifierForm(ModelForm):
   class Meta:
     model = models.RightsStatementLinkingAgentIdentifier
     exclude = ('linkingagentidentifiertype',)
+    widgets = {
+      'linkingagentidentifiervalue': TextInput(attrs=INPUT_ATTRS), }
 
 #class RightsLinkingAgent(ModelForm):
 #  class Meta:
