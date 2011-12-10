@@ -1112,6 +1112,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'no normalization'); -- No normalization for sip with access directory --
+set @noNormalizationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
+
 
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, @setFilePermissionsTaskConfig, @defaultNextChainLink);
@@ -1179,8 +1182,8 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 set @FinishedNormalizationWithDIPMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'no normalization'); -- No normalization for sip with access directory --
-set @noNormalizationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'manual normalization'); -- Manual normalization for sip with access directory --
+set @manualNormalizationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
@@ -1549,6 +1552,8 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'manual normalization');
+set @ManualNormalizationMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, @setFilePermissionsTaskConfig, @defaultNextChainLink);
@@ -1609,6 +1614,9 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @ProcessSubmissionDocumentationLinkMicroServiceChain); -- no normalization --
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
+    (@MicroServiceChainLink, @ManualNormalizationMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
     (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 set @normalizeOptionsForASIPWITHOUTAccessDirectory = @MicroServiceChainLink;
@@ -1626,6 +1634,9 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @noNormalizationWithAccessDirectoryMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @manualNormalizationWithAccessDirectoryMicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @normalizePreservationWithAccessDirectoryMicroServiceChain);
