@@ -664,7 +664,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', 'referenced http://localhost/ica-atom/index.php/sword/deposit/archivematica demo@example.com demo "%SIPDirectory%" "%SIPUUID%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', '--url="http://localhost/ica-atom/index.php/sword/deposit/archivematica" --email="demo@example.com" --password="demo" --UUID="%SIPUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'uploadDIP');
