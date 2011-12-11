@@ -42,6 +42,7 @@ from unitTransfer import unitTransfer
 from pyinotify import ThreadedNotifier
 import transferD
 import xmlRPCServer
+import uploadDIPServer
 
 import signal
 import os
@@ -270,7 +271,7 @@ if __name__ == '__main__':
             print "psudo run"
             time.sleep(3)
     print "This PID: ", si.pid
-        
+
     if True:
         import getpass
         print "user: ", getpass.getuser()
@@ -283,8 +284,8 @@ if __name__ == '__main__':
         t = threading.Thread(target=flushOutputs)
         t.daemon = True
         t.start() 
-    
-    watchDirectories()    
+
+    watchDirectories()
     transferD.main()
     xmlRPCServer.startXMLRPCServer()
-    
+    uploadDIPServer.start()
