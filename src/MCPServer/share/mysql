@@ -101,15 +101,31 @@ CREATE TABLE RightsStatement (
     rightsStatementIdentifier LONGTEXT NOT NULL,
     rightsStatementIdentifierType LONGTEXT NOT NULL,
     rightsStatementIdentifierValue LONGTEXT NOT NULL,
-    rightsBasis LONGTEXT NOT NULL,
-    copyrightStatus LONGTEXT NOT NULL,
-    copyrightJurisdiction LONGTEXT NOT NULL,
-    copyrightStatusDeterminationDate LONGTEXT,
-    licenseInformation LONGTEXT,
-    licenseIdentifier LONGTEXT,
-    licenseIdentifierType LONGTEXT NOT NULL,
-    licenseIdentifierValue LONGTEXT NOT NULL,
-    licenseTerms LONGTEXT
+    fkAgent int(10) UNSIGNED DEFAULT 0 NOT NULL,
+    rightsNotes LONGTEXT NOT NULL,
+    rightsBasis LONGTEXT NOT NULL
+);
+ALTER TABLE RightsStatement ADD INDEX fkAgent (fkAgent);
+
+DROP TABLE IF EXISTS RightsStatementCopyright;
+CREATE TABLE RightsStatementCopyright(
+  pk INT(10) unsigned NOT NULL AUTO_INCREMENT,
+  fkRightsStatement INT(10) unsigned DEFAULT NULL,
+  copyrightStatus LONGTEXT NOT NULL,
+  copyrightJurisdiction LONGTEXT NOT NULL,
+  copyrightStatusDeterminationDate LONGTEXT NOT NULL,
+  PRIMARY KEY (pk),
+  KEY fkRightsStatement (fkRightsStatement)
+);
+
+DROP TABLE IF EXISTS RightsStatementLicense;
+CREATE TABLE RightsStatementLicense(
+  pk INT(10) unsigned NOT NULL AUTO_INCREMENT,
+  fkRightsStatement INT(10) unsigned DEFAULT NULL,
+  licenseIdentifier longtext,
+  licenseTerms longtext,
+  PRIMARY KEY (pk),
+  KEY fkRightsStatement (fkRightsStatement)
 );
 
 DROP TABLE IF EXISTS ArchivematicaRightsStatement;
@@ -187,25 +203,6 @@ CREATE TABLE RightsStatementLinkingObjectIdentifierLinkingObjectRole (
 );
 */
 
--- linkingAgentIdentifier (O, R)
-DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifier;
-CREATE TABLE RightsStatementLinkingAgentIdentifier ( 
-    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    fkRightsStatement INT UNSIGNED,
-    Foreign Key (fkRightsStatement) references RightsStatement(pk),
-    linkingAgentIdentifierType LONGTEXT NOT NULL,
-    linkingAgentIdentifierValue LONGTEXT NOT NULL
-);
-
--- 4.1.8.3 linkingAgentRole (O, R)
-DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifierLinkingAgentRole;
-CREATE TABLE RightsStatementLinkingAgentIdentifierLinkingAgentRole ( 
-    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    fkRightsStatementLinkingAgentIdentifier INT UNSIGNED,
-    Foreign Key (fkRightsStatementLinkingAgentIdentifier) references RightsStatementLinkingAgentIdentifier(pk),
-    linkingAgentRole LONGTEXT NOT NULL
-);
-
 -- 4.1.6 rightsGranted (O, R)
 DROP TABLE IF EXISTS RightsStatementRightsGranted;
 CREATE TABLE RightsStatementRightsGranted ( 
@@ -213,9 +210,9 @@ CREATE TABLE RightsStatementRightsGranted (
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
     act LONGTEXT NOT NULL,
-    termOfGrant LONGTEXT NOT NULL,
     startDate LONGTEXT NOT NULL,
-    endDate LONGTEXT
+    endDate LONGTEXT,
+    restriction LONGTEXT NUT NULL
 );
 
 -- 4.1.6.2 restriction (O, R)
@@ -434,13 +431,6 @@ CREATE TABLE FilesIDs(
     formatVersion   LONGTEXT,
     formatRegistryName  LONGTEXT,
     formatRegistryKey   LONGTEXT
-);
-
-DROP TABLE IF EXISTS LinkingAgentIdentifiers;
-CREATE TABLE LinkingAgentIdentifiers(
-    pk      INT PRIMARY KEY AUTO_INCREMENT,
-    Type    LONGTEXT,
-    Value   LONGTEXT
 );
 
 DROP TABLE IF EXISTS Events;
