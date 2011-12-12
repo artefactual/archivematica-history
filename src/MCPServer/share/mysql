@@ -212,7 +212,7 @@ CREATE TABLE RightsStatementRightsGranted (
     act LONGTEXT NOT NULL,
     startDate LONGTEXT NOT NULL,
     endDate LONGTEXT,
-    restriction LONGTEXT NUT NULL
+    restriction LONGTEXT NOT NULL
 );
 
 -- 4.1.6.2 restriction (O, R)
