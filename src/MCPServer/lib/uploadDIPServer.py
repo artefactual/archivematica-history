@@ -63,6 +63,11 @@ def uploadDIP(worker, job):
         # Capture data sent within the job
         data = cPickle.loads(job.data)
 
+        # Make sure UUID exists
+        if not models.Job.objects.filter(sipuuid=data.UUID).count():
+          log("UUID not recognized")
+          return ''
+
         # Nth try
         try:
           access = models.Access.get(sipuuid=data.UUID)
@@ -77,7 +82,7 @@ def uploadDIP(worker, job):
 
             # Get uploadDIP directory from the database
             jobs = models.Job.objects.filter(sipuuid=data.UUID)
-            if jobs.count:
+            if jobs.count():
                 dir_source = jobs[0].directory.rstrip('/') # i.e.: /foo/barDIP
                 dir_target = data.rsync_target + '/' # i.e.: user@hostname:~/foo/bar/
 
