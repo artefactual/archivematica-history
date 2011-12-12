@@ -4,12 +4,10 @@ currentDir="$(dirname $0)"
 echo "Removing existing units"
 sudo ./removeUnitsFromWatchedDirectories.py
 
-
 echo "Enter root database password for each the following. (Hit enter if blank)"
 
-echo MCPServer
-mysql -u root -p --execute="source $currentDir/../src/MCPServer/share/mysql" "$databaseName"
-
-echo transcoder
-mysql -u root -p --execute="source $currentDir/../src/transcoder/share/mysql" "$databaseName"
+# CREATE DATABASE MCP CHARACTER SET utf8 COLLATE utf8_unicode_ci
+mysql -u root -p --execute="DROP DATABASE IF EXISTS MCP; CREATE DATABASE MCP;" \
+                 --execute="USE $databaseName; source $currentDir/../src/MCPServer/share/mysql;" \
+                 --execute="USE $databaseName; source $currentDir/../src/transcoder/share/mysql;"
 
