@@ -2,7 +2,7 @@
 {% load breadcumbs %}
 
 {% block sidebar %}
-  {% include "main/transfer/_sidebar.html" %}
+  {% include sidebar_template %}
 {% endblock %}
 
 {% block content %}
@@ -10,8 +10,13 @@
     <div class="span12">
 
       <ul class="breadcrumb">
-        {% breadcrumb_url 'Transfer' main.views.transfer_grid %}
-        {% breadcrumb_url name main.views.transfer_detail uuid %}
+        {% if section == 'ingest' %}
+          {% breadcrumb_url 'Ingest' main.views.ingest_grid %}
+          {% breadcrumb_url name main.views.ingest_detail uuid %}
+        {% else %}
+          {% breadcrumb_url 'Transfer' main.views.transfer_grid %}
+          {% breadcrumb_url name main.views.transfer_detail uuid %}
+        {% endif %}
         {% breadcrumb 'Rights' %}
       </ul>
 

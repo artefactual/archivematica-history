@@ -188,6 +188,8 @@ def ingest_rights_edit(request, uuid, id=None):
   jobs = models.Job.objects.filter(sipuuid=uuid)
   name = utils.get_directory_name(jobs[0])
 
+  section = 'ingest'
+  sidebar_template = "main/" + section + "/_sidebar.html"
   max_notes = 1
 
   if id:
