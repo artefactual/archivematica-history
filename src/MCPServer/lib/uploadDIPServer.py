@@ -110,6 +110,10 @@ def uploadDIP(worker, job):
                 # We don't need the temporary file anymore!
                 os.unlink(file_name)
 
+                # At this point, we should have a return code
+                # If greater than zero, see man rsync (EXIT VALUES)
+                process.returncode
+
         # Building headers dictionary for the deposit request
         headers = {}
         headers['User-Agent'] = 'Archivematica'
