@@ -108,7 +108,10 @@ def uploadDIP(worker, job):
     return ""
 
 def debug():
-  return __name__ == "__main__"
+    return True
 
 if __name__ == "__main__":
-    start()
+    # Hack to run the worker in a thread
+    from threading import Thread
+    t = Thread(target=start)
+    t.start()
