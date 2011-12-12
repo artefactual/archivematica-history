@@ -50,8 +50,7 @@ def start():
     # Register tasks
     gm_worker.register_task("uploadDIP", uploadDIP)
 
-    if debug():
-        print "uploadDIP worker has started, waiting for jobs."
+    log("uploadDIP worker has started, waiting for jobs.")
 
     # Loop
     gm_worker.work()
@@ -59,31 +58,40 @@ def start():
 def uploadDIP(worker, job):
 
     try:
-
-        if debug():
-            print "[uploadDIP] Processing job..."
+        log("Processing job...")
 
         # Capture data sent within the job
         data = cPickle.loads(job.data)
 
-        # Got enough information, storage it (we'll update it later)
-        access = models.Access()
-        access.sipuuid = data.UUID
-        access.save()
+        # Nth try
+        try:
+          access = models.Access.get(sipuuid=data.UUID)
+        # First time this job is called
+        except:
+          access = models.Access()
+          access.sipuuid = data.UUID
+          access.save()
 
-        # Rsync
-        if data.rsync_command and data.rsync_target:
+        # Rsync (data.rsync_target and data.rsync_command (optional))
+        if data.rsync_target:
 
             # Get uploadDIP directory from the database
             jobs = models.Job.objects.filter(sipuuid=data.UUID)
             if jobs.count:
-                dir_source = jobs[0].directory
+                dir_source = jobs[0].directory.rstrip('/') # i.e.: /foo/barDIP
+                dir_target = data.rsync_target + '/' # i.e.: user@hostname:~/foo/bar/
 
                 # Build command
-                command = ['rsync', '-avzP', dir_source, dir_target]
+                command = ["rsync", "-avzP", dir_source, dir_target]
+                if data.rsync_command:
+                  # i.e.: rsync -e "ssh -i key"
+                  command.insert(1, "-e \"%s\"" % data.rsync_command)
+
+                log(' '.join(command))
 
                 # Getting around of rsync output buffering by outputting to a temporary file
                 pipe_output, file_name = tempfile.mkstemp()
+                log("Rsync output is being saved in %s" % file_name)
 
                 process = subprocess.Popen(command, stdout=pipe_output)
 
@@ -103,16 +111,20 @@ def uploadDIP(worker, job):
                     if not match:
                         continue
 
-                    # Update job status somewhere (MCP.Accesses?)
+                    # Update job status
                     # percentage in match.group(1)
                     # ETA in match.group(2)
+                    access.status = "Sending... %s\% (ETA: %s)" % (match.group(1), match.group(2))
+                    access.save()
+                    log(access.status)
 
                 # We don't need the temporary file anymore!
                 os.unlink(file_name)
 
                 # At this point, we should have a return code
                 # If greater than zero, see man rsync (EXIT VALUES)
-                process.returncode
+                access.exitcode = process.returncode
+                access.save()
 
         # Building headers dictionary for the deposit request
         headers = {}
@@ -129,11 +141,9 @@ def uploadDIP(worker, job):
         auth = requests.auth.HTTPBasicAuth(data.email, data.password)
         response = requests.request('POST', data.url, auth=auth, headers=headers)
 
-        if debug():
-          print "> Response code: %s" % response.status_code
-          # print response.content
-          # print response.headers
-          print "> Location: %s" % response.headers.get('Location')
+        # response.{content,headers,status_code}
+        log("> Response code: %s" % response.status_code)
+        log("> Location: %s" % response.headers.get('Location'))
 
         # Update record with location
         access.resource = response.headers.get('Location')
@@ -148,14 +158,13 @@ def uploadDIP(worker, job):
         return ""
 
     finally:
-        if debug():
-            print "[uploadDIP] Job finished"
+        log("Job finished")
 
     return ""
 
-def debug():
-    return True
-    # return __name__ == "__main__"
+def log(message):
+    if True: # __name__ == "__main__"
+        print "[uploadDIP] %s" % message
 
 if __name__ == "__main__":
     start()
