@@ -78,12 +78,11 @@ class StandardTaskConfig(models.Model):
 
 class Task(models.Model):
   taskuuid = models.CharField(max_length=50, primary_key=True, db_column='taskUUID')
-  # jobuuid = models.CharField(max_length=50, db_column='jobUUID', blank=True)
   job = models.ForeignKey(Job, db_column='jobuuid', to_field = 'jobuuid')
   createdtime = models.DateTimeField(db_column='createdTime')
   fileuuid = models.CharField(max_length=50, db_column='fileUUID', blank=True)
   filename = models.CharField(max_length=100, db_column='fileName', blank=True)
-  exec_field = models.CharField(max_length=50, db_column='exec', blank=True)
+  execution = models.CharField(max_length=50, db_column='exec', blank=True)
   arguments = models.CharField(max_length=1000, blank=True)
   starttime = models.DateTimeField(db_column='startTime')
   client = models.CharField(max_length=50, blank=True)
