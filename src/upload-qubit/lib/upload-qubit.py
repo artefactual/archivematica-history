@@ -44,8 +44,8 @@ if __name__ == '__main__':
     parser.add_option_group(options)
 
     options = optparse.OptionGroup(parser, 'Rsync options')
-    options.add_option('-c', '--rsync-command', dest='rsync_command', metavar='RSYNC_COMMAND', help='Rsync command')
-    options.add_option('-t', '--rsync-target', dest='rsync_target', metavar='RSYNC_TARGET', help='Rsync target')
+    options.add_option('-c', '--rsync-command', dest='rsync_command', metavar='RSYNC_COMMAND', help='Rsync command, e.g.: ssh -p 2222')
+    options.add_option('-t', '--rsync-target', dest='rsync_target', metavar='RSYNC_TARGET', help='Rsync target, e.g.: foo@bar:~/dips/')
     parser.add_option_group(options)
 
     (opts, args) = parser.parse_args()
