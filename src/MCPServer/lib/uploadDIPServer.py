@@ -42,11 +42,14 @@ def start():
         gm_opts = ['127.0.0.1', '4730']
     gm_worker = gearman.GearmanWorker(gm_opts)
     gm_worker.set_client_id(gethostname() + "_MCPServer")
+
+    # Register tasks
     gm_worker.register_task("uploadDIP", uploadDIP)
 
     if debug():
-        print "The worker has started, waiting for jobs."
+        print "uploadDIP worker has started, waiting for jobs."
 
+    # Loop
     gm_worker.work()
 
 def uploadDIP(worker, job):
@@ -54,7 +57,7 @@ def uploadDIP(worker, job):
     try:
 
         if debug():
-            print "Processing job..."
+            print "[uploadDIP] Processing job..."
 
         # Capture data sent within the job
         data = cPickle.loads(job.data)
@@ -103,15 +106,13 @@ def uploadDIP(worker, job):
 
     finally:
         if debug():
-            print "Job finished"
+            print "[uploadDIP] Job finished"
 
     return ""
 
 def debug():
     return True
+    # return __name__ == "__main__"
 
 if __name__ == "__main__":
-    # Hack to run the worker in a thread
-    from threading import Thread
-    t = Thread(target=start)
-    t.start()
+    start()
