@@ -38,7 +38,7 @@ $(function()
 
       update: function(node, value)
         {
-          led = node.find('span');
+          led = $(node).find('span');
 
           if (!value)
           {
