@@ -27,7 +27,11 @@ CREATE TABLE Accesses (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     SIPUUID VARCHAR(50),
     resource LONGTEXT,
-    createdTime TIMESTAMP(8) DEFAULT NOW()
+    status LONGTEXT,
+    statusCode TINYINT UNSIGNED,
+    exitCode TINYINT UNSIGNED,
+    createdTime TIMESTAMP(8) DEFAULT NOW(),
+    updatedTime TIMESTAMP(8)
 );
 
 DROP TABLE IF EXISTS Agents;
