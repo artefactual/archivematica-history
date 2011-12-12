@@ -18,10 +18,21 @@
             <abbr title="Created time">CT:</abbr> {{ item.createdtime }}
           </td>
         </tr>
+        {% if item.stdout %}
+          <tr>
+            <td colspan="3" class="stderror">
+              <p>STDOUT</p>
+              <pre>{{ item.stdout }}</pre>
+            </td>
+          </tr>
+        {% endif %}
         {% ifnotequal item.exitcode 0 %}
           {% if item.stderror %}
             <tr>
-              <td colspan="3" class="stderror"><pre>{{ item.stderror }}</pre></td>
+              <td colspan="3" class="stderror">
+                <p>STDERR</p>
+                <pre>{{ item.stderror }}</pre>
+              </td>
             </tr>
           {% endif %}
         {% endifnotequal %}
