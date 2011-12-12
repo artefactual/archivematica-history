@@ -113,6 +113,7 @@ class RightsStatement(models.Model):
   rightsstatementidentifier = models.TextField(db_column='rightsStatementIdentifier', blank=True, verbose_name='Identifier')
   rightsstatementidentifiertype = models.TextField(db_column='rightsStatementIdentifierType', blank=True, verbose_name='Type')
   rightsstatementidentifiervalue = models.TextField(db_column='rightsStatementIdentifierValue', blank=True, verbose_name='Value')
+  rightsholder = models.TextField(db_column='fkAgent', blank=True, verbose_name='Rights holder')
   rightsnotes = models.TextField(db_column='rightsNotes', verbose_name='Rights note(s)', blank=True)
   rightsbasis = models.TextField(db_column='rightsBasis', verbose_name='Basis', blank=True)
 
@@ -153,24 +154,6 @@ class RightsStatementLicenseNote(models.Model):
 
   class Meta:
     db_table = u'RightsStatementLicenseNote'
-
-class RightsStatementLinkingAgentIdentifier(models.Model):
-  id = models.AutoField(primary_key=True, db_column='pk')
-  rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
-  # rightsstatement = models.ManyToManyField(RightsStatement, db_column='fkRightsStatement')
-  linkingagentidentifiertype = models.TextField(db_column='linkingAgentIdentifierType', blank=True)
-  linkingagentidentifiervalue = models.TextField(db_column='linkingAgentIdentifierValue', verbose_name='Rights holder', blank=True)
-
-  class Meta:
-    db_table = u'RightsStatementLinkingAgentIdentifier'
-
-class RightsStatementLinkingAgentIdentifierLinkingAgentRole(models.Model):
-  id = models.AutoField(primary_key=True, db_column='pk')
-  linkingagent = models.ForeignKey(RightsStatementLinkingAgentIdentifier, db_column='fkRightsStatementLinkingAgentIdentifier')
-  linkingagentrole = models.TextField(db_column='linkingAgentRole', blank=True)
-
-  class Meta:
-    db_table = u'RightsStatementLinkingAgentIdentifierLinkingAgentRole'
 
 class RightsStatementRightsGranted(models.Model):
   id = models.AutoField(primary_key=True, db_column='pk')
