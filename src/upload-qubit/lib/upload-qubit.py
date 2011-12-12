@@ -26,7 +26,7 @@ import gearman
 
 def check_request_status(job_request):
     if job_request.complete:
-        print "Job %s created! Result: %s - %s" % (job_request.job.unique, job_request.state, job_request.result)
+        print "Job %s created! Result: %s." % (job_request.job.unique, job_request.state)
     elif job_request.timed_out:
         print "Job %s timed out!" % job_request.unique
     elif job_request.state == JOB_UNKNOWN:
