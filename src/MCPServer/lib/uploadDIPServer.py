@@ -26,6 +26,10 @@ import sys
 import gearman
 import cPickle
 from socket import gethostname
+import subprocess
+import re
+import tempfile
+import time
 
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import requests
@@ -69,7 +73,42 @@ def uploadDIP(worker, job):
 
         # Rsync
         if data.rsync_command and data.rsync_target:
-            pass
+
+            # Get uploadDIP directory from the database
+            jobs = models.Job.objects.filter(sipuuid=data.UUID)
+            if jobs.count:
+                dir_source = jobs[0].directory
+
+                # Build command
+                command = ['rsync', '-avzP', dir_source, dir_target]
+
+                # Getting around of rsync output buffering by outputting to a temporary file
+                pipe_output, file_name = tempfile.mkstemp()
+
+                process = subprocess.Popen(command, stdout=pipe_output)
+
+                # poll() returns None while the process is still running
+                while not process.poll():
+                    time.sleep(1)
+                    last_line = open(file_name).readlines()
+
+                    # It's possible that it hasn't output yet, so continue
+                    if len(last_line) == 0:
+                        continue
+                    last_line = last_line[-1]
+
+                    # Matching to "[bytes downloaded]  number%  [speed] number:number:number"
+                    match = re.match(".* ([0-9]*)%.* ([0-9]*:[0-9]*:[0-9]*).*", last_line)
+
+                    if not match:
+                        continue
+
+                    # Update job status somewhere (MCP.Accesses?)
+                    # percentage in match.group(1)
+                    # ETA in match.group(2)
+
+                # We don't need the temporary file anymore!
+                os.unlink(file_name)
 
         # Building headers dictionary for the deposit request
         headers = {}
