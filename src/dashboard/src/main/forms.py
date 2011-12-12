@@ -35,8 +35,17 @@ class SettingsForm(forms.Form):
   arguments = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
 
 class RightsForm(ModelForm):
+  rightsbasis = forms.ChoiceField(choices=(
+    ('Copyright', 'Copyright'),
+    ('Statute', 'Statute'),
+    ('License', 'License'),
+    ('Policy', 'Policy'),
+    ('Donor', 'Donor')
+  ))
+
   class Meta:
     model = models.RightsStatement
+
     #fields = (
     #  'rightsstatementidentifier',)
     exclude = ('id', 'rightsstatementidentifier', 'rightsstatementidentifiertype', 'rightsstatementidentifiervalue',)
