@@ -88,14 +88,3 @@ class RightsLicenseNoteForm(ModelForm):
     model = models.RightsStatementLicenseNote
     widgets = {
       'licensenote': Textarea(attrs=TEXTAREA_ATTRS), }
-
-class RightsStatementLinkingAgentIdentifierForm(ModelForm):
-  class Meta:
-    model = models.RightsStatementLinkingAgentIdentifier
-    exclude = ('linkingagentidentifiertype',)
-    widgets = {
-      'linkingagentidentifiervalue': TextInput(attrs=INPUT_ATTRS), }
-
-#class RightsLinkingAgent(ModelForm):
-#  class Meta:
-#    model = models.RightsStatementLinkingAgentIdentifier
