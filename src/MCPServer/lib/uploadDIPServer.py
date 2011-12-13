@@ -68,6 +68,14 @@ def uploadDIP(worker, job):
           log("UUID not recognized")
           return ''
 
+        # Get directory
+        jobs = models.Job.objects.filter(sipuuid=data.UUID, jobtype="uploadDIP")
+        if jobs.count():
+          directory = jobs[0].directory.rstrip('/').replace('%sharedPath%', '/var/archivematica/sharedDirectory/')
+        else:
+          log("Directory not found")
+          return ''
+
         # Nth try
         try:
           access = models.Access.objects.get(sipuuid=data.UUID)
@@ -80,61 +88,56 @@ def uploadDIP(worker, job):
         # Rsync (data.rsync_target and data.rsync_command (optional))
         if data.rsync_target:
 
-            # Get uploadDIP directory from the database
-            jobs = models.Job.objects.filter(sipuuid=data.UUID, jobtype="uploadDIP")
-            if jobs.count():
-                dir_source = jobs[0].directory.rstrip('/').replace('%sharedPath%', '/var/archivematica/sharedDirectory/') # i.e.: /foo/barDIP
-                dir_target = data.rsync_target + '/' # i.e.: user@hostname:~/foo/bar/
+            # Build command
+            command = ["rsync", "-avzP", directory, data.rsync_target]
+            if data.rsync_command:
+              # i.e.: rsync -e "ssh -i key"
+              command.insert(1, "-e \"%s\"" % data.rsync_command)
 
-                # Build command
-                command = ["rsync", "-avzP", dir_source, dir_target]
-                if data.rsync_command:
-                  # i.e.: rsync -e "ssh -i key"
-                  command.insert(1, "-e \"%s\"" % data.rsync_command)
+            log(' '.join(command))
 
-                log(' '.join(command))
+            # Getting around of rsync output buffering by outputting to a temporary file
+            pipe_output, file_name = tempfile.mkstemp()
+            log("Rsync output is being saved in %s" % file_name)
 
-                # Getting around of rsync output buffering by outputting to a temporary file
-                pipe_output, file_name = tempfile.mkstemp()
-                log("Rsync output is being saved in %s" % file_name)
+            process = subprocess.Popen(command, stdout=pipe_output, stderr=pipe_output)
 
-                process = subprocess.Popen(command, stdout=pipe_output)
+            # poll() returns None while the process is still running
+            while process.poll() is None:
+                time.sleep(1)
+                last_line = open(file_name).readlines()
 
-                # poll() returns None while the process is still running
-                while not process.poll():
-                    time.sleep(1)
-                    last_line = open(file_name).readlines()
+                # It's possible that it hasn't output yet, so continue
+                if len(last_line) == 0:
+                    continue
+                last_line = last_line[-1]
 
-                    # It's possible that it hasn't output yet, so continue
-                    if len(last_line) == 0:
-                        continue
-                    last_line = last_line[-1]
+                # Matching to "[bytes downloaded]  number%  [speed] number:number:number"
+                match = re.match(".* ([0-9]*)%.* ([0-9]*:[0-9]*:[0-9]*).*", last_line)
 
-                    # Matching to "[bytes downloaded]  number%  [speed] number:number:number"
-                    match = re.match(".* ([0-9]*)%.* ([0-9]*:[0-9]*:[0-9]*).*", last_line)
+                if not match:
+                    continue
 
-                    if not match:
-                        continue
-
-                    # Update job status
-                    # percentage in match.group(1)
-                    # ETA in match.group(2)
-                    access.status = "Sending... %s\% (ETA: %s)" % (match.group(1), match.group(2))
-                    access.save()
-                    log(access.status)
-
-                # We don't need the temporary file anymore!
-                # os.unlink(file_name)
-
-                # At this point, we should have a return code
-                # If greater than zero, see man rsync (EXIT VALUES)
-                access.exitcode = process.returncode
+                # Update job status
+                # - percentage in match.group(1)
+                # - ETA in match.group(2)
+                access.status = "Sending... %s (ETA: %s)" % (match.group(1), match.group(2))
                 access.save()
+                log(access.status)
 
-                if 0 < process.returncode:
-                  log("rsync quit unexpectedly (exit %s), the job will be stopped here" % process.returncode)
-                  return ''
+            # We don't need the temporary file anymore!
+            # log("Removing temporary rsync output file: %s" % file_name)
+            # os.unlink(file_name)
 
+            # At this point, we should have a return code
+            # If greater than zero, see man rsync (EXIT VALUES)
+            access.exitcode = process.returncode
+
+            if 0 < process.returncode:
+              log("rsync quit unexpectedly (exit %s), the job will be stopped here" % process.returncode)
+              return ''
+
+            access.save()
 
         # Building headers dictionary for the deposit request
         headers = {}
@@ -144,10 +147,11 @@ def uploadDIP(worker, job):
         headers['Content-Type'] = 'application/zip'
         headers['X-No-Op'] = 'false'
         headers['X-Verbose'] = 'false'
-        headers['Content-Location'] = 'file:///A60'
+        headers['Content-Location'] = "file:///%s" % os.path.basename(directory)
         """ headers['Content-Disposition'] """
 
         # Auth and request!
+        log("About to deposit to: %s" % data.url)
         auth = requests.auth.HTTPBasicAuth(data.email, data.password)
         response = requests.request('POST', data.url, auth=auth, headers=headers)
 
@@ -160,6 +164,7 @@ def uploadDIP(worker, job):
         access.save()
 
     except Exception as inst:
+        log("DEBUG EXCEPTION! uploadDIP worker")
         print >>sys.stderr, "DEBUG EXCEPTION! uploadDIP worker"
         print >>sys.stderr, type(inst)
         print >>sys.stderr, inst.args
