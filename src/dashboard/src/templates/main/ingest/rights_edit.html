@@ -36,10 +36,18 @@
         {% endif %}
       {% endif %}
 
-      {% if id %}
-        <form class="form-stacked" method="post" action="{% url main.views.ingest_rights_edit uuid id %}">
+      {% if section == 'ingest' %}
+        {% if id %}
+          <form class="form-stacked" method="post" action="{% url main.views.ingest_rights_edit uuid id %}">
+        {% else %}
+          <form class="form-stacked" method="post" action="{% url main.views.ingest_rights_edit uuid %}">
+        {% endif %}
       {% else %}
-        <form class="form-stacked" method="post" action="{% url main.views.ingest_rights_edit uuid %}">
+        {% if id %}
+          <form class="form-stacked" method="post" action="{% url main.views.transfer_rights_edit uuid id %}">
+        {% else %}
+          <form class="form-stacked" method="post" action="{% url main.views.transfer_rights_edit uuid %}">
+        {% endif %}
       {% endif %}
 
         {{ grantFormset }}
