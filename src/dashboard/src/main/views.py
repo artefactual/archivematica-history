@@ -76,6 +76,80 @@ def status(request):
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Shared
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def rights_edit(request, uuid, id=None, section='ingest'):
+  jobs = models.Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(jobs[0])
+
+  sidebar_template = "main/" + section + "/_sidebar.html"
+  max_notes = 1
+
+  if id:
+    viewRights = models.RightsStatement.objects.get(pk=id)
+    form = forms.RightsForm(instance=viewRights)
+    # determine how many empty forms should be shown for children
+    extra_grant_notes = max_notes - len(models.RightsStatementRightsGranted.objects.filter(rightsstatement=viewRights))
+    extra_copyright_forms = max_notes - len(models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights))
+    extra_copyright_notes = max_notes - len(models.RightsStatementCopyrightNote.objects.filter(rightsstatement=viewRights))
+    extra_statute_forms = max_notes - len(models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights))
+    extra_statute_notes = max_notes - len(models.RightsStatementStatuteInformationNote.objects.filter(rightsstatement=viewRights))
+    extra_license_forms = max_notes - len(models.RightsStatementLicense.objects.filter(rightsstatement=viewRights))
+    extra_license_notes = max_notes - len(models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights))
+  else:
+    form = forms.RightsForm(request.POST)
+    if request.method != 'POST':
+      viewRights = models.RightsStatement()
+    extra_grant_notes = max_notes
+    extra_copyright_forms = max_notes
+    extra_copyright_notes = max_notes
+    extra_statute_forms = max_notes
+    extra_statute_notes = max_notes
+    extra_license_forms = max_notes
+    extra_license_notes = max_notes
+
+  # create inline formsets for child elements
+  GrantFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementRightsGranted, extra=extra_grant_notes, can_delete=False, form=forms.RightsGrantedForm)
+  CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
+  CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes, can_delete=False, form=forms.RightsCopyrightNoteForm)
+  StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
+  StatuteNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformationNote, extra=extra_statute_notes, can_delete=False, form=forms.RightsCopyrightNoteForm)
+  LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
+  LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote, extra=extra_license_notes, can_delete=False, form=forms.RightsLicenseNoteForm)
+
+  # handle form creation/saving
+  if request.method == 'POST':
+    createdRights = form.save()
+    grantFormset = GrantFormSet(request.POST, instance=createdRights)
+    grantFormset.save()
+    statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
+    copyrightFormset = CopyrightFormSet(request.POST, instance=createdRights)
+    copyrightFormset.save() 
+    copyrightNoteFormset = CopyrightNoteFormSet(request.POST, instance=createdRights)
+    copyrightNoteFormset.save() 
+    statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
+    statuteFormset.save()
+    statuteNoteFormset = StatuteNoteFormSet(request.POST, instance=createdRights)
+    statuteNoteFormset.save()
+    licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
+    licenseFormset.save()
+    licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
+    licenseNoteFormset.save()
+    return redirect('/' + section + '/' + uuid + '/rights/' + str(createdRights.id))
+  else:
+    grantFormset = GrantFormSet(instance=viewRights)
+    copyrightFormset = CopyrightFormSet(instance=viewRights)
+    copyrightNoteFormset = CopyrightNoteFormSet(instance=viewRights)
+    statuteFormset = StatuteFormSet(instance=viewRights)
+    statuteNoteFormset = StatuteNoteFormSet(instance=viewRights)
+    licenseFormset = LicenseFormSet(instance=viewRights)
+    licenseNoteFormset = LicenseNoteFormSet(instance=viewRights)
+
+  return render_to_response('main/ingest/rights_edit.html', locals())
+
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Ingest
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
@@ -185,6 +259,9 @@ def ingest_rights_list(request, uuid):
   return render_to_response('main/ingest/rights_list.html', locals())
 
 def ingest_rights_edit(request, uuid, id=None):
+
+  return rights_edit(request, uuid, id, 'ingest')
+
   jobs = models.Job.objects.filter(sipuuid=uuid)
   name = utils.get_directory_name(jobs[0])
 
@@ -486,8 +563,12 @@ def transfer_rights_add(request, uuid, jobs, name):
 
   return render_to_response('main/transfer/rights_edit.html', locals())
 
+def transfer_rights_edit(request, uuid, id=None):
+  
+  return rights_edit(request, uuid, id, 'transfer')
+
 @load_jobs # Adds jobs, name
-def transfer_rights_edit(request, uuid, jobs, name, id):
+def AAAtransfer_rights_edit(request, uuid, jobs, name, id):
   try:
     right = models.RightsStatementLinkingAgentIdentifier.objects.get(id=id)
   except ObjectDoesNotExist:
