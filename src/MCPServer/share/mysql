@@ -3064,7 +3064,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 SET @microserviceGroup  = 'Generate METS.xml';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, '%SIPLogsDirectory%METSGeneration.log', '%SIPLogsDirectory%METSGeneration.log', 'createMETS_v0.0', '--sipUUID "%SIPUUID%" --basePath "%SIPDirectory%" --xmlFile "%SIPLogsDirectory%"METS.xml --basePathString "transferDirectory" --fileGroupIdentifier "transferUUID"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'createMETS_v0.0', '--sipUUID "%SIPUUID%" --basePath "%SIPDirectory%" --xmlFile "%SIPLogsDirectory%"METS.xml --basePathString "transferDirectory" --fileGroupIdentifier "transferUUID"');
 set @GenerateMETSxmldocument = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
