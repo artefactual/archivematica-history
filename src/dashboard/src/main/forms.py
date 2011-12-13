@@ -50,7 +50,7 @@ class RightsForm(ModelForm):
     #  'rightsstatementidentifier',)
     exclude = ('id', 'rightsstatementidentifier', 'rightsstatementidentifiertype', 'rightsstatementidentifiervalue',)
     widgets = {
-      'rightsstatementidentifier': TextInput(attrs=INPUT_ATTRS), 'rightsnotes': Textarea(attrs=TEXTAREA_ATTRS), 'rightsbasis': TextInput(attrs=INPUT_ATTRS), }
+      'rightsstatementidentifier': TextInput(attrs=INPUT_ATTRS), 'rightsnotes': Textarea(attrs=TEXTAREA_ATTRS), }
 
 class RightsGrantedForm(ModelForm):
   class Meta:
