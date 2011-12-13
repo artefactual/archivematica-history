@@ -46,11 +46,19 @@
 
         {% include "_form.html" %}
 
+        <div id='copyright_formset'>
         {{ copyrightFormset }}
         {% include "formset_table.html" with formset=copyrightNoteFormset %}
+        </div>
+
+        <div id='statute_formset'>
         {{ statuteFormset }}
+        </div>
+
+        <div id='license_formset'>
         {{ licenseFormset }}
         {% include "formset_table.html" with formset=licenseNoteFormset %}
+        </div>
 
         <div class="actions">
           {% if id %}
@@ -64,4 +72,7 @@
       </form>
     </div>
   </div>
+
+  <script src='/media/js/rights_formset_changer.js'></script>
+
 {% endblock %}
