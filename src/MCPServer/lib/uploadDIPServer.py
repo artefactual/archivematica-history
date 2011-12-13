@@ -70,7 +70,7 @@ def uploadDIP(worker, job):
 
         # Nth try
         try:
-          access = models.Access.get(sipuuid=data.UUID)
+          access = models.Access.objects.get(sipuuid=data.UUID)
         # First time this job is called
         except:
           access = models.Access()
@@ -81,9 +81,9 @@ def uploadDIP(worker, job):
         if data.rsync_target:
 
             # Get uploadDIP directory from the database
-            jobs = models.Job.objects.filter(sipuuid=data.UUID)
+            jobs = models.Job.objects.filter(sipuuid=data.UUID, jobtype="uploadDIP")
             if jobs.count():
-                dir_source = jobs[0].directory.rstrip('/') # i.e.: /foo/barDIP
+                dir_source = jobs[0].directory.rstrip('/').replace('%sharedPath%', '/var/archivematica/sharedDirectory/') # i.e.: /foo/barDIP
                 dir_target = data.rsync_target + '/' # i.e.: user@hostname:~/foo/bar/
 
                 # Build command
@@ -124,12 +124,17 @@ def uploadDIP(worker, job):
                     log(access.status)
 
                 # We don't need the temporary file anymore!
-                os.unlink(file_name)
+                # os.unlink(file_name)
 
                 # At this point, we should have a return code
                 # If greater than zero, see man rsync (EXIT VALUES)
                 access.exitcode = process.returncode
                 access.save()
+
+                if 0 < process.returncode:
+                  log("rsync quit unexpectedly (exit %s), the job will be stopped here" % process.returncode)
+                  return ''
+
 
         # Building headers dictionary for the deposit request
         headers = {}
@@ -159,7 +164,7 @@ def uploadDIP(worker, job):
         print >>sys.stderr, type(inst)
         print >>sys.stderr, inst.args
         import traceback
-        traceback.print_exc(file=sys.stdout)
+        traceback.print_exc()
         return ""
 
     finally:
