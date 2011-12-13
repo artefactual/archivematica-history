@@ -171,15 +171,14 @@ CREATE TABLE RightsStatementStatuteInformation (
 
 );
 
--- 4.1.5.4 statuteNote (O, R)
-DROP TABLE IF EXISTS RightsStatementStatuteInformationStatuteNote;
-CREATE TABLE RightsStatementStatuteInformationStatuteNote ( 
-    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    fkRightsStatementStatuteInformation INT UNSIGNED,
-    Foreign Key (fkRightsStatementStatuteInformation) references RightsStatementStatuteInformation(pk),
-    statuteNote LONGTEXT NOT NULL
+DROP TABLE IF EXISTS RightsStatementStatuteInformationNote;
+CREATE TABLE RightsStatementStatuteInformationNote (
+  pk int(10) unsigned NOT NULL AUTO_INCREMENT,
+  fkRightsStatement int(10) unsigned DEFAULT NULL,
+  statuteNote longtext NOT NULL,
+  PRIMARY KEY (pk),
+  KEY fkRightsStatement (fkRightsStatement)
 );
-
 
 /*
 USING - ArchivematicaRightsStatement TABLE
