@@ -146,7 +146,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
     licenseFormset = LicenseFormSet(instance=viewRights)
     licenseNoteFormset = LicenseNoteFormSet(instance=viewRights)
 
-  return render_to_response('main/ingest/rights_edit.html', locals())
+  return render_to_response('main/rights_edit.html', locals())
 
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
