@@ -22,6 +22,30 @@ function revealSelectedBasis() {
 }
 
 $(document).ready(function() {
+  // active formset changer
   $('#id_rightsbasis').change(revealSelectedBasis);
   revealSelectedBasis();
+
+  // attach autocomplete
+  $("#id_rightsholder").autocomplete({  
+
+    // define callback to format results  
+    source: function(req, add){  
+ 
+      // pass request to server  
+      $.getJSON("autocomplete/rightsholders", {'text': req.term}, function(data) {  
+ 
+        // create array for response objects  
+        var suggestions = [];  
+  
+        // process response  
+        $.each(data, function(i, val){  
+          suggestions.push(val);  
+        });  
+
+        // pass array to callback  
+        add(suggestions);  
+      });
+    }
+  })
 });

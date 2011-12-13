@@ -148,6 +148,17 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
   return render_to_response('main/rights_edit.html', locals())
 
+def rights_holders_autocomplete(request):
+
+  search_text = ''
+
+  try:
+    search_text = request.REQUEST['text']
+  except Exception: pass
+
+  response_data = {'John Doe': 'John Doe', 'Jane Doe': 'Jane Doe'}
+
+  return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Ingest
