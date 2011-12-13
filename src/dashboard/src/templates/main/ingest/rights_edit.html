@@ -53,6 +53,7 @@
 
         <div id='statute_formset'>
         {{ statuteFormset }}
+        {% include "formset_table.html" with formset=statuteNoteFormset %}
         </div>
 
         <div id='license_formset'>

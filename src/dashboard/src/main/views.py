@@ -200,6 +200,7 @@ def ingest_rights_edit(request, uuid, id=None):
     extra_copyright_forms = max_notes - len(models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights))
     extra_copyright_notes = max_notes - len(models.RightsStatementCopyrightNote.objects.filter(rightsstatement=viewRights))
     extra_statute_forms = max_notes - len(models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights))
+    extra_statute_notes = max_notes - len(models.RightsStatementStatuteInformationNote.objects.filter(rightsstatement=viewRights))
     extra_license_forms = max_notes - len(models.RightsStatementLicense.objects.filter(rightsstatement=viewRights))
     extra_license_notes = max_notes - len(models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights))
   else:
@@ -210,6 +211,7 @@ def ingest_rights_edit(request, uuid, id=None):
     extra_copyright_forms = max_notes
     extra_copyright_notes = max_notes
     extra_statute_forms = max_notes
+    extra_statute_notes = max_notes
     extra_license_forms = max_notes
     extra_license_notes = max_notes
 
@@ -218,6 +220,7 @@ def ingest_rights_edit(request, uuid, id=None):
   CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
   CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes, can_delete=False, form=forms.RightsCopyrightNoteForm)
   StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
+  StatuteNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformationNote, extra=extra_statute_notes, can_delete=False, form=forms.RightsCopyrightNoteForm)
   LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
   LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote, extra=extra_license_notes, can_delete=False, form=forms.RightsLicenseNoteForm)
 
@@ -233,6 +236,8 @@ def ingest_rights_edit(request, uuid, id=None):
     copyrightNoteFormset.save() 
     statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
     statuteFormset.save()
+    statuteNoteFormset = StatuteNoteFormSet(request.POST, instance=createdRights)
+    statuteNoteFormset.save()
     licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
     licenseFormset.save()
     licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
@@ -243,6 +248,7 @@ def ingest_rights_edit(request, uuid, id=None):
     copyrightFormset = CopyrightFormSet(instance=viewRights)
     copyrightNoteFormset = CopyrightNoteFormSet(instance=viewRights)
     statuteFormset = StatuteFormSet(instance=viewRights)
+    statuteNoteFormset = StatuteNoteFormSet(instance=viewRights)
     licenseFormset = LicenseFormSet(instance=viewRights)
     licenseNoteFormset = LicenseNoteFormSet(instance=viewRights)
 
