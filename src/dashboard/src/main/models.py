@@ -192,3 +192,12 @@ class RightsStatementStatuteInformationNote(models.Model):
 
   class Meta:
     db_table = u'RightsStatementStatuteInformationNote'
+
+class RightsStatementLinkingAgentIdentifier(models.Model):
+  id = models.AutoField(primary_key=True, db_column='pk')
+  rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+  linkingagentidentifiertype = models.TextField(db_column='linkingAgentIdentifierType', verbose_name='Linking Agent', blank=True)
+  linkingagentidentifiervalue = models.TextField(db_column='linkingAgentIdentifierValue', verbose_name='Linking Agent Value', blank=True)
+
+  class Meta:
+    db_table = u'RightsStatementLinkingAgentIdentifier'
