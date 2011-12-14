@@ -2,7 +2,7 @@
 {% load breadcumbs %}
 
 {% block sidebar %}
-  {% include "main/ingest/_sidebar.html" %}
+  {% include sidebar_template %}
 {% endblock %}
 
 {% block content %}
@@ -10,8 +10,13 @@
     <div class="span12">
 
       <ul class="breadcrumb">
-        {% breadcrumb_url 'Ingest' main.views.ingest_grid %}
-        {% breadcrumb_url name main.views.ingest_detail uuid %}
+        {% if section == 'ingest' %}
+          {% breadcrumb_url 'Ingest' main.views.ingest_grid %}
+          {% breadcrumb_url name main.views.ingest_detail uuid %}
+        {% else %}
+          {% breadcrumb_url 'Transfer' main.views.transfer_grid %}
+          {% breadcrumb_url name main.views.transfer_detail uuid %}
+        {% endif %}
         {% breadcrumb 'Rights' %}
       </ul>
 
@@ -32,7 +37,11 @@
   <td>{{ grant.startdate }}</td>
   <td>{{ grant.enddate }}</td>
   <td>
-    <a href='{% url main.views.ingest_rights_edit uuid grant.rightsstatement.id %}'>Edit</a>
+    {% if section == 'ingest' %}
+      <a href='{% url main.views.ingest_rights_edit uuid grant.rightsstatement.id %}'>Edit</a>
+    {% else %}
+      <a href='{% url main.views.transfer_rights_edit uuid grant.rightsstatement.id %}'>Edit</a>
+    {% endif %}
   </td>
 </tr>
 </p>

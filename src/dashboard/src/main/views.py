@@ -76,7 +76,7 @@ def status(request):
   return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-      Shared
+      Rights-related
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def rights_edit(request, uuid, id=None, section='ingest'):
@@ -159,6 +159,16 @@ def rights_holders_autocomplete(request):
   response_data = {'John Doe': 'John Doe', 'Jane Doe': 'Jane Doe'}
 
   return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
+
+def rights_list(request, uuid, section):
+  jobs = models.Job.objects.filter(sipuuid=uuid)
+  name = utils.get_directory_name(jobs[0])
+
+  grants = models.RightsStatementRightsGranted.objects.all()
+
+  sidebar_template = "main/" + section + "/_sidebar.html"
+
+  return render_to_response('main/rights_list.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Ingest
@@ -265,12 +275,7 @@ def ingest_microservices(request, uuid):
   return render_to_response('main/ingest/microservices.html', locals())
 
 def ingest_rights_list(request, uuid):
-  jobs = models.Job.objects.filter(sipuuid=uuid)
-  name = utils.get_directory_name(jobs[0])
-
-  grants = models.RightsStatementRightsGranted.objects.all()
-
-  return render_to_response('main/rights_list.html', locals())
+  return rights_list(request, uuid, 'ingest')
 
 def ingest_rights_edit(request, uuid, id=None):
 
@@ -469,10 +474,8 @@ def transfer_microservices(request, uuid):
   name = utils.get_directory_name(jobs[0])
   return render_to_response('main/transfer/microservices.html', locals())
 
-@load_jobs # Adds jobs, name
-def transfer_rights_list(request, uuid, jobs, name):
-  rights = models.RightsStatementLinkingAgentIdentifier.objects.all()
-  return render_to_response('main/transfer/rights_list.html', locals())
+def transfer_rights_list(request, uuid):
+  return rights_list(request, uuid, 'transfer')
 
 def transfer_rights_edit(request, uuid, id=None):
   
