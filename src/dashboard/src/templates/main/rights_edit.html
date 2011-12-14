@@ -75,7 +75,12 @@
           {% else %}
             <button type="submit" class="btn primary">Add</button>
           {% endif %}
-          <a href="{% url main.views.ingest_rights_list uuid %}" class="btn">Cancel</a>
+
+          {% if section == 'ingest' %}
+            <a href="{% url main.views.ingest_rights_list uuid %}" class="btn">Cancel</a>
+          {% else %}
+             <a href="{% url main.views.transfer_rights_list uuid %}" class="btn">Cancel</a>
+          {% endif %}
         </div>
 
       </form>
