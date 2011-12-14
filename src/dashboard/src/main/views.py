@@ -270,7 +270,7 @@ def ingest_rights_list(request, uuid):
 
   grants = models.RightsStatementRightsGranted.objects.all()
 
-  return render_to_response('main/ingest/rights_list.html', locals())
+  return render_to_response('main/rights_list.html', locals())
 
 def ingest_rights_edit(request, uuid, id=None):
 
