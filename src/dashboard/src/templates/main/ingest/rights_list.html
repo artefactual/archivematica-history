@@ -17,6 +17,27 @@
 
       <h1>Rights<br /><small>{{ name }}</small></h1>
 
+<table>
+<tr>
+  <td><b>Act</b></td>
+  <td><b>Restriction</b></td>
+  <td><b>Start</b></td>
+  <td><b>End</b></td>
+  <td></td>
+</tr>
+{% for grant in grants %}
+<tr>
+  <td>{{ grant.act }}</td>
+  <td>{{ grant.restriction }}</td>
+  <td>{{ grant.startdate }}</td>
+  <td>{{ grant.enddate }}</td>
+  <td>
+    <a href='{% url main.views.ingest_rights_edit uuid grant.rightsstatement.id %}'>Edit</a>
+  </td>
+</tr>
+</p>
+{% endfor %}
+
     </div>
   </div>
 {% endblock %}
