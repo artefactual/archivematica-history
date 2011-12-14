@@ -66,8 +66,9 @@ if __name__ == '__main__':
 
     try:
         gm_client = gearman.GearmanClient(gm_opts)
-        job = gm_client.submit_job('uploadDIP', data, background=True, wait_until_complete=False)
-        check_request_status(job)
+        job_request = gm_client.submit_job('uploadDIP', data, background=False, wait_until_complete=True)
+        check_request_status(job_request)
     except:
         print >>sys.stderr, "Something wrong happend, see the traceback:"
         traceback.print_exc(file=sys.stderr)
+
