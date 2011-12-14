@@ -88,7 +88,11 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
   if id:
     viewRights = models.RightsStatement.objects.get(pk=id)
-    form = forms.RightsForm(instance=viewRights)
+    if request.method == 'POST':
+      form = forms.RightsForm(request.POST)
+      viewsRights = form.save()
+    else:
+      form = forms.RightsForm(instance=viewRights)
     # determine how many empty forms should be shown for children
     extra_grant_notes = max_notes - len(models.RightsStatementRightsGranted.objects.filter(rightsstatement=viewRights))
     extra_copyright_forms = max_notes - len(models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights))
@@ -120,7 +124,10 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
   # handle form creation/saving
   if request.method == 'POST':
-    createdRights = form.save()
+    if id:
+      createdRights = viewRights
+    else:
+      createdRights = form.save()
     grantFormset = GrantFormSet(request.POST, instance=createdRights)
     grantFormset.save()
     statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
