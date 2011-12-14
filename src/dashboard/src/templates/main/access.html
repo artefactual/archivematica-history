@@ -35,7 +35,7 @@
           <td><a href="{% url main.views.ingest_detail item.sipuuid %}">{{ item.get_title }}</a></th>
           <td><a href="{{ item.resource }}">{{ item.resource }}</a></th>
           <td>{{ item.createdtime }}</th>
-          <td>N/A</th>
+          <td>{{ item.status }}</th>
           <td><a class="btn danger small" href="{% url main.views.access_delete item.pk %}">Delete</a></td>
         </tr>
       {% endfor %}
