@@ -87,9 +87,20 @@ def uploadDIP(worker, job):
 
         # Rsync (data.rsync_target and data.rsync_command (optional))
         if data.rsync_target:
-
-            # Build command
-            command = ["rsync", "-avzP", directory, data.rsync_target]
+            """ Build command (rsync)
+             -a =
+                -r = recursive
+                -l = recreate symlinks on destination
+                -p = set same permissions
+                -t = transfer modification times
+                -g = set same group owner on destination
+                -o = set same user owner on destination (if possible, super-user)
+                --devices = transfer character and block device files (only super-user)
+                --specials = transfer special files like sockets and fifos
+             -z = compress
+             -P = --partial + --stats
+            """
+            command = ["rsync", "-rltz", "-P", directory, data.rsync_target]
             if data.rsync_command:
               # i.e.: rsync -e "ssh -i key"
               command.insert(1, "-e \"%s\"" % data.rsync_command)
