@@ -267,6 +267,9 @@ def ingest_microservices(request, uuid):
 def ingest_rights_list(request, uuid):
   jobs = models.Job.objects.filter(sipuuid=uuid)
   name = utils.get_directory_name(jobs[0])
+
+  grants = models.RightsStatementRightsGranted.objects.all()
+
   return render_to_response('main/ingest/rights_list.html', locals())
 
 def ingest_rights_edit(request, uuid, id=None):
