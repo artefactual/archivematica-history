@@ -231,6 +231,16 @@ CREATE TABLE RightsStatementRightsGrantedRestriction (
     rightsGrantedNote LONGTEXT 
 );
 
+-- 4.1.8 linkingAgentIdentifier (O, R)
+DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifier;
+CREATE TABLE RightsStatementLinkingAgentIdentifier (
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    linkingAgentIdentifierType LONGTEXT NOT NULL,
+    linkingAgentIdentifierValue LONGTEXT NOT NULL
+);
+
 /*
 Entity semantic units
 4.1
