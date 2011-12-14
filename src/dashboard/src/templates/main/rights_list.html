@@ -40,7 +40,7 @@
     {% if section == 'ingest' %}
       <a href='{% url main.views.ingest_rights_edit uuid grant.rightsstatement.id %}'>Edit</a>
     {% else %}
-      <a href='{% url main.views.transfer_rights_edit uuid grant.rightsstatement.id %}'>Edit</a>
+      <a href='{% url main.views.transfer_rights_edit uuid grant.rightsstatement.id %}' class='btn'>Edit</a>
     {% endif %}
   </td>
 </tr>
