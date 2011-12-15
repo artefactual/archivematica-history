@@ -50,6 +50,7 @@ def updateSizeAndChecksum(fileUUID, filePath, date, eventIdentifierUUID):
 
 
 def addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="ingestion", eventDetail="", use="original"):
+    print filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType, eventDetail, use
     insertIntoFiles(fileUUID, filePathRelativeToSIP, date, transferUUID=transferUUID, use=use)
     insertIntoEvents(fileUUID=fileUUID, \
                    eventIdentifierUUID=taskUUID, \

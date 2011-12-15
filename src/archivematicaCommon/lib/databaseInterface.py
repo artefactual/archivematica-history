@@ -33,7 +33,8 @@ global separator
 separator = "', '"
 
 #DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings")
-DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings", charset="utf8")
+DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings", charset="utf8", use_unicode = True)
+
 
 def getSeparator():
     global separator
@@ -63,8 +64,11 @@ database=MySQLdb.connect(**DB_CONNECTION_OPTS)
 sqlLock.release()
 
 def runSQL(sql):
+    #print type(sql), sql
+    #if isinstance(sql, str):
+    #    sql = sql.decode('utf-8')
+    #print type(sql), sql
     global database
-    print sql
     #found that even though it says it's compiled thread safe, running it multi-threaded crashes it.
     sqlLock.acquire()
     db = database

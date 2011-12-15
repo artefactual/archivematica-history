@@ -40,6 +40,7 @@ from socket import gethostname
 import gearman
 import threading
 import cPickle
+import traceback
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
 import databaseInterface
@@ -77,9 +78,15 @@ def loadSupportedModules(file):
 def executeCommand(gearman_worker, gearman_job):
     try:
         execute = gearman_job.task
+        print "executing:", execute, "{", gearman_job.unique, "}"
         data = cPickle.loads(gearman_job.data)
         utcDate = databaseInterface.getUTCDate()
-        arguments = data["arguments"].encode("utf-8")
+        arguments = data["arguments"]#.encode("utf-8")
+        if isinstance(arguments, unicode):
+            arguments = arguments.encode("utf-8")
+        #if isinstance(arguments, str):
+        #    arguments = unicode(arguments)
+            
         sInput = ""
         clientID = gearman_worker.worker_client_id
         
@@ -115,11 +122,13 @@ def executeCommand(gearman_worker, gearman_job):
         return cPickle.dumps({"exitCode" : exitCode, "stdOut": stdOut, "stdError": stdError})
     #catch OS errors
     except OSError, ose:
+        traceback.print_exc(file=sys.stdout)
         print >>sys.stderr, "Execution failed:", ose
         output = ["Config Error!", ose.__str__() ]
         exitCode = 1
         return cPickle.dumps({"exitCode" : exitCode, "stdOut": output[0], "stdError": output[1]})
     except:
+        traceback.print_exc(file=sys.stdout)
         print sys.exc_info().__str__()
         print "Unexpected error:", sys.exc_info()[0]
         output = ["", sys.exc_info().__str__()]

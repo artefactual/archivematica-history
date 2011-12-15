@@ -32,7 +32,7 @@ CREATE TABLE Accesses (
     exitCode TINYINT UNSIGNED,
     createdTime TIMESTAMP(8) DEFAULT NOW(),
     updatedTime TIMESTAMP(8)
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Agents;
 CREATE TABLE Agents (
@@ -41,7 +41,7 @@ CREATE TABLE Agents (
     agentIdentifierValue    LONGTEXT,
     agentName               LONGTEXT,
     agentType               LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 set @archivematicaAgent = 1;
 set @organizationAgent = 2;
@@ -55,7 +55,7 @@ DROP TABLE IF EXISTS MetadataAppliesToTypes;
 CREATE TABLE MetadataAppliesToTypes (
     pk  INT PRIMARY KEY,
     description varchar(50)
-);
+) DEFAULT CHARSET=utf8;
 
 set @SIPMetadataAppliesToType = 1;
 set @TransferMetadataAppliesToType = 2;
@@ -88,7 +88,7 @@ CREATE TABLE Dublincore (
     language        LONGTEXT,
     coverage        LONGTEXT,
     rights          LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 
 -- rightsStatement (O, R)
@@ -104,7 +104,7 @@ CREATE TABLE RightsStatement (
     fkAgent int(10) UNSIGNED DEFAULT 0 NOT NULL,
     rightsNotes LONGTEXT NOT NULL,
     rightsBasis LONGTEXT NOT NULL
-);
+) DEFAULT CHARSET=utf8;
 ALTER TABLE RightsStatement ADD INDEX fkAgent (fkAgent);
 
 DROP TABLE IF EXISTS RightsStatementCopyright;
@@ -116,7 +116,7 @@ CREATE TABLE RightsStatementCopyright(
   copyrightStatusDeterminationDate LONGTEXT NOT NULL,
   PRIMARY KEY (pk),
   KEY fkRightsStatement (fkRightsStatement)
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS RightsStatementLicense;
 CREATE TABLE RightsStatementLicense(
@@ -126,7 +126,7 @@ CREATE TABLE RightsStatementLicense(
   licenseTerms longtext,
   PRIMARY KEY (pk),
   KEY fkRightsStatement (fkRightsStatement)
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS ArchivematicaRightsStatement;
 CREATE TABLE ArchivematicaRightsStatement (
@@ -136,7 +136,7 @@ CREATE TABLE ArchivematicaRightsStatement (
     metadataAppliesToidentifier      VARCHAR(50),
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk)
-);
+) DEFAULT CHARSET=utf8;
 
 -- rightsExtension (O, R) ??? --
 
@@ -147,7 +147,7 @@ CREATE TABLE RightsStatementCopyrightNote (
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
     copyrightNote LONGTEXT NOT NULL
-);
+) DEFAULT CHARSET=utf8;
 
 -- 4.1.4.3 licenseNote (O, R)
 DROP TABLE IF EXISTS RightsStatementLicenseNote;
@@ -156,7 +156,7 @@ CREATE TABLE RightsStatementLicenseNote (
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
     licenseNote LONGTEXT NOT NULL
-);
+) DEFAULT CHARSET=utf8;
 
 
 -- 4.1.5 statuteInformation (O, R)
@@ -169,7 +169,7 @@ CREATE TABLE RightsStatementStatuteInformation (
     statuteCitation LONGTEXT NOT NULL,
     statuteInformationDeterminationDate LONGTEXT
 
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS RightsStatementStatuteInformationNote;
 CREATE TABLE RightsStatementStatuteInformationNote (
@@ -178,7 +178,7 @@ CREATE TABLE RightsStatementStatuteInformationNote (
   statuteNote longtext NOT NULL,
   PRIMARY KEY (pk),
   KEY fkRightsStatement (fkRightsStatement)
-);
+) DEFAULT CHARSET=utf8;
 
 /*
 USING - ArchivematicaRightsStatement TABLE
@@ -190,7 +190,7 @@ CREATE TABLE RightsStatementLinkingObjectIdentifier (
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
     linkingObjectIdentifierType LONGTEXT NOT NULL,
     linkingObjectIdentifierValue LONGTEXT NOT NULL
-);
+) DEFAULT CHARSET=utf8;
 
 -- 4.1.7.? LinkingObjectRole (O, R)
 DROP TABLE IF EXISTS RightsStatementLinkingObjectIdentifierLinkingObjectRole;
@@ -199,7 +199,7 @@ CREATE TABLE RightsStatementLinkingObjectIdentifierLinkingObjectRole (
     fkRightsStatementLinkingObjectIdentifier INT UNSIGNED,
     Foreign Key (fkRightsStatementLinkingObjectIdentifier) references RightsStatementLinkingObjectIdentifier(pk),
     LinkingObjectRole LONGTEXT NOT NULL
-);
+) DEFAULT CHARSET=utf8;
 */
 
 -- 4.1.6 rightsGranted (O, R)
@@ -212,7 +212,7 @@ CREATE TABLE RightsStatementRightsGranted (
     startDate LONGTEXT NOT NULL,
     endDate LONGTEXT,
     restriction LONGTEXT NOT NULL
-);
+) DEFAULT CHARSET=utf8;
 
 -- 4.1.6.2 restriction (O, R)
 DROP TABLE IF EXISTS RightsStatementRightsGrantedRestriction;
@@ -221,7 +221,7 @@ CREATE TABLE RightsStatementRightsGrantedRestriction (
     fkRightsStatementRightsGranted INT UNSIGNED,
     Foreign Key (fkRightsStatementRightsGranted) references RightsStatementRightsGranted(pk),
     restriction LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 -- 4.1.6.4 rightsGrantedNote (O, R)
 DROP TABLE IF EXISTS RightsStatementRightsGrantedRestriction;
 CREATE TABLE RightsStatementRightsGrantedRestriction ( 
@@ -229,7 +229,7 @@ CREATE TABLE RightsStatementRightsGrantedRestriction (
     fkRightsStatementRightsGranted INT UNSIGNED,
     Foreign Key (fkRightsStatementRightsGranted) references RightsStatementRightsGranted(pk),
     rightsGrantedNote LONGTEXT 
-);
+) DEFAULT CHARSET=utf8;
 
 -- 4.1.8 linkingAgentIdentifier (O, R)
 DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifier;
@@ -239,7 +239,7 @@ CREATE TABLE RightsStatementLinkingAgentIdentifier (
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
     linkingAgentIdentifierType LONGTEXT NOT NULL,
     linkingAgentIdentifierValue LONGTEXT NOT NULL
-);
+) DEFAULT CHARSET=utf8;
 
 /*
 Entity semantic units
@@ -356,7 +356,7 @@ CREATE TABLE Transfers (
     typeOfTransfer      LONGTEXT,
     description         LONGTEXT,
     notes               LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Tasks;
 CREATE TABLE Tasks (
@@ -373,7 +373,7 @@ CREATE TABLE Tasks (
     stdOut          LONGTEXT,
     stdError        LONGTEXT,
     exitCode        BIGINT
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Jobs;
 CREATE TABLE Jobs (
@@ -387,7 +387,7 @@ CREATE TABLE Jobs (
     currentStep     VARCHAR(50),
     microserviceGroup VARCHAR(50),
     hidden          BOOLEAN NOT NULL DEFAULT 0
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS jobStepCompleted;
 CREATE TABLE jobStepCompleted (
@@ -395,7 +395,7 @@ CREATE TABLE jobStepCompleted (
     jobUUID         VARCHAR(50),
     completedTime   TIMESTAMP(8) DEFAULT NOW(),
     step            VARCHAR(50)
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS SIPs;
 CREATE TABLE SIPs (
@@ -404,7 +404,7 @@ CREATE TABLE SIPs (
     currentPath     LONGTEXT,
     magicLink       BIGINT,
     magicLinkExitMessage VARCHAR(50) DEFAULT 'Completed successfully'
-);
+) DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS Files;
@@ -421,7 +421,7 @@ CREATE TABLE Files(
     fileSize            BIGINT UNSIGNED, 
     checksum            VARCHAR(100),
     fileGrpUse                VARCHAR(50) DEFAULT 'Original'
-);
+) DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS FilesFits;
@@ -429,7 +429,7 @@ CREATE TABLE FilesFits(
     fileUUID   VARCHAR(50) PRIMARY KEY,
     Foreign Key (fileUUID) references Files(fileUUID),
     FITSxml    LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS FilesIDs;
 CREATE TABLE FilesIDs(
@@ -440,7 +440,7 @@ CREATE TABLE FilesIDs(
     formatVersion   LONGTEXT,
     formatRegistryName  LONGTEXT,
     formatRegistryKey   LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Events;
 CREATE TABLE Events(
@@ -455,7 +455,7 @@ CREATE TABLE Events(
     eventOutcomeDetailNote  LONGTEXT,
     linkingAgentIdentifier  INT,
     Foreign Key (linkingAgentIdentifier) references linkingAgentIdentifiers(pk)
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Derivations;
 CREATE TABLE Derivations (
@@ -465,7 +465,7 @@ CREATE TABLE Derivations (
     derivedFileUUID  VARCHAR(50),
     Foreign Key (derivedFileUUID) references Files(fileUUID),
     relatedEventUUID VARCHAR(50)
-);
+) DEFAULT CHARSET=utf8;
 
 
 
@@ -474,7 +474,7 @@ CREATE TABLE Sounds(
     pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     description        LONGTEXT,
     fileLocation       LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 set @errorSound = 1;
 set @alertSound = 2;
@@ -501,7 +501,7 @@ CREATE TABLE MicroServiceChainLinks (
     microserviceGroup VARCHAR(50),
     reloadFileList      BOOLEAN DEFAULT TRUE,
     defaultExitMessage  VARCHAR(50) DEFAULT 'Failed'
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
 CREATE TABLE MicroServiceChainLinksExitCodes (
@@ -514,7 +514,7 @@ CREATE TABLE MicroServiceChainLinksExitCodes (
     playSound   INT,
     Foreign Key (playSound) references Sounds(pk),
     exitMessage  VARCHAR(50) DEFAULT 'Completed successfully'
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS MicroServiceChains;
 CREATE TABLE MicroServiceChains (
@@ -522,13 +522,13 @@ CREATE TABLE MicroServiceChains (
     startingLink    INT UNSIGNED,
     Foreign Key (startingLink) references MicroServiceChainLinks(pk),           
     description     LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS TaskTypes;
 CREATE TABLE TaskTypes (
     pk                 INT UNSIGNED,
     description        LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 INSERT INTO TaskTypes
     (pk, description) 
@@ -545,7 +545,7 @@ CREATE TABLE TasksConfigs (
     Foreign Key (taskType) references TaskTypes(pk),
     taskTypePKReference INT UNSIGNED,
     description         LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS StandardTasksConfigs;
 CREATE TABLE StandardTasksConfigs (
@@ -558,7 +558,7 @@ CREATE TABLE StandardTasksConfigs (
     standardErrorFile   VARCHAR(250),
     execute             VARCHAR(50),
     arguments           LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS MicroServiceChainChoice;
 CREATE TABLE MicroServiceChainChoice (
@@ -567,13 +567,13 @@ CREATE TABLE MicroServiceChainChoice (
     Foreign Key (choiceAvailableAtLink) references MicroServiceChainLinks(pk),
     chainAvailable          INT UNSIGNED,
     Foreign Key (chainAvailable) references MicroServiceChains(pk)
-);
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS WatchedDirectoriesExpectedTypes;
 CREATE TABLE WatchedDirectoriesExpectedTypes (
     pk                      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     description             LONGTEXT
-);
+) DEFAULT CHARSET=utf8;
 
 SET @expectedTypeSIP = 1;
 SET @expectedTypeDIP = 2;
@@ -592,7 +592,7 @@ CREATE TABLE WatchedDirectories (
     onlyActOnDirectories    BOOLEAN DEFAULT TRUE,
     expectedType            INT DEFAULT 1,
     Foreign Key (expectedType) references WatchedDirectoriesExpectedTypes(pk)
-);
+) DEFAULT CHARSET=utf8;
 
 
 -- Move To Failed Directory --
@@ -1035,7 +1035,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @ExtractpackagesinsubmissiondocumentationTask, 'Extract packages in submission documentation');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -1437,7 +1437,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @ExtractpackagesinsubmissiondocumentationTask, 'Extract packages in submission documentation');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -2204,7 +2204,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @ExtractpackagesTask, 'Extract packages');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -2885,7 +2885,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @ExtractpackagesTask, 'Extract packages');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
