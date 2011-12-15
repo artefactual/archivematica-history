@@ -79,7 +79,7 @@ def executeCommand(gearman_worker, gearman_job):
         execute = gearman_job.task
         data = cPickle.loads(gearman_job.data)
         utcDate = databaseInterface.getUTCDate()
-        arguments = data["arguments"]
+        arguments = data["arguments"].encode("utf-8")
         sInput = ""
         clientID = gearman_worker.worker_client_id
         
@@ -136,7 +136,17 @@ def startThread(threadNumber):
     gm_worker.work()
     
 
+def flushOutputs():
+    while True:
+        sys.stdout.flush()
+        sys.stderr.flush()
+        time.sleep(5)
+
 def startThreads(t=1):
+    if True:
+        t2 = threading.Thread(target=flushOutputs)
+        t2.daemon = True
+        t2.start() 
     if t == 0:
         from externals.detectCores import detectCPUs
         t = detectCPUs()

@@ -32,7 +32,8 @@ from datetime import datetime
 global separator
 separator = "', '"
 
-DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings") # charset="utf8"
+#DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings")
+DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings", charset="utf8")
 
 def getSeparator():
     global separator
