@@ -30,7 +30,7 @@ from executeOrRunSubProcess import executeOrRun
 from externals.checksummingTools import sha_for_file
 from databaseFunctions import insertIntoEvents
 import MySQLdb
-
+from archivematicaFunctions import unicodeToStr
 
 def updateSizeAndChecksum(fileUUID, filePath, date, eventIdentifierUUID):   
     fileSize = os.path.getsize(filePath).__str__()
@@ -167,7 +167,9 @@ def renameAsSudo(source, destination):
 #import lxml.etree as etree
 def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIdentifierUUID = uuid.uuid4().__str__(), fileUUID="None", sipUUID = None, transferUUID=None, eventOutcomeDetailNote = ""):
     """If the file uuid is not provided, will use the sip uuid and old path to find the file uuid"""
-    
+    src = unicodeToStr(src)
+    dst = unicodeToStr(dst)
+    fileUUID = unicodeToStr(fileUUID)
     if not fileUUID or fileUUID == "None":
         sql = "Need to define transferUUID or sipUUID"
         if sipUUID:
@@ -178,14 +180,14 @@ def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIde
         row = c.fetchone()
         while row != None:
             print row
-            fileUUID = row[0] 
+            fileUUID = unicodeToStr(row[0])
+            print type(fileUUID), fileUUID 
             row = c.fetchone()
         sqlLock.release()
     
     if eventOutcomeDetailNote == "":
-        eventOutcomeDetailNote = "Original name=\"" + src + "\"; cleaned up name=\"" + dst + "\""
+        eventOutcomeDetailNote = "Original name=\"%s\"; cleaned up name=\"%s\"" %(src, dst)
         #eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
-    
     #CREATE THE EVENT
     if not fileUUID:
         print >>sys.stderr, "Unable to find file uuid for: ", src, " -> ", dst
@@ -193,6 +195,6 @@ def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIde
     insertIntoEvents(fileUUID=fileUUID, eventIdentifierUUID=eventIdentifierUUID, eventType=eventType, eventDateTime=eventDateTime, eventDetail=eventDetail, eventOutcome="", eventOutcomeDetailNote=eventOutcomeDetailNote)
         
     #UPDATE THE CURRENT FILE PATH
-    sql =  """UPDATE Files SET currentLocation='""" + dst + """' WHERE fileUUID='""" + fileUUID + """';"""
+    sql =  """UPDATE Files SET currentLocation='%s' WHERE fileUUID='%s';""" % (dst, fileUUID)
     databaseInterface.runSQL(sql)
         

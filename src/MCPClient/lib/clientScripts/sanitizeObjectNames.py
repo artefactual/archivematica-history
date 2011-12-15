@@ -31,7 +31,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import insertIntoEvents
 from fileOperations import updateFileLocation
- 
+from archivematicaFunctions import unicodeToStr
        
 if __name__ == '__main__':
     objectsDirectory = sys.argv[1]
@@ -117,7 +117,7 @@ if __name__ == '__main__':
                     print row
                     fileUUID = row[0] 
                     oldPath = row[1]
-                    newPath = oldPath.replace(oldfile, newfile, 1)
+                    newPath = unicodeToStr(oldPath).replace(oldfile, newfile, 1)
                     directoryContents.append((fileUUID, oldPath, newPath))
                     row = c.fetchone()
                 sqlLock.release()

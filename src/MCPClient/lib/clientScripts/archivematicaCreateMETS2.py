@@ -1,4 +1,5 @@
 #!/usr/bin/python -OO
+# -*- coding: utf-8 -*-
 #
 # This file is part of Archivematica.
 #
@@ -30,6 +31,8 @@ import MySQLdb
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from archivematicaFunctions import escape
+from archivematicaFunctions import unicodeToStr
+from archivematicaFunctions import strToUnicode
 
 from optparse import OptionParser
 parser = OptionParser()
@@ -92,9 +95,9 @@ globalDigiprovMDCounter = 0
 def newChild(parent, tag, text=None, tailText=None, sets=[]):
     child = etree.Element(tag)
     parent.append(child)
-    child.text = text
+    child.text = strToUnicode(text)
     if tailText:
-        child.tail = tailText
+        child.tail = strToUnicode(tailText)
     for set in sets:
         key, value = set
         child.set(key, value)
@@ -132,13 +135,12 @@ def getDublinCore(type_, id):
         i = 0
         for term in key:
             if row[i] != None:
-                txt = escape(row[i].__str__())
+                txt = row[i]
             else:
                 txt = ""
             if term in dctermsElements:
                 etree.SubElement(ret, dctermsBNS + term).text = txt
             else:
-                print term, ": ", txt
                 newChild(ret, term, text=txt)
             i+=1
             
@@ -568,7 +570,8 @@ if __name__ == '__main__':
         time.sleep(10)
     if False: #True: #insert sample dc for testing
         sql = """ INSERT INTO Dublincore (metadataAppliesToType, metadataAppliesToidentifier, title, creator, subject, description, publisher, contributor, date, type, format, identifier, source, isPartOf, language, coverage, rights)
-            VALUES (1, '%s', "title3", "creator4", "subject5", "description6", "publisher7", "contributor8", "date9", "type0", "format11", "identifier12", "source13", "isPartOf14", "language15", "coverage16", "rights17"); """ % (fileGroupIdentifier)
+            VALUES (1, '%s', "Je l'apprécititle3", "Je l'apprécicreator4", "Je l'apprécisubject5", "Je l'apprécidescription6", "Je l'apprécipublisher7", "Je l'apprécicontributor8", "Je l'apprécidate9", "Je l'apprécitype0", "Je l'appréciformat11", "Je l'appréciidentifier12", "Je l'apprécisource13", "Je l'appréciisPartOf14", "Je l'apprécilanguage15", "Je l'apprécicoverage16", "Je l'apprécirights17"); """ % (fileGroupIdentifier)
+            #VALUES (1, '%s', "title3", "creator4", "subject5", "description6", "publisher7", "contributor8", "date9", "type0", "format11", "identifier12", "source13", "isPartOf14", "language15", "coverage16", "rights17"); """ % (fileGroupIdentifier)
         databaseInterface.runSQL(sql)
     
     if not baseDirectoryPath.endswith('/'):
