@@ -20,11 +20,11 @@
       {% if request.method == 'POST' %}
         {% if form.is_valid %}
           <div class="alert-message success">
-            <p><strong>Saved!</p>
+            <p><strong>Saved!</strong></p>
           </div>
         {% else %}
           <div class="alert-message error">
-            <p>Something wrong happened.</p>
+            <p>An error has occurred.</p>
           </div>
         {% endif %}
       {% endif %}
