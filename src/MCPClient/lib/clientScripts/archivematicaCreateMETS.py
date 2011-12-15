@@ -52,6 +52,7 @@ parser.add_option("-S",  "--sipUUID", action="store", dest="sipUUID", default=""
 parser.add_option("-x",  "--xmlFile", action="store", dest="xmlFile", default="")
 parser.add_option("-a",  "--amdSec", action="store_true", dest="amdSec", default=False)
 (opts, args) = parser.parse_args()
+print opts
 
 
 SIPUUID = opts.sipUUID
@@ -99,7 +100,9 @@ def createFileSec(path, parentBranch, structMapParent):
     
     if doneFirstRun:
         for doDirectories in [False, True]:
-            for item in os.listdir(path):                 
+            print "path", type(path), path
+            for item in os.listdir(path): 
+                print "item", type(item), item                
                 itempath = os.path.join(path, item)
                 if os.path.isdir(itempath):
                     if not doDirectories:
@@ -117,6 +120,8 @@ def createFileSec(path, parentBranch, structMapParent):
                     myuuid=""
                     #pathSTR = itempath.replace(basePath + "objects", "objects", 1)
                     pathSTR = itempath.replace(basePath, basePathString, 1)
+                    
+                    print "pathSTR", type(pathSTR), pathSTR
                     
                     sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupIdentifier, SIPUUID, MySQLdb.escape_string(pathSTR))
                     c, sqlLock = databaseInterface.querySQL(sql) 

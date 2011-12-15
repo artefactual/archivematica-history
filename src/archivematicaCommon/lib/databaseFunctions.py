@@ -164,3 +164,8 @@ def createSIP(path, UUID=None):
         VALUES ('""" + UUID + databaseInterface.separator + path + "');"
     databaseInterface.runSQL(sql) 
     return UUID
+
+def deUnicode(str):
+    if str == None:
+        return None
+    return unicode(str).encode('utf-8')

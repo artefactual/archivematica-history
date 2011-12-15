@@ -170,8 +170,8 @@ class Command:
         #If unsuccesful
         if self.exitCode:
             print >>sys.stderr, "Failed:"
-            print >>sys.stderr, self.__str__()
-            print >>sys.stderr, self.stdOut
+            #print >>sys.stderr, self.__str__()
+            print self.stdOut
             print >>sys.stderr, self.stdError
             if False and self.failedCount < 1: #retry count
                 self.failedCount= self.failedCount + 1

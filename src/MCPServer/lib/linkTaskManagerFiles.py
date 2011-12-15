@@ -34,8 +34,10 @@ import sys
 import archivematicaMCP
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseFunctions
+from databaseFunctions import deUnicode
 
 import os
+
 
 class linkTaskManagerFiles:
     def __init__(self, jobChainLink, pk, unit):
@@ -50,19 +52,26 @@ class linkTaskManagerFiles:
         c, sqlLock = databaseInterface.querySQL(sql) 
         row = c.fetchone()
         while row != None:
-            print row
-            #pk = row[0] 
-            filterFileEnd = row[1]
-            filterFileStart = row[2]
-            filterSubDir = row[3]
+            filterFileEnd = deUnicode(row[1])
+            filterFileStart = deUnicode(row[2])
+            filterSubDir = deUnicode(row[3])
             requiresOutputLock = row[4]
-            self.standardOutputFile = row[5]
-            self.standardErrorFile = row[6]
-            self.execute = row[7]
-            self.arguments = row[8]
+            self.standardOutputFile = deUnicode(row[5])
+            self.standardErrorFile = deUnicode(row[6])
+            self.execute = deUnicode(row[7])
+            self.arguments = deUnicode(row[8])
             row = c.fetchone()
         sqlLock.release()
-        
+        print "ALKJDLJSS"
+        print filterFileEnd, type(filterFileEnd)
+        print filterFileStart, type(filterFileStart)
+        print filterSubDir, type(filterSubDir)
+        print requiresOutputLock, type(requiresOutputLock)
+        print self.standardOutputFile, type(self.standardOutputFile)
+        print self.standardErrorFile, type(self.standardErrorFile)
+        print self.execute, type(self.execute)
+        print self.arguments, type(self.arguments)
+        print "/ALKJDLJSS"
         if requiresOutputLock:
             outputLock = threading.Lock()
         else:
@@ -80,6 +89,11 @@ class linkTaskManagerFiles:
                 if not os.path.basename(file).startswith(filterFileStart):
                     continue
             if filterSubDir:
+                print "file", file, type(file)
+                #print unit.pathString, type(unit.pathString)
+                #filterSubDir = filterSubDir.encode('utf-8')
+                #print filterSubDir, type(filterSubDir)
+                
                 if not file.startswith(unit.pathString + filterSubDir):
                     continue
             
@@ -93,6 +107,12 @@ class linkTaskManagerFiles:
             print commandReplacementDic
             for key in commandReplacementDic.iterkeys():
                 value = commandReplacementDic[key].replace("\"", ("\\\""))
+                print "key", type(key), key
+                print "value", type(value), value
+                if isinstance(value, unicode):
+                    value = value.encode("utf-8")
+                #key = key.encode("utf-8")
+                #value = value.encode("utf-8")
                 if execute:
                     execute = execute.replace(key, value)
                 if arguments:
@@ -105,6 +125,13 @@ class linkTaskManagerFiles:
             
             for key in SIPReplacementDic.iterkeys():
                 value = SIPReplacementDic[key].replace("\"", ("\\\""))
+                print "key", type(key), key
+                print "value", type(value), value
+                if isinstance(value, unicode):
+                    value = value.encode("utf-8")
+                #key = key.encode("utf-8")
+                #value = value.encode("utf-8")
+                
                 if execute:
                     execute = execute.replace(key, value)
                 if arguments:

@@ -42,6 +42,10 @@ if __name__ == '__main__':
     
     
     (opts, args) = parser.parse_args()
+    opts2 = vars(opts)
+#    for key, value in opts2.iteritems():
+#        print type(key), key, type(value), value
+#        exec 'opts.' + key + ' = value.decode("utf-8")'
     fileUUID = opts.fileUUID
     if not fileUUID or fileUUID == "None":
         fileUUID = uuid.uuid4().__str__()     

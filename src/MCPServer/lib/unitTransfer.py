@@ -29,6 +29,7 @@ import archivematicaMCP
 import os
 import time
 import sys
+import traceback
 import pyinotify
 import threading
 import shutil
@@ -108,31 +109,46 @@ class unitTransfer(unit):
         #os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])
         currentPath = self.currentPath.replace("%sharedPath%", \
                                                archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1) + "/"
-        print "currentPath: ", currentPath
-        for directory, subDirectories, files in os.walk(currentPath):
-            directory = directory.replace( currentPath, "%transferDirectory%", 1)
-            for file in files:
-                filePath = os.path.join(directory, file)
-                #print filePath
-                self.fileList[filePath] = unitFile(filePath)
-        
-        sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND transferUUID =  '""" + self.UUID + "'"
-        c, sqlLock = databaseInterface.querySQL(sql) 
-        row = c.fetchone()
-        while row != None:
-            #print row
-            UUID = row[0]
-            currentPath = row[1]
-            fileGrpUse = row[2]
-            if currentPath in self.fileList:
-                self.fileList[currentPath].UUID = UUID
-                self.fileList[currentPath].fileGrpUse = fileGrpUse
-            else:
-                print >>sys.stderr, self.fileList
-                eventDetail = "Transfer {" + self.UUID + "} has file {" + UUID + "}\"" + currentPath + "\" in the database, but file doesn't exist in the file system."
-                print >>sys.stderr, "!!!", eventDetail, "!!!"
+        print "currentPath: ", currentPath, type(currentPath)
+        try:
+            print currentPath, type(currentPath)
+            for directory, subDirectories, files in os.walk(currentPath.encode("utf-8")):
+                directory = directory.replace( currentPath.encode("utf-8"), "%transferDirectory%", 1)
+                print directory, type(directory)
+                #directory = directory.encode("utf-8")
+                for file in files:
+                    print file, type(file)
+                    #file = file.encode("utf-8")
+                    filePath = os.path.join(directory, file)
+                    self.fileList[filePath] = unitFile(filePath)
+
+            print "made it this far"
+            sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND transferUUID =  '""" + self.UUID + "'"
+            print sql
+            c, sqlLock = databaseInterface.querySQL(sql) 
             row = c.fetchone()
-        sqlLock.release()
+            print self.fileList
+            while row != None:
+                #print row
+                UUID = row[0]
+                currentPath = row[1].encode("utf-8")
+                fileGrpUse = row[2]
+                print currentPath in self.fileList, row
+                if currentPath in self.fileList:
+                    self.fileList[currentPath].UUID = UUID
+                    self.fileList[currentPath].fileGrpUse = fileGrpUse
+                else:
+                    print >>sys.stderr, self.fileList
+                    eventDetail = "Transfer {" + self.UUID + "} has file {" + UUID + "}\"" + currentPath + "\" in the database, but file doesn't exist in the file system."
+                    print >>sys.stderr, "!!!", eventDetail, "!!!"
+                row = c.fetchone()
+            sqlLock.release()
+        
+        except Exception as inst:
+            traceback.print_exc(file=sys.stdout)
+            print  type(inst)
+            print  inst.args
+            exit(1)
         
     def updateLocation(self, newLocation):
         self.currentPath = newLocation
