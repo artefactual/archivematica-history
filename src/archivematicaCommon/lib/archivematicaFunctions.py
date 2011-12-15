@@ -26,6 +26,17 @@ import lxml.etree as etree
 import os
 import sys
 
+def unicodeToStr(string):
+    if isinstance(string, unicode):
+        string = string.encode("utf-8")
+    return string
+
+def strToUnicode(string):
+    if isinstance(string, str):
+        string = string.decode("utf-8")
+    return string
+
+
 def getTagged(root, tag):
     ret = []
     for element in root:
@@ -116,6 +127,6 @@ def escapeForCommand2(str):
     return ret
 
 def escape(string):
-    string = string.decode('utf-8')
+    #string = string.decode('utf-8')
     return string
 

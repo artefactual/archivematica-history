@@ -62,16 +62,6 @@ class linkTaskManagerFiles:
             self.arguments = deUnicode(row[8])
             row = c.fetchone()
         sqlLock.release()
-        print "ALKJDLJSS"
-        print filterFileEnd, type(filterFileEnd)
-        print filterFileStart, type(filterFileStart)
-        print filterSubDir, type(filterSubDir)
-        print requiresOutputLock, type(requiresOutputLock)
-        print self.standardOutputFile, type(self.standardOutputFile)
-        print self.standardErrorFile, type(self.standardErrorFile)
-        print self.execute, type(self.execute)
-        print self.arguments, type(self.arguments)
-        print "/ALKJDLJSS"
         if requiresOutputLock:
             outputLock = threading.Lock()
         else:
@@ -81,7 +71,7 @@ class linkTaskManagerFiles:
 
         self.tasksLock.acquire()            
         for file, fileUnit in unit.fileList.items():
-            print "file:", file, fileUnit
+            #print "file:", file, fileUnit
             if filterFileEnd:
                 if not file.endswith(filterFileEnd):
                     continue

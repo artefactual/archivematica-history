@@ -65,8 +65,8 @@ sqlLock.release()
 
 def runSQL(sql):
     #print type(sql), sql
-    #if isinstance(sql, str):
-    #    sql = sql.decode('utf-8')
+    if isinstance(sql, unicode):
+        sql = sql.encode('utf-8')
     #print type(sql), sql
     global database
     #found that even though it says it's compiled thread safe, running it multi-threaded crashes it.
@@ -93,6 +93,8 @@ def runSQL(sql):
 
 def querySQL(sql):
     global database
+    if isinstance(sql, unicode):
+        sql = sql.encode('utf-8')
     sqlLock.acquire()
     print sql
     try:
@@ -116,6 +118,8 @@ def querySQL(sql):
 
 def queryAllSQL(sql):
     global database
+    if isinstance(sql, unicode):
+        sql = sql.encode('utf-8')
     sqlLock.acquire()
     #print sql
     rows = []
