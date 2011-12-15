@@ -46,11 +46,14 @@ class taskStandard():
             UUID = uuid.uuid4().__str__()
         self.UUID = UUID
         self.linkTaskManager = linkTaskManager
-        self.execute = execute
+        self.execute = execute.encode( "utf-8" )
+        #print >>sys.stderr, "EXECUTE: ", self.execute, type(self.execute), self.UUID, type(self.UUID)
         self.arguments = arguments
         self.standardOutputFile = standardOutputFile
         self.standardErrorFile = standardErrorFile
         self.outputLock = outputLock
+        
+        
         print "init done"
         
     def performTask(self):
