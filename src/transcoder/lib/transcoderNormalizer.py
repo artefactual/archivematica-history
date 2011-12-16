@@ -103,9 +103,9 @@ def onceNormalized(command):
                eventIdentifierUUID=derivationEventUUID, \
                eventType="normalization", \
                eventDateTime=opts.date, \
-               eventDetail="", \
+               eventDetail=command.eventDetailCommand.stdOut, \
                eventOutcome="", \
-               eventOutcomeDetailNote=command.eventDetailCommand.stdOut)
+               eventOutcomeDetailNote=filePathRelativeToSIP)
             
             updateSizeAndChecksum(outputFileUUID, ef, opts.date, uuid.uuid4().__str__())
             
