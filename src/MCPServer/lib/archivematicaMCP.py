@@ -42,7 +42,6 @@ from unitTransfer import unitTransfer
 from pyinotify import ThreadedNotifier
 import transferD
 import xmlRPCServer
-import uploadDIPServer
 
 import signal
 import os
