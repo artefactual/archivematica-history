@@ -288,11 +288,6 @@ if __name__ == '__main__':
     watchDirectories()
     transferD.main()
 
-    # Start uploadDIP Gearman worker (threading to avoid blocking)
-    t = threading.Thread(target=uploadDIPServer.start)
-    t.setDaemon(True)
-    t.start()
-
     # Start "XMLRPC" Gearman worker
     # This is blocking the main thread with the worker loop
     xmlRPCServer.startXMLRPCServer()
