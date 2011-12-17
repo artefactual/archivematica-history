@@ -109,7 +109,7 @@ if __name__ == '__main__':
                 newfile = newfile.replace(objectsDirectory, relativeReplacement, 1) + "/"
                 directoryContents = []
                 
-                sql = "SELECT fileUUID, currentLocation FROM Files WHERE Files.removedTime = 0 AND Files.currentLocation LIKE '" + MySQLdb.escape_string(oldfile).replace("%","\%") + "%' AND " + groupSQL + " = '" + groupID + "';"
+                sql = "SELECT fileUUID, currentLocation FROM Files WHERE Files.removedTime = 0 AND Files.currentLocation LIKE '" + MySQLdb.escape_string(oldfile.replace("\\", "\\\\")).replace("%","\%") + "%' AND " + groupSQL + " = '" + groupID + "';"
                  
                 c, sqlLock = databaseInterface.querySQL(sql) 
                 row = c.fetchone()
