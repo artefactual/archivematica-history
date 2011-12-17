@@ -23,118 +23,148 @@
 
 cd `dirname $0`
 
-part="svn up"
-echo -n "\"Would you like to ${part}?\" (y/N) "
-read a
-if [[ $a == "Y" || $a == "y" ]]; then
-    echo "doing ${part} ..."
-    echo "cleaning up..."
-    cd localDevSetup/
-    ./cleanup.sh
-    cd ..
-    
-    echo "UPDATING..."
-    svn update
+fn_exists()
+{
+  type $1 2>/dev/null | grep -q 'is a function'
+}
 
-    echo "integrating into environment..."
-    cd localDevSetup/
-    ./createLocalDevDirectories.sh
-    cd ..
-else
-        echo "not going to ${part}"
+function svn-update() {
+  part="svn up"
+  echo -n "\"Would you like to ${part}?\" (y/N) "
+  read a
+  if [[ $a == "Y" || $a == "y" ]]; then
+      echo "doing ${part} ..."
+      echo "cleaning up..."
+      cd localDevSetup/
+      ./cleanup.sh
+      cd ..
+
+      echo "UPDATING..."
+      svn update
+
+      echo "integrating into environment..."
+      cd localDevSetup/
+      ./createLocalDevDirectories.sh
+      cd ..
+  else
+          echo "not going to ${part}"
+  fi
+}
+
+function package-update() {
+  part="update/install package requirements"
+  echo -n "\"Would you like to ${part}?\" (y/N) "
+  read a
+  if [[ $a == "Y" || $a == "y" ]]; then
+          echo "Going to ${part} ..."
+          cd localDevSetup/
+          sudo apt-get update
+          ./installDependsFromDebianFile.py ./../src/archivematicaCommon/debian/control
+          ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
+          ./installDependsFromDebianFile.py ./../src/dashboard/debian/control
+          #./installDependsFromDebianFile.py ./../src/easy-extract/debian/control
+          ./installDependsFromDebianFile.py ./../src/MCPClient/debian/control
+          ./installDependsFromDebianFile.py ./../src/MCPrpcCLI/debian/control
+          ./installDependsFromDebianFile.py ./../src/MCPServer/debian/control
+          #./installDependsFromDebianFile.py ./../src/metaPackage-forensic-tools/debian/control
+          #./installDependsFromDebianFile.py ./../src/metaPackage-shotgun/debian/control
+          ./installDependsFromDebianFile.py ./../src/sanitizeNames/debian/control
+          ./installDependsFromDebianFile.py ./../src/SIPCreationTools/debian/control
+          ./installDependsFromDebianFile.py ./../src/transcoder/debian/control
+          ./installDependsFromDebianFile.py ./../src/upload-qubit/debian/control
+          #./installDependsFromDebianFile.py ./../src/vm-includes/debian/control
+          ./installDependsFromDebianFile.py ./../src/xubuntuGuiScriptsEditor/debian/control
+          cd ..
+  else
+          echo "Not going to ${part}."
+  fi
+}
+
+function recreate-db() {
+  part="recreate the databases"
+  echo -n "\"Would you like to ${part}?\" (y/N) "
+  read a
+  if [[ $a == "Y" || $a == "y" ]]; then
+          echo "Going to ${part} ..."
+          cd localDevSetup/
+          ./recreateDB.sh
+          cd ..
+  else
+          echo "Not going to ${part}."
+  fi
+}
+
+function restart-services() {
+  part="restart archivematica services"
+  echo -n "\"Would you like to ${part}?\" (y/N) "
+  read a
+  if [[ $a == "Y" || $a == "y" ]]; then
+          echo "Going to ${part} ..."
+          sudo stop archivematica-mcp-server
+          sleep 1
+          sudo stop archivematica-mcp-client
+          sleep 1
+          sudo kill -9 `cat /tmp/archivematicaMCPServerPID`
+
+          sleep 3
+          sudo rm /tmp/archivematicaMCP*
+          sudo start archivematica-mcp-server
+          sudo start archivematica-mcp-client
+          sudo apache2ctl restart
+  else
+          echo "Not going to ${part}."
+  fi
+}
+
+function export-sampledata() {
+  part="export sample data to ~/sampledata"
+  echo -n "\"Would you like to ${part}?\" (y/N) "
+  read a
+  if [[ $a == "Y" || $a == "y" ]]; then
+          rev="`svn info | grep \"Revision: \" | awk -F " " '{print $2}'`"
+          echo Going to export to '~/'sampledata-$rev ...
+          svn export sampledata ~/sampledata-${rev}
+  else
+          echo "Not going to ${part}."
+  fi
+}
+
+function install-gui() {
+  part="re-create gui-scripts editor file"
+  echo -n "\"Would you like to ${part}?\" (y/N) "
+  read a
+  if [[ $a == "Y" || $a == "y" ]]; then
+          rm /home/$USER/.config/Thunar/uca.xml
+          tmp="`pwd`"
+          cd src/xubuntuGuiScriptsEditor/share
+          ./addArchivematicaGUIScripts.sh
+          cd "$tmp"
+  else
+          echo "Not going to ${part}."
+  fi
+}
+
+function example() {
+  part="example"
+  echo -n "\"Would you like to ${part}?\" (y/N) "
+  read a
+  if [[ $a == "Y" || $a == "y" ]]; then
+          echo "Going to ${part} ..."
+  else
+          echo "Not going to ${part}"
+  fi
+}
+
+# Run only one function if given
+if [ ! -z ${1} ]; then
+  ${1}
+  exit
 fi
 
-part="update/install package requirements"
-echo -n "\"Would you like to ${part}?\" (y/N) "
-read a
-if [[ $a == "Y" || $a == "y" ]]; then
-        echo "Going to ${part} ..."
-        cd localDevSetup/
-	sudo apt-get update
-        ./installDependsFromDebianFile.py ./../src/archivematicaCommon/debian/control
-        ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
-        ./installDependsFromDebianFile.py ./../src/dashboard/debian/control
-        #./installDependsFromDebianFile.py ./../src/easy-extract/debian/control
-        ./installDependsFromDebianFile.py ./../src/MCPClient/debian/control
-        ./installDependsFromDebianFile.py ./../src/MCPrpcCLI/debian/control
-        ./installDependsFromDebianFile.py ./../src/MCPServer/debian/control
-        #./installDependsFromDebianFile.py ./../src/metaPackage-forensic-tools/debian/control
-        #./installDependsFromDebianFile.py ./../src/metaPackage-shotgun/debian/control
-        ./installDependsFromDebianFile.py ./../src/sanitizeNames/debian/control
-        ./installDependsFromDebianFile.py ./../src/SIPCreationTools/debian/control
-        ./installDependsFromDebianFile.py ./../src/transcoder/debian/control
-        ./installDependsFromDebianFile.py ./../src/upload-qubit/debian/control
-        #./installDependsFromDebianFile.py ./../src/vm-includes/debian/control
-        ./installDependsFromDebianFile.py ./../src/xubuntuGuiScriptsEditor/debian/control
-        cd ..
-else
-        echo "Not going to ${part}."
-fi
-
-part="recreate the databases"
-echo -n "\"Would you like to ${part}?\" (y/N) "
-read a
-if [[ $a == "Y" || $a == "y" ]]; then
-        echo "Going to ${part} ..."
-        cd localDevSetup/
-        ./recreateDB.sh
-        cd ..
-else
-        echo "Not going to ${part}."
-fi
-
-
-part="restart archivematica services"
-echo -n "\"Would you like to ${part}?\" (y/N) "
-read a
-if [[ $a == "Y" || $a == "y" ]]; then
-        echo "Going to ${part} ..."
-        sudo stop archivematica-mcp-server
-        sleep 1
-        sudo stop archivematica-mcp-client
-        sleep 1
-        sudo kill -9 `cat /tmp/archivematicaMCPServerPID`
-        
-        sleep 3
-        sudo rm /tmp/archivematicaMCP*
-        sudo start archivematica-mcp-server
-        sudo start archivematica-mcp-client
-        sudo apache2ctl restart
-else
-        echo "Not going to ${part}."
-fi
-
-part="export sample data to ~/sampledata"
-echo -n "\"Would you like to ${part}?\" (y/N) "
-read a
-if [[ $a == "Y" || $a == "y" ]]; then
-        rev="`svn info | grep \"Revision: \" | awk -F " " '{print $2}'`"
-        echo Going to export to '~/'sampledata-$rev ...
-        svn export sampledata ~/sampledata-${rev}
-else
-        echo "Not going to ${part}."
-fi
-
-part="re-create gui-scripts editor file"
-echo -n "\"Would you like to ${part}?\" (y/N) "
-read a
-if [[ $a == "Y" || $a == "y" ]]; then
-        rm /home/$USER/.config/Thunar/uca.xml
-        tmp="`pwd`"
-        cd src/xubuntuGuiScriptsEditor/share
-        ./addArchivematicaGUIScripts.sh
-        cd "$tmp"
-else
-        echo "Not going to ${part}."
-fi
-
-exit
-
-part="example"
-echo -n "\"Would you like to ${part}?\" (y/N) "
-read a
-if [[ $a == "Y" || $a == "y" ]]; then
-        echo "Going to ${part} ..."
-else
-        echo "Not going to ${part}"
-fi
+svn-update
+package-update
+recreate-db
+restart-services
+export-sampledata
+install-gui
+svn-update
