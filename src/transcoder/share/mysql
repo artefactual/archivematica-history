@@ -2362,7 +2362,7 @@ INSERT INTO CommandRelationships
 );
 
 -- End Of ADD Normalization Path for .SVG --
-
+/*
 -- ADD Normalization Path for .MBOX --
 INSERT INTO FileIDs 
     (description)
@@ -2447,7 +2447,7 @@ INSERT INTO CommandRelationships
     @fileID
 );
 -- End Of ADD Normalization Path for .MBOX --
-
+*/
 
 -- ADD Normalization Path for .PDF --
 INSERT INTO FileIDs 
