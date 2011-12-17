@@ -22,12 +22,38 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-import xmlrpclib
+import gearman
+import cPickle
 import lxml.etree as etree
 import os
 import time
 
-proxy = xmlrpclib.ServerProxy("http://localhost:8001/")
+class Settings:
+  MCP_SERVER = ('localhost', 4730)
+
+settings = Settings()
+
+class MCPClient:
+
+    def __init__(self, host=settings.MCP_SERVER[0], port=settings.MCP_SERVER[1]):
+        self.server = "%s:%d" % (host, port)    
+    
+    def list(self):
+        gm_client = gearman.GearmanClient([self.server])
+        completed_job_request = gm_client.submit_job("getJobsAwaitingApproval", "", None)
+        #self.check_request_status(completed_job_request)
+        return cPickle.loads(completed_job_request.result)
+
+    def execute(self, uuid, choice):
+        gm_client = gearman.GearmanClient([self.server])
+        data = {}
+        data["jobUUID"] = uuid
+        data["chain"] = choice
+        completed_job_request = gm_client.submit_job("approveJob", cPickle.dumps(data), None)
+        #self.check_request_status(completed_job_request)
+        return
+
+mcpClient = MCPClient()
 
 def getTagged(root, tag): #bad, I use this elsewhere, should be imported
     ret = []
@@ -39,7 +65,7 @@ def getTagged(root, tag): #bad, I use this elsewhere, should be imported
 
 def updateJobsAwaitingApproval(jobsAwaitingApproval):
     del jobsAwaitingApproval
-    ret = proxy.getJobsAwaitingApproval()
+    ret = mcpClient.list()
     jobsAwaitingApproval = etree.XML(ret)
     return jobsAwaitingApproval
 
@@ -65,7 +91,7 @@ def approveJob(jobsAwaitingApproval, choice, choice2):
         chain = getTagged(getTagged(jobsAwaitingApproval[index], "choices")[0][int(choice2)], \
                                    "chainAvailable")[0].text
         print "Approving: " + uuid, chain, sipUUID
-        proxy.approveJob(uuid, int(chain))
+        mcpClient.execute(uuid, int(chain))
         del jobsAwaitingApproval[index]
     except ValueError:
         return    
@@ -91,6 +117,8 @@ if __name__ == '__main__':
         if choice == "u":
             jobsAwaitingApproval = updateJobsAwaitingApproval(jobsAwaitingApproval)
         else:
+            if choice == "q":
+                break
             choice2 = "No-op"
             while choice2 != "q":
                 #try:
