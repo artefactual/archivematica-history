@@ -68,7 +68,7 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, relativeDirectory="./")
             #eventOutcomeDetailNote = checksumFile.__str__() + "verified"
             eventOutcome="Pass"
             print eventOutcome, fileLocation
-            exitCode = 0  
+ 
         
         
 
