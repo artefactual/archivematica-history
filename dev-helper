@@ -167,4 +167,3 @@ recreate-db
 restart-services
 export-sampledata
 install-gui
-svn-update
