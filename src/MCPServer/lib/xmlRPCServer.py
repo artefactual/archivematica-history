@@ -57,7 +57,7 @@ def gearmanApproveJob(gearman_worker, gearman_job):
     except Exception as inst:
         print >>sys.stderr, "DEBUG EXCEPTION! gearmanApproveJob"
         print >>sys.stderr, type(inst)     # the exception instance
-        print >>sys.stderr, inst.args 
+        print >>sys.stderr, inst.args
         return ""
 
 def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
@@ -73,13 +73,13 @@ def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
     except Exception as inst:
         print >>sys.stderr, "DEBUG EXCEPTION! gearmanGetJobsAwaitingApproval"
         print >>sys.stderr, type(inst)     # the exception instance
-        print >>sys.stderr, inst.args 
+        print >>sys.stderr, inst.args
         return ""
 
 
-def startXMLRPCServer(): 
+def startXMLRPCServer():
     gm_worker = gearman.GearmanWorker([archivematicaMCP.config.get('MCPServer', 'GearmanServerWorker')])
-    hostID = gethostname() + "_MCPServer" 
+    hostID = gethostname() + "_MCPServer"
     gm_worker.set_client_id(hostID)
     gm_worker.register_task("approveJob", gearmanApproveJob)
     gm_worker.register_task("getJobsAwaitingApproval", gearmanGetJobsAwaitingApproval)

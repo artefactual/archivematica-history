@@ -63,7 +63,7 @@ def createAgent(agentIdentifierType, agentIdentifierValue, agentName, agentType)
 
 def createArchivematicaAgent():
     return createAgent("preservation system", "Archivematica-0.7", "Archivematica", "software")
-    
+
 def createOrganizationAgent():
     return createAgent(yourAgentIdentifierType, yourAgentIdentifierValue, yourAgentName, yourAgentType)
 
@@ -72,7 +72,7 @@ def createLinkingAgentIdentifier(eType):
         return createOrgLinkingAgentIdentifier()
     else:
         return createArchivematicaLinkingAgentIdentifier()
-    
+
 
 def createOutcomeInformation( eventOutcomeDetailNote = None, eventOutcomeText = None):
     ret = etree.Element("eventOutcomeInformation")

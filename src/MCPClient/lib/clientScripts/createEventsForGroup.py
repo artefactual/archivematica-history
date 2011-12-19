@@ -25,7 +25,7 @@ from optparse import OptionParser
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from databaseFunctions import insertIntoEvents
-import databaseInterface             
+import databaseInterface
 
 
 if __name__ == '__main__':
@@ -39,11 +39,11 @@ if __name__ == '__main__':
     parser.add_option("-o",  "--eventOutcome",      action="store", dest="eventOutcome", default="")
     parser.add_option("-n",  "--eventOutcomeDetailNote",   action="store", dest="eventOutcomeDetailNote", default="")
     parser.add_option("-u",  "--eventIdentifierUUID",      action="store", dest="eventIdentifierUUID", default="")
-   
-    
+
+
     (opts, args) = parser.parse_args()
     sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s';""" % (opts.groupType, opts.groupUUID)
-    rows = databaseInterface.queryAllSQL(sql) 
+    rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
         fileUUID = row[0]
         insertIntoEvents(fileUUID=fileUUID, \
@@ -52,4 +52,4 @@ if __name__ == '__main__':
                      eventDateTime=opts.eventDateTime, \
                      eventDetail=opts.eventDetail, \
                      eventOutcome=opts.eventOutcome, \
-                     eventOutcomeDetailNote=opts.eventOutcomeDetailNote)  
+                     eventOutcomeDetailNote=opts.eventOutcomeDetailNote)

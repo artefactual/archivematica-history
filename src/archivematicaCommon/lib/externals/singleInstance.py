@@ -1,5 +1,5 @@
 #!/usr/bin/python -OO
-#Author Larry Bates http://code.activestate.com/recipes/users/651848/ 
+#Author Larry Bates http://code.activestate.com/recipes/users/651848/
 #Source {{{ http://code.activestate.com/recipes/546512/ (r1)
 #license: PSF http://docs.python.org/license.html
 
@@ -17,7 +17,7 @@ class singleinstance(object):
                      only a single instance of an application is running.
 
     '''
-                        
+
     def __init__(self, pidPath):
         '''
         pidPath - full path/filename where pid for running application is to be
@@ -66,7 +66,7 @@ class singleinstance(object):
     #def __del__(self):
     #    if not self.lasterror:
     #        os.unlink(self.pidPath)
-    
+
     def kill(self,level=9, timeToSleep=2):
         if self.pid == str(os.getpid()):
             print >>sys.stderr, "Killing self"
@@ -81,8 +81,8 @@ class singleinstance(object):
             print self.pid, "is not", str(os.getpid())
             time.sleep(timeToSleep)
             self.kill(level, timeToSleep)
-            
-        
+
+
 
 if __name__ == "__main__":
     #
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     #
     if myapp.alreadyrunning():
         sys.exit("Another instance of this program is already running")
-        
+
     #
     # not running, safe to continue...
     #

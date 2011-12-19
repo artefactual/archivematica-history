@@ -29,7 +29,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from fileOperations import updateFileLocation
 from fileOperations import renameAsSudo
-   
+
 def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIPUUID, date, copy=False):
     #exitCode = 435
     exitCode = 179
@@ -41,14 +41,14 @@ def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIP
             objectPath = accessPath.replace(accessDirectory, objectsDirectory, 1)
             objectName = os.path.basename(objectPath)
             objectNameExtensionIndex = objectName.rfind(".")
-            
+
             if objectNameExtensionIndex != -1:
                 objectName = objectName[:objectNameExtensionIndex + 1]
                 objectNameLike = os.path.join( os.path.dirname(objectPath), objectName).replace(SIPDirectory, "%SIPDirectory%", 1)
                 #sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation LIKE  '%s%' AND removedTime = 0 AND SIPUUID = '%s'" % (objectNameLike, SIPUUID)
                 #ValueError: unsupported format character ''' (0x27) at index 76
-                sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation LIKE  '" + objectNameLike + "%' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'" 
-                c, sqlLock = databaseInterface.querySQL(sql) 
+                sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation LIKE  '" + objectNameLike + "%' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
+                c, sqlLock = databaseInterface.querySQL(sql)
                 row = c.fetchone()
                 if not row:
                     print >>sys.stderr, "No corresponding object for:", accessPath.replace(SIPDirectory, "%SIPDirectory%", 1)
@@ -58,19 +58,19 @@ def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIP
                     print row
                     objectUUID = row[0]
                     objectPath = row[1]
-                    dipPath = os.path.join(DIPDirectory,  "objects", "%s-%s" % (objectUUID, os.path.basename(accessPath))) 
+                    dipPath = os.path.join(DIPDirectory,  "objects", "%s-%s" % (objectUUID, os.path.basename(accessPath)))
                     if copy:
                         print "TODO - copy not supported yet"
                     else:
                         #
                         dest = dipPath
                         renameAsSudo(accessPath, dest)
-                        
-                        src = accessPath.replace(SIPDirectory, "%SIPDirectory%") 
+
+                        src = accessPath.replace(SIPDirectory, "%SIPDirectory%")
                         dst = dest.replace(SIPDirectory, "%SIPDirectory%")
                         update.append((src, dst))
-                        
-                        #                            
+
+                        #
                     row = c.fetchone()
                 sqlLock.release()
                 for src, dst in update:
@@ -78,7 +78,7 @@ def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIP
                     eventOutcomeDetailNote = "moved from=\"" + src + "\"; moved to=\"" + dst + "\""
                     updateFileLocation(src, dst, "movement", date, eventDetail, sipUUID=SIPUUID, eventOutcomeDetailNote = eventOutcomeDetailNote)
     return exitCode
-    
+
 
 
 if __name__ == '__main__':
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     parser.add_option('-c', '--copy', dest='copy', action='store_true')
 
     (opts, args) = parser.parse_args()
-    
+
     SIPDirectory = opts.SIPDirectory
     accessDirectory = os.path.join(SIPDirectory, opts.accessDirectory)
     objectsDirectory = os.path.join(SIPDirectory, opts.objectsDirectory)
@@ -101,12 +101,12 @@ if __name__ == '__main__':
     SIPUUID = opts.SIPUUID
     date = opts.date
     copy = opts.copy
-    
+
     if not os.path.isdir(accessDirectory):
         print "no access directory in this sip"
         exit(0)
-    
-            
+
+
     try:
         if not os.path.isdir(DIPDirectory):
             os.mkdir(DIPDirectory)
@@ -114,7 +114,6 @@ if __name__ == '__main__':
             os.mkdir(os.path.join(DIPDirectory, "objects"))
     except:
         print "error creating DIP directory"
-    
+
     exitCode = something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIPUUID, date, copy)
     exit(exitCode)
-      

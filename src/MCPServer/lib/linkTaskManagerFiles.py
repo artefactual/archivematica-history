@@ -48,8 +48,8 @@ class linkTaskManagerFiles:
         self.exitCode = 0
         self.clearToNextLink = False
         print "DEBUG pk:", pk
-        sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__()
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             filterFileEnd = deUnicode(row[1])
@@ -66,10 +66,10 @@ class linkTaskManagerFiles:
             outputLock = threading.Lock()
         else:
             outputLock = None
-        
+
         SIPReplacementDic = unit.getReplacementDic(unit.currentPath)
 
-        self.tasksLock.acquire()            
+        self.tasksLock.acquire()
         for file, fileUnit in unit.fileList.items():
             #print "file:", file, fileUnit
             if filterFileEnd:
@@ -83,12 +83,12 @@ class linkTaskManagerFiles:
                 #print unit.pathString, type(unit.pathString)
                 #filterSubDir = filterSubDir.encode('utf-8')
                 #print filterSubDir, type(filterSubDir)
-                
+
                 if not file.startswith(unit.pathString + filterSubDir):
                     continue
-            
+
             standardOutputFile = self.standardOutputFile
-            standardErrorFile = self.standardErrorFile 
+            standardErrorFile = self.standardErrorFile
             execute = self.execute
             arguments = self.arguments
 
@@ -111,8 +111,8 @@ class linkTaskManagerFiles:
                     standardOutputFile = standardOutputFile.replace(key, value)
                 if standardErrorFile:
                     standardErrorFile = standardErrorFile.replace(key, value)
-            
-            
+
+
             for key in SIPReplacementDic.iterkeys():
                 value = SIPReplacementDic[key].replace("\"", ("\\\""))
                 print "key", type(key), key
@@ -121,7 +121,7 @@ class linkTaskManagerFiles:
                     value = value.encode("utf-8")
                 #key = key.encode("utf-8")
                 #value = value.encode("utf-8")
-                
+
                 if execute:
                     execute = execute.replace(key, value)
                 if arguments:
@@ -130,7 +130,7 @@ class linkTaskManagerFiles:
                     standardOutputFile = standardOutputFile.replace(key, value)
                 if standardErrorFile:
                     standardErrorFile = standardErrorFile.replace(key, value)
-            
+
             UUID = uuid.uuid4().__str__()
             task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, outputLock=outputLock, UUID=UUID)
             self.tasks[UUID] = task
@@ -143,35 +143,30 @@ class linkTaskManagerFiles:
                 time.sleep(archivematicaMCP.limitTaskThreadsSleep)
                 self.tasksLock.acquire()
             print "Active threads:", threading.activeCount()
-            t.start() 
-            
-            
+            t.start()
+
+
         self.clearToNextLink = True
         self.tasksLock.release()
         if self.tasks == {} :
             self.jobChainLink.linkProcessingComplete(self.exitCode)
-        
-    
+
+
     def taskCompletedCallBackFunction(self, task):
         print task
         #logTaskCompleted()
         self.exitCode += math.fabs(task.results["exitCode"])
         databaseFunctions.logTaskCompletedSQL(task)
 
-        if task.UUID in self.tasks: 
+        if task.UUID in self.tasks:
             del self.tasks[task.UUID]
         else:
             print >>sys.stderr, "Key Value Error:", task.UUID
             print >>sys.stderr, "Key Value Error:", self.tasks
             exit(1)
 
-        self.tasksLock.acquire()        
+        self.tasksLock.acquire()
         if self.clearToNextLink == True and self.tasks == {} :
             print "DEBUG proceeding to next link", self.jobChainLink.UUID
             self.jobChainLink.linkProcessingComplete(self.exitCode)
         self.tasksLock.release()
-      
-        
-        
-        
-        

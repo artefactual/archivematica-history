@@ -46,7 +46,7 @@ import xmlRPCServer
 import signal
 import os
 import pyinotify
-# from archivematicaReplacementDics import replacementDics 
+# from archivematicaReplacementDics import replacementDics
 # from MCPlogging import *
 # from MCPloggingSQL import getUTCDate
 import ConfigParser
@@ -102,23 +102,23 @@ def isUUID(uuid):
     or len(split[4]) != 12 :
         return False
     return True
-    
+
 def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
     UUID = ""
     path = path.replace(config.get('MCPServer', "sharedDirectory"), "%sharedPath%", 1)
-    
+
     #find UUID on end of SIP path
     uuidLen = -36
     if isUUID(path[uuidLen-1:-1]):
         UUID = path[uuidLen-1:-1]
 
-    
+
     if UUID == "":
         #Find it in the database
         sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "';"
         #if waitSleep != 0:
             #time.sleep(waitSleep) #let db be updated by the microservice that moved it.
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         if not row:
             print "Not opening existing SIP:", UUID, "-", path
@@ -127,8 +127,8 @@ def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
             print "Opening existing SIP:", UUID, "-", path
             row = c.fetchone()
         sqlLock.release()
-                
-    
+
+
     #Create it
     if UUID == "":
         UUID = databaseFunctions.createSIP(path)
@@ -161,7 +161,7 @@ def createUnitAndJobChain(path, config, terminate=False):
 def createUnitAndJobChainThreaded(path, config):
     #createUnitAndJobChain(path, config)
     #return
-    try:   
+    try:
         print "DEBGUG alert watch path: ", path
         t = threading.Thread(target=createUnitAndJobChain, args=(path, config), kwargs={"terminate":True})
         t.daemon = True
@@ -172,22 +172,22 @@ def createUnitAndJobChainThreaded(path, config):
             print threading.activeCount().__str__()
             print "DEBUG createUnitAndJobChainThreaded waiting on thread count", threading.activeCount()
             time.sleep(4)
-        t.start() 
+        t.start()
     except Exception as inst:
-            print "DEBUG EXCEPTION!"
-            print type(inst)     # the exception instance
-            print inst.args 
+        print "DEBUG EXCEPTION!"
+        print type(inst)     # the exception instance
+        print inst.args
 
 def watchDirectories():
     rows = []
     sql = """SELECT watchedDirectoryPath, chain, onlyActOnDirectories, description FROM WatchedDirectories LEFT OUTER JOIN WatchedDirectoriesExpectedTypes ON WatchedDirectories.expectedType = WatchedDirectoriesExpectedTypes.pk"""
-    c, sqlLock = databaseInterface.querySQL(sql) 
+    c, sqlLock = databaseInterface.querySQL(sql)
     row = c.fetchone()
     while row != None:
         rows.append(row)
         row = c.fetchone()
     sqlLock.release()
-    
+
     for row in rows:
         print row
         directory = row[0].replace("%watchDirectoryPath%", config.get('MCPServer', "watchDirectoryPath"), 1)
@@ -201,7 +201,7 @@ def watchDirectories():
                 path = path + "/"
             createUnitAndJobChain(path, row)
         watchDirectory.archivematicaWatchDirectory(directory,row, createUnitAndJobChainThreaded)
-    
+
 #if __name__ == '__main__':
 #    signal.signal(signal.SIGTERM, signal_handler)
 #    signal.signal(signal.SIGINT, signal_handler)
@@ -210,10 +210,10 @@ def watchDirectories():
 #directoryWatchList = loadDirectoryWatchLlist(configs)
 #archivematicaMCPServerListen()
 
-    
+
 def signal_handler(signalReceived, frame):
     print signalReceived, frame
-    global stopSignalReceived 
+    global stopSignalReceived
     stopSignalReceived = True
     threads = threading.enumerate()
     for thread in threads:
@@ -231,7 +231,7 @@ def signal_handler(signalReceived, frame):
             except Exception as inst:
                 print "DEBUG EXCEPTION!"
                 print type(inst)     # the exception instance
-                print inst.args 
+                print inst.args
         else:
             print "not stopping: ", type(thread), thread
     sys.stdout.flush()
@@ -251,7 +251,7 @@ def debugMonitor():
             print "\tSQL Lock: Locked"
         print "</DEBUG>"
         time.sleep(10)
-        
+
 def flushOutputs():
     while True:
         sys.stdout.flush()
@@ -278,11 +278,11 @@ if __name__ == '__main__':
     if True:
         t = threading.Thread(target=debugMonitor)
         t.daemon = True
-        t.start() 
+        t.start()
     if True:
         t = threading.Thread(target=flushOutputs)
         t.daemon = True
-        t.start() 
+        t.start()
 
     watchDirectories()
     transferD.main()

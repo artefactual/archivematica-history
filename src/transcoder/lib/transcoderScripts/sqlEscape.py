@@ -29,4 +29,3 @@ lines = sys.stdin.readlines()
 for line in lines:
     tmp = MySQLdb.escape_string(line)
     print tmp.replace("\\n","")
-

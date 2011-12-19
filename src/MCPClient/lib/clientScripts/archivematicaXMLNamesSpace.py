@@ -31,7 +31,7 @@ fitsNS = "http://hul.harvard.edu/ois/xml/ns/fits/fits_output"
 xlinkNS = "http://www.w3.org/1999/xlink"
 dcNS="http://purl.org/dc/elements/1.1/"
 
-dcBNS = "{" + dcNS + "}" 
+dcBNS = "{" + dcNS + "}"
 dctermsBNS = "{" + dctermsNS + "}"
 xsiBNS = "{" + xsiNS + "}"
 metsBNS = "{" + metsNS + "}"
@@ -41,4 +41,3 @@ xlinkBNS = "{" + xlinkNS + "}"
 
 NSMAP = { "xsi" : xsiNS, \
 "xlink": xlinkNS }
-

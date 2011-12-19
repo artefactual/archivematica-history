@@ -25,7 +25,7 @@ import sys
 from optparse import OptionParser
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import updateSizeAndChecksum
-    
+
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-i",  "--fileUUID",          action="store", dest="fileUUID", default="")
@@ -33,13 +33,8 @@ if __name__ == '__main__':
     parser.add_option("-d",  "--date",              action="store", dest="date", default="")
     parser.add_option("-u",  "--eventIdentifierUUID", action="store", dest="eventIdentifierUUID", default="")
     (opts, args) = parser.parse_args()
-    
+
     updateSizeAndChecksum(opts.fileUUID, \
                      opts.filePath, \
                      opts.date, \
-                     opts.eventIdentifierUUID)  
-
-    
-
-    
-    
+                     opts.eventIdentifierUUID)

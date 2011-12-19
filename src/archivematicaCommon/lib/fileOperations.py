@@ -32,10 +32,10 @@ from databaseFunctions import insertIntoEvents
 import MySQLdb
 from archivematicaFunctions import unicodeToStr
 
-def updateSizeAndChecksum(fileUUID, filePath, date, eventIdentifierUUID):   
+def updateSizeAndChecksum(fileUUID, filePath, date, eventIdentifierUUID):
     fileSize = os.path.getsize(filePath).__str__()
     checksum = sha_for_file(filePath).__str__()
-    
+
     sql = "UPDATE Files " + \
         "SET fileSize='" + fileSize +"', checksum='" + checksum +  "' " + \
         "WHERE fileUUID='" + fileUUID + "'"
@@ -46,7 +46,7 @@ def updateSizeAndChecksum(fileUUID, filePath, date, eventIdentifierUUID):
                      eventType="message digest calculation", \
                      eventDateTime=date, \
                      eventDetail="program=\"python\"; module=\"hashlib.sha256()\"", \
-                     eventOutcomeDetailNote=checksum)  
+                     eventOutcomeDetailNote=checksum)
 
 
 def addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="ingestion", eventDetail="", use="original"):
@@ -101,7 +101,7 @@ def checksumFile(filePath, fileUUID):
     truePath = filePath.replace("transfer/", transferDirectory, 1)
     checksum = sha_for_file(truePath)
     utcDate = databaseInterface.getUTCDate()
-    
+
     #Create Event
     eventIdentifierUUID = uuid.uuid4().__str__()
     eventType = "message digest calculation"
@@ -123,7 +123,7 @@ def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
     global separator
     print "removing: ", filePath
     filesWithMatchingPath = []
-    
+
     sqlLoggingLock.acquire()
     #Find the file pk/UUID
     c=MCPloggingSQL.database.cursor()
@@ -135,7 +135,7 @@ def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
         row = c.fetchone()
     sqlLoggingLock.release()
     #Update the database
-    for file in filesWithMatchingPath: 
+    for file in filesWithMatchingPath:
         eventIdentifierUUID = uuid.uuid4().__str__()
         eventType = "file removed"
         eventDateTime = utcDate
@@ -149,12 +149,12 @@ def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
                                        eventDetail=eventDetail, \
                                        eventOutcome=eventOutcome, \
                                        eventOutcomeDetailNote=eventOutcomeDetailNote)
-        
-    
+
+
         databaseInterface.runSQL("UPDATE Files " + \
            "SET removedTime='" + utcDate + "', currentLocation=NULL " + \
            "WHERE fileUUID='" + file + "'" )
-        
+
 def renameAsSudo(source, destination):
     """Used to move/rename Directories that the archivematica user may or may not have writes to move"""
     command = "sudo mv \"" + source + "\"   \"" + destination + "\""
@@ -175,16 +175,16 @@ def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIde
         if sipUUID:
             sql = "SELECT Files.fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(src) + "' AND Files.sipUUID = '" + sipUUID + "';"
         elif transferUUID:
-            sql = "SELECT Files.fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(src) + "' AND Files.transferUUID = '" + transferUUID + "';"  
-        c, sqlLock = databaseInterface.querySQL(sql) 
+            sql = "SELECT Files.fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(src) + "' AND Files.transferUUID = '" + transferUUID + "';"
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             print row
             fileUUID = unicodeToStr(row[0])
-            print type(fileUUID), fileUUID 
+            print type(fileUUID), fileUUID
             row = c.fetchone()
         sqlLock.release()
-    
+
     if eventOutcomeDetailNote == "":
         eventOutcomeDetailNote = "Original name=\"%s\"; cleaned up name=\"%s\"" %(src, dst)
         #eventOutcomeDetailNote = eventOutcomeDetailNote.decode('utf-8')
@@ -193,8 +193,7 @@ def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIde
         print >>sys.stderr, "Unable to find file uuid for: ", src, " -> ", dst
         exit(6)
     insertIntoEvents(fileUUID=fileUUID, eventIdentifierUUID=eventIdentifierUUID, eventType=eventType, eventDateTime=eventDateTime, eventDetail=eventDetail, eventOutcome="", eventOutcomeDetailNote=eventOutcomeDetailNote)
-        
+
     #UPDATE THE CURRENT FILE PATH
     sql =  """UPDATE Files SET currentLocation='%s' WHERE fileUUID='%s';""" % (dst, fileUUID)
     databaseInterface.runSQL(sql)
-        

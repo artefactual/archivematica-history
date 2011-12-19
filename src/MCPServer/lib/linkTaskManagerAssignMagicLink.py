@@ -48,20 +48,19 @@ class linkTaskManagerAssignMagicLink:
         self.jobChainLink = jobChainLink
         self.UUID = uuid.uuid4().__str__()
         self.unit = unit
-        
+
         ###GET THE MAGIC NUMBER FROM THE TASK stuff
         link = 0
-        sql = """SELECT execute FROM StandardTasksConfigs where pk = """ + pk.__str__() 
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        sql = """SELECT execute FROM StandardTasksConfigs where pk = """ + pk.__str__()
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             print row
             link = row[0]
             row = c.fetchone()
         sqlLock.release()
-        
+
         ###Update the unit
         #set the magic number
         self.unit.setMagicLink(link, exitStatus="")
         self.jobChainLink.linkProcessingComplete(0)
-        

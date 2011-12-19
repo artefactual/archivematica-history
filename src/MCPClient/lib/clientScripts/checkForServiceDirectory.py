@@ -30,7 +30,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import insertIntoDerivations
 
-    
+
 def something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date):
     #exitCode = 435
     exitCode = 0
@@ -41,9 +41,9 @@ def something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date):
             accessPath = os.path.join(path, file)
             sql = "UPDATE Files SET fileGrpUse='service' WHERE currentLocation =  '" + accessPath.replace(SIPDirectory, "%SIPDirectory%", 1) + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
             #print sql
-            rows = databaseInterface.runSQL(sql)           
+            rows = databaseInterface.runSQL(sql)
     return exitCode
-    
+
 
 
 if __name__ == '__main__':
@@ -56,17 +56,16 @@ if __name__ == '__main__':
     parser.add_option("-t",  "--date", action="store", dest="date", default="")
 
     (opts, args) = parser.parse_args()
-    
+
     SIPDirectory = opts.SIPDirectory
     serviceDirectory = os.path.join(SIPDirectory, opts.serviceDirectory)
     objectsDirectory = os.path.join(SIPDirectory, opts.objectsDirectory)
     SIPUUID = opts.SIPUUID
     date = opts.date
-    
+
     if not os.path.isdir(serviceDirectory):
         print "no service directory in this sip"
         exit(0)
-    
+
     exitCode = something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date)
     exit(exitCode)
-      

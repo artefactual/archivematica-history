@@ -85,7 +85,3 @@ def map(requests, prefetch=True, size=None):
         [r.response.content for r in requests]
 
     return [r.response for r in requests]
-
-
-
-

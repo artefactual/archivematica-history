@@ -26,7 +26,7 @@ import os
 import stat
 import shutil
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from executeOrRunSubProcess import executeOrRun 
+from executeOrRunSubProcess import executeOrRun
 
 printSubProcessOutput=True
 
@@ -67,7 +67,7 @@ shutil.move(AIP, storeLocation)
 extractDirectory = "/tmp/" + SIPUUID + "/"
 os.makedirs(extractDirectory)
 #
-command = "7z x -bd -o\"" + extractDirectory + "\" \"" + storeLocation + "\"" 
+command = "7z x -bd -o\"" + extractDirectory + "\" \"" + storeLocation + "\""
 ret = executeOrRun("command", command, printing=printSubProcessOutput)
 exitCode, stdOut, stdErr = ret
 if exitCode != 0:
@@ -90,9 +90,9 @@ for command in verificationCommands:
         exitCode=1
     else:
         print >>sys.stderr, "Passed test: ", command
-        
-#cleanup    
-shutil.rmtree(extractDirectory)  
+
+#cleanup
+shutil.rmtree(extractDirectory)
 
 #write to html file
 if exitCode == 0:
@@ -112,10 +112,10 @@ if exitCode == 0:
     # Calculate position
     position = 0
     for item in body.findall("div"):
-      name = item.find('p[@class="name"]/a').text
-      if SIPNAME < name:
-        break
-      position = position + 1
+        name = item.find('p[@class="name"]/a').text
+        if SIPNAME < name:
+            break
+        position = position + 1
 
     # Create HTML div object
     div = etree.Element("div")

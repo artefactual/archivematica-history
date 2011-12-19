@@ -48,12 +48,10 @@ class linkTaskManagerLoadMagicLink:
         self.jobChainLink = jobChainLink
         self.UUID = uuid.uuid4().__str__()
         self.unit = unit
-             
+
         ###Update the unit
         magicLink = self.unit.getMagicLink()
         if magicLink != None:
             link, exitStatus = magicLink
             self.jobChainLink.setExitMessage("Completed successfully")
             self.jobChainLink.jobChain.nextChainLink(link)
-        
-        

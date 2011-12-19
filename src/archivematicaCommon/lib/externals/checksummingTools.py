@@ -2,7 +2,7 @@
 import hashlib
 
 #Borrowed from http://stackoverflow.com/questions/1131220/get-md5-hash-of-a-files-without-open-it-in-python
-def md5_for_file(fileName, block_size=2**20):   
+def md5_for_file(fileName, block_size=2**20):
     f = open(fileName)
     md5 = hashlib.md5()
     while True:
@@ -14,7 +14,7 @@ def md5_for_file(fileName, block_size=2**20):
     return md5.hexdigest()
 
 #Modification of above borrowed function
-def sha_for_file(fileName, block_size=2**20):   
+def sha_for_file(fileName, block_size=2**20):
     f = open(fileName)
     sha = hashlib.sha256()
     while True:

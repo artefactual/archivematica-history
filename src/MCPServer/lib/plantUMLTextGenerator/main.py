@@ -49,13 +49,13 @@ def jobChainLinkTextGet(leadIn, pk, label = ""):
         defaultSoundFile = row[6]
         defaultExitMessage = row[7]
         microserviceGroup = row[8]
-        
-        leadOut = description 
+
+        leadOut = description
         if label != "":
             print ("%s -->[%s] %s") % (leadIn, label, leadOut)
         else:
             print ("%s --> %s") % (leadIn, leadOut)
-            
+
         sql = """SELECT exitCode, nextMicroServiceChainLink, exitMessage FROM MicroServiceChainLinksExitCodes WHERE microServiceChainLink = '%s';""" % (pk.__str__())
         rows2 = databaseInterface.queryAllSQL(sql)
         for row2 in rows2:
@@ -65,29 +65,29 @@ def jobChainLinkTextGet(leadIn, pk, label = ""):
         if defaultNextChainLink:
             print """ if "exitCodeIs Unhandled" then """
             jobChainLinkTextGet("", defaultNextChainLink, label="true")
-            print """endif""" 
+            print """endif"""
 
 
 def jobChainTextGet(leadIn, pk):
     sql = """SELECT startingLink, description FROM MicroServiceChains WHERE pk = '%s';""" % (pk.__str__())
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
-        startingLink = row[0] 
+        startingLink = row[0]
         description = row[1]
         leadOut = description + " \"MicroServiceChain\""
         print ("%s --> %s") % (leadIn, leadOut)
-        jobChainLinkTextGet(leadOut, startingLink) 
+        jobChainLinkTextGet(leadOut, startingLink)
 
 if __name__ == '__main__':
     sql = """SELECT watchedDirectoryPath, chain, expectedType FROM WatchedDirectories;"""
     rows = databaseInterface.queryAllSQL(sql)
     i = 1
     for row in rows:
-        watchedDirectoryPath = row[0] 
+        watchedDirectoryPath = row[0]
         chain = row[1]
         expectedType = row[2]
         print "@startuml", "img/" + i.__str__() + ".png" #img/activity_img10.png
-        print "title " + watchedDirectoryPath 
+        print "title " + watchedDirectoryPath
         #print "(*) --> " "First activity"
         jobChainTextGet("(*)[" + watchedDirectoryPath + "]" , chain)
         # --> (*)

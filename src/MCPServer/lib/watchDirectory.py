@@ -48,7 +48,7 @@ class archivematicaWatchDirectoryTimer():
         self.delay = delay
         self.watchManager = watchManager
         self.path = path
-        self.timerLock = threading.Lock()    
+        self.timerLock = threading.Lock()
         args=[self]
         self.timer = threading.Timer(self.delay, self.timerExpired)
         self.timer.start()
@@ -60,7 +60,7 @@ class archivematicaWatchDirectoryTimer():
         self.timer = threading.Timer(self.delay, self.timerExpired)
         self.timer.start()
         self.timerLock.release()
-    
+
     def timerExpired(self):
         self.timerLock.acquire()
         #print "time expired", self
@@ -76,10 +76,10 @@ class directoryCreated(ProcessEvent):
         self.timer = timer
         if self.timer == None:
             self.timer = archivematicaWatchDirectoryTimer(watchDirectoryProcessEvent, event, watchManager, path) # self to rm, wd and event to activate Processing.
-            
+
     def process_IN_CREATE(self, event):
         self.process_IN_MODIFY(event)
-        
+
     def process_IN_MODIFY(self, event):
         self.timer.resetDelay()
 
@@ -104,21 +104,21 @@ class watchDirectoryProcessEvent(ProcessEvent):
                 print "Warning: %s was created. It is a file, not a directory."
         else:
             print "Warning: %s was created. Was something copied into this directory?" %  os.path.join(event.path, event.name)
-        
-    def process_IN_MOVED_TO(self, event):  
+
+    def process_IN_MOVED_TO(self, event):
         """Create a Job based on what was moved into the directory and process it."""
         #ensure no directories are in the process of moving. (so none will be in the middle of moving INTO this directory)
         movingDirectoryLock.acquire()
         movingDirectoryLock.release()
         path = os.path.join(event.path, event.name)
         if os.path.isdir(path):
-            path = path + "/"    
-        
+            path = path + "/"
+
         self.callBackFunction(path, self.config)
-    
+
     def process_default(self, event):
         print event
-            
+
 
 class archivematicaWatchDirectory:
     def __init__(self, directory, variables, callBackFunction):
@@ -127,7 +127,7 @@ class archivematicaWatchDirectory:
             os.makedirs(directory)
         print "watching directory: ", directory
         wm = WatchManager()
-        
+
         #wm.add_watch(directory, , proc_fun=MyProcessing())
         #if debug:
         #    mask = pyinotify.ALL_EVENTS

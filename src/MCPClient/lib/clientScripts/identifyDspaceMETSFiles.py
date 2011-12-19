@@ -26,7 +26,7 @@ import MySQLdb
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 
-           
+
 
 
 if __name__ == '__main__':

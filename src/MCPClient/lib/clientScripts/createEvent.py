@@ -24,7 +24,7 @@
 from optparse import OptionParser
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from databaseFunctions import insertIntoEvents             
+from databaseFunctions import insertIntoEvents
 
 
 if __name__ == '__main__':
@@ -36,14 +36,14 @@ if __name__ == '__main__':
     parser.add_option("-o",  "--eventOutcome",      action="store", dest="eventOutcome", default="")
     parser.add_option("-n",  "--eventOutcomeDetailNote",   action="store", dest="eventOutcomeDetailNote", default="")
     parser.add_option("-u",  "--eventIdentifierUUID",      action="store", dest="eventIdentifierUUID", default="")
-   
-    
+
+
     (opts, args) = parser.parse_args()
-   
+
     insertIntoEvents(fileUUID=opts.fileUUID, \
                      eventIdentifierUUID=opts.eventIdentifierUUID, \
                      eventType=opts.eventType, \
                      eventDateTime=opts.eventDateTime, \
                      eventDetail=opts.eventDetail, \
                      eventOutcome=opts.eventOutcome, \
-                     eventOutcomeDetailNote=opts.eventOutcomeDetailNote)  
+                     eventOutcomeDetailNote=opts.eventOutcomeDetailNote)

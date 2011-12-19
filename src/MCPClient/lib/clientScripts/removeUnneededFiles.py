@@ -29,25 +29,25 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from scanForRemovedFiles import addRemovedEvent
 
 removeIfFileNameIs = ["Thumbs.db"]
-   
+
 def removableFile(target):
     global eventDetailText
     basename = os.path.basename(target)
-    if basename in removeIfFileNameIs:     
+    if basename in removeIfFileNameIs:
         eventDetailText = basename + " is noted as a removable file."
         return True
     return False
 
 if __name__ == '__main__':
-    target = sys.argv[1] 
+    target = sys.argv[1]
     fileUUID = sys.argv[2]
     logsDirectory = sys.argv[3]
     date = sys.argv[4]
     eIDValue = sys.argv[5]
-    
-    xmlFile = logsDirectory + "fileMeta/" + fileUUID + ".xml" 
-    global eventDetailText  
-    eventDetailText = "fileRemoved"   
+
+    xmlFile = logsDirectory + "fileMeta/" + fileUUID + ".xml"
+    global eventDetailText
+    eventDetailText = "fileRemoved"
     if removableFile(target):
         print fileUUID + " -> " + os.path.basename(target)
         os.remove(target)

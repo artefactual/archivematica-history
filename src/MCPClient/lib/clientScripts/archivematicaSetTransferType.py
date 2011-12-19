@@ -24,15 +24,10 @@
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
-    
+
 if __name__ == '__main__':
     transferUUID = sys.argv[1]
     transferType = sys.argv[2]
-    
+
     sql =  """UPDATE Transfers SET type='""" + transferType + """' WHERE transferUUID='""" + transferUUID + """';"""
     databaseInterface.runSQL(sql)
-    
-    
-
-    
-    

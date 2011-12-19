@@ -43,7 +43,7 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, transferDirectory, tran
     for item in root.findall("{http://www.loc.gov/METS/}fileSec/{http://www.loc.gov/METS/}fileGrp"):
         #print etree.tostring(item)
         #print item
-        
+
         USE = item.get("USE")
         if USE == "TEXT":
             for item2 in item:
@@ -52,21 +52,21 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, transferDirectory, tran
                         if item3.tag == "{http://www.loc.gov/METS/}FLocat":
                             fileLocation = item3.get("{http://www.w3.org/1999/xlink}href")
                             fileFullPath = os.path.join(relativeDirectory, fileLocation)
-                           
+
                             dbLocation = fileFullPath.replace(transferDirectory, "%transferDirectory%")
                             sql = """UPDATE Files SET fileGrpUse = 'text/ocr' WHERE currentLocation = '%s' AND transferUUID = '%s';""" % (MySQLdb.escape_string(dbLocation), transferUUID)
                             databaseInterface.runSQL(sql)
     return exitCode
-             
+
 
 
 if __name__ == '__main__':
     metsFile = sys.argv[1]
-    date = sys.argv[2] 
+    date = sys.argv[2]
     taskUUID = sys.argv[3]
     transferDirectory = sys.argv[4]
     transferUUID = sys.argv[5]
-    
-    
+
+
     ret = verifyMetsFileSecChecksums(metsFile, date, taskUUID, transferDirectory, transferUUID, relativeDirectory=os.path.dirname(metsFile) + "/")
     quit(ret)

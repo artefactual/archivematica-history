@@ -38,7 +38,7 @@ class twistedLaunchSubProcess(twistedProtocol.ProcessProtocol):
         self.doneLock = doneLock
         self.exitCode = None
         self.printing = printing
-        
+
     def connectionMade(self):
         if self.stdIn:
             self.transport.write(self.stdIn)
@@ -47,7 +47,7 @@ class twistedLaunchSubProcess(twistedProtocol.ProcessProtocol):
         if self.printing:
             print stdOut
         self.stdOut = self.stdOut + stdOut
-        
+
     def errReceived(self, stdError):
         if self.printing:
             print stdError
@@ -56,7 +56,7 @@ class twistedLaunchSubProcess(twistedProtocol.ProcessProtocol):
     def processEnded(self, reason):
         self.exitCode = reason.value.exitCode
         self.doneLock.release()
-        
+
 
 def launchSubProcess(command, stdIn="", printing=True):
     doneLock = threading.Lock()
@@ -66,10 +66,10 @@ def launchSubProcess(command, stdIn="", printing=True):
     reactor.spawnProcess(tsp, commands[0], commands, {})
     if not reactor._started:
         reactor.run()
-    doneLock.acquire()   
+    doneLock.acquire()
     return tsp.exitCode, tsp.stdOut, tsp.stdError
 
-        
+
 
 def createAndRunScript(text, stdIn="", printing=True):
     #output the text to a /tmp/ file
@@ -77,14 +77,14 @@ def createAndRunScript(text, stdIn="", printing=True):
     FILE = os.open(scriptPath, os.O_WRONLY | os.O_CREAT, 0770)
     os.write(FILE, text)
     os.close(FILE)
- 
+
     #run it
     ret = launchSubProcess(scriptPath, stdIn="", printing=True)
-    
+
     #remove the temp file
     os.remove(scriptPath)
-    
-    return ret 
+
+    return ret
 
 
 
@@ -97,4 +97,3 @@ def executeOrRun(type, text, stdIn="", printing=True):
     if type == "pythonScript":
         text = "#!/usr/bin/python -OO\n" + text
         return createAndRunScript(text, stdIn=stdIn, printing=printing)
-        

@@ -632,5 +632,3 @@ class Response(object):
 
         elif (self.status_code >= 500) and (self.status_code < 600):
             raise HTTPError('%s Server Error' % self.status_code)
-
-

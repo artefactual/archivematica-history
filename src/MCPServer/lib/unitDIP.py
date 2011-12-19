@@ -33,12 +33,12 @@ import lxml.etree as etree
 
 
 class unitDIP(unit):
-    
+
     def __init__(self, currentPath, UUID):
         self.currentPath = currentPath.__str__()
         self.UUID = UUID
         self.fileList = {}
-    
+
     def reloadFileList(self):
         self.fileList = {}
         #os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])
@@ -50,9 +50,9 @@ class unitDIP(unit):
                 filePath = os.path.join(directory, file)
                 #print filePath
                 self.fileList[filePath] = unitFile(filePath)
-        
+
         sql = """SELECT  fileUUID, currentLocation FROM Files WHERE sipUUID =  '""" + self.UUID + "'" #AND Files.removedTime = 0; TODO
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             #print row
@@ -66,26 +66,26 @@ class unitDIP(unit):
             row = c.fetchone()
             self.fileList[filePath].UUID = UUID
         sqlLock.release()
-        
 
-        
-        
+
+
+
     def reload(self):
-        #sql = """SELECT * FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'" 
-        #c, sqlLock = databaseInterface.querySQL(sql) 
+        #sql = """SELECT * FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'"
+        #c, sqlLock = databaseInterface.querySQL(sql)
         #row = c.fetchone()
         #while row != None:
         #    print row
         #    #self.UUID = row[0]
-        #    self.createdTime = row[1] 
+        #    self.createdTime = row[1]
         #    self.currentPath = row[2]
         #    row = c.fetchone()
         #sqlLock.release()
-        
+
         #no-op for reload on DIP
         return
-             
-        
+
+
     def getReplacementDic(self, target):
         # self.currentPath = currentPath.__str__()
         # self.UUID = uuid.uuid4().__str__()
@@ -97,8 +97,8 @@ class unitDIP(unit):
             SIPName = os.path.basename(self.currentPath).replace("-" + SIPUUID, "")
         SIPDirectory = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
         relativeDirectoryLocation = target.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
-      
-        
+
+
         ret = { \
         "%SIPLogsDirectory%": SIPDirectory + "logs/", \
         "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
@@ -114,7 +114,7 @@ class unitDIP(unit):
         "%SIPName%":SIPName \
         }
         return ret
-    
+
     def xmlify(self):
         ret = etree.Element("unit")
         etree.SubElement(ret, "type").text = "DIP"

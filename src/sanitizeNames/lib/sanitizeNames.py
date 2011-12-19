@@ -63,15 +63,15 @@ def sanitizePath(path):
         if fileExtension != sanitizedName:
             fileExtension = "." + fileExtension
         else:
-             fileExtension = ""
+            fileExtension = ""
         sanitizedName = dirname + "/" + fileTitle + fileExtension
-               
+
         while os.path.exists(sanitizedName):
             sanitizedName = dirname + "/" + fileTitle + replacementChar + n.__str__() + fileExtension
-            n+=1 
+            n+=1
         rename(path, sanitizedName)
         return sanitizedName
-    
+
 def sanitizeRecursively(path):
     sanitizedName = sanitizePath(path)
     if sanitizedName != path:
@@ -79,7 +79,7 @@ def sanitizeRecursively(path):
     if os.path.isdir(sanitizedName):
         for f in os.listdir(sanitizedName):
             sanitizeRecursively(sanitizedName + "/" + f)
-            
+
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print >>sys.stderr, "Error, sanitizeNames takes one agrument PATH or -V (version)"
@@ -94,4 +94,3 @@ if __name__ == '__main__':
     path = os.path.abspath(path)
     print "Scanning: " + path
     sanitizeRecursively(path)
-      

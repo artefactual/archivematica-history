@@ -33,19 +33,19 @@ from fileOperations import renameAsSudo
 def updateDB(dst, sipUUID):
     sql =  """UPDATE SIPs SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""
     databaseInterface.runSQL(sql)
-    
+
 def moveSIP(src, dst, sipUUID, sharedDirectoryPath):
     # os.rename(src, dst)
     if src.endswith("/"):
         src = src[:-1]
-    
+
     dest = dst.replace(sharedDirectoryPath, "%sharedPath%", 1)
     if dest.endswith("/"):
         dest = os.path.join(dest, os.path.basename(src))
     if dest.endswith("/."):
         dest = os.path.join(dest[:-1], os.path.basename(src))
     updateDB(dest + "/", sipUUID)
-    
+
     renameAsSudo(src, dst)
 
 if __name__ == '__main__':
@@ -54,4 +54,3 @@ if __name__ == '__main__':
     sipUUID = sys.argv[3]
     sharedDirectoryPath = sys.argv[4]
     moveSIP(src, dst, sipUUID, sharedDirectoryPath)
-

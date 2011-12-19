@@ -27,13 +27,13 @@ import os
 def getTagged(root, tag):
     ret = []
     for element in root:
-        #print element.tag 
+        #print element.tag
         #print tag
         #print element.tag == tag
         if element.tag == tag:
             ret.append(element)
             #return ret #only return the first encounter
-    return ret  
+    return ret
 
 def getPronomsFromPremis(filePath):
     ret = []
@@ -50,4 +50,4 @@ def getPronomsFromPremis(filePath):
                     for formatRegistry in formatRegistrys:
                         if getTagged(formatRegistry, "formatRegistryName")[0].text == "PRONOM":
                             ret.append(getTagged(formatRegistry, "formatRegistryKey")[0].text)
-    return ret  
+    return ret

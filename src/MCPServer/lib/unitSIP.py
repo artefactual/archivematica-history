@@ -36,13 +36,13 @@ from databaseFunctions import insertIntoEvents
 
 
 class unitSIP(unit):
-    
+
     def __init__(self, currentPath, UUID):
         self.currentPath = currentPath.__str__()
         self.UUID = UUID
         self.fileList = {}
         self.pathString = "%SIPDirectory%"
-    
+
     def reloadFileList(self):
         self.fileList = {}
         #os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])
@@ -54,9 +54,9 @@ class unitSIP(unit):
                 filePath = os.path.join(directory, file)
                 #print filePath
                 self.fileList[filePath] = unitFile(filePath)
-        
-        sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND sipUUID =  '""" + self.UUID + "'" 
-        c, sqlLock = databaseInterface.querySQL(sql) 
+
+        sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND sipUUID =  '""" + self.UUID + "'"
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             #print row
@@ -69,21 +69,21 @@ class unitSIP(unit):
             else:
                 print >>sys.stderr, self.fileList
                 eventDetail = "SIP {" + self.UUID + "} has file {" + UUID + "}\"" + currentPath + "\" in the database, but file doesn't exist in the file system."
-                print >>sys.stderr, "!!!", eventDetail, "!!!"  
+                print >>sys.stderr, "!!!", eventDetail, "!!!"
             row = c.fetchone()
         sqlLock.release()
-        
+
     def setMagicLink(self,link, exitStatus=""):
         if exitStatus != "":
             sql =  """UPDATE SIPs SET magicLink='""" + link + """', magicLinkExitMessage='""" + exitStatus + """' WHERE sipUUID='""" + self.UUID + """';"""
         else:
-            sql =  """UPDATE SIPs SET magicLink='""" + link + """' WHERE sipUUID='""" + self.UUID + """';"""        
+            sql =  """UPDATE SIPs SET magicLink='""" + link + """' WHERE sipUUID='""" + self.UUID + """';"""
         databaseInterface.runSQL(sql)
-    
+
     def getMagicLink(self):
         ret = None
-        sql = """SELECT magicLink, magicLinkExitMessage FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'" 
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        sql = """SELECT magicLink, magicLinkExitMessage FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'"
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             print row
@@ -91,21 +91,21 @@ class unitSIP(unit):
             row = c.fetchone()
         sqlLock.release()
         return ret
-        
-        
+
+
     def reload(self):
-        sql = """SELECT * FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'" 
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        sql = """SELECT * FROM SIPs WHERE sipUUID =  '""" + self.UUID + "'"
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             print row
             #self.UUID = row[0]
-            self.createdTime = row[1] 
+            self.createdTime = row[1]
             self.currentPath = row[2]
             row = c.fetchone()
         sqlLock.release()
-             
-        
+
+
     def getReplacementDic(self, target):
         # self.currentPath = currentPath.__str__()
         # self.UUID = uuid.uuid4().__str__()
@@ -117,8 +117,8 @@ class unitSIP(unit):
             SIPName = os.path.basename(self.currentPath).replace("-" + SIPUUID, "")
         SIPDirectory = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
         relativeDirectoryLocation = target.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
-      
-        
+
+
         ret = { \
         "%SIPLogsDirectory%": SIPDirectory + "logs/", \
         "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
@@ -136,7 +136,7 @@ class unitSIP(unit):
         "%SIPName%":SIPName \
         }
         return ret
-    
+
     def xmlify(self):
         ret = etree.Element("unit")
         etree.SubElement(ret, "type").text = "SIP"
