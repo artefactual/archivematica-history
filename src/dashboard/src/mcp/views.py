@@ -20,20 +20,20 @@ from dashboard.contrib.mcp.client import MCPClient
 from lxml import etree
 
 def execute(request):
-  result = ''
-  if 'uuid' in request.REQUEST:
-    client = MCPClient()
-    uuid = request.REQUEST.get('uuid', '')
-    choice = request.REQUEST.get('choice', '')
-    result = client.execute(uuid, choice)
-  return HttpResponse(result, mimetype = 'text/plain')
+    result = ''
+    if 'uuid' in request.REQUEST:
+        client = MCPClient()
+        uuid = request.REQUEST.get('uuid', '')
+        choice = request.REQUEST.get('choice', '')
+        result = client.execute(uuid, choice)
+    return HttpResponse(result, mimetype = 'text/plain')
 
 def list(request):
-  client = MCPClient()
-  jobs = etree.XML(client.list())
-  response = ''
-  if 0 < len(jobs):
-    for job in jobs:
-      response += etree.tostring(job)
-  response = '<MCP>%s</MCP>' % response
-  return HttpResponse(response, mimetype = 'text/xml')
+    client = MCPClient()
+    jobs = etree.XML(client.list())
+    response = ''
+    if 0 < len(jobs):
+        for job in jobs:
+            response += etree.tostring(job)
+    response = '<MCP>%s</MCP>' % response
+    return HttpResponse(response, mimetype = 'text/xml')

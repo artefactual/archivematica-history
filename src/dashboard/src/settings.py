@@ -8,20 +8,20 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-  # ('Your Name', 'your_email@domain.com'),
+    # ('Your Name', 'your_email@domain.com'),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-    'NAME': 'MCP',                        # Or path to database file if using sqlite3.
-    'USER': 'demo',                       # Not used with sqlite3.
-    'PASSWORD': 'demo',                   # Not used with sqlite3.
-    'HOST': '',                           # Set to empty string for localhost. Not used with sqlite3.
-    'PORT': '',                           # Set to empty string for default. Not used with sqlite3.
-  }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'MCP',                        # Or path to database file if using sqlite3.
+        'USER': 'demo',                       # Not used with sqlite3.
+        'PASSWORD': 'demo',                   # Not used with sqlite3.
+        'HOST': '',                           # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                           # Set to empty string for default. Not used with sqlite3.
+    }
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -73,17 +73,17 @@ ADMIN_MEDIA_PREFIX = '/media/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-  # Put strings here, like "/home/html/static" or "C:/www/django/static".
-  # Always use forward slashes, even on Windows.
-  # Don't forget to use absolute paths, not relative paths.
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
 )
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
-  'django.contrib.staticfiles.finders.FileSystemFinder',
-  'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-  #  'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -91,46 +91,45 @@ SECRET_KEY = 'e7b-$#-3fgu)j1k01)3tp@^e0=yv1hlcc4k-b6*ap^zezv2$48'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-  'django.template.loaders.filesystem.Loader',
-  'django.template.loaders.app_directories.Loader',
-  # 'django.template.loaders.eggs.Loader',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
-  'django.middleware.common.CommonMiddleware',
-  # 'django.contrib.sessions.middleware.SessionMiddleware',
-  # 'django.middleware.csrf.CsrfViewMiddleware',
-  # 'django.contrib.auth.middleware.AuthenticationMiddleware',
-  # 'django.contrib.messages.middleware.MessageMiddleware',
-  'dashboard.middleware.common.AJAXSimpleExceptionResponse',
+    'django.middleware.common.CommonMiddleware',
+    # 'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.messages.middleware.MessageMiddleware',
+    'dashboard.middleware.common.AJAXSimpleExceptionResponse',
 )
 
 ROOT_URLCONF = 'dashboard.urls'
 
 TEMPLATE_DIRS = (
-  # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-  # Always use forward slashes, even on Windows.
-  # Don't forget to use absolute paths, not relative paths.
-  os.path.join(BASE_PATH, 'templates'),
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(BASE_PATH, 'templates'),
 )
 
 INSTALLED_APPS = (
+    # Django basics
+    # 'django.contrib.auth',
+    # 'django.contrib.contenttypes',
+    # 'django.contrib.sessions',
+    # 'django.contrib.sites',
+    # 'django.contrib.messages',
+    # 'django.contrib.staticfiles',
+    'django.contrib.webdesign',
 
-  # Django basics
-  # 'django.contrib.auth',
-  # 'django.contrib.contenttypes',
-  # 'django.contrib.sessions',
-  # 'django.contrib.sites',
-  # 'django.contrib.messages',
-  # 'django.contrib.staticfiles',
-  'django.contrib.webdesign',
+    # Uncomment the next line to enable the admin:
+    # 'django.contrib.admin',
 
-  # Uncomment the next line to enable the admin:
-  # 'django.contrib.admin',
-
-  # Internal apps
-  'dashboard.main',
-  'dashboard.mcp',
+    # Internal apps
+    'dashboard.main',
+    'dashboard.mcp',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -139,35 +138,35 @@ INSTALLED_APPS = (
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOGGING = {
-  'version': 1,
-  'disable_existing_loggers': False,
-  'handlers': {
-    'mail_admins': {
-      'level': 'ERROR',
-      'class': 'django.utils.log.AdminEmailHandler'
-    }
-  },
-  'loggers': {
-    'django.request': {
-      'handlers': ['mail_admins'],
-      'level': 'ERROR',
-      'propagate': True,
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+      'mail_admins': {
+        'level': 'ERROR',
+        'class': 'django.utils.log.AdminEmailHandler'
+      }
     },
-  }
+    'loggers': {
+      'django.request': {
+        'handlers': ['mail_admins'],
+        'level': 'ERROR',
+        'propagate': True,
+      },
+    }
 }
 
 # Django debug toolbar
 try:
-  import debug_toolbar
+    import debug_toolbar
 except:
-  pass
+    pass
 else:
-  MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-  INSTALLED_APPS += ('debug_toolbar',)
-  INTERNAL_IPS = ('127.0.0.1', '192.168.82.1',)
-  DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-  }
+    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    INSTALLED_APPS += ('debug_toolbar',)
+    INTERNAL_IPS = ('127.0.0.1', '192.168.82.1',)
+    DEBUG_TOOLBAR_CONFIG = {
+        'INTERCEPT_REDIRECTS': False,
+    }
 
 # Dashboard internal settings
 MCP_SERVER = ('127.0.0.1', 4730) # localhost:4730
@@ -175,10 +174,10 @@ POLLING_INTERVAL = 5 # Seconds
 STATUS_POLLING_INTERVAL = 5 # Seconds
 
 MICROSERVICES_HELP = {
-  'Appraise SIP for preservation': 'Appraise SIP for preservation. Delete any files not accepted for preservation. Add submission documentation to metadata/ submissionDocumentation folder if desired.',
-  'Appraise SIP for submission': 'Check the SIP to make sure it conforms to your Submission Agreement. Delete any files not accepted for ingest. Add submission documentation to metadata/ submissionDocumentation folder if desired.',
-  'Remove from quarantine': 'If desired, click Approve to remove the SIP from quarantine immediately. Otherwise, wait until the quarantine period has expired and the SIP will be removed automatically.',
-  'Store AIP': 'If desired, review AIP content. Click "Approve" to move the AIP into archival storage.',
-  'Upload DIP': 'If desired, review the DIP and remove any access copies that should not be uploaded to the public access system, e.g. for copyright or security reasons. Click "Approve" to upload the DIP to the access system.',
-  'Approve normalization': 'Review normalization of objects, and manually normalize as necessary.',
+    'Appraise SIP for preservation': 'Appraise SIP for preservation. Delete any files not accepted for preservation. Add submission documentation to metadata/ submissionDocumentation folder if desired.',
+    'Appraise SIP for submission': 'Check the SIP to make sure it conforms to your Submission Agreement. Delete any files not accepted for ingest. Add submission documentation to metadata/ submissionDocumentation folder if desired.',
+    'Remove from quarantine': 'If desired, click Approve to remove the SIP from quarantine immediately. Otherwise, wait until the quarantine period has expired and the SIP will be removed automatically.',
+    'Store AIP': 'If desired, review AIP content. Click "Approve" to move the AIP into archival storage.',
+    'Upload DIP': 'If desired, review the DIP and remove any access copies that should not be uploaded to the public access system, e.g. for copyright or security reasons. Click "Approve" to upload the DIP to the access system.',
+    'Approve normalization': 'Review normalization of objects, and manually normalize as necessary.',
 }
