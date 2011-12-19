@@ -37,7 +37,7 @@ if __name__ == '__main__':
     target =  sys.argv[2]
     date = sys.argv[3]
     taskUUID = sys.argv[4]
-    
+
     command = 'clamdscan  - <"' + escapeForCommand2(target) + '"'
     print >>sys.stderr, command
     commandVersion = "clamdscan -V"
@@ -45,19 +45,19 @@ if __name__ == '__main__':
 
     clamscanOutput = executeOrRun("bashScript", command, printing=False)
     clamscanVersionOutput = executeOrRun("command", commandVersion, printing=False)
-    
+
     if clamscanOutput[0] or clamscanVersionOutput[0]:
         if clamscanVersionOutput[0]:
             print >>sys.stderr, clamscanVersionOutput
             exit(2)
         else:
             eventOutcome = "Fail"
-    
+
     if eventOutcome == "Fail" or clamscanOutput[1].find(clamscanResultShouldBe) == -1:
         eventOutcome = "Fail"
         print >>sys.stderr, fileUUID, " - ", os.path.basename(target)
-        print >>sys.stderr, clamscanOutput 
-    
+        print >>sys.stderr, clamscanOutput
+
     version, virusDefs, virusDefsDate = clamscanVersionOutput[1].split("/")
     virusDefs = virusDefs + "/" + virusDefsDate
     eventDetailText = "program=\"Clam AV\"; version=\"" + version + "\"; virusDefinitions=\"" + virusDefs + "\""
@@ -66,4 +66,3 @@ if __name__ == '__main__':
         insertIntoEvents(fileUUID=fileUUID, eventIdentifierUUID=taskUUID, eventType="virus check", eventDateTime=date, eventDetail=eventDetailText, eventOutcome=eventOutcome, eventOutcomeDetailNote="")
     if eventOutcome != "Pass":
         exit(3)
-            

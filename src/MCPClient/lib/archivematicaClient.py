@@ -3,7 +3,7 @@
 # This file is part of Archivematica.
 #
 # Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
-# 
+#
 # Archivematica is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -49,7 +49,7 @@ from databaseFunctions import logTaskAssignedSQL
 config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
 config.read("/etc/archivematica/MCPClient/clientConfig.conf")
 
-replacementDic = { 
+replacementDic = {
     "%sharedPath%":config.get('MCPClient', "sharedDirectoryMounted"), \
     "%clientScriptsDirectory%":config.get('MCPClient', "clientScriptsDirectory")
 }
@@ -61,20 +61,20 @@ def loadSupportedModulesSupport(key, value):
     if not os.path.isfile(value):
         print >>sys.stderr, "Warning - Module can't find file, or relies on system path:{%s}%s" % (key.__str__(), value.__str__())
     supportedModules[key] = value + " "
-        
-def loadSupportedModules(file):    
+
+def loadSupportedModules(file):
     supportedModulesConfig = ConfigParser.RawConfigParser()
     supportedModulesConfig.read(file)
     for key, value in supportedModulesConfig.items('supportedCommands'):
         loadSupportedModulesSupport(key, value)
-    
+
     loadSupportedCommandsSpecial = config.get('MCPClient', "LoadSupportedCommandsSpecial")
     if loadSupportedCommandsSpecial.lower() == "yes" or \
     loadSupportedCommandsSpecial.lower() == "true":
         for key, value in supportedModulesConfig.items('supportedCommandsSpecial'):
             loadSupportedModulesSupport(key, value)
-          
-       
+
+
 def executeCommand(gearman_worker, gearman_job):
     try:
         execute = gearman_job.task
@@ -86,36 +86,36 @@ def executeCommand(gearman_worker, gearman_job):
             arguments = arguments.encode("utf-8")
         #if isinstance(arguments, str):
         #    arguments = unicode(arguments)
-            
+
         sInput = ""
         clientID = gearman_worker.worker_client_id
-        
+
         if True:
             print clientID, execute, data
         logTaskAssignedSQL(gearman_job.unique.__str__(), clientID, utcDate)
-        
-        
-        
+
+
+
         if execute not in supportedModules:
             output = ["Error!", "Error! - Tried to run and unsupported command." ]
             exitCode = -1
             return cPickle.dumps({"exitCode" : exitCode, "stdOut": output[0], "stdError": output[1]})
-        command = supportedModules[execute] 
-        
-        
+        command = supportedModules[execute]
+
+
         replacementDic["%date%"] = utcDate
         replacementDic["%jobCreatedDate%"] = data["createdDate"]
         #Replace replacement strings
         for key in replacementDic.iterkeys():
             command = command.replace ( key, replacementDic[key] )
             arguments = arguments.replace ( key, replacementDic[key] )
-        
+
         key = "%taskUUID%"
         value = gearman_job.unique.__str__()
         arguments = arguments.replace(key, value)
-        
+
         #execute command
-    
+
         command += " " + arguments
         print >>sys.stderr, "processing: {" + gearman_job.unique + "}" + command.__str__()
         exitCode, stdOut, stdError = executeOrRun("command", command, sInput, printing=False)
@@ -133,17 +133,17 @@ def executeCommand(gearman_worker, gearman_job):
         print "Unexpected error:", sys.exc_info()[0]
         output = ["", sys.exc_info().__str__()]
         return cPickle.dumps({"exitCode" : -1, "stdOut": output[0], "stdError": output[1]})
-        
 
-def startThread(threadNumber): 
+
+def startThread(threadNumber):
     gm_worker = gearman.GearmanWorker([config.get('MCPClient', "MCPArchivematicaServer")])
-    hostID = gethostname() + "_" + threadNumber.__str__() 
+    hostID = gethostname() + "_" + threadNumber.__str__()
     gm_worker.set_client_id(hostID)
     for key in supportedModules.iterkeys():
         print "registering:", '"' + key + '"'
         gm_worker.register_task(key, executeCommand)
     gm_worker.work()
-    
+
 
 def flushOutputs():
     while True:
@@ -155,7 +155,7 @@ def startThreads(t=1):
     if True:
         t2 = threading.Thread(target=flushOutputs)
         t2.daemon = True
-        t2.start() 
+        t2.start()
     if t == 0:
         from externals.detectCores import detectCPUs
         t = detectCPUs()
@@ -170,4 +170,3 @@ if __name__ == '__main__':
     tl = threading.Lock()
     tl.acquire()
     tl.acquire()
-  

@@ -39,7 +39,7 @@ import threading
 import string
 
 lockDicsLock = threading.Lock()
-sipUUIDFileLocksCount = {} 
+sipUUIDFileLocksCount = {}
 sipUUIDFileLocks = {}
 
 def releaseSIPUUIDFileLock(sipUUIDfile):
@@ -66,21 +66,21 @@ def acquireSIPUUIDFileLock(sipUUIDfile):
         print "Software logic error. This should not happen."
 
 def loadFileUUIDsDic(sipUUIDfile):
-  UUIDsDic = {}
-  if os.path.isfile(sipUUIDfile):
-    FileUUIDs_fh = open(sipUUIDfile, "r")
-    line = FileUUIDs_fh.readline()
-    while line:
-      theFileLine = line.split(" -> ",1)
-      if len(theFileLine) > 1 :
-        fileUUID = theFileLine[0]
-        fileName = theFileLine[1]
-        fileName = string.replace(fileName, "\n", "", 1)
-        UUIDsDic[fileName] = fileUUID
-      line = FileUUIDs_fh.readline()
-  else:
     UUIDsDic = {}
-  return UUIDsDic
+    if os.path.isfile(sipUUIDfile):
+        FileUUIDs_fh = open(sipUUIDfile, "r")
+        line = FileUUIDs_fh.readline()
+        while line:
+            theFileLine = line.split(" -> ",1)
+            if len(theFileLine) > 1 :
+                fileUUID = theFileLine[0]
+                fileName = theFileLine[1]
+                fileName = string.replace(fileName, "\n", "", 1)
+                UUIDsDic[fileName] = fileUUID
+            line = FileUUIDs_fh.readline()
+    else:
+        UUIDsDic = {}
+    return UUIDsDic
 
 def getTagged(root, tag):
     ret = []
@@ -88,8 +88,8 @@ def getTagged(root, tag):
         if element.tag == tag:
             ret.append(element)
             return ret #only return the first encounter
-    return ret  
-    
+    return ret
+
 def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory, updateSIPUUIDfile=True):
     ret = "No UUID for file: " + filename
     #for every file in the fileUUIDxmlFilesDirectory:
@@ -98,7 +98,7 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory, up
         for dirs, subDirs, files in os.walk(fileUUIDxmlFilesDirectory):
             configFiles = files
             break
-        
+
         #print "config file - dir: ", fileUUIDxmlFilesDirectory
         for configFile in configFiles:
             if configFile.endswith(".xml"):
@@ -137,32 +137,31 @@ def findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory, up
         print "debug except 3"
         ret = ret
     return ret
-    
+
 
 def getUUIDOfFile(sipUUIDfile, basepath, fullFileName, fileUUIDxmlFilesDirectory, relativeString="objects/"):
-  UUIDsDic = loadFileUUIDsDic(sipUUIDfile) 
-  if basepath not in fullFileName:
-      return "No UUID for file: " + os.path.basename(fullFileName) 
-  filename = string.replace( fullFileName, basepath, relativeString, 1 )    
-  if UUIDsDic and filename in UUIDsDic:
-    return UUIDsDic[filename]
-  else :
-    return findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory)
+    UUIDsDic = loadFileUUIDsDic(sipUUIDfile)
+    if basepath not in fullFileName:
+        return "No UUID for file: " + os.path.basename(fullFileName)
+    filename = string.replace( fullFileName, basepath, relativeString, 1 )
+    if UUIDsDic and filename in UUIDsDic:
+        return UUIDsDic[filename]
+    else :
+        return findUUIDFromFileUUIDxml(sipUUIDfile, filename, fileUUIDxmlFilesDirectory)
 
-   
+
 if __name__ == '__main__':
-  function =  sys.argv[1]
+    function =  sys.argv[1]
 
-  if function == "Logline" :
-    basepath = sys.argv[2]
-    fullFileName = sys.argv[3]
-    filename = string.replace( fullFileName, basepath, "objects", 1 )    
-    print filename
+    if function == "Logline" :
+        basepath = sys.argv[2]
+        fullFileName = sys.argv[3]
+        filename = string.replace( fullFileName, basepath, "objects", 1 )
+        print filename
 
-  elif function == "getFileUUID":
-    sipUUIDfile = sys.argv[2]
-    basepath = sys.argv[3]
-    fullFileName = sys.argv[4]
-    fileUUIDxmlFilesDirectory = sys.argv[5]
-    print getUUIDOfFile( sipUUIDfile, basepath, fullFileName, fileUUIDxmlFilesDirectory)
-
+    elif function == "getFileUUID":
+        sipUUIDfile = sys.argv[2]
+        basepath = sys.argv[3]
+        fullFileName = sys.argv[4]
+        fileUUIDxmlFilesDirectory = sys.argv[5]
+        print getUUIDOfFile( sipUUIDfile, basepath, fullFileName, fileUUIDxmlFilesDirectory)

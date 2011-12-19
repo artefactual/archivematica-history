@@ -51,7 +51,7 @@ def verifyNothingElseAtTopLevel(SIPDir, ret=0):
     return ret
 
 if __name__ == '__main__':
-    SIPDir = sys.argv[1] 
+    SIPDir = sys.argv[1]
     ret = verifyDirectoriesExist(SIPDir)
     ret = verifyNothingElseAtTopLevel(SIPDir, ret)
     ret = checkDirectory(SIPDir, ret)

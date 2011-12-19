@@ -36,8 +36,8 @@ import dashboard.main.models as models
 
 user = getpass.getuser()
 if "archivematica" != user:
-  print >> sys.stderr, 'This user is required to be executed as "archivematica" user but you are using %s.' % user
-  sys.exit(1)
+    print >> sys.stderr, 'This user is required to be executed as "archivematica" user but you are using %s.' % user
+    sys.exit(1)
 
 def start(data):
 
@@ -124,8 +124,8 @@ def start(data):
             access.exitcode = process.returncode
 
             if 0 < process.returncode:
-              log("rsync quit unexpectedly (exit %s), the upload script will be stopped here" % process.returncode)
-              return ''
+                log("rsync quit unexpectedly (exit %s), the upload script will be stopped here" % process.returncode)
+                return ''
 
             access.save()
 
@@ -190,9 +190,8 @@ if __name__ == '__main__':
     (opts, args) = parser.parse_args()
 
     if opts.email is None or opts.password is None or opts.url is None or opts.UUID is None:
-         print >>sys.stderr, "Invalid syntax"
-         parser.print_help()
-         sys.exit(2)
+        print >>sys.stderr, "Invalid syntax"
+        parser.print_help()
+        sys.exit(2)
 
     start(opts)
-

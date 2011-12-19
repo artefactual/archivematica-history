@@ -33,10 +33,10 @@ if __name__ == '__main__':
     sipUUID = sys.argv[1]
     submissionDocumentationDirectory = sys.argv[2]
     sharedPath = sys.argv[3]
-    
+
     sql = """SELECT Transfers.currentLocation FROM Transfers WHERE Transfers.transferUUID IN (SELECT transferUUID FROM Files WHERE  removedTime = 0 AND sipUUID =  '%s');""" % (sipUUID)
     print sql
-    c, sqlLock = databaseInterface.querySQL(sql) 
+    c, sqlLock = databaseInterface.querySQL(sql)
     row = c.fetchone()
     while row != None:
         #print row
@@ -45,6 +45,6 @@ if __name__ == '__main__':
         src = os.path.join(transferLocation, "metadata/submissionDocumentation")
         dst = os.path.join(submissionDocumentationDirectory, "transfer-%s" % (transferNameUUID))
         print >>sys.stderr, src, " -> ", dst
-        shutil.copytree(src, dst) 
+        shutil.copytree(src, dst)
         row = c.fetchone()
     sqlLock.release()

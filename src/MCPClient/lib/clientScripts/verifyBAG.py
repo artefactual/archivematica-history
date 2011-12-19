@@ -23,7 +23,7 @@
 # @version svn: $Id$
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from executeOrRunSubProcess import executeOrRun 
+from executeOrRunSubProcess import executeOrRun
 
 printSubProcessOutput=True
 
@@ -42,5 +42,5 @@ for command in verificationCommands:
         print >>sys.stderr, "Failed test: ", command
         exitCode=1
     else:
-        print >>sys.stderr, "Passed test: ", command   
+        print >>sys.stderr, "Passed test: ", command
 quit(exitCode)

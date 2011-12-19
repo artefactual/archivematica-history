@@ -36,11 +36,11 @@ from fileOperations import writeToFile
 #Tasks are what are assigned to clients.
 #They have a zero-many(tasks) TO one(job) relationship
 #This relationship is formed by storing a pointer to it's owning job in its job variable.
-#They use a "replacement dictionary" to define variables for this task.  
-#Variables used for the task are defined in the Job's configuration/module (The xml file)    
+#They use a "replacement dictionary" to define variables for this task.
+#Variables used for the task are defined in the Job's configuration/module (The xml file)
 class taskStandard():
     """A task is an instance of a command, operating on an entire directory, or a single file."""
-    
+
     def __init__(self, linkTaskManager, execute, arguments, standardOutputFile, standardErrorFile, outputLock=None, UUID=None):
         if UUID == None:
             UUID = uuid.uuid4().__str__()
@@ -52,10 +52,10 @@ class taskStandard():
         self.standardOutputFile = standardOutputFile
         self.standardErrorFile = standardErrorFile
         self.outputLock = outputLock
-        
-        
+
+
         print "init done"
-        
+
     def performTask(self):
         from archivematicaMCP import limitGearmanConnectionsSemaphore
         limitGearmanConnectionsSemaphore.acquire()
@@ -68,39 +68,39 @@ class taskStandard():
         self.check_request_status(completed_job_request)
         print "DEBUG: FINISHED PERFORMING TASK: ", self.UUID
         exit(0)
-    
+
     def check_request_status(self, job_request):
         if job_request.complete:
             self.results = cPickle.loads(job_request.result)
             print "Task %s finished!  Result: %s - %s" % (job_request.job.unique, job_request.state, self.results)
             self.writeOutputs()
             self.linkTaskManager.taskCompletedCallBackFunction(self)
-            
+
         elif job_request.timed_out:
             print >>sys.stderr, "Task %s timed out!" % job_request.unique
             self.results['exitCode'] = -1
             self.results["stdError"] = "Task %s timed out!" % job_request.unique
             self.linkTaskManager.taskCompletedCallBackFunction(self)
-            
+
         elif job_request.state == JOB_UNKNOWN:
             print >>sys.stderr, "Task %s connection failed!" % job_request.unique
             self.results["stdError"] = "Task %s connection failed!" % job_request.unique
             self.results['exitCode'] = -1
             self.linkTaskManager.taskCompletedCallBackFunction(self)
-        
+
         else:
             print >>sys.stderr, "Task %s failed!" % job_request.unique
             self.results["stdError"] = "Task %s failed!" % job_request.unique
             self.results['exitCode'] = -1
             self.linkTaskManager.taskCompletedCallBackFunction(self)
-        
 
 
- 
-    
-    #This function is used to verify that where 
+
+
+
+    #This function is used to verify that where
     #the MCP is writing to is an allowable location
-    #@fileName - full path of file it wants to validate. 
+    #@fileName - full path of file it wants to validate.
     def writeOutputsValidateOutputFile(self, fileName):
         ret = fileName
         if ret:
@@ -109,30 +109,29 @@ class taskStandard():
             else:
                 ret = "<^Not allowed to write to file^> " + ret
         return ret
-    
+
     #Used to write the output of the commands to the specified files
     def writeOutputs(self):
         """Used to write the output of the commands to the specified files"""
-        
-        
+
+
         if self.outputLock != None:
             self.outputLock.acquire()
-        
+
         standardOut = self.writeOutputsValidateOutputFile(self.standardOutputFile)
         standardError = self.writeOutputsValidateOutputFile(self.standardErrorFile)
-         
+
         #output , filename
         a = writeToFile(self.results["stdOut"], standardOut)
         b = writeToFile(self.results["stdError"], standardError)
 
         if self.outputLock != None:
             self.outputLock.release()
-            
+
         if a:
             self.stdError = "Failed to write to file{" + standardOut + "}\r\n" + self.results["stdOut"]
         if b:
             self.stdError = "Failed to write to file{" + standardError + "}\r\n" + self.results["stdError"]
         if  self.results['exitCode']:
             return self.results['exitCode']
-        return a + b 
-
+        return a + b

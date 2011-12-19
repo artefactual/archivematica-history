@@ -32,7 +32,7 @@ try:
     max2 = int(sys.argv[1])
 except:
     max2 = 950
-    
+
 def simple(i = 0, str = "."):
     while i < max:
         str = "%s/%d" % (str, i)
@@ -46,6 +46,3 @@ for x in range(max2):
     dir = "./" + x.__str__()
     os.mkdir(dir)
     simple(str=dir)
-    
-
-     

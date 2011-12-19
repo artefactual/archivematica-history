@@ -28,30 +28,30 @@ from archivematicaFunctions import fileNoLongerExists
 from archivematicaFunctions import getTagged
 from createXmlEventsAssist import createEvent
 
-def addRemovedEvent(root, eventDetailText, date, eIDValue):    
+def addRemovedEvent(root, eventDetailText, date, eIDValue):
     eventXML = createEvent( eIDValue, "fileRemoved", \
     eventDateTime=date,  eventDetailText=eventDetailText)
-    
+
     events = getTagged(root, "events")[0]
     events.append(eventXML)
-   
+
 
 
 if __name__ == '__main__':
-    
+
     objectsDir = sys.argv[1]
     xmlFile = sys.argv[2]
-    eventDetailText = sys.argv[3] 
+    eventDetailText = sys.argv[3]
     date = sys.argv[4]
     eIDValue = sys.argv[5]
-    
+
     if not xmlFile.endswith(".xml"):
         print "Warning: Non xml file in /logs/fileMeta/ {" + xmlFile + "}"
         quit(0)
-    
+
     tree = etree.parse( xmlFile )
     root = tree.getroot()
-    
+
     if fileNoLongerExists(root, objectsDir) == 1:
         addRemovedEvent(root, eventDetailText, date, eIDValue)
         tree = etree.ElementTree(root)

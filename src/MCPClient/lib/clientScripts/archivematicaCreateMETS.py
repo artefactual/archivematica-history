@@ -32,7 +32,7 @@ import string
 import MySQLdb
 from xml.sax.saxutils import quoteattr
 from datetime import datetime
-from createXmlEventsAssist import createArchivematicaAgent 
+from createXmlEventsAssist import createArchivematicaAgent
 from createXmlEventsAssist import createOrganizationAgent
 #from archivematicaCreateMETS2 import escape
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
@@ -90,7 +90,7 @@ def createFileSec(path, parentBranch, structMapParent):
     if path == basePath: #if it's the very first run through (recursive function)
         pathSTR = os.path.basename(os.path.dirname(basePath))
         #structMapParent.set("DMDID", "SIP-description")
-        
+
         #currentBranch = newChild(parentBranch, "fileGrp")
         #currentBranch.set("USE", "directory")
         # structMap directory
@@ -98,16 +98,16 @@ def createFileSec(path, parentBranch, structMapParent):
         createFileSec(os.path.join(path, "objects/"), parentBranch, div)
         doneFirstRun = False
     filename = os.path.basename(pathSTR)
-    
+
     structMapParent.set("TYPE", "directory")
     structMapParent.set("LABEL", escape(filename))
-    
-    
+
+
     if doneFirstRun:
         for doDirectories in [False, True]:
             print "path", type(path), path
-            for item in os.listdir(path): 
-                print "item", type(item), item                
+            for item in os.listdir(path):
+                print "item", type(item), item
                 itempath = os.path.join(path, item)
                 if os.path.isdir(itempath):
                     if not doDirectories:
@@ -116,8 +116,8 @@ def createFileSec(path, parentBranch, structMapParent):
                     #currentBranch.set("USE", "directory")
                     # structMap directory
                     div = newChild(structMapParent, "div")
-    
-                    createFileSec(os.path.join(path, item), parentBranch, div)        
+
+                    createFileSec(os.path.join(path, item), parentBranch, div)
                 elif os.path.isfile(itempath):
                     if doDirectories:
                         continue
@@ -125,11 +125,11 @@ def createFileSec(path, parentBranch, structMapParent):
                     myuuid=""
                     #pathSTR = itempath.replace(basePath + "objects", "objects", 1)
                     pathSTR = itempath.replace(basePath, basePathString, 1)
-                    
+
                     print "pathSTR", type(pathSTR), pathSTR
-                    
+
                     sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupIdentifier, SIPUUID, MySQLdb.escape_string(pathSTR))
-                    c, sqlLock = databaseInterface.querySQL(sql) 
+                    c, sqlLock = databaseInterface.querySQL(sql)
                     row = c.fetchone()
                     if row == None:
                         print >>sys.stderr, "No uuid for file: \"", pathSTR, "\""
@@ -137,39 +137,39 @@ def createFileSec(path, parentBranch, structMapParent):
                         myuuid = row[0]
                         row = c.fetchone()
                     sqlLock.release()
-                    
+
                     if includeAmdSec:
                         createDigiprovMD(myuuid, itempath, myuuid)
-                    
+
                     pathSTR = itempath.replace(basePath, "", 1)
-                    
+
                     fileI = etree.SubElement( parentBranch, "file")
-    
+
                     filename = ''.join(quoteattr(item).split("\"")[1:-1])
                     #filename = replace /tmp/"UUID" with /objects/
-                    
+
                     ID = "file-" + myuuid.__str__()
                     fileI.set("ID", escape(ID))
                     if includeAmdSec:
-                        fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())            
-    
+                        fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())
+
                     Flocat = newChild(fileI, "FLocat")
                     Flocat.set(xlinkBNS + "href", escape(pathSTR) )
                     Flocat.set("LOCTYPE", "OTHER")
                     Flocat.set("OTHERLOCTYPE", "SYSTEM")
-    
+
                     # structMap file
                     #div = newChild(structMapParent, "div")
                     fptr = newChild(structMapParent, "fptr")
                     FILEID = "file-" + myuuid.__str__()
                     fptr.set("FILEID", escape(FILEID))
-         
+
 if __name__ == '__main__':
     root = etree.Element( "mets", \
     nsmap = {None: metsNS, "xlink": xlinkNS}, \
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd" } )
 
-    #cd /tmp/$UUID; 
+    #cd /tmp/$UUID;
     opath = os.getcwd()
     os.chdir(basePath)
     path = basePath
@@ -187,7 +187,7 @@ if __name__ == '__main__':
     structMap = newChild(root, "structMap")
     structMap.set("TYPE", "physical")
     structMapDiv = newChild(structMap, "div")
-    
+
     createFileSec(path, sipFileGrp, structMapDiv)
 
     tree = etree.ElementTree(root)
@@ -195,4 +195,3 @@ if __name__ == '__main__':
 
     # Restore original path
     os.chdir(opath)
-    

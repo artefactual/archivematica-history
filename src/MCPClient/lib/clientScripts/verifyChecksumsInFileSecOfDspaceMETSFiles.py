@@ -37,7 +37,7 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, relativeDirectory="./")
     for item in root.findall("{http://www.loc.gov/METS/}fileSec/{http://www.loc.gov/METS/}fileGrp/{http://www.loc.gov/METS/}file"):
         #print etree.tostring(item)
         #print item
-        
+
         checksum = item.get("CHECKSUM")
         checksumType = item.get("CHECKSUMTYPE")
         for item2 in item:
@@ -46,7 +46,7 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, relativeDirectory="./")
                 #print item2.attrib
                 fileLocation = item2.get("{http://www.w3.org/1999/xlink}href")
         #print "%s - %s - %s " % (checksumType, checksum, fileLocation)
-        fileFullPath = os.path.join(relativeDirectory, fileLocation)       
+        fileFullPath = os.path.join(relativeDirectory, fileLocation)
         if checksumType == "MD5":
             checksum2 = md5_for_file(fileFullPath)
             eventDetail = "program=\"python\"; module=\"hashlib.sha256()\""
@@ -56,8 +56,8 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, relativeDirectory="./")
         else:
             print >>sys.stderr, "Unsupported checksum type: %s" % (checksumType.__str__())
             exit(300)
-         
-            
+
+
         if checksum != checksum2:
             #eventOutcomeDetailNote = checksumFile.__str__() + " != " + checksumDB.__str__()
             eventOutcome="Fail"
@@ -68,12 +68,14 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, relativeDirectory="./")
             #eventOutcomeDetailNote = checksumFile.__str__() + "verified"
             eventOutcome="Pass"
             print eventOutcome, fileLocation
- 
-        
-        
+
+
+
+
+
 
     return exitCode
-    
+
     #insertIntoEvents(fileUUID="", eventIdentifierUUID="", eventType="", eventDateTime=databaseInterface.getUTCDate(), eventDetail="", eventOutcome="", eventOutcomeDetailNote="")
     databaseFunctions.insertIntoEvents(fileUUID=fileUUID, \
                  eventIdentifierUUID=eventIdentifierUUID, \
@@ -82,16 +84,16 @@ def verifyMetsFileSecChecksums(metsFile, date, taskUUID, relativeDirectory="./")
                  eventOutcome=eventOutcome, \
                  eventOutcomeDetailNote=eventOutcomeDetailNote, \
                  eventDetail=eventDetail)
-    
- 
-             
+
+
+
 
 
 if __name__ == '__main__':
     metsFile = sys.argv[1]
-    date = sys.argv[2] 
+    date = sys.argv[2]
     taskUUID = sys.argv[3]
-    
-    
+
+
     ret = verifyMetsFileSecChecksums(metsFile, date, taskUUID, relativeDirectory=os.path.dirname(metsFile) + "/")
     quit(ret)

@@ -32,21 +32,17 @@ from sanitizeNames import sanitizePath
 
 
 DetoxDic={}
-      
+
 if __name__ == '__main__':
     SIPDirectory = sys.argv[1]
     sipUUID =  sys.argv[2]
     date = sys.argv[3]
     sharedDirectoryPath = sys.argv[4]
     #os.path.abspath(SIPDirectory)
-    
+
     dst = sanitizePath(SIPDirectory)
-    if SIPDirectory != dst: 
+    if SIPDirectory != dst:
         dst = dst.replace(sharedDirectoryPath, "%sharedPath%", 1)
         print SIPDirectory.replace(sharedDirectoryPath, "%sharedPath%", 1) + " -> " + dst
         sql =  """UPDATE SIPs SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""
         databaseInterface.runSQL(sql)
-        
-    
-    
-

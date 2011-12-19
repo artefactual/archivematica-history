@@ -31,7 +31,7 @@ import transcoder
 import uuid
 #from premisXMLlinker import xmlNormalize
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from fileOperations import addFileToSIP 
+from fileOperations import addFileToSIP
 from fileOperations import updateSizeAndChecksum
 from getPronomsFromPremis import getPronomsFromPremis
 from databaseFunctions import insertIntoEvents
@@ -59,12 +59,12 @@ def inPreservationFormat():
 
 def onceNormalized(command):
     transcodedFiles = []
-    
+
     if not command.outputLocation:
         command.outputLocation = ""
     elif os.path.isfile(command.outputLocation):
         transcodedFiles.append(command.outputLocation)
-    elif os.path.isdir(command.outputLocation):        
+    elif os.path.isdir(command.outputLocation):
         for w in os.walk(command.outputLocation):
             path, directories, files = w
             for p in files:
@@ -75,7 +75,7 @@ def onceNormalized(command):
         print >>sys.stderr, command
         print >>sys.stderr, "Error - output file does not exist [" + command.outputLocation + "]"
         command.exitCode = -2
-             
+
     derivationEventUUID = uuid.uuid4().__str__()
     for ef in transcodedFiles:
         global outputFileUUID
@@ -91,7 +91,7 @@ def onceNormalized(command):
                      opts.date, \
                      opts.logsDirectory, \
                      ) #    {normalized; not normalized}"""
-                     
+
             #Add the new file to the sip
             filePathRelativeToSIP = ef.replace(opts.sipPath, "%SIPDirectory%", 1)
             # addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourceType="ingestion"):
@@ -106,14 +106,14 @@ def onceNormalized(command):
                eventDetail=command.eventDetailCommand.stdOut, \
                eventOutcome="", \
                eventOutcomeDetailNote=filePathRelativeToSIP)
-            
+
             updateSizeAndChecksum(outputFileUUID, ef, opts.date, uuid.uuid4().__str__())
-            
+
             #Add linking information between files
             insertIntoDerivations(sourceFileUUID=opts.fileUUID, derivedFileUUID=outputFileUUID, relatedEventUUID=derivationEventUUID)
-            
-            outputFileUUID = uuid.uuid4().__str__() 
-            replacementDic["%postfix%"] = "-" + outputFileUUID             
+
+            outputFileUUID = uuid.uuid4().__str__()
+            replacementDic["%postfix%"] = "-" + outputFileUUID
 
 def identifyCommands(fileName):
     """Identify file type(s)"""
@@ -122,12 +122,12 @@ def identifyCommands(fileName):
     premisFile = opts.logsDirectory + "fileMeta/" + opts.fileUUID + ".xml"
     try:
         for pronomID in getPronomsFromPremis(premisFile):
-            sql = """SELECT CR.pk, CR.command, CR.GroupMember 
-            FROM CommandRelationships AS CR 
-            JOIN FileIDs ON CR.fileID=FileIDs.pk 
+            sql = """SELECT CR.pk, CR.command, CR.GroupMember
+            FROM CommandRelationships AS CR
+            JOIN FileIDs ON CR.fileID=FileIDs.pk
             JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
-            JOIN FileIDsByPronom AS FIBP  ON FileIDs.pk = FIBP.FileIDs 
-            WHERE FIBP.FileID = '""" + pronomID.__str__() + """'  
+            JOIN FileIDsByPronom AS FIBP  ON FileIDs.pk = FIBP.FileIDs
+            WHERE FIBP.FileID = '""" + pronomID.__str__() + """'
             AND CommandClassifications.classification = '""" + opts.commandClassifications +"""';"""
             c.execute(sql)
             row = c.fetchone()
@@ -137,21 +137,21 @@ def identifyCommands(fileName):
     except:
         print >>sys.stderr, "Failed to retrieve pronomIDs."
         ret = []
-        
+
     if transcoder.fileExtension:
-        sql = """SELECT CR.pk, CR.command, CR.GroupMember 
-        FROM CommandRelationships AS CR 
-        JOIN FileIDs ON CR.fileID=FileIDs.pk 
+        sql = """SELECT CR.pk, CR.command, CR.GroupMember
+        FROM CommandRelationships AS CR
+        JOIN FileIDs ON CR.fileID=FileIDs.pk
         JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
-        JOIN FileIDsByExtension AS FIBE  ON FileIDs.pk = FIBE.FileIDs 
-        WHERE FIBE.Extension = '""" + transcoder.fileExtension.__str__() + """'  
+        JOIN FileIDsByExtension AS FIBE  ON FileIDs.pk = FIBE.FileIDs
+        WHERE FIBE.Extension = '""" + transcoder.fileExtension.__str__() + """'
         AND CommandClassifications.classification = '""" + opts.commandClassifications +"""';"""
         c.execute(sql)
         row = c.fetchone()
         while row != None:
             ret.append(row)
-            row = c.fetchone()  
-    
+            row = c.fetchone()
+
     if not len(ret):
         if opts.commandClassifications == "preservation":
             if inPreservationFormat():
@@ -160,11 +160,11 @@ def identifyCommands(fileName):
                 print >>sys.stderr, "Unable to verify archival readiness."
                 #Issue 528: related to exit code
                 exit(0)
-        
+
         elif opts.commandClassifications == "access":
             sql = """SELECT CR.pk, CR.command, CR.GroupMember
             FROM CommandRelationships AS CR
-            JOIN Commands AS C ON CR.command = C.pk 
+            JOIN Commands AS C ON CR.command = C.pk
             WHERE C.description = 'Copying File.';"""
             c.execute(sql)
             row = c.fetchone()
@@ -173,7 +173,7 @@ def identifyCommands(fileName):
                 copyExitCode = cl.execute()
                 if copyExitCode:
                     exit(copyExitCode)
-                row = c.fetchone()  
+                row = c.fetchone()
             if inAccessFormat():
                 print "Already in access format."
                 exit(0)
@@ -187,7 +187,7 @@ if __name__ == '__main__':
     global opts
     global replacementDic
     global outputFileUUID
-    
+
     parser = OptionParser()
     parser.add_option("-f",  "--inputFile",          action="store", dest="inputFile", default="")
     parser.add_option("-c",  "--commandClassifications",  action="store", dest="commandClassifications", default="")
@@ -201,23 +201,23 @@ if __name__ == '__main__':
     parser.add_option("-s",  "--sipUUID",   action="store", dest="sipUUID", default="")
     parser.add_option("-p",  "--sipPath",   action="store", dest="sipPath", default="")
     parser.add_option("-g",  "--fileGrpUse",   action="store", dest="fileGrpUse", default="")
-        
+
     (opts, args) = parser.parse_args()
-    
+
     filename = opts.inputFile
     print "Operating on file: ", filename
     print "Using " + opts.commandClassifications + " command classifications"
-   
+
     if opts.excludeDirectory != "":
         if filename.startswith(opts.excludeDirectory):
             print "skipping file in exclude directory: ", filename
             exit(0)
-            
-    #can move into if opts.commandClassifications == "preservation/access": to isolate for those functions 
+
+    #can move into if opts.commandClassifications == "preservation/access": to isolate for those functions
     if opts.fileGrpUse in ["DSPACEMETS", "service"]:
-            print "file's fileGrpUse in exclusion list, skipping"
-            exit(0)
-            
+        print "file's fileGrpUse in exclusion list, skipping"
+        exit(0)
+
     setFileIn(fileIn=filename)
     prefix = ""
     postfix = ""
@@ -225,14 +225,14 @@ if __name__ == '__main__':
     if opts.commandClassifications == "preservation":
         postfix = "-" + opts.taskUUID
         outputFileUUID = opts.taskUUID
-        outputDirectory = transcoder.fileDirectory 
+        outputDirectory = transcoder.fileDirectory
     elif opts.commandClassifications == "access":
         prefix = opts.fileUUID + "-"
         outputDirectory = opts.accessDirectory
     else:
         print >>sys.stderr, "Unsupported command classification."
         exit(2)
-    
+
     fileExtensionWithDot = "." + transcoder.fileExtension
     if transcoder.fileExtension == "":
         fileExtensionWithDot = ""
@@ -249,10 +249,9 @@ if __name__ == '__main__':
         "%prefix%": prefix,
         "%postfix%": postfix
         }
-    
-    
+
+
     transcoder.onSuccess = onceNormalized
     transcoder.identifyCommands = identifyCommands
     transcoder.replacementDic = replacementDic
     main(filename)
-

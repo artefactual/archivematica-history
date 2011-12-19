@@ -17,7 +17,7 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage 
+# @subpackage
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
@@ -50,11 +50,11 @@ def add(filePath="~/.config/Thunar/uca.xml", \
     otherFiles="", \
     textFiles="", \
     videoFiles="" ):
-    
+
     if filePath.startswith("~/"):
         homepath = os.path.expanduser('~')
         filePath = filePath.replace('~', homepath, 1)
-    
+
     tree = etree.parse(filePath)
     root = tree.getroot()
     print(etree.tostring(root, pretty_print=True))
@@ -70,10 +70,10 @@ def add(filePath="~/.config/Thunar/uca.xml", \
     etree.SubElement(action, "other-files").text = otherFiles
     etree.SubElement(action, "text-files").text = textFiles
     etree.SubElement(action, "video-files").text = videoFiles
-    
+
     print(etree.tostring(root, pretty_print=True))
-    
-    
+
+
 def printAction(filePath="~/.config/Thunar/uca.xml", \
     icon="accessories-calculator", \
     name="", \
@@ -104,15 +104,15 @@ def printAction(filePath="~/.config/Thunar/uca.xml", \
         etree.SubElement(action, "text-files")
     if options.videoFiles:
         etree.SubElement(action, "video-files")
-    
+
     print(etree.tostring(action, pretty_print=True))
-    
+
 
 if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("-f", "--file", dest="filename", default="~/.config/Thunar/uca.xml", \
         help="The uca.xml to edit.", metavar="uca.xml")
-        
+
     #icon
     parser.add_option("-i", "--icon", metavar="icon", default="accessories-calculator", \
         help="Icon to use in display. ie. \"accessories-calculator\"")
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     #name
     parser.add_option("-n", "--name", metavar="name", default="", \
         help="name for script")
-    
+
     #command
     parser.add_option("-c", "--command", metavar="command", default="", \
         help="Command to insert.")
@@ -128,37 +128,37 @@ if __name__ == "__main__":
     #description
     parser.add_option("-d", "--description", metavar="description", default="", \
         help="Mouseover Description")
-   
+
     #patterns
     parser.add_option("-p", "--patterns", metavar="patterns", default="*", \
         help="")
-    
+
     #directories
     parser.add_option("-D", "--directories", action="store_true", default=False, \
         help="")
-    
+
     #audioFiles
     parser.add_option("-A", "--audioFiles", action="store_true", default=False, \
         help="")
-    
+
     #imageFiles
     parser.add_option("-I", "--imageFiles", action="store_true", default=False, \
         help="")
-    
+
     #otherFiles
     parser.add_option("-O", "--otherFiles", action="store_true", default=False, \
         help="")
-    
+
     #textFiles
     parser.add_option("-T", "--textFiles", action="store_true", default=False, \
         help="")
-    
+
     #videoFiles
     parser.add_option("-V", "--videoFiles", action="store_true", default=False, \
         help="")
-    
 
-    
+
+
     (options, args) = parser.parse_args()
     #print options
     #print args
@@ -174,4 +174,3 @@ if __name__ == "__main__":
         options.otherFiles, \
         options.textFiles, \
         options.videoFiles )
-        

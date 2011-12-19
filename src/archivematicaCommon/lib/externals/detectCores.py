@@ -1,13 +1,13 @@
 #!/usr/bin/python -OO
-#Author Bruce Eckel (www.BruceEckel.com) 
+#Author Bruce Eckel (www.BruceEckel.com)
 #Source http://www.artima.com/weblogs/viewpost.jsp?thread=230001
 
 import os
 
 def detectCPUs():
-    """ 
+    """
     Detects the number of CPUs on a system. Cribbed from pp.
-    """ 
+    """
     # Linux, Unix and MacOS:
     if hasattr(os, "sysconf"):
         if os.sysconf_names.has_key("SC_NPROCESSORS_ONLN"): # Linux & Unix:

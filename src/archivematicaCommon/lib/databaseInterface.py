@@ -40,7 +40,7 @@ def getSeparator():
     global separator
     return separator
 
-def getUTCDate():    
+def getUTCDate():
     """Returns a string of the UTC date & time in ISO format"""
     d = datetime.utcnow()
     return d.isoformat('T')
@@ -74,13 +74,13 @@ def runSQL(sql):
     db = database
     try:
         db.query(sql)
-    except MySQLdb.OperationalError, message:  
+    except MySQLdb.OperationalError, message:
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
             database=MySQLdb.connect(**DB_CONNECTION_OPTS)
             sqlLock.release()
             runSQL(sql)
-            return 
+            return
         else:
             print >>sys.stderr, "Error with query: ", sql
             print >>sys.stderr, "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
@@ -100,7 +100,7 @@ def querySQL(sql):
     try:
         c=database.cursor()
         c.execute(sql)
-    except MySQLdb.OperationalError, message:  
+    except MySQLdb.OperationalError, message:
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
             database=MySQLdb.connect(**DB_CONNECTION_OPTS)
@@ -108,13 +108,13 @@ def querySQL(sql):
             time.sleep(10)
             c=database.cursor()
             c.execute(sql)
-    return c, sqlLock 
+    return c, sqlLock
 #        row = c.fetchone()
 #        while row != None:
 #            fileUUID = row[0]
 #            filesToChecksum.append(row[0])
 #            row = c.fetchone()
-        
+
 
 def queryAllSQL(sql):
     global database
@@ -128,7 +128,7 @@ def queryAllSQL(sql):
         c.execute(sql)
         rows = c.fetchall()
         sqlLock.release()
-    except MySQLdb.OperationalError, message:  
+    except MySQLdb.OperationalError, message:
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
             database=MySQLdb.connect(**DB_CONNECTION_OPTS)
@@ -139,9 +139,3 @@ def queryAllSQL(sql):
             rows = c.fetchall()
             sqlLock.release()
     return rows
-
-
-
-
-
-    

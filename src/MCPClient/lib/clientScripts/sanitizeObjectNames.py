@@ -32,7 +32,7 @@ import databaseInterface
 from databaseFunctions import insertIntoEvents
 from fileOperations import updateFileLocation
 from archivematicaFunctions import unicodeToStr
-       
+
 if __name__ == '__main__':
     objectsDirectory = sys.argv[1]
     sipUUID =  sys.argv[2]
@@ -42,9 +42,9 @@ if __name__ == '__main__':
     groupType = "%%%s%%" % (groupType)
     groupSQL = sys.argv[6]
     groupID = sipUUID
-    
+
     relativeReplacement = "%sobjects/" % (groupType) #"%SIPDirectory%objects/"
-    
+
 
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
     command = "sanitizeNames \"" + objectsDirectory + "\""
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         #p.wait()
         output = p.communicate()
         retcode = p.returncode
-        
+
         #print output
 
         #it executes check for errors
@@ -66,14 +66,14 @@ if __name__ == '__main__':
             print output[1]# sError
             quit(retcode)
         lines = output[0].split("\n")
-        
+
         #GET VERSION
         p = subprocess.Popen(shlex.split(commandVersion), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    
+
         #p.wait()
         output = p.communicate()
         retcode = p.returncode
-        
+
         #it executes check for errors
         if retcode != 0:
             print >>sys.stderr, "Error getting version; error code:" + retcode.__str__()
@@ -94,8 +94,8 @@ if __name__ == '__main__':
             if os.path.isfile(newfile):
                 oldfile = oldfile.replace(objectsDirectory, relativeReplacement, 1)
                 newfile = newfile.replace(objectsDirectory, relativeReplacement, 1)
-                print oldfile, " -> ", newfile 
-                
+                print oldfile, " -> ", newfile
+
                 if groupType == "%SIPDirectory%":
                     updateFileLocation(oldfile, newfile, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=None, sipUUID=sipUUID)
                 elif groupType == "%transferDirectory%":
@@ -103,19 +103,19 @@ if __name__ == '__main__':
                 else:
                     print >>sys.stderr, "bad group type", groupType
                     exit(3)
-                
+
             elif os.path.isdir(newfile):
                 oldfile = oldfile.replace(objectsDirectory, relativeReplacement, 1) + "/"
                 newfile = newfile.replace(objectsDirectory, relativeReplacement, 1) + "/"
                 directoryContents = []
-                
+
                 sql = "SELECT fileUUID, currentLocation FROM Files WHERE Files.removedTime = 0 AND Files.currentLocation LIKE '" + MySQLdb.escape_string(oldfile.replace("\\", "\\\\")).replace("%","\%") + "%' AND " + groupSQL + " = '" + groupID + "';"
-                 
-                c, sqlLock = databaseInterface.querySQL(sql) 
+
+                c, sqlLock = databaseInterface.querySQL(sql)
                 row = c.fetchone()
                 while row != None:
                     print row
-                    fileUUID = row[0] 
+                    fileUUID = row[0]
                     oldPath = row[1]
                     newPath = unicodeToStr(oldPath).replace(oldfile, newfile, 1)
                     directoryContents.append((fileUUID, oldPath, newPath))
@@ -126,6 +126,3 @@ if __name__ == '__main__':
 
                 for fileUUID, oldPath, newPath in directoryContents:
                     updateFileLocation(oldPath, newPath, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=fileUUID)
-                    
-
-

@@ -30,12 +30,12 @@ class unitFile(unit):
         self.currentPath = currentPath
         self.UUID = UUID
         self.fileGrpUse = 'None'
-        
+
     def getReplacementDic(self):
         # self.currentPath = currentPath.__str__()
         # self.UUID = uuid.uuid4().__str__()
         #Pre do some variables, that other variables rely on, because dictionaries don't maintain order
-        
+
         ret = {\
                "%relativeLocation%": self.currentPath, \
                "%fileUUID%": self.UUID, \

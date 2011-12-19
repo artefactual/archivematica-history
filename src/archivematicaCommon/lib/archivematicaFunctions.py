@@ -40,15 +40,15 @@ def strToUnicode(string):
 def getTagged(root, tag):
     ret = []
     for element in root:
-        #print element.tag 
+        #print element.tag
         #print tag
         #print element.tag == tag
         if element.tag == tag:
             ret.append(element)
             #return ret #only return the first encounter
-    return ret  
+    return ret
 
-  
+
 def appendEventToFile(SIPLogsDirectory, fileUUID, eventXML):
     xmlFile = SIPLogsDirectory + "fileMeta/" + fileUUID + ".xml"
     appendEventToFile2(xmlFile, eventXML)
@@ -59,10 +59,10 @@ def appendEventToFile2(xmlFile, eventXML):
 
     events = getTagged(root, "events")[0]
     events.append(eventXML)
-    
+
     tree = etree.ElementTree(root)
     tree.write(xmlFile)
-    
+
 def archivematicaRenameFile(SIPLogsDirectory, fileUUID, newName, eventXML):
     xmlFile = SIPLogsDirectory + "fileMeta/" + fileUUID + ".xml"
     newName = newName.decode('utf-8')
@@ -73,33 +73,33 @@ def archivematicaRenameFile(SIPLogsDirectory, fileUUID, newName, eventXML):
 
     events = getTagged(root, "events")[0]
     events.append(eventXML)
-    
+
     #print etree.tostring(root, pretty_print=True)
-    
+
     tree = etree.ElementTree(root)
     tree.write(xmlFile)
-    
-    
+
+
 def fileNoLongerExists(root, objectsDir):
     """Returns 0 if not deleted, 1 if deleted, -1 if deleted, but already an event to indicated it has been removed"""
     events = getTagged(root, "events")[0]
-    
+
     for event in getTagged(events, "event"):
         #print >>sys.stderr , "event"
         etype = getTagged(event, "eventType")
         if len(etype) and etype[0].text == "fileRemoved":
-                #print >>sys.stderr , "file already removed"
-                return -1
-    
+            #print >>sys.stderr , "file already removed"
+            return -1
+
     currentName = getTagged(root, "currentFileName")[0].text
-    
+
     currentName2 = currentName.replace("objects", objectsDir, 1)
     if os.path.isfile(currentName2.encode('utf8')):
         return 0
     else:
         print currentName
         return 1
-    
+
 def escapeForCommand(str):
     ret = str
     #print >>sys.stderr, "escaping:\t ", ret
@@ -107,9 +107,9 @@ def escapeForCommand(str):
     #ret = ret.replace("\"", "\\\"")
     #ret = ret.replace("'", "\\'")
     #ret = "'" + ret.replace("'", "'\\''") + "'"
-    
+
     #|  &  ;  <  >  (  )  $  `  \  "  '
-    
+
     ret = ret.replace("\\", "\\\\")
     ret = ret.replace("\"", "\\\"")
     ret = ret.replace("'", "\\'")
@@ -129,4 +129,3 @@ def escapeForCommand2(str):
 def escape(string):
     #string = string.decode('utf-8')
     return string
-

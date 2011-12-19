@@ -45,7 +45,7 @@ def archivematicaGetRights(metadataAppliesToList):
         list = "pk, rightsStatementIdentifier, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightInformation, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseInformation LONGTEXT, licenseIdentifier, licenseIdentifierType, licenseIdentifierValue, licenseTerms"
         key = list.split(", ")
         sql = """SELECT %s FROM RightsStatement WHERE metadataAppliesToidentifier = '%s' AND metadataAppliesToType = '%s';""" % (list, metadataAppliesToidentifier, metadataAppliesToType)
-        databaseInterface.  
+        databaseInterface.
         if not rows:
             continue
         else:
@@ -58,15 +58,15 @@ def archivematicaGetRights(metadataAppliesToList):
                 rightsStatementIdentifier = etree.SubElement(rightsStatement, "rightsStatementIdentifier")
                 etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentiferType").text = valueDic["rightsStatementIdentiferType"]
                 etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierValue").text = valueDic["rightsStatementIdentifierValue"]
-                
+
                 etree.SubElement(rightsStatement, "rightsBasis").text = valueDic["rightsBasis"]
                 "rightsBasis, copyrightInformation, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseInformation LONGTEXT, licenseIdentifier, licenseIdentifierType, licenseIdentifierValue, licenseTerms"
             break
     return ret
-"""    
+"""
 -- rightsStatement (O, R)
 DROP TABLE IF EXISTS RightsStatement;
-CREATE TABLE RightsStatement ( 
+CREATE TABLE RightsStatement (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     rightsStatementIdentifier LONGTEXT NOT NULL,
     rightsStatementIdentifierType LONGTEXT NOT NULL,
@@ -154,7 +154,7 @@ rightsExtension (O, R)
           <licenseIdentifierValue>d3e828fb-e6f1-40b6-a3c5-839773b35755</licenseIdentifierValue>
         </licenseIdentifier>
         <licenseTerms>This file is licensed under the Creative Commons Attribution-Share Alike 3.0 Unported license</licenseTerms>
-        <licenseNote></licenseNote> 
+        <licenseNote></licenseNote>
       </licenseInformation>
       <statuteInformation>
         <statuteJurisdiction></statuteJurisdiction>
@@ -199,7 +199,7 @@ CREATE TABLE ArchivematicaRightsStatement (
 
 -- 4.1.3.4 copyrightNote (O, R)
 DROP TABLE IF EXISTS RightsStatementCopyrightNote;
-CREATE TABLE RightsStatementCopyrightNote ( 
+CREATE TABLE RightsStatementCopyrightNote (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
@@ -208,7 +208,7 @@ CREATE TABLE RightsStatementCopyrightNote (
 
 -- 4.1.4.3 licenseNote (O, R)
 DROP TABLE IF EXISTS RightsStatementLicenseNote;
-CREATE TABLE RightsStatementLicenseNote ( 
+CREATE TABLE RightsStatementLicenseNote (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
@@ -218,7 +218,7 @@ CREATE TABLE RightsStatementLicenseNote (
 
 -- 4.1.5 statuteInformation (O, R)
 DROP TABLE IF EXISTS RightsStatementStatuteInformation;
-CREATE TABLE RightsStatementStatuteInformation ( 
+CREATE TABLE RightsStatementStatuteInformation (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
@@ -230,7 +230,7 @@ CREATE TABLE RightsStatementStatuteInformation (
 
 -- 4.1.5.4 statuteNote (O, R)
 DROP TABLE IF EXISTS RightsStatementStatuteInformationStatuteNote;
-CREATE TABLE RightsStatementStatuteInformationStatuteNote ( 
+CREATE TABLE RightsStatementStatuteInformationStatuteNote (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatementStatuteInformation INT UNSIGNED,
     Foreign Key (fkRightsStatementStatuteInformation) references RightsStatementStatuteInformation(pk),
@@ -242,7 +242,7 @@ CREATE TABLE RightsStatementStatuteInformationStatuteNote (
 USING - ArchivematicaRightsStatement TABLE
 -- 4.1.7 linkingObjectIdentifier (O, R)
 DROP TABLE IF EXISTS RightsStatementLinkingObjectIdentifier;
-CREATE TABLE RightsStatementLinkingObjectIdentifier ( 
+CREATE TABLE RightsStatementLinkingObjectIdentifier (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
@@ -252,7 +252,7 @@ CREATE TABLE RightsStatementLinkingObjectIdentifier (
 
 -- 4.1.7.? LinkingObjectRole (O, R)
 DROP TABLE IF EXISTS RightsStatementLinkingObjectIdentifierLinkingObjectRole;
-CREATE TABLE RightsStatementLinkingObjectIdentifierLinkingObjectRole ( 
+CREATE TABLE RightsStatementLinkingObjectIdentifierLinkingObjectRole (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatementLinkingObjectIdentifier INT UNSIGNED,
     Foreign Key (fkRightsStatementLinkingObjectIdentifier) references RightsStatementLinkingObjectIdentifier(pk),
@@ -262,7 +262,7 @@ CREATE TABLE RightsStatementLinkingObjectIdentifierLinkingObjectRole (
 
 -- linkingAgentIdentifier (O, R)
 DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifier;
-CREATE TABLE RightsStatementLinkingAgentIdentifier ( 
+CREATE TABLE RightsStatementLinkingAgentIdentifier (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
@@ -272,7 +272,7 @@ CREATE TABLE RightsStatementLinkingAgentIdentifier (
 
 -- 4.1.8.3 linkingAgentRole (O, R)
 DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifierLinkingAgentRole;
-CREATE TABLE RightsStatementLinkingAgentIdentifierLinkingAgentRole ( 
+CREATE TABLE RightsStatementLinkingAgentIdentifierLinkingAgentRole (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatementLinkingAgentIdentifier INT UNSIGNED,
     Foreign Key (fkRightsStatementLinkingAgentIdentifier) references RightsStatementLinkingAgentIdentifier(pk),
@@ -281,7 +281,7 @@ CREATE TABLE RightsStatementLinkingAgentIdentifierLinkingAgentRole (
 
 -- 4.1.6 rightsGranted (O, R)
 DROP TABLE IF EXISTS RightsStatementRightsGranted;
-CREATE TABLE RightsStatementRightsGranted ( 
+CREATE TABLE RightsStatementRightsGranted (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatement INT UNSIGNED,
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
@@ -293,7 +293,7 @@ CREATE TABLE RightsStatementRightsGranted (
 
 -- 4.1.6.2 restriction (O, R)
 DROP TABLE IF EXISTS RightsStatementRightsGrantedRestriction;
-CREATE TABLE RightsStatementRightsGrantedRestriction ( 
+CREATE TABLE RightsStatementRightsGrantedRestriction (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatementRightsGranted INT UNSIGNED,
     Foreign Key (fkRightsStatementRightsGranted) references RightsStatementRightsGranted(pk),
@@ -301,20 +301,20 @@ CREATE TABLE RightsStatementRightsGrantedRestriction (
 );
 -- 4.1.6.4 rightsGrantedNote (O, R)
 DROP TABLE IF EXISTS RightsStatementRightsGrantedRestriction;
-CREATE TABLE RightsStatementRightsGrantedRestriction ( 
+CREATE TABLE RightsStatementRightsGrantedRestriction (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatementRightsGranted INT UNSIGNED,
     Foreign Key (fkRightsStatementRightsGranted) references RightsStatementRightsGranted(pk),
-    rightsGrantedNote LONGTEXT 
+    rightsGrantedNote LONGTEXT
 );"""
 
-         
+
 if __name__ == '__main__':
     root = etree.Element( "mets", \
     nsmap = {None: metsNS, "xlink": xlinkNS}, \
     attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd" } )
 
-    #cd /tmp/$UUID; 
+    #cd /tmp/$UUID;
     opath = os.getcwd()
     os.chdir(basePath)
     path = basePath
@@ -332,7 +332,7 @@ if __name__ == '__main__':
     structMap = newChild(root, "structMap")
     structMap.set("TYPE", "physical")
     structMapDiv = newChild(structMap, "div")
-    
+
     createFileSec(path, sipFileGrp, structMapDiv)
 
     tree = etree.ElementTree(root)
@@ -340,4 +340,3 @@ if __name__ == '__main__':
 
     # Restore original path
     os.chdir(opath)
-    

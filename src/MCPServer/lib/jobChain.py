@@ -42,7 +42,7 @@ class jobChain:
         self.unit = unit
         self.pk = chainPK
         sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__()
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         if row == None:
             sqlLock.release()
@@ -51,13 +51,13 @@ class jobChain:
             print row
             #self.pk = row[0]
             self.startingChainLink = row[1]
-            self.description = row[2]           
+            self.description = row[2]
             row = c.fetchone()
         sqlLock.release()
         self.currentLink = jobChainLink(self, self.startingChainLink, unit)
         if self.currentLink == None:
             return None
-        
+
     def nextChainLink(self, pk):
         if pk != None:
             t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk, ))
@@ -65,7 +65,6 @@ class jobChain:
             t.start()
         else:
             print "Done with SIP:" + self.unit.UUID
-    
+
     def nextChainLinkThreaded(self, pk):
         self.currentLink = jobChainLink(self, pk, self.unit)
-        

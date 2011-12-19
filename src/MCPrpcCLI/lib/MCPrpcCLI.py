@@ -3,7 +3,7 @@
 # This file is part of Archivematica.
 #
 # Copyright 2010-2011 Artefactual Systems Inc. <http://artefactual.com>
-# 
+#
 # Archivematica is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -29,15 +29,15 @@ import os
 import time
 
 class Settings:
-  MCP_SERVER = ('localhost', 4730)
+    MCP_SERVER = ('localhost', 4730)
 
 settings = Settings()
 
 class MCPClient:
 
     def __init__(self, host=settings.MCP_SERVER[0], port=settings.MCP_SERVER[1]):
-        self.server = "%s:%d" % (host, port)    
-    
+        self.server = "%s:%d" % (host, port)
+
     def list(self):
         gm_client = gearman.GearmanClient([self.server])
         completed_job_request = gm_client.submit_job("getJobsAwaitingApproval", "", None)
@@ -61,7 +61,7 @@ def getTagged(root, tag): #bad, I use this elsewhere, should be imported
         if element.tag == tag:
             ret.append(element)
             return ret #only return the first encounter
-    return ret 
+    return ret
 
 def updateJobsAwaitingApproval(jobsAwaitingApproval):
     del jobsAwaitingApproval
@@ -76,7 +76,7 @@ def printJobsAwaitingApproval(jobsAwaitingApproval):
         print i
         i += 1
         print etree.tostring(job, pretty_print=True)
-        
+
 def approveJob(jobsAwaitingApproval, choice, choice2):
     try:
         index = int(choice)
@@ -87,15 +87,15 @@ def approveJob(jobsAwaitingApproval, choice, choice2):
                                    "unitXML")[0], \
                                    "UUID")[0].text
         uuid = getTagged(jobsAwaitingApproval[index], "UUID")[0].text
-       
+
         chain = getTagged(getTagged(jobsAwaitingApproval[index], "choices")[0][int(choice2)], \
                                    "chainAvailable")[0].text
         print "Approving: " + uuid, chain, sipUUID
         mcpClient.execute(uuid, int(chain))
         del jobsAwaitingApproval[index]
     except ValueError:
-        return    
-    
+        return
+
 
 if __name__ == '__main__':
     os.system("clear")
@@ -122,17 +122,12 @@ if __name__ == '__main__':
             choice2 = "No-op"
             while choice2 != "q":
                 #try:
-                    printJobsAwaitingApproval(jobsAwaitingApproval[int(choice)][2])
-                    choice2 = raw_input('Please enter a value:')
-                    print "choice2: " + choice2
-                    approveJob(jobsAwaitingApproval, choice, choice2)
-                    choice2 = "q"
+                printJobsAwaitingApproval(jobsAwaitingApproval[int(choice)][2])
+                choice2 = raw_input('Please enter a value:')
+                print "choice2: " + choice2
+                approveJob(jobsAwaitingApproval, choice, choice2)
+                choice2 = "q"
                 #except:
-                    #print "invalid choice"
-                    #choice2 = "q"
-        os.system("clear")    
-    
-    
-
-
-
+                #print "invalid choice"
+                #choice2 = "q"
+        os.system("clear")

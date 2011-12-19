@@ -26,11 +26,11 @@ import sys
 exitInidcatingThereAreObjects = 179
 
 if __name__ == '__main__':
-    objectsDir = sys.argv[1] 
+    objectsDir = sys.argv[1]
     os.path.isdir(objectsDir)
     ret = 0
     for dirs, subDirs, files in os.walk(objectsDir):
         if files != None and files != []:
-            ret = exitInidcatingThereAreObjects  
+            ret = exitInidcatingThereAreObjects
             break
     exit(ret)

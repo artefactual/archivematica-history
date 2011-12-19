@@ -51,36 +51,36 @@ class watchDirectoryProcessEvent(ProcessEvent):
     def __init__(self, unit):
         self.unit = unit
         self.cookie = None
-        
-    def process_IN_MOVED_TO(self, event):  
+
+    def process_IN_MOVED_TO(self, event):
         if self.cookie == event.cookie:
             unit.updateLocation(os.path.join(event.path, event.name) + "/")
             self.cookie = None
-    
+
     def process_IN_MOVED_FROM(self, event):
         if self.unit.currentPath == os.path.join(event.path, event.name) + "/" :
             self.cookie = event.cookie
-"""    
+"""
 class unitTransfer(unit):
     def __init__(self, currentPath, UUID=""):
         #Just Use the end of the directory name
         self.pathString = "%transferDirectory%"
         currentPath2 = currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), \
                        "%sharedPath%", 1)
-        
+
         if UUID == "":
             sql = """SELECT transferUUID FROM Transfers WHERE currentLocation = '""" + currentPath2 + "'"
             time.sleep(.5)
-            c, sqlLock = databaseInterface.querySQL(sql) 
+            c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             while row != None:
                 UUID = row[0]
                 print "Opening existing Transfer:", UUID, "-", currentPath2
                 row = c.fetchone()
             sqlLock.release()
-            
+
         if UUID == "":
-            uuidLen = -36           
+            uuidLen = -36
             if  archivematicaMCP.isUUID(currentPath[uuidLen-1:-1]):
                 UUID = currentPath[uuidLen-1:-1]
             else:
@@ -89,11 +89,11 @@ class unitTransfer(unit):
                 sql = """INSERT INTO Transfers (transferUUID, currentLocation)
                 VALUES ('""" + UUID + databaseInterface.separator + currentPath2 + "');"
                 databaseInterface.runSQL(sql)
-                
+
         self.currentPath = currentPath2
         self.UUID = UUID
         self.fileList = {}
-        #create a watch of the transfer directory path /.. watching for moves 
+        #create a watch of the transfer directory path /.. watching for moves
         a = """wm = WatchManager()
         notifier = ThreadedNotifier(wm, watchDirectoryProcessEvent(self))
         mask = pyinotify.IN_MOVED_TO | pyinotify.IN_MOVED_FROM
@@ -102,7 +102,7 @@ class unitTransfer(unit):
         self.notifier = notifier
         #^ if the item moved is this unit:
         #update this unit's current location - here and db?"""
-    
+
     def reloadFileList(self):
         print "DEBUG reloading transfer file list: ", self.UUID
         self.fileList = {}
@@ -125,7 +125,7 @@ class unitTransfer(unit):
             print "made it this far"
             sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND transferUUID =  '""" + self.UUID + "'"
             print sql
-            c, sqlLock = databaseInterface.querySQL(sql) 
+            c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             print self.fileList
             while row != None:
@@ -143,29 +143,29 @@ class unitTransfer(unit):
                     print >>sys.stderr, "!!!", eventDetail, "!!!"
                 row = c.fetchone()
             sqlLock.release()
-        
+
         except Exception as inst:
             traceback.print_exc(file=sys.stdout)
             print  type(inst)
             print  inst.args
             exit(1)
-        
+
     def updateLocation(self, newLocation):
         self.currentPath = newLocation
         sql =  """UPDATE Transfers SET currentPath='""" + newLocation + """' WHERE transferUUID='""" + self.UUID + """';"""
         databaseInterface.runSQL(sql)
-    
+
     def setMagicLink(self,link, exitStatus=""):
         if exitStatus != "":
             sql =  """UPDATE Transfers SET magicLink='""" + link + """', magicLinkExitMessage='""" + exitStatus + """' WHERE transferUUID='""" + self.UUID + """';"""
         else:
-            sql =  """UPDATE Transfers SET magicLink='""" + link + """' WHERE transferUUID='""" + self.UUID + """';"""        
+            sql =  """UPDATE Transfers SET magicLink='""" + link + """' WHERE transferUUID='""" + self.UUID + """';"""
         databaseInterface.runSQL(sql)
-    
+
     def getMagicLink(self):
         ret = None
-        sql = """SELECT magicLink, magicLinkExitMessage FROM Transfers WHERE transferUUID =  '""" + self.UUID + "'" 
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        sql = """SELECT magicLink, magicLinkExitMessage FROM Transfers WHERE transferUUID =  '""" + self.UUID + "'"
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             print row
@@ -173,22 +173,22 @@ class unitTransfer(unit):
             row = c.fetchone()
         sqlLock.release()
         return ret
-        
-        
+
+
     def reload(self):
-        sql = """SELECT transferUUID, currentLocation FROM Transfers WHERE transferUUID =  '""" + self.UUID + "'" 
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        sql = """SELECT transferUUID, currentLocation FROM Transfers WHERE transferUUID =  '""" + self.UUID + "'"
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             print row
             self.UUID = row[0]
-            #self.createdTime = row[1] 
+            #self.createdTime = row[1]
             self.currentPath = row[1]
             row = c.fetchone()
         sqlLock.release()
         return
-             
-        
+
+
     def getReplacementDic(self, target):
         # self.currentPath = currentPath.__str__()
         # self.UUID = uuid.uuid4().__str__()
@@ -200,8 +200,8 @@ class unitTransfer(unit):
             SIPName = os.path.basename(self.currentPath).replace("-" + SIPUUID, "")
         SIPDirectory = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
         relativeDirectoryLocation = target.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
-      
-        
+
+
         ret = { \
         "%SIPLogsDirectory%": SIPDirectory + "logs/", \
         "%SIPObjectsDirectory%": SIPDirectory + "objects/", \
@@ -218,7 +218,7 @@ class unitTransfer(unit):
         "%SIPName%":SIPName \
         }
         return ret
-    
+
     def xmlify(self):
         ret = etree.Element("unit")
         etree.SubElement(ret, "type").text = "Transfer"
@@ -227,7 +227,7 @@ class unitTransfer(unit):
         etree.SubElement(unitXML, "currentPath").text = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
         return ret
 
-a = """    
+a = """
     def __del__(self):
         #TODO - cleanup the watch directory for this unit
         self. notifier.stop()

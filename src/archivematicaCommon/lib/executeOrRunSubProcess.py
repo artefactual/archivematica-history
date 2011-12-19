@@ -32,8 +32,8 @@ def launchSubProcess(command, stdIn="", printing=True):
     stdOut = ""
     #print  >>sys.stderr, command
     try:
-        p = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
-        stdOut, stdError = p.communicate() 
+        p = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdOut, stdError = p.communicate()
         #append the output to stderror and stdout
         if printing:
             print stdOut
@@ -47,7 +47,7 @@ def launchSubProcess(command, stdIn="", printing=True):
         return -1, "Execution failed:", command
     return retcode, stdOut, stdError
 
-        
+
 
 def createAndRunScript(text, stdIn="", printing=True):
     #output the text to a /tmp/ file
@@ -55,14 +55,14 @@ def createAndRunScript(text, stdIn="", printing=True):
     FILE = os.open(scriptPath, os.O_WRONLY | os.O_CREAT, 0770)
     os.write(FILE, text)
     os.close(FILE)
- 
+
     #run it
     ret = launchSubProcess(scriptPath, stdIn="", printing=True)
-    
+
     #remove the temp file
     os.remove(scriptPath)
-    
-    return ret 
+
+    return ret
 
 
 
@@ -75,4 +75,3 @@ def executeOrRun(type, text, stdIn="", printing=True):
     if type == "pythonScript":
         text = "#!/usr/bin/python -OO\n" + text
         return createAndRunScript(text, stdIn=stdIn, printing=printing)
-        

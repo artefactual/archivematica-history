@@ -60,11 +60,11 @@ def verifyNothingElseAtTopLevel(SIPDir, ret=0):
                 print >>sys.stderr, "Error, file exists: " + entry
                 ret += 1
     return ret
-             
+
 
 
 if __name__ == '__main__':
-    SIPDir = sys.argv[1] 
+    SIPDir = sys.argv[1]
     ret = verifyDirectoriesExist(SIPDir)
     ret = verifyNothingElseAtTopLevel(SIPDir, ret)
     ret = checkDirectory(SIPDir, ret)

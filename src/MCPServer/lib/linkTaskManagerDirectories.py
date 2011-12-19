@@ -38,12 +38,12 @@ class linkTaskManagerDirectories:
         self.tasks = []
         self.pk = pk
         self.jobChainLink = jobChainLink
-        sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__() 
-        c, sqlLock = databaseInterface.querySQL(sql) 
+        sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__()
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             print row
-            #pk = row[0] 
+            #pk = row[0]
             filterFileEnd = row[1]
             filterFileStart = row[2]
             filterSubDir = row[3]
@@ -55,12 +55,12 @@ class linkTaskManagerDirectories:
             arguments = row[8]
             row = c.fetchone()
         sqlLock.release()
-        
+
         #if reloadFileList:
         #    unit.reloadFileList()
-        
+
         #        "%taskUUID%": task.UUID.__str__(), \
-        
+
         if filterSubDir:
             directory = os.path.join(unit.currentPath, filterSubDir)
         else:
@@ -77,24 +77,20 @@ class linkTaskManagerDirectories:
                 standardOutputFile = standardOutputFile.replace(key, value)
             if standardErrorFile:
                 standardErrorFile = standardErrorFile.replace(key, value)
-        
+
         UUID = uuid.uuid4().__str__()
         self.task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, UUID=UUID)
         databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
         t = threading.Thread(target=self.task.performTask)
         t.daemon = True
-        t.start() 
-        
-        
-        
-        
-    
+        t.start()
+
+
+
+
+
     def taskCompletedCallBackFunction(self, task):
         print task
         databaseFunctions.logTaskCompletedSQL(task)
         if True:
             self.jobChainLink.linkProcessingComplete(task.results["exitCode"])
-        
-     
-        
-        

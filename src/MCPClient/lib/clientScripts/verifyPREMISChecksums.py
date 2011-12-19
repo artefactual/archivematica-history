@@ -31,7 +31,7 @@ from externals.checksummingTools import sha_for_file
 
 def verifyChecksum(fileUUID, filePath, date, eventIdentifierUUID):
     sql = """SELECT checksum FROM Files WHERE fileUUID = '""" + fileUUID + "'"
-    c, sqlLock = databaseInterface.querySQL(sql) 
+    c, sqlLock = databaseInterface.querySQL(sql)
     row = c.fetchone()
     checksumDB = ""
     while row != None:
@@ -42,7 +42,7 @@ def verifyChecksum(fileUUID, filePath, date, eventIdentifierUUID):
         print >>sys.stderr, "No checksum found in database for file:", fileUUID, filePath
         exit(1)
     checksumFile = sha_for_file(filePath)
-    
+
     eventOutcome=""
     eventOutcomeDetailNote=""
     exitCode = 0
@@ -55,8 +55,8 @@ def verifyChecksum(fileUUID, filePath, date, eventIdentifierUUID):
     else:
         eventOutcomeDetailNote = checksumFile.__str__() + "verified"
         eventOutcome="Pass"
-        exitCode = 0  
-        
+        exitCode = 0
+
     #insertIntoEvents(fileUUID="", eventIdentifierUUID="", eventType="", eventDateTime=databaseInterface.getUTCDate(), eventDetail="", eventOutcome="", eventOutcomeDetailNote="")
     databaseFunctions.insertIntoEvents(fileUUID=fileUUID, \
                  eventIdentifierUUID=eventIdentifierUUID, \
@@ -65,10 +65,10 @@ def verifyChecksum(fileUUID, filePath, date, eventIdentifierUUID):
                  eventOutcome=eventOutcome, \
                  eventOutcomeDetailNote=eventOutcomeDetailNote, \
                  eventDetail="program=\"python\"; module=\"hashlib.sha256()\"")
-    
-    exit(exitCode) 
-    
-    
+
+    exit(exitCode)
+
+
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-i",  "--fileUUID",          action="store", dest="fileUUID", default="")
@@ -76,12 +76,8 @@ if __name__ == '__main__':
     parser.add_option("-d",  "--date",              action="store", dest="date", default="")
     parser.add_option("-u",  "--eventIdentifierUUID", action="store", dest="eventIdentifierUUID", default="")
     (opts, args) = parser.parse_args()
-    
+
     verifyChecksum(opts.fileUUID, \
                      opts.filePath, \
                      opts.date, \
-                     opts.eventIdentifierUUID)  
-
-
-    
-    
+                     opts.eventIdentifierUUID)

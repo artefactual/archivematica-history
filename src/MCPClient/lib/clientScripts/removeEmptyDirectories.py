@@ -25,7 +25,7 @@
 import os
 import sys
 exitCode = 0
-    
+
 
 def removeEmptyDirectories(path):
     if not os.path.isdir(path):
@@ -41,7 +41,7 @@ def removeEmptyDirectories(path):
             else:
                 empty = False
         except:
-            print >>sys.stderr, "Error with path:", fullPath 
+            print >>sys.stderr, "Error with path:", fullPath
             exitCode+=1
     if empty == True:
         try:
@@ -50,10 +50,10 @@ def removeEmptyDirectories(path):
         except:
             print >>sys.stderr, "Error removing:", path
     return empty
-            
-        
 
-if __name__ == '__main__':    
+
+
+if __name__ == '__main__':
     path = sys.argv[1]
     removeEmptyDirectories(path)
     exit(exitCode)

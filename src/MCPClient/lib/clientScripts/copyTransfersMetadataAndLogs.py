@@ -32,14 +32,14 @@ import databaseInterface
 def main(sipUUID, transfersDirectory, sharedPath=""):
     if not os.path.exists(transfersDirectory):
         os.makedirs(transfersDirectory)
-        
+
     exitCode = 0
-    sql = """SELECT Files.transferUUID, Transfers.currentLocation FROM Files 
+    sql = """SELECT Files.transferUUID, Transfers.currentLocation FROM Files
         JOIN Transfers on Transfers.transferUUID = Files.transferUUID
-        WHERE sipUUID = '%s' 
+        WHERE sipUUID = '%s'
         GROUP BY Files.transferUUID;""" % (sipUUID)
- 
-    c, sqlLock = databaseInterface.querySQL(sql) 
+
+    c, sqlLock = databaseInterface.querySQL(sql)
     row = c.fetchone()
     while row != None:
         try:
@@ -52,15 +52,15 @@ def main(sipUUID, transfersDirectory, sharedPath=""):
             if not os.path.exists(transferMetaDestDir):
                 os.makedirs(transferMetaDestDir)
                 shutil.copytree(transferPath + "logs", os.path.join(transferMetaDestDir, "logs"))
-                shutil.copytree(transferPath + "metadata", os.path.join(transferMetaDestDir, "metadata")) 
-             
+                shutil.copytree(transferPath + "metadata", os.path.join(transferMetaDestDir, "metadata"))
+
         except Exception as inst:
             print >>sys.stderr, type(inst)
-            print >>sys.stderr, inst.args      
+            print >>sys.stderr, inst.args
             print >>sys.stderr, "Error with transfer: ", row
             exitCode += 1
         row = c.fetchone()
-            
+
     sqlLock.release()
     exit(exitCode)
 
@@ -70,9 +70,6 @@ if __name__ == '__main__':
     parser.add_option("-S",  "--sipUUID", action="store", dest="sipUUID", default="")
     parser.add_option("-p",  "--sharedPath", action="store", dest="sharedPath", default="/var/archivematica/sharedDirectory/")
     (opts, args) = parser.parse_args()
-    
-            
-    main(opts.sipUUID, opts.sipDirectory+"metadata/transfers/", sharedPath=opts.sharedPath)    
 
-    
-    
+
+    main(opts.sipUUID, opts.sipDirectory+"metadata/transfers/", sharedPath=opts.sharedPath)

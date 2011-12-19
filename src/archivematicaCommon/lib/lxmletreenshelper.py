@@ -37,7 +37,3 @@ def createStructuredDirectory(SIPDir):
 if __name__ == '__main__':
     SIPDir = sys.argv[1]
     createStructuredDirectory(SIPDir)
-
-
-
-    

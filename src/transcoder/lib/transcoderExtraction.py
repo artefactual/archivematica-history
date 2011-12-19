@@ -27,7 +27,7 @@ import uuid
 from transcoder import main
 from executeOrRunSubProcess import executeOrRun
 import transcoder
-#from premisXMLlinker import xmlNormalize 
+#from premisXMLlinker import xmlNormalize
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import addFileToTransfer
 from databaseFunctions import fileWasRemoved
@@ -52,7 +52,7 @@ def onceExtracted(command):
         os.remove(replacementDic["%inputFile%"])
         currentLocation =  replacementDic["%inputFile%"].replace(sipDirectory, "%transferDirectory%", 1)
         fileWasRemoved(packageFileUUID, eventOutcomeDetailNote = "removed from: " + currentLocation)
-        
+
     print "OUTPUT DIRECTORY: ", replacementDic["%outputDirectory%"]
     for w in os.walk(replacementDic["%outputDirectory%"].replace("*", "asterisk*")):
         path, directories, files = w
@@ -71,29 +71,29 @@ def onceExtracted(command):
             date = sys.argv[4].__str__()
             taskUUID = sys.argv[5].__str__()
             packageFileUUID = sys.argv[6].__str__()
-           
+
             filePathRelativeToSIP = ef.replace(sipDirectory,"%transferDirectory%", 1)
-            print "File Extracted:: {" + fileUUID + "} ", filePathRelativeToSIP 
+            print "File Extracted:: {" + fileUUID + "} ", filePathRelativeToSIP
             eventDetail="Unpacked from: {" + packageFileUUID + "}" + filePathRelativeToSIP
             addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="unpacking", eventDetail=eventDetail)
             updateSizeAndChecksum(fileUUID, ef, date, uuid.uuid4.__str__())
-            
-            
+
+
         run = sys.argv[0].__str__() + \
         " \"" + transcoder.escapeForCommand(ef) + "\""
-        if True: #Add the file to the SIP  
+        if True: #Add the file to the SIP
             run = run + " \"" + transcoder.escapeForCommand(sys.argv[2].__str__()) + "\"" + \
             " \"" + transcoder.escapeForCommand(sys.argv[3].__str__()) + "\"" + \
             " \"" + transcoder.escapeForCommand(sys.argv[4].__str__()) + "\"" + \
             " \"" + transcoder.escapeForCommand(sys.argv[5].__str__()) + "\"" + \
             " \"" + fileUUID + "\""
- 
-        exitCode, stdOut, stdError = executeOrRun("command", run)              
+
+        exitCode, stdOut, stdError = executeOrRun("command", run)
         print stdOut
         print >>sys.stderr, stdError
         if exitCode != 0 and command.exitCode == 0:
             command.exitCode = exitCode
-             
+
     global extractedCount
     date = sys.argv[4].__str__().split(".", 1)[0]
     extractedCount = extractedCount + 1
@@ -103,17 +103,17 @@ def identifyCommands(fileName):
     """Identify file type(s)"""
     ret = []
     removeOnceExtractedSkip = ['.part01.rar', '.r01', '.pst']
-    
+
     RarExtensions = ['.part01.rar', '.r01', '.rar']
     for extension in RarExtensions:
         if fileName.lower().endswith(extension.lower()):
             #sql find the file type,
             c=transcoder.database.cursor()
-            sql = """SELECT CR.pk, CR.command, CR.GroupMember 
-            FROM CommandRelationships AS CR 
-            JOIN FileIDs ON CR.fileID=FileIDs.pk 
-            JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk 
-            WHERE FileIDs.description='unrar-nonfreeCompatable' 
+            sql = """SELECT CR.pk, CR.command, CR.GroupMember
+            FROM CommandRelationships AS CR
+            JOIN FileIDs ON CR.fileID=FileIDs.pk
+            JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
+            WHERE FileIDs.description='unrar-nonfreeCompatable'
             AND CommandClassifications.classification = 'extract';"""
             c.execute(sql)
             row = c.fetchone()
@@ -121,7 +121,7 @@ def identifyCommands(fileName):
                 ret.append(row)
                 row = c.fetchone()
             break
-    
+
     SevenZipExtensions = ['.ARJ', '.CAB', '.CHM', '.CPIO',
                   '.DMG', '.HFS', '.LZH', '.LZMA',
                   '.NSIS', '.UDF', '.WIM', '.XAR',
@@ -129,11 +129,11 @@ def identifyCommands(fileName):
     for extension in SevenZipExtensions:
         if fileName.lower().endswith(extension.lower()):
             c=transcoder.database.cursor()
-            sql = """SELECT CR.pk, CR.command, CR.GroupMember 
-            FROM CommandRelationships AS CR 
-            JOIN FileIDs ON CR.fileID=FileIDs.pk 
-            JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk 
-            WHERE FileIDs.description='7ZipCompatable' 
+            sql = """SELECT CR.pk, CR.command, CR.GroupMember
+            FROM CommandRelationships AS CR
+            JOIN FileIDs ON CR.fileID=FileIDs.pk
+            JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
+            WHERE FileIDs.description='7ZipCompatable'
             AND CommandClassifications.classification = 'extract';"""
             c.execute(sql)
             row = c.fetchone()
@@ -144,18 +144,18 @@ def identifyCommands(fileName):
     if fileName.lower().endswith('.pst'):
         global removeOnceExtracted
         c=transcoder.database.cursor()
-        sql = """SELECT CR.pk, CR.command, CR.GroupMember 
-        FROM CommandRelationships AS CR 
-        JOIN FileIDs ON CR.fileID=FileIDs.pk 
-        JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk 
-        WHERE FileIDs.description='A .pst file' 
+        sql = """SELECT CR.pk, CR.command, CR.GroupMember
+        FROM CommandRelationships AS CR
+        JOIN FileIDs ON CR.fileID=FileIDs.pk
+        JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
+        WHERE FileIDs.description='A .pst file'
         AND CommandClassifications.classification = 'extract';"""
         c.execute(sql)
         row = c.fetchone()
         while row != None:
             ret.append(row)
             row = c.fetchone()
-            
+
     #check if not to remove
     for extension in removeOnceExtractedSkip:
         if fileName.lower().endswith(extension.lower()):
@@ -170,4 +170,3 @@ if __name__ == '__main__':
     filename = sys.argv[1].__str__()
     print filename
     main(filename)
-

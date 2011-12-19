@@ -53,11 +53,11 @@ def setFileIn(fileIn=sys.argv[1]):
     x2mod = x2+1
     #length of s
     sLen = len(s)
-    
+
     if x2 < x1:
         x2mod = 0
-    
-    
+
+
     fileDirectory = os.path.dirname(s) + "/"
     if x2mod != 0:
         fileExtension = s[x2mod:sLen]
@@ -68,13 +68,13 @@ def setFileIn(fileIn=sys.argv[1]):
         fileExtension = ""
         fileTitle = s[x1:sLen]
         fileFullName = fileDirectory + fileTitle
-    
+
     #print "fileTitle", fileTitle
     #print "fileExtension", fileExtension
     #print "fileDirectory", fileDirectory
     #print "fileFullName", fileFullName
-    
-    
+
+
 setFileIn()
 
 database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/transcoder/dbsettings")
@@ -117,11 +117,11 @@ class Command:
         if self.verificationCommand:
             self.verificationCommand = Command(self.verificationCommand)
             self.verificationCommand.command = self.verificationCommand.command.replace("%outputLocation%", self.outputLocation)
-        
+
         if self.eventDetailCommand:
             self.eventDetailCommand = Command(self.eventDetailCommand)
             self.eventDetailCommand.command = self.eventDetailCommand.command.replace("%outputLocation%", self.outputLocation)
-    
+
     def __str__(self):
         if self.verificationCommand:
             return "[COMMAND]\n" + \
@@ -138,16 +138,16 @@ class Command:
             "command: " + self.command.__str__() + "\n" + \
             "description: " + self.description.__str__() + "\n" + \
             "outputLocation: " + self.outputLocation.__str__() + "\n" + \
-            "verificationCommand: " + self.verificationCommand.__str__() 
-    
+            "verificationCommand: " + self.verificationCommand.__str__()
+
     def execute(self, skipOnSuccess=False):
-        
+
         #print self.__str__()
-        
+
         #Do a dictionary replacement.
         #Replace replacement strings
         global replacementDic
-                
+
         #for each key replace all instances of the key in the command string
         for key in replacementDic.iterkeys():
             #self.command = self.command.replace ( key, quote(replacementDic[key]) )
@@ -156,17 +156,17 @@ class Command:
                 self.outputLocation = self.outputLocation.replace ( key, replacementDic[key] )
         print "Running: "
         print self.__str__()
-        
-        self.exitCode, self.stdOut, self.stdError = executeOrRun(self.type, self.command)      
-        
-        
+
+        self.exitCode, self.stdOut, self.stdError = executeOrRun(self.type, self.command)
+
+
         if (not self.exitCode) and self.verificationCommand:
             print
             self.exitCode = self.verificationCommand.execute(skipOnSuccess=True)
-        
+
         if (not self.exitCode) and self.eventDetailCommand:
             self.eventDetailCommand.execute(skipOnSuccess=True)
-        
+
         #If unsuccesful
         if self.exitCode:
             print >>sys.stderr, "Failed:"
@@ -176,7 +176,7 @@ class Command:
             if False and self.failedCount < 1: #retry count
                 self.failedCount= self.failedCount + 1
                 time.sleep(2)
-                print >>sys.stderr, "retrying, ", self.failedCount 
+                print >>sys.stderr, "retrying, ", self.failedCount
                 return self.execute(skipOnSuccess)
         else:
             global onSuccess
@@ -196,7 +196,7 @@ class CommandLinker:
             co =Command(self.command.__str__())
             self.commandObject = co
             commandObjects[self.command] = co
-        
+
         if self.group in groupObjects:
             self.groupObject = groupObjects[self.group]
             groupObjects[self.group].members.append(self)
@@ -204,12 +204,12 @@ class CommandLinker:
             go =Group(self.group, [self])
             self.groupObject = go
             groupObjects[self.group] = go
-        
+
     def __str__(self):
         return "[Command Linker]\n" + \
         "PK: " + self.pk.__str__() + "\n" + \
-        self.commandObject.__str__() 
-    
+        self.commandObject.__str__()
+
     def execute(self):
         c=database.cursor()
         sql = "UPDATE CommandRelationships SET countAttempts=countAttempts+1 WHERE pk=" + self.pk.__str__() + ";"
@@ -234,13 +234,13 @@ class CommandLinker:
             c.execute(sql)
             row = c.fetchone()
             return ret
-        
+
 
 class Group:
     def __init__(self, pk, members=[]):
         self.pk = pk
         self.members = members
-    
+
     def __str__(self):
         members = ""
         for m in self.members:
@@ -248,8 +248,8 @@ class Group:
         return "[GROUP]\n" + \
         "PK: " + self.pk.__str__() + "\n" + \
         members
-        
-        
+
+
 def main(fileName):
     #determin the pk's of the Command Linkers
     cls = identifyCommands(fileName)
@@ -257,13 +257,13 @@ def main(fileName):
     if cls == []:
         print "Nothing to do"
         return 0
-    
+
     #Create the groups and command objects for the Command Linkers
     for c in cls:
         cl = CommandLinker(c)
         pk, commandPK, groupPK = c
         commandLinkerObjects[pk] = cl
-    
+
     #execute
     for g in groupObjects:
         if (g > 0 or g < LowerEndMainGroupMax) and len(groupObjects[g]):
@@ -278,19 +278,19 @@ def main(fileName):
                 cl.execute()
                 combinedExitCode += math.fabs(cl.commandObject.exitCode)
             if len(groupObjects[mainGroup].members) > 0 and combinedExitCode == 0:
-                break 
+                break
         if mainGroup == LowerEndMainGroupMax:
             quit(-1)
-        mainGroup = mainGroup - 1 
-    
-    
+        mainGroup = mainGroup - 1
+
+
     #look for problems
     for g in groupObjects:
         #Groups that require at least one good one.
         if g > 0:
             exitCode=-1
             for cl in groupObjects[g].members:
-                if cl.commandObject.exitCode == 0: 
+                if cl.commandObject.exitCode == 0:
                     exitCode = 0
                     break
             if exit:
@@ -299,7 +299,7 @@ def main(fileName):
         if g == mainGroup:
             exitCode=0
             for cl in groupObjects[g].members:
-                if cl.commandObject.exitCode != 0: 
+                if cl.commandObject.exitCode != 0:
                     exitCode = -1
                     break
             if exit:

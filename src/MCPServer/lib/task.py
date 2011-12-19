@@ -21,4 +21,3 @@
 # @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
-
