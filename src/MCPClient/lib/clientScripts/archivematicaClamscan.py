@@ -61,7 +61,7 @@ if __name__ == '__main__':
     version, virusDefs, virusDefsDate = clamscanVersionOutput[1].split("/")
     virusDefs = virusDefs + "/" + virusDefsDate
     eventDetailText = "program=\"Clam AV\"; version=\"" + version + "\"; virusDefinitions=\"" + virusDefs + "\""
-	
+
     if fileUUID != "None":
         insertIntoEvents(fileUUID=fileUUID, eventIdentifierUUID=taskUUID, eventType="virus check", eventDateTime=date, eventDetail=eventDetailText, eventOutcome=eventOutcome, eventOutcomeDetailNote="")
     if eventOutcome != "Pass":
