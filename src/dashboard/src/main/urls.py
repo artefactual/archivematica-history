@@ -52,6 +52,9 @@ urlpatterns = patterns('dashboard.main.views',
     (r'access/$', 'access_list'),
     (r'access/(?P<id>\d+)/delete/$', 'access_delete'),
 
+    # Lookup
+    (r'lookup/rightsholder/(?P<id>\d+)/$', 'rights_holders_lookup'),
+
     # Autocomplete
     (r'autocomplete/rightsholders$', 'rights_holders_autocomplete'),
 

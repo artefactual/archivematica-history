@@ -181,6 +181,14 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
     return render_to_response('main/rights_edit.html', locals())
 
+def rights_holders_lookup(request, id):
+    try:
+      agent = models.RightsStatementLinkingAgentIdentifier.objects.get(pk=id)
+      result = agent.linkingagentidentifiervalue + ' [' + str(agent.id) + ']'
+    except:
+      result = ''
+    return HttpResponse(result)
+
 def rights_holders_autocomplete(request):
 
     search_text = ''
