@@ -94,7 +94,17 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             if request.POST.get('rightsholder') == '':
                 agentId = 0
             else:
-                agentId = request.POST.get('rightsholder')
+                agentRaw = request.POST.get('rightsholder')
+                try:
+                    int(agentRaw)
+                    agentId = int(agentRaw)
+                except ValueError:
+                    agentRe = re.compile('(.*)\[(\d*)\]')
+                    match = agentRe.match(agentRaw)
+                    if match:
+                        agentId = match.group(2)
+                    else:
+                        agentId = 0
             postData.__setitem__('rightsholder', agentId)
             form = forms.RightsForm(postData, instance=viewRights)
             form.cleaned_data = postData
