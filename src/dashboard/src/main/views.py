@@ -88,9 +88,16 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
     if id:
         viewRights = models.RightsStatement.objects.get(pk=id)
+        agentId = None
         if request.method == 'POST':
-            form = forms.RightsForm(request.POST, instance=viewRights)
-            form.cleaned_data = request.POST
+            postData = request.POST.copy()
+            if request.POST.get('rightsholder') == '':
+                agentId = 0
+            else:
+                agentId = request.POST.get('rightsholder')
+            postData.__setitem__('rightsholder', agentId)
+            form = forms.RightsForm(postData, instance=viewRights)
+            form.cleaned_data = postData
             viewRights = form.save()
         else:
             form = forms.RightsForm(instance=viewRights)
