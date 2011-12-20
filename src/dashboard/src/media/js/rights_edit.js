@@ -26,6 +26,11 @@ $(document).ready(function() {
   $('#id_rightsbasis').change(revealSelectedBasis);
   revealSelectedBasis();
 
+  // lookup rightsholder
+  $.get('lookup/rightsholder/' + $('#id_rightsholder').val(), function(data) {
+    $('#id_rightsholder').val(data);
+  });
+
   // attach autocomplete
   $("#id_rightsholder").autocomplete({  
 
