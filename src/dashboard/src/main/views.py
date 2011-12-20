@@ -79,6 +79,23 @@ def status(request):
       Rights-related
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
+def rights_parse_agent_id(input):
+    if input == '':
+        agentId = 0
+    else:
+        agentRaw = input
+        try:
+            int(agentRaw)
+            agentId = int(agentRaw)
+        except ValueError:
+            agentRe = re.compile('(.*)\[(\d*)\]')
+            match = agentRe.match(agentRaw)
+            if match:
+                agentId = match.group(2)
+            else:
+                agentId = 0
+    return agentId
+
 def rights_edit(request, uuid, id=None, section='ingest'):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     name = utils.get_directory_name(jobs[0])
@@ -91,20 +108,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         agentId = None
         if request.method == 'POST':
             postData = request.POST.copy()
-            if request.POST.get('rightsholder') == '':
-                agentId = 0
-            else:
-                agentRaw = postData.get('rightsholder')
-                try:
-                    int(agentRaw)
-                    agentId = int(agentRaw)
-                except ValueError:
-                    agentRe = re.compile('(.*)\[(\d*)\]')
-                    match = agentRe.match(agentRaw)
-                    if match:
-                        agentId = match.group(2)
-                    else:
-                        agentId = 0
+            agentId = rights_parse_agent_id(postData.get('rightsholder'))
             if agentId == 0 and postData.get('rightsholder') != '0' and postData.get('rightsholder') != '':
                 agent = models.RightsStatementLinkingAgentIdentifier()
                 agent.rightsstatement = viewRights
@@ -128,7 +132,12 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_license_forms = max_notes - len(models.RightsStatementLicense.objects.filter(rightsstatement=viewRights))
         extra_license_notes = max_notes - len(models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights))
     else:
-        form = forms.RightsForm(request.POST)
+        #return HttpResponse(request.POST.get('rightsholder'))
+        postData = request.POST.copy()
+        if request.method == 'POST':
+            agentId = rights_parse_agent_id(postData.get('rightsholder'))
+            postData.__setitem__('rightsholder', agentId)
+        form = forms.RightsForm(postData)
         if request.method != 'POST':
             viewRights = models.RightsStatement()
         extra_grant_notes = max_notes
