@@ -189,7 +189,12 @@ def rights_holders_autocomplete(request):
         search_text = request.REQUEST['text']
     except Exception: pass
 
-    response_data = {'John Doe': 'John Doe', 'Jane Doe': 'Jane Doe'}
+    response_data = {}
+
+    agents = models.RightsStatementLinkingAgentIdentifier.objects.all()
+    for agent in agents:
+      value = agent.linkingagentidentifiervalue + ' [' + str(agent.id) + ']'
+      response_data[value] = value
 
     return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
 
