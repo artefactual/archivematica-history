@@ -199,7 +199,7 @@ def rights_holders_autocomplete(request):
 
     response_data = {}
 
-    agents = models.RightsStatementLinkingAgentIdentifier.objects.all()
+    agents = models.RightsStatementLinkingAgentIdentifier.objects.filter(linkingagentidentifiervalue__icontains=search_text)
     for agent in agents:
         value = agent.linkingagentidentifiervalue + ' [' + str(agent.id) + ']'
         response_data[value] = value
