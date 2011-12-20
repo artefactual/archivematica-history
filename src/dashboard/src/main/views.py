@@ -94,7 +94,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             if request.POST.get('rightsholder') == '':
                 agentId = 0
             else:
-                agentRaw = request.POST.get('rightsholder')
+                agentRaw = postData.get('rightsholder')
                 try:
                     int(agentRaw)
                     agentId = int(agentRaw)
@@ -105,6 +105,12 @@ def rights_edit(request, uuid, id=None, section='ingest'):
                         agentId = match.group(2)
                     else:
                         agentId = 0
+            if agentId == 0 and postData.get('rightsholder') != '0' and postData.get('rightsholder') != '':
+                agent = models.RightsStatementLinkingAgentIdentifier()
+                agent.rightsstatement = viewRights
+                agent.linkingagentidentifiervalue = postData.get('rightsholder')
+                agent.save()
+                agentId = agent.id
             postData.__setitem__('rightsholder', agentId)
             form = forms.RightsForm(postData, instance=viewRights)
             form.cleaned_data = postData
