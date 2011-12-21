@@ -110,6 +110,8 @@ class JobStepCompleted(models.Model):
 
 class RightsStatement(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
+    metadataappliestotype = models.IntegerField(Job, db_column='metadataAppliesToType')
+    metadataappliestoidentifier = models.CharField(max_length=50, blank=True, db_column='metadataAppliesToidentifier')
     rightsstatementidentifier = models.TextField(db_column='rightsStatementIdentifier', blank=True, verbose_name='Identifier')
     rightsstatementidentifiertype = models.TextField(db_column='rightsStatementIdentifierType', blank=True, verbose_name='Type')
     rightsstatementidentifiervalue = models.TextField(db_column='rightsStatementIdentifierValue', blank=True, verbose_name='Value')
