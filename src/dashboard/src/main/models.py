@@ -72,6 +72,37 @@ class Job(models.Model):
     class Meta:
         db_table = u'Jobs'
 
+class SIPManager(models.Manager):
+
+    def is_hidden(self, uuid):
+        try:
+            return SIP.objects.get(uuid__exact=uuid).hidden is True
+        except:
+            return False
+
+class SIP(models.Model):
+    uuid = models.CharField(max_length=150, primary_key=True, db_column='sipUUID')
+    createdtime = models.DateTimeField(db_column='createdTime')
+    # ...
+    hidden = models.BooleanField(default=False, blank=False)
+
+    objects = SIPManager()
+
+class TransferManager(models.Manager):
+
+    def is_hidden(self, uuid):
+      try:
+        return Transfer.objects.get(uuid__exact=uuid).hidden is True
+      except:
+        return False
+
+class Transfer(models.Model):
+    uuid = models.CharField(max_length=150, primary_key=True, db_column='transferUUID')
+    # ...
+    hidden = models.BooleanField(default=False, blank=False)
+
+    objects = TransferManager()
+
 class StandardTaskConfig(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     execute = models.TextField(db_column='execute', blank=True)
