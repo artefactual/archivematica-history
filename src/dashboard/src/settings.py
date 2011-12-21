@@ -174,10 +174,14 @@ POLLING_INTERVAL = 5 # Seconds
 STATUS_POLLING_INTERVAL = 5 # Seconds
 
 MICROSERVICES_HELP = {
-    'Appraise SIP for preservation': 'Appraise SIP for preservation. Delete any files not accepted for preservation. Add submission documentation to metadata/ submissionDocumentation folder if desired.',
-    'Appraise SIP for submission': 'Check the SIP to make sure it conforms to your Submission Agreement. Delete any files not accepted for ingest. Add submission documentation to metadata/ submissionDocumentation folder if desired.',
-    'Remove from quarantine': 'If desired, click Approve to remove the SIP from quarantine immediately. Otherwise, wait until the quarantine period has expired and the SIP will be removed automatically.',
-    'Store AIP': 'If desired, review AIP content. Click "Approve" to move the AIP into archival storage.',
+    'Approve transfer': 'Once you have added files to the transfer, select "transfer complete" to begin processing.',
+    'Workflow decision - create transfer backup': 'Create a complete backup of the transfer in case transfer/ingest are interrupted or fail. The transfer will automatically be deleted once the AIP has been moved into storage.',
+    'Workflow decision - send transfer to quarantine': 'Quarantine transfer to allow definitions in anti-virus software to be updated.',
+    'Remove from quarantine': 'If desired, select "unquarantine" to remove the transfer from quarantine immediately. Otherwise, wait until the quarantine period has expired and the transfer will be removed automatically.',
+    'Create SIP(s)': 'Create one or more SIPs from the transfer. See the Archivematica user manual for information about SIP creation options.',
+    'Approve SIP Creation': 'Once you have added files to the SIP and have completed appraisal and physical arrangement, select "SIP creation complete" to move the SIP into ingest.',
+    'Normalize': 'Create preservation and/or access copies of files if desired. Creating access copies will result in a DIP being generated for upload into an access system.',
+    'Approve normalization': 'In the file browser, review normalized files if desired.',
+    'Store AIP': 'If desired, review AIP contents. Click "Approve" to move the AIP into archival storage.',
     'Upload DIP': 'If desired, review the DIP and remove any access copies that should not be uploaded to the public access system, e.g. for copyright or security reasons. Click "Approve" to upload the DIP to the access system.',
-    'Approve normalization': 'Review normalization of objects, and manually normalize as necessary.',
 }
