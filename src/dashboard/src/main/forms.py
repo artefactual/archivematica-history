@@ -46,8 +46,6 @@ class RightsForm(ModelForm):
     class Meta:
         model = models.RightsStatement
 
-        #fields = (
-        #  'rightsstatementidentifier',)
         exclude = ('id', 'metadataappliestotype', 'metadataappliestoidentifier', 'rightsstatementidentifier', 'rightsstatementidentifiertype', 'rightsstatementidentifiervalue',)
         widgets = {
             'rightsstatementidentifier': TextInput(attrs=INPUT_ATTRS), 'rightsnotes': Textarea(attrs=TEXTAREA_ATTRS), 'rightsholder': TextInput(attrs=INPUT_ATTRS), }
