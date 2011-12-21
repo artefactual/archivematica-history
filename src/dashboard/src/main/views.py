@@ -163,7 +163,8 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             createdRights = viewRights
         else:
             createdRights = form.save()
-            createdRights.metadataappliestotype = 1
+            sectionTypeID = {'transfer': 2, 'ingest': 1}
+            createdRights.metadataappliestotype = sectionTypeID[section]
             createdRights.metadataappliestoidentifier = uuid
             createdRights.save()
         grantFormset = GrantFormSet(request.POST, instance=createdRights)
