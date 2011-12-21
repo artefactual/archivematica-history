@@ -250,6 +250,9 @@ def ingest_status(request, uuid=None):
         def encoder(obj):
             items = []
             for item in obj:
+                # Check if hidden (TODO: this method is slow)
+                if models.SIP.objects.is_hidden(item['sipuuid']):
+                    continue
                 jobs = get_jobs_by_sipuuid(item['sipuuid'])
                 item['directory'] = utils.get_directory_name(jobs[0])
                 item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
@@ -479,6 +482,9 @@ def transfer_status(request, uuid=None):
         def encoder(obj):
             items = []
             for item in obj:
+                # Check if hidden (TODO: this method is slow)
+                if models.Transfer.objects.is_hidden(item['sipuuid']):
+                    continue
                 jobs = get_jobs_by_sipuuid(item['sipuuid'])
                 item['directory'] = utils.get_directory_name(jobs[0])
                 item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
