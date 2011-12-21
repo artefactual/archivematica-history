@@ -355,7 +355,8 @@ CREATE TABLE Transfers (
     sourceOfAcquisition LONGTEXT,
     typeOfTransfer      LONGTEXT,
     description         LONGTEXT,
-    notes               LONGTEXT
+    notes               LONGTEXT,
+    hidden              BOOLEAN NOT NULL DEFAULT 0
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Tasks;
@@ -403,7 +404,8 @@ CREATE TABLE SIPs (
     createdTime     TIMESTAMP(8) DEFAULT NOW(),
     currentPath     LONGTEXT,
     magicLink       BIGINT,
-    magicLinkExitMessage VARCHAR(50) DEFAULT 'Completed successfully'
+    magicLinkExitMessage VARCHAR(50) DEFAULT 'Completed successfully',
+    hidden          BOOLEAN NOT NULL DEFAULT 0
 ) DEFAULT CHARSET=utf8;
 
 
