@@ -63,7 +63,7 @@ $(function()
 
       model: Sip,
 
-      url: '/ingest/status',
+      url: '/ingest/status/',
 
       initialize: function()
         {
@@ -182,7 +182,7 @@ $(function()
 
           $('<div>' +
               '<p><strong>Are you sure you want to remove this SIP from the dashboard? Note that this does not delete the SIP or related entities.</strong></p>' +
-              '<p>Directory: ' + this.model.get('directory') + '<br />UUID: ' + this.model.get('uuid') + '<br />Status: ' + $(this.el).find('.sip-detail-icon-status > a > img').attr('title') + '</p>' +
+              '<p>Directory: ' + this.model.get('directory') + '<br />UUID: ' + this.model.get('uuid') + '<br />Status: ' + $(this.el).find('.sip-detail-icon-status > img').attr('title') + '</p>' +
             '</div>').dialog(
             {
               modal: true,
@@ -488,6 +488,16 @@ $(function()
         {
           var value = $(event.target).val();
 
+          if ('uploadDIP' == this.model.get('microservice') && 2 == value)
+          {
+            $('#modal-from-dom').modal({
+                backdrop: true,
+                keyboard: true
+              }).modal('show');
+
+            return false;
+          }
+
           $.ajax({
             context: this,
             data: { uuid: this.model.get('uuid'), choice: value },
@@ -529,7 +539,7 @@ $(function()
                       }]
                   });
               },
-            url: '/ingest/normalization-report/' + this.model.sip.get('uuid')
+            url: '/ingest/normalization-report/' + this.model.sip.get('uuid') + '/'
           });
         },
 
@@ -557,7 +567,7 @@ $(function()
                       }]
                   });
               },
-            url: '/tasks/' + this.model.get('uuid')
+            url: '/tasks/' + this.model.get('uuid') + '/'
           });
         },
 
@@ -745,7 +755,7 @@ $(function()
                               context: this,
                               data: { changes: JSON.stringify(changes) },
                               type: 'POST',
-                              url: '/jobs/manual-normalization/' + self.options.uuid
+                              url: '/jobs/manual-normalization/' + self.options.uuid + '/'
                             })
                               .then(function()
                                 {
@@ -777,7 +787,7 @@ $(function()
         {
           return $.ajax({
             dataType: 'json',
-            url: '/jobs/list-objects/' + this.options.uuid,
+            url: '/jobs/list-objects/' + this.options.uuid + '/',
             success: function(data)
               {
                 this.directoryContent = data;
@@ -845,7 +855,7 @@ $(function()
           $.ajax({
             data: { path: undefined === path ? '.' : path },
             context: self,
-            url: '/jobs/explore/' + this.options.uuid,
+            url: '/jobs/explore/' + this.options.uuid + '/',
             type: 'GET',
             success: function(data)
               {
@@ -1008,7 +1018,7 @@ $(function()
             context: this,
             dataType: 'json',
             type: 'GET',
-            url: '/ingest/status',
+            url: '/ingest/status/',
             beforeSend: function()
               {
                 window.statusWidget.startPoll();
