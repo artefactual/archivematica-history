@@ -37,7 +37,7 @@ from datetime import datetime
 from django.shortcuts import redirect
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-      Utils
+      Utils (decorators)
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 # Try to update context instead of sending new params
@@ -238,65 +238,50 @@ def ingest_grid(request):
     return render_to_response('main/ingest/grid.html', locals())
 
 def ingest_status(request, uuid=None):
-    if request.method == 'GET':
-        # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-        objects = models.Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None').filter(unittype__exact = 'unitSIP')
-        mcp_available = False
-        try:
-            client = MCPClient()
-            mcp_status = etree.XML(client.list())
-            mcp_available = True
-        except Exception: pass
-        def encoder(obj):
-            items = []
-            for item in obj:
-                # Check if hidden (TODO: this method is slow)
-                if models.SIP.objects.is_hidden(item['sipuuid']):
-                    continue
-                jobs = get_jobs_by_sipuuid(item['sipuuid'])
-                item['directory'] = utils.get_directory_name(jobs[0])
-                item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
-                item['uuid'] = item['sipuuid']
-                item['id'] = item['sipuuid']
-                del item['sipuuid']
-                item['jobs'] = []
-                for job in jobs:
-                    newJob = {}
-                    item['jobs'].append(newJob)
-                    newJob['uuid'] = job.jobuuid
-                    newJob['microservice'] = job.jobtype #map_known_values(job.jobtype)
-                    newJob['currentstep'] = job.currentstep #map_known_values(job.currentstep)
-                    newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
-                    try: mcp_status
-                    except NameError: pass
-                    else:
-                        xml_unit = mcp_status.xpath('choicesAvailableForUnit[UUID="%s"]' % job.jobuuid)
-                        if xml_unit:
-                            xml_unit_choices = xml_unit[0].findall('choices/choice')
-                            choices = {}
-                            for choice in xml_unit_choices:
-                                choices[choice.find("chainAvailable").text] = choice.find("description").text
-                            newJob['choices'] = choices
-                items.append(item)
-            return items
-        response = {}
-        response['objects'] = objects
-        response['mcp'] = mcp_available
-        return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
-    elif request.method == 'DELETE':
-        jobs = models.Job.objects.filter(sipuuid=uuid)
-        jobs.update(hidden=True)
-        """ MCP
-        try:
-          mcp_client = MCPClient()
-          mcp_list = etree.XML(mcp_client.list())
-          for uuid in mcp_list.findall('Job/UUID'):
-            if 0 < len(jobs.filter(jobuuid=uuid.text)):
-              client.execute(uuid.text)
-        except Exception: pass
-        """
-        response = simplejson.JSONEncoder().encode({'removed': True})
-        return HttpResponse(response, mimetype='application/json')
+    # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
+    objects = models.Job.objects.filter(hidden=False).values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None').filter(unittype__exact = 'unitSIP')
+    mcp_available = False
+    try:
+        client = MCPClient()
+        mcp_status = etree.XML(client.list())
+        mcp_available = True
+    except Exception: pass
+    def encoder(obj):
+        items = []
+        for item in obj:
+            # Check if hidden (TODO: this method is slow)
+            if models.SIP.objects.is_hidden(item['sipuuid']):
+                continue
+            jobs = get_jobs_by_sipuuid(item['sipuuid'])
+            item['directory'] = utils.get_directory_name(jobs[0])
+            item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
+            item['uuid'] = item['sipuuid']
+            item['id'] = item['sipuuid']
+            del item['sipuuid']
+            item['jobs'] = []
+            for job in jobs:
+                newJob = {}
+                item['jobs'].append(newJob)
+                newJob['uuid'] = job.jobuuid
+                newJob['microservice'] = job.jobtype #map_known_values(job.jobtype)
+                newJob['currentstep'] = job.currentstep #map_known_values(job.currentstep)
+                newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
+                try: mcp_status
+                except NameError: pass
+                else:
+                    xml_unit = mcp_status.xpath('choicesAvailableForUnit[UUID="%s"]' % job.jobuuid)
+                    if xml_unit:
+                        xml_unit_choices = xml_unit[0].findall('choices/choice')
+                        choices = {}
+                        for choice in xml_unit_choices:
+                            choices[choice.find("chainAvailable").text] = choice.find("description").text
+                        newJob['choices'] = choices
+            items.append(item)
+        return items
+    response = {}
+    response['objects'] = objects
+    response['mcp'] = mcp_available
+    return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
 
 def ingest_metadata(request, uuid):
     try:
@@ -343,20 +328,14 @@ def ingest_rights_edit(request, uuid, id=None):
     return rights_edit(request, uuid, id, 'ingest')
 
 def ingest_delete(request, uuid):
-    jobs = Job.objects.filter(sipuuid=uuid)
-
-    """ MCP
     try:
-      mcp_client = MCPClient()
-      mcp_list = etree.XML(mcp_client.list())
-      for uuid in mcp_list.findall('Job/UUID'):
-        if 0 < len(jobs.filter(jobuuid=uuid.text)):
-          client.execute(uuid.text)
-    except Exception: pass
-    """
-
-    jobs.update(hidden=True)
-    return HttpResponseRedirect(reverse('dashboard.main.views.ingest_grid'))
+        sip = models.SIP.objects.get(uuid__exact=uuid)
+        sip.hidden = True
+        sip.save()
+        response = simplejson.JSONEncoder().encode({'removed': True})
+        return HttpResponse(response, mimetype='application/json')
+    except:
+        raise Http404
 
 def ingest_normalization_report(request, uuid):
     query = """
@@ -470,63 +449,50 @@ def transfer_grid(request):
     return render_to_response('main/transfer/grid.html', locals())
 
 def transfer_status(request, uuid=None):
-    if request.method == 'GET':
-        # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
-        objects = models.Job.objects.filter(hidden=False, unittype__exact='unitTransfer').values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
-        mcp_available = False
-        try:
-            client = MCPClient()
-            mcp_status = etree.XML(client.list())
-            mcp_available = True
-        except Exception: pass
-        def encoder(obj):
-            items = []
-            for item in obj:
-                # Check if hidden (TODO: this method is slow)
-                if models.Transfer.objects.is_hidden(item['sipuuid']):
-                    continue
-                jobs = get_jobs_by_sipuuid(item['sipuuid'])
-                item['directory'] = utils.get_directory_name(jobs[0])
-                item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
-                item['uuid'] = item['sipuuid']
-                item['id'] = item['sipuuid']
-                del item['sipuuid']
-                item['jobs'] = []
-                for job in jobs:
-                    newJob = {}
-                    item['jobs'].append(newJob)
-                    newJob['uuid'] = job.jobuuid
-                    newJob['microservice'] = job.jobtype #map_known_values(job.jobtype)
-                    newJob['currentstep'] = job.currentstep #map_known_values(job.currentstep)
-                    newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
-                    try: mcp_status
-                    except NameError: pass
-                    else:
-                        xml_unit = mcp_status.xpath('choicesAvailableForUnit[UUID="%s"]' % job.jobuuid)
-                        if xml_unit:
-                            xml_unit_choices = xml_unit[0].findall('choices/choice')
-                            choices = {}
-                            for choice in xml_unit_choices:
-                                choices[choice.find("chainAvailable").text] = choice.find("description").text
-                            newJob['choices'] = choices
-                items.append(item)
-            return items
-        response = {}
-        response['objects'] = objects
-        response['mcp'] = mcp_available
-        return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
-    elif request.method == 'DELETE':
-        jobs = models.Job.objects.filter(sipuuid=uuid)
-        try:
-            mcp_client = MCPClient()
-            mcp_list = etree.XML(mcp_client.list())
-            for uuid in mcp_list.findall('Job/UUID'):
-                if 0 < len(jobs.filter(jobuuid=uuid.text)):
-                    client.execute(uuid.text)
-        except Exception: pass
-        jobs.update(hidden=True)
-        response = simplejson.JSONEncoder().encode({'removed': True})
-        return HttpResponse(response, mimetype='application/json')
+    # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
+    objects = models.Job.objects.filter(hidden=False, unittype__exact='unitTransfer').values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
+    mcp_available = False
+    try:
+        client = MCPClient()
+        mcp_status = etree.XML(client.list())
+        mcp_available = True
+    except Exception: pass
+    def encoder(obj):
+        items = []
+        for item in obj:
+            # Check if hidden (TODO: this method is slow)
+            if models.Transfer.objects.is_hidden(item['sipuuid']):
+                continue
+            jobs = get_jobs_by_sipuuid(item['sipuuid'])
+            item['directory'] = utils.get_directory_name(jobs[0])
+            item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
+            item['uuid'] = item['sipuuid']
+            item['id'] = item['sipuuid']
+            del item['sipuuid']
+            item['jobs'] = []
+            for job in jobs:
+                newJob = {}
+                item['jobs'].append(newJob)
+                newJob['uuid'] = job.jobuuid
+                newJob['microservice'] = job.jobtype #map_known_values(job.jobtype)
+                newJob['currentstep'] = job.currentstep #map_known_values(job.currentstep)
+                newJob['timestamp'] = '%d.%s' % (calendar.timegm(job.createdtime.timetuple()), str(job.createdtimedec).split('.')[-1])
+                try: mcp_status
+                except NameError: pass
+                else:
+                    xml_unit = mcp_status.xpath('choicesAvailableForUnit[UUID="%s"]' % job.jobuuid)
+                    if xml_unit:
+                        xml_unit_choices = xml_unit[0].findall('choices/choice')
+                        choices = {}
+                        for choice in xml_unit_choices:
+                            choices[choice.find("chainAvailable").text] = choice.find("description").text
+                        newJob['choices'] = choices
+            items.append(item)
+        return items
+    response = {}
+    response['objects'] = objects
+    response['mcp'] = mcp_available
+    return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
 
 def transfer_detail(request, uuid):
     jobs = models.Job.objects.filter(sipuuid=uuid)
@@ -550,20 +516,14 @@ def transfer_rights_delete(request, uuid, jobs, name, id):
     return HttpResponse()
 
 def transfer_delete(request, uuid):
-    jobs = models.Job.objects.filter(sipuuid=uuid)
-
-    """ MCP
     try:
-      mcp_client = MCPClient()
-      mcp_list = etree.XML(mcp_client.list())
-      for uuid in mcp_list.findall('Job/UUID'):
-        if 0 < len(jobs.filter(jobuuid=uuid.text)):
-          client.execute(uuid.text)
-    except Exception: pass
-    """
-
-    jobs.update(hidden=True)
-    return HttpResponseRedirect(reverse('dashboard.main.views.ingest_grid'))
+        transfer = models.Transfer.objects.get(uuid__exact=uuid)
+        transfer.hidden = True
+        transfer.save()
+        response = simplejson.JSONEncoder().encode({'removed': True})
+        return HttpResponse(response, mimetype='application/json')
+    except:
+        raise Http404
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Archival storage
