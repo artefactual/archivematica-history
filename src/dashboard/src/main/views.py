@@ -124,13 +124,13 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             form.cleaned_data = viewRights
             form.save()
         # determine how many empty forms should be shown for children
-        extra_grant_notes = max_notes - len(models.RightsStatementRightsGranted.objects.filter(rightsstatement=viewRights))
-        extra_copyright_forms = max_notes - len(models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights))
-        extra_copyright_notes = max_notes - len(models.RightsStatementCopyrightNote.objects.filter(rightsstatement=viewRights))
-        extra_statute_forms = max_notes - len(models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights))
-        extra_statute_notes = max_notes - len(models.RightsStatementStatuteInformationNote.objects.filter(rightsstatement=viewRights))
-        extra_license_forms = max_notes - len(models.RightsStatementLicense.objects.filter(rightsstatement=viewRights))
-        extra_license_notes = max_notes - len(models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights))
+        extra_grant_notes = max_notes - models.RightsStatementRightsGranted.objects.filter(rightsstatement=viewRights).count()
+        extra_copyright_forms = max_notes - models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights).count()
+        extra_copyright_notes = max_notes - models.RightsStatementCopyrightNote.objects.filter(rightsstatement=viewRights).count()
+        extra_statute_forms = max_notes - models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights).count()
+        extra_statute_notes = max_notes - models.RightsStatementStatuteInformationNote.objects.filter(rightsstatement=viewRights).count()
+        extra_license_forms = max_notes - models.RightsStatementLicense.objects.filter(rightsstatement=viewRights).count()
+        extra_license_notes = max_notes - models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights).count()
     else:
         #return HttpResponse(request.POST.get('rightsholder'))
         postData = request.POST.copy()
