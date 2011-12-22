@@ -22,12 +22,10 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-import lxml.etree as etree
 import sys
 import os
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-from scanForRemovedFiles import addRemovedEvent
-
+from fileOperations import removeFileByFileUUID
 removeIfFileNameIs = ["Thumbs.db"]
 
 def removableFile(target):
@@ -45,14 +43,9 @@ if __name__ == '__main__':
     date = sys.argv[4]
     eIDValue = sys.argv[5]
 
-    xmlFile = logsDirectory + "fileMeta/" + fileUUID + ".xml"
     global eventDetailText
     eventDetailText = "fileRemoved"
     if removableFile(target):
         print fileUUID + " -> " + os.path.basename(target)
         os.remove(target)
-        tree = etree.parse( xmlFile )
-        root = tree.getroot()
-        addRemovedEvent(root, eventDetailText, date, eIDValue)
-        tree = etree.ElementTree(root)
-        tree.write(xmlFile)
+        removeFileByFileUUID(fileUUID)
