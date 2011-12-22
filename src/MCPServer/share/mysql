@@ -121,7 +121,8 @@ DROP TABLE IF EXISTS RightsStatementLicense;
 CREATE TABLE RightsStatementLicense(
   pk INT(10) unsigned NOT NULL AUTO_INCREMENT,
   fkRightsStatement INT(10) unsigned DEFAULT NULL,
-  licenseIdentifier longtext,
+  licenseIdentifierType longtext,
+  licenseIdentifierValue longtext,
   licenseTerms longtext,
   PRIMARY KEY (pk),
   KEY fkRightsStatement (fkRightsStatement)

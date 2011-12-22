@@ -92,7 +92,8 @@ class RightsLicenseForm(ModelForm):
     class Meta:
         model = models.RightsStatementLicense
         widgets = {
-            'licenseidentifier': TextInput(attrs=INPUT_ATTRS),
+            'licensetype': TextInput(attrs=INPUT_ATTRS),
+            'licensevalue': TextInput(attrs=INPUT_ATTRS),
             'licenseterms': TextInput(attrs=INPUT_ATTRS), }
 
 class RightsLicenseNoteForm(ModelForm):
