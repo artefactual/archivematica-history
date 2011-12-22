@@ -88,6 +88,9 @@ class SIP(models.Model):
 
     objects = SIPManager()
 
+    class Meta:
+        db_table = u'SIPs'
+
 class TransferManager(models.Manager):
 
     def is_hidden(self, uuid):
@@ -102,6 +105,9 @@ class Transfer(models.Model):
     hidden = models.BooleanField(default=False, blank=False)
 
     objects = TransferManager()
+
+    class Meta:
+        db_table = u'Transfers'
 
 class StandardTaskConfig(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
