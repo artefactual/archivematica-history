@@ -22,6 +22,22 @@ $(function()
 
     window.Sip = Backbone.Model.extend({
 
+      methodUrl:
+      {
+        'delete': '/transfer/uuid/delete/'
+      },
+
+      sync: function(method, model, options)
+        {
+          if (model.methodUrl && model.methodUrl[method.toLowerCase()])
+          {
+            options = options || {};
+            options.url = model.methodUrl[method.toLowerCase()].replace('uuid', this.get('id'));
+          }
+
+          Backbone.sync(method, model, options);
+        },
+
       initialize: function()
         {
           this.loadJobs();
