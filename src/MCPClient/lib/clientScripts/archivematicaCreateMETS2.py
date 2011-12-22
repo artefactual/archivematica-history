@@ -28,6 +28,7 @@ from xml.sax.saxutils import quoteattr
 import os
 import sys
 import MySQLdb
+from archivematicaCreateMETSRights import archivematicaGetRights
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from archivematicaFunctions import escape
@@ -381,14 +382,9 @@ def createDigiprovMDAgents():
     sqlLock.release()
     return ret
 
-def getRights(fileUUID, filePath, use, type, id):
-    ret = []
-    #if there are file level rights, use them
-    #elif there are SIP level rights, use them
-    #elif there are Transfer level rights, use them
-    return ret
 
-def getAMDSec(fileUUID, filePath, use, type, id):
+
+def getAMDSec(fileUUID, filePath, use, type, id, transferUUID):
     global globalAmdSecCounter
     globalAmdSecCounter += 1
     AMDID = "amdSec_%s" % (globalAmdSecCounter.__str__())
@@ -398,18 +394,17 @@ def getAMDSec(fileUUID, filePath, use, type, id):
     #tech MD
     #digiprob MD
     AMD.append(createTechMD(fileUUID))
+    
+    if use == "original":
+        metadataAppliesToList = [(fileUUID, FileMetadataAppliesToType), (fileGroupIdentifier, SIPMetadataAppliesToType), (transferUUID.__str__(), TransferMetadataAppliesToType)]        
+        for a in archivematicaGetRights(metadataAppliesToList):
+            AMD.append(a)
+    
     for a in createDigiprovMD(fileUUID):
         AMD.append(a)
-
+        
     for a in createDigiprovMDAgents():
         AMD.append(a)
-
-    if use == "original":
-        #rights MD (repeatable)
-        rightsList = getRights(fileUUID, filePath, use, type, id)
-        if rightsList != None and rightsList != []:
-            for rights in rightsList:
-                AMD.append(rights)
     return ret
 
 
@@ -431,7 +426,7 @@ def createFileSec(directoryPath, structMapDiv):
             #directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath + "objects", "objects", 1)
             directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath, baseDirectoryPathString, 1)
 
-            sql = """SELECT fileUUID, fileGrpUse FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(directoryPathSTR))
+            sql = """SELECT fileUUID, fileGrpUse, transferUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(directoryPathSTR))
             c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             if row == None:
@@ -443,6 +438,7 @@ def createFileSec(directoryPath, structMapDiv):
             while row != None:
                 myuuid = row[0]
                 use = row[1]
+                transferUUID = row[2]
                 row = c.fetchone()
             sqlLock.release()
 
@@ -531,7 +527,7 @@ def createFileSec(directoryPath, structMapDiv):
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
                 Flocat = newChild(file, "FLocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("LOCTYPE","OTHER"), ("OTHERLOCTYPE", "SYSTEM")])
                 if includeAmdSec and not skipAMDSec:
-                    AMD, ADMID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier)
+                    AMD, ADMID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier, transferUUID)
                     global amdSecs
                     amdSecs.append(AMD)
                     file.set("ADMID", ADMID)

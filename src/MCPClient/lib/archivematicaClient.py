@@ -90,8 +90,8 @@ def executeCommand(gearman_worker, gearman_job):
         sInput = ""
         clientID = gearman_worker.worker_client_id
 
-        if True:
-            print clientID, execute, data
+        #if True:
+        #    print clientID, execute, data
         logTaskAssignedSQL(gearman_job.unique.__str__(), clientID, utcDate)
 
 
@@ -117,7 +117,7 @@ def executeCommand(gearman_worker, gearman_job):
         #execute command
 
         command += " " + arguments
-        print >>sys.stderr, "processing: {" + gearman_job.unique + "}" + command.__str__()
+        print >>sys.stderr, "<processingCommand>{" + gearman_job.unique + "}" + command.__str__() + "</processingCommand>" 
         exitCode, stdOut, stdError = executeOrRun("command", command, sInput, printing=False)
         return cPickle.dumps({"exitCode" : exitCode, "stdOut": stdOut, "stdError": stdError})
     #catch OS errors
