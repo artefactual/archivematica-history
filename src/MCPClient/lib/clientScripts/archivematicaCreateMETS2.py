@@ -235,7 +235,7 @@ def createTechMD(fileUUID):
         formatDesignation = etree.SubElement(format, "formatDesignation")
         etree.SubElement(formatDesignation, "formatName").text = "Unknown"
     while row != None:
-        print row
+        #print row
         format = etree.SubElement(objectCharacteristics, "format")
         #fileUUID = row[0]
 
@@ -386,6 +386,7 @@ def createDigiprovMDAgents():
 
 def getAMDSec(fileUUID, filePath, use, type, id, transferUUID):
     global globalAmdSecCounter
+    global globalRightsMDCounter
     globalAmdSecCounter += 1
     AMDID = "amdSec_%s" % (globalAmdSecCounter.__str__())
     AMD = etree.Element("amdSec")
@@ -397,8 +398,14 @@ def getAMDSec(fileUUID, filePath, use, type, id, transferUUID):
     
     if use == "original":
         metadataAppliesToList = [(fileUUID, FileMetadataAppliesToType), (fileGroupIdentifier, SIPMetadataAppliesToType), (transferUUID.__str__(), TransferMetadataAppliesToType)]        
-        for a in archivematicaGetRights(metadataAppliesToList):
-            AMD.append(a)
+        for a in archivematicaGetRights(metadataAppliesToList, fileUUID):
+            globalRightsMDCounter +=1
+            rightsMD = etree.SubElement(AMD, "rightsMD")
+            rightsMD.set("ID", "rightsMD_" + globalRightsMDCounter.__str__())
+            mdWrap = newChild(rightsMD,"mdWrap")
+            mdWrap.set("MDTYPE", "PREMIS:RIGHTS")
+            xmlData = newChild(mdWrap, "xmlData")
+            xmlData.append(a)
     
     for a in createDigiprovMD(fileUUID):
         AMD.append(a)
