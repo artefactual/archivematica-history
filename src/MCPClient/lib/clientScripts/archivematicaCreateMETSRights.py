@@ -42,10 +42,11 @@ def archivematicaGetRights(metadataAppliesToList):
     """[(fileUUID, fileUUIDTYPE), (sipUUID, sipUUIDTYPE), (transferUUID, transferUUIDType)]"""
     ret = []
     for metadataAppliesToidentifier, metadataAppliesToType in metadataAppliesToList:
-        list = "pk, rightsStatementIdentifier, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightInformation, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseInformation LONGTEXT, licenseIdentifier, licenseIdentifierType, licenseIdentifierValue, licenseTerms"
+        list = "RightsStatement.pk, rightsStatementIdentifier, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseIdentifier, licenseIdentifier, licenseTerms"
         key = list.split(", ")
-        sql = """SELECT %s FROM RightsStatement WHERE metadataAppliesToidentifier = '%s' AND metadataAppliesToType = '%s';""" % (list, metadataAppliesToidentifier, metadataAppliesToType)
-        databaseInterface.
+        sql = """SELECT %s FROM RightsStatement LEFT JOIN RightsStatementCopyright ON RightsStatementCopyright.fkRightsStatement = RightsStatement.pk LEFT JOIN RightsStatementLicense ON RightsStatementLicense.fkRightsStatement = RightsStatement.pk WHERE metadataAppliesToidentifier = '%s' AND metadataAppliesToType = %s;""" % (list, metadataAppliesToidentifier, metadataAppliesToType)
+        print sql
+        rows = databaseInterface.queryAllSQL(sql)
         if not rows:
             continue
         else:
@@ -56,35 +57,38 @@ def archivematicaGetRights(metadataAppliesToList):
                 for i in range(len(key)):
                     valueDic[key[i]] = row[i]
                 rightsStatementIdentifier = etree.SubElement(rightsStatement, "rightsStatementIdentifier")
-                etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentiferType").text = valueDic["rightsStatementIdentiferType"]
+                etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentiferType").text = valueDic["rightsStatementIdentifierType"]
                 etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierValue").text = valueDic["rightsStatementIdentifierValue"]
-
                 etree.SubElement(rightsStatement, "rightsBasis").text = valueDic["rightsBasis"]
-                "rightsBasis, copyrightInformation, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseInformation LONGTEXT, licenseIdentifier, licenseIdentifierType, licenseIdentifierValue, licenseTerms"
+                
+                #copright information
+                if valueDic["copyrightStatus"] != None and valueDic["copyrightStatus"] != "":
+                    coprightInformation = etree.SubElement(rightsStatement, "coprightInformation")
+                    etree.SubElement(coprightInformation, "copyrightStatus").text = valueDic["copyrightStatus"]
+                    etree.SubElement(coprightInformation, "copyrightJurisdiction").text = valueDic["copyrightJurisdiction"]
+                    etree.SubElement(coprightInformation, "copyrightStatusDeterminationDate").text = valueDic["copyrightStatusDeterminationDate"]
+                    #TODO 4.1.3.4 copyrightNote (O, R)
+                    #copyrightNote Repeatable
+                
+                # licenseInformation
+                licenseInformation = etree.SubElement(rightsStatement, "licenseInformation")
+                licenseIdentifier = etree.SubElement(licenseInformation, "licenseIdentifier")
+                etree.SubElement(licenseIdentifier, "licenseIdentifierType").text = "http://code.google.com/p/archivematica/issues/detail?id=704 comment 13"#valueDic["licenseIdentifierType"]
+                etree.SubElement(licenseIdentifier, "licenseIdentifierValue").text = valueDic["licenseIdentifier"]
+                etree.SubElement(licenseInformation, "licenseTerms").text = valueDic["licenseTerms"]
+                #TODO licenseNote (O, R)
+                #4.1.4.3 licenseNote (O, R)
+             
+                #4.1.5 statuteInformation (O, R)
+                
+                #4.1.6 rightsGranted (O, R)
+                
+                #4.1.7 linkingObjectIdentifier (O, R)
+                
+                #4.1.8 linkingAgentIdentifier (O, R)
             break
     return ret
 """
--- rightsStatement (O, R)
-DROP TABLE IF EXISTS RightsStatement;
-CREATE TABLE RightsStatement (
-    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    rightsStatementIdentifier LONGTEXT NOT NULL,
-    rightsStatementIdentifierType LONGTEXT NOT NULL,
-    rightsStatementIdentifierValue LONGTEXT NOT NULL,
-    rightsBasis LONGTEXT NOT NULL,
-    copyrightInformation LONGTEXT,
-    copyrightStatus LONGTEXT NOT NULL,
-    copyrightJurisdiction LONGTEXT NOT NULL,
-    copyrightStatusDeterminationDate LONGTEXT,
-    licenseInformation LONGTEXT,
-    licenseIdentifier LONGTEXT,
-    licenseIdentifierType LONGTEXT NOT NULL,
-    licenseIdentifierValue LONGTEXT NOT NULL,
-    licenseTerms LONGTEXT
-);
-
-
-
 /*
 Entity semantic units
 4.1
