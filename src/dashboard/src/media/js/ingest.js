@@ -506,7 +506,7 @@ $(function()
 
           if ('uploadDIP' == this.model.get('microservice') && 2 == value)
           {
-            $('#modal-from-dom').modal({
+            $('#upload-dip-modal').modal({
                 backdrop: true,
                 keyboard: true
               }).modal('show');
