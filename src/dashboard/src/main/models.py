@@ -179,7 +179,8 @@ class RightsStatementCopyrightNote(models.Model):
 class RightsStatementLicense(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
-    licenseidentifier = models.TextField(db_column='licenseIdentifier', blank=True, verbose_name='License identifier')
+    licensetype = models.TextField(db_column='licenseIdentifierType', blank=True, verbose_name='Identifier type')
+    licensevalue = models.TextField(db_column='licenseIdentifierValue', blank=True, verbose_name='Identifier value')
     licenseterms = models.TextField(db_column='licenseTerms', blank=True, verbose_name='License terms')
 
     class Meta:
