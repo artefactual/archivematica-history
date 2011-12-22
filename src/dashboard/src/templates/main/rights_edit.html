@@ -5,6 +5,10 @@
   {% include sidebar_template %}
 {% endblock %}
 
+{% block js %}
+  <script src="/media/js/rights_edit.js" type="text/javascript"></script>
+{% endblock %}
+
 {% block content %}
   <div class="row">
     <div class="span12">
@@ -19,8 +23,6 @@
         {% endif %}
         {% breadcrumb 'Rights' %}
       </ul>
-
-{{ a }}
 
       <h1>Rights<br /><small>{{ name }}</small></h1>
 
@@ -50,23 +52,23 @@
         {% endif %}
       {% endif %}
 
-        {{ grantFormset }}
+        {% include "_formset.html" with formset=grantFormset %}
 
         {% include "_form.html" %}
 
         <div id='copyright_formset'>
-        {{ copyrightFormset }}
-        {% include "formset_table.html" with formset=copyrightNoteFormset %}
+          {% include "_formset.html" with formset=copyrightFormset %}
+          {% include "_formset_table.html" with formset=copyrightNoteFormset %}
         </div>
 
         <div id='statute_formset'>
-        {{ statuteFormset }}
-        {% include "formset_table.html" with formset=statuteNoteFormset %}
+          {% include "_formset.html" with formset=statuteFormset %}
+          {% include "_formset_table.html" with formset=statuteNoteFormset %}
         </div>
 
         <div id='license_formset'>
-        {{ licenseFormset }}
-        {% include "formset_table.html" with formset=licenseNoteFormset %}
+          {% include "_formset.html" with formset=licenseFormset %}
+          {% include "_formset_table.html" with formset=licenseNoteFormset %}
         </div>
 
         <div class="actions">
@@ -86,7 +88,5 @@
       </form>
     </div>
   </div>
-
-  <script src='/media/js/rights_edit.js'></script>
 
 {% endblock %}
