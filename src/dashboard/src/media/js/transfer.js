@@ -197,7 +197,7 @@ $(function()
           var self = this;
 
           $('<div>' +
-              '<p><strong>Are you sure you want to remove this transfer from the dashboard? Note that this does not delete the  or related entities.</strong></p>' +
+              '<p><strong>Are you sure you want to remove this transfer from the dashboard? Note that this does not delete the transfer or related entities.</strong></p>' +
               '<p>Directory: ' + this.model.get('directory') + '<br />UUID: ' + this.model.get('uuid') + '<br />Status: ' + $(this.el).find('.sip-detail-icon-status > img').attr('title') + '</p>' +
             '</div>').dialog(
             {
