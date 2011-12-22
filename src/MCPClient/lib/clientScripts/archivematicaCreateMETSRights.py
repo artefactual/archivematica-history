@@ -51,23 +51,23 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
         else:
             for row in rows:
                 valueDic= {}
-                rightsStatement = etree.Element("rightsStatement")
+                rightsStatement = etree.Element("rightsStatement", nsmap={None: premisNS})
                 rightsStatement.set(xsiBNS+"schemaLocation", premisNS + " http://www.loc.gov/standards/premis/v2/premis-v2-1.xsd")
-                rightsStatement.set("version", "2.1")
+                #rightsStatement.set("version", "2.1") #cvc-complex-type.3.2.2: Attribute 'version' is not allowed to appear in element 'rightsStatement'. 
                 ret.append(rightsStatement)
                 for i in range(len(key)):
                     valueDic[key[i]] = row[i]
                 rightsStatementIdentifier = etree.SubElement(rightsStatement, "rightsStatementIdentifier")
-                etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentiferType").text = valueDic["rightsStatementIdentifierType"]
+                etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierType").text = valueDic["rightsStatementIdentifierType"]
                 etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierValue").text = valueDic["rightsStatementIdentifierValue"]
                 etree.SubElement(rightsStatement, "rightsBasis").text = valueDic["rightsBasis"]
                 
                 #copright information
                 if valueDic["copyrightStatus"] != None and valueDic["copyrightStatus"] != "":
-                    coprightInformation = etree.SubElement(rightsStatement, "coprightInformation")
-                    etree.SubElement(coprightInformation, "copyrightStatus").text = valueDic["copyrightStatus"]
-                    etree.SubElement(coprightInformation, "copyrightJurisdiction").text = valueDic["copyrightJurisdiction"]
-                    etree.SubElement(coprightInformation, "copyrightStatusDeterminationDate").text = valueDic["copyrightStatusDeterminationDate"]
+                    copyrightInformation = etree.SubElement(rightsStatement, "copyrightInformation")
+                    etree.SubElement(copyrightInformation, "copyrightStatus").text = valueDic["copyrightStatus"]
+                    etree.SubElement(copyrightInformation, "copyrightJurisdiction").text = valueDic["copyrightJurisdiction"]
+                    etree.SubElement(copyrightInformation, "copyrightStatusDeterminationDate").text = valueDic["copyrightStatusDeterminationDate"]
                     #TODO 4.1.3.4 copyrightNote (O, R)
                     #copyrightNote Repeatable
                 
@@ -125,9 +125,9 @@ def getrightsGranted(pk, parent):
         #TODO : restriction is a repeatable field.
         etree.SubElement(rightsGranted, "act").text = row[1]
         etree.SubElement(rightsGranted, "restriction").text = row[4]
-        etree.SubElement(rightsGranted, "termOfGrant").text = "Issue 859:     termOfGrant is a required field"
-        etree.SubElement(rightsGranted, "startDate").text = row[2]
-        etree.SubElement(rightsGranted, "endDate").text = row[3]
+        termOfGrant = etree.SubElement(rightsGranted, "termOfGrant")
+        etree.SubElement(termOfGrant, "startDate").text = row[2]
+        etree.SubElement(termOfGrant, "endDate").text = row[3]
         
         #TODO 4.1.6.4 rightsGrantedNote (O, R)
         
