@@ -35,7 +35,7 @@ class SettingsForm(forms.Form):
     arguments = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
 
 class RightsForm(ModelForm):
-    rightsbasis = forms.ChoiceField(choices=(
+    rightsbasis = forms.ChoiceField(label="Basis", choices=(
         ('Copyright', 'Copyright'),
         ('Statute', 'Statute'),
         ('License', 'License'),
