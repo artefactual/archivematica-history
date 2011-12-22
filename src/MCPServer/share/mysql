@@ -223,8 +223,8 @@ CREATE TABLE RightsStatementRightsGrantedRestriction (
     restriction LONGTEXT
 ) DEFAULT CHARSET=utf8;
 -- 4.1.6.4 rightsGrantedNote (O, R)
-DROP TABLE IF EXISTS RightsStatementRightsGrantedRestriction;
-CREATE TABLE RightsStatementRightsGrantedRestriction ( 
+DROP TABLE IF EXISTS RightsStatementRightsGrantedNote;
+CREATE TABLE RightsStatementRightsGrantedNote ( 
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fkRightsStatementRightsGranted INT UNSIGNED,
     Foreign Key (fkRightsStatementRightsGranted) references RightsStatementRightsGranted(pk),

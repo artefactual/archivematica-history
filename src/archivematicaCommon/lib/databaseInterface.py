@@ -96,7 +96,7 @@ def querySQL(sql):
     if isinstance(sql, unicode):
         sql = sql.encode('utf-8')
     sqlLock.acquire()
-    print sql
+    #print sql
     try:
         c=database.cursor()
         c.execute(sql)
