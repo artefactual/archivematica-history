@@ -49,7 +49,6 @@ removeWithAsterisk_v0.0 = %clientScriptsDirectory%removeWithAsterisk.sh
 bagit_v0.0 = /usr/share/bagit/bin/bag
 verifySIPCompliance_v0.0 = %clientScriptsDirectory%verifySIPCompliance.py
 verifyTransferCompliance_v0.0 = %clientScriptsDirectory%verifyTransferCompliance.py
-scanForRemovedFiles_v0.0 = %clientScriptsDirectory%scanForRemovedFiles.py
 removeFilesWithoutPresmisMetadata_v0.0 = %clientScriptsDirectory%removeFilesWithoutPresmisMetadata.py
 setDirectoryPermissionsForAppraisal_v0.0 = %clientScriptsDirectory%setDirectoryPermissionsForAppraisal.sh
 backupDIP_v0.0 = %clientScriptsDirectory%backupDIP.sh

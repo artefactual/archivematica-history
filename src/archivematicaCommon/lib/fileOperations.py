@@ -118,6 +118,10 @@ def checksumFile(filePath, fileUUID):
                                        eventOutcome=eventOutcome, \
                                        eventOutcomeDetailNote=eventOutcomeDetailNote)
 
+def removeFileByFileUUID(fileUUID, utcDate = databaseInterface.getUTCDate()):
+    databaseInterface.runSQL("UPDATE Files " + \
+           "SET removedTime='" + utcDate + "', currentLocation=NULL " + \
+           "WHERE fileUUID='" + fileUUID + "'" )
 
 def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
     global separator
@@ -149,11 +153,7 @@ def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
                                        eventDetail=eventDetail, \
                                        eventOutcome=eventOutcome, \
                                        eventOutcomeDetailNote=eventOutcomeDetailNote)
-
-
-        databaseInterface.runSQL("UPDATE Files " + \
-           "SET removedTime='" + utcDate + "', currentLocation=NULL " + \
-           "WHERE fileUUID='" + file + "'" )
+        removeFileByFileUUID(fileUUID, utcDate)
 
 def renameAsSudo(source, destination):
     """Used to move/rename Directories that the archivematica user may or may not have writes to move"""
