@@ -498,6 +498,7 @@ def transfer_status(request, uuid=None):
 def transfer_detail(request, uuid):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     name = utils.get_directory_name(jobs[0])
+    is_waiting = jobs.filter(currentstep='Awaiting decision').count() > 0
     return render_to_response('main/transfer/detail.html', locals())
 
 def transfer_microservices(request, uuid):
