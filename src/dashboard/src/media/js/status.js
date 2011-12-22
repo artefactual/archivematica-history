@@ -49,7 +49,7 @@ $(function()
 
           if (!led.length)
           {
-            led = node.append('<span />').children('span');
+            led = $(node).append('<span />').children('span');
           }
 
           led.text(value);
