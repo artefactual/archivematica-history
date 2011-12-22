@@ -22,6 +22,19 @@ function revealSelectedBasis() {
 }
 
 $(document).ready(function() {
+
+  $.extend($.inputmask.defaults.definitions, {
+    'y': {
+      'validator': '[012]\\d\\d\\d',
+      'cardinality': 4,
+      'prevalidator': [
+        { 'validator': '[012]', 'cardinality': 1 }
+      ]
+    }
+  });
+
+  $('input[name*="date"]').inputmask('y/m/d');
+
   // active formset changer
   $('#id_rightsbasis').change(revealSelectedBasis);
   revealSelectedBasis();
