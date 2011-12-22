@@ -98,7 +98,6 @@ CREATE TABLE RightsStatement (
     metadataAppliesToType  INT,
     Foreign Key (metadataAppliesToType) references MetadataAppliesToTypes(pk),
     metadataAppliesToidentifier      VARCHAR(50),
-    rightsStatementIdentifier LONGTEXT NOT NULL,
     rightsStatementIdentifierType LONGTEXT NOT NULL,
     rightsStatementIdentifierValue LONGTEXT NOT NULL,
     fkAgent int(10) UNSIGNED DEFAULT 0 NOT NULL,
@@ -669,7 +668,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', '--url="http://localhost/ica-atom/index.php/sword/deposit/archivematica" --email="demo@example.com" --password="demo" --UUID="%SIPUUID%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', '--url="http://localhost/ica-atom/index.php/sword/deposit/slug" --email="demo@example.com" --password="demo" --UUID="%SIPUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'uploadDIP');
