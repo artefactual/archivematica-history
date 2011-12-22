@@ -163,7 +163,7 @@ class RightsStatementCopyright(models.Model):
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
     copyrightstatus = models.TextField(db_column='copyrightStatus', blank=True, verbose_name='Copyright status')
     copyrightjurisdiction = models.TextField(db_column='copyrightJurisdiction', blank=True, verbose_name='Copyright jurisdiction')
-    copyrightstatusdeterminationdate = models.TextField(db_column='copyrightStatusDeterminationDate', blank=True, verbose_name='Copyright determination date')
+    copyrightstatusdeterminationdate = models.TextField(db_column='copyrightStatusDeterminationDate', blank=True, verbose_name='Copyright determination date', help_text='Use ISO 8061 (YYYY-MM-DD)')
 
     class Meta:
         db_table = u'RightsStatementCopyright'
@@ -200,8 +200,8 @@ class RightsStatementRightsGranted(models.Model):
     act = models.TextField(db_column='act', blank=True)
     #termofgrant = models.TextField(db_column='termOfGrant', blank=True)
     restriction = models.TextField(db_column='restriction', blank=True)
-    startdate = models.TextField(db_column='startDate', verbose_name='Start', blank=True)
-    enddate = models.TextField(db_column='endDate', verbose_name='End', blank=True)
+    startdate = models.TextField(db_column='startDate', verbose_name='Start', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
+    enddate = models.TextField(db_column='endDate', verbose_name='End', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
 
     class Meta:
         db_table = u'RightsStatementRightsGranted'
@@ -219,7 +219,7 @@ class RightsStatementStatuteInformation(models.Model):
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
     statutejurisdiction = models.TextField(db_column='statuteJurisdiction', verbose_name='Statute jurisdiction', blank=True)
     statutecitation = models.TextField(db_column='statuteCitation', verbose_name='Statute citation', blank=True)
-    statutedeterminationdate = models.TextField(db_column='statuteInformationDeterminationDate', verbose_name='Statute determination date', blank=True)
+    statutedeterminationdate = models.TextField(db_column='statuteInformationDeterminationDate', verbose_name='Statute determination date', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
 
     class Meta:
         db_table = u'RightsStatementStatuteInformation'
