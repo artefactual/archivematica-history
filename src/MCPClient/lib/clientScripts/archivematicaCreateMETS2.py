@@ -29,6 +29,7 @@ import os
 import sys
 import MySQLdb
 from archivematicaCreateMETSRights import archivematicaGetRights
+from archivematicaCreateMETSRightsDspaceMDRef import archivematicaCreateMETSRightsDspaceMDRef 
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from archivematicaFunctions import escape
@@ -379,7 +380,7 @@ def createDigiprovMDAgents():
 
 
 
-def getAMDSec(fileUUID, filePath, use, type, id, transferUUID):
+def getAMDSec(fileUUID, filePath, use, type, id, transferUUID, itemdirectoryPath):
     global globalAmdSecCounter
     global globalRightsMDCounter
     globalAmdSecCounter += 1
@@ -401,6 +402,17 @@ def getAMDSec(fileUUID, filePath, use, type, id, transferUUID):
             mdWrap.set("MDTYPE", "PREMIS:RIGHTS")
             xmlData = newChild(mdWrap, "xmlData")
             xmlData.append(a)
+        
+        if transferUUID:
+                sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
+                rows = databaseInterface.queryAllSQL(sql)
+                if rows[0][0] == "Dspace1.7":
+                    for a in archivematicaCreateMETSRightsDspaceMDRef(fileUUID, filePath, transferUUID, itemdirectoryPath):
+                        globalRightsMDCounter +=1
+                        rightsMD = etree.SubElement(AMD, "rightsMD")
+                        rightsMD.set("ID", "rightsMD_" + globalRightsMDCounter.__str__())
+                        rightsMD.append(a)
+
    
     for a in createDigiprovMD(fileUUID):
         AMD.append(a)
@@ -497,9 +509,7 @@ def createFileSec(directoryPath, structMapDiv):
                 sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
                 rows = databaseInterface.queryAllSQL(sql)
                 if rows[0][0] == "Dspace1.7":
-                    if use == "original":
-                        print "original"
-                    elif use == "DSPACEMETS":
+                    if use == "DSPACEMETS":
                         use = "submissionDocumentation"
                         admidApplyTo = None
                         if GROUPID=="": #is an AIP identifier
@@ -529,7 +539,7 @@ def createFileSec(directoryPath, structMapDiv):
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
                 Flocat = newChild(file, "FLocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("LOCTYPE","OTHER"), ("OTHERLOCTYPE", "SYSTEM")])
                 if includeAmdSec:
-                    AMD, ADMID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier, transferUUID)
+                    AMD, ADMID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier, transferUUID, itemdirectoryPath)
                     global amdSecs
                     amdSecs.append(AMD)
                     file.set("ADMID", ADMID)
