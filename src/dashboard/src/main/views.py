@@ -576,9 +576,12 @@ def archival_storage(request, path=None):
         sip['href'] = item.find('p[@class="name"]/a').attrib['href']
         sip['name'] = item.find('p[@class="name"]/a').text
         sip['uuid'] = item.find('p[@class="uuid"]').text
-        size = os.path.getsize(os.path.join(os.path.dirname(document), sip['href'])) / float(1024) / float(1024)
-        total_size = total_size + size
-        sip['size'] = '{0:.2f}'.format(size)
+        try:
+            size = os.path.getsize(os.path.join(os.path.dirname(document), sip['href'])) / float(1024) / float(1024)
+            total_size = total_size + size
+            sip['size'] = '{0:.2f}'.format(size)
+        except:
+            sip['size'] = 'N/A'
         try:
             date = datetime.strptime(item.find('p[@class="date"]').text.split('.')[0], '%Y-%m-%dT%H:%M:%S')
             sip['date'] = date.isoformat(' ')
