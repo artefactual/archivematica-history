@@ -136,36 +136,3 @@ def getrightsGranted(pk, parent):
             etree.SubElement(termOfGrant, "endDate").text = formatDate(row[3])
         
         #TODO 4.1.6.4 rightsGrantedNote (O, R)
-        
-
-if __name__ == '__main__':
-    root = etree.Element( "mets", \
-    nsmap = {None: metsNS, "xlink": xlinkNS}, \
-    attrib = { "{" + xsiNS + "}schemaLocation" : "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd" } )
-
-    #cd /tmp/$UUID;
-    opath = os.getcwd()
-    os.chdir(basePath)
-    path = basePath
-
-    #if includeAmdSec:
-    #    amdSec = newChild(root, "amdSec")
-
-    fileSec = etree.Element("fileSec")
-    #fileSec.tail = "\n"
-    root.append(fileSec)
-
-    sipFileGrp = etree.SubElement(fileSec, "fileGrp")
-    sipFileGrp.set("USE", "original")
-
-    structMap = newChild(root, "structMap")
-    structMap.set("TYPE", "physical")
-    structMapDiv = newChild(structMap, "div")
-
-    createFileSec(path, sipFileGrp, structMapDiv)
-
-    tree = etree.ElementTree(root)
-    tree.write(XMLFile, pretty_print=True, xml_declaration=True)
-
-    # Restore original path
-    os.chdir(opath)
