@@ -60,12 +60,9 @@ urlpatterns = patterns('dashboard.main.views',
     # Autocomplete
     (r'autocomplete/rightsholders$', 'rights_holders_autocomplete'),
 
-    # Settings
-    (r'settings/$', 'settings_list'),
-    (r'settings/(?P<id>\d+)/$', 'settings_edit'),
-
     # Administration
     (r'administration/$', 'administration'),
+    (r'administration/edit/(?P<id>\d+)/$', 'administration_edit'),
 
     #Status
     (r'status/$', 'status'),

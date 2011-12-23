@@ -685,36 +685,22 @@ def access_delete(request, id):
     return HttpResponseRedirect(reverse('dashboard.main.views.access_list'))
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-      Settings
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
-
-def settings_list(request):
-    settings = models.StandardTaskConfig.objects.all()
-    return render_to_response('main/settings/list.html', locals())
-
-def settings_edit(request, id):
-    try:
-        setting = models.StandardTaskConfig.objects.get(id=id)
-    except ObjectDoesNotExist:
-        raise Http404
-
-    if request.method == 'POST':
-        form = forms.SettingsForm(request.POST)
-        if form.is_valid():
-            setting.arguments = form.cleaned_data['arguments']
-            setting.save()
-            return HttpResponseRedirect(reverse('dashboard.main.views.settings_list'))
-    else:
-        form = forms.SettingsForm(initial={'arguments': setting.arguments})
-
-    return render_to_response('main/settings/edit.html', locals())
-
-""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Administration
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def administration(request):
+    upload_setting = models.StandardTaskConfig.objects.get(execute="upload-qubit_v0.0")
     return render_to_response('main/administration/index.html', locals())
+
+def administration_edit(request, id):
+    if request.method == 'POST':
+        upload_setting = models.StandardTaskConfig.objects.get(pk=id)
+        form = forms.AdministrationForm(request.POST)
+        if form.is_valid():
+            upload_setting.arguments = form.cleaned_data['arguments']
+            upload_setting.save()
+
+    return HttpResponseRedirect(reverse("dashboard.main.views.administration"))
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc
