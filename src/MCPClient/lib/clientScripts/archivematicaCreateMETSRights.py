@@ -25,18 +25,20 @@
 from archivematicaXMLNamesSpace import *
 
 import os
-import uuid
 import sys
 import lxml.etree as etree
-import string
-import MySQLdb
-from xml.sax.saxutils import quoteattr
-from datetime import datetime
 #from archivematicaCreateMETS2 import escape
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from archivematicaFunctions import escape
 
+
+def formatDate(date):
+    """hack fix for 0.8, easy dashboard insertion ISO 8061 -> edtfSimpleType"""
+    if date:
+        date = date.replace("/", "-")
+    return date
+      
 
 def archivematicaGetRights(metadataAppliesToList, fileUUID):
     """[(fileUUID, fileUUIDTYPE), (sipUUID, sipUUIDTYPE), (transferUUID, transferUUIDType)]"""
@@ -67,7 +69,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     copyrightInformation = etree.SubElement(rightsStatement, "copyrightInformation")
                     etree.SubElement(copyrightInformation, "copyrightStatus").text = valueDic["copyrightStatus"]
                     etree.SubElement(copyrightInformation, "copyrightJurisdiction").text = valueDic["copyrightJurisdiction"]
-                    etree.SubElement(copyrightInformation, "copyrightStatusDeterminationDate").text = valueDic["copyrightStatusDeterminationDate"]
+                    etree.SubElement(copyrightInformation, "copyrightStatusDeterminationDate").text = formatDate(valueDic["copyrightStatusDeterminationDate"])
                     #TODO 4.1.3.4 copyrightNote (O, R)
                     #copyrightNote Repeatable
                 
@@ -112,7 +114,7 @@ def getstatuteInformation(pk, parent):
         statuteInformation = etree.SubElement(parent, "statuteInformation")
         etree.SubElement(statuteInformation, "statuteJurisdiction").text = row[1]
         etree.SubElement(statuteInformation, "statuteCitation").text = row[2]
-        etree.SubElement(statuteInformation, "statuteInformationDeterminationDate").text = row[3]
+        etree.SubElement(statuteInformation, "statuteInformationDeterminationDate").text = formatDate(row[3])
         
         #TODO 4.1.5.4 statuteNote (O, R) row[0]
 
@@ -126,8 +128,12 @@ def getrightsGranted(pk, parent):
         etree.SubElement(rightsGranted, "act").text = row[1]
         etree.SubElement(rightsGranted, "restriction").text = row[4]
         termOfGrant = etree.SubElement(rightsGranted, "termOfGrant")
-        etree.SubElement(termOfGrant, "startDate").text = row[2]
-        etree.SubElement(termOfGrant, "endDate").text = row[3]
+        etree.SubElement(termOfGrant, "startDate").text = formatDate(row[2])
+        if not row[2]:  
+            #globalErrorCount +=1
+            print >>sys.stderr, "The value '' of element 'startDate' is not valid. "
+        if row[3]:
+            etree.SubElement(termOfGrant, "endDate").text = formatDate(row[3])
         
         #TODO 4.1.6.4 rightsGrantedNote (O, R)
         
