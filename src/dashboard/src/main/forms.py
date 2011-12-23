@@ -14,7 +14,7 @@ class DublinCoreMetadataForm(forms.Form):
     description = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
     publisher = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
     contributor = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
-    date = forms.DateField(required=False, help_text='Use ISO 8061 (YYYY-MM-DD or YYYY-MM-DD/YYYY-MM-DD)', widget=TextInput(attrs=INPUT_ATTRS))
+    date = forms.CharField(required=False, help_text='Use ISO 8061 (YYYY-MM-DD or YYYY-MM-DD/YYYY-MM-DD)', widget=TextInput(attrs=INPUT_ATTRS))
     type = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
     format = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
     identifier = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
