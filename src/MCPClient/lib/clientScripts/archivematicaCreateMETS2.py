@@ -517,7 +517,7 @@ def createFileSec(directoryPath, structMapDiv):
                         dmdSec, ID = createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR)
                         dmdSecs.append(dmdSec)
                         if admidApplyTo != None:
-                            admidApplyTo.set("ADMID", ID)
+                            admidApplyTo.set("DMDID", ID)
                         else:
                             dspaceMetsDMDID = ID
 
@@ -572,11 +572,6 @@ if __name__ == '__main__':
     while False: #used to stall the mcp and stop the client for testing this module
         import time
         time.sleep(10)
-    if False: #True: #insert sample dc for testing
-        sql = """ INSERT INTO Dublincore (metadataAppliesToType, metadataAppliesToidentifier, title, creator, subject, description, publisher, contributor, date, type, format, identifier, source, isPartOf, language, coverage, rights)
-            VALUES (1, '%s', "Je l'apprécititle3", "Je l'apprécicreator4", "Je l'apprécisubject5", "Je l'apprécidescription6", "Je l'apprécipublisher7", "Je l'apprécicontributor8", "Je l'apprécidate9", "Je l'apprécitype0", "Je l'appréciformat11", "Je l'appréciidentifier12", "Je l'apprécisource13", "Je l'appréciisPartOf14", "Je l'apprécilanguage15", "Je l'apprécicoverage16", "Je l'apprécirights17"); """ % (fileGroupIdentifier)
-            #VALUES (1, '%s', "title3", "creator4", "subject5", "description6", "publisher7", "contributor8", "date9", "type0", "format11", "identifier12", "source13", "isPartOf14", "language15", "coverage16", "rights17"); """ % (fileGroupIdentifier)
-        databaseInterface.runSQL(sql)
 
     if not baseDirectoryPath.endswith('/'):
         baseDirectoryPath += '/'
