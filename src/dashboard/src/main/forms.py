@@ -38,7 +38,6 @@ class RightsForm(ModelForm):
 
     class Meta:
         model = models.RightsStatement
-
         exclude = (
             'id',
             'metadataappliestotype',
@@ -52,7 +51,6 @@ class RightsForm(ModelForm):
 class RightsGrantedForm(ModelForm):
     class Meta:
         model = models.RightsStatementRightsGranted
-
         widgets = {
             'act': TextInput(attrs=INPUT_ATTRS),
             'restriction': TextInput(attrs=INPUT_ATTRS),
@@ -80,6 +78,12 @@ class RightsStatuteForm(ModelForm):
             'statutejurisdiction': TextInput(attrs=INPUT_ATTRS),
             'statutecitation': TextInput(attrs=INPUT_ATTRS),
             'statutedeterminationdate': TextInput(attrs=INPUT_ATTRS), }
+
+class RightsStatuteNoteForm(ModelForm):
+    class Meta:
+        model = models.RightsStatementStatuteInformationNote
+        widgets = {
+            'statutenote': Textarea(attrs=TEXTAREA_ATTRS), }
 
 class RightsLicenseForm(ModelForm):
     class Meta:
