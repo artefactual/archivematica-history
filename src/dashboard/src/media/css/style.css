@@ -228,7 +228,6 @@ body {
 .job-detail-actions > .btn_browse_job { background-image: url(/media/images/folder_magnify.png); }
 .job-detail-actions > .btn_approve_job { background-image: url(/media/images/control_play_blue.png); color: Green; }
 .job-detail-actions > .btn_reject_job { background-image: url(/media/images/control_stop_blue.png); color: Red; }
-.job-detail-actions > .btn_manual_normalization { background-image: url(/media/images/user_comment.png); }
 .job-detail-actions > .btn_normalization_report { background-image: url(/media/images/table_edit.png); }
 
 .job-detail-microservice > .title {
@@ -363,105 +362,6 @@ body {
 #page-preservation-planning table { }
 #page-preservation-planning table ul { list-style: none; }
 #page-preservation-planning table ul li { display: inline; }
-
-/*
- * Manual normalization dialog
- */
-
-#manual-normalization {
-  font-size: 11px;
-  margin-top: 4px;
-}
-
-#manual-normalization > p {
-  font-size: 12px;
-}
-
-#manual-normalization > ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-#manual-normalization > ul > li {
-  list-style: none;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-#manual-normalization > ul > li:first-child {
-  border-top: 1px solid #ccc;
-}
-
-#manual-normalization > ul > li.selected {
-  background-color: #eee;
-}
-
-#manual-normalization > ul > li > p {
-  cursor: pointer;
-  height: 24px;
-  margin: 0;
-  padding: 0 0 0 24px;
-}
-
-#manual-normalization > ul > li.hover > p {
-  background: transparent url(/media/images/pencil_add.png) no-repeat 6px 50%;
-}
-
-#manual-normalization > ul > li.selected > p {
-  background: transparent url(/media/images/tick.png) no-repeat 6px 50%;
-}
-
-#manual-normalization > ul > li > p > span {
-  padding: 0 5px 0 24px;
-  background: transparent url(/media/images/folder.png) no-repeat 4px 50%;
-  height: 24px;
-  display: table-cell;
-  vertical-align: middle;
-  color: Blue;
-}
-
-#manual-normalization > ul > li > p > span:after {
-  content: '/';
-}
-
-#manual-normalization > ul > li > p > span:last-child {
-  border: 0;
-  background: transparent url(/media/images/page_white.png) no-repeat 4px 50%;
-  color: Black;
-}
-
-#manual-normalization > ul > li > p > span:last-child:after {
-  content: '';
-}
-
-#manual-normalization > ul > li > div {
-  padding: 6px 0 6px 0;
-}
-
-#manual-normalization > ul > li > div > .field:first-child {
-  margin-bottom: 8px;
-}
-
-#manual-normalization > ul > li > div > .field > label {
-  display: block;
-  float: left;
-  margin-right: 6px;
-  text-align: right;
-  width: 100px;
-}
-
-#manual-normalization > ul > li > div > .field > label:after {
-  content: ':';
-}
-
-#manual-normalization > ul > li > div > .field > input {
-  width: 440px;
-}
 
 /*
  * Optimizations based in screen width
