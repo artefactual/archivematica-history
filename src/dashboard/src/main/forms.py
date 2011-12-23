@@ -24,7 +24,7 @@ class DublinCoreMetadataForm(forms.Form):
     coverage = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
     rights = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
 
-class SettingsForm(forms.Form):
+class AdministrationForm(forms.Form):
     arguments = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
 
 class RightsForm(ModelForm):
