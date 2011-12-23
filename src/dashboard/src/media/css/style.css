@@ -223,6 +223,7 @@ body {
   border: 1px solid #999;
 }
 
+.job-detail-actions > a { margin-left: 4px; }
 .job-detail-actions > .btn_show_tasks { background-image: url(/media/images/cog.png); }
 .job-detail-actions > .btn_browse_job { background-image: url(/media/images/folder_magnify.png); }
 .job-detail-actions > .btn_approve_job { background-image: url(/media/images/control_play_blue.png); color: Green; }

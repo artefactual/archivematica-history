@@ -32,13 +32,11 @@ urlpatterns = patterns('dashboard.main.views',
     (r'ingest/(?P<uuid>' + UUID_REGEX + ')/rights/(?P<id>\d+)/$', 'ingest_rights_edit'),
     (r'ingest/status/$', 'ingest_status'),
     (r'ingest/status/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_status'),
-    # (r'ingest/metadata/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_metadata'),
-    (r'ingest/normalization_report/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_normalization_report'),
+    (r'ingest/normalization-report/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_normalization_report'),
 
     # Jobs and taks (is part of ingest)
     (r'jobs/(?P<uuid>' + UUID_REGEX + ')/explore/$', 'jobs_explore'),
     (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects/$', 'jobs_list_objects'),
-    (r'jobs/(?P<uuid>' + UUID_REGEX + ')/manual-normalization/$', 'jobs_manual_normalization'),
     (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
 
     # Archival storage
