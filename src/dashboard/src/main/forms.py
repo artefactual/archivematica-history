@@ -19,17 +19,10 @@ class DublinCoreMetadataForm(forms.Form):
     format = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
     identifier = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
     source = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
-    isPartOf = forms.CharField(required=True, label='isPartOf', widget=TextInput(attrs=INPUT_ATTRS))
+    isPartOf = forms.CharField(required=False, label='isPartOf', widget=TextInput(attrs=INPUT_ATTRS))
     language = forms.CharField(required=False, help_text='Use ISO 3166', widget=TextInput(attrs=INPUT_ATTRS))
     coverage = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
     rights = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
-
-class TransferMetadataForm(forms.Form):
-    accession_identifier = forms.CharField()
-    source_of_acquisition = forms.CharField()
-    type_of_transfer = forms.CharField()
-    description = forms.CharField()
-    notes = forms.CharField()
 
 class SettingsForm(forms.Form):
     arguments = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
