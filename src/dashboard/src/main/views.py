@@ -225,7 +225,7 @@ def rights_list(request, uuid, section):
 
     # See MetadataAppliesToTypes table
     types = { 'ingest': 1, 'transfer': 2, 'file': 3 }
-    grants = models.RightsStatementRightsGranted.objects.filter(metadataappliestotype=types[section], metadataAppliesToidentifier=uuid)
+    grants = models.RightsStatementRightsGranted.objects.filter(rightsstatement__metadataappliestotype__exact=types[section], rightsstatement__metadataappliestoidentifier__exact=uuid)
 
     sidebar_template = "main/" + section + "/_sidebar.html"
 
