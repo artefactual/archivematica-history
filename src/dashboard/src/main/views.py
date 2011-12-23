@@ -182,7 +182,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         licenseFormset.save()
         licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
         licenseNoteFormset.save()
-        return redirect('/' + section + '/' + uuid + '/rights/' + str(createdRights.id))
+        return HttpResponseRedirect(reverse('dashboard.main.views.%s_rights_list' % section, args=[uuid]))
     else:
         grantFormset = GrantFormSet(instance=viewRights)
         copyrightFormset = CopyrightFormSet(instance=viewRights)
