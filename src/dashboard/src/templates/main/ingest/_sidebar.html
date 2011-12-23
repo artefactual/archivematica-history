@@ -2,12 +2,13 @@
 <ul>
   <li><a href="{% url main.views.ingest_microservices uuid %}">List</a></li>
 </ul>
-<h5>Metadata</h5>
-<ul>
-  <li><a href="{% url main.views.ingest_metadata uuid %}">Edit</a></li>
-</ul>
 <h5>Rights</h5>
 <ul>
   <li><a href="{% url main.views.ingest_rights_list uuid %}">List</a></li>
   <li><a href="{% url main.views.ingest_rights_edit uuid %}">Add</a></li>
+</ul>
+<h5>Metadata</h5>
+<ul>
+  <li><a href="{% url main.views.ingest_metadata_list uuid %}">List</a></li>
+  <li><a href="{% url main.views.ingest_metadata_edit uuid %}">Add</a></li>
 </ul>
