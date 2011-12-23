@@ -34,6 +34,8 @@ import databaseInterface
 from archivematicaFunctions import escape
 from archivematicaFunctions import unicodeToStr
 from archivematicaFunctions import strToUnicode
+from sharedVariablesAcrossModules import sharedVariablesAcrossModules
+sharedVariablesAcrossModules.globalErrorCount = 0
 
 from optparse import OptionParser
 parser = OptionParser()
@@ -65,8 +67,6 @@ for use in globalFileGrpsUses:
     globalFileGrps[use] = grp
 
 ##counters
-global globalErrorCount
-globalErrorCount = 0
 global amdSecs
 amdSecs = []
 global dmdSecs
@@ -86,10 +86,6 @@ globalDigiprovMDCounter = 0
 
 #GROUPID="G1" -> GROUPID="Group-%object's UUID%"
 ##group of the object and it's related access, license
-
-
-
-
 
 #move to common
 def newChild(parent, tag, text=None, tailText=None, sets=[]):
@@ -437,8 +433,7 @@ def createFileSec(directoryPath, structMapDiv):
             row = c.fetchone()
             if row == None:
                 print >>sys.stderr, "No uuid for file: \"", directoryPathSTR, "\""
-                global globalErrorCount
-                globalErrorCount += 1
+                sharedVariablesAcrossModules.globalErrorCount += 1
                 sqlLock.release()
                 continue
             while row != None:
@@ -521,12 +516,12 @@ def createFileSec(directoryPath, structMapDiv):
                             dspaceMetsDMDID = ID
 
             if GROUPID=="":
-                globalErrorCount += 1
+                sharedVariablesAcrossModules.globalErrorCount += 1
                 print >>sys.stderr, "No groupID for file: \"", directoryPathSTR, "\""
 
             if use not in globalFileGrps:
                 print >>sys.stderr, "Invalid use: \"", use, "\""
-                globalErrorCount += 1
+                sharedVariablesAcrossModules.globalErrorCount += 1
             else:
                 file = newChild(globalFileGrps[use], "file", sets=[("ID",FILEID), ("GROUPID",GROUPID)])
                 if use == "original":
@@ -646,4 +641,4 @@ if __name__ == '__main__':
         f.write(fileContents)
         f.close
 
-    exit(globalErrorCount)
+    exit(sharedVariablesAcrossModules.globalErrorCount)
