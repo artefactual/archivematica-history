@@ -233,7 +233,7 @@ class RightsStatementStatuteInformation(models.Model):
 class RightsStatementStatuteInformationNote(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
-    statutenote = models.TextField(db_column='statuteNote', blank=True)
+    statutenote = models.TextField(db_column='statuteNote', verbose_name='Statute note', blank=True)
 
     class Meta:
         db_table = u'RightsStatementStatuteInformationNote'
