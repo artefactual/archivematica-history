@@ -294,11 +294,16 @@ def ingest_metadata_list(request, uuid, jobs, name):
 
     return render_to_response('main/ingest/metadata_list.html', locals())
 
-def ingest_metadata_edit(request, uuid):
-    try:
-        dc = models.DublinCore.objects.get_sip_metadata(uuid)
-    except ObjectDoesNotExist:
-        dc = models.DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
+def ingest_metadata_edit(request, uuid, id=None):
+    if id:
+      dc = models.DublinCore.objects.get(pk=id)
+    else:
+      # Right now we only support linking metadata to the Ingest
+      try:
+          dc = models.DublinCore.objects.get_sip_metadata(uuid)
+          return HttpResponseRedirect(reverse('dashboard.main.views.ingest_metadata_edit', args=[uuid, dc.id]))
+      except ObjectDoesNotExist:
+          dc = models.DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
 
     fields = ['title', 'creator', 'subject', 'description', 'publisher',
               'contributor', 'date', 'type', 'format', 'identifier',
@@ -310,6 +315,7 @@ def ingest_metadata_edit(request, uuid):
             for item in fields:
                 setattr(dc, item, form.cleaned_data[item])
             dc.save()
+            return HttpResponseRedirect(reverse('dashboard.main.views.ingest_metadata_list', args=[uuid]))
     else:
         initial = {}
         for item in fields:
@@ -318,7 +324,7 @@ def ingest_metadata_edit(request, uuid):
         jobs = models.Job.objects.filter(sipuuid=uuid)
         name = utils.get_directory_name(jobs[0])
 
-    return render_to_response('main/ingest/metadata.html', locals())
+    return render_to_response('main/ingest/metadata_edit.html', locals())
 
 def ingest_metadata_delete(request, uuid, id):
     try:

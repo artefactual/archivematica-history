@@ -57,6 +57,12 @@ class DublinCore(models.Model):
     class Meta:
         db_table = u'Dublincore'
 
+    def __unicode__(self):
+        if self.title:
+            return u'%s' % self.title
+        else:
+            return u'Untitled'
+
 class Job(models.Model):
     jobuuid = models.CharField(max_length=150, primary_key=True, db_column='jobUUID')
     jobtype = models.CharField(max_length=750, db_column='jobType', blank=True)
