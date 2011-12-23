@@ -27,9 +27,9 @@ from archivematicaXMLNamesSpace import *
 import os
 import sys
 import lxml.etree as etree
-#from archivematicaCreateMETS2 import escape
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
+from sharedVariablesAcrossModules import sharedVariablesAcrossModules
 from archivematicaFunctions import escape
 
 
@@ -130,7 +130,7 @@ def getrightsGranted(pk, parent):
         termOfGrant = etree.SubElement(rightsGranted, "termOfGrant")
         etree.SubElement(termOfGrant, "startDate").text = formatDate(row[2])
         if not row[2]:  
-            #globalErrorCount +=1
+            sharedVariablesAcrossModules.globalErrorCount +=1
             print >>sys.stderr, "The value '' of element 'startDate' is not valid. "
         if row[3]:
             etree.SubElement(termOfGrant, "endDate").text = formatDate(row[3])
