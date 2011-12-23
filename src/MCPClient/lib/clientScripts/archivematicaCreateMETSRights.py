@@ -42,7 +42,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
     """[(fileUUID, fileUUIDTYPE), (sipUUID, sipUUIDTYPE), (transferUUID, transferUUIDType)]"""
     ret = []
     for metadataAppliesToidentifier, metadataAppliesToType in metadataAppliesToList:
-        list = "RightsStatement.pk, rightsStatementIdentifier, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseIdentifier, licenseIdentifier, licenseTerms"
+        list = "RightsStatement.pk, rightsStatementIdentifierType, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseIdentifierType, licenseIdentifierValue, licenseTerms"
         key = list.split(", ")
         sql = """SELECT %s FROM RightsStatement LEFT JOIN RightsStatementCopyright ON RightsStatementCopyright.fkRightsStatement = RightsStatement.pk LEFT JOIN RightsStatementLicense ON RightsStatementLicense.fkRightsStatement = RightsStatement.pk WHERE metadataAppliesToidentifier = '%s' AND metadataAppliesToType = %s;""" % (list, metadataAppliesToidentifier, metadataAppliesToType)
         rows = databaseInterface.queryAllSQL(sql)
@@ -74,8 +74,8 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                 # licenseInformation
                 licenseInformation = etree.SubElement(rightsStatement, "licenseInformation")
                 licenseIdentifier = etree.SubElement(licenseInformation, "licenseIdentifier")
-                etree.SubElement(licenseIdentifier, "licenseIdentifierType").text = "http://code.google.com/p/archivematica/issues/detail?id=704 comment 13"#valueDic["licenseIdentifierType"]
-                etree.SubElement(licenseIdentifier, "licenseIdentifierValue").text = valueDic["licenseIdentifier"]
+                etree.SubElement(licenseIdentifier, "licenseIdentifierType").text = valueDic["licenseIdentifierType"]
+                etree.SubElement(licenseIdentifier, "licenseIdentifierValue").text = valueDic["licenseIdentifierValue"]
                 etree.SubElement(licenseInformation, "licenseTerms").text = valueDic["licenseTerms"]
                 #TODO licenseNote (O, R)
                 #4.1.4.3 licenseNote (O, R)
