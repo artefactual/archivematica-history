@@ -64,6 +64,9 @@ urlpatterns = patterns('dashboard.main.views',
     (r'settings/$', 'settings_list'),
     (r'settings/(?P<id>\d+)/$', 'settings_edit'),
 
+    # Administration
+    (r'administration/$', 'administration'),
+
     #Status
     (r'status/$', 'status'),
 

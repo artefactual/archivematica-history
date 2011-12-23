@@ -710,6 +710,13 @@ def settings_edit(request, id):
     return render_to_response('main/settings/edit.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      Administration
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
+
+def administration(request):
+    return render_to_response('main/administration/index.html', locals())
+
+""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
