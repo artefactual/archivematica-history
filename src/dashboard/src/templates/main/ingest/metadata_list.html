@@ -1,0 +1,47 @@
+{% extends "layout_fluid.html" %}
+{% load breadcumbs %}
+
+{% block sidebar %}
+  {% include "main/ingest/_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="span12">
+
+      <ul class="breadcrumb">
+        {% breadcrumb_url 'Ingest' main.views.ingest_grid %}
+        {% breadcrumb_url name main.views.ingest_detail uuid %}
+        {% breadcrumb 'Metadata' %}
+      </ul>
+
+      <h1>Metadata<br /><small>{{ name }}</small></h1>
+
+<table>
+<tr>
+  <td><b>Act</b></td>
+  <td><b>Restriction</b></td>
+  <td><b>Start</b></td>
+  <td><b>End</b></td>
+  <td></td>
+</tr>
+{% for grant in grants %}
+<tr>
+  <td>{{ grant.act }}</td>
+  <td>{{ grant.restriction }}</td>
+  <td>{{ grant.startdate }}</td>
+  <td>{{ grant.enddate }}</td>
+  <td>
+    {% if section == 'ingest' %}
+      <a href='{% url main.views.ingest_rights_edit uuid grant.rightsstatement.id %}'>Edit</a>
+    {% else %}
+      <a href='{% url main.views.transfer_rights_edit uuid grant.rightsstatement.id %}' class='btn'>Edit</a>
+    {% endif %}
+  </td>
+</tr>
+</p>
+{% endfor %}
+
+    </div>
+  </div>
+{% endblock %}

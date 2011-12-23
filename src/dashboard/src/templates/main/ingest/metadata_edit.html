@@ -17,18 +17,6 @@
 
       <h1>Metadata<br /><small>{{ name }}</small></h1>
 
-      {% if request.method == 'POST' %}
-        {% if form.is_valid %}
-          <div class="alert-message success">
-            <p><strong>Saved!</strong></p>
-          </div>
-        {% else %}
-          <div class="alert-message error">
-            <p>An error has occurred.</p>
-          </div>
-        {% endif %}
-      {% endif %}
-
       <form class="form-stacked" method="post" action="{% url main.views.ingest_metadata uuid %}">
 
         {% include "_form.html" %}
