@@ -138,4 +138,7 @@ def queryAllSQL(sql):
             c.execute(sql)
             rows = c.fetchall()
             sqlLock.release()
+        else:
+            print >>sys.stderr, message
+            sqlLock.release()
     return rows

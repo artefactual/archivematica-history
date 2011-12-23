@@ -406,7 +406,7 @@ def getAMDSec(fileUUID, filePath, use, type, id, transferUUID):
             mdWrap.set("MDTYPE", "PREMIS:RIGHTS")
             xmlData = newChild(mdWrap, "xmlData")
             xmlData.append(a)
-    
+   
     for a in createDigiprovMD(fileUUID):
         AMD.append(a)
         
@@ -498,27 +498,28 @@ def createFileSec(directoryPath, structMapDiv):
                     GROUPID = "Group-%s" % (row[0])
                     row = c.fetchone()
                 sqlLock.release()
-
-            if use == "DSPACEMETS":
-                #skipAMDSec = True
-                skipAMDSec = False
-                use = "submissionDocumentation"
-
-                admidApplyTo = None
-                if GROUPID=="": #is an AIP identifier
-                    GROUPID = myuuid
-                    admidApplyTo = structMapDiv.getparent()
-
-
-                LABEL = "mets.xml-%s" % (GROUPID)
-                dmdSec, ID = createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR)
-                dmdSecs.append(dmdSec)
-                if admidApplyTo != None:
-                    admidApplyTo.set("ADMID", ID)
-                else:
-                    dspaceMetsDMDID = ID
-            else:
-                skipAMDSec = False
+                
+            if transferUUID:
+                sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
+                rows = databaseInterface.queryAllSQL(sql)
+                if rows[0][0] == "Dspace1.7":
+                    if use == "original":
+                        print "original"
+                    elif use == "DSPACEMETS":
+                        use = "submissionDocumentation"
+                        admidApplyTo = None
+                        if GROUPID=="": #is an AIP identifier
+                            GROUPID = myuuid
+                            admidApplyTo = structMapDiv.getparent()
+        
+        
+                        LABEL = "mets.xml-%s" % (GROUPID)
+                        dmdSec, ID = createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR)
+                        dmdSecs.append(dmdSec)
+                        if admidApplyTo != None:
+                            admidApplyTo.set("ADMID", ID)
+                        else:
+                            dspaceMetsDMDID = ID
 
             if GROUPID=="":
                 globalErrorCount += 1
@@ -533,7 +534,7 @@ def createFileSec(directoryPath, structMapDiv):
                     filesInThisDirectory.append(file)
                 #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
                 Flocat = newChild(file, "FLocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("LOCTYPE","OTHER"), ("OTHERLOCTYPE", "SYSTEM")])
-                if includeAmdSec and not skipAMDSec:
+                if includeAmdSec:
                     AMD, ADMID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier, transferUUID)
                     global amdSecs
                     amdSecs.append(AMD)
