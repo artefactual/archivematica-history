@@ -1,5 +1,7 @@
 databaseName="MCP"
 currentDir="$(dirname $0)"
+username="demo"
+password="demo"
 
 echo "Removing existing units"
 sudo ./removeUnitsFromWatchedDirectories.py
