@@ -751,46 +751,6 @@ def get_jobs_by_sipuuid(uuid):
         except Exception: return 0
     return sorted(jobs, key = get_priority) # key = lambda job: priorities[job.currentstep]
 
-def jobs_manual_normalization(request, uuid):
-    job = models.Job.objects.get(jobuuid=uuid)
-
-    try:
-        changes = simplejson.loads(request.POST.get('changes'))
-    except TypeError:
-        raise Http404
-
-    # TODO: check input
-    # name, newName and directory
-
-    output = []
-    returncodes = []
-    for item in changes:
-
-        if item["filename"].startswith('/'):
-            item["filename"] = item["filename"][1:]
-
-        if item["newFilename"].startswith('/'):
-            item["newFilename"] = item["newFilename"][1:]
-
-        command = []
-        command.append("/usr/lib/archivematica/transcoder/premisXMLlinker.py")
-        command.append("%s/objects/%s" % (job.directory, item["filename"]))
-        command.append("%s/objects/%s" % (job.directory, item["newFilename"]))
-        command.append("%s/" % job.directory)
-        command.append("%s" % item["description"])
-
-        process = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE)
-        output.append(process.communicate()[0])
-        # output.append(command)
-        returncodes.append(process.returncode)
-
-    if 1 in returncodes:
-        for item in output:
-            response += str(item) + '\n'
-        return HttpResponse(response, mimetype='text/plain', status=400)
-    else:
-        return HttpResponse("ok", mimetype='text/plain')
-
 def jobs_list_objects(request, uuid):
     response = []
     job = models.Job.objects.get(jobuuid=uuid)

@@ -349,8 +349,6 @@ $(function()
         'click .btn_approve_job': 'approveJob',
         'click .btn_reject_job': 'rejectJob',
         'click .btn_show_tasks': 'showTasks',
-        'click .btn_manual_normalization': 'manualNormalization',
-        'click .btn_normalization_report': 'normalizationReport',
         'change select': 'action'
       },
 
@@ -391,12 +389,6 @@ $(function()
               .append('<a class="btn_browse_job" href="#" title="Browse"><span>Browse</span></a>')
               .append('<a class="btn_approve_job" href="#" title="Approve"><span>Approve</span></a>')
               .append('<a class="btn_reject_job" href="#" title="Reject"><span>Reject</span></a>');
-
-            if ('Approve normalization' == this.model.get('microservice'))
-            {
-              this.$('.job-detail-actions')
-                .append('<a class="btn_manual_normalization" href="#" title="Manual"><span>Manual</span></a>');
-            }
           }
           else
           {
@@ -415,12 +407,6 @@ $(function()
             }
 
             this.$('.job-detail-actions').append($select);
-          }
-
-          if ('Approve normalization' == this.model.get('microservice'))
-          {
-            this.$('.job-detail-actions')
-              .append('<a class="btn_normalization_report" href="#" title="Report"><span>Report</span></a>');
           }
 
           this.$('.job-detail-microservice > a').tooltip();
@@ -451,34 +437,6 @@ $(function()
           });
         },
 
-      normalizationReport: function(event)
-        {
-          event.preventDefault();
-
-          $.ajax({
-            context: this,
-            type: 'GET',
-            dataType: 'html',
-            success: function(data)
-              {
-                $('<div class="task-dialog"></div>')
-                  .append('<table>' + $(data).find('thead').html() + $(data).find('tbody').html() + '</table>')
-                  .dialog({
-                    title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Normalization report',
-                    width: 800,
-                    height: 600,
-                    modal: true,
-                    buttons: [
-                      {
-                        text: 'Close',
-                        click: function() { $(this).dialog('close'); }
-                      }]
-                  });
-              },
-            url: '/ingest/normalization-report' + this.model.sip.get('uuid') + '/'
-          });
-        },
-
       showTasks: function(event)
         {
           event.preventDefault();
@@ -505,13 +463,6 @@ $(function()
               },
             url: '/tasks/' + this.model.get('uuid') + '/'
           });
-        },
-
-      manualNormalization: function(event)
-        {
-          event.preventDefault();
-
-          this.manualNormalizationView = new window.ManualNormalizationView({ uuid: this.model.get('uuid') });
         },
 
       browseJob: function(event)
@@ -565,171 +516,6 @@ $(function()
           });
         }
 
-    });
-
-    window.ManualNormalizationView = Backbone.View.extend({
-
-      id: 'manual-normalization',
-
-      initialize: function()
-        {
-          _.bindAll(this, 'render');
-
-          this.render();
-        },
-
-      render: function()
-        {
-          var self = this;
-
-          this.getContent()
-            .done(function()
-              {
-                var $list = $(document.createElement('ul')).addClass('manual-normalization-list');
-
-                for (var i in this.directoryContent)
-                {
-                  var $item = $(document.createElement('li'));
-
-                  var $title = $(document.createElement('p'));
-                  $.map(this.directoryContent[i].split('/'), function(n)
-                    {
-                      if (0 == n)
-                      {
-                        return true;
-                      }
-
-                      $title.append('<span>' + n + '</span>');
-                    });
-
-                  $item.append($title);
-
-                  $title.before($('<input type="hidden" name="filename" />').val(this.directoryContent[i]));
-
-                  $item
-                    .hover(function()
-                      {
-                        $(this).addClass('hover');
-                      },
-                      function()
-                      {
-                        $(this).removeClass('hover');
-                      })
-                    .delegate('p', 'click', function(event)
-                      {
-                        var $item = $(this).closest('li');
-
-                        if ($item.hasClass('selected'))
-                        {
-                          $item.removeClass('selected');
-
-                          $(this).nextAll().remove();
-                        }
-                        else
-                        {
-                          $item.addClass('selected');
-
-                          var filename = $item.find('input[name=filename]').val();
-                          var content = _.template($('#manual-normalization-item-template').html(),  { newFilename: filename, description: '' });
-
-                          $(this).after(content);
-
-                        }
-                      });
-
-                  $list.append($item);
-                }
-
-                $('<div id="manual-normalization"><p>Select those files that have been normalized manually. Introduce the new filename and write a description.</p></div>').append($list).dialog(
-                  {
-                    width: 640,
-                    height: 480,
-                    buttons:
-                      {
-                        'Submit': function()
-                          {
-                            var valid = true;
-
-                            // Build an array of changes from the dialog form
-                            var changes = [];
-                            $list.children('.selected').each(function(index, sender)
-                              {
-                                var filename = $('input[name=filename]', this).val();
-                                var newFilename = $('input[name=new-filename]', this).val();
-                                var description = $('input[name=description]', this).val();
-
-                                if (filename == newFilename)
-                                {
-                                  valid = false;
-
-                                  return false;
-                                }
-
-                                changes.push({
-                                  filename: filename,
-                                  newFilename: newFilename,
-                                  description: description
-                                });
-                              });
-
-                            if (!valid)
-                            {
-                              alert("Cannot find normalized file.");
-
-                              return false;
-                            }
-
-                            if (0 == changes.length)
-                            {
-                              $(this).dialog('close');
-
-                              return false;
-                            }
-
-                            // Sent form data to the server as JSON
-                            $.ajax({
-                              context: this,
-                              data: { changes: JSON.stringify(changes) },
-                              type: 'POST',
-                              url: '/jobs/manual-normalization/' + self.options.uuid + '/'
-                            })
-                              .then(function()
-                                {
-                                  $(this).dialog('close');
-                                })
-                              .fail(function()
-                                {
-                                  alert('Manual normalization failed.');
-                                  $(this).dialog('close');
-                                });
-                          },
-                        'Close': function() 
-                          {
-                            $(this).dialog('close');
-                          }
-                      },
-                    title: 'Manual normalization'
-                  });
-              })
-            .fail(function()
-              {
-                // TODO
-              });
-
-          return this;
-        },
-
-      getContent: function()
-        {
-          return $.ajax({
-            dataType: 'json',
-            url: '/jobs/list-objects/' + this.options.uuid + '/',
-            success: function(data)
-              {
-                this.directoryContent = data;
-              }
-            });
-        }
     });
 
     window.DirectoryBrowserView = Backbone.View.extend({
