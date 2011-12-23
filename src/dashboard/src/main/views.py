@@ -223,7 +223,9 @@ def rights_list(request, uuid, section):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     name = utils.get_directory_name(jobs[0])
 
-    grants = models.RightsStatementRightsGranted.objects.all()
+    # See MetadataAppliesToTypes table
+    types = { 'ingest': 1, 'transfer': 2, 'file': 3 }
+    grants = models.RightsStatementRightsGranted.objects.filter(metadataappliestotype=types[section], metadataAppliesToidentifier=uuid)
 
     sidebar_template = "main/" + section + "/_sidebar.html"
 
