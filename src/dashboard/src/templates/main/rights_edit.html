@@ -18,11 +18,17 @@
         {% if section == 'ingest' %}
           {% breadcrumb_url 'Ingest' main.views.ingest_grid %}
           {% breadcrumb_url name main.views.ingest_detail uuid %}
+          {% breadcrumb_url 'Rights' main.views.ingest_rights_list uuid %}
         {% else %}
           {% breadcrumb_url 'Transfer' main.views.transfer_grid %}
           {% breadcrumb_url name main.views.transfer_detail uuid %}
+          {% breadcrumb_url 'Rights' main.views.transfer_rights_list uuid %}
         {% endif %}
-        {% breadcrumb 'Rights' %}
+        {% if id %}
+          {% breadcrumb 'Edit' %}
+        {% else %}
+          {% breadcrumb 'Add' %}
+        {% endif %}
       </ul>
 
       <h1>Rights<br /><small>{{ name }}</small></h1>
@@ -74,9 +80,9 @@
 
         <div class="actions">
           {% if id %}
-            <button type="submit" class="btn primary">Edit</button>
+            <button type="submit" class="btn primary">Save</button>
           {% else %}
-            <button type="submit" class="btn primary">Add</button>
+            <button type="submit" class="btn primary">Create</button>
           {% endif %}
 
           {% if section == 'ingest' %}

@@ -28,10 +28,11 @@
         <tbody>
           {% for item in metadata %}
             <tr>
-              <td>{{ item.enddate }}</td>
-              <td>Ingest</td>
+              <td>{{ item }}</td>
+              <td>{{ name }}</td>
               <td>
                 <a href='{% url main.views.ingest_metadata_edit uuid item.id %}'>Edit</a>
+                <a href='{% url main.views.ingest_metadata_delete uuid item.id %}'>Delete</a>
               </td>
             </tr>
           {% endfor %}
