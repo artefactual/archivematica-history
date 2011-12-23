@@ -286,7 +286,15 @@ def ingest_status(request, uuid=None):
     response['mcp'] = mcp_available
     return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
 
-def ingest_metadata(request, uuid):
+@load_jobs # Adds jobs, name
+def ingest_metadata_list(request, uuid, jobs, name):
+    # See MetadataAppliesToTypes table
+    # types = { 'ingest': 1, 'transfer': 2, 'file': 3 }
+    metadata = models.DublinCore.objects.filter(metadataappliestotype__exact=1, metadataappliestoidentifier__exact=uuid)
+
+    return render_to_response('main/ingest/metadata_list.html', locals())
+
+def ingest_metadata_edit(request, uuid):
     try:
         dc = models.DublinCore.objects.get_sip_metadata(uuid)
     except ObjectDoesNotExist:
