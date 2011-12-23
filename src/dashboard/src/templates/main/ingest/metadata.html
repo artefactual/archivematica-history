@@ -36,6 +36,9 @@
         <div class="actions">
           <button type="submit" class="btn primary">Save</button>
           <a href="{% url main.views.ingest_detail uuid %}" class="btn">Cancel</a>
+          {% if dc.id %}
+            <a href="{% url main.views.ingest_metadata_delete uuid dc.id %}" class="btn danger">Delete</a>
+          {% endif %}
         </div>
 
       </form>
