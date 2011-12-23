@@ -1,0 +1,28 @@
+{% extends "layout_fluid.html" %}
+
+{% block title %}Administration{% endblock %}
+{% block h1 %}Administration{% endblock %}
+{% block page_id %}Administration{% endblock %}
+
+{% block sidebar %}
+  {% include "main/administration/_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <h1>Administration</h1>
+
+  <form method="post" action="{% url main.views.administration_edit upload_setting.id %}">
+
+    <div class="span12">
+      <h2>Upload DIP command</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempus aliquet mollis. Ut pellentesque tempor molestie. Proin consectetur tellus in sapien sagittis laoreet. In ipsum sapien, consectetur ac aliquam vel, tincidunt sed tellus. Donec mauris arcu, aliquam vel venenatis a, laoreet id tellus. Maecenas venenatis adipiscing venenatis. Sed sit amet molestie odio.</p>
+      <textarea class="span12" name="arguments">{{ upload_setting.arguments }}</textarea>
+      <div class="actions">
+        <input type="submit" value="Save" class="btn primary" />
+      </div>
+    </div>
+
+  </form>
+
+{% endblock %}
