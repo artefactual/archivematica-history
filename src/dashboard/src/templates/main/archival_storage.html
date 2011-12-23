@@ -129,7 +129,7 @@
         {% for item in sips %}
           <tr>
             <td class="link-sip"><a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a></td>
-            <td class="size">{{ item.size }} MB</td>
+            <td class="size">{{ item.size }}</td>
             <td class="uuid">{{ item.uuid }}</td>
             <td>{{ item.date }}</td>
           </tr>
