@@ -65,7 +65,6 @@ for use in globalFileGrpsUses:
     globalFileGrps[use] = grp
 
 ##counters
-#globalCounter = 0
 global globalErrorCount
 globalErrorCount = 0
 global amdSecs
