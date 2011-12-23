@@ -215,7 +215,7 @@ class RightsStatementRightsGranted(models.Model):
 class RightsStatementRightsGrantedRestriction(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     rightsgranted = models.ForeignKey(RightsStatementRightsGranted, db_column='fkRightsStatementRightsGranted')
-    rightsgrantednote = models.TextField(db_column='rightsGrantedNote', blank=True)
+    restriction = models.TextField(db_column='restriction', blank=True)
 
     class Meta:
         db_table = u'RightsStatementRightsGrantedRestriction'

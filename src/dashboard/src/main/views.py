@@ -194,6 +194,10 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
     return render_to_response('main/rights_edit.html', locals())
 
+def rights_delete(request, uuid, id, section):
+    models.RightsStatement.objects.get(pk=id).delete()
+    return HttpResponseRedirect(reverse('dashboard.main.views.%s_rights_list' % section, args=[uuid]))
+
 def rights_holders_lookup(request, id):
     try:
       agent = models.RightsStatementLinkingAgentIdentifier.objects.get(pk=id)
@@ -348,8 +352,10 @@ def ingest_rights_list(request, uuid):
     return rights_list(request, uuid, 'ingest')
 
 def ingest_rights_edit(request, uuid, id=None):
-
     return rights_edit(request, uuid, id, 'ingest')
+
+def ingest_rights_delete(request, uuid, id):
+    return rights_delete(request, uuid, id, 'ingest')
 
 def ingest_delete(request, uuid):
     try:
@@ -533,12 +539,10 @@ def transfer_rights_list(request, uuid):
     return rights_list(request, uuid, 'transfer')
 
 def transfer_rights_edit(request, uuid, id=None):
-
     return rights_edit(request, uuid, id, 'transfer')
 
-@load_jobs # Adds jobs, name
-def transfer_rights_delete(request, uuid, jobs, name, id):
-    return HttpResponse()
+def transfer_rights_delete(request, uuid, id):
+    return rights_delete(request, uuid, id, 'transfer')
 
 def transfer_delete(request, uuid):
     try:
