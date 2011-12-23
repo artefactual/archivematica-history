@@ -310,6 +310,13 @@ def ingest_metadata(request, uuid):
 
     return render_to_response('main/ingest/metadata.html', locals())
 
+def ingest_metadata_delete(request, uuid, id):
+    try:
+      models.DublinCore.objects.get(pk=id).delete()
+      return HttpResponseRedirect(reverse('dashboard.main.views.ingest_detail', args=[uuid]))
+    except:
+      raise Http404
+
 def ingest_detail(request, uuid):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     is_waiting = jobs.filter(currentstep='Awaiting decision').count() > 0
