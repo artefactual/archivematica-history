@@ -117,7 +117,7 @@ def executeCommand(gearman_worker, gearman_job):
         #execute command
 
         command += " " + arguments
-        print >>sys.stderr, "<processingCommand>{" + gearman_job.unique + "}" + command.__str__() + "</processingCommand>" 
+        print >>sys.stderr, "<processingCommand>{" + gearman_job.unique + "}" + command.__str__() + "</processingCommand>"
         exitCode, stdOut, stdError = executeOrRun("command", command, sInput, printing=False)
         return cPickle.dumps({"exitCode" : exitCode, "stdOut": stdOut, "stdError": stdError})
     #catch OS errors

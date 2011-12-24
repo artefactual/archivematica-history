@@ -100,10 +100,10 @@ class SIP(models.Model):
 class TransferManager(models.Manager):
 
     def is_hidden(self, uuid):
-      try:
-        return Transfer.objects.get(uuid__exact=uuid).hidden is True
-      except:
-        return False
+        try:
+            return Transfer.objects.get(uuid__exact=uuid).hidden is True
+        except:
+            return False
 
 class Transfer(models.Model):
     uuid = models.CharField(max_length=150, primary_key=True, db_column='transferUUID')
