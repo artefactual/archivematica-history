@@ -61,12 +61,37 @@ def archivematicaCreateMETSRightsDspaceMDRef(fileUUID, filePath, transferUUID, i
         sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation = '%%SIPDirectory%%%s/mets.xml' AND transferUUID = '%s';" % (os.path.dirname(filePath), transferUUID)
         rows = databaseInterface.queryAllSQL(sql)
         for row in rows:
-            print row
             metsFileUUID = row[0]
             metsLoc = row[1].replace("%SIPDirectory%", "", 1)
             metsLocation = os.path.join(os.path.dirname(itemdirectoryPath), "mets.xml")
             LABEL = "mets.xml-%s" % (metsFileUUID)
             ret.append(createMDRefDMDSec(LABEL, metsLocation, metsLoc))
+        
+        base = os.path.dirname(os.path.dirname(itemdirectoryPath))
+        base2 = os.path.dirname(os.path.dirname(filePath))
+        
+        for dir in os.listdir(base):
+            fullDir = os.path.join(base, dir)
+            fullDir2 = os.path.join(base2, dir)
+            print fullDir
+            if dir.startswith("ITEM"):
+                print "continue"
+                continue 
+            if not os.path.isdir(fullDir):
+                continue
+            sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation = '%%SIPDirectory%%%s/mets.xml' AND transferUUID = '%s';" % (fullDir2, transferUUID)
+            print sql
+            rows = databaseInterface.queryAllSQL(sql)
+            for row in rows:
+                print row
+                metsFileUUID = row[0]
+                metsLoc = row[1].replace("%SIPDirectory%", "", 1)
+                metsLocation = os.path.join(fullDir, "mets.xml")
+                print metsLocation
+                LABEL = "mets.xml-%s" % (metsFileUUID)
+                ret.append(createMDRefDMDSec(LABEL, metsLocation, metsLoc))
+            
+        
             
         
     except Exception as inst:
