@@ -231,6 +231,15 @@ def rights_list(request, uuid, section):
     types = { 'ingest': 1, 'transfer': 2, 'file': 3 }
     grants = models.RightsStatementRightsGranted.objects.filter(rightsstatement__metadataappliestotype__exact=types[section], rightsstatement__metadataappliestoidentifier__exact=uuid)
 
+    # When listing ingest rights we also want to show transfer rights
+    # The only way I've found to get the related transfer of a SIP is looking into the File table
+    if section is "ingest":
+        try:
+            transfer_uuid = models.File.objects.filter(sip__uuid__exact=uuid)[0].transfer.uuid
+            transfer_grants = models.RightsStatementRightsGranted.objects.filter(rightsstatement__metadataappliestotype__exact=types['transfer'], rightsstatement__metadataappliestoidentifier__exact=transfer_uuid)
+        except:
+            pass
+
     sidebar_template = "main/" + section + "/_sidebar.html"
 
     return render_to_response('main/rights_list.html', locals())
