@@ -50,7 +50,7 @@ def createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR):
     mdRef.set("OTHERLOCTYPE", "SYSTEM")
     mdRef.set("XPTR", XPTR)
     return mdRef
-    
+
 
 
 def archivematicaCreateMETSRightsDspaceMDRef(fileUUID, filePath, transferUUID, itemdirectoryPath):
@@ -66,17 +66,17 @@ def archivematicaCreateMETSRightsDspaceMDRef(fileUUID, filePath, transferUUID, i
             metsLocation = os.path.join(os.path.dirname(itemdirectoryPath), "mets.xml")
             LABEL = "mets.xml-%s" % (metsFileUUID)
             ret.append(createMDRefDMDSec(LABEL, metsLocation, metsLoc))
-        
+
         base = os.path.dirname(os.path.dirname(itemdirectoryPath))
         base2 = os.path.dirname(os.path.dirname(filePath))
-        
+
         for dir in os.listdir(base):
             fullDir = os.path.join(base, dir)
             fullDir2 = os.path.join(base2, dir)
             print fullDir
             if dir.startswith("ITEM"):
                 print "continue"
-                continue 
+                continue
             if not os.path.isdir(fullDir):
                 continue
             sql = "SELECT fileUUID, currentLocation FROM Files WHERE currentLocation = '%%SIPDirectory%%%s/mets.xml' AND transferUUID = '%s';" % (fullDir2, transferUUID)
@@ -90,14 +90,13 @@ def archivematicaCreateMETSRightsDspaceMDRef(fileUUID, filePath, transferUUID, i
                 print metsLocation
                 LABEL = "mets.xml-%s" % (metsFileUUID)
                 ret.append(createMDRefDMDSec(LABEL, metsLocation, metsLoc))
-            
-        
-            
-        
+
+
+
+
     except Exception as inst:
         print >>sys.stderr, "Error creating mets dspace mdref", fileUUID, filePath
         print >>sys.stderr, type(inst), inst.args
         sharedVariablesAcrossModules.globalErrorCount +=1
-    
+
     return ret
-    

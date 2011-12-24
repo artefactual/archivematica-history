@@ -200,10 +200,10 @@ def rights_delete(request, uuid, id, section):
 
 def rights_holders_lookup(request, id):
     try:
-      agent = models.RightsStatementLinkingAgentIdentifier.objects.get(pk=id)
-      result = agent.linkingagentidentifiervalue + ' [' + str(agent.id) + ']'
+        agent = models.RightsStatementLinkingAgentIdentifier.objects.get(pk=id)
+        result = agent.linkingagentidentifiervalue + ' [' + str(agent.id) + ']'
     except:
-      result = ''
+        result = ''
     return HttpResponse(result)
 
 def rights_holders_autocomplete(request):
@@ -300,14 +300,14 @@ def ingest_metadata_list(request, uuid, jobs, name):
 
 def ingest_metadata_edit(request, uuid, id=None):
     if id:
-      dc = models.DublinCore.objects.get(pk=id)
+        dc = models.DublinCore.objects.get(pk=id)
     else:
-      # Right now we only support linking metadata to the Ingest
-      try:
-          dc = models.DublinCore.objects.get_sip_metadata(uuid)
-          return HttpResponseRedirect(reverse('dashboard.main.views.ingest_metadata_edit', args=[uuid, dc.id]))
-      except ObjectDoesNotExist:
-          dc = models.DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
+        # Right now we only support linking metadata to the Ingest
+        try:
+            dc = models.DublinCore.objects.get_sip_metadata(uuid)
+            return HttpResponseRedirect(reverse('dashboard.main.views.ingest_metadata_edit', args=[uuid, dc.id]))
+        except ObjectDoesNotExist:
+            dc = models.DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
 
     fields = ['title', 'creator', 'subject', 'description', 'publisher',
               'contributor', 'date', 'type', 'format', 'identifier',
@@ -332,10 +332,10 @@ def ingest_metadata_edit(request, uuid, id=None):
 
 def ingest_metadata_delete(request, uuid, id):
     try:
-      models.DublinCore.objects.get(pk=id).delete()
-      return HttpResponseRedirect(reverse('dashboard.main.views.ingest_detail', args=[uuid]))
+        models.DublinCore.objects.get(pk=id).delete()
+        return HttpResponseRedirect(reverse('dashboard.main.views.ingest_detail', args=[uuid]))
     except:
-      raise Http404
+        raise Http404
 
 def ingest_detail(request, uuid):
     jobs = models.Job.objects.filter(sipuuid=uuid)

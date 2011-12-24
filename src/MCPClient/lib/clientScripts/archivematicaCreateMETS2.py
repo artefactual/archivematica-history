@@ -29,7 +29,7 @@ import os
 import sys
 import MySQLdb
 from archivematicaCreateMETSRights import archivematicaGetRights
-from archivematicaCreateMETSRightsDspaceMDRef import archivematicaCreateMETSRightsDspaceMDRef 
+from archivematicaCreateMETSRightsDspaceMDRef import archivematicaCreateMETSRightsDspaceMDRef
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from archivematicaFunctions import escape
@@ -391,9 +391,9 @@ def getAMDSec(fileUUID, filePath, use, type, id, transferUUID, itemdirectoryPath
     #tech MD
     #digiprob MD
     AMD.append(createTechMD(fileUUID))
-    
+
     if use == "original":
-        metadataAppliesToList = [(fileUUID, FileMetadataAppliesToType), (fileGroupIdentifier, SIPMetadataAppliesToType), (transferUUID.__str__(), TransferMetadataAppliesToType)]        
+        metadataAppliesToList = [(fileUUID, FileMetadataAppliesToType), (fileGroupIdentifier, SIPMetadataAppliesToType), (transferUUID.__str__(), TransferMetadataAppliesToType)]
         for a in archivematicaGetRights(metadataAppliesToList, fileUUID):
             globalRightsMDCounter +=1
             rightsMD = etree.SubElement(AMD, "rightsMD")
@@ -402,21 +402,21 @@ def getAMDSec(fileUUID, filePath, use, type, id, transferUUID, itemdirectoryPath
             mdWrap.set("MDTYPE", "PREMIS:RIGHTS")
             xmlData = newChild(mdWrap, "xmlData")
             xmlData.append(a)
-        
-        if transferUUID:
-                sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
-                rows = databaseInterface.queryAllSQL(sql)
-                if rows[0][0] == "Dspace1.7":
-                    for a in archivematicaCreateMETSRightsDspaceMDRef(fileUUID, filePath, transferUUID, itemdirectoryPath):
-                        globalRightsMDCounter +=1
-                        rightsMD = etree.SubElement(AMD, "rightsMD")
-                        rightsMD.set("ID", "rightsMD_" + globalRightsMDCounter.__str__())
-                        rightsMD.append(a)
 
-   
+        if transferUUID:
+            sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
+            rows = databaseInterface.queryAllSQL(sql)
+            if rows[0][0] == "Dspace1.7":
+                for a in archivematicaCreateMETSRightsDspaceMDRef(fileUUID, filePath, transferUUID, itemdirectoryPath):
+                    globalRightsMDCounter +=1
+                    rightsMD = etree.SubElement(AMD, "rightsMD")
+                    rightsMD.set("ID", "rightsMD_" + globalRightsMDCounter.__str__())
+                    rightsMD.append(a)
+
+
     for a in createDigiprovMD(fileUUID):
         AMD.append(a)
-        
+
     for a in createDigiprovMDAgents():
         AMD.append(a)
     return ret
@@ -504,7 +504,7 @@ def createFileSec(directoryPath, structMapDiv):
                     GROUPID = "Group-%s" % (row[0])
                     row = c.fetchone()
                 sqlLock.release()
-                
+
             if transferUUID:
                 sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
                 rows = databaseInterface.queryAllSQL(sql)
@@ -515,8 +515,8 @@ def createFileSec(directoryPath, structMapDiv):
                         if GROUPID=="": #is an AIP identifier
                             GROUPID = myuuid
                             admidApplyTo = structMapDiv.getparent()
-        
-        
+
+
                         LABEL = "mets.xml-%s" % (GROUPID)
                         dmdSec, ID = createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR)
                         dmdSecs.append(dmdSec)
