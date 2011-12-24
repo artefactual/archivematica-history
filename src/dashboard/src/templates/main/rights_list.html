@@ -48,6 +48,15 @@
               </td>
             </tr>
           {% endfor %}
+          {% for grant in transfer_grants %}
+            <tr>
+              <td>{{ grant.act }}</td>
+              <td>{{ grant.restriction }}</td>
+              <td>{{ grant.startdate }}</td>
+              <td>{{ grant.enddate }}</td>
+              <td>Transfer</td>
+            </tr>
+          {% endfor %}
         </tbody>
       </table>
 
