@@ -133,12 +133,13 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_license_notes = max_notes - models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights).count()
     else:
         #return HttpResponse(request.POST.get('rightsholder'))
-        postData = request.POST.copy()
         if request.method == 'POST':
+            postData = request.POST.copy()
             agentId = rights_parse_agent_id(postData.get('rightsholder'))
             postData.__setitem__('rightsholder', agentId)
-        form = forms.RightsForm(postData)
-        if request.method != 'POST':
+            form = forms.RightsForm(postData)
+        else:
+            form = forms.RightsForm()
             viewRights = models.RightsStatement()
         extra_grant_notes = max_notes
         extra_copyright_forms = max_notes
