@@ -33,6 +33,7 @@ import traceback
 import pyinotify
 import threading
 import shutil
+import MySQLdb
 from pyinotify import WatchManager
 from pyinotify import Notifier
 from pyinotify import ThreadedNotifier
@@ -69,7 +70,7 @@ class unitTransfer(unit):
                        "%sharedPath%", 1)
 
         if UUID == "":
-            sql = """SELECT transferUUID FROM Transfers WHERE currentLocation = '""" + currentPath2 + "'"
+            sql = """SELECT transferUUID FROM Transfers WHERE currentLocation = '""" + MySQLdb.escape_string(currentPath2) + "'"
             time.sleep(.5)
             c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
@@ -87,7 +88,7 @@ class unitTransfer(unit):
                 UUID = uuid.uuid4().__str__()
                 self.UUID = UUID
                 sql = """INSERT INTO Transfers (transferUUID, currentLocation)
-                VALUES ('""" + UUID + databaseInterface.separator + currentPath2 + "');"
+                VALUES ('""" + UUID + databaseInterface.separator + MySQLdb.escape_string(currentPath2) + "');"
                 databaseInterface.runSQL(sql)
 
         self.currentPath = currentPath2

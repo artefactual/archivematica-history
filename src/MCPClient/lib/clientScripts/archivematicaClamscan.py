@@ -28,7 +28,7 @@ import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
 from databaseFunctions import insertIntoEvents
-from archivematicaFunctions import escapeForCommand2
+from archivematicaFunctions import escapeForCommand
 
 clamscanResultShouldBe="Infected files: 0"
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     date = sys.argv[3]
     taskUUID = sys.argv[4]
 
-    command = 'clamdscan  - <"' + escapeForCommand2(target) + '"'
+    command = 'clamdscan  - <"' + escapeForCommand(target) + '"'
     print >>sys.stderr, command
     commandVersion = "clamdscan -V"
     eventOutcome = "Pass"
