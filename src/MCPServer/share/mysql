@@ -1617,9 +1617,10 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @ProcessSubmissionDocumentationLinkMicroServiceChain); -- no normalization --
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @ManualNormalizationMicroServiceChain);
+-- Issue 741:	Make manual normalization compatible with current data structure
+-- INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+--    VALUES                
+--    (@MicroServiceChainLink, @ManualNormalizationMicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
@@ -1639,9 +1640,10 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @noNormalizationWithAccessDirectoryMicroServiceChain);
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES                
-    (@MicroServiceChainLink, @manualNormalizationWithAccessDirectoryMicroServiceChain);
+-- Issue 741:	Make manual normalization compatible with current data structure
+-- INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+--     VALUES                
+--     (@MicroServiceChainLink, @manualNormalizationWithAccessDirectoryMicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @normalizePreservationWithAccessDirectoryMicroServiceChain);
