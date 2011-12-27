@@ -158,9 +158,12 @@ def removeFile(filePath, utcDate = databaseInterface.getUTCDate()):
 def renameAsSudo(source, destination):
     """Used to move/rename Directories that the archivematica user may or may not have writes to move"""
     command = "sudo mv \"" + source + "\"   \"" + destination + "\""
+    if isinstance(command, unicode):
+        command = command.encode("utf-8")
     exitCode, stdOut, stdError = executeOrRun("command", command, "", printing=False)
     if exitCode:
-        print stdOut
+        print >>sys.stderr, "exitCode:", exitCode
+        print >>sys.stderr, stdOut
         print >>sys.stderr, stdError
         exit(exitCode)
 
