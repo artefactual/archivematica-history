@@ -25,13 +25,14 @@ import os
 import subprocess
 import shlex
 import sys
+import MySQLdb
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from executeOrRunSubProcess import executeOrRun
 from fileOperations import renameAsSudo
 
 def updateDB(dst, sipUUID):
-    sql =  """UPDATE SIPs SET currentPath='""" + dst + """' WHERE sipUUID='""" + sipUUID + """';"""
+    sql =  """UPDATE SIPs SET currentPath='""" + MySQLdb.escape_string(dst) + """' WHERE sipUUID='""" + sipUUID + """';"""
     databaseInterface.runSQL(sql)
 
 def moveSIP(src, dst, sipUUID, sharedDirectoryPath):

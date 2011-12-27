@@ -167,7 +167,7 @@ def createSIP(path, UUID=None):
         UUID = uuid.uuid4().__str__()
     print "Creating SIP:", UUID, "-", path
     sql = """INSERT INTO SIPs (sipUUID, currentPath)
-        VALUES ('""" + UUID + databaseInterface.separator + path + "');"
+        VALUES ('""" + UUID + databaseInterface.separator + escapeForDB(path) + "');"
     databaseInterface.runSQL(sql)
     return UUID
 

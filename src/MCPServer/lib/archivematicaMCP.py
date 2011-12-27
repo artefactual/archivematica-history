@@ -42,6 +42,7 @@ from unitTransfer import unitTransfer
 from pyinotify import ThreadedNotifier
 import transferD
 import xmlRPCServer
+import MySQLdb
 
 import signal
 import os
@@ -115,7 +116,7 @@ def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
 
     if UUID == "":
         #Find it in the database
-        sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + path + "';"
+        sql = """SELECT sipUUID FROM SIPs WHERE currentPath = '""" + MySQLdb.escape_string(path) + "';"
         #if waitSleep != 0:
             #time.sleep(waitSleep) #let db be updated by the microservice that moved it.
         c, sqlLock = databaseInterface.querySQL(sql)
