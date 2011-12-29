@@ -494,14 +494,31 @@ $(function()
 
       action: function(event)
         {
-          var value = $(event.target).val();
+          var $select = $(event.target);
+          var value = $select.val();
 
           if ('uploadDIP' == this.model.get('microservice') && 2 == value)
           {
-            $('#upload-dip-modal').modal({
-                backdrop: true,
-                keyboard: true
-              }).modal('show');
+            var modal = $('#upload-dip-modal');
+            
+            modal
+
+              .find('a.primary').one('click', function(event)
+                {
+                  event.preventDefault();
+                  modal.modal('hide');
+                })
+              .end()
+              
+              .find('a.secondary').one('click', function(event)
+                {
+                  event.preventDefault();
+                  $select.val(0);
+                  modal.modal('hide');
+                })
+              .end()
+
+              .modal('show');
 
             return false;
           }
@@ -1039,6 +1056,16 @@ $(function()
 
     window.onresize = optimizeWidth;
     window.onload = optimizeWidth;
+
+    $(document).ready(function()
+      {
+        // Create modal
+        $('#upload-dip-modal')
+          .modal({
+            backdrop: true,
+            keyboard: true
+          });
+      });
 
   }
 );
