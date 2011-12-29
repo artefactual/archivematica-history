@@ -60,6 +60,14 @@
         </tbody>
       </table>
 
+      <div class="actions">
+        {% if section == 'ingest' %}
+          <a class="btn primary" href="{% url main.views.ingest_rights_edit uuid %}">Add</a>
+        {% else %}
+          <a class="btn primary" href="{% url main.views.transfer_rights_edit uuid %}">Add</a>
+        {% endif %}
+      </div>
+
     </div>
   </div>
 {% endblock %}
