@@ -1,4 +1,5 @@
 import os
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 BASE_PATH = os.path.dirname(__file__)
 
@@ -95,6 +96,14 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
     # 'django.template.loaders.eggs.Loader',
 )
+
+""" If you want to extend default tmpl context processors...
+
+TEMPLATE_CONTEXT_PROCESSORS = TEMPLATE_CONTEXT_PROCESSORS + (
+    ''
+
+)
+"""
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
