@@ -77,6 +77,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(BASE_PATH, 'media'),
 )
 
 # List of finder classes that know how to find static files in
@@ -111,10 +112,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.csrf.CsrfViewMiddleware',
     # 'django.contrib.auth.middleware.AuthenticationMiddleware',
     # 'django.contrib.messages.middleware.MessageMiddleware',
-    'dashboard.middleware.common.AJAXSimpleExceptionResponse',
+    'middleware.common.AJAXSimpleExceptionResponse',
 )
 
-ROOT_URLCONF = 'dashboard.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -130,15 +131,15 @@ INSTALLED_APPS = (
     # 'django.contrib.sessions',
     # 'django.contrib.sites',
     # 'django.contrib.messages',
-    # 'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'django.contrib.webdesign',
 
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
 
     # Internal apps
-    'dashboard.main',
-    'dashboard.mcp',
+    'main',
+    'mcp',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -172,7 +173,7 @@ except:
 else:
     MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
     INSTALLED_APPS += ('debug_toolbar',)
-    INTERNAL_IPS = ('127.0.0.1', '192.168.82.1',)
+    INTERNAL_IPS = ('127.0.0.1', '192.168.82.1', '10.0.2.2')
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS': False,
     }

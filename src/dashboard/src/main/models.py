@@ -4,8 +4,8 @@
 
 from django.db import models
 
-from dashboard.contrib import utils
-import dashboard.main
+from contrib import utils
+import main
 
 class Access(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
@@ -22,7 +22,7 @@ class Access(models.Model):
 
     def get_title(self):
         try:
-            jobs = dashboard.main.models.Job.objects.filter(sipuuid=self.sipuuid)
+            jobs = main.models.Job.objects.filter(sipuuid=self.sipuuid)
             return utils.get_directory_name(jobs[0])
         except:
             return 'N/A'

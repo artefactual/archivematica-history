@@ -16,7 +16,7 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.http import HttpResponse
-from dashboard.contrib.mcp.client import MCPClient
+from contrib.mcp.client import MCPClient
 from lxml import etree
 
 def execute(request):

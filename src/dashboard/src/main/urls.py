@@ -4,7 +4,7 @@ from django.views.generic.simple import direct_to_template, redirect_to
 
 UUID_REGEX = '[\w]{8}(-[\w]{4}){3}-[\w]{12}'
 
-urlpatterns = patterns('dashboard.main.views',
+urlpatterns = patterns('main.views',
 
     # Index
     (r'^$', 'home'),
