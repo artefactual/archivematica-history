@@ -27,10 +27,10 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpRespo
 from django.utils import simplejson
 from django.utils.functional import wraps
 from django.views.static import serve
-from dashboard.contrib.mcp.client import MCPClient
-from dashboard.contrib import utils
-from dashboard.main import forms
-from dashboard.main import models
+from contrib.mcp.client import MCPClient
+from contrib import utils
+from main import forms
+from main import models
 from lxml import etree
 import calendar, os, re, subprocess
 from datetime import datetime
@@ -183,7 +183,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         licenseFormset.save()
         licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
         licenseNoteFormset.save()
-        return HttpResponseRedirect(reverse('dashboard.main.views.%s_rights_list' % section, args=[uuid]))
+        return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
     else:
         grantFormset = GrantFormSet(instance=viewRights)
         copyrightFormset = CopyrightFormSet(instance=viewRights)
@@ -197,7 +197,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
 def rights_delete(request, uuid, id, section):
     models.RightsStatement.objects.get(pk=id).delete()
-    return HttpResponseRedirect(reverse('dashboard.main.views.%s_rights_list' % section, args=[uuid]))
+    return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
 
 def rights_holders_lookup(request, id):
     try:
@@ -315,7 +315,7 @@ def ingest_metadata_edit(request, uuid, id=None):
         # Right now we only support linking metadata to the Ingest
         try:
             dc = models.DublinCore.objects.get_sip_metadata(uuid)
-            return HttpResponseRedirect(reverse('dashboard.main.views.ingest_metadata_edit', args=[uuid, dc.id]))
+            return HttpResponseRedirect(reverse('main.views.ingest_metadata_edit', args=[uuid, dc.id]))
         except ObjectDoesNotExist:
             dc = models.DublinCore(metadataappliestotype=1, metadataappliestoidentifier=uuid)
 
@@ -329,7 +329,7 @@ def ingest_metadata_edit(request, uuid, id=None):
             for item in fields:
                 setattr(dc, item, form.cleaned_data[item])
             dc.save()
-            return HttpResponseRedirect(reverse('dashboard.main.views.ingest_metadata_list', args=[uuid]))
+            return HttpResponseRedirect(reverse('main.views.ingest_metadata_list', args=[uuid]))
     else:
         initial = {}
         for item in fields:
@@ -343,7 +343,7 @@ def ingest_metadata_edit(request, uuid, id=None):
 def ingest_metadata_delete(request, uuid, id):
     try:
         models.DublinCore.objects.get(pk=id).delete()
-        return HttpResponseRedirect(reverse('dashboard.main.views.ingest_detail', args=[uuid]))
+        return HttpResponseRedirect(reverse('main.views.ingest_detail', args=[uuid]))
     except:
         raise Http404
 
@@ -700,7 +700,7 @@ def access_list(request):
 def access_delete(request, id):
     access = get_object_or_404(models.Access, pk=id)
     access.delete()
-    return HttpResponseRedirect(reverse('dashboard.main.views.access_list'))
+    return HttpResponseRedirect(reverse('main.views.access_list'))
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Administration
@@ -718,7 +718,7 @@ def administration_edit(request, id):
             upload_setting.arguments = form.cleaned_data['arguments']
             upload_setting.save()
 
-    return HttpResponseRedirect(reverse("dashboard.main.views.administration"))
+    return HttpResponseRedirect(reverse("main.views.administration"))
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc

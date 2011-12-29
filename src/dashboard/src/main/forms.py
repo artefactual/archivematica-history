@@ -2,7 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.forms.models import modelformset_factory
 from django.forms.widgets import TextInput, Textarea
-from dashboard.main import models
+from main import models
 
 TEXTAREA_ATTRS = {'rows': '4', 'class': 'span11'}
 INPUT_ATTRS = {'class': 'span11'}
