@@ -253,6 +253,11 @@ body {
   width: 100%;
 }
 
+.task-dialog a {
+  color: Blue;
+  text-decoration: none;
+}
+
 .task-dialog .stderror {
   background-color: #ddd;
   font-family: "Courier New";
