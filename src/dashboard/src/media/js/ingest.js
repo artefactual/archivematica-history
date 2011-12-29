@@ -503,17 +503,29 @@ $(function()
             
             modal
 
-              .find('a.primary').one('click', function(event)
+              .one('hidden', function()
+                {
+                  $(this).find('input').val('');
+                  $select.val(0);
+
+                  modal.find('a.primary, a.secondary').unbind('click');
+                })
+
+              .find('a.primary').bind('click', function(event)
                 {
                   event.preventDefault();
-                  modal.modal('hide');
+
+                  var slug = modal.find('input').val();
+                  if (slug)
+                  {
+                    modal.modal('hide');
+                  }
                 })
               .end()
               
-              .find('a.secondary').one('click', function(event)
+              .find('a.secondary').bind('click', function(event)
                 {
                   event.preventDefault();
-                  $select.val(0);
                   modal.modal('hide');
                 })
               .end()
@@ -1064,11 +1076,7 @@ $(function()
           .modal({
             backdrop: true,
             keyboard: true
-          })
-            .on('hidden', function()
-              {
-                $(this).find('input').val('');
-              });
+          });
       });
 
   }
