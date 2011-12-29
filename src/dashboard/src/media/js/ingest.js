@@ -554,7 +554,7 @@ $(function()
                           {
                             return $(this).attr('data-location').replace(/%.*%/gi, '');
                           }
-                      });
+                      }).click(function(event) { event.preventDefault(); });
               },
             url: '/ingest/normalization-report/' + this.model.sip.get('uuid') + '/'
           });
