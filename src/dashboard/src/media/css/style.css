@@ -462,3 +462,14 @@ textarea {
 .ui-dialog .ui-dialog-buttonpane {
   border-color: #e5e5e5;
 }
+
+/*
+ *
+ */
+
+input.command,
+textarea.command {
+  font-family: "Courier New", Courier, "Lucida Console", monospace;
+  font-size: 14px;
+  line-height: 1.5em;
+}
