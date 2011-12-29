@@ -67,7 +67,7 @@ class Job(models.Model):
     jobuuid = models.CharField(max_length=150, primary_key=True, db_column='jobUUID')
     jobtype = models.CharField(max_length=750, db_column='jobType', blank=True)
     createdtime = models.DateTimeField(db_column='createdTime')
-    createdtimedec = models.DecimalField(null=True, db_column='createdTimeDec', blank=True)
+    createdtimedec = models.DecimalField(null=True, db_column='createdTimeDec', blank=True, max_digits=24, decimal_places=10)
     directory = models.CharField(max_length=750, blank=True)
     sipuuid = models.CharField(max_length=150, db_column='SIPUUID', blank=True)
     unittype = models.CharField(max_length=150, db_column='unitType', blank=True)
