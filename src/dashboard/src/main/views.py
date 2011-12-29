@@ -29,6 +29,7 @@ from django.utils.functional import wraps
 from django.views.static import serve
 from contrib.mcp.client import MCPClient
 from contrib import utils
+from contrib.utils import render
 from main import forms
 from main import models
 from lxml import etree
@@ -57,7 +58,7 @@ def load_jobs(view):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def home(request):
-    return render_to_response('home.html', locals())
+    return render(request, 'home.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Status
@@ -193,7 +194,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         licenseFormset = LicenseFormSet(instance=viewRights)
         licenseNoteFormset = LicenseNoteFormSet(instance=viewRights)
 
-    return render_to_response('main/rights_edit.html', locals())
+    return render(request, 'main/rights_edit.html', locals())
 
 def rights_delete(request, uuid, id, section):
     models.RightsStatement.objects.get(pk=id).delete()
@@ -243,7 +244,7 @@ def rights_list(request, uuid, section):
 
     sidebar_template = "main/" + section + "/_sidebar.html"
 
-    return render_to_response('main/rights_list.html', locals())
+    return render(request, 'main/rights_list.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Ingest
@@ -252,7 +253,7 @@ def rights_list(request, uuid, section):
 def ingest_grid(request):
     polling_interval = django_settings.POLLING_INTERVAL
     microservices_help = django_settings.MICROSERVICES_HELP
-    return render_to_response('main/ingest/grid.html', locals())
+    return render(request, 'main/ingest/grid.html', locals())
 
 def ingest_status(request, uuid=None):
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
@@ -306,7 +307,7 @@ def ingest_metadata_list(request, uuid, jobs, name):
     # types = { 'ingest': 1, 'transfer': 2, 'file': 3 }
     metadata = models.DublinCore.objects.filter(metadataappliestotype__exact=1, metadataappliestoidentifier__exact=uuid)
 
-    return render_to_response('main/ingest/metadata_list.html', locals())
+    return render(request, 'main/ingest/metadata_list.html', locals())
 
 def ingest_metadata_edit(request, uuid, id=None):
     if id:
@@ -338,7 +339,7 @@ def ingest_metadata_edit(request, uuid, id=None):
         jobs = models.Job.objects.filter(sipuuid=uuid)
         name = utils.get_directory_name(jobs[0])
 
-    return render_to_response('main/ingest/metadata_edit.html', locals())
+    return render(request, 'main/ingest/metadata_edit.html', locals())
 
 def ingest_metadata_delete(request, uuid, id):
     try:
@@ -351,12 +352,12 @@ def ingest_detail(request, uuid):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     is_waiting = jobs.filter(currentstep='Awaiting decision').count() > 0
     name = utils.get_directory_name(jobs[0])
-    return render_to_response('main/ingest/detail.html', locals())
+    return render(request, 'main/ingest/detail.html', locals())
 
 def ingest_microservices(request, uuid):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     name = utils.get_directory_name(jobs[0])
-    return render_to_response('main/ingest/microservices.html', locals())
+    return render(request, 'main/ingest/microservices.html', locals())
 
 def ingest_rights_list(request, uuid):
     return rights_list(request, uuid, 'ingest')
@@ -485,7 +486,7 @@ def ingest_normalization_report(request, uuid):
     ))
     objects = cursor.fetchall()
 
-    return render_to_response('main/normalization_report.html', locals())
+    return render(request, 'main/normalization_report.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Transfer
@@ -494,7 +495,7 @@ def ingest_normalization_report(request, uuid):
 def transfer_grid(request):
     polling_interval = django_settings.POLLING_INTERVAL
     microservices_help = django_settings.MICROSERVICES_HELP
-    return render_to_response('main/transfer/grid.html', locals())
+    return render(request, 'main/transfer/grid.html', locals())
 
 def transfer_status(request, uuid=None):
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
@@ -546,12 +547,12 @@ def transfer_detail(request, uuid):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     name = utils.get_directory_name(jobs[0])
     is_waiting = jobs.filter(currentstep='Awaiting decision').count() > 0
-    return render_to_response('main/transfer/detail.html', locals())
+    return render(request, 'main/transfer/detail.html', locals())
 
 def transfer_microservices(request, uuid):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     name = utils.get_directory_name(jobs[0])
-    return render_to_response('main/transfer/microservices.html', locals())
+    return render(request, 'main/transfer/microservices.html', locals())
 
 def transfer_rights_list(request, uuid):
     return rights_list(request, uuid, 'transfer')
@@ -586,7 +587,7 @@ def archival_storage(request, path=None):
     try:
         tree = etree.parse(document)
     except IOError:
-        return render_to_response('main/archival_storage.html', locals())
+        return render(request, 'main/archival_storage.html', locals())
     tree = tree.findall('body/div')
     sips = []
     for item in tree:
@@ -619,7 +620,7 @@ def archival_storage(request, path=None):
         if sort_by == 'down':
             sips.reverse()
     total_size = '{0:.2f}'.format(total_size)
-    return render_to_response('main/archival_storage.html', locals())
+    return render(request, 'main/archival_storage.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Preservation planning
@@ -687,7 +688,7 @@ def preservation_planning(request):
 
     cursor.close()
 
-    return render_to_response('main/preservation_planning.html', locals())
+    return render(request, 'main/preservation_planning.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Access
@@ -695,7 +696,7 @@ def preservation_planning(request):
 
 def access_list(request):
     access = models.Access.objects.all()
-    return render_to_response('main/access.html', locals())
+    return render(request, 'main/access.html', locals())
 
 def access_delete(request, id):
     access = get_object_or_404(models.Access, pk=id)
@@ -708,7 +709,7 @@ def access_delete(request, id):
 
 def administration(request):
     upload_setting = models.StandardTaskConfig.objects.get(execute="upload-qubit_v0.0")
-    return render_to_response('main/administration/index.html', locals())
+    return render(request, 'main/administration/index.html', locals())
 
 def administration_edit(request, id):
     if request.method == 'POST':
@@ -727,7 +728,7 @@ def administration_edit(request, id):
 def tasks(request, uuid):
     job = models.Job.objects.get(jobuuid=uuid)
     objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')
-    return render_to_response('main/tasks.html', locals())
+    return render(request, 'main/tasks.html', locals())
 
 def map_known_values(value):
     #changes should be made in the database, not this map
