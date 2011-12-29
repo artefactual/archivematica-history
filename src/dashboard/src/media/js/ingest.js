@@ -19,7 +19,6 @@ along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 $(function()
   {
-
     window.Sip = Backbone.Model.extend({
 
       methodUrl:
@@ -546,7 +545,16 @@ $(function()
                         text: 'Close',
                         click: function() { $(this).dialog('close'); }
                       }]
-                  });
+                  })
+                  .find('a.file-location')
+                    .popover(
+                      {
+                        trigger: 'hover',
+                        content: function()
+                          {
+                            return $(this).attr('data-location').replace(/%.*%/gi, '');
+                          }
+                      });
               },
             url: '/ingest/normalization-report/' + this.model.sip.get('uuid') + '/'
           });

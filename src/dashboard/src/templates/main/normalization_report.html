@@ -17,7 +17,7 @@
       {% for item in objects %}
         <tr>
           <!-- File name -->
-          <td>{{ item.1 }}</td>
+          <td><a class="file-location" href="#" title="Location" data-location="{{ item.8 }}">{{ item.1 }}</a></td>
           <!-- Never red -->
           <td>{{ item.2|yesno:"Yes,No" }}</td>
           <!-- Red when yes -->
