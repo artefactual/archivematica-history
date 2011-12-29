@@ -1064,7 +1064,11 @@ $(function()
           .modal({
             backdrop: true,
             keyboard: true
-          });
+          })
+            .on('hidden', function()
+              {
+                $(this).find('input').val('');
+              });
       });
 
   }
