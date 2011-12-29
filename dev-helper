@@ -94,7 +94,7 @@ function recreate-db() {
   fi
 }
 
-function restart-services() {
+function restart() {
   part="restart archivematica services"
   echo -n "\"Would you like to ${part}?\" (y/N) "
   read a
@@ -164,6 +164,6 @@ fi
 svn-update
 package-update
 recreate-db
-restart-services
+restart
 export-sampledata
 install-gui
