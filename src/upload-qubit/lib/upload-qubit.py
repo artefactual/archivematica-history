@@ -43,12 +43,12 @@ def start(data):
 
     try:
         # Make sure UUID exists
-        if not models.Job.objects.filter(sipuuid=data.UUID).count():
+        if not models.Job.objects.filter(sipuuid=data.uuid).count():
             log("UUID not recognized")
             return ''
 
         # Get directory
-        jobs = models.Job.objects.filter(sipuuid=data.UUID, jobtype="uploadDIP")
+        jobs = models.Job.objects.filter(sipuuid=data.uuid, jobtype="uploadDIP")
         if jobs.count():
             directory = jobs[0].directory.rstrip('/').replace('%sharedPath%', '/var/archivematica/sharedDirectory/')
         else:
@@ -57,11 +57,11 @@ def start(data):
 
         # Nth try
         try:
-            access = models.Access.objects.get(sipuuid=data.UUID)
+            access = models.Access.objects.get(sipuuid=data.uuid)
         # First time this job is called
         except:
             access = models.Access()
-            access.sipuuid = data.UUID
+            access.sipuuid = data.uuid
             access.save()
 
         # Rsync (data.rsync_target and data.rsync_command (optional))
@@ -179,7 +179,7 @@ if __name__ == '__main__':
     options.add_option('-u', '--url', dest='url', metavar='URL', help='URL')
     options.add_option('-e', '--email', dest='email', metavar='EMAIL', help='account e-mail')
     options.add_option('-p', '--password', dest='password', metavar='PASSWORD', help='account password')
-    options.add_option('-U', '--UUID', dest='UUID', metavar='UUID', help='UUID')
+    options.add_option('-U', '--uuid', dest='uuid', metavar='UUID', help='UUID')
     parser.add_option_group(options)
 
     options = optparse.OptionGroup(parser, 'Rsync options')
@@ -189,7 +189,7 @@ if __name__ == '__main__':
 
     (opts, args) = parser.parse_args()
 
-    if opts.email is None or opts.password is None or opts.url is None or opts.UUID is None:
+    if opts.email is None or opts.password is None or opts.url is None or opts.uuid is None:
         print >>sys.stderr, "Invalid syntax"
         parser.print_help()
         sys.exit(2)
