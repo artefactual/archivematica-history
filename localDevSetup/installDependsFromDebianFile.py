@@ -37,8 +37,8 @@ if not os.path.isfile(filePath):
 f = open(filePath, 'r')
 
 line = f.readline()
-while not line.startswith("Depends:"):    
-    line = f.readline()    
+while not line.startswith("Depends:"):
+    line = f.readline()
 
 
 
@@ -49,10 +49,10 @@ for part in line.split(","):
         continue
     if part.startswith("archivematica"):
         continue
-    
+
     if part in excludePackages:
         continue
-    
+
     print sys.argv[1]
     print "Attempting Install/Update of: ", part
     command = "sudo apt-get install -y " + part
@@ -63,8 +63,3 @@ for part in line.split(","):
         print >>sys.stderr, stdError
     #else:
         #print "OK"
- 
-    
-    
-
-
