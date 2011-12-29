@@ -8,19 +8,80 @@
   {% include "main/administration/_sidebar.html" %}
 {% endblock %}
 
+{% block css %}
+  <style type="text/css">
+
+    td.option {
+      white-space: nowrap;
+    }
+
+  </style>
+{% endblock %}
+
 {% block content %}
 
   <h1>Administration</h1>
 
-  <form method="post" action="{% url main.views.administration_edit upload_setting.id %}">
+  <form class="form-stacked" method="post" action="{% url main.views.administration_edit upload_setting.id %}">
 
     <div class="span12">
-      <h2>Upload DIP command</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempus aliquet mollis. Ut pellentesque tempor molestie. Proin consectetur tellus in sapien sagittis laoreet. In ipsum sapien, consectetur ac aliquam vel, tincidunt sed tellus. Donec mauris arcu, aliquam vel venenatis a, laoreet id tellus. Maecenas venenatis adipiscing venenatis. Sed sit amet molestie odio.</p>
-      <textarea class="span12" name="arguments">{{ upload_setting.arguments }}</textarea>
+
+      <h3>Upload DIP</h3>
+
+      <p>Archivematica provides a micro-service to upload generated DIPs to <a href="http://www.qubit-toolkit.org">Qubit Toolkit</a>, only compatible with release 1.2 or newer. In the future we will extend this feature to other solutions.</p>
+      <p>The arguments below are passed to a Python script called upload-qubit.py. Please notice some arguments are not optional:</p>
+
+      <table class="condensed-table">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="option">--url</td>
+            <td><strong>Required</strong></td>
+            <td>URL where the Qubit index.php frontend lives, SWORD services path will be appended.</td>
+          </tr>
+          <tr>
+            <td class="option">--email</td>
+            <td><strong>Required</strong></td>
+            <td>E-mail account used to log in Qubit.</td>
+          </tr>
+          <tr>
+            <td class="option">--password</td>
+            <td><strong>Required</strong></td>
+            <td>Password linked to your e-mail account.</td>
+          </tr>
+          <tr>
+            <td class="option">--uuid</td>
+            <td><strong>Required</strong></td>
+            <td>Use this wildcard: %SIPUUID%, Archivematica will do the rest for you.</td>
+          </tr>
+          <tr>
+            <td>--rsync-target</td>
+            <td>Optional</td>
+            <td>The DIP can be sent with Rsync to a remote host before is deposited in Qubit.</td>
+          </tr>
+          <tr>
+            <td class="option">--rsync-command</td>
+            <td>Optional</td>
+            <td>If --rsync-target is used, you can use this argument to specify the remote shell manually. For example: "ssh -p 22222 -l user".</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="clearfix">
+        <label for="arguments">Command arguments</label>
+        <textarea class="span12" name="arguments" rows="6">{{ upload_setting.arguments }}</textarea>
+      </div>
+
       <div class="actions">
         <input type="submit" value="Save" class="btn primary" />
       </div>
+
     </div>
 
   </form>
