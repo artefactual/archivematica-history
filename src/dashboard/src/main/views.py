@@ -462,7 +462,15 @@ def ingest_normalization_report(request, uuid):
             Tasks.exitCode = 0 AND
             Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
             Tasks.stdOut LIKE '%%Already in access format%%')
-        AS 'Already in access format'
+        AS 'Already in access format',
+
+        (
+          SELECT Files.originalLocation
+          FROM Files
+          WHERE
+            Files.fileUUID = U
+        )
+        AS 'Location'
 
       FROM Tasks
       JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
