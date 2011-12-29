@@ -144,7 +144,13 @@
         </tr>
       </tfoot>
     </table>
+
   {% else %}
-    <p>Archival storage is empty.</p>
+
+    <div class="alert-message block-message warning">
+      <p>Archival storage is empty.</p>
+    </div>
+
   {% endif %}
+
 {% endblock %}
