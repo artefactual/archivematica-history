@@ -42,32 +42,32 @@
         <tbody>
           <tr>
             <td class="option">--url</td>
-            <td><strong>Required</strong></td>
+            <td><span class="label important">Required</span></td>
             <td>URL where the Qubit index.php frontend lives, SWORD services path will be appended.</td>
           </tr>
           <tr>
             <td class="option">--email</td>
-            <td><strong>Required</strong></td>
+            <td><span class="label important">Required</span></td>
             <td>E-mail account used to log in Qubit.</td>
           </tr>
           <tr>
             <td class="option">--password</td>
-            <td><strong>Required</strong></td>
+            <td><span class="label important">Required</span></td>
             <td>Password linked to your e-mail account.</td>
           </tr>
           <tr>
             <td class="option">--uuid</td>
-            <td><strong>Required</strong></td>
+            <td><span class="label important">Required</span></td>
             <td>Use this wildcard: %SIPUUID%, Archivematica will do the rest for you.</td>
           </tr>
           <tr>
             <td>--rsync-target</td>
-            <td>Optional</td>
+            <td><span class="label">Optional</span></td>
             <td>The DIP can be sent with Rsync to a remote host before is deposited in Qubit. This is the destination value passed to Rsync (see man 1 rsync). For example: "foobar.com:~/dips/".</td>
           </tr>
           <tr>
             <td class="option">--rsync-command</td>
-            <td>Optional</td>
+            <td><span class="label">Optional</span></td>
             <td>If --rsync-target is used, you can use this argument to specify the remote shell manually. For example: "ssh -p 22222 -l user".</td>
           </tr>
         </tbody>
