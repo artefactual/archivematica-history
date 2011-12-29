@@ -41,8 +41,8 @@ def removeEverythingInDirectory(directory):
     os.system(execute)
 
 def cleanWatchedDirectories():
-    sql = """SELECT watchedDirectoryPath FROM WatchedDirectories;""" 
-    c, sqlLock = databaseInterface.querySQL(sql) 
+    sql = """SELECT watchedDirectoryPath FROM WatchedDirectories;"""
+    c, sqlLock = databaseInterface.querySQL(sql)
     row = c.fetchone()
     while row != None:
         try:
@@ -54,12 +54,12 @@ def cleanWatchedDirectories():
             print inst.args      # arguments stored in .args
         row = c.fetchone()
     sqlLock.release()
-    
+
 if __name__ == '__main__':
     if True:
         import getpass
         user = getpass.getuser()
-        print "user: ", user 
+        print "user: ", user
         if user != "root":
             print "Please run as root (with sudo)"
             exit (1)
