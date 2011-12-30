@@ -496,14 +496,27 @@ $(function()
         {
           var $select = $(event.target);
           var value = $select.val();
-          var self = this;
 
           if ('uploadDIP' == this.model.get('microservice') && 2 == value)
           {
             var modal = $('#upload-dip-modal');
+            var input = modal.find('input');
             var process = false;
-            
+            var url = '/ingest/' + this.model.sip.get('uuid') + '/upload/';
+           
             modal
+
+              .one('show', function()
+                {
+                  $.ajax(url, { type: 'GET' })
+                    .done(function(data)
+                      {
+                        if (data.target)
+                        {
+                          input.val(data.target);
+                        }
+                      });
+                })
 
               .one('hidden', function()
                 {
@@ -515,11 +528,10 @@ $(function()
               .find('a.primary').bind('click', function(event)
                 {
                   event.preventDefault();
-
-                  var target = modal.find('input').val();
-                  if (target)
+                 
+                  if (input.val())
                   {
-                    $.ajax('/ingest/' + self.model.sip.get('uuid') + '/upload/', { type: 'POST', data: { 'target': target }})
+                    $.ajax(url, { type: 'POST', data: { 'target': input.val() }})
                       .done(function(data)
                         {
                           if (data.ready)
