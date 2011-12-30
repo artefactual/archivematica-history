@@ -98,7 +98,6 @@
 
   <script type=="text/template" id="metadata-dialog">
     <form class="form-stacked">
-      {% csrf_token %}
       {% for field in form %}
         <div class="form-item clearfix">
           {{ field.errors }}
@@ -124,6 +123,7 @@
       <h3>Upload DIP</h3>
     </div>
     <div class="modal-body">
+      <p>You can upload the generated DIP to Qubit given the permalink of the target description. Before this upload, you can optionally create description introducing DC metadata.</p>
       <form class="form-stacked">
         <div class="clearfix">
           <label>Enter the permalink of the target description</label>
