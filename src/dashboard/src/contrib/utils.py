@@ -1,8 +1,17 @@
+import os
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 
 def render(request, template, context={}):
     return render_to_response(template, context, context_instance=RequestContext(request))
+
+def get_directory_size(path='.'):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            total_size += os.path.getsize(fp)
+    return total_size
 
 def get_directory_name(job):
     """
