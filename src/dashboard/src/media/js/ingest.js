@@ -543,14 +543,14 @@ $(function()
               .one('hidden', function()
                 {
                   $(this).find('input').val('');
-
+                  $select.val(0);
                   modal.find('a.primary, a.secondary').unbind('click');
                 })
 
               .find('a.primary').bind('click', function(event)
                 {
                   event.preventDefault();
-                 
+
                   if (input.val())
                   {
                     var xhr = $.ajax(url, { type: 'POST', data: { 'target': input.val() }})
@@ -574,7 +574,7 @@ $(function()
                   }
                 })
               .end()
-              
+
               .find('a.secondary').bind('click', function(event)
                 {
                   event.preventDefault();
