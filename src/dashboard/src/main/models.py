@@ -3,18 +3,25 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 
 from django.db import models
-
 from contrib import utils
 import main
 
 class Access(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     sipuuid = models.CharField(max_length=150, db_column='SIPUUID', blank=True)
+    # Qubit ID (slug) generated or preexisting if a new description was not created
     resource = models.TextField(db_column='resource', blank=True)
+    # Before the UploadDIP micro-service is executed, a dialog shows up and ask the user
+    # the target archival description when the DIP will be deposited via SWORD
+    # This column is mandatory, the user won't be able to submit the form if this field is empty
     target = models.TextField(db_column='target', blank=True)
+    # 
     status = models.TextField(db_column='status', blank=True)
+    # 
     statuscode = models.IntegerField(null=True, db_column='statusCode', blank=True)
+    # Rsync exit code
     exitcode = models.IntegerField(null=True, db_column='exitCode', blank=True)
+    # Timestamps
     createdtime = models.DateTimeField(db_column='createdTime', auto_now_add=True)
     updatedtime = models.DateTimeField(db_column='updatedTime', auto_now=True)
 
