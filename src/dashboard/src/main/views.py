@@ -401,8 +401,12 @@ def ingest_upload(request, uuid):
             response = simplejson.JSONEncoder().encode({ 'ready': True })
             return HttpResponse(response, mimetype='application/json')
     elif request.method == 'GET':
-        response = simplejson.JSONEncoder().encode({ 'ready': True })
-        return HttpResponse(response, mimetype='application/json')
+        try:
+            access = models.Access.objects.get(sipuuid=uuid)
+            response = simplejson.JSONEncoder().encode({ 'target': access.target })
+            return HttpResponse(response, mimetype='application/json')
+        except:
+            raise Http404
 
     return HttpResponseBadRequest()
 
