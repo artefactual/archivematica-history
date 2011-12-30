@@ -497,18 +497,40 @@ $(function()
           var $select = $(event.target);
           var value = $select.val();
 
+          // Define function to execute 
+          var executeCommand = function(context)
+            {
+              $.ajax({
+                context: this,
+                data: { uuid: context.model.get('uuid'), choice: value },
+                type: 'POST',
+                success: function(data)
+                  {
+                    context.model.set({
+                      'currentstep': 'Executing command(s)',
+                      'status': 0
+                    });
+
+                    context.model.sip.view.updateIcon();
+                  },
+                url: '/mcp/execute/'
+              });
+            };
+
           if ('uploadDIP' == this.model.get('microservice') && 2 == value)
           {
             var modal = $('#upload-dip-modal');
             var input = modal.find('input');
             var process = false;
             var url = '/ingest/' + this.model.sip.get('uuid') + '/upload/';
+            var self = this;
            
             modal
 
               .one('show', function()
                 {
-                  $.ajax(url, { type: 'GET' })
+                  var xhr = $.ajax(url, { type: 'GET' });
+                  xhr
                     .done(function(data)
                       {
                         if (data.target)
@@ -531,12 +553,13 @@ $(function()
                  
                   if (input.val())
                   {
-                    $.ajax(url, { type: 'POST', data: { 'target': input.val() }})
+                    var xhr = $.ajax(url, { type: 'POST', data: { 'target': input.val() }})
+                    xhr
                       .done(function(data)
                         {
                           if (data.ready)
                           {
-                            process = true;
+                            executeCommand(self);
                           }
                         })
                       .fail(function()
@@ -562,27 +585,10 @@ $(function()
 
               .modal('show');
 
-            if (!process)
-            {
-              return false;
-            }
+            return false;
           }
-
-          $.ajax({
-            context: this,
-            data: { uuid: this.model.get('uuid'), choice: value },
-            type: 'POST',
-            success: function(data)
-              {
-                this.model.set({
-                  'currentstep': 'Executing command(s)',
-                  'status': 0
-                });
-
-                this.model.sip.view.updateIcon();
-              },
-            url: '/mcp/execute/'
-          });
+          
+          executeCommand(this);
         },
 
       normalizationReport: function(event)
