@@ -496,17 +496,18 @@ $(function()
         {
           var $select = $(event.target);
           var value = $select.val();
+          var self = this;
 
           if ('uploadDIP' == this.model.get('microservice') && 2 == value)
           {
             var modal = $('#upload-dip-modal');
+            var process = false;
             
             modal
 
               .one('hidden', function()
                 {
                   $(this).find('input').val('');
-                  $select.val(0);
 
                   modal.find('a.primary, a.secondary').unbind('click');
                 })
@@ -515,10 +516,26 @@ $(function()
                 {
                   event.preventDefault();
 
-                  var slug = modal.find('input').val();
-                  if (slug)
+                  var target = modal.find('input').val();
+                  if (target)
                   {
-                    modal.modal('hide');
+                    $.ajax('/ingest/' + self.model.sip.get('uuid') + '/upload/', { type: 'POST', data: { 'target': target }})
+                      .done(function(data)
+                        {
+                          if (data.ready)
+                          {
+                            process = true;
+                          }
+                        })
+                      .fail(function()
+                        {
+                          alert("Error.");
+                          $select.val(0);
+                        })
+                      .always(function()
+                        {
+                          modal.modal('hide');
+                        });
                   }
                 })
               .end()
@@ -526,13 +543,17 @@ $(function()
               .find('a.secondary').bind('click', function(event)
                 {
                   event.preventDefault();
+                  $select.val(0);
                   modal.modal('hide');
                 })
               .end()
 
               .modal('show');
 
-            return false;
+            if (!process)
+            {
+              return false;
+            }
           }
 
           $.ajax({
