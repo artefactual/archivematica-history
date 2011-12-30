@@ -30,9 +30,9 @@ import time
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import requests
 
-sys.path.append("/usr/share/archivematica")
-os.environ['DJANGO_SETTINGS_MODULE'] = "dashboard.settings"
-import dashboard.main.models as models
+sys.path.append("/usr/share/archivematica/dashboard")
+os.environ['DJANGO_SETTINGS_MODULE'] = "settings"
+import main.models as models
 
 user = getpass.getuser()
 if "archivematica" != user:
@@ -139,6 +139,8 @@ def start(data):
         headers['X-Verbose'] = 'false'
         headers['Content-Location'] = "file:///%s" % os.path.basename(directory)
         """ headers['Content-Disposition'] """
+
+        # Build URL
 
         # Auth and request!
         log("About to deposit to: %s" % data.url)
