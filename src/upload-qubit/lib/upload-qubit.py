@@ -36,142 +36,164 @@ import main.models as models
 
 user = getpass.getuser()
 if "archivematica" != user:
-    print >> sys.stderr, 'This user is required to be executed as "archivematica" user but you are using %s.' % user
-    sys.exit(1)
+    error('This user is required to be executed as "archivematica" user but you are using %s.' % user)
 
 def start(data):
+    # Make sure we are working with an existing SIP record
+    try:
+      sip = models.SIP.objects.get(pk=data.uuid)
+    except:
+      error("UUID not recognized")
+
+    # Get directory
+    jobs = models.Job.objects.filter(sipuuid=data.uuid, jobtype="uploadDIP")
+    if jobs.count():
+        directory = jobs[0].directory.rstrip('/').replace('%sharedPath%', '/var/archivematica/sharedDirectory/')
+    else:
+        error("Directory not found")
+
+    # Check if exists
+    if os.path.exists(directory) is False:
+        error("Directory not found")
 
     try:
-        # Make sure UUID exists
-        if not models.Job.objects.filter(sipuuid=data.uuid).count():
-            log("UUID not recognized")
-            return ''
-
-        # Get directory
-        jobs = models.Job.objects.filter(sipuuid=data.uuid, jobtype="uploadDIP")
-        if jobs.count():
-            directory = jobs[0].directory.rstrip('/').replace('%sharedPath%', '/var/archivematica/sharedDirectory/')
-        else:
-            log("Directory not found")
-            return ''
-
-        # Nth try
-        try:
-            access = models.Access.objects.get(sipuuid=data.uuid)
-        # First time this job is called
-        except:
-            access = models.Access()
-            access.sipuuid = data.uuid
-            access.save()
-
-        # Rsync (data.rsync_target and data.rsync_command (optional))
-        if data.rsync_target:
-            """ Build command (rsync)
-             -a =
-                -r = recursive
-                -l = recreate symlinks on destination
-                -p = set same permissions
-                -t = transfer modification times
-                -g = set same group owner on destination
-                -o = set same user owner on destination (if possible, super-user)
-                --devices = transfer character and block device files (only super-user)
-                --specials = transfer special files like sockets and fifos
-             -z = compress
-             -P = --partial + --stats
-            """
-            command = ["rsync", "-rltz", "-P", directory, data.rsync_target]
-            if data.rsync_command:
-                # i.e.: rsync -e "ssh -i key"
-                command.insert(1, "-e \"%s\"" % data.rsync_command)
-
-            log(' '.join(command))
-
-            # Getting around of rsync output buffering by outputting to a temporary file
-            pipe_output, file_name = tempfile.mkstemp()
-            log("Rsync output is being saved in %s" % file_name)
-
-            process = subprocess.Popen(command, stdout=pipe_output, stderr=pipe_output)
-
-            # poll() returns None while the process is still running
-            while process.poll() is None:
-                time.sleep(1)
-                last_line = open(file_name).readlines()
-
-                # It's possible that it hasn't output yet, so continue
-                if len(last_line) == 0:
-                    continue
-                last_line = last_line[-1]
-
-                # Matching to "[bytes downloaded]  number%  [speed] number:number:number"
-                match = re.match(".* ([0-9]*)%.* ([0-9]*:[0-9]*:[0-9]*).*", last_line)
-
-                if not match:
-                    continue
-
-                # Update upload status
-                # - percentage in match.group(1)
-                # - ETA in match.group(2)
-                access.status = "Sending... %s (ETA: %s)" % (match.group(1), match.group(2))
-                access.save()
-                log(access.status)
-
-            # We don't need the temporary file anymore!
-            # log("Removing temporary rsync output file: %s" % file_name)
-            # os.unlink(file_name)
-
-            # At this point, we should have a return code
-            # If greater than zero, see man rsync (EXIT VALUES)
-            access.exitcode = process.returncode
-
-            if 0 < process.returncode:
-                log("rsync quit unexpectedly (exit %s), the upload script will be stopped here" % process.returncode)
-                return ''
-
-            access.save()
-
-        # Building headers dictionary for the deposit request
-        headers = {}
-        headers['User-Agent'] = 'Archivematica'
-        headers['X-Packaging'] = 'http://purl.org/net/sword-types/METSArchivematicaDIP'
-        """ headers['X-On-Beahalf-Of'] """
-        headers['Content-Type'] = 'application/zip'
-        headers['X-No-Op'] = 'false'
-        headers['X-Verbose'] = 'false'
-        headers['Content-Location'] = "file:///%s" % os.path.basename(directory)
-        """ headers['Content-Disposition'] """
-
-        # Build URL
-
-        # Auth and request!
-        log("About to deposit to: %s" % data.url)
-        auth = requests.auth.HTTPBasicAuth(data.email, data.password)
-        response = requests.request('POST', data.url, auth=auth, headers=headers)
-
-        # response.{content,headers,status_code}
-        log("> Response code: %s" % response.status_code)
-        log("> Location: %s" % response.headers.get('Location'))
-
-        # Update record with location
-        access.resource = response.headers.get('Location')
+        # This upload was called before, restore Access record
+        access = models.Access.objects.get(sipuuid=data.uuid)
+    except:
+        # First time this job is called, create new Access record
+        access = models.Access(sipuuid=data.uuid)
         access.save()
 
-    except Exception as inst:
-        log("DEBUG EXCEPTION! uploadDIP worker")
-        print >>sys.stderr, "DEBUG EXCEPTION! uploadDIP worker"
-        print >>sys.stderr, type(inst)
-        print >>sys.stderr, inst.args
-        import traceback
-        traceback.print_exc()
-        return ""
+    # Check if a target was selected
+    if access.target is None:
+        error("Any target was selected")
 
-    finally:
-        log("Upload finished")
+    # Rsync if data.rsync_target option was passed to this script
+    if data.rsync_target:
+        """ Build command (rsync)
+          -a =
+            -r = recursive
+            -l = recreate symlinks on destination
+            -p = set same permissions
+            -t = transfer modification times
+            -g = set same group owner on destination
+            -o = set same user owner on destination (if possible, super-user)
+            --devices = transfer character and block device files (only super-user)
+            --specials = transfer special files like sockets and fifos
+          -z = compress
+          -P = --partial + --stats
+        """
+        # Using rsync -rltzP
+        command = ["rsync", "-rltz", "-P", directory, data.rsync_target]
 
-    return ""
+        # Add -e if data.rsync_command was passed to this script
+        if data.rsync_command:
+            # Insert in second position. Example: rsync -e "ssh -i key" ...
+            command.insert(1, "-e \"%s\"" % data.rsync_command)
 
-def log(message):
-    if True:
-        print "[uploadDIP] %s" % message
+        log(' '.join(command))
+
+        # Getting around of rsync output buffering by outputting to a temporary file
+        pipe_output, file_name = tempfile.mkstemp()
+        log("Rsync output is being saved in %s" % file_name)
+
+        # Call Rsync
+        process = subprocess.Popen(command, stdout=pipe_output, stderr=pipe_output)
+
+        # poll() returns None while the process is still running
+        while process.poll() is None:
+            time.sleep(1)
+            last_line = open(file_name).readlines()
+
+            # It's possible that it hasn't output yet, so continue
+            if len(last_line) == 0:
+                continue
+            last_line = last_line[-1]
+
+            # Matching to "[bytes downloaded]  number%  [speed] number:number:number"
+            match = re.match(".* ([0-9]*)%.* ([0-9]*:[0-9]*:[0-9]*).*", last_line)
+
+            if not match:
+                continue
+
+            # Update upload status
+            # - percentage in match.group(1)
+            # - ETA in match.group(2)
+            access.status = "Sending... %s (ETA: %s)" % (match.group(1), match.group(2))
+            access.statuscode = 10
+            access.save()
+            log(access.status)
+
+        # We don't need the temporary file anymore!
+        # log("Removing temporary rsync output file: %s" % file_name)
+        # os.unlink(file_name)
+
+        # At this point, we should have a return code
+        # If greater than zero, see man rsync (EXIT VALUES)
+        access.exitcode = process.returncode
+        if 0 < process.returncode:
+            access.statuscode = 12
+        else:
+            access.statuscode = 11
+        access.save()
+
+        if 0 < process.returncode:
+            error("Rsync quit unexpectedly (exit %s), the upload script will be stopped here" % process.returncode)
+
+    # Building headers dictionary for the deposit request
+    headers = {}
+    headers['User-Agent'] = 'Archivematica'
+    headers['X-Packaging'] = 'http://purl.org/net/sword-types/METSArchivematicaDIP'
+    """ headers['X-On-Beahalf-Of'] """
+    headers['Content-Type'] = 'application/zip'
+    headers['X-No-Op'] = 'false'
+    headers['X-Verbose'] = 'false'
+    headers['Content-Location'] = "file:///%s" % os.path.basename(directory)
+    """ headers['Content-Disposition'] """
+
+    # Build URL (expected sth like http://localhost/ica-atom/index.php)
+    data.url = "%s/sword/deposit/%s" % (data.url, access.target)
+
+    # Auth and request!
+    log("About to deposit to: %s" % data.url)
+    access.statuscode = 13
+    access.save()
+    auth = requests.auth.HTTPBasicAuth(data.email, data.password)
+    response = requests.request('POST', data.url, auth=auth, headers=headers)
+
+    # response.{content,headers,status_code}
+    log("> Response code: %s" % response.status_code)
+    log("> Location: %s" % response.headers.get('Location'))
+
+    # Check Qubit response status code
+    if not response.status_code in [200, 201, 302]:
+        error("Response code not expected")
+
+    # Location is a must, if it is not included in the Qubit response something was wrong
+    if response.headers['Location'] is None:
+        error("Location is expected, if not is likely something is wrong with Qubit")
+    else:
+        access.resource = response.header.get('Location')
+
+    # (A)synchronously?
+    if response.status_code is 200:
+        access.statuscode = 14
+        access.status = "Deposited synchronously"
+    else:
+        access.statuscode = 15
+        access.status = "Deposited asynchronously, Qubit is processing the DIP in the job queue"
+    access.save()
+
+def log(message, access=None):
+    message = "[uploadDIP] %s" % message
+    print message
+    if access:
+        access.status = message
+        access.save()
+
+def error(message, code=1):
+    print >>sys.stderr, "[uploadDIP] %s" % message
+    sys.exit(code)
 
 if __name__ == '__main__':
 
@@ -196,4 +218,14 @@ if __name__ == '__main__':
         parser.print_help()
         sys.exit(2)
 
-    start(opts)
+    try:
+        start(opts)
+    except Exception as inst:
+        log("DEBUG EXCEPTION! uploadDIP worker")
+        print >>sys.stderr, "DEBUG EXCEPTION! uploadDIP worker"
+        print >>sys.stderr, type(inst)
+        print >>sys.stderr, inst.args
+        import traceback
+        traceback.print_exc()
+    finally:
+        log("Upload finished")
