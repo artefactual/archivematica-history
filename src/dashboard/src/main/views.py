@@ -401,12 +401,18 @@ def ingest_upload(request, uuid):
             response = simplejson.JSONEncoder().encode({ 'ready': True })
             return HttpResponse(response, mimetype='application/json')
     elif request.method == 'GET':
+        data = {}
         try:
             access = models.Access.objects.get(sipuuid=uuid)
-            response = simplejson.JSONEncoder().encode({ 'target': access.target })
-            return HttpResponse(response, mimetype='application/json')
+            data['target'] = access.target
         except:
+            # pass
             raise Http404
+        # Disabled, it could be very slow
+        # job = models.Job.objects.get(jobtype='uploadDIP', sipuuid=uuid)
+        # data['size'] = utils.get_directory_size(job.directory)
+        response = simplejson.JSONEncoder().encode(data)
+        return HttpResponse(response, mimetype='application/json')
 
     return HttpResponseBadRequest()
 
