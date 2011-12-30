@@ -373,10 +373,38 @@ def ingest_delete(request, uuid):
         sip = models.SIP.objects.get(uuid__exact=uuid)
         sip.hidden = True
         sip.save()
-        response = simplejson.JSONEncoder().encode({'removed': True})
+        response = simplejson.JSONEncoder().encode({ 'removed': True })
         return HttpResponse(response, mimetype='application/json')
     except:
         raise Http404
+
+def ingest_upload(request, uuid):
+    """
+        The upload DIP is actually not executed here, but some data is storaged
+        in the database (permalink, ...), used later by upload-qubit.py
+        - GET = It could be used to obtain DIP size
+        - POST = Create Accesses tuple with permalink
+    """
+    try:
+        sip = models.SIP.objects.get(uuid__exact=uuid)
+    except:
+        raise Http404
+
+    if request.method == 'POST':
+        if 'target' in request.POST:
+            try:
+                access = models.Access.objects.get(sipuuid=uuid)
+            except:
+                access = models.Access(sipuuid=uuid)
+            access.target = request.POST['target']
+            access.save()
+            response = simplejson.JSONEncoder().encode({ 'ready': True })
+            return HttpResponse(response, mimetype='application/json')
+    elif request.method == 'GET':
+        response = simplejson.JSONEncoder().encode({ 'ready': True })
+        return HttpResponse(response, mimetype='application/json')
+
+    return HttpResponseBadRequest()
 
 def ingest_normalization_report(request, uuid):
     query = """

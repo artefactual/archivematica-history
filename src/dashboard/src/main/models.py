@@ -11,6 +11,7 @@ class Access(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     sipuuid = models.CharField(max_length=150, db_column='SIPUUID', blank=True)
     resource = models.TextField(db_column='resource', blank=True)
+    target = models.TextField(db_column='target', blank=True)
     status = models.TextField(db_column='status', blank=True)
     statuscode = models.IntegerField(null=True, db_column='statusCode', blank=True)
     exitcode = models.IntegerField(null=True, db_column='exitCode', blank=True)
