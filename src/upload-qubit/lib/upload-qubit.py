@@ -34,6 +34,25 @@ sys.path.append("/usr/share/archivematica/dashboard")
 os.environ['DJANGO_SETTINGS_MODULE'] = "settings"
 import main.models as models
 
+def hilite(string, status=True):
+    if not os.isatty(sys.stdout.fileno()):
+        return string
+    attr = []
+    if status:
+        attr.append('32')
+    else:
+        attr.append('31')
+    return '\x1b[%sm%s\x1b[0m' % (';'.join(attr), string)
+
+def log(message, access=None):
+    print "[uploadDIP] %s" % hilite(message)
+    if access:
+        access.status = message
+        access.save()
+
+def error(message, code=1):
+    print >>sys.stderr, "[uploadDIP] %s" % hilite(message, False)
+
 user = getpass.getuser()
 if "archivematica" != user:
     error('This user is required to be executed as "archivematica" user but you are using %s.' % user)
@@ -54,7 +73,14 @@ def start(data):
 
     # Check if exists
     if os.path.exists(directory) is False:
-        error("Directory not found")
+        log("Directory not found: %s" % directory)
+
+        # Trying with uploadedDIPs
+        log("Looking up uploadedDIPs/")
+        directory = directory.replace('uploadDIP', 'uploadedDIPs')
+
+        if os.path.exists(directory) is False:
+          error("Directory not found: %s" % directory)
 
     try:
         # This upload was called before, restore Access record
@@ -65,8 +91,10 @@ def start(data):
         access.save()
 
     # Check if a target was selected
-    if access.target is None:
+    if access.target is None or not len(access.target):
         error("Any target was selected")
+    else:
+        log("Target: %s" % access.target)
 
     # Rsync if data.rsync_target option was passed to this script
     if data.rsync_target:
@@ -184,17 +212,6 @@ def start(data):
         access.status = "Deposited asynchronously, Qubit is processing the DIP in the job queue"
     access.save()
 
-def log(message, access=None):
-    message = "[uploadDIP] %s" % message
-    print message
-    if access:
-        access.status = message
-        access.save()
-
-def error(message, code=1):
-    print >>sys.stderr, "[uploadDIP] %s" % message
-    sys.exit(code)
-
 if __name__ == '__main__':
 
     parser = optparse.OptionParser(usage='Usage: %prog [options]')
@@ -228,4 +245,5 @@ if __name__ == '__main__':
         import traceback
         traceback.print_exc()
     finally:
-        log("Upload finished")
+        # log("Upload finished")
+        pass
