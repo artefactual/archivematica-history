@@ -34,6 +34,9 @@ sys.path.append("/usr/share/archivematica/dashboard")
 os.environ['DJANGO_SETTINGS_MODULE'] = "settings"
 import main.models as models
 
+PREFIX = "[uploadDIP]"
+
+# Colorize output
 def hilite(string, status=True):
     if not os.isatty(sys.stdout.fileno()):
         return string
@@ -44,15 +47,19 @@ def hilite(string, status=True):
         attr.append('31')
     return '\x1b[%sm%s\x1b[0m' % (';'.join(attr), string)
 
+# Print to stdout
 def log(message, access=None):
-    print "[uploadDIP] %s" % hilite(message)
+    print "%s %s" % (PREFIX, hilite(message))
     if access:
         access.status = message
         access.save()
 
+# Print to stderr and exit
 def error(message, code=1):
-    print >>sys.stderr, "[uploadDIP] %s" % hilite(message, False)
+    print >>sys.stderr, "%s %s" % (PREFIX, hilite(message, False))
+    sys.exit(1)
 
+# Make sure that archivematica user is executing this script
 user = getpass.getuser()
 if "archivematica" != user:
     error('This user is required to be executed as "archivematica" user but you are using %s.' % user)
@@ -179,6 +186,8 @@ def start(data):
     headers['Content-Location'] = "file:///%s" % os.path.basename(directory)
     """ headers['Content-Disposition'] """
 
+    headers['Create-Parent'] = 'false'
+
     # Build URL (expected sth like http://localhost/ica-atom/index.php)
     data.url = "%s/sword/deposit/%s" % (data.url, access.target)
 
@@ -193,6 +202,11 @@ def start(data):
     log("> Response code: %s" % response.status_code)
     log("> Location: %s" % response.headers.get('Location'))
 
+    if data.debug:
+        # log("> Headers sent: %s" % headers)
+        # log("> Headers received: %s" % response.headers)
+        log("> Content received: %s" % response.content)
+
     # Check Qubit response status code
     if not response.status_code in [200, 201, 302]:
         error("Response code not expected")
@@ -201,16 +215,20 @@ def start(data):
     if response.headers['Location'] is None:
         error("Location is expected, if not is likely something is wrong with Qubit")
     else:
-        access.resource = response.header.get('Location')
+        access.resource = response.headers.get('Location')
 
     # (A)synchronously?
     if response.status_code is 200:
         access.statuscode = 14
         access.status = "Deposited synchronously"
+        log(access.status)
     else:
         access.statuscode = 15
         access.status = "Deposited asynchronously, Qubit is processing the DIP in the job queue"
+        log(access.status)
     access.save()
+
+    # We also have to parse the XML document
 
 if __name__ == '__main__':
 
@@ -221,6 +239,7 @@ if __name__ == '__main__':
     options.add_option('-e', '--email', dest='email', metavar='EMAIL', help='account e-mail')
     options.add_option('-p', '--password', dest='password', metavar='PASSWORD', help='account password')
     options.add_option('-U', '--uuid', dest='uuid', metavar='UUID', help='UUID')
+    options.add_option('-d', '--debug', dest='debug', metavar='DEBUG', action="store_true", default=False, help='Debug mode, prints HTTP headers')
     parser.add_option_group(options)
 
     options = optparse.OptionGroup(parser, 'Rsync options')
@@ -231,9 +250,8 @@ if __name__ == '__main__':
     (opts, args) = parser.parse_args()
 
     if opts.email is None or opts.password is None or opts.url is None or opts.uuid is None:
-        print >>sys.stderr, "Invalid syntax"
         parser.print_help()
-        sys.exit(2)
+        error("Invalid syntax", 2)
 
     try:
         start(opts)
