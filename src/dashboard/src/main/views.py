@@ -66,6 +66,7 @@ def home(request):
       Status
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
+# TODO: hide removed elements, db against gearman
 def status(request):
     client = MCPClient()
     xml = etree.XML(client.list())
@@ -405,10 +406,9 @@ def ingest_upload(request, uuid):
             response = simplejson.JSONEncoder().encode({ 'ready': True })
             return HttpResponse(response, mimetype='application/json')
     elif request.method == 'GET':
-        data = {}
         try:
             access = models.Access.objects.get(sipuuid=uuid)
-            data['target'] = cPickle.loads(str(access.target))['target']
+            data = cPickle.loads(str(access.target))['target']
         except:
             # pass
             raise Http404
