@@ -66,7 +66,7 @@ def home(request):
       Status
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
-# TODO: hide removed elements, db against gearman
+# TODO: hide removed elements
 def status(request):
     client = MCPClient()
     xml = etree.XML(client.list())
@@ -408,7 +408,7 @@ def ingest_upload(request, uuid):
     elif request.method == 'GET':
         try:
             access = models.Access.objects.get(sipuuid=uuid)
-            data = cPickle.loads(str(access.target))['target']
+            data = cPickle.loads(str(access.target))
         except:
             # pass
             raise Http404
