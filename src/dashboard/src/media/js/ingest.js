@@ -536,13 +536,15 @@ $(function()
                         if (data.target)
                         {
                           input.filter(':text').val(data.target);
+                          input.filter(':checkbox').prop('checked', data.intermediate);
                         }
                       });
                 })
 
               .one('hidden', function()
                 {
-                  $(this).find('input').val('');
+                  input.filter(':text').val('');
+                  input.filter(':checkbox').prop('checked', false);
                   $select.val(0);
                   modal.find('a.primary, a.secondary').unbind('click');
                 })
