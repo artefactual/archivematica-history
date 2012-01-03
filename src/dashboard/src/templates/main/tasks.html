@@ -18,6 +18,12 @@
             <abbr title="Created time">CT:</abbr> {{ item.createdtime }}
           </td>
         </tr>
+        <tr>
+          <td colspan="3"><a href="#" onclick="javascript: $(this).closest('tr').next().toggle(); return false;">Show arguments</a></td>
+        </tr>
+        <tr style="display: none;">
+          <td colspan="3">{{ item.arguments }}</td>
+        </tr>
         {% if item.stdout %}
           <tr>
             <td colspan="3" class="stderror">
