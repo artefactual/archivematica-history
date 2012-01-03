@@ -22,7 +22,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db import connection, transaction
 from django.forms.models import modelformset_factory, inlineformset_factory
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.utils import simplejson
 from django.utils.functional import wraps
@@ -33,9 +33,12 @@ from contrib.utils import render
 from main import forms
 from main import models
 from lxml import etree
-import calendar, os, re, subprocess
+import calendar
+import cPickle
 from datetime import datetime
-from django.shortcuts import redirect
+import os
+import re
+import subprocess
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Utils (decorators)
@@ -396,7 +399,9 @@ def ingest_upload(request, uuid):
                 access = models.Access.objects.get(sipuuid=uuid)
             except:
                 access = models.Access(sipuuid=uuid)
-            access.target = request.POST['target']
+            access.target = cPickle.dumps({
+              "target": request.POST['target'],
+              "intermediate": request.POST['intermediate'] is "true" })
             access.save()
             response = simplejson.JSONEncoder().encode({ 'ready': True })
             return HttpResponse(response, mimetype='application/json')
@@ -404,7 +409,7 @@ def ingest_upload(request, uuid):
         data = {}
         try:
             access = models.Access.objects.get(sipuuid=uuid)
-            data['target'] = access.target
+            data['target'] = cPickle.loads(str(access.target))['target']
         except:
             # pass
             raise Http404

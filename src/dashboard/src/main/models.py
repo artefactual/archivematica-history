@@ -15,9 +15,20 @@ class Access(models.Model):
     # the target archival description when the DIP will be deposited via SWORD
     # This column is mandatory, the user won't be able to submit the form if this field is empty
     target = models.TextField(db_column='target', blank=True)
-    # 
+    # Human readable status of an upload (rsync progress percentage, etc)
     status = models.TextField(db_column='status', blank=True)
-    # 
+    # Machine readable status code of an upload
+    # 10 = Rsync is working
+    # 11 = Rsync finished successfully
+    # 12 = Rsync failed (then see self.exitcode to get rsync exit code)
+    # 13 = SWORD deposit will be executed
+    # 14 = Deposit done, Qubit returned code 200 (HTTP Created)
+    #      - The deposited was created synchronously
+    #      - At this point self.resource should contains the created Qubit resource
+    # 15 = Deposit done, Qubit returned code 201 (HTTP Accepted)
+    #      - The deposited will be created asynchronously (Qubit has a job queue)
+    #      - At this point self.resource should contains the created Qubit resource
+    #      - ^ this resource could be under progres, ask to Qubit for the status
     statuscode = models.IntegerField(null=True, db_column='statusCode', blank=True)
     # Rsync exit code
     exitcode = models.IntegerField(null=True, db_column='exitCode', blank=True)

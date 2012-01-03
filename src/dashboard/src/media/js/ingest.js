@@ -497,7 +497,7 @@ $(function()
           var $select = $(event.target);
           var value = $select.val();
 
-          // Define function to execute 
+          // Define function to execute
           var executeCommand = function(context)
             {
               $.ajax({
@@ -524,7 +524,7 @@ $(function()
             var process = false;
             var url = '/ingest/' + this.model.sip.get('uuid') + '/upload/';
             var self = this;
-           
+
             modal
 
               .one('show', function()
@@ -535,7 +535,7 @@ $(function()
                       {
                         if (data.target)
                         {
-                          input.val(data.target);
+                          input.filter(':text').val(data.target);
                         }
                       });
                 })
@@ -551,10 +551,12 @@ $(function()
                 {
                   event.preventDefault();
 
-                  if (input.val())
+                  if (input.filter(':text').val())
                   {
-                    var xhr = $.ajax(url, { type: 'POST', data: { 'target': input.val() }})
-                    xhr
+                    var xhr = $.ajax(url, { type: 'POST', data: {
+                      'target': input.filter(':text').val(),
+                      'intermediate': input.filter(':checkbox').is(':checked') }})
+
                       .done(function(data)
                         {
                           if (data.ready)
@@ -587,12 +589,12 @@ $(function()
 
             return false;
           }
-          
+
           executeCommand(this);
         },
 
       normalizationReport: function(event)
-        { 
+        {
           event.preventDefault();
 
           $.ajax({
