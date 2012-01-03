@@ -401,7 +401,7 @@ def ingest_upload(request, uuid):
                 access = models.Access(sipuuid=uuid)
             access.target = cPickle.dumps({
               "target": request.POST['target'],
-              "intermediate": request.POST['intermediate'] is "true" })
+              "intermediate": request.POST['intermediate'] == "true" })
             access.save()
             response = simplejson.JSONEncoder().encode({ 'ready': True })
             return HttpResponse(response, mimetype='application/json')
