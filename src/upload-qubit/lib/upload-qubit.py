@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
+import cPickle
 import getpass
 import optparse
 import os
@@ -97,11 +98,14 @@ def start(data):
         access = models.Access(sipuuid=data.uuid)
         access.save()
 
-    # Check if a target was selected
-    if access.target is None or not len(access.target):
-        error("Any target was selected")
-    else:
-        log("Target: %s" % access.target)
+    # The target columns contents a serialized Python dictionary
+    # - target is the permalink string
+    # - intermediate is a boolean
+    try:
+        target = cPickle.loads(str(access.target))
+        log("Target: %s (intermediate: %s)" % (target['target'], target['intermediate']))
+    except:
+        error("No target was selected")
 
     # Rsync if data.rsync_target option was passed to this script
     if data.rsync_target:
@@ -185,11 +189,10 @@ def start(data):
     headers['X-Verbose'] = 'false'
     headers['Content-Location'] = "file:///%s" % os.path.basename(directory)
     """ headers['Content-Disposition'] """
-
-    headers['Create-Parent'] = 'false'
+    headers['Create-Parent'] = str(target['intermediate']).lower()
 
     # Build URL (expected sth like http://localhost/ica-atom/index.php)
-    data.url = "%s/sword/deposit/%s" % (data.url, access.target)
+    data.url = "%s/sword/deposit/%s" % (data.url, target['target'])
 
     # Auth and request!
     log("About to deposit to: %s" % data.url)
@@ -256,12 +259,11 @@ if __name__ == '__main__':
     try:
         start(opts)
     except Exception as inst:
-        log("DEBUG EXCEPTION! uploadDIP worker")
         print >>sys.stderr, "DEBUG EXCEPTION! uploadDIP worker"
         print >>sys.stderr, type(inst)
         print >>sys.stderr, inst.args
         import traceback
         traceback.print_exc()
+        sys.exit(1)
     finally:
-        # log("Upload finished")
         pass
