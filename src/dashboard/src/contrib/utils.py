@@ -1,5 +1,4 @@
 import os
-from django.shortcuts import render_to_response
 
 def get_directory_size(path='.'):
     total_size = 0
