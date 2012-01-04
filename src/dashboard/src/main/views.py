@@ -518,7 +518,7 @@ def ingest_normalization_report(request, uuid):
       FROM Tasks
       JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
       WHERE
-        Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+        (Tasks.exec = 'transcoderNormalizePreservation_v0.0' OR Tasks.exec = 'transcoderNormalizeAccess_v0.0') AND
         Jobs.SIPUUID = %s
       ORDER BY Tasks.fileName"""
 
