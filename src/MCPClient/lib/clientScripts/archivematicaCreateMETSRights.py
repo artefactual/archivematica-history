@@ -112,7 +112,8 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierValue").text = row[1]
                     row = c.fetchone()
                 sqlLock.release()
-            break
+            if False: # Issue 873:
+                break
     return ret
 
 def getstatuteInformation(pk, parent):
