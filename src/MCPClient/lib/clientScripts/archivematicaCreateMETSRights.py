@@ -70,8 +70,12 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     etree.SubElement(copyrightInformation, "copyrightStatus").text = valueDic["copyrightStatus"]
                     etree.SubElement(copyrightInformation, "copyrightJurisdiction").text = valueDic["copyrightJurisdiction"]
                     etree.SubElement(copyrightInformation, "copyrightStatusDeterminationDate").text = formatDate(valueDic["copyrightStatusDeterminationDate"])
-                    #TODO 4.1.3.4 copyrightNote (O, R)
+                    
                     #copyrightNote Repeatable
+                    sql = "SELECT copyrightNote FROM RightsStatementCopyrightNote WHERE fkRightsStatement = %d;" % (valueDic["RightsStatement.pk"])
+                    rows2 = databaseInterface.queryAllSQL(sql)
+                    for row2 in rows2:
+                        etree.SubElement(copyrightInformation, "copyrightNote").text =  row2[0]
 
                 # licenseInformation
                 licenseInformation = etree.SubElement(rightsStatement, "licenseInformation")
@@ -79,8 +83,12 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                 etree.SubElement(licenseIdentifier, "licenseIdentifierType").text = valueDic["licenseIdentifierType"]
                 etree.SubElement(licenseIdentifier, "licenseIdentifierValue").text = valueDic["licenseIdentifierValue"]
                 etree.SubElement(licenseInformation, "licenseTerms").text = valueDic["licenseTerms"]
-                #TODO licenseNote (O, R)
+                
                 #4.1.4.3 licenseNote (O, R)
+                sql = "SELECT licenseNote FROM RightsStatementLicenseNote WHERE fkRightsStatement = %d;" % (valueDic["RightsStatement.pk"])
+                rows2 = databaseInterface.queryAllSQL(sql)
+                for row2 in rows2:
+                    etree.SubElement(licenseInformation, "licenseNote").text =  row2[0]
 
                 #4.1.5 statuteInformation (O, R)
                 getstatuteInformation(valueDic["RightsStatement.pk"], rightsStatement)
@@ -116,15 +124,19 @@ def getstatuteInformation(pk, parent):
         etree.SubElement(statuteInformation, "statuteCitation").text = row[2]
         etree.SubElement(statuteInformation, "statuteInformationDeterminationDate").text = formatDate(row[3])
 
-        #TODO 4.1.5.4 statuteNote (O, R) row[0]
+        #statuteNote Repeatable
+        sql = "SELECT statuteNote FROM RightsStatementStatuteInformationNote WHERE fkRightsStatement = %d;" % (row[0])
+        rows2 = databaseInterface.queryAllSQL(sql)
+        for row2 in rows2:
+            etree.SubElement(statuteInformation, "statuteNote").text =  row2[0]
 
 def getrightsGranted(pk, parent):
     sql = "SELECT pk, act, startDate, endDate, restriction FROM RightsStatementRightsGranted WHERE fkRightsStatement = %d" % (pk)
-    #TODO : restriction is a repeatable field.
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
         rightsGranted = etree.SubElement(parent, "rightsGranted")
-        #TODO : restriction is a repeatable field.
+        #TODO : Issue 860:    rights granted restriction is a repeatable field.
+        #http://code.google.com/p/archivematica/issues/detail?id=860
         etree.SubElement(rightsGranted, "act").text = row[1]
         etree.SubElement(rightsGranted, "restriction").text = row[4]
         termOfGrant = etree.SubElement(rightsGranted, "termOfGrant")
@@ -135,4 +147,8 @@ def getrightsGranted(pk, parent):
         if row[3]:
             etree.SubElement(termOfGrant, "endDate").text = formatDate(row[3])
 
-        #TODO 4.1.6.4 rightsGrantedNote (O, R)
+        #4.1.6.4 rightsGrantedNote (O, R)
+        sql = "SELECT rightsGrantedNote FROM RightsStatementRightsGrantedNote WHERE fkRightsStatementRightsGranted = %d;" % (row[0])
+        rows2 = databaseInterface.queryAllSQL(sql)
+        for row2 in rows2:
+            etree.SubElement(rightsGranted, "rightsGrantedNote").text =  row2[0]

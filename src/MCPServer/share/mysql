@@ -204,6 +204,8 @@ CREATE TABLE RightsStatementLinkingObjectIdentifierLinkingObjectRole (
 */
 
 -- 4.1.6 rightsGranted (O, R)
+-- Issue 860:	rights granted restriction is a repeatable field.
+-- http://code.google.com/p/archivematica/issues/detail?id=860
 DROP TABLE IF EXISTS RightsStatementRightsGranted;
 CREATE TABLE RightsStatementRightsGranted ( 
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
