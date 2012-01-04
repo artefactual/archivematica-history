@@ -31,6 +31,7 @@ from datetime import datetime
 
 global separator
 separator = "', '"
+printSQL = False
 
 #DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings")
 DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings", charset="utf8", use_unicode = True)
@@ -64,11 +65,12 @@ database=MySQLdb.connect(**DB_CONNECTION_OPTS)
 sqlLock.release()
 
 def runSQL(sql):
-    #print type(sql), sql
+    global database
+    if printSQL:
+        print printSQL
     if isinstance(sql, unicode):
         sql = sql.encode('utf-8')
     #print type(sql), sql
-    global database
     #found that even though it says it's compiled thread safe, running it multi-threaded crashes it.
     sqlLock.acquire()
     db = database
@@ -93,10 +95,11 @@ def runSQL(sql):
 
 def querySQL(sql):
     global database
+    if printSQL:
+        print sql
     if isinstance(sql, unicode):
         sql = sql.encode('utf-8')
     sqlLock.acquire()
-    #print sql
     try:
         c=database.cursor()
         c.execute(sql)
@@ -118,6 +121,8 @@ def querySQL(sql):
 
 def queryAllSQL(sql):
     global database
+    if printSQL:
+        print sql
     if isinstance(sql, unicode):
         sql = sql.encode('utf-8')
     sqlLock.acquire()
