@@ -144,6 +144,20 @@ function install-gui() {
   fi
 }
 
+function update-qubit() {
+  part="update Qubit (trunk) and restart its qubit-sword service"
+  echo -n "\"Would you like to ${part}?\" (y/N) "
+  read a
+  if [[ $a == "Y" || $a == "y" ]]; then
+          svn update qubit-svn
+          sudo stop qubit-sword
+          sudo start qubit-sword
+          echo "Remember to activate sfSwordPlugin and restart Qubit database if necessary!"
+  else
+          echo "Not going to ${part}."
+  fi
+}
+
 function example() {
   part="example"
   echo -n "\"Would you like to ${part}?\" (y/N) "
@@ -167,3 +181,4 @@ recreate-db
 restart
 export-sampledata
 install-gui
+update-qubit
