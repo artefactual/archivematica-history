@@ -73,7 +73,7 @@ def start(data):
       error("UUID not recognized")
 
     # Get directory
-    jobs = models.Job.objects.filter(sipuuid=data.uuid, jobtype="uploadDIP")
+    jobs = models.Job.objects.filter(sipuuid=data.uuid, jobtype="Upload DIP")
     if jobs.count():
         directory = jobs[0].directory.rstrip('/').replace('%sharedPath%', '/var/archivematica/sharedDirectory/')
     else:
@@ -259,7 +259,7 @@ if __name__ == '__main__':
     try:
         start(opts)
     except Exception as inst:
-        print >>sys.stderr, "DEBUG EXCEPTION! uploadDIP worker"
+        print >>sys.stderr, "Exception!"
         print >>sys.stderr, type(inst)
         print >>sys.stderr, inst.args
         import traceback
