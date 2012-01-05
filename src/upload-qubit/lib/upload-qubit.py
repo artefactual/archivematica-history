@@ -77,7 +77,7 @@ def start(data):
     if jobs.count():
         directory = jobs[0].directory.rstrip('/').replace('%sharedPath%', '/var/archivematica/sharedDirectory/')
     else:
-        error("Directory not found")
+        error("Directory not found: %s" % directory)
 
     # Check if exists
     if os.path.exists(directory) is False:
