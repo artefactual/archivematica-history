@@ -44,7 +44,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
     """[(fileUUID, fileUUIDTYPE), (sipUUID, sipUUIDTYPE), (transferUUID, transferUUIDType)]"""
     ret = []
     for metadataAppliesToidentifier, metadataAppliesToType in metadataAppliesToList:
-        list = "RightsStatement.pk, rightsStatementIdentifierType, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseIdentifierType, licenseIdentifierValue, licenseTerms"
+        list = "RightsStatement.pk, rightsStatementIdentifierType, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseIdentifierType, licenseIdentifierValue, licenseTerms, rightsNotes"
         key = list.split(", ")
         sql = """SELECT %s FROM RightsStatement LEFT JOIN RightsStatementCopyright ON RightsStatementCopyright.fkRightsStatement = RightsStatement.pk LEFT JOIN RightsStatementLicense ON RightsStatementLicense.fkRightsStatement = RightsStatement.pk WHERE metadataAppliesToidentifier = '%s' AND metadataAppliesToType = %s;""" % (list, metadataAppliesToidentifier, metadataAppliesToType)
         rows = databaseInterface.queryAllSQL(sql)
@@ -63,7 +63,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                 etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierType").text = valueDic["rightsStatementIdentifierType"]
                 etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierValue").text = valueDic["rightsStatementIdentifierValue"]
                 etree.SubElement(rightsStatement, "rightsBasis").text = valueDic["rightsBasis"]
-
+                
                 #copright information
                 if valueDic["copyrightStatus"] != None and valueDic["copyrightStatus"] != "":
                     copyrightInformation = etree.SubElement(rightsStatement, "copyrightInformation")
@@ -94,7 +94,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                 getstatuteInformation(valueDic["RightsStatement.pk"], rightsStatement)
 
                 #4.1.6 rightsGranted (O, R)
-                getrightsGranted(valueDic["RightsStatement.pk"], rightsStatement)
+                getrightsGranted(valueDic["RightsStatement.pk"], rightsStatement, valueDic["rightsNotes"])
 
                 #4.1.7 linkingObjectIdentifier (O, R)
                 linkingObjectIdentifier = etree.SubElement(rightsStatement, "linkingObjectIdentifier")
@@ -131,7 +131,7 @@ def getstatuteInformation(pk, parent):
         for row2 in rows2:
             etree.SubElement(statuteInformation, "statuteNote").text =  row2[0]
 
-def getrightsGranted(pk, parent):
+def getrightsGranted(pk, parent, rightsGrantedNote=""):
     sql = "SELECT pk, act, startDate, endDate, restriction FROM RightsStatementRightsGranted WHERE fkRightsStatement = %d" % (pk)
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
@@ -147,7 +147,8 @@ def getrightsGranted(pk, parent):
             print >>sys.stderr, "The value '' of element 'startDate' is not valid. "
         if row[3]:
             etree.SubElement(termOfGrant, "endDate").text = formatDate(row[3])
-
+        if rightsGrantedNote:
+            etree.SubElement(rightsGranted, "rightsGrantedNote").text =  rightsGrantedNote
         #4.1.6.4 rightsGrantedNote (O, R)
         sql = "SELECT rightsGrantedNote FROM RightsStatementRightsGrantedNote WHERE fkRightsStatementRightsGranted = %d;" % (row[0])
         rows2 = databaseInterface.queryAllSQL(sql)
