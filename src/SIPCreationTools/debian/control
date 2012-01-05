@@ -8,7 +8,7 @@ Homepage: http://archivematica.org
 
 Package: sip-creation-tools
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python, archivematica-createdublincore
+Depends: ${shlibs:Depends}, ${misc:Depends}, python
 Description: SIP creation tools for Archivematica
   Enter long description
   
