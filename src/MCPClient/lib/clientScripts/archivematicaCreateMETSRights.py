@@ -26,6 +26,7 @@ from archivematicaXMLNamesSpace import *
 
 import os
 import sys
+import uuid
 import lxml.etree as etree
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
@@ -59,9 +60,14 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                 ret.append(rightsStatement)
                 for i in range(len(key)):
                     valueDic[key[i]] = row[i]
+                
                 rightsStatementIdentifier = etree.SubElement(rightsStatement, "rightsStatementIdentifier")
-                etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierType").text = valueDic["rightsStatementIdentifierType"]
-                etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierValue").text = valueDic["rightsStatementIdentifierValue"]
+                if valueDic["rightsStatementIdentifierValue"]:
+                    etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierType").text = valueDic["rightsStatementIdentifierType"]
+                    etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierValue").text = valueDic["rightsStatementIdentifierValue"]
+                else:
+                    etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierType").text = "UUID"
+                    etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierValue").text = uuid.uuid4().__str__()
                 etree.SubElement(rightsStatement, "rightsBasis").text = valueDic["rightsBasis"]
                 
                 #copright information
@@ -103,15 +109,15 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
 
 
                 #4.1.8 linkingAgentIdentifier (O, R)
-                sql = """SELECT agentIdentifierType, agentIdentifierValue, agentName, agentType FROM Agents;"""
-                c, sqlLock = databaseInterface.querySQL(sql)
-                row = c.fetchone()
-                while row != None:
-                    linkingAgentIdentifier = etree.SubElement(rightsStatement, "linkingAgentIdentifier")
-                    etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierType").text = row[0]
-                    etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierValue").text = row[1]
-                    row = c.fetchone()
-                sqlLock.release()
+                #sql = """SELECT agentIdentifierType, agentIdentifierValue, agentName, agentType FROM Agents;"""
+                #c, sqlLock = databaseInterface.querySQL(sql)
+                #row = c.fetchone()
+                #while row != None:
+                #    linkingAgentIdentifier = etree.SubElement(rightsStatement, "linkingAgentIdentifier")
+                #    etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierType").text = row[0]
+                #    etree.SubElement(linkingAgentIdentifier, "linkingAgentIdentifierValue").text = row[1]
+                #    row = c.fetchone()
+                #sqlLock.release()
             if False: # Issue 873:
                 break
     return ret
