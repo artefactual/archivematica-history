@@ -1120,7 +1120,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'no normalization'); -- No normalization for sip with access directory --
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'No normalization'); -- No normalization for sip with access directory --
 set @noNormalizationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
 
 
@@ -1233,7 +1233,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink2);
 set @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'preservation'); -- preservation normalization for sip with access directory --
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Preservation'); -- preservation normalization for sip with access directory --
 set @normalizePreservationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
@@ -1283,7 +1283,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'preservation and access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Preservation and access');
 set @CreateDIPandAIPMicroServiceChain = LAST_INSERT_ID();
 -- /CREATE AIP AND DIP --
 
@@ -1325,7 +1325,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'access only');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Access only');
 set @normalizeAccessOnlyMicroServiceChain = LAST_INSERT_ID();
 -- CREATE AIP AND DIP - Access normalization only --
 
@@ -1518,7 +1518,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Approve normalization');
 set @MicroServiceChain = LAST_INSERT_ID();
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'no normalization');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'No normalization');
 set @ProcessSubmissionDocumentationLinkMicroServiceChain = LAST_INSERT_ID();
 
 SET @microserviceGroup  = 'Normalize';
@@ -1591,7 +1591,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'preservation only');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Preservation only');
 set @CreateAIPMicroServiceChain = LAST_INSERT_ID();
 -- /CREATE AIP --
 
@@ -1619,7 +1619,7 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @CreateDIPandAIPMicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
-    (@MicroServiceChainLink, @ProcessSubmissionDocumentationLinkMicroServiceChain); -- no normalization --
+    (@MicroServiceChainLink, @ProcessSubmissionDocumentationLinkMicroServiceChain); -- No normalization --
 -- Issue 741:	Make manual normalization compatible with current data structure
 -- INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
 --    VALUES                
