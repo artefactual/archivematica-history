@@ -2652,14 +2652,14 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 set @FailTransferComplianceChainLink = LAST_INSERT_ID();
 
-SET @microserviceGroup  = 'Verify Transfer compliance';
+SET @microserviceGroup  = 'Verify transfer compliance';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'verifyTransferCompliance_v0.0', '"%SIPDirectory%"');
 SET @verifyTransferComplianceTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      @verifyTransferComplianceTask, 'Verify Transfer compliance');
+    (0,      @verifyTransferComplianceTask, 'Verify transfer compliance');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailTransferComplianceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -3181,10 +3181,10 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 set @FailTransferComplianceChainLink = LAST_INSERT_ID();
 
-SET @microserviceGroup  = 'Verify Transfer compliance';
+SET @microserviceGroup  = 'Verify transfer compliance';
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      @verifyTransferComplianceTask, 'Verify Transfer compliance');
+    (0,      @verifyTransferComplianceTask, 'Verify transfer compliance');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailTransferComplianceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
