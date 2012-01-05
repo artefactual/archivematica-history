@@ -84,6 +84,7 @@ def status(request):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def rights_parse_agent_id(input):
+    return 0
     if input == '':
         agentId = 0
     else:
@@ -112,6 +113,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         agentId = None
         if request.method == 'POST':
             postData = request.POST.copy()
+            """
             agentId = rights_parse_agent_id(postData.get('rightsholder'))
             if agentId == 0 and postData.get('rightsholder') != '0' and postData.get('rightsholder') != '':
                 agent = models.RightsStatementLinkingAgentIdentifier()
@@ -120,6 +122,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
                 agent.save()
                 agentId = agent.id
             postData.__setitem__('rightsholder', agentId)
+            """
             form = forms.RightsForm(postData, instance=viewRights)
             form.cleaned_data = postData
             viewRights = form.save()
