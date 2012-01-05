@@ -43,7 +43,8 @@ class RightsForm(ModelForm):
             'metadataappliestotype',
             'metadataappliestoidentifier',
             'rightsstatementidentifiertype',
-            'rightsstatementidentifiervalue',)
+            'rightsstatementidentifiervalue',
+            'rightsholder',)
         widgets = {
             'rightsnotes': Textarea(attrs=TEXTAREA_ATTRS),
             'rightsholder': TextInput(attrs=INPUT_ATTRS), }
