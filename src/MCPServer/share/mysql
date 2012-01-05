@@ -807,7 +807,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'remove_v0.0', '-R "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Removed bagged files.');
+    (0,      LAST_INSERT_ID(), 'Removed bagged files');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -902,7 +902,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 SET @CopyTransfersmetadataandlogsTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      @CopyTransfersmetadataandlogsTask, 'Copy Transfers metadata and logs');
+    (0,      @CopyTransfersmetadataandlogsTask, 'Copy transfers metadata and logs');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(),  @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1083,7 +1083,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 SET @MoveSubmissionDocumentationintoobjectsdirectoryTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      @MoveSubmissionDocumentationintoobjectsdirectoryTask, 'Move Submission Documentation into objects directory');
+    (0,      @MoveSubmissionDocumentationintoobjectsdirectoryTask, 'Move submission documentation into objects directory');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1112,7 +1112,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 SET @MoveTransferSubmissionDocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      @MoveTransferSubmissionDocumentationTask, 'Copy Transfer Submission Documentation');
+    (0,      @MoveTransferSubmissionDocumentationTask, 'Copy transfer submission documentation');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1341,7 +1341,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      @CopyTransfersmetadataandlogsTask, 'Copy Transfers metadata and logs');
+    (0,      @CopyTransfersmetadataandlogsTask, 'Copy transfers metadata and logs');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(),  @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1473,7 +1473,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      @MoveSubmissionDocumentationintoobjectsdirectoryTask, 'Move Submission Documentation into objects directory');
+    (0,      @MoveSubmissionDocumentationintoobjectsdirectoryTask, 'Move submission documentation into objects directory');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1493,7 +1493,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      @MoveTransferSubmissionDocumentationTask, 'Copy Transfer Submission Documentation');
+    (0,      @MoveTransferSubmissionDocumentationTask, 'Copy transfer submission documentation');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
