@@ -413,7 +413,7 @@ def ingest_upload(request, uuid):
             # pass
             raise Http404
         # Disabled, it could be very slow
-        # job = models.Job.objects.get(jobtype='uploadDIP', sipuuid=uuid)
+        # job = models.Job.objects.get(jobtype='Upload DIP', sipuuid=uuid)
         # data['size'] = utils.get_directory_size(job.directory)
         response = simplejson.JSONEncoder().encode(data)
         return HttpResponse(response, mimetype='application/json')
@@ -809,7 +809,7 @@ def map_known_values(value):
       'seperateDIP': 'Seperate DIP',
       'storeAIP': 'Store AIP',
       'unquarantine': 'Remove from Quarantine',
-      'uploadDIP': 'Upload DIP',
+      'Upload DIP': 'Upload DIP',
       'verifyChecksum': 'Verify checksum',
       'verifyMetadataDirectoryChecksums': 'Verify metadata directory checksums',
       'verifySIPCompliance': 'Verify SIP compliance',
