@@ -1,0 +1,17 @@
+$(document).ready(
+  function()
+    {
+      $('.preview-help-text')
+        .children('.preview')
+          .show()
+          .children('a')
+            .click(function(event)
+              {
+                event.preventDefault();
+                $(this).closest('.preview').hide();
+                $(this).closest('.preview-help-text').children('.content').show();
+              })
+          .end()
+        .end()
+        .children('.content').hide();
+    });

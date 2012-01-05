@@ -473,3 +473,19 @@ textarea.command {
   font-size: 14px;
   line-height: 1.5em;
 }
+
+/*
+ * Preview help text (non-js friendly)
+ */
+
+.preview-help-text {
+  
+}
+
+.preview-help-text .preview {
+  display: none;
+}
+
+.preview-help-text .content {
+
+}
