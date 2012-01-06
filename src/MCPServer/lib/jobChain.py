@@ -42,13 +42,14 @@ class jobChain:
         self.unit = unit
         self.pk = chainPK
         sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__()
+        print sql
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         if row == None:
             sqlLock.release()
             return None
         while row != None:
-            print row
+            print "jobChain", row
             #self.pk = row[0]
             self.startingChainLink = row[1]
             self.description = row[2]

@@ -27,7 +27,6 @@ import threading
 import uuid
 import sys
 import time
-import transferD
 #select * from MicroServiceChainChoice JOIN MicroServiceChains on chainAvailable = MicroServiceChains.pk;
 #| pk | choiceAvailableAtLink | chainAvailable | pk | startingLink | description
 

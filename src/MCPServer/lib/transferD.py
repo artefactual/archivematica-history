@@ -50,18 +50,23 @@ sipCreationDirectory = "/var/archivematica/sharedDirectory/watchedDirectories/SI
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import fileWasRemoved
+from externals.singleInstance import singleinstance
 
 #Local Variables
 mask = pyinotify.IN_CREATE | pyinotify.IN_MODIFY | pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO | pyinotify.IN_DELETE | pyinotify.IN_MOVE_SELF | pyinotify.IN_DELETE_SELF
 #wm = pyinotify.WatchManager()
 movedFrom = {} #cookie
+global movedFromCount
+movedFromCount = 0
 movedFromLock = threading.Lock()
 
 def timerExpired(event, utcDate):
+    global movedFromCount
     movedFromLock.acquire()
     if event.cookie in movedFrom:
         #remove it from the list of unfound moves
         movedFromPath, filesMoved, timer = movedFrom.pop(event.cookie)
+        movedFromCount.value = movedFromCount.value - 1
         movedFromLock.release()
         for fileUUID, oldLocation in filesMoved:
             fileWasRemoved(fileUUID, utcDate = utcDate, eventOutcomeDetailNote = "removed from: " + oldLocation)
@@ -83,6 +88,7 @@ class SIPWatch(pyinotify.ProcessEvent):
 
     #if a file is moved in, look for a cookie to claim
     def process_IN_MOVED_TO(self, event):
+        global movedFromCount
         t = threading.Thread(target=self.threaded_process_IN_MOVED_TO, args=(event,))
         t.daemon = True
         t.start()
@@ -101,6 +107,7 @@ class SIPWatch(pyinotify.ProcessEvent):
 
         #remove it from the list of unfound moves
         movedFromPath, filesMoved, timer = movedFrom.pop(event.cookie)
+        movedFromCount.value = movedFromCount.value - 1
         movedFromLock.release()
 
         movedToPath = os.path.join(event.path, event.name).replace(\
@@ -115,6 +122,7 @@ class SIPWatch(pyinotify.ProcessEvent):
                 "WHERE fileUUID='" + fileUUID + "'" )
 
     def process_IN_MOVED_FROM(self, event):
+        global movedFromCount
         print event
         print "SIP IN_MOVED_FROM"
         #Wait for a moved to, and if one doesn't occur, consider it moved outside of the system.
@@ -137,6 +145,7 @@ class SIPWatch(pyinotify.ProcessEvent):
         utcDate = databaseInterface.getUTCDate()
         timer = threading.Timer(archivematicaMCP.config.getint('MCPServer', "delayTimer"), timerExpired, args=[event, utcDate], kwargs={})
         movedFrom[event.cookie] = (movedFromPath, filesMoved, timer)
+        movedFromCount.value = movedFromCount.value + 1
         movedFromLock.release()
 
         #create timer to check if it's claimed by a move to
@@ -204,6 +213,7 @@ class transferWatch(pyinotify.ProcessEvent):
     #when a file is moved out, create a cookie for the file, with the file uuid
     #and a timer, so if it isn't claimed, the cookie is removed.
     def process_IN_MOVED_FROM(self, event):
+        global movedFromCount
         print event
         print "Transfer IN_MOVED_FROM"
         #Wait for a moved to, and if one doesn't occur, consider it moved outside of the system.
@@ -226,6 +236,7 @@ class transferWatch(pyinotify.ProcessEvent):
         utcDate = databaseInterface.getUTCDate()
         timer = threading.Timer(archivematicaMCP.config.getint('MCPServer', "delayTimer"), timerExpired, args=[event, utcDate], kwargs={})
         movedFrom[event.cookie] = (movedFromPath, filesMoved, timer)
+        movedFromCount.value = movedFromCount.value + 1
         movedFromLock.release()
 
         #create timer to check if it's claimed by a move to
@@ -243,7 +254,8 @@ class transferWatch(pyinotify.ProcessEvent):
         t.daemon = True
         t.start()
 
-    def threaded_process_IN_MOVED_TO(self, event):
+    def threaded_process_IN_MOVED_TO(self, event):  
+        global movedFromCount      
         time.sleep(archivematicaMCP.config.getint('MCPServer', "waitToActOnMoves"))
         print event
         movedFromLock.acquire()
@@ -255,6 +267,7 @@ class transferWatch(pyinotify.ProcessEvent):
 
         #remove it from the list of unfound moves
         movedFromPath, filesMoved, timer = movedFrom.pop(event.cookie)
+        movedFromCount.value = movedFromCount.value - 1
         movedFromLock.release()
 
         movedToPath = os.path.join(event.path, event.name).replace(\
@@ -386,6 +399,7 @@ class SIPCreationWatch(pyinotify.ProcessEvent):
     def process_IN_MOVED_TO(self, event):
         #time.sleep(archivematicaMCP.dbWaitSleep) #let db be updated by the microservice that moved it.
         print event
+        print "process_IN_MOVED_TO SIPCreationWatch"
         path = os.path.join(event.path, event.name)
         if not os.path.isdir(path):
             print >>sys.stderr, "Bad path for watching - not a directory: ", path
@@ -422,6 +436,22 @@ def startWatching():
 def main():
     loadExistingFiles()
     startWatching()
+
+def keepRunning():
+    while True:
+        time.sleep(100)
+
+def mainWithMovedFromCounter(movedFrom):
+    global movedFromCount
+    si = singleinstance("/tmp/archivematicaMCPTransferDPID")
+    if si.alreadyrunning():
+        print >>sys.stderr, "Another instance is already running. Killing PID:", si.pid
+        si.kill()
+    movedFromCount = movedFrom
+    main()
+    databaseInterface.reconnect()
+    keepRunning()
+    
 
 if __name__ == '__main__':
     main()

@@ -36,6 +36,9 @@ printSQL = False
 #DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings")
 DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings", charset="utf8", use_unicode = True)
 
+def reconnect():
+    global database
+    database=MySQLdb.connect(**DB_CONNECTION_OPTS)
 
 def getSeparator():
     global separator
@@ -75,7 +78,10 @@ def runSQL(sql):
     sqlLock.acquire()
     db = database
     try:
-        db.query(sql)
+        #db.query(sql)
+        c=database.cursor()
+        c.execute(sql)
+        rows = c.fetchall()
     except MySQLdb.OperationalError, message:
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
@@ -111,6 +117,9 @@ def querySQL(sql):
             time.sleep(10)
             c=database.cursor()
             c.execute(sql)
+        else:
+            print >>sys.stderr, "Error with query: ", sql
+            print >>sys.stderr, "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
     return c, sqlLock
 #        row = c.fetchone()
 #        while row != None:
@@ -144,6 +153,8 @@ def queryAllSQL(sql):
             rows = c.fetchall()
             sqlLock.release()
         else:
-            print >>sys.stderr, message
+            print >>sys.stderr, "Error with query: ", sql
+            print >>sys.stderr, "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
+            exit(-100)
             sqlLock.release()
     return rows
