@@ -97,8 +97,8 @@ class linkTaskManagerFiles:
             print commandReplacementDic
             for key in commandReplacementDic.iterkeys():
                 value = commandReplacementDic[key].replace("\"", ("\\\""))
-                print "key", type(key), key
-                print "value", type(value), value
+                #print "key", type(key), key
+                #print "value", type(value), value
                 if isinstance(value, unicode):
                     value = value.encode("utf-8")
                 #key = key.encode("utf-8")
