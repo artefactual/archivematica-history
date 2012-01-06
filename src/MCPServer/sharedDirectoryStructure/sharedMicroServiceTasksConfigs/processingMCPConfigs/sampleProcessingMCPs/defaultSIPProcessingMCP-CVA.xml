@@ -2,7 +2,7 @@
     <preconfiguredChoices>
         <preconfiguredChoice>
             <appliesTo>Normalize</appliesTo>
-            <goToChain>access only</goToChain>
+            <goToChain>Access only</goToChain>
         </preconfiguredChoice>
         <preconfiguredChoice>
             <appliesTo>Approve normalization</appliesTo>
