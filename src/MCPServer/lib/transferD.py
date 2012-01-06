@@ -437,9 +437,14 @@ def main():
     loadExistingFiles()
     startWatching()
 
-def keepRunning():
+def debugMonitor():
     while True:
-        time.sleep(100)
+        dblockstatus = "SQL Lock: Locked"
+        if databaseInterface.sqlLock.acquire(False):
+            databaseInterface.sqlLock.release()
+            dblockstatus = "SQL Lock: Unlocked"
+        print "<DEBUG type=\"transferD\">", "\tDate Time: ", databaseInterface.getUTCDate(), "\tThreadCount: ", threading.activeCount(), "movedFromCount", movedFromCount.value, dblockstatus, "</DEBUG>"
+        time.sleep(10)
 
 def mainWithMovedFromCounter(movedFrom):
     global movedFromCount
@@ -450,7 +455,7 @@ def mainWithMovedFromCounter(movedFrom):
     movedFromCount = movedFrom
     main()
     databaseInterface.reconnect()
-    keepRunning()
+    debugMonitor()
     
 
 if __name__ == '__main__':

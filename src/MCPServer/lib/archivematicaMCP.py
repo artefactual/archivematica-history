@@ -251,16 +251,11 @@ def signal_handler(signalReceived, frame):
 def debugMonitor():
     global countOfCreateUnitAndJobChainThreaded
     while True:
-        print "<DEBUG>"
-        print "\tThreadCount: ", threading.activeCount()
-        print "\tcountOfCreateUnitAndJobChainThreaded", countOfCreateUnitAndJobChainThreaded
-        print "\tDate Time: ", databaseInterface.getUTCDate()
+        dblockstatus = "SQL Lock: Locked"
         if databaseInterface.sqlLock.acquire(False):
             databaseInterface.sqlLock.release()
-            print "\tSQL Lock: Unlocked"
-        else:
-            print "\tSQL Lock: Locked"
-        print "</DEBUG>"
+            dblockstatus = "SQL Lock: Unlocked"
+        print "<DEBUG type=\"archivematicaMCP\">", "\tDate Time: ", databaseInterface.getUTCDate(), "\tThreadCount: ", threading.activeCount(), "\tcountOfCreateUnitAndJobChainThreaded", countOfCreateUnitAndJobChainThreaded, dblockstatus, "</DEBUG>"
         time.sleep(10)
 
 def flushOutputs():
