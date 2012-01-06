@@ -64,9 +64,12 @@ import lxml.etree as etree
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import databaseFunctions
+import multiprocessing 
 from externals.singleInstance import singleinstance
 
 global xmlRPCServerServer
+global countOfCreateUnitAndJobChainThreaded
+countOfCreateUnitAndJobChainThreaded = 0
 
 config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
 config.read("/etc/archivematica/MCPServer/serverConfig.conf")
@@ -75,6 +78,7 @@ config.read("/etc/archivematica/MCPServer/serverConfig.conf")
 
 #time to sleep to allow db to be updated with the new location of a SIP
 dbWaitSleep = 2
+transferDMovedFromCounter = multiprocessing.Value('i', 0) 
 
 configs = []
 jobsAwaitingApproval = []
@@ -159,13 +163,15 @@ def createUnitAndJobChain(path, config, terminate=False):
     if terminate:
         exit(0)
 
-def createUnitAndJobChainThreaded(path, config):
+def createUnitAndJobChainThreaded(path, config, terminate=True):
+    global countOfCreateUnitAndJobChainThreaded
     #createUnitAndJobChain(path, config)
     #return
     try:
         print "DEBGUG alert watch path: ", path
-        t = threading.Thread(target=createUnitAndJobChain, args=(path, config), kwargs={"terminate":True})
+        t = threading.Thread(target=createUnitAndJobChain, args=(path, config), kwargs={"terminate":terminate})
         t.daemon = True
+        countOfCreateUnitAndJobChainThreaded += 1
         while(limitTaskThreads <= threading.activeCount() + reservedAsTaskProcessingThreads ):
             if stopSignalReceived:
                 print "Signal was received; stopping createUnitAndJobChainThreaded(path, config)"
@@ -173,6 +179,7 @@ def createUnitAndJobChainThreaded(path, config):
             print threading.activeCount().__str__()
             print "DEBUG createUnitAndJobChainThreaded waiting on thread count", threading.activeCount()
             time.sleep(4)
+        countOfCreateUnitAndJobChainThreaded -= 1
         t.start()
     except Exception as inst:
         print "DEBUG EXCEPTION!"
@@ -200,7 +207,8 @@ def watchDirectories():
             path = os.path.join(directory, item)
             if os.path.isdir(path):
                 path = path + "/"
-            createUnitAndJobChain(path, row)
+            #createUnitAndJobChain(path, row)
+            createUnitAndJobChainThreaded(path, row, terminate=False)
         watchDirectory.archivematicaWatchDirectory(directory,row, createUnitAndJobChainThreaded)
 
 #if __name__ == '__main__':
@@ -241,9 +249,11 @@ def signal_handler(signalReceived, frame):
     exit(0)
 
 def debugMonitor():
+    global countOfCreateUnitAndJobChainThreaded
     while True:
         print "<DEBUG>"
         print "\tThreadCount: ", threading.activeCount()
+        print "\tcountOfCreateUnitAndJobChainThreaded", countOfCreateUnitAndJobChainThreaded
         print "\tDate Time: ", databaseInterface.getUTCDate()
         if databaseInterface.sqlLock.acquire(False):
             databaseInterface.sqlLock.release()
@@ -258,6 +268,15 @@ def flushOutputs():
         sys.stdout.flush()
         sys.stderr.flush()
         time.sleep(5)
+
+def startTransferD():
+    p = multiprocessing.Process(target=transferD.mainWithMovedFromCounter, args=(transferDMovedFromCounter,))
+    p.start()
+    print >>sys.stderr, "transferD started - PID:", p.pid
+    while p.is_alive():
+        time.sleep(5)
+    print >>sys.stderr, "transferD crashed\n exitCode:", p.exitcode 
+    
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
@@ -286,7 +305,9 @@ if __name__ == '__main__':
         t.start()
 
     watchDirectories()
-    transferD.main()
+    t = threading.Thread(target=startTransferD)
+    t.daemon = True
+    t.start()
 
     # Start "XMLRPC" Gearman worker
     # This is blocking the main thread with the worker loop
