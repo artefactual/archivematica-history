@@ -208,6 +208,8 @@ def watchDirectories():
             if os.path.isdir(path):
                 path = path + "/"
             #createUnitAndJobChain(path, row)
+            while(limitTaskThreads <= threading.activeCount() + reservedAsTaskProcessingThreads ):
+                time.sleep(1)
             createUnitAndJobChainThreaded(path, row, terminate=False)
         watchDirectory.archivematicaWatchDirectory(directory,row, createUnitAndJobChainThreaded)
 
