@@ -10,7 +10,7 @@
         </preconfiguredChoice>
         <preconfiguredChoice>
             <appliesTo>Normalize</appliesTo>
-            <goToChain>preservation and access</goToChain>
+            <goToChain>Preservation and access</goToChain>
         </preconfiguredChoice>
         <preconfiguredChoice>
             <appliesTo>Approve normalization</appliesTo>
