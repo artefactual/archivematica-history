@@ -1,5 +1,5 @@
 #!/bin/sh
-#This script  will be modified to allow user to select the type of vm to build.
+#This scripti  will be modified to allow user to select the type of vm to build.
 rootSize="8000"
 cat << !
 Build Archivematica VM
