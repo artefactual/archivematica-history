@@ -22,21 +22,34 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+#sudo apt-get install graphviz
+
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 
-def jobChainLinkExitCodesTextGet(exitCode, nextMicroServiceChainLink, exitMessage):
-    print """ if "exitCodeIs %s" then""" % (exitCode.__str__())
-    a= """-->[true] "Some Activity"
-              --> "Another activity"
-              -right-> (*)
-            else
-              ->[false] "Something else"
-              -->[Ending process] (*)
-            endif"""
+f = open('plantUML', 'w')
+processedJobChainLinks = []
+def writePlant(*items):
+    p = ""
+    for str in items:
+        p = "%s%s" % (p, str.__str__())
+    print p
+    f.write(p)
+    f.write("\n")
 
-def jobChainLinkTextGet(leadIn, pk, label = ""):
+def jobChainLinkExitCodesTextGet(indent, exitCode, nextMicroServiceChainLink, exitMessage, set):
+    leadIn = ""
+    if set:
+        leadIn = "->[false]"
+    writePlant( indent, leadIn, """if "exitCodeIs %s" then""" % (exitCode.__str__()))
+    if nextMicroServiceChainLink:
+        jobChainLinkTextGet(indent + " ", "-->[true]", nextMicroServiceChainLink, label = "")
+    else:
+        writePlant(indent + " ", """-->[true] "End Of Chain" """)
+   
+
+def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
     sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description, MicroServiceChainLinks.reloadFileList, Sounds.fileLocation, MicroServiceChainLinks.defaultExitMessage, MicroServiceChainLinks.microserviceGroup FROM MicroServiceChainLinks LEFT OUTER JOIN Sounds ON MicroServiceChainLinks.defaultPlaySound = Sounds.pk JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = '%s';""" % (pk.__str__())
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
@@ -50,33 +63,58 @@ def jobChainLinkTextGet(leadIn, pk, label = ""):
         defaultExitMessage = row[7]
         microserviceGroup = row[8]
 
-        leadOut = description
+        leadOut = "%d. %s" % (pk, description)
         if label != "":
-            print ("%s -->[%s] %s") % (leadIn, label, leadOut)
+            writePlant( ("%s%s \"%s %s\"") % (indent, leadIn , label, leadOut) )
         else:
-            print ("%s --> %s") % (leadIn, leadOut)
+            writePlant( ("%s%s \"%s\"") % (indent, leadIn, leadOut) )
+        
+        if pk in processedJobChainLinks:
+            return
+        else:
+            processedJobChainLinks.append(pk)
 
         sql = """SELECT exitCode, nextMicroServiceChainLink, exitMessage FROM MicroServiceChainLinksExitCodes WHERE microServiceChainLink = '%s';""" % (pk.__str__())
         rows2 = databaseInterface.queryAllSQL(sql)
+        set = False
+        ifindent = indent + " "
         for row2 in rows2:
+            if set:
+                #writePlant( indent + " ", """endif""")
+                writePlant( ifindent[:-1], """else""")
             exitCode = row2[0]
             nextMicroServiceChainLink = row2[1]
             exitMessage = row2[2]
+            jobChainLinkExitCodesTextGet(ifindent, exitCode, nextMicroServiceChainLink, exitMessage, set)
+            set = True
+            ifindent = ifindent + " "
+        
+        if set:
+            writePlant( ifindent, """else""")
+            writePlant( ifindent, """->[false] if "%d. default" then """ % (pk) )
+        else:        
+            writePlant( ifindent, """ if "%d. default" """ % (pk) )
+                
         if defaultNextChainLink:
-            print """ if "exitCodeIs Unhandled" then """
-            jobChainLinkTextGet("", defaultNextChainLink, label="true")
-            print """endif"""
+            jobChainLinkTextGet(ifindent + " ", "-->[true]", defaultNextChainLink, label="true")
+        else:
+            writePlant( ifindent, """-->[True] "End Of Chain" """ )
+        while ifindent != indent + " ":
+            writePlant( ifindent + " ", """endif""")
+            ifindent = ifindent[:-1]
+        writePlant( ifindent, """endif""" )
 
 
 def jobChainTextGet(leadIn, pk):
     sql = """SELECT startingLink, description FROM MicroServiceChains WHERE pk = '%s';""" % (pk.__str__())
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
+        processedJobChainLinks = []
         startingLink = row[0]
         description = row[1]
-        leadOut = description + " \"MicroServiceChain\""
-        print ("%s --> %s") % (leadIn, leadOut)
-        jobChainLinkTextGet(leadOut, startingLink)
+        leadOut = "-->[" + description + " MicroServiceChain]"
+        writePlant( ("%s \"%s\"") % (leadIn, leadOut) )
+        jobChainLinkTextGet("", leadOut, startingLink)
 
 if __name__ == '__main__':
     sql = """SELECT watchedDirectoryPath, chain, expectedType FROM WatchedDirectories;"""
@@ -86,10 +124,10 @@ if __name__ == '__main__':
         watchedDirectoryPath = row[0]
         chain = row[1]
         expectedType = row[2]
-        print "@startuml", "img/" + i.__str__() + ".png" #img/activity_img10.png
-        print "title " + watchedDirectoryPath
+        writePlant( "@startuml", "img/" + i.__str__() + ".png" ) #img/activity_img10.png
+        writePlant( "title " + watchedDirectoryPath )
         #print "(*) --> " "First activity"
-        jobChainTextGet("(*)[" + watchedDirectoryPath + "]" , chain)
+        jobChainTextGet("(*) --> [" + watchedDirectoryPath + "]" , chain)
         # --> (*)
-        print "@enduml"
+        writePlant( "@enduml" )
         i+=1
