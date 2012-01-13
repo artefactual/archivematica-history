@@ -28,7 +28,7 @@ import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 
-f = open('plantUML', 'w')
+f = open('plantUML.txt', 'w')
 processedJobChainLinks = []
 def writePlant(*items):
     p = ""
@@ -62,48 +62,70 @@ def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
         defaultSoundFile = row[6]
         defaultExitMessage = row[7]
         microserviceGroup = row[8]
-
-        leadOut = "%d. %s" % (pk, description)
-        if label != "":
-            writePlant( ("%s%s \"%s %s\"") % (indent, leadIn , label, leadOut) )
-        else:
-            writePlant( ("%s%s \"%s\"") % (indent, leadIn, leadOut) )
         
-        if pk in processedJobChainLinks:
-            return
+        if taskType == 3:
+            sql = """SELECT execute FROM StandardTasksConfigs WHERE pk = %d; """ % (taskTypePKReference)
+            rows = databaseInterface.queryAllSQL(sql)
+            leadOut = "%d. %s" % (pk, description)
+            if label != "":
+                writePlant( ("%s%s \"%s %s - Assign Magic Link %s\"") % (indent, leadIn , label, leadOut, rows[0][0].__str__()) )
+            else:
+                writePlant( ("%s%s \"%s - Assign Magic Link %s\"") % (indent, leadIn, leadOut, rows[0][0].__str__()) )
+            
+            if pk in processedJobChainLinks:
+                return
+            else:
+                processedJobChainLinks.append(pk)
         else:
-            processedJobChainLinks.append(pk)
+            leadOut = "%d. %s" % (pk, description)
+            if label != "":
+                writePlant( ("%s%s \"%s %s\"") % (indent, leadIn , label, leadOut) )
+            else:
+                writePlant( ("%s%s \"%s\"") % (indent, leadIn, leadOut) )
+            
+            if pk in processedJobChainLinks:
+                return
+            else:
+                processedJobChainLinks.append(pk)
 
-        sql = """SELECT exitCode, nextMicroServiceChainLink, exitMessage FROM MicroServiceChainLinksExitCodes WHERE microServiceChainLink = '%s';""" % (pk.__str__())
-        rows2 = databaseInterface.queryAllSQL(sql)
-        set = False
-        ifindent = indent + " "
-        for row2 in rows2:
+        if taskType == 0 or taskType == 1 or taskType == 3: #|    0 | one instance |    1 | for each file                   | 
+            
+            sql = """SELECT exitCode, nextMicroServiceChainLink, exitMessage FROM MicroServiceChainLinksExitCodes WHERE microServiceChainLink = '%s';""" % (pk.__str__())
+            rows2 = databaseInterface.queryAllSQL(sql)
+            set = False
+            ifindent = indent + " "
+            for row2 in rows2:
+                if set:
+                    #writePlant( indent + " ", """endif""")
+                    writePlant( ifindent[:-1], """else""")
+                exitCode = row2[0]
+                nextMicroServiceChainLink = row2[1]
+                exitMessage = row2[2]
+                jobChainLinkExitCodesTextGet(ifindent, exitCode, nextMicroServiceChainLink, exitMessage, set)
+                set = True
+                ifindent = ifindent + " "
+            
             if set:
-                #writePlant( indent + " ", """endif""")
-                writePlant( ifindent[:-1], """else""")
-            exitCode = row2[0]
-            nextMicroServiceChainLink = row2[1]
-            exitMessage = row2[2]
-            jobChainLinkExitCodesTextGet(ifindent, exitCode, nextMicroServiceChainLink, exitMessage, set)
-            set = True
-            ifindent = ifindent + " "
+                writePlant( ifindent, """else""")
+                writePlant( ifindent, """->[false] if "%d. default" then """ % (pk) )
+            else:        
+                writePlant( ifindent, """ if "%d. default" """ % (pk) )
+                    
+            if defaultNextChainLink:
+                jobChainLinkTextGet(ifindent + " ", "-->[true]", defaultNextChainLink, label="true")
+            else:
+                writePlant( ifindent, """-->[True] "End Of Chain" """ )
+            while ifindent != indent + " ":
+                writePlant( ifindent + " ", """endif""")
+                ifindent = ifindent[:-1]
+            writePlant( ifindent, """endif""" )
+            
+        if taskType == 2: #
+            print "get user choice to proceed with"
         
-        if set:
-            writePlant( ifindent, """else""")
-            writePlant( ifindent, """->[false] if "%d. default" then """ % (pk) )
-        else:        
-            writePlant( ifindent, """ if "%d. default" """ % (pk) )
-                
-        if defaultNextChainLink:
-            jobChainLinkTextGet(ifindent + " ", "-->[true]", defaultNextChainLink, label="true")
-        else:
-            writePlant( ifindent, """-->[True] "End Of Chain" """ )
-        while ifindent != indent + " ":
-            writePlant( ifindent + " ", """endif""")
-            ifindent = ifindent[:-1]
-        writePlant( ifindent, """endif""" )
-
+        if taskType == 4:
+            print "goto magic link"
+            
 
 def jobChainTextGet(leadIn, pk):
     sql = """SELECT startingLink, description FROM MicroServiceChains WHERE pk = '%s';""" % (pk.__str__())
@@ -113,7 +135,7 @@ def jobChainTextGet(leadIn, pk):
         startingLink = row[0]
         description = row[1]
         leadOut = "-->[" + description + " MicroServiceChain]"
-        writePlant( ("%s \"%s\"") % (leadIn, leadOut) )
+        writePlant( ("%s \"%s\"") % (leadIn, description + " MicroServiceChain") )
         jobChainLinkTextGet("", leadOut, startingLink)
 
 if __name__ == '__main__':
@@ -124,7 +146,8 @@ if __name__ == '__main__':
         watchedDirectoryPath = row[0]
         chain = row[1]
         expectedType = row[2]
-        writePlant( "@startuml", "img/" + i.__str__() + ".png" ) #img/activity_img10.png
+        writePlant( "@startuml WatchedDirectory-", watchedDirectoryPath.replace("%watchDirectoryPath%", "").replace("/", "_") + ".png" ) #img/activity_img10.png
+        #writePlant( "@image ", watchedDirectoryPath.replace("/", "-").replace( + ".png" )
         writePlant( "title " + watchedDirectoryPath )
         #print "(*) --> " "First activity"
         jobChainTextGet("(*) --> [" + watchedDirectoryPath + "]" , chain)
