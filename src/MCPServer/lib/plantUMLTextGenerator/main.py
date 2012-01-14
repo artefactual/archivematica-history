@@ -51,6 +51,7 @@ def jobChainLinkExitCodesTextGet(indent, exitCode, nextMicroServiceChainLink, ex
 
 def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
     sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description, MicroServiceChainLinks.reloadFileList, Sounds.fileLocation, MicroServiceChainLinks.defaultExitMessage, MicroServiceChainLinks.microserviceGroup FROM MicroServiceChainLinks LEFT OUTER JOIN Sounds ON MicroServiceChainLinks.defaultPlaySound = Sounds.pk JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = '%s';""" % (pk.__str__())
+    print sql
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
         currentTask = row[0]
@@ -112,33 +113,49 @@ def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
                 writePlant( ifindent, """ if "%d. default" """ % (pk) )
                     
             if defaultNextChainLink:
-                jobChainLinkTextGet(ifindent + " ", "-->[true]", defaultNextChainLink, label="true")
+                jobChainLinkTextGet(ifindent + " ", "-->[true]", defaultNextChainLink, label="")
             else:
-                writePlant( ifindent, """-->[True] "End Of Chain" """ )
+                writePlant( ifindent, """-->[true] "End Of Chain" """ )
             while ifindent != indent + " ":
                 writePlant( ifindent + " ", """endif""")
                 ifindent = ifindent[:-1]
             writePlant( ifindent, """endif""" )
             
-        if taskType == 2: #
-            print "get user choice to proceed with"
+        elif taskType == 2: #
+            sql = """SELECT description, chainAvailable from MicroServiceChainChoice Join MicroServiceChains ON MicroServiceChainChoice.chainAvailable = MicroServiceChains.pk WHERE choiceAvailableAtLink = %d;""" % (pk)
+            print sql
+            rows2 = databaseInterface.queryAllSQL(sql)
+            first = True
+            ifindent = indent
+            for row2 in rows2:
+                leadIn = "->[false]"
+                if first:
+                    leadIn = ""
+                    first = False
+                else:
+                    writePlant( ifindent[:-1], "else")
+                writePlant( ifindent, leadIn, """if "select %s" then""" % (row2[0]))
+                ifindent = ifindent + " "
+                leadOut = "-->[true]"
+                jobChainTextGet(leadOut, row2[1], indent=ifindent+" ")
         
-        if taskType == 4:
-            print "goto magic link"
+        elif taskType == 4:
+            writePlant( indent, leadIn, """ "Load Magic Link" """)
+            writePlant( indent, "-->[Load Magic Link] (*)")
             
 
-def jobChainTextGet(leadIn, pk):
+def jobChainTextGet(leadIn, pk, indent=""):
     sql = """SELECT startingLink, description FROM MicroServiceChains WHERE pk = '%s';""" % (pk.__str__())
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
-        processedJobChainLinks = []
         startingLink = row[0]
         description = row[1]
         leadOut = "-->[" + description + " MicroServiceChain]"
         writePlant( ("%s \"%s\"") % (leadIn, description + " MicroServiceChain") )
-        jobChainLinkTextGet("", leadOut, startingLink)
+        jobChainLinkTextGet(indent, leadOut, startingLink)
 
-if __name__ == '__main__':
+
+def createWatchedDirectories():
     sql = """SELECT watchedDirectoryPath, chain, expectedType FROM WatchedDirectories;"""
     rows = databaseInterface.queryAllSQL(sql)
     i = 1
@@ -154,3 +171,25 @@ if __name__ == '__main__':
         # --> (*)
         writePlant( "@enduml" )
         i+=1
+        
+def createLoadMagic():
+    sql = """SELECT watchedDirectoryPath, chain, expectedType FROM WatchedDirectories;"""
+    rows = databaseInterface.queryAllSQL(sql)
+    i = 1
+    for row in rows:
+        watchedDirectoryPath = row[0]
+        chain = row[1]
+        expectedType = row[2]
+        processedJobChainLinks = []
+        writePlant( "@startuml WatchedDirectory-", watchedDirectoryPath.replace("%watchDirectoryPath%", "").replace("/", "_") + ".png" ) #img/activity_img10.png
+        #writePlant( "@image ", watchedDirectoryPath.replace("/", "-").replace( + ".png" )
+        writePlant( "title " + watchedDirectoryPath )
+        #print "(*) --> " "First activity"
+        jobChainTextGet("(*) --> [" + watchedDirectoryPath + "]" , chain)
+        # --> (*)
+        writePlant( "@enduml" )
+        i+=1
+        
+if __name__ == '__main__':
+    createWatchedDirectories()
+    createLoadMagic()
