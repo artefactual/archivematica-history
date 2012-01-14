@@ -29,6 +29,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 
 f = open('plantUML.txt', 'w')
+global processedJobChainLinks
 processedJobChainLinks = []
 def writePlant(*items):
     p = ""
@@ -50,6 +51,7 @@ def jobChainLinkExitCodesTextGet(indent, exitCode, nextMicroServiceChainLink, ex
    
 
 def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
+    global processedJobChainLinks
     sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description, MicroServiceChainLinks.reloadFileList, Sounds.fileLocation, MicroServiceChainLinks.defaultExitMessage, MicroServiceChainLinks.microserviceGroup FROM MicroServiceChainLinks LEFT OUTER JOIN Sounds ON MicroServiceChainLinks.defaultPlaySound = Sounds.pk JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = '%s';""" % (pk.__str__())
     print sql
     rows = databaseInterface.queryAllSQL(sql)
@@ -156,6 +158,7 @@ def jobChainTextGet(leadIn, pk, indent=""):
 
 
 def createWatchedDirectories():
+    global processedJobChainLinks
     sql = """SELECT watchedDirectoryPath, chain, expectedType FROM WatchedDirectories;"""
     rows = databaseInterface.queryAllSQL(sql)
     i = 1
@@ -164,29 +167,23 @@ def createWatchedDirectories():
         chain = row[1]
         expectedType = row[2]
         writePlant( "@startuml WatchedDirectory-", watchedDirectoryPath.replace("%watchDirectoryPath%", "").replace("/", "_") + ".png" ) #img/activity_img10.png
-        #writePlant( "@image ", watchedDirectoryPath.replace("/", "-").replace( + ".png" )
         writePlant( "title " + watchedDirectoryPath )
-        #print "(*) --> " "First activity"
         jobChainTextGet("(*) --> [" + watchedDirectoryPath + "]" , chain)
-        # --> (*)
         writePlant( "@enduml" )
         i+=1
         
 def createLoadMagic():
-    sql = """SELECT watchedDirectoryPath, chain, expectedType FROM WatchedDirectories;"""
+    global processedJobChainLinks
+    sql = """SELECT TasksConfigs.description, StandardTasksConfigs.execute FROM TasksConfigs JOIN StandardTasksConfigs ON TasksConfigs.taskTypePKReference = StandardTasksConfigs.pk WHERE TasksConfigs.taskType = 3;"""
     rows = databaseInterface.queryAllSQL(sql)
     i = 1
     for row in rows:
-        watchedDirectoryPath = row[0]
-        chain = row[1]
-        expectedType = row[2]
+        description = row[0]
+        chainLink = row[1]
         processedJobChainLinks = []
-        writePlant( "@startuml WatchedDirectory-", watchedDirectoryPath.replace("%watchDirectoryPath%", "").replace("/", "_") + ".png" ) #img/activity_img10.png
-        #writePlant( "@image ", watchedDirectoryPath.replace("/", "-").replace( + ".png" )
-        writePlant( "title " + watchedDirectoryPath )
-        #print "(*) --> " "First activity"
-        jobChainTextGet("(*) --> [" + watchedDirectoryPath + "]" , chain)
-        # --> (*)
+        writePlant( "@startuml LoadMagicLink-", description, "-", chainLink ,".png" ) #img/activity_img10.png
+        writePlant( "title ", description, "-", chainLink )
+        jobChainLinkTextGet("", "(*) --> [" + description + "]", int(chainLink), label = "")
         writePlant( "@enduml" )
         i+=1
         
