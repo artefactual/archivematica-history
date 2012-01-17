@@ -425,7 +425,8 @@ CREATE TABLE Files(
     enteredSystem       TIMESTAMP(8) DEFAULT NOW(),
     fileSize            BIGINT UNSIGNED, 
     checksum            VARCHAR(100),
-    fileGrpUse                VARCHAR(50) DEFAULT 'Original'
+    fileGrpUse          VARCHAR(50) DEFAULT 'Original',
+    fileGrpUUID         VARCHAR(50)
 ) DEFAULT CHARSET=utf8;
 
 
