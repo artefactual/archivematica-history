@@ -26,6 +26,7 @@ import os
 import sys
 import uuid
 from optparse import OptionParser
+import re
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import insertIntoDerivations
@@ -46,7 +47,31 @@ def something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date):
 
 
 
+def regular(SIPDirectory, objectsDirectory, SIPUUID, date):
+    searchForRegularExpressions = True
+    if not searchForRegularExpressions:
+        return
+    original = ""
+    service = ""
+
+    for (path, dirs, files) in os.walk(objectsDirectory):
+        for file in files:
+            m = re.search("_me\.[a-zA-Z0-9]{2,4}$", file)
+            if m != None:
+                file1Full = os.path.join(path, file).replace(SIPDirectory, "%SIPDirectory%", 1) #service
+                file2 = file.replace(m.group(0), m.group(0).replace("_me", "_m", 1))
+                file2Full = os.path.join(path, file2).replace(SIPDirectory, "%SIPDirectory%", 1) #original
+                accessPath = os.path.join(path, file)
+                sql = "UPDATE Files SET fileGrpUse='service' WHERE currentLocation =  '" + file1Full + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
+                rows = databaseInterface.runSQL(sql)
+                sql = "UPDATE Files SET fileGrpUUID= (SELECT fileUUID FROM (SELECT * FROM Files WHERE removedTime = 0 AND SIPUUID = '"+ SIPUUID + "')  AS F WHERE currentLocation =  '" + file2Full + "') WHERE currentLocation =  '" + file1Full + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
+                rows = databaseInterface.runSQL(sql)
+    
+
 if __name__ == '__main__':
+    while False:
+        import time
+        time.sleep(10)
     parser = OptionParser()
     #'--SIPDirectory "%SIPDirectory%" --serviceDirectory "objects/service/" --objectsDirectory "objects/" --SIPUUID "%SIPUUID%" --date "%date%"' );
     parser.add_option("-s",  "--SIPDirectory", action="store", dest="SIPDirectory", default="")
@@ -65,6 +90,7 @@ if __name__ == '__main__':
 
     if not os.path.isdir(serviceDirectory):
         print "no service directory in this sip"
+        regular(SIPDirectory, objectsDirectory, SIPUUID, date)
         exit(0)
 
     exitCode = something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date)

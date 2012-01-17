@@ -440,7 +440,7 @@ def createFileSec(directoryPath, structMapDiv):
             #directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath + "objects", "objects", 1)
             directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath, baseDirectoryPathString, 1)
 
-            sql = """SELECT fileUUID, fileGrpUse, transferUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(directoryPathSTR))
+            sql = """SELECT fileUUID, fileGrpUse, fileGrpUUID, transferUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(directoryPathSTR))
             c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             if row == None:
@@ -451,7 +451,8 @@ def createFileSec(directoryPath, structMapDiv):
             while row != None:
                 myuuid = row[0]
                 use = row[1]
-                transferUUID = row[2]
+                fileGrpUUID = row[2]
+                transferUUID = row[3]
                 row = c.fetchone()
             sqlLock.release()
 
@@ -469,11 +470,14 @@ def createFileSec(directoryPath, structMapDiv):
 
             newChild(structMapDiv, "fptr", sets=[("FILEID",FILEID)])
 
-            GROUPID=""
-            if use == "original" or use == "submissionDocumentation":
+            GROUPID = ""
+            if fileGrpUUID:
+                GROUPID = "Group-%s" % (fileGrpUUID)
+                
+            elif  use == "original" or use == "submissionDocumentation":
                 GROUPID = "Group-%s" % (myuuid)
 
-            if use == "preservation":
+            elif use == "preservation":
                 sql = "SELECT * FROM Derivations WHERE derivedFileUUID = '" + myuuid + "';"
                 c, sqlLock = databaseInterface.querySQL(sql)
                 row = c.fetchone()
