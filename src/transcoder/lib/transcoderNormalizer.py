@@ -201,6 +201,7 @@ if __name__ == '__main__':
     parser.add_option("-s",  "--sipUUID",   action="store", dest="sipUUID", default="")
     parser.add_option("-p",  "--sipPath",   action="store", dest="sipPath", default="")
     parser.add_option("-g",  "--fileGrpUse",   action="store", dest="fileGrpUse", default="")
+    parser.add_option("-n",  "--normalizeFileGrpUse",   action="store", dest="normalizeFileGrpUse", default="original")
 
     (opts, args) = parser.parse_args()
 
@@ -214,8 +215,8 @@ if __name__ == '__main__':
             exit(0)
 
     #can move into if opts.commandClassifications == "preservation/access": to isolate for those functions
-    if opts.fileGrpUse in ["DSPACEMETS", "service"]:
-        print "file's fileGrpUse in exclusion list, skipping"
+    if opts.fileGrpUse != opts.normalizeFileGrpUse:
+        print "file's fileGrpUse not part of normalize from use."
         exit(0)
 
     setFileIn(fileIn=filename)
