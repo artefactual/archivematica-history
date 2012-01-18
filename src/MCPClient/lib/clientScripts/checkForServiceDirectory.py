@@ -39,20 +39,36 @@ def something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date):
     #For every file, & directory Try to find the matching file & directory in the objects directory
     for (path, dirs, files) in os.walk(serviceDirectory):
         for file in files:
+            servicePreExtension = "_me"
+            originalPreExtension = "_m"
+            file1Full = os.path.join(path, file).replace(SIPDirectory, "%SIPDirectory%", 1) #service
+            
+            a = file.rfind(servicePreExtension + ".")
+            file2 = ""
+            if a != -1:
+                file2Full = os.path.join(path, file[:a] + originalPreExtension + ".").replace(SIPDirectory + "objects/service/", "%SIPDirectory%objects/", 1) #service
+            else:
+                a = file.rfind(".")
+                if a != -1: #if a period is found
+                    a += 1 #include the period
+                file2Full = os.path.join(path, file[:a]).replace(SIPDirectory + "objects/service/", "%SIPDirectory%objects/", 1) #service
             accessPath = os.path.join(path, file)
-            sql = "UPDATE Files SET fileGrpUse='service' WHERE currentLocation =  '" + accessPath.replace(SIPDirectory, "%SIPDirectory%", 1) + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
-            #print sql
+            sql = "UPDATE Files SET fileGrpUse='service' WHERE currentLocation =  '" + file1Full + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
+            rows = databaseInterface.runSQL(sql)
+            sql = "UPDATE Files SET fileGrpUUID= (SELECT fileUUID FROM (SELECT * FROM Files WHERE removedTime = 0 AND SIPUUID = '"+ SIPUUID + "')  AS F WHERE currentLocation LIKE  '" + file2Full + "%') WHERE currentLocation =  '" + file1Full + "' AND removedTime = 0 AND SIPUUID = '"+ SIPUUID + "'"
+            print sql
             rows = databaseInterface.runSQL(sql)
     return exitCode
 
 
-
+#only works if files have the same extension
 def regular(SIPDirectory, objectsDirectory, SIPUUID, date):
     searchForRegularExpressions = True
     if not searchForRegularExpressions:
         return
     original = ""
     service = ""
+    
 
     for (path, dirs, files) in os.walk(objectsDirectory):
         for file in files:
@@ -90,7 +106,7 @@ if __name__ == '__main__':
 
     if not os.path.isdir(serviceDirectory):
         print "no service directory in this sip"
-        regular(SIPDirectory, objectsDirectory, SIPUUID, date)
+        #regular(SIPDirectory, objectsDirectory, SIPUUID, date)
         exit(0)
 
     exitCode = something(SIPDirectory, serviceDirectory, objectsDirectory, SIPUUID, date)
