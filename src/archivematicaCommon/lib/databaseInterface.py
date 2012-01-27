@@ -27,6 +27,7 @@ import os
 import threading
 import string
 import sys
+import time
 from datetime import datetime
 
 global separator
@@ -38,7 +39,19 @@ DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archiv
 
 def reconnect():
     global database
-    database=MySQLdb.connect(**DB_CONNECTION_OPTS)
+    retryAttempts = 3
+    secondsBetweenRetry = 10
+    for a in range(retryAttempts):
+        try:
+            database=MySQLdb.connect(**DB_CONNECTION_OPTS)
+            break
+        except Exception as inst:
+            print >>sys.stderr, "Error connecting to database:"
+            print >>sys.stderr, type(inst)     # the exception instance
+            print >>sys.stderr, inst.args
+            time.sleep(secondsBetweenRetry)
+            if a+1 == retryAttempts:
+                raise Exception(inst)
 
 def getSeparator():
     global separator
@@ -64,7 +77,7 @@ def getDeciDate(date):
 sqlLock = threading.Lock()
 sqlLock.acquire()
 global database
-database=MySQLdb.connect(**DB_CONNECTION_OPTS)
+reconnect()
 sqlLock.release()
 
 def runSQL(sql):
@@ -85,7 +98,7 @@ def runSQL(sql):
     except MySQLdb.OperationalError, message:
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
-            database=MySQLdb.connect(**DB_CONNECTION_OPTS)
+            reconnect()
             sqlLock.release()
             runSQL(sql)
             return
@@ -112,7 +125,7 @@ def querySQL(sql):
     except MySQLdb.OperationalError, message:
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
-            database=MySQLdb.connect(**DB_CONNECTION_OPTS)
+            reconnect()
             import time
             time.sleep(10)
             c=database.cursor()
@@ -145,7 +158,7 @@ def queryAllSQL(sql):
     except MySQLdb.OperationalError, message:
         #errorMessage = "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
         if message[0] == 2006 and message[1] == 'MySQL server has gone away':
-            database=MySQLdb.connect(**DB_CONNECTION_OPTS)
+            reconnect()
             import time
             time.sleep(10)
             c=database.cursor()
