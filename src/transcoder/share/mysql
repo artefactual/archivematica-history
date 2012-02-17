@@ -60,6 +60,13 @@ CREATE TABLE Commands (
     description LONGTEXT
 );
 
+
+DROP TABLE IF EXISTS FileIDs;
+CREATE TABLE FileIDs (
+    pk INT PRIMARY KEY AUTO_INCREMENT,
+    description TEXT
+);
+
 DROP TABLE IF EXISTS CommandRelationships;
 CREATE TABLE CommandRelationships (
     pk INT PRIMARY KEY AUTO_INCREMENT,
@@ -74,13 +81,7 @@ CREATE TABLE CommandRelationships (
     countOK INT UNSIGNED DEFAULT 0,
     countNotOK INT UNSIGNED DEFAULT 0
 );
--- UPDATE CommandRelationships SET countOK=countOK+1 Where pk=1234 --
 
-DROP TABLE IF EXISTS FileIDs;
-CREATE TABLE FileIDs (
-    pk INT PRIMARY KEY AUTO_INCREMENT,
-    description TEXT
-);
 
 DROP TABLE IF EXISTS FileIDsByExtension;
 CREATE TABLE FileIDsByExtension (

@@ -31,8 +31,8 @@ CREATE TABLE Accesses (
     status LONGTEXT,
     statusCode TINYINT UNSIGNED,
     exitCode TINYINT UNSIGNED,
-    createdTime TIMESTAMP(8) DEFAULT NOW(),
-    updatedTime TIMESTAMP(8)
+    createdTime TIMESTAMP DEFAULT NOW(),
+    updatedTime TIMESTAMP
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Agents;
@@ -366,14 +366,14 @@ DROP TABLE IF EXISTS Tasks;
 CREATE TABLE Tasks (
     taskUUID        VARCHAR(50) PRIMARY KEY,
     jobUUID         VARCHAR(50),
-    createdTime     TIMESTAMP(8) DEFAULT NOW(),
+    createdTime     TIMESTAMP DEFAULT NOW(),
     fileUUID        VARCHAR(50),
     fileName        VARCHAR(100),
     exec            VARCHAR(50),
     arguments       VARCHAR(1000),
-    startTime       TIMESTAMP(8),
+    startTime       TIMESTAMP,
     client          VARCHAR(50),
-    endTime         TIMESTAMP(8),
+    endTime         TIMESTAMP,
     stdOut          LONGTEXT,
     stdError        LONGTEXT,
     exitCode        BIGINT
@@ -383,7 +383,7 @@ DROP TABLE IF EXISTS Jobs;
 CREATE TABLE Jobs (
     jobUUID         VARCHAR(50) PRIMARY KEY,
     jobType         VARCHAR(250),
-    createdTime     TIMESTAMP(8) DEFAULT NOW(),
+    createdTime     TIMESTAMP DEFAULT NOW(),
     createdTimeDec  decimal(24,10) NOT NULL DEFAULT 0,
     directory       VARCHAR(250),
     SIPUUID         VARCHAR(50),
@@ -397,14 +397,14 @@ DROP TABLE IF EXISTS jobStepCompleted;
 CREATE TABLE jobStepCompleted (
     pk              BIGINT PRIMARY KEY AUTO_INCREMENT,
     jobUUID         VARCHAR(50),
-    completedTime   TIMESTAMP(8) DEFAULT NOW(),
+    completedTime   TIMESTAMP DEFAULT NOW(),
     step            VARCHAR(50)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS SIPs;
 CREATE TABLE SIPs (
     sipUUID         VARCHAR(50) PRIMARY KEY,
-    createdTime     TIMESTAMP(8) DEFAULT NOW(),
+    createdTime     TIMESTAMP DEFAULT NOW(),
     currentPath     LONGTEXT,
     magicLink       BIGINT,
     magicLinkExitMessage VARCHAR(50) DEFAULT 'Completed successfully',
@@ -421,8 +421,8 @@ CREATE TABLE Files(
     Foreign Key (sipUUID) references SIPs(sipUUID),
     transferUUID        VARCHAR(50),
     Foreign Key (transferUUID) references Transfers(transferUUID),
-    removedTime         TIMESTAMP(8) DEFAULT 0,
-    enteredSystem       TIMESTAMP(8) DEFAULT NOW(),
+    removedTime         TIMESTAMP DEFAULT 0,
+    enteredSystem       TIMESTAMP DEFAULT NOW(),
     fileSize            BIGINT UNSIGNED, 
     checksum            VARCHAR(100),
     fileGrpUse          VARCHAR(50) DEFAULT 'Original',
@@ -455,12 +455,11 @@ CREATE TABLE Events(
     Foreign Key (fileUUID) references Files(fileUUID),
     eventIdentifierUUID VARCHAR(50),
     eventType           LONGTEXT,
-    eventDateTime       TIMESTAMP(8),
+    eventDateTime       TIMESTAMP,
     eventDetail         LONGTEXT,
     eventOutcome        LONGTEXT,
     eventOutcomeDetailNote  LONGTEXT,
-    linkingAgentIdentifier  INT,
-    Foreign Key (linkingAgentIdentifier) references linkingAgentIdentifiers(pk)
+    linkingAgentIdentifier  INT
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Derivations;
@@ -493,46 +492,9 @@ INSERT INTO Sounds
     ( @requiresApprovalSound, 'Requires approval', '/usr/share/sounds/KDE-Sys-List-End.ogg');
 
 
-
-
-DROP TABLE IF EXISTS MicroServiceChainLinks;
-CREATE TABLE MicroServiceChainLinks (
-    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    currentTask                 INT UNSIGNED,
-    Foreign Key (currentTask) references TasksConfigs(pk),            
-    defaultNextChainLink        INT UNSIGNED DEFAULT 1,   
-    Foreign Key (defaultNextChainLink) references MicroServiceChainLinks(pk),    
-    defaultPlaySound   INT,
-    Foreign Key (defaultPlaySound) references Sounds(pk),    
-    microserviceGroup VARCHAR(50),
-    reloadFileList      BOOLEAN DEFAULT TRUE,
-    defaultExitMessage  VARCHAR(50) DEFAULT 'Failed'
-) DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
-CREATE TABLE MicroServiceChainLinksExitCodes (
-    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    microServiceChainLink   INT UNSIGNED,
-    Foreign Key (microServiceChainLink) references MicroServiceChainLinks(pk),
-    exitCode    INT DEFAULT 0,
-    nextMicroServiceChainLink   INT UNSIGNED,
-    Foreign Key (nextMicroServiceChainLink) references MicroServiceChainLinks(pk),
-    playSound   INT,
-    Foreign Key (playSound) references Sounds(pk),
-    exitMessage  VARCHAR(50) DEFAULT 'Completed successfully'
-) DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS MicroServiceChains;
-CREATE TABLE MicroServiceChains (
-    pk              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
-    startingLink    INT UNSIGNED,
-    Foreign Key (startingLink) references MicroServiceChainLinks(pk),           
-    description     LONGTEXT
-) DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS TaskTypes;
 CREATE TABLE TaskTypes (
-    pk                 INT UNSIGNED,
+    pk                 INT UNSIGNED PRIMARY KEY,
     description        LONGTEXT
 ) DEFAULT CHARSET=utf8;
 
@@ -553,6 +515,8 @@ CREATE TABLE TasksConfigs (
     description         LONGTEXT
 ) DEFAULT CHARSET=utf8;
 
+
+
 DROP TABLE IF EXISTS StandardTasksConfigs;
 CREATE TABLE StandardTasksConfigs (
     pk                  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -565,6 +529,44 @@ CREATE TABLE StandardTasksConfigs (
     execute             VARCHAR(50),
     arguments           LONGTEXT
 ) DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS MicroServiceChainLinks;
+CREATE TABLE MicroServiceChainLinks (
+    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    currentTask                 INT UNSIGNED,
+    Foreign Key (currentTask) references TasksConfigs(pk),            
+    defaultNextChainLink        INT UNSIGNED DEFAULT 1,   
+    Foreign Key (defaultNextChainLink) references MicroServiceChainLinks(pk),    
+    defaultPlaySound   INT UNSIGNED,
+    Foreign Key (defaultPlaySound) references Sounds(pk),    
+    microserviceGroup VARCHAR(50),
+    reloadFileList      BOOLEAN DEFAULT TRUE,
+    defaultExitMessage  VARCHAR(50) DEFAULT 'Failed'
+) DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS MicroServiceChainLinksExitCodes;
+CREATE TABLE MicroServiceChainLinksExitCodes (
+    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    microServiceChainLink   INT UNSIGNED,
+    Foreign Key (microServiceChainLink) references MicroServiceChainLinks(pk),
+    exitCode    INT DEFAULT 0,
+    nextMicroServiceChainLink   INT UNSIGNED,
+    Foreign Key (nextMicroServiceChainLink) references MicroServiceChainLinks(pk),
+    playSound   INT UNSIGNED,
+    Foreign Key (playSound) references Sounds(pk),
+    exitMessage  VARCHAR(50) DEFAULT 'Completed successfully'
+) DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS MicroServiceChains;
+CREATE TABLE MicroServiceChains (
+    pk              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+    startingLink    INT UNSIGNED,
+    Foreign Key (startingLink) references MicroServiceChainLinks(pk),           
+    description     LONGTEXT
+) DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS MicroServiceChainChoice;
 CREATE TABLE MicroServiceChainChoice (
@@ -596,7 +598,7 @@ CREATE TABLE WatchedDirectories (
     chain                   INT UNSIGNED,
     Foreign Key (chain) references MicroServiceChains(pk),
     onlyActOnDirectories    BOOLEAN DEFAULT TRUE,
-    expectedType            INT DEFAULT 1,
+    expectedType            INT UNSIGNED DEFAULT 1,
     Foreign Key (expectedType) references WatchedDirectoriesExpectedTypes(pk)
 ) DEFAULT CHARSET=utf8;
 
