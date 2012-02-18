@@ -44,6 +44,7 @@ def reconnect():
     for a in range(retryAttempts):
         try:
             database=MySQLdb.connect(**DB_CONNECTION_OPTS)
+            database.autocommit(0)
             break
         except Exception as inst:
             print >>sys.stderr, "Error connecting to database:"
