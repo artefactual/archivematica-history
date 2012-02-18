@@ -32,7 +32,7 @@ from datetime import datetime
 
 global separator
 separator = "', '"
-printSQL = False
+printSQL = True
 
 #DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings")
 DB_CONNECTION_OPTS = dict(db="MCP", read_default_file="/etc/archivematica/archivematicaCommon/dbsettings", charset="utf8", use_unicode = True)
@@ -106,6 +106,7 @@ def runSQL(sql):
             print >>sys.stderr, "Error with query: ", sql
             print >>sys.stderr, "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
             exit(-100)
+    db.commit()
     sqlLock.release()
     return
 
