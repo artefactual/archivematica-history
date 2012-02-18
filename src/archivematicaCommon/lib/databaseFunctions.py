@@ -117,7 +117,7 @@ def logTaskCreatedSQL(taskManager, commandReplacementDic, taskUUID, arguments):
 def logTaskAssignedSQL(taskUUID, client, date):
     databaseInterface.runSQL("UPDATE Tasks " + \
     "SET startTime='" + date + "', client='" + client + "' " + \
-    "WHERE taskUUID='" + taskUUID + "'" )
+    "WHERE taskUUID='" + taskUUID + "';" )
 
 def logTaskCompletedSQL(task):
     print "Logging task output to db", task.UUID

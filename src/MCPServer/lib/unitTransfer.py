@@ -89,6 +89,7 @@ class unitTransfer(unit):
                 self.UUID = UUID
                 sql = """INSERT INTO Transfers (transferUUID, currentLocation)
                 VALUES ('""" + UUID + databaseInterface.separator + MySQLdb.escape_string(currentPath2) + "');"
+                print "SQL: ", sql
                 databaseInterface.runSQL(sql)
 
         self.currentPath = currentPath2
