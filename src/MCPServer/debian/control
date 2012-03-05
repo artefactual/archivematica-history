@@ -8,7 +8,7 @@ Homepage: http://archivematica.org
 
 Package: archivematica-mcp-server
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, dbconfig-common, logapp, mysql-server, python-pyinotify, python-mysqldb, python-lxml, gearman, uuid, archivematica-common
+Depends: ${shlibs:Depends}, ${misc:Depends}, dbconfig-common, logapp, mysql-server, python-pyinotify, python-gearman, python-mysqldb, python-lxml, gearman, uuid, archivematica-common
 Description: MCP Server for Archivematica
   Enter long description
   

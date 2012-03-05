@@ -8,7 +8,7 @@ Homepage: http://archivematica.org
 
 Package: archivematica-mcp-rpccli
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python-lxml
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-lxml, python-gearman, python
 Description: MCP RPC CLI
   Enter long description
   
