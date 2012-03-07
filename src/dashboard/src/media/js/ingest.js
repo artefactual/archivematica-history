@@ -435,22 +435,21 @@ $(function()
         {
           $(this.el).html(this.template(this.model.toJSON()));
 
-          if (-1 < jQuery.inArray(this.model.get('currentstep'), ['Failed', 'Rejected']))
-          {
-            $(this.el).css('background-color', '#f2d8d8');
-          }
-          else if ('Requires approval' === this.model.get('currentstep'))
-          {
-            $(this.el).css('background-color', '#ffffff');
-          }
-          else if ('Executing command(s)' === this.model.get('currentstep'))
-          {
-            $(this.el).css('background-color', '#fedda7');
-          }
-          else
-          {
-            $(this.el).css('background-color', '#d8f2dc');
-          }
+          // use colors to differentiate status of jobs
+          var status = this.model.get('currentstep'),
+              statusColors = {
+                'Failed':               '#f2d8d8',
+                'Rejected':             '#f2d8d8',
+                'Requires approval':    '#ffffff',
+                'Executing command(s)': '#fedda7',
+              },
+              bgColor;
+
+          bgColor = (statusColors[status] == undefined)
+            ? '#d8f2dc'
+            : statusColors[status];
+
+          $(this.el).css('background-color', bgColor);
 
           // Micro-services requiring approval
           if (1 === this.model.get('status'))
