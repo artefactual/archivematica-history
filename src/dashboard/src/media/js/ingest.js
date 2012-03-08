@@ -409,7 +409,7 @@ $(function()
 
     });
 
-    window.JobView = Backbone.View.extend({
+    window.JobView = BaseJobView.extend({
 
       className: 'job',
 
@@ -435,21 +435,10 @@ $(function()
         {
           $(this.el).html(this.template(this.model.toJSON()));
 
-          // use colors to differentiate status of jobs
-          var status = this.model.get('currentstep'),
-              statusColors = {
-                'Failed':               '#f2d8d8',
-                'Rejected':             '#f2d8d8',
-                'Requires approval':    '#ffffff',
-                'Executing command(s)': '#fedda7',
-              },
-              bgColor;
-
-          bgColor = (statusColors[status] == undefined)
-            ? '#d8f2dc'
-            : statusColors[status];
-
-          $(this.el).css('background-color', bgColor);
+          $(this.el).css(
+            'background-color',
+            this.getStatusColor(this.model.get('currentstep'))
+          );
 
           // Micro-services requiring approval
           if (1 === this.model.get('status'))
