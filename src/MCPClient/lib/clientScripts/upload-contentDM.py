@@ -22,6 +22,20 @@
 # @author Mark Jordan <EMAIL@EMAIL.email>
 # @version svn: $Id$
 
+# http://docs.python.org/library/argparse.html#module-argparse
+# http://www.doughellmann.com/PyMOTW/argparse/
+import argparse
+
 if __name__ == '__main__':
-    print "TODO"
+    import argparse
+
+    parser = argparse.ArgumentParser(description='restructure')
+    parser.add_argument('--uuid', action="store", dest='uuid', metavar='UUID', help='AIP-UUID')
+    parser.add_argument('--dipDir', action="store", dest='dipDir', metavar='dipDir', help='DIP Directory')
+    parser.add_argument('--servers', nargs='*', action="store", dest='servers', metavar='servers', help='Space delimited set of server(s) to upload to.')
+    
+    args = parser.parse_args()
+    
+    print args
+    print args.uuid
     
