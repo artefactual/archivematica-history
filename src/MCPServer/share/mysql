@@ -697,7 +697,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 */
 
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Upload DIP to ICA-ATOM');
-set @MicroServiceChain = LAST_INSERT_ID();
+set @MicroServiceChainUploadICAATOM = LAST_INSERT_ID();
 
 -- <uploadDIP - contentDM> --
 SET @microserviceGroup  = 'Upload DIP';
@@ -717,10 +717,10 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --servers 127.0.0.1'');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --servers 127.0.0.1');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Upload DIP');
+    (0,      LAST_INSERT_ID(), 'Upload DIP to contentDM');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -733,7 +733,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'restructureDIPForContentDMUpload_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Upload DIP');
+    (0,      LAST_INSERT_ID(), 'Restructure DIP for content DM upload');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -752,21 +752,24 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 */
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Upload DIP to ICA-ATOM');
-set @MicroServiceChain = LAST_INSERT_ID();
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Upload DIP to contentDM');
+set @MicroServiceChainUploadContentDM = LAST_INSERT_ID();
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      LAST_INSERT_ID(), 'Upload DIP to ICA-ATOM');
+    (2,      LAST_INSERT_ID(), 'Upload DIP');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
-    (@MicroServiceChainLink, @MicroServiceChain);
+    (@MicroServiceChainLink, @MicroServiceChainUploadICAATOM);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @MicroServiceChainUploadContentDM);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES                
     (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
@@ -3365,3 +3368,4 @@ CREATE OR REPLACE VIEW lastJobsTasks AS SELECT * FROM Tasks WHERE jobUUID = (SEL
 CREATE OR REPLACE VIEW lastJobsInfo AS SELECT count(taskUUID) AS 'Completed Tasks', min(startTime), max(endTime), TIMEDIFF(UTC_TIMESTAMP(), min(startTime)) AS 'Job duration', TIMEDIFF(UTC_TIMESTAMP(), max(endTime)) AS 'Time Since last return', TIME(TIMEDIFF(UTC_TIMESTAMP(), min(startTime))/count(taskUUID)) AS 'AVG proc time'  FROM lastJobsTasks where startTime != 0;
 
 -- /VIEWS --
+
