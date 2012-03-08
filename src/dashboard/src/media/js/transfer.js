@@ -416,49 +416,6 @@ $(function()
               },
             url: '/mcp/execute/'
           });
-        },
-
-      approveJob: function(event)
-        {
-          event.preventDefault();
-
-          $.ajax({
-            context: this,
-            data: { uuid: this.model.get('uuid') },
-            type: 'POST',
-            success: function(data)
-              {
-                this.model.set({
-                  'currentstep': 'Executing command(s)',
-                  'status': 0
-                });
-
-                this.model.sip.view.updateIcon();
-              },
-            url: '/mcp/approve-job/'
-          });
-        },
-
-      rejectJob: function(event)
-        {
-          event.preventDefault();
-
-          $.ajax({
-            context: this,
-            data: { uuid: this.model.get('uuid') },
-            type: 'POST',
-            success: function(data)
-              {
-                this.model.set({
-                  'currentstep': 'Rejected',
-                  'status': 0
-                });
-
-                this.model.sip.view.updateIcon();
-                // this.model.sip.view.toggleJobs();
-              },
-            url: '/mcp/reject-job/'
-          });
         }
 
     });
