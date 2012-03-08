@@ -424,13 +424,6 @@ $(function()
 
       template: _.template($('#job-template').html()),
 
-      initialize: function()
-        {
-          _.bindAll(this, 'render', 'approveJob', 'rejectJob');
-          this.model.bind('change', this.render);
-          this.model.view = this;
-        },
-
       render: function()
         {
           $(this.el).html(this.template(this.model.toJSON()));
@@ -618,42 +611,6 @@ $(function()
               },
             url: '/ingest/normalization-report/' + this.model.sip.get('uuid') + '/'
           });
-        },
-
-      showTasks: function(event)
-        {
-          event.preventDefault();
-
-          $.ajax({
-            context: this,
-            type: 'GET',
-            dataType: 'html',
-            success: function(data)
-              {
-                $('<div class="task-dialog"></div>')
-                  .append('<table>' + $(data).find('tbody').html() + '</table>')
-                  .dialog({
-                    title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Tasks',
-                    width: 640,
-                    height: 480,
-                    modal: true,
-                    buttons: [
-                      {
-                        text: 'Close',
-                        click: function() { $(this).dialog('close'); }
-                      }]
-                  });
-              },
-            url: '/tasks/' + this.model.get('uuid') + '/'
-          });
-        },
-
-      browseJob: function(event)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-
-          this.directoryBrowser = new window.DirectoryBrowserView({ uuid: this.model.get('uuid') });
         },
 
       approveJob: function(event)
