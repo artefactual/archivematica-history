@@ -20,7 +20,7 @@ var BaseJobView = Backbone.View.extend({
             $('<div class="task-dialog"></div>')
               .append('<table>' + $(data).find('tbody').html() + '</table>')
               .dialog({
-                title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Tasks',
+                title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('type') + ' &raquo Tasks',
                 width: 640,
                 height: 480,
                 modal: true,

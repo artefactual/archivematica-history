@@ -301,7 +301,7 @@ $(function()
 
               if (self.model.jobs.detect(function(job)
                 {
-                  return job.get('microservice') === 'Normalize submission documentation to preservation format';
+                  return job.get('type') === 'Normalize submission documentation to preservation format';
                 }))
               {
                 dialog.find('input, select, textarea').prop('disabled', true).addClass('disabled');
@@ -327,7 +327,7 @@ $(function()
           // TODO: fastest solution would be to use the first microservice of the collection, once is ordered correctly
           var job = this.model.jobs.detect(function(job)
             {
-              return job.get('microservice') === 'Assign file UUIDs and checksums';
+              return job.get('type') === 'Assign file UUIDs and checksums';
             });
 
           // Fallback: use last micro-service timestamp
@@ -460,7 +460,7 @@ $(function()
             this.$('.job-detail-actions').append($select);
           }
 
-          if ('Approve normalization' == this.model.get('microservice'))
+          if ('Approve normalization' == this.model.get('type'))
           {
             this.$('.job-detail-actions')
               .append('<a class="btn_normalization_report" href="#" title="Report"><span>Report</span></a>');
@@ -498,7 +498,7 @@ $(function()
               });
             };
 
-          if ('Upload DIP' == this.model.get('microservice') && 2 == value)
+          if ('Upload DIP' == this.model.get('type') && 2 == value)
           {
             var modal = $('#upload-dip-modal');
             var input = modal.find('input');
@@ -589,7 +589,7 @@ $(function()
                 $('<div class="task-dialog"></div>')
                   .append('<table>' + $(data).find('thead').html() + $(data).find('tbody').html() + '</table>')
                   .dialog({
-                    title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('microservice') + ' &raquo Normalization report',
+                    title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('type') + ' &raquo Normalization report',
                     width: 860,
                     height: 640,
                     modal: true,
