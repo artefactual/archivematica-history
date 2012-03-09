@@ -76,8 +76,8 @@
 
   <script type="text/template" id="job-template">
     <div class="job-detail-microservice">
-      <span>Micro-Service:&nbsp;</span><span title="<%= uuid %>"><%= microservice %></span>
-      <% tmp = window.microservices_help[microservice]; %>
+      <span>Micro-Service:&nbsp;</span><span title="<%= uuid %>"><%= type %></span>
+      <% tmp = window.microservices_help[type]; %>
       <% if (tmp !== undefined) { %>
         [<a href="#" title="<%= tmp %>">?</a>]
       <% } %>

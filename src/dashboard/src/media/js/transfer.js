@@ -258,7 +258,7 @@ $(function()
           // TODO: fastest solution would be to use the first microservice of the collection, once is ordered correctly
           var job = this.model.jobs.detect(function(job)
             {
-              return job.get('microservice') === 'Assign file UUIDs and checksums';
+              return job.get('type') === 'Assign file UUIDs and checksums';
             });
 
           // Fallback: use last micro-service timestamp
