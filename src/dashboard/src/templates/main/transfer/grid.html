@@ -74,6 +74,11 @@
     <div class="sip-detail-job-container"></div>
   </script>
 
+  <script type="text/template" id="microservice-group-template">
+    <div><%= name %></div>
+    <%= jobs %>
+  </script>
+
   <script type="text/template" id="job-template">
     <div class="job-detail-microservice">
       <span>Micro-Service:&nbsp;</span><span title="<%= uuid %>"><%= type %></span>

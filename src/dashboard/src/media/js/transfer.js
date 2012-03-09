@@ -20,6 +20,45 @@ along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 $(function()
   {
 
+    window.MicroserviceGroupView = Backbone.View.extend({
+
+      className: 'microservicegroup',
+
+      template: _.template($('#microservice-group-template').html()),
+
+      initialize: function()
+        {
+          this.jobs = [];
+        },
+
+      addJob: function(job)
+        {
+          this.jobs.push(job);
+        },
+
+      render: function()
+        {
+          $(this.el).empty();
+
+          $(this.el).append('<div>AAA</div>');
+
+          var self = this;
+          this.jobs.map(function(job) {
+            var view = new JobView({model: job});
+            $(self.el).append(view.render().el);
+          });
+
+          $(this.el).append('<div>BBB</div>');
+
+          $(this.el).html(this.template({
+            name: 'My service',
+            jobs: 'jobs'
+          }));
+
+          return this;
+        }
+    });
+
     window.Sip = Backbone.Model.extend({
 
       methodUrl:
