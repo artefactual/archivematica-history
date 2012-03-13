@@ -429,7 +429,9 @@ def createFileSec(directoryPath, structMapDiv):
     delayed = []
     filesInThisDirectory = []
     dspaceMetsDMDID = None
-    for item in os.listdir(directoryPath):
+    directoryContents = os.listdir(directoryPath)
+    directoryContents.sort()
+    for item in directoryContents:
         itemdirectoryPath = os.path.join(directoryPath, item)
         if os.path.isdir(itemdirectoryPath):
             delayed.append(item)
