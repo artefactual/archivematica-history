@@ -29,6 +29,7 @@ from linkTaskManagerFiles import linkTaskManagerFiles
 from linkTaskManagerChoice import linkTaskManagerChoice
 from linkTaskManagerAssignMagicLink import linkTaskManagerAssignMagicLink
 from linkTaskManagerLoadMagicLink import linkTaskManagerLoadMagicLink
+from linkTaskManagerReplacementDicFromChoice import linkTaskManagerReplacementDicFromChoice
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import logJobCreatedSQL
@@ -40,15 +41,17 @@ constTaskForEachFile = 1
 constSelectPathTask = 2
 constSetMagicLink = 3
 constLoadMagicLink = 4
+constGetReplacementDic = 5
 
 class jobChainLink:
-    def __init__(self, jobChain, jobChainLinkPK, unit):
+    def __init__(self, jobChain, jobChainLinkPK, unit, passVar=None):
         if jobChainLinkPK == None:
             return None
         self.UUID = uuid.uuid4().__str__()
         self.jobChain = jobChain
         self.pk = jobChainLinkPK
         self.unit = unit
+        self.passVar=passVar
         self.createdDate = databaseInterface.getUTCDate()
         sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description, MicroServiceChainLinks.reloadFileList, Sounds.fileLocation, MicroServiceChainLinks.defaultExitMessage, MicroServiceChainLinks.microserviceGroup FROM MicroServiceChainLinks LEFT OUTER JOIN Sounds ON MicroServiceChainLinks.defaultPlaySound = Sounds.pk JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = """ + jobChainLinkPK.__str__()
         c, sqlLock = databaseInterface.querySQL(sql)
@@ -96,6 +99,8 @@ class jobChainLink:
             linkTaskManagerAssignMagicLink(self, taskTypePKReference, self.unit)
         elif taskType == constLoadMagicLink:
             linkTaskManagerLoadMagicLink(self, taskTypePKReference, self.unit)
+        elif taskType == constGetReplacementDic:
+            linkTaskManagerReplacementDicFromChoice(self, taskTypePKReference, self.unit)
         else:
             print sys.stderr, "unsupported task type: ", taskType
 
@@ -142,8 +147,7 @@ class jobChainLink:
         else:
             print "No exit message"
 
-
-    def linkProcessingComplete(self, exitCode):
+    def linkProcessingComplete(self, exitCode, passVar=None):
         playSounds = True
         if playSounds:
             filePath = self.getSoundFileToPlay(exitCode)
@@ -151,4 +155,4 @@ class jobChainLink:
                 print "playing: ", filePath
                 playAudioFileInThread(filePath)
         self.updateExitMessage(exitCode)
-        self.jobChain.nextChainLink(self.getNextChainLinkPK(exitCode))
+        self.jobChain.nextChainLink(self.getNextChainLinkPK(exitCode), passVar=passVar)

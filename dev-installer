@@ -43,7 +43,7 @@ if [[ $a == "Y" || $a == "y" ]]; then
         sudo apt-get install gearman 
 	sudo apt-get install python-setuptools 
 	sudo apt-get install python-gearman
-        sudo easy_install gearman
+        #sudo easy_install gearman
 else
         echo "Not going to ${part}"
 fi

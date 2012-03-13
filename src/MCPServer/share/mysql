@@ -504,7 +504,8 @@ INSERT INTO TaskTypes
     ( 1, 'for each file'),
     ( 2, 'get user choice to proceed with'),
     ( 3, 'assign magic link'),
-    ( 4, 'goto magic link');
+    ( 4, 'goto magic link'),
+    ( 5, 'get replacement dic from user choice');
 
 DROP TABLE IF EXISTS TasksConfigs;
 CREATE TABLE TasksConfigs (
@@ -577,6 +578,15 @@ CREATE TABLE MicroServiceChainChoice (
     Foreign Key (chainAvailable) references MicroServiceChains(pk)
 ) DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS MicroServiceChoiceReplacementDic;
+CREATE TABLE MicroServiceChoiceReplacementDic (
+    pk                      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    choiceAvailableAtLink   INT UNSIGNED,
+    Foreign Key (choiceAvailableAtLink) references MicroServiceChainLinks(pk),
+    description             LONGTEXT,
+    replacementDic          LONGTEXT
+) DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS WatchedDirectoriesExpectedTypes;
 CREATE TABLE WatchedDirectoriesExpectedTypes (
     pk                      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -601,6 +611,21 @@ CREATE TABLE WatchedDirectories (
     expectedType            INT UNSIGNED DEFAULT 1,
     Foreign Key (expectedType) references WatchedDirectoriesExpectedTypes(pk)
 ) DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS StandardTasksConfigs;
+CREATE TABLE StandardTasksConfigs (
+    pk                  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    filterFileEnd       VARCHAR(50),
+    filterFileStart     VARCHAR(50),
+    filterSubDir        VARCHAR(50),
+    requiresOutputLock  BOOLEAN,
+    standardOutputFile  VARCHAR(250),
+    standardErrorFile   VARCHAR(250),
+    execute             VARCHAR(50),
+    arguments           LONGTEXT
+) DEFAULT CHARSET=utf8;
+
 
 
 -- Move To Failed Directory --
@@ -821,8 +846,23 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (5,      LAST_INSERT_ID(), 'Store AIP location');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, 'Store AIP in stanard Archivematica Directory', '{"%AIPsStore%":"%sharedPath%www/AIPsStore/"}');
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Store AIP');
 set @MicroServiceChain = LAST_INSERT_ID();
+
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES

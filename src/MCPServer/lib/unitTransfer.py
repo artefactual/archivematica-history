@@ -213,7 +213,6 @@ class unitTransfer(unit):
         "%processingDirectory%": archivematicaMCP.config.get('MCPServer', "processingDirectory"), \
         "%checksumsNoExtention%":archivematicaMCP.config.get('MCPServer', "checksumsNoExtention"), \
         "%watchDirectoryPath%":archivematicaMCP.config.get('MCPServer', "watchDirectoryPath"), \
-        "%AIPsStore%":archivematicaMCP.config.get('MCPServer', "AIPsStore"), \
         "%rejectedDirectory%":archivematicaMCP.config.get('MCPServer', "rejectedDirectory"), \
         "%SIPUUID%":SIPUUID, \
         "%SIPName%":SIPName \
