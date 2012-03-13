@@ -106,7 +106,9 @@ def createFileSec(path, parentBranch, structMapParent):
     if doneFirstRun:
         for doDirectories in [False, True]:
             print "path", type(path), path
-            for item in os.listdir(path):
+            directoryContents = os.listdir(path)
+            directoryContents.sort()
+            for item in directoryContents:
                 print "item", type(item), item
                 itempath = os.path.join(path, item)
                 if os.path.isdir(itempath):
