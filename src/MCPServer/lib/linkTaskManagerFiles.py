@@ -25,6 +25,7 @@
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
 from unitFile import unitFile
+from replacementDic import replacementDic
 import databaseInterface
 import threading
 import math
@@ -91,6 +92,10 @@ class linkTaskManagerFiles:
             standardErrorFile = self.standardErrorFile
             execute = self.execute
             arguments = self.arguments
+            
+            if self.jobChainLink.passVar != None:
+                if isinstance(self.jobChainLink.passVar, replacementDic):
+                    execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
 
 
             commandReplacementDic = fileUnit.getReplacementDic()
@@ -168,5 +173,5 @@ class linkTaskManagerFiles:
         self.tasksLock.acquire()
         if self.clearToNextLink == True and self.tasks == {} :
             print "DEBUG proceeding to next link", self.jobChainLink.UUID
-            self.jobChainLink.linkProcessingComplete(self.exitCode)
+            self.jobChainLink.linkProcessingComplete(self.exitCode, self.jobChainLink.passVar)
         self.tasksLock.release()

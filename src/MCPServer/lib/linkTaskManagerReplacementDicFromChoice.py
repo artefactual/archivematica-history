@@ -162,7 +162,7 @@ class linkTaskManagerReplacementDicFromChoice:
         #    time.sleep(1)
         
         #get the one at index, and go with it.
-        choiceIndex, description, replacementDic2 = self.choices[index]
+        choiceIndex, description, replacementDic2 = self.choices[int(index)]
         rd = replacementDic(eval(replacementDic2))
         self.jobChainLink.linkProcessingComplete(0, rd)
         
