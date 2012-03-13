@@ -33,6 +33,7 @@ from socket import gethostname
 def getJobsAwaitingApproval():
     ret = etree.Element("choicesAvailableForUnits")
     for UUID, choice in choicesAvailableForUnits.items():
+        print UUID, choice
         ret.append(choice.xmlify())
     return etree.tostring(ret, pretty_print=True)
 

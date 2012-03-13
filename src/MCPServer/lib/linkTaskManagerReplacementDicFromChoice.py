@@ -38,10 +38,10 @@ import databaseInterface
 import lxml.etree as etree
 import os
 import archivematicaMCP
-global choicesAvailableForUnits
-choicesAvailableForUnits = {}
-choicesAvailableForUnitsLock = threading.Lock()
-waitingOnTimer = "waitingOnTimer"
+from linkTaskManagerChoice import choicesAvailableForUnits
+from linkTaskManagerChoice import choicesAvailableForUnitsLock
+from linkTaskManagerChoice import waitingOnTimer
+from replacementDic import replacementDic
 
 class linkTaskManagerReplacementDicFromChoice:
     def __init__(self, jobChainLink, pk, unit):
@@ -62,6 +62,7 @@ class linkTaskManagerReplacementDicFromChoice:
             row = c.fetchone()
             choiceIndex += 1
         sqlLock.release()
+        print "choices", self.choices
 
         preConfiguredChain = self.checkForPreconfiguredXML()
         if preConfiguredChain != None:
@@ -134,11 +135,10 @@ class linkTaskManagerReplacementDicFromChoice:
                 print >>sys.stderr, "Error parsing xml:"
                 print >>sys.stderr, type(inst)
                 print >>sys.stderr, inst.args
-
-
         return ret
 
     def xmlify(self):
+        print "xmlify"
         ret = etree.Element("choicesAvailableForUnit")
         etree.SubElement(ret, "UUID").text = self.jobChainLink.UUID
         ret.append(self.unit.xmlify())
@@ -147,18 +147,22 @@ class linkTaskManagerReplacementDicFromChoice:
             choice = etree.SubElement(choices, "choice")
             etree.SubElement(choice, "chainAvailable").text = chainAvailable.__str__()
             etree.SubElement(choice, "description").text = description
+        print etree.tostring(ret)
         return ret
 
 
 
-    def proceedWithChoice(self, chain):
+    def proceedWithChoice(self, index):
         choicesAvailableForUnitsLock.acquire()
         del choicesAvailableForUnits[self.jobChainLink.UUID]
         choicesAvailableForUnitsLock.release()
-        while archivematicaMCP.transferDMovedFromCounter.value != 0:
-            print "Waiting for all files to finish updating their location in the database"
-            print transferD.movedFrom
-            time.sleep(1)
-        self.jobChainLink.setExitMessage("Completed successfully")
+        #while archivematicaMCP.transferDMovedFromCounter.value != 0:
+        #    print "Waiting for all files to finish updating their location in the database"
+        #    print transferD.movedFrom
+        #    time.sleep(1)
+        
         #get the one at index, and go with it.
-        jobChain.jobChain(self.unit, chain)
+        choiceIndex, description, replacementDic2 = self.choices[index]
+        rd = replacementDic(eval(replacementDic2))
+        self.jobChainLink.linkProcessingComplete(0, rd)
+        
