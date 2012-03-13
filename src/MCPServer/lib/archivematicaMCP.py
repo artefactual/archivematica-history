@@ -302,9 +302,9 @@ if __name__ == '__main__':
         t.start()
 
     watchDirectories()
-    t = threading.Thread(target=startTransferD)
-    t.daemon = True
-    t.start()
+    #t = threading.Thread(target=startTransferD)
+    #t.daemon = True
+    #t.start()
 
     # Start "XMLRPC" Gearman worker
     # This is blocking the main thread with the worker loop

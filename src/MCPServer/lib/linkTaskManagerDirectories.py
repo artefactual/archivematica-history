@@ -24,6 +24,7 @@
 
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
+from replacementDic import replacementDic
 import os
 import uuid
 import sys
@@ -65,6 +66,11 @@ class linkTaskManagerDirectories:
             directory = os.path.join(unit.currentPath, filterSubDir)
         else:
             directory = unit.currentPath
+        
+        if self.jobChainLink.passVar != None:
+            if isinstance(self.jobChainLink.passVar, replacementDic):
+                execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
+                    
         commandReplacementDic = unit.getReplacementDic(directory)
                 #for each key replace all instances of the key in the command string
         for key in commandReplacementDic.iterkeys():
@@ -93,4 +99,4 @@ class linkTaskManagerDirectories:
         print task
         databaseFunctions.logTaskCompletedSQL(task)
         if True:
-            self.jobChainLink.linkProcessingComplete(task.results["exitCode"])
+            self.jobChainLink.linkProcessingComplete(task.results["exitCode"], self.jobChainLink.passVar)
