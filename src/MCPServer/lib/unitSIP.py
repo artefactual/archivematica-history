@@ -128,7 +128,6 @@ class unitSIP(unit):
         "%processingDirectory%": archivematicaMCP.config.get('MCPServer', "processingDirectory"), \
         "%checksumsNoExtention%":archivematicaMCP.config.get('MCPServer', "checksumsNoExtention"), \
         "%watchDirectoryPath%":archivematicaMCP.config.get('MCPServer', "watchDirectoryPath"), \
-        "%AIPsStore%":archivematicaMCP.config.get('MCPServer', "AIPsStore"), \
         "%AIPCompressionLevel%":archivematicaMCP.config.get('MCPServer', "AIPCompressionLevel"), \
         "%AIPCompressionAlgorithm%":archivematicaMCP.config.get('MCPServer', "AIPCompressionAlgorithm"), \
         "%rejectedDirectory%":archivematicaMCP.config.get('MCPServer', "rejectedDirectory"), \

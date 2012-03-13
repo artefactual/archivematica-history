@@ -59,13 +59,13 @@ class jobChain:
         if self.currentLink == None:
             return None
 
-    def nextChainLink(self, pk):
+    def nextChainLink(self, pk, passVar=None):
         if pk != None:
-            t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk, ))
+            t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk,), kwargs={"passVar":passVar} )
             t.daemon = True
             t.start()
         else:
             print "Done with SIP:" + self.unit.UUID
 
-    def nextChainLinkThreaded(self, pk):
-        self.currentLink = jobChainLink(self, pk, self.unit)
+    def nextChainLinkThreaded(self, pk, passVar=None):
+        self.currentLink = jobChainLink(self, pk, self.unit, passVar)
