@@ -75,8 +75,12 @@
   </script>
 
   <script type="text/template" id="microservice-group-template">
-    <div><%= name %></div>
-    <%= jobs %>
+    <!--<div><%= name %></div>-->
+    <% jobs.each(function(job){ %>
+<div class="job">
+      <%= jobTemplate(job.toJSON()) %>
+</div>
+    <% }); %>
   </script>
 
   <script type="text/template" id="job-template">
