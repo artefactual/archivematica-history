@@ -26,33 +26,19 @@ $(function()
 
       template: _.template($('#microservice-group-template').html()),
 
+      jobTemplate: _.template($('#job-template').html()),
+
       initialize: function()
         {
-          this.jobs = [];
-        },
-
-      addJob: function(job)
-        {
-          this.jobs.push(job);
+          this.jobs = this.options.jobs || new JobCollection();
         },
 
       render: function()
         {
-          $(this.el).empty();
-
-          $(this.el).append('<div>AAA</div>');
-
-          var self = this;
-          this.jobs.map(function(job) {
-            var view = new JobView({model: job});
-            $(self.el).append(view.render().el);
-          });
-
-          $(this.el).append('<div>BBB</div>');
-
           $(this.el).html(this.template({
             name: 'My service',
-            jobs: 'jobs'
+            jobs: this.jobs,
+            jobTemplate: this.jobTemplate
           }));
 
           return this;
@@ -213,6 +199,9 @@ $(function()
           else
           {
             this.$jobContainer.empty();
+
+//var group = new MicroserviceGroupView({jobs: this.model.jobs});
+//this.$jobContainer.append(group.render().el);
 
             var self = this;
             this.model.jobs.each(function(job)
