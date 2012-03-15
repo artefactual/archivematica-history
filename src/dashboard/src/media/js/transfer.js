@@ -28,19 +28,31 @@ $(function()
 
       initialize: function()
         {
+          this.name = this.options.name || '';
           this.jobs = this.options.jobs || new JobCollection();
         },
 
       render: function()
         {
+          // render group wrapper
           $(this.el).html(this.template({
-            name: 'My service'
+            name: this.name
           }));
 
+          // add container for jobs
+          var jobDiv = $('<div></div>');
+          $(this.el).append(jobDiv);
+
+          // render jobs to container
           var self = this;
           this.jobs.each(function(job) {
             var view = new JobView({model: job});
-            $(self.el).append(view.render().el);
+            jobDiv.append(view.render().el);
+          });
+
+          // toggle job container when user clicks handle
+          $(this.el).click(function() {
+            jobDiv.toggle();
           });
 
           return this;
@@ -204,6 +216,7 @@ $(function()
 
 /*
 var group = new MicroserviceGroupView({
+  name: 'ZZZZ',
   jobs: this.model.jobs
 });
 this.$jobContainer.append(group.render().el);
