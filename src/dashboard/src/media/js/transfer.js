@@ -40,7 +40,7 @@ $(function()
           }));
 
           // add container for jobs
-          var jobDiv = $('<div></div>');
+          var jobDiv = $('<div></div>').hide();
           $(this.el).append(jobDiv);
 
           // render jobs to container
@@ -51,8 +51,8 @@ $(function()
           });
 
           // toggle job container when user clicks handle
-          $(this.el).click(function() {
-            jobDiv.toggle();
+          $(this.el).children(':first').click(function() {
+            jobDiv.toggle('fast');
           });
 
           return this;
@@ -215,11 +215,23 @@ $(function()
             this.$jobContainer.empty();
 
 /*
-var group = new MicroserviceGroupView({
-  name: 'ZZZZ',
-  jobs: this.model.jobs
-});
-this.$jobContainer.append(group.render().el);
+var groups = {}
+  , group;
+
+this.model.jobs.each(function(job)
+  {
+    group = job.get('microservicegroup');
+    groups[group] = groups[group] || new JobCollection();
+    groups[group].add(job);
+  });
+
+for(group in groups) {
+  var group = new MicroserviceGroupView({
+    name: group,
+    jobs: groups[group]
+  });
+  this.$jobContainer.append(group.render().el);
+}
 */
 
             var self = this;
