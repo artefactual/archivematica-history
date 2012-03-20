@@ -58,6 +58,14 @@ $(function()
             jobDiv.toggle('fast');
           });
 
+          // dynamic CSS tweaks (add to stylesheet when these changes put into production
+
+          // pointer when hovering
+          $('.microservice-group').css('cursor', 'pointer');
+
+          // indent jobs
+          $('.job-detail-microservice').children().css('margin-left', '20px');
+
           return this;
         }
     });
