@@ -52,6 +52,9 @@ $(function()
 
           // toggle job container when user clicks handle
           $(this.el).children(':first').click(function() {
+            var arrowEl = $(this).children('.microservice-group-arrow')
+              , arrowHtml = (jobDiv.is(':visible')) ? '&#x25B8' : '&#x25BE';
+            $(arrowEl).html(arrowHtml);
             jobDiv.toggle('fast');
           });
 
