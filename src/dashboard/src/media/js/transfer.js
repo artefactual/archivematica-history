@@ -214,25 +214,38 @@ $(function()
           {
             this.$jobContainer.empty();
 
-/*
-var groups = {}
-  , group;
+// the below bit is just for flagging on experimental mode
+var QueryString = location.href.substring(location.href.indexOf('?') + 1)
+  , qs = {};
 
-this.model.jobs.each(function(job)
-  {
-    group = job.get('microservicegroup');
-    groups[group] = groups[group] || new JobCollection();
-    groups[group].add(job);
-  });
-
-for(group in groups) {
-  var group = new MicroserviceGroupView({
-    name: group,
-    jobs: groups[group]
-  });
-  this.$jobContainer.append(group.render().el);
+QueryString = QueryString.split("&");
+var i;
+for (i =0; i < QueryString.length; i++) { 
+   var raw = QueryString[i].split("=");
+   qs[(raw[0])] = raw[1];
 }
-*/
+
+if (qs['test']) {
+
+  var groups = {}
+    , group;
+
+  this.model.jobs.each(function(job)
+    {
+      group = job.get('microservicegroup');
+      groups[group] = groups[group] || new JobCollection();
+      groups[group].add(job);
+    });
+
+  for(group in groups) {
+    var group = new MicroserviceGroupView({
+      name: group,
+      jobs: groups[group]
+    });
+    this.$jobContainer.append(group.render().el);
+  }
+
+} else {
 
             var self = this;
             this.model.jobs.each(function(job)
@@ -240,6 +253,7 @@ for(group in groups) {
                 var view = new JobView({model: job});
                 self.$jobContainer.append(view.render().el);
               });
+}
 
             this.$jobContainer.slideDown('fast');
             $(this.el).addClass('sip-selected');
