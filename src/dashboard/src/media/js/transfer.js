@@ -19,57 +19,6 @@ along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 $(function()
   {
-
-    window.MicroserviceGroupView = Backbone.View.extend({
-
-      className: 'microservicegroup',
-
-      template: _.template($('#microservice-group-template').html()),
-
-      initialize: function()
-        {
-          this.name = this.options.name || '';
-          this.jobs = this.options.jobs || new JobCollection();
-        },
-
-      render: function()
-        {
-          // render group wrapper
-          $(this.el).html(this.template({
-            name: this.name
-          }));
-
-          // add container for jobs
-          var jobDiv = $('<div></div>').hide();
-          $(this.el).append(jobDiv);
-
-          // render jobs to container
-          var self = this;
-          this.jobs.each(function(job) {
-            var view = new JobView({model: job});
-            jobDiv.append(view.render().el);
-          });
-
-          // toggle job container when user clicks handle
-          $(this.el).children(':first').click(function() {
-            var arrowEl = $(this).children('.microservice-group-arrow')
-              , arrowHtml = (jobDiv.is(':visible')) ? '&#x25B8' : '&#x25BE';
-            $(arrowEl).html(arrowHtml);
-            jobDiv.toggle('fast');
-          });
-
-          // dynamic CSS tweaks (add to stylesheet when these changes put into production
-
-          // pointer when hovering
-          $('.microservice-group').css('cursor', 'pointer');
-
-          // indent jobs
-          $('.job-detail-microservice').children().css('margin-left', '20px');
-
-          return this;
-        }
-    });
-
     window.Sip = Backbone.Model.extend({
 
       methodUrl:
@@ -225,46 +174,27 @@ $(function()
           {
             this.$jobContainer.empty();
 
-// the below bit is just for flagging on experimental mode
-var QueryString = location.href.substring(location.href.indexOf('?') + 1)
-  , qs = {};
+            var groups = {}
+              , group;
 
-QueryString = QueryString.split("&");
-var i;
-for (i =0; i < QueryString.length; i++) { 
-   var raw = QueryString[i].split("=");
-   qs[(raw[0])] = raw[1];
-}
-
-if (qs['test']) {
-
-  var groups = {}
-    , group;
-
-  this.model.jobs.each(function(job)
-    {
-      group = job.get('microservicegroup');
-      groups[group] = groups[group] || new JobCollection();
-      groups[group].add(job);
-    });
-
-  for(group in groups) {
-    var group = new MicroserviceGroupView({
-      name: group,
-      jobs: groups[group]
-    });
-    this.$jobContainer.append(group.render().el);
-  }
-
-} else {
-
-            var self = this;
             this.model.jobs.each(function(job)
               {
-                var view = new JobView({model: job});
-                self.$jobContainer.append(view.render().el);
+                group = job.get('microservicegroup');
+                groups[group] = groups[group] || new JobCollection();
+                groups[group].add(job);
+              }
+            );
+
+            for(group in groups) {
+              var group = new MicroserviceGroupView({
+                name: group,
+                jobs: groups[group]
               });
-}
+              group.template = _.template(
+                $('#microservice-group-template').html()
+              );
+              this.$jobContainer.append(group.render().el);
+            }
 
             this.$jobContainer.slideDown('fast');
             $(this.el).addClass('sip-selected');
