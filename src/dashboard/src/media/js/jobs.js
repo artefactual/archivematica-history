@@ -140,7 +140,7 @@ var BaseJobView = Backbone.View.extend({
       var statusColors = {
             'Failed':               '#f2d8d8',
             'Rejected':             '#f2d8d8',
-            'Requires approval':    '#ffffff',
+            'Awaiting decision':    '#ffffff',
             'Executing command(s)': '#fedda7',
           },
           bgColor;
