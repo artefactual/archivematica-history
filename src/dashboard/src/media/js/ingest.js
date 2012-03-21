@@ -174,12 +174,27 @@ $(function()
           {
             this.$jobContainer.empty();
 
-            var self = this;
+            var groups = {}
+              , group;
+
             this.model.jobs.each(function(job)
               {
-                var view = new JobView({model: job});
-                self.$jobContainer.append(view.render().el);
+                group = job.get('microservicegroup');
+                groups[group] = groups[group] || new JobCollection();
+                groups[group].add(job);
+              }
+            );
+
+            for(group in groups) {
+              var group = new MicroserviceGroupView({
+                name: group,
+                jobs: groups[group]
               });
+              group.template = _.template(
+                $('#microservice-group-template').html()
+              );
+              this.$jobContainer.append(group.render().el);
+            }
 
             this.$jobContainer.slideDown('fast');
             $(this.el).addClass('sip-selected');
