@@ -168,6 +168,7 @@ $(function()
           if (this.$jobContainer.is(':visible'))
           {
             this.$jobContainer.slideUp('fast');
+            $(this.el).css('margin-bottom', '0px');
             $(this.el).removeClass('sip-selected');
           }
           else
@@ -177,6 +178,7 @@ $(function()
             var groups = {}
               , group;
 
+            // separate jobs by group
             this.model.jobs.each(function(job)
               {
                 group = job.get('microservicegroup');
@@ -185,6 +187,7 @@ $(function()
               }
             );
 
+            // display groups
             for(group in groups) {
               var group = new MicroserviceGroupView({
                 name: group,
@@ -195,6 +198,9 @@ $(function()
               );
               this.$jobContainer.append(group.render().el);
             }
+
+            // add padding below container element
+            $(this.el).css('margin-bottom', '10px');
 
             this.$jobContainer.slideDown('fast');
             $(this.el).addClass('sip-selected');
