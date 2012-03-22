@@ -120,6 +120,29 @@ $(function()
 
           this.$('.sip-detail-actions > a').twipsy();
 
+          // if the margin isn't already added, add it
+          var self = this;
+          $(this.el).hover(
+            function() {
+              // if next is open, add bottom margin
+              if($(self.el).next().children(':nth-child(2)').is(':visible'))
+              {
+                $(self.el).animate({
+                  'margin-bottom': '10px'
+                }, 300);
+              }
+            },
+            function() {
+              // if not open, get rid of bottom margin
+              if (!self.$jobContainer.is(':visible'))
+              {
+                $(self.el).animate({
+                  'margin-bottom': '0px'
+                }, 300);
+              }
+            }
+          );
+
           return this;
         },
 
@@ -168,7 +191,10 @@ $(function()
           if (this.$jobContainer.is(':visible'))
           {
             this.$jobContainer.slideUp('fast');
-            $(this.el).css('margin-bottom', '0px');
+            // if next is not open, add bottom margin
+            if(!$(this.el).next().children(':nth-child(2)').is(':visible')) {
+              $(this.el).css('margin-bottom', '0px');
+            }
             $(this.el).removeClass('sip-selected');
           }
           else
