@@ -120,30 +120,47 @@ $(function()
 
           this.$('.sip-detail-actions > a').twipsy();
 
-          // if the margin isn't already added, add it
           var self = this;
           $(this.el).hover(
             function() {
-              // if next is open, add bottom margin
-              if($(self.el).next().children(':nth-child(2)').is(':visible'))
-              {
+              // temporarily increase bottom margin if hovering over closed SIP container
+              var nextSibling = $(self.el).next();
+              if (nextSibling.children(':nth-child(2)').is(':visible')) {
+                // ease in margin setting
                 $(self.el).animate({
-                  'margin-bottom': '10px'
-                }, 300);
+                  'margin-bottom': '10px',
+                  queue: true
+                }, 200);
               }
             },
             function() {
-              // if not open, get rid of bottom margin
-              if (!self.$jobContainer.is(':visible'))
-              {
-                $(self.el).animate({
-                  'margin-bottom': '0px'
-                }, 300);
+              // open SIP containers don't need temporary bottom margin adjustment
+              if (!$(self.el).children(':nth-child(2)').is(':visible')) {
+                self.updateBottomMargins();
               }
-            }
+             }
           );
 
           return this;
+        },
+
+      updateBottomMargins: function()
+        {
+           $('.sip').each(function()
+             {
+               // create bottom margin if next SIP has been toggled open
+               var finalBottomMargin =
+                 ($(this).children(':nth-child(2)').is(':visible'))
+                   ? '10px'
+                   : '0px';
+
+                // ease in margin setting
+                $(this).animate({
+                  'margin-bottom': finalBottomMargin,
+                  queue: true
+                }, 200);
+             }
+           );
         },
 
       update: function()
@@ -185,16 +202,19 @@ $(function()
 
       toggleJobs: function(event)
         {
+          var self = this;
+
           event.preventDefault();
           event.stopPropagation();
 
           if (this.$jobContainer.is(':visible'))
           {
-            this.$jobContainer.slideUp('fast');
-            // if next is not open, add bottom margin
-            if(!$(this.el).next().children(':nth-child(2)').is(':visible')) {
-              $(this.el).css('margin-bottom', '0px');
-            }
+            this.$jobContainer.slideUp('fast', function()
+              {
+                self.updateBottomMargins();
+              }
+            );
+
             $(this.el).removeClass('sip-selected');
           }
           else
@@ -225,10 +245,11 @@ $(function()
               this.$jobContainer.append(group.render().el);
             }
 
-            // add padding below container element
-            $(this.el).css('margin-bottom', '10px');
-
-            this.$jobContainer.slideDown('fast');
+            this.$jobContainer.slideDown('fast', function()
+              {
+                self.updateBottomMargins();
+              }
+            );
             $(this.el).addClass('sip-selected');
           }
         },
