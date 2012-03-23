@@ -469,7 +469,7 @@ def createFileSec(directoryPath, structMapDiv):
         #directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath + "objects", "objects", 1)
         directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath, baseDirectoryPathString, 1)
 
-        sql = """SELECT fileUUID, fileGrpUse, fileGrpUUID, transferUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(directoryPathSTR))
+        sql = """SELECT fileUUID, fileGrpUse, fileGrpUUID, transferUUID, label FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(directoryPathSTR))
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         if row == None:
@@ -482,6 +482,7 @@ def createFileSec(directoryPath, structMapDiv):
             use = row[1]
             fileGrpUUID = row[2]
             transferUUID = row[3]
+            label = row[4]
             row = c.fetchone()
         sqlLock.release()
         
@@ -497,6 +498,8 @@ def createFileSec(directoryPath, structMapDiv):
 
         #<fptr FILEID="file1-UUID"/>
         fileDiv = etree.SubElement(structMapDiv, "div")
+        if label != None:
+            fileDiv.set("LABEL", label)
         newChild(fileDiv, "fptr", sets=[("FILEID",FILEID)])
 
         GROUPID = ""
