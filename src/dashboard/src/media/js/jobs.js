@@ -67,8 +67,6 @@ var BaseSipView = Backbone.View.extend({
 
   updateJobContainer: function()
     {
-      this.$jobContainer.empty();
-
       var groups = {}
         , group
         , self = this;
@@ -82,6 +80,22 @@ var BaseSipView = Backbone.View.extend({
         }
       );
 
+      // take note of any groups that have been open by the user before
+      // we refresh the DOM
+      var openGroups = [];
+      $(this.$jobContainer).children('.microservicegroup').each(function () {
+        // if group is open, take note of it
+        var group = $(this).children(':first').children('.microservice-group-name').text()
+          , visible = $(this).children(':nth-child(2)').is(':visible');
+
+        if (visible) {
+          openGroups.push(group);
+        }
+      });
+
+      // refresh DOM
+      this.$jobContainer.empty();
+
       // display groups
       for(group in groups) {
         var group = new MicroserviceGroupView({
@@ -93,6 +107,17 @@ var BaseSipView = Backbone.View.extend({
         );
         this.$jobContainer.append(group.render().el);
       }
+
+      // re-open any groups that were open before the DOM elements were refreshed
+      $(this.$jobContainer).children('.microservicegroup').each(function () {
+        var group = $(this).children(':first').children('.microservice-group-name').text()
+          , visible = $(this).children(':nth-child(2)').is(':visible');
+
+        // show jobs in group if group was open
+        if (openGroups.indexOf(group) != -1) {
+          $(this).children(':nth-child(2)').show();
+        }
+      });
 
       this.$jobContainer.slideDown('fast', function()
         {
