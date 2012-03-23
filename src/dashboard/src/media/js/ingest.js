@@ -111,6 +111,27 @@ $(function()
 
           this.$('.sip-detail-actions > a').twipsy();
 
+          var self = this;
+          $(this.el).hover(
+            function() {
+              // temporarily increase bottom margin if hovering over closed SIP container
+              var nextSibling = $(self.el).next();
+              if (nextSibling.children(':nth-child(2)').is(':visible')) {
+                // ease in margin setting
+                $(self.el).animate({
+                  'margin-bottom': '10px',
+                  queue: true
+                }, 200);
+              }
+            },
+            function() {
+              // open SIP containers don't need temporary bottom margin adjustment
+              if (!$(self.el).children(':nth-child(2)').is(':visible')) {
+                self.updateBottomMargins();
+              }
+             }
+          );
+
           return this;
         },
 
@@ -123,13 +144,19 @@ $(function()
 
       toggleJobs: function(event)
         {
+          var self = this;
+
           event.preventDefault();
           event.stopPropagation();
 
           if (this.$jobContainer.is(':visible'))
           {
-            this.$jobContainer.slideUp('fast');
-            $(this.el).css('margin-bottom', '0px');
+            this.$jobContainer.slideUp('fast', function()
+              {
+                self.updateBottomMargins();
+              }
+            );
+
             $(this.el).removeClass('sip-selected');
           }
           else
@@ -139,6 +166,7 @@ $(function()
             var groups = {}
               , group;
 
+            // separate jobs by group
             this.model.jobs.each(function(job)
               {
                 group = job.get('microservicegroup');
@@ -147,6 +175,7 @@ $(function()
               }
             );
 
+            // display groups
             for(group in groups) {
               var group = new MicroserviceGroupView({
                 name: group,
@@ -158,10 +187,11 @@ $(function()
               this.$jobContainer.append(group.render().el);
             }
 
-            // add padding below container element
-            $(this.el).css('margin-bottom', '10px');
-
-            this.$jobContainer.slideDown('fast');
+            this.$jobContainer.slideDown('fast', function()
+              {
+                self.updateBottomMargins();
+              }
+            );
             $(this.el).addClass('sip-selected');
           }
         },
