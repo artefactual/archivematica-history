@@ -47,6 +47,7 @@ parser.add_option("-f",  "--fileGroupIdentifier", action="store", dest="fileGrou
 parser.add_option("-t",  "--fileGroupType", action="store", dest="fileGroupType", default="sipUUID") #
 parser.add_option("-x",  "--xmlFile", action="store", dest="xmlFile", default="")
 parser.add_option("-a",  "--amdSec", action="store_true", dest="amdSec", default=False)
+parser.add_option("-i",  "--PyICULocale", action="store", dest="PyICULocale", default='pl_PL.UTF-8')
 (opts, args) = parser.parse_args()
 
 
@@ -586,7 +587,7 @@ def createFileSec(directoryPath, structMapDiv):
 
 
 if __name__ == '__main__':
-    sharedVariablesAcrossModules.collator = PyICU.Collator.createInstance(PyICU.Locale('pl_PL.UTF-8'))
+    sharedVariablesAcrossModules.collator = PyICU.Collator.createInstance(PyICU.Locale(opts.PyICULocale))
     while False: #used to stall the mcp and stop the client for testing this module
         import time
         time.sleep(10)
