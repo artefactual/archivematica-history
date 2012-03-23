@@ -84,7 +84,7 @@ sqlLock.release()
 def runSQL(sql):
     global database
     if printSQL:
-        print printSQL
+        print sql
     if isinstance(sql, unicode):
         sql = sql.encode('utf-8')
     #print type(sql), sql
