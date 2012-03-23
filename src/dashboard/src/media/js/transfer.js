@@ -110,60 +110,6 @@ $(function()
           window.location = '/transfer/' + this.model.get('uuid') + '/';
         },
 
-      toggleJobs: function(event)
-        {
-          var self = this;
-
-          event.preventDefault();
-          event.stopPropagation();
-
-          if (this.$jobContainer.is(':visible'))
-          {
-            this.$jobContainer.slideUp('fast', function()
-              {
-                self.updateBottomMargins();
-              }
-            );
-
-            $(this.el).removeClass('sip-selected');
-          }
-          else
-          {
-            this.$jobContainer.empty();
-
-            var groups = {}
-              , group;
-
-            // separate jobs by group
-            this.model.jobs.each(function(job)
-              {
-                group = job.get('microservicegroup');
-                groups[group] = groups[group] || new JobCollection();
-                groups[group].add(job);
-              }
-            );
-
-            // display groups
-            for(group in groups) {
-              var group = new MicroserviceGroupView({
-                name: group,
-                jobs: groups[group]
-              });
-              group.template = _.template(
-                $('#microservice-group-template').html()
-              );
-              this.$jobContainer.append(group.render().el);
-            }
-
-            this.$jobContainer.slideDown('fast', function()
-              {
-                self.updateBottomMargins();
-              }
-            );
-            $(this.el).addClass('sip-selected');
-          }
-        },
-
       remove: function(event)
         {
           event.preventDefault();
