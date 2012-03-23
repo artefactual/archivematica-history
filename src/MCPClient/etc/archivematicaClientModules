@@ -81,4 +81,5 @@ createSIPfromTransferObjects_v0.0 = %clientScriptsDirectory%createSIPfromTransfe
 checkTransferDirectoryForObjects_v0.0 = %clientScriptsDirectory%checkTransferDirectoryForObjects.py
 copyTransferSubmissionDocumentation_v0.0 = %clientScriptsDirectory%copyTransferSubmissionDocumentation.py
 removeEmptyDirectories_v0.0 = %clientScriptsDirectory%removeEmptyDirectories.py
+loadLabelsFromCSV_v0.0 = %clientScriptsDirectory%loadLabelsFromCSV.py
 
