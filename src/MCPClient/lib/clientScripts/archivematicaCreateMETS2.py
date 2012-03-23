@@ -496,7 +496,8 @@ def createFileSec(directoryPath, structMapDiv):
 
 
         #<fptr FILEID="file1-UUID"/>
-        newChild(structMapDiv, "fptr", sets=[("FILEID",FILEID)])
+        fileDiv = etree.SubElement(structMapDiv, "div")
+        newChild(fileDiv, "fptr", sets=[("FILEID",FILEID)])
 
         GROUPID = ""
         if fileGrpUUID:
