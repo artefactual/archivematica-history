@@ -871,16 +871,6 @@ $(function()
           });
       };
 
-    Date.prototype.getArchivematicaDateTime = function()
-      {
-        pad = function (n)
-          {
-            return n < 10 ? '0' + n : n;
-          }
-
-        return this.getFullYear() + '-' + pad(this.getMonth() + 1) + '-' + pad(this.getDate()) + ' ' + pad(this.getHours()) + ':' + pad(this.getMinutes()); // + ':' + pad(this.getSeconds());
-      };
-
     window.log = function(message)
       {
         try
