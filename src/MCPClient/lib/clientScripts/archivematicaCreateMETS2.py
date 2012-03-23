@@ -28,6 +28,7 @@ from xml.sax.saxutils import quoteattr
 import os
 import sys
 import MySQLdb
+import PyICU
 from archivematicaCreateMETSRights import archivematicaGetRights
 from archivematicaCreateMETSRightsDspaceMDRef import archivematicaCreateMETSRightsDspaceMDRef
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
@@ -58,7 +59,6 @@ fileGroupType = opts.fileGroupType
 includeAmdSec = opts.amdSec
 
 #Global Variables
-
 
 globalFileGrps = {}
 globalFileGrpsUses = ["original", "submissionDocumentation", "preservation", "service", "access", "license", "text/ocr"]
@@ -430,19 +430,16 @@ def createFileSec(directoryPath, structMapDiv):
     filesInThisDirectory = []
     dspaceMetsDMDID = None
     directoryContents = os.listdir(directoryPath)
-    directoryContents.sort()
+    directoryContentsTuples = []
     for item in directoryContents:
         itemdirectoryPath = os.path.join(directoryPath, item)
         if os.path.isdir(itemdirectoryPath):
             delayed.append(item)
 
         elif os.path.isfile(itemdirectoryPath):
-            #myuuid = uuid.uuid4()
-            myuuid=""
-            #directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath + "objects", "objects", 1)
+            #find original file name
             directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath, baseDirectoryPathString, 1)
-
-            sql = """SELECT fileUUID, fileGrpUse, fileGrpUUID, transferUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(directoryPathSTR))
+            sql = """SELECT Related.originalLocation AS 'derivedFromOriginalLocation', Current.originalLocation FROM Files AS Current LEFT OUTER JOIN Derivations ON Current.fileUUID = Derivations.derivedFileUUID LEFT OUTER JOIN Files AS Related ON Derivations.sourceFileUUID = Related.fileUUID WHERE Current.removedTime = 0 AND Current.%s = '%s' AND Current.currentLocation = '%s';""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(directoryPathSTR))
             c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             if row == None:
@@ -451,134 +448,145 @@ def createFileSec(directoryPath, structMapDiv):
                 sqlLock.release()
                 continue
             while row != None:
-                myuuid = row[0]
-                use = row[1]
-                fileGrpUUID = row[2]
-                transferUUID = row[3]
+                #add to files in this directory tuple list
+                derivedFromOriginalName = row[0]
+                originalLocation = row[1]
+                if derivedFromOriginalName != None:
+                    originalLocation = derivedFromOriginalName
+                originalName = os.path.basename(originalLocation) + u"/" #+ u"/" keeps normalized after original / is very uncommon in a file name
+                directoryContentsTuples.append((originalName, item,)) 
+                row = c.fetchone()
+            sqlLock.release()
+            
+    #order files by their original name
+    for originalName, item in sorted(directoryContentsTuples, key=lambda listItems: listItems[0], cmp=sharedVariablesAcrossModules.collator.compare):
+        #item = unicode(item)
+        itemdirectoryPath = os.path.join(directoryPath, item)
+            
+        #myuuid = uuid.uuid4()
+        myuuid=""
+        #directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath + "objects", "objects", 1)
+        directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath, baseDirectoryPathString, 1)
+
+        sql = """SELECT fileUUID, fileGrpUse, fileGrpUUID, transferUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND Files.currentLocation = '%s';""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(directoryPathSTR))
+        c, sqlLock = databaseInterface.querySQL(sql)
+        row = c.fetchone()
+        if row == None:
+            print >>sys.stderr, "No uuid for file: \"", directoryPathSTR, "\""
+            sharedVariablesAcrossModules.globalErrorCount += 1
+            sqlLock.release()
+            continue
+        while row != None:
+            myuuid = row[0]
+            use = row[1]
+            fileGrpUUID = row[2]
+            transferUUID = row[3]
+            row = c.fetchone()
+        sqlLock.release()
+        
+        filename = ''.join(quoteattr(item).split("\"")[1:-1])
+        directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath, "", 1)
+        #print filename, directoryPathSTR
+
+
+        FILEID="%s-%s" % (item, myuuid)
+        if FILEID[0].isdigit():
+            FILEID = "_" + FILEID
+
+
+        #<fptr FILEID="file1-UUID"/>
+        newChild(structMapDiv, "fptr", sets=[("FILEID",FILEID)])
+
+        GROUPID = ""
+        if fileGrpUUID:
+            GROUPID = "Group-%s" % (fileGrpUUID)
+            
+        elif  use == "original" or use == "submissionDocumentation":
+            GROUPID = "Group-%s" % (myuuid)
+
+        elif use == "preservation":
+            sql = "SELECT * FROM Derivations WHERE derivedFileUUID = '" + myuuid + "';"
+            c, sqlLock = databaseInterface.querySQL(sql)
+            row = c.fetchone()
+            while row != None:
+                GROUPID = "Group-%s" % (row[1])
                 row = c.fetchone()
             sqlLock.release()
 
-            filename = ''.join(quoteattr(item).split("\"")[1:-1])
-            directoryPathSTR = itemdirectoryPath.replace(baseDirectoryPath, "", 1)
-            #print filename, directoryPathSTR
-
-
-            FILEID="%s-%s" % (item, myuuid)
-            if FILEID[0].isdigit():
-                FILEID = "_" + FILEID
-
-
-            #<fptr FILEID="file1-UUID"/>
-
-            newChild(structMapDiv, "fptr", sets=[("FILEID",FILEID)])
-
-            GROUPID = ""
-            if fileGrpUUID:
-                GROUPID = "Group-%s" % (fileGrpUUID)
-                
-            elif  use == "original" or use == "submissionDocumentation":
-                GROUPID = "Group-%s" % (myuuid)
-
-            elif use == "preservation":
-                sql = "SELECT * FROM Derivations WHERE derivedFileUUID = '" + myuuid + "';"
-                c, sqlLock = databaseInterface.querySQL(sql)
+        elif use == "license" or use == "text/ocr" or use == "DSPACEMETS":
+            sql = """SELECT originalLocation FROM Files where fileUUID = '%s'""" % (myuuid)
+            originalLocation = databaseInterface.queryAllSQL(sql)[0][0]
+            sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND originalLocation LIKE '%s/%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(os.path.dirname(originalLocation)).replace("%", "%%"))
+            c, sqlLock = databaseInterface.querySQL(sql)
+            row = c.fetchone()
+            while row != None:
+                GROUPID = "Group-%s" % (row[0])
                 row = c.fetchone()
-                while row != None:
-                    GROUPID = "Group-%s" % (row[1])
-                    row = c.fetchone()
-                sqlLock.release()
+            sqlLock.release()
 
-            elif use == "license" or use == "text/ocr" or use == "DSPACEMETS":
-                sql = """SELECT originalLocation FROM Files where fileUUID = '%s'""" % (myuuid)
-                originalLocation = databaseInterface.queryAllSQL(sql)[0][0]
-                sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND originalLocation LIKE '%s/%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(os.path.dirname(originalLocation)).replace("%", "%%"))
-                c, sqlLock = databaseInterface.querySQL(sql)
+        elif use == "service":
+            fileFileIDPath = itemdirectoryPath.replace(baseDirectoryPath + "objects/service/", baseDirectoryPathString + "objects/")
+            objectNameExtensionIndex = fileFileIDPath.rfind(".")
+            fileFileIDPath = fileFileIDPath[:objectNameExtensionIndex + 1]
+            sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND currentLocation LIKE '%s%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(fileFileIDPath.replace("%", "%%")))
+            c, sqlLock = databaseInterface.querySQL(sql)
+            row = c.fetchone()
+            while row != None:
+                GROUPID = "Group-%s" % (row[0])
                 row = c.fetchone()
-                while row != None:
-                    GROUPID = "Group-%s" % (row[0])
-                    row = c.fetchone()
-                sqlLock.release()
+            sqlLock.release()
 
-            elif use == "service":
-                fileFileIDPath = itemdirectoryPath.replace(baseDirectoryPath + "objects/service/", baseDirectoryPathString + "objects/")
-                objectNameExtensionIndex = fileFileIDPath.rfind(".")
-                fileFileIDPath = fileFileIDPath[:objectNameExtensionIndex + 1]
-                sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND currentLocation LIKE '%s%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(fileFileIDPath.replace("%", "%%")))
-                c, sqlLock = databaseInterface.querySQL(sql)
-                row = c.fetchone()
-                while row != None:
-                    GROUPID = "Group-%s" % (row[0])
-                    row = c.fetchone()
-                sqlLock.release()
-
-            if transferUUID:
-                sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
-                rows = databaseInterface.queryAllSQL(sql)
-                if rows[0][0] == "Dspace1.7":
-                    if use == "DSPACEMETS":
-                        use = "submissionDocumentation"
-                        admidApplyTo = None
-                        if GROUPID=="": #is an AIP identifier
-                            GROUPID = myuuid
-                            admidApplyTo = structMapDiv.getparent()
+        if transferUUID:
+            sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
+            rows = databaseInterface.queryAllSQL(sql)
+            if rows[0][0] == "Dspace1.7":
+                if use == "DSPACEMETS":
+                    use = "submissionDocumentation"
+                    admidApplyTo = None
+                    if GROUPID=="": #is an AIP identifier
+                        GROUPID = myuuid
+                        admidApplyTo = structMapDiv.getparent()
 
 
-                        LABEL = "mets.xml-%s" % (GROUPID)
-                        dmdSec, ID = createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR)
-                        dmdSecs.append(dmdSec)
-                        if admidApplyTo != None:
-                            admidApplyTo.set("DMDID", ID)
-                        else:
-                            dspaceMetsDMDID = ID
+                    LABEL = "mets.xml-%s" % (GROUPID)
+                    dmdSec, ID = createMDRefDMDSec(LABEL, itemdirectoryPath, directoryPathSTR)
+                    dmdSecs.append(dmdSec)
+                    if admidApplyTo != None:
+                        admidApplyTo.set("DMDID", ID)
+                    else:
+                        dspaceMetsDMDID = ID
 
-            if GROUPID=="":
-                sharedVariablesAcrossModules.globalErrorCount += 1
-                print >>sys.stderr, "No groupID for file: \"", directoryPathSTR, "\""
+        if GROUPID=="":
+            sharedVariablesAcrossModules.globalErrorCount += 1
+            print >>sys.stderr, "No groupID for file: \"", directoryPathSTR, "\""
 
-            if use not in globalFileGrps:
-                print >>sys.stderr, "Invalid use: \"", use, "\""
-                sharedVariablesAcrossModules.globalErrorCount += 1
-            else:
-                file = newChild(globalFileGrps[use], "file", sets=[("ID",FILEID), ("GROUPID",GROUPID)])
-                if use == "original":
-                    filesInThisDirectory.append(file)
-                #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
-                Flocat = newChild(file, "FLocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("LOCTYPE","OTHER"), ("OTHERLOCTYPE", "SYSTEM")])
-                if includeAmdSec:
-                    AMD, ADMID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier, transferUUID, itemdirectoryPath)
-                    global amdSecs
-                    amdSecs.append(AMD)
-                    file.set("ADMID", ADMID)
-
-
+        if use not in globalFileGrps:
+            print >>sys.stderr, "Invalid use: \"", use, "\""
+            sharedVariablesAcrossModules.globalErrorCount += 1
+        else:
+            file = newChild(globalFileGrps[use], "file", sets=[("ID",FILEID), ("GROUPID",GROUPID)])
+            if use == "original":
+                filesInThisDirectory.append(file)
+            #<Flocat xlink:href="objects/file1-UUID" locType="other" otherLocType="system"/>
+            Flocat = newChild(file, "FLocat", sets=[(xlinkBNS +"href",directoryPathSTR), ("LOCTYPE","OTHER"), ("OTHERLOCTYPE", "SYSTEM")])
+            if includeAmdSec:
+                AMD, ADMID = getAMDSec(myuuid, directoryPathSTR, use, fileGroupType, fileGroupIdentifier, transferUUID, itemdirectoryPath)
+                global amdSecs
+                amdSecs.append(AMD)
+                file.set("ADMID", ADMID)
 
 
-            #fileI = etree.SubElement( structMapDiv, xlinkBNS + "fits", nsmap=NSMAP)
-
-
-            #filename = replace /tmp/"UUID" with /objects/
-
-            #fileI.set("ID", "file-" + item.__str__() + "-"    + myuuid.__str__())
-            #fileI.set("ADMID", "digiprov-" + item.__str__() + "-"    + myuuid.__str__())
-
-            #Flocat = newChild(fileI, "Flocat")
-            #Flocat.set(xlinkBNS + "href", directoryPathSTR )
-            #Flocat.set("locType", "other")
-            #Flocat.set("otherLocType", "system")
-
-            # structMap file
-            #div = newChild(structMapDiv, "div")
-            #fptr = newChild(div, "fptr")
-            #fptr.set("FILEID","file-" + item.__str__() + "-" + myuuid.__str__())
     if dspaceMetsDMDID != None:
         for file in filesInThisDirectory:
             file.set("DMDID", dspaceMetsDMDID)
-    for item in delayed:
+    
+    for item in sorted(delayed, cmp=sharedVariablesAcrossModules.collator.compare):
         itemdirectoryPath = os.path.join(directoryPath, item)
         createFileSec(itemdirectoryPath, newChild(structMapDiv, "div", sets=[("TYPE","directory"), ("LABEL",item)]))
 
 
 if __name__ == '__main__':
+    sharedVariablesAcrossModules.collator = PyICU.Collator.createInstance(PyICU.Locale('pl_PL.UTF-8'))
     while False: #used to stall the mcp and stop the client for testing this module
         import time
         time.sleep(10)
