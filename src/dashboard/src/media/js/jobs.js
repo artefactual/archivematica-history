@@ -11,13 +11,14 @@ var BaseSipView = Backbone.View.extend({
 
   render: function()
     {
+      var self = this;
+
       $(this.el).html(this.template(this.model.toJSON()));
 
       this.$jobContainer = this.$('.sip-detail-job-container');
 
       this.$('.sip-detail-actions > a').twipsy();
 
-      var self = this;
       $(this.el).hover(
         function() {
           // temporarily increase bottom margin if hovering over closed SIP container
@@ -60,39 +61,45 @@ var BaseSipView = Backbone.View.extend({
       }
       else
       {
-        this.$jobContainer.empty();
-
-        var groups = {}
-          , group;
-
-        // separate jobs by group
-        this.model.jobs.each(function(job)
-          {
-            group = job.get('microservicegroup');
-            groups[group] = groups[group] || new JobCollection();
-            groups[group].add(job);
-          }
-        );
-
-        // display groups
-        for(group in groups) {
-          var group = new MicroserviceGroupView({
-            name: group,
-            jobs: groups[group]
-          });
-          group.template = _.template(
-            $('#microservice-group-template').html()
-          );
-          this.$jobContainer.append(group.render().el);
-        }
-
-        this.$jobContainer.slideDown('fast', function()
-          {
-            self.updateBottomMargins();
-          }
-        );
-        $(this.el).addClass('sip-selected');
+        this.updateJobContainer();
       }
+    },
+
+  updateJobContainer: function()
+    {
+      this.$jobContainer.empty();
+
+      var groups = {}
+        , group
+        , self = this;
+
+      // separate jobs by group
+      this.model.jobs.each(function(job)
+        {
+          group = job.get('microservicegroup');
+          groups[group] = groups[group] || new JobCollection();
+          groups[group].add(job);
+        }
+      );
+
+      // display groups
+      for(group in groups) {
+        var group = new MicroserviceGroupView({
+          name: group,
+          jobs: groups[group]
+        });
+        group.template = _.template(
+          $('#microservice-group-template').html()
+        );
+        this.$jobContainer.append(group.render().el);
+      }
+
+      this.$jobContainer.slideDown('fast', function()
+        {
+          self.updateBottomMargins();
+        }
+      );
+      $(this.el).addClass('sip-selected');
     },
 
   updateBottomMargins: function()
@@ -127,15 +134,7 @@ var BaseSipView = Backbone.View.extend({
 
       if (this.$jobContainer.is(':visible'))
       {
-        this.$jobContainer.empty();
-
-        var self = this;
-
-        this.model.jobs.each(function(job)
-          {
-            var view = new JobView({model: job});
-            self.$jobContainer.append(view.render().el);
-          });
+        this.updateJobContainer();
       }
     },
 
@@ -175,6 +174,8 @@ var MicroserviceGroupView = Backbone.View.extend({
 
   render: function()
     {
+      var self = this;
+
       // render group wrapper
       $(this.el).html(this.template({
         name: this.name
@@ -185,7 +186,6 @@ var MicroserviceGroupView = Backbone.View.extend({
       $(this.el).append(jobDiv);
 
       // render jobs to container
-      var self = this;
       this.jobs.each(function(job) {
         var view = new JobView({model: job});
         jobDiv.append(view.render().el);
