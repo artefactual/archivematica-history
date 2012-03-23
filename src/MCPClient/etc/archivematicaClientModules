@@ -82,4 +82,6 @@ checkTransferDirectoryForObjects_v0.0 = %clientScriptsDirectory%checkTransferDir
 copyTransferSubmissionDocumentation_v0.0 = %clientScriptsDirectory%copyTransferSubmissionDocumentation.py
 removeEmptyDirectories_v0.0 = %clientScriptsDirectory%removeEmptyDirectories.py
 loadLabelsFromCSV_v0.0 = %clientScriptsDirectory%loadLabelsFromCSV.py
+removeHiddenFilesAndDirectories_v0.0 = %clientScriptsDirectory%removeHiddenFilesAndDirectories.py
+
 
