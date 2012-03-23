@@ -426,7 +426,8 @@ CREATE TABLE Files(
     fileSize            BIGINT UNSIGNED, 
     checksum            VARCHAR(100),
     fileGrpUse          VARCHAR(50) DEFAULT 'Original',
-    fileGrpUUID         VARCHAR(50)
+    fileGrpUUID         VARCHAR(50),
+    label               LONGTEXT
 ) DEFAULT CHARSET=utf8;
 
 
