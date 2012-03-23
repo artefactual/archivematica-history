@@ -9,6 +9,38 @@ var BaseSipView = Backbone.View.extend({
     'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove'
   },
 
+  render: function()
+    {
+      $(this.el).html(this.template(this.model.toJSON()));
+
+      this.$jobContainer = this.$('.sip-detail-job-container');
+
+      this.$('.sip-detail-actions > a').twipsy();
+
+      var self = this;
+      $(this.el).hover(
+        function() {
+          // temporarily increase bottom margin if hovering over closed SIP container
+          var nextSibling = $(self.el).next();
+          if (nextSibling.children(':nth-child(2)').is(':visible')) {
+            // ease in margin setting
+            $(self.el).animate({
+              'margin-bottom': '10px',
+              queue: true
+            }, 200);
+          }
+        },
+        function() {
+          // open SIP containers don't need temporary bottom margin adjustment
+          if (!$(self.el).children(':nth-child(2)').is(':visible')) {
+            self.updateBottomMargins();
+          }
+         }
+      );
+
+      return this;
+    },
+
   updateBottomMargins: function()
     {
        $('.sip').each(function()
