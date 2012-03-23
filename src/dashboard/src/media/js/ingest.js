@@ -92,18 +92,9 @@ $(function()
 
     });
 
-    window.SipView = Backbone.View.extend({
-
-      className: 'sip',
+    window.SipView = BaseSipView.extend({
 
       template: _.template($('#sip-template').html()),
-
-      events: {
-        'click .sip-row': 'openPanel',
-        'click .sip-row > .sip-detail-actions > .btn_show_panel': 'openPanel',
-        'click .sip-row > .sip-detail-actions > .btn_show_jobs': 'toggleJobs',
-        'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove',
-      },
 
       initialize: function()
         {
@@ -121,36 +112,6 @@ $(function()
           this.$('.sip-detail-actions > a').twipsy();
 
           return this;
-        },
-
-      update: function()
-        {
-          // Reload nested collection
-          this.model.loadJobs(); // .refresh() shouldn't work here
-
-          // Update timestamp
-          this.$('.sip-detail-timestamp').html(this.getIngestStartTime());
-
-          // Update icon
-          this.updateIcon();
-
-          if (this.$jobContainer.is(':visible'))
-          {
-            this.$jobContainer.empty();
-
-            var self = this;
-
-            this.model.jobs.each(function(job)
-              {
-                var view = new JobView({model: job});
-                self.$jobContainer.append(view.render().el);
-              });
-          }
-        },
-
-      updateIcon: function()
-        {
-          this.$('.sip-detail-icon-status').html(this.model.jobs.getIcon());
         },
 
       openPanel: function(event)
@@ -338,24 +299,6 @@ $(function()
             url: url
           });
 
-        },
-
-      getIngestStartTime: function()
-        {
-          // Use "Assign file UUIDs and checksums" micro-service to represent ingest start time
-          // TODO: fastest solution would be to use the first microservice of the collection, once is ordered correctly
-          var job = this.model.jobs.detect(function(job)
-            {
-              return job.get('type') === 'Assign file UUIDs and checksums';
-            });
-
-          // Fallback: use last micro-service timestamp
-          if (undefined === job)
-          {
-            job = this.model.jobs.last();
-          }
-
-          return new Date(job.get('timestamp') * 1000).getArchivematicaDateTime();
         }
     });
 
