@@ -1,11 +1,22 @@
 Date.prototype.getArchivematicaDateTime = function()
   {
-    pad = function (n)
+    return this.getArchivematicaDateString();
+  };
+
+Date.prototype.getArchivematicaDateString = function()
+  {
+    var pad = function (n)
       {
         return n < 10 ? '0' + n : n;
       }
+ 
+    var dateText = this.getFullYear()
+      + '-' + pad(this.getMonth() + 1)
+      + '-' + pad(this.getDate())
+      + ' ' + pad(this.getHours())
+      + ':' + pad(this.getMinutes());
 
-    return this.getFullYear() + '-' + pad(this.getMonth() + 1) + '-' + pad(this.getDate()) + ' ' + pad(this.getHours()) + ':' + pad(this.getMinutes()); // + ':' + pad(this.getSeconds());
+    return dateText;
   };
 
 var BaseSipView = Backbone.View.extend({
