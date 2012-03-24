@@ -13,9 +13,9 @@
             <span>&nbsp;</span> {{ item.exec_field }} (exit code: {{ item.exitcode }})
           </td>
           <td>
-            <abbr title="Start time">ST:</abbr> {{ item.starttime }}<br />
-            <abbr title="End time">ET:</abbr> {{ item.endtime }}<br />
-            <abbr title="Created time">CT:</abbr> {{ item.createdtime }}
+            <abbr title="Start time">ST:</abbr> <span class='utcDate'>{{ item.starttime }}</span><br />
+            <abbr title="End time">ET:</abbr> <span class='utcDate'>{{ item.endtime }}</span><br />
+            <abbr title="Created time">CT:</abbr> <span class='utcDate'>{{ item.createdtime }}<span>
           </td>
         </tr>
         <tr>
