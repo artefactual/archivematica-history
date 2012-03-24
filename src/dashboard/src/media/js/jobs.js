@@ -1,3 +1,9 @@
+function utcDateToLocal(dateText) {
+  dateText = dateText.replace('a.m.', 'AM').replace('p.m.', 'PM');
+  var date = new Date(dateText + ' UTC');
+  return date.getArchivematicaDateString();
+}
+
 Date.prototype.getArchivematicaDateTime = function()
   {
     return this.getArchivematicaDateString();
@@ -281,6 +287,10 @@ var BaseJobView = Backbone.View.extend({
                     click: function() { $(this).dialog('close'); }
                   }]
               });
+            // localize UTC dates
+            $('.utcDate').each(function() {
+              $(this).text(utcDateToLocal($(this).text()));
+            });
           },
         url: '/tasks/' + this.model.get('uuid') + '/'
       });
