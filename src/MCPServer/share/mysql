@@ -3453,8 +3453,7 @@ CREATE OR REPLACE VIEW processingDurationInformation AS
     SELECT 
         Jobs.sipUUID AS 'SIP_OR_TRANSFER_UUID', 
         client, 
-        SEC_TO_TIME(max(TIME_TO_SEC(endTime)) - min(TIME_TO_SEC(startTime))) AS 'Time_spent_in_system wrong', 
-        SEC_TO_TIME(sum((TIME_TO_SEC(endTime) - TIME_TO_SEC(startTime)))) AS 'Time_spent_processing',  
+        SEC_TO_TIME(sum((UNIX_TIMESTAMP(endTime) - UNIX_TIMESTAMP(startTime)))) AS 'Time_spent_processing',  
         count(taskUUID) AS 'Number_of_tasks',
         Transfers.currentLocation,
         SIPs.currentPath
@@ -3473,13 +3472,11 @@ CREATE OR REPLACE VIEW processingDurationInformation AS
 
 
 /*
--- CREATE OR REPLACE VIEW processingDurationInformation AS --
     SELECT 
         Jobs.sipUUID AS 'SIP_OR_TRANSFER_UUID', 
         client, 
-        SEC_TO_TIME(max(TIME_TO_SEC(endTime)) - min(TIME_TO_SEC(startTime))) AS 'Time_spent_in_system wrong', 
         Durations.Time_spent_in_system,
-        SEC_TO_TIME(sum((TIME_TO_SEC(endTime) - TIME_TO_SEC(startTime)))) AS 'Time_spent_processing',  
+        SEC_TO_TIME(sum((UNIX_TIMESTAMP(endTime) - UNIX_TIMESTAMP(startTime)))) AS 'Time_spent_processing',  
         count(Tasks.taskUUID) AS 'Number_of_tasks',
         Transfers.currentLocation,
         SIPs.currentPath
@@ -3489,7 +3486,7 @@ CREATE OR REPLACE VIEW processingDurationInformation AS
         LEFT OUTER JOIN (
                 SELECT 
                     Jobs.sipUUID AS 'sipUUID',
-                    SEC_TO_TIME(max(TIME_TO_SEC(d.endTime)) - min(TIME_TO_SEC(d.startTime))) AS 'Time_spent_in_system' 
+                    SEC_TO_TIME(max(UNIX_TIMESTAMP(d.endTime)) - min(UNIX_TIMESTAMP(d.startTime))) AS 'Time_spent_in_system' 
                 FROM 
                     Tasks AS d 
                     JOIN Jobs on d.jobUUID = Jobs.jobUUID 
@@ -3510,8 +3507,7 @@ CREATE OR REPLACE VIEW processingDurationInformation AS
         Jobs.sipUUID 
     ORDER BY 
         min(TIME_TO_SEC(startTime))
-;
-*/
+;*/
 
 -- /VIEWS --
 
