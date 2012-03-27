@@ -33,12 +33,13 @@ replacementChar = "_"
 
 def sanitizeName(basename):
     ret = ""
+    basename = basename.decode('utf-8')
     for c in basename:
         if c in valid:
             ret += c
         else:
             ret += replacementChar
-    return ret
+    return ret.encode('utf-8')
 
 def sanitizePath(path):
     basename = os.path.basename(path)
