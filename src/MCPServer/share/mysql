@@ -3472,42 +3472,45 @@ CREATE OR REPLACE VIEW processingDurationInformation AS
 
 
 /*
-    SELECT 
-        Jobs.sipUUID AS 'SIP_OR_TRANSFER_UUID', 
-        client, 
-        Durations.Time_spent_in_system,
-        SEC_TO_TIME(sum((UNIX_TIMESTAMP(endTime) - UNIX_TIMESTAMP(startTime)))) AS 'Time_spent_processing',  
-        count(Tasks.taskUUID) AS 'Number_of_tasks',
-        Transfers.currentLocation,
-        SIPs.currentPath
-    From 
-        Tasks  
-        JOIN Jobs on Tasks.jobUUID = Jobs.jobUUID 
-        LEFT OUTER JOIN (
-                SELECT 
-                    Jobs.sipUUID AS 'sipUUID',
-                    SEC_TO_TIME(max(UNIX_TIMESTAMP(d.endTime)) - min(UNIX_TIMESTAMP(d.startTime))) AS 'Time_spent_in_system' 
-                FROM 
-                    Tasks AS d 
-                    JOIN Jobs on d.jobUUID = Jobs.jobUUID 
-                WHERE
-                    endtime != 0 
-                    AND startTime != 0 
-                GROUP BY 
-                    Jobs.sipUUID
-                ) AS Durations 
-            ON Jobs.sipUUID = Durations.sipUUID
-        LEFT OUTER JOIN Transfers ON Jobs.sipUUID = Transfers.transferUUID 
-        LEFT OUTER JOIN SIPs ON Jobs.sipUUID = SIPs.sipUUID 
-    WHERE
-        endtime != 0 
-        AND startTime != 0 
-    GROUP BY
-        client, 
-        Jobs.sipUUID 
-    ORDER BY 
-        min(TIME_TO_SEC(startTime))
-;*/
+SELECT
+    Jobs.sipUUID AS 'SIP_OR_TRANSFER_UUID',
+    client,
+    Durations.Time_spent_in_system,
+    SEC_TO_TIME(sum((UNIX_TIMESTAMP(endTime) - UNIX_TIMESTAMP(startTime)))) AS 'Time_spent_processing', 
+    count(Tasks.taskUUID) AS 'Number_of_tasks',
+    Transfers.currentLocation,
+    SIPs.currentPath
+From
+    Tasks 
+    JOIN Jobs on Tasks.jobUUID = Jobs.jobUUID
+    LEFT OUTER JOIN (
+            SELECT
+                Jobs.sipUUID AS 'sipUUID',
+                SEC_TO_TIME(max(UNIX_TIMESTAMP(d.endTime)) - min(UNIX_TIMESTAMP(d.startTime))) AS 'Time_spent_in_system',
+                min(UNIX_TIMESTAMP(d.startTime)) AS 'startedTime'
+            FROM
+                Tasks AS d
+                JOIN Jobs on d.jobUUID = Jobs.jobUUID
+            WHERE
+                endtime != 0
+                AND startTime != 0
+            GROUP BY
+                Jobs.sipUUID
+            ) AS Durations
+        ON Jobs.sipUUID = Durations.sipUUID
+    LEFT OUTER JOIN Transfers ON Jobs.sipUUID = Transfers.transferUUID
+    LEFT OUTER JOIN SIPs ON Jobs.sipUUID = SIPs.sipUUID
+WHERE
+    endtime != 0
+    AND startTime != 0
+GROUP BY
+    client,
+    Jobs.sipUUID
+ORDER BY
+    Durations.startedTime,
+    Jobs.sipUUID 
+;
+*/
 
 -- /VIEWS --
 
