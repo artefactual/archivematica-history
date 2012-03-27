@@ -3490,7 +3490,24 @@ ORDER BY
     Jobs.sipUUID 
 ;
 
-SELECT * FROM processingDurationInformation;
+CREATE OR REPLACE VIEW PDI_by_unit AS
+    SELECT 
+        SIP_OR_TRANSFER_UUID, 
+        SEC_TO_TIME(sum(TIME_TO_SEC(Time_spent_processing))) AS 'Total time processing', 
+        Number_of_tasks,  
+        SEC_TO_TIME(sum(TIME_TO_SEC(Time_spent_processing))/Number_of_tasks) AS 'Average time per task', 
+        sum(Files.fileSize) AS 'total file size',
+        count(Files.fileUUID) AS 'number of files',
+        sum(Files.fileSize)/count(Files.fileUUID)/1000 AS 'average file size KB',
+        sum(Files.fileSize)/count(Files.fileUUID)/1000000 AS 'average file size MB',
+        processingDurationInformation.currentLocation, 
+        processingDurationInformation.currentPath
+    FROM 
+        processingDurationInformation
+        JOIN Files ON processingDurationInformation.SIP_OR_TRANSFER_UUID = Files.sipUUID OR processingDurationInformation.SIP_OR_TRANSFER_UUID = Files.transferUUID
+    GROUP BY 
+        SIP_OR_TRANSFER_UUID
+;
 
 -- /VIEWS --
 
