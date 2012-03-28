@@ -34,6 +34,10 @@ if __name__ == '__main__':
     fileLabels = sys.argv[2]
     labelFirst = False
     
+    if not os.path.isfile(fileLabels):
+        print "No such file:", fileLabels
+        exit(0)
+    
     with open(fileLabels, 'rb') as f:
         reader = csv.reader(f)
         for row in reader:
