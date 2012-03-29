@@ -256,56 +256,37 @@ $(function()
 
       getIcon: function()
         {
-          var path = '';
-          var title = '';
+          var path = '/media/images/'
+            , icon
+            , title;
 
-          if (undefined !== this.find(function(job)
-            {
-              return 0 < job.get('status') || 'Requires approval' === job.get('currentstep');
-            }))
-          {
-            path = '/media/images/bell.png';
-            title = 'Requires approval';
-          }
-          else if (undefined !== this.find(function(job)
-            {
-              return 0 < job.get('status') || 'Awaiting decision' === job.get('currentstep');
-            }))
-          {
-            path = '/media/images/bell.png';
-            title = 'Awaiting decision';
-          }
-          else if (undefined !== this.find(function(job)
-            {
-              return 'Failed' === job.get('currentstep');
-            }))
-          {
-            path = '/media/images/cancel.png';
-            title = 'Failed';
-          }
-          else if (undefined !== this.find(function(job)
-            {
-              return 'Executing command(s)' === job.get('currentstep');
-            }))
-          {
-            path = '/media/images/arrow_refresh.png';
-            title = 'Executing command(s)';
-          }
-          else if (undefined !== this.find(function(job)
-            {
-              return 'Rejected' === job.get('currentstep');
-            }))
-          {
-            path = '/media/images/control_stop_blue.png';
-            title = 'Rejected';
-          }
-          else
-          {
-            path = '/media/images/accept.png';
-            title = 'Completed successfully';
+          var statusIcons = {
+            'Requires approval':    'bell.png',
+            'Awaiting decision':    'bell.png',
+            'Failed':               'cancel.png',
+            'Executing command(s)': 'arrow_refresh.png',
+            'Rejected':             'control_stop_blue.png'
+          };
+
+          var job = this.toJSON().shift();
+
+          for(status in statusIcons) {
+             if (job.currentstep == status) {
+               icon = statusIcons[status];
+               title = job.currentStep;
+               break;
+             }
           }
 
-          return '<img src="' + path + '" title="' + title + '" />';
+          if (job.microservicegroup == 'Reject SIP') {
+            icon = 'control_stop_blue.png';
+            title = 'Reject SIP';
+          }
+
+          icon = icon   || 'accept.png';
+          title = title || 'Completed successfully';
+
+          return '<img src="' + path + '/' + icon + '" title="' + title + '" />';
         },
 
       comparator: function(job)
