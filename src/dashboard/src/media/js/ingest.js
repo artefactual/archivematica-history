@@ -466,24 +466,6 @@ $(function()
           });
       };
 
-    window.log = function(message)
-      {
-        try
-        {
-          console.log(message);
-        }
-        catch (error)
-        {
-          try
-          {
-            window.opera.postError(a);
-          }
-          catch (error)
-          {
-          }
-        }
-      };
-
     optimizeWidth = function()
       {
         var width = document.documentElement.clientWidth;
