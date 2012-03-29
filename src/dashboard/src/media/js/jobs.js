@@ -59,6 +59,61 @@ Date.prototype.getArchivematicaDateString = function()
     return dateText;
   };
 
+function tooltipPlugin(options)
+  {
+    var settings = {
+      xOffset: 10,
+      yOffset: 20,
+      width: 280
+    };
+
+    return this.each(function()
+      {
+        var $this = $(this);
+        var $tooltip;
+
+        if (options)
+        {
+          $.extend(settings, options);
+        }
+
+        if (undefined === settings.content)
+        {
+          settings.content = $this.attr('title');
+        }
+
+        $this
+          .attr('title', '')
+          .mouseover(function(event)
+            {
+              $('.tooltip').remove();
+
+              $tooltip = $('<div class="tooltip">' + (undefined !== settings.title ? '<p class="tooltip-title">' + settings.title + '</p>' : '') + '<div class="tooltip-content">' + settings.content + '</div></div>')
+                .hide()
+                .css({
+                  top: (event.pageY - settings.xOffset) + 'px',
+                  left: (event.pageX + settings.yOffset) + 'px',
+                  width: settings.width + 'px'})
+                .fadeIn()
+                .appendTo('body');
+            })
+          .mouseout(function(event)
+            {
+              $tooltip.remove();
+            })
+          .mousemove(function(event)
+            {
+              $tooltip.css({
+                top: (event.pageY - settings.xOffset) + 'px',
+                left: (event.pageX + settings.yOffset) + 'px'});
+            })
+          .click(function(event)
+            {
+              event.preventDefault();
+            });
+      });
+  };
+
 Sip = Backbone.Model.extend({
 
   methodUrl:
