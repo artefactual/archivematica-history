@@ -21,6 +21,23 @@ function log(message) {
   }
 }
 
+function optimizeWidth() {
+  var width = document.documentElement.clientWidth;
+
+  if (1020 > width)
+  {
+    document.body.className = 'w-lte-1020';
+  }
+  else if (1200 > width)
+  {
+    document.body.className = 'w-lte-1200';
+  }
+  else
+  {
+    document.body.className = '';
+  }
+};
+
 Date.prototype.getArchivematicaDateTime = function()
   {
     return this.getArchivematicaDateString();
