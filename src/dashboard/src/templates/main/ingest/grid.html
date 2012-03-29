@@ -17,7 +17,7 @@
         {% endif %}
 
         window.Sips = new SipCollection;
-        window.App = new AppView;
+        window.App = new AppView({statusUrl: '/ingest/status/'});
       });
 
     window.microservices_help = {

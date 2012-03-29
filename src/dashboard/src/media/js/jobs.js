@@ -576,3 +576,186 @@ BaseDirectoryBrowserView = Backbone.View.extend({
       this.listContents(this.parent);
     }
 });
+
+BaseAppView = Backbone.View.extend({
+
+  interval: window.pollingInterval ? window.pollingInterval * 1000: 5000,
+
+  idle: false,
+
+  initialize: function(options)
+    {
+      this.statusUrl = options.statusUrl;
+
+      _.bindAll(this, 'add', 'remove');
+      Sips.bind('add', this.add);
+      Sips.bind('remove', this.remove);
+
+      window.statusWidget = new window.StatusView();
+
+      // this.manageIdle();
+
+      this.poll(true);
+
+      // Close pop-ups when click event is triggered somewhere else
+      $(document).click(function(event)
+        {
+          $target = $(event.target);
+
+          if (!$target.parents().is('#directory-browser') && !$target.is('.btn_browse_job'))
+          {
+            $('#directory-browser').fadeOut('fast', function()
+              {
+                $(this).remove();
+              });
+          }
+
+        });
+    },
+
+  manageIdle: function()
+    {
+      $.idleTimer(this.interval * 10);
+
+      var self = this;
+      $(document)
+        .bind('idle.idleTimer', function()
+          {
+            self.idle = true;
+            $('<span id="polling-notification">Polling was disabled until next user activity is detected.</span>').appendTo('body');
+          })
+        .bind('active.idleTimer', function()
+          {
+            self.idle = false;
+            $('#polling-notification').fadeOut('fast');
+            self.poll();
+          });
+    },
+
+  add: function(sip)
+    {
+      var view = new SipView({model: sip});
+      var $new = $(view.render().el).hide();
+
+      // Get the current position in the collection
+      var position = Sips.indexOf(sip);
+
+      if (0 === position)
+      {
+        this.el.children('#sip-body').prepend($new);
+      }
+      else
+      {
+        var $target = this.el.find('.sip').eq(position);
+
+        if ($target.length)
+        {
+          $target.before($new);
+        }
+        else
+        {
+          this.el.children('#sip-body').append($new);
+        }
+      }
+
+      if (!this.firstPoll)
+      {
+        // Animation
+        $new.addClass('sip-new').show('blind', {}, 500, function()
+          {
+            $(this).removeClass('sip-new', 2000);
+          });
+      }
+      else
+      {
+        $new.show();
+      }
+    },
+
+  remove: function(sip)
+    {
+      $(sip.view.el).hide('blind', function()
+        {
+          $(this).remove();
+        });
+    },
+
+  poll: function(start)
+    {
+      this.firstPoll = undefined !== start;
+
+      $.ajax({
+        context: this,
+        dataType: 'json',
+        type: 'GET',
+        url: this.statusUrl,
+        beforeSend: function()
+          {
+            window.statusWidget.startPoll();
+          },
+        error: function()
+          {
+            window.statusWidget.text('Error trying to connect to database. Trying again...', true);
+          },
+        success: function(response)
+          {
+            var objects = response.objects;
+
+            for (i in objects)
+            {
+              var sip = objects[i];
+              var item = Sips.find(function(item)
+                {
+                  return item.get('uuid') == sip.uuid;
+                });
+
+              if (undefined === item)
+              {
+                // Add new sips
+                Sips.add(sip);
+              }
+              else
+              {
+                // Update sips
+                item.set(sip);
+              }
+            }
+
+            // Delete sips
+            if (Sips.length > objects.length)
+            {
+              var unusedSips = Sips.reject(function(sip)
+                  {
+                    return -1 < $.inArray(sip.get('uuid'), _.pluck(objects, 'uuid'));
+                  });
+
+              Sips.remove(unusedSips);
+            }
+
+            // MCP status
+            if (response.mcp)
+            {
+              window.statusWidget.connect();
+            }
+            else
+            {
+              window.statusWidget.text('Error trying to connect to MCP server. Trying again...', true);
+            }
+          },
+        complete: function()
+          {
+            var self = this;
+
+            window.statusWidget.endPoll();
+
+            if (!self.idle)
+            {
+              setTimeout(function()
+                {
+                  self.poll();
+                }, this.interval);
+            }
+          }
+      });
+    }
+});
