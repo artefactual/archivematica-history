@@ -468,11 +468,9 @@ var BaseJobView = Backbone.View.extend({
     }
 });
 
-DirectoryBrowserView = Backbone.View.extend({
+BaseDirectoryBrowserView = Backbone.View.extend({
 
   id: 'directory-browser',
-
-  template: _.template($('#directory-browser-template').html()),
 
   events: {
       'click #directory-browser-tab > a': 'remove',
