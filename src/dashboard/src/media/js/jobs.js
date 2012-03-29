@@ -4,6 +4,23 @@ function utcDateToLocal(dateText) {
   return date.getArchivematicaDateString();
 }
 
+function log(message) {
+  try
+  {
+    console.log(message);
+  }
+  catch (error)
+  {
+    try
+    {
+      window.opera.postError(a);
+    }
+    catch (error)
+    {
+    }
+  }
+}
+
 Date.prototype.getArchivematicaDateTime = function()
   {
     return this.getArchivematicaDateString();
