@@ -19,59 +19,10 @@ along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 $(function()
   {
-    window.Sip = Backbone.Model.extend({
-
-      methodUrl:
-      {
-        'delete': '/transfer/uuid/delete/'
-      },
-
-      sync: function(method, model, options)
-        {
-          if (model.methodUrl && model.methodUrl[method.toLowerCase()])
-          {
-            options = options || {};
-            options.url = model.methodUrl[method.toLowerCase()].replace('uuid', this.get('id'));
-          }
-
-          Backbone.sync(method, model, options);
-        },
-
-      initialize: function()
-        {
-          this.loadJobs();
-        },
-
-      hasFinished: function()
-        {
-          return false === this.jobs.some(function(job)
-            {
-              return -1 < jQuery.inArray(job.get('currentstep'), ['Requires approval', 'Executing command(s)']);
-            });
-        },
-
-      set: function(attributes, options)
-        {
-          Backbone.Model.prototype.set.call(this, attributes, options);
-
-          if (undefined !== this.jobs && !this.hasFinished())
-          {
-            this.view.update();
-          }
-        },
-
-      loadJobs: function()
-        {
-          // Nested collection
-          this.jobs = new JobCollection(this.get('jobs'));
-
-          var self = this;
-          this.jobs.each(function(job)
-            {
-              job.sip = self;
-            });
-        }
-
+    window.Sip = Sip.extend({
+      methodUrl: {
+        delete: '/transfer/uuid/delete/'
+      }
     });
 
     window.SipCollection = Backbone.Collection.extend({
