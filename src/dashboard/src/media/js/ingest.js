@@ -403,6 +403,10 @@ $(function()
 
     });
 
+    window.DirectoryBrowserView = BaseDirectoryBrowserView.extend({
+      template: _.template($('#directory-browser-template').html())
+    });
+
     window.AppView = Backbone.View.extend({
 
       el: $('#sip-container'),
