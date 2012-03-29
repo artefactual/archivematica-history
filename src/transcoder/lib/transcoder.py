@@ -21,7 +21,6 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 import re
-import MySQLdb
 import math
 import sys
 import os
@@ -31,6 +30,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
 from fileOperations import updateSizeAndChecksum
 from archivematicaFunctions import escapeForCommand
+import databaseInterface
 LowerEndMainGroupMax = -10
 
 fileTitle = ""
@@ -77,7 +77,6 @@ def setFileIn(fileIn=sys.argv[1]):
 
 setFileIn()
 
-database=MySQLdb.connect(db="MCP", read_default_file="/etc/archivematica/transcoder/dbsettings")
 commandObjects = {}
 groupObjects = {}
 commandLinkerObjects = {}
@@ -97,13 +96,12 @@ class Command:
         self.stdErr = ""
         self.exitCode=None
         self.failedCount=0
-        c=database.cursor()
         sql = """SELECT CT.type, C.verificationCommand, C.eventDetailCommand, C.command, C.outputLocation, C.description
         FROM Commands AS C
         JOIN CommandTypes AS CT ON C.commandType = CT.pk
         WHERE C.pk = """ + commandID.__str__() + """
         ;"""
-        c.execute(sql)
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             self.type, \
@@ -114,6 +112,7 @@ class Command:
             self.description = \
             row
             row = c.fetchone()
+        sqlLock.release()
         if self.verificationCommand:
             self.verificationCommand = Command(self.verificationCommand)
             self.verificationCommand.command = self.verificationCommand.command.replace("%outputLocation%", self.outputLocation)
@@ -211,17 +210,15 @@ class CommandLinker:
         self.commandObject.__str__()
 
     def execute(self):
-        c=database.cursor()
         sql = "UPDATE CommandRelationships SET countAttempts=countAttempts+1 WHERE pk=" + self.pk.__str__() + ";"
-        c.execute(sql)
-        row = c.fetchone()
+        databaseInterface.runSQL(sql)
         if self.commandObject.exitCode != None:
             if self.commandObject.exitCode:
                 column = "countNotOK"
             else:
                 column = "countOK"
             sql = "UPDATE CommandRelationships SET " + column + "=" + column + "+1 WHERE pk=" + self.pk.__str__() + ";"
-            c.execute(sql)
+            databaseInterface.runSQL(sql)
             row = c.fetchone()
             return self.commandObject.exitCode
         else:
@@ -231,8 +228,7 @@ class CommandLinker:
             else:
                 column = "countOK"
             sql = "UPDATE CommandRelationships SET " + column + "=" + column + "+1 WHERE pk=" + self.pk.__str__() + ";"
-            c.execute(sql)
-            row = c.fetchone()
+            databaseInterface.runSQL(sql)
             return ret
 
 
