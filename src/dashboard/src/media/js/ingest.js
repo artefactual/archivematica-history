@@ -250,52 +250,6 @@ $(function()
 
     });
 
-    window.JobCollection = Backbone.Collection.extend({
-
-      model: Job,
-
-      getIcon: function()
-        {
-          var path = '/media/images/'
-            , icon
-            , title;
-
-          var statusIcons = {
-            'Requires approval':    'bell.png',
-            'Awaiting decision':    'bell.png',
-            'Failed':               'cancel.png',
-            'Executing command(s)': 'arrow_refresh.png',
-            'Rejected':             'control_stop_blue.png'
-          };
-
-          var job = this.toJSON().shift();
-
-          for(status in statusIcons) {
-             if (job.currentstep == status) {
-               icon = statusIcons[status];
-               title = job.currentStep;
-               break;
-             }
-          }
-
-          if (job.microservicegroup == 'Reject SIP') {
-            icon = 'control_stop_blue.png';
-            title = 'Reject SIP';
-          }
-
-          icon = icon   || 'accept.png';
-          title = title || 'Completed successfully';
-
-          return '<img src="' + path + '/' + icon + '" title="' + title + '" />';
-        },
-
-      comparator: function(job)
-        {
-          return -1 * job.get('timestamp');
-        }
-
-    });
-
     window.JobView = BaseJobView.extend({
 
       className: 'job',
