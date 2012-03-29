@@ -197,10 +197,6 @@ $(function()
         }
     });
 
-    window.Job = Backbone.Model.extend({
-
-    });
-
     window.JobView = BaseJobView.extend({
 
       className: 'job',
