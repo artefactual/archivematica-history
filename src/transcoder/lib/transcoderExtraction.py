@@ -32,6 +32,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import addFileToTransfer
 from databaseFunctions import fileWasRemoved
 from fileOperations import updateSizeAndChecksum
+import databaseInterface
 
 global extractedCount
 extractedCount = 1
@@ -108,15 +109,13 @@ def identifyCommands(fileName):
     for extension in RarExtensions:
         if fileName.lower().endswith(extension.lower()):
             #sql find the file type,
-            c=transcoder.database.cursor()
             sql = """SELECT CR.pk, CR.command, CR.GroupMember
             FROM CommandRelationships AS CR
             JOIN FileIDs ON CR.fileID=FileIDs.pk
             JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
             WHERE FileIDs.description='unrar-nonfreeCompatable'
             AND CommandClassifications.classification = 'extract';"""
-            c.execute(sql)
-            row = c.fetchone()
+            databaseInterface.runSQL(sql)
             while row != None:
                 ret.append(row)
                 row = c.fetchone()
@@ -128,33 +127,34 @@ def identifyCommands(fileName):
                   '.Z', '.ZIP', '.GZIP', '.TAR',]
     for extension in SevenZipExtensions:
         if fileName.lower().endswith(extension.lower()):
-            c=transcoder.database.cursor()
             sql = """SELECT CR.pk, CR.command, CR.GroupMember
             FROM CommandRelationships AS CR
             JOIN FileIDs ON CR.fileID=FileIDs.pk
             JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
             WHERE FileIDs.description='7ZipCompatable'
             AND CommandClassifications.classification = 'extract';"""
-            c.execute(sql)
+            databaseInterface.runSQL(sql)
+            c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             while row != None:
                 ret.append(row)
                 row = c.fetchone()
+            sqlLock.release()
             break
     if fileName.lower().endswith('.pst'):
         global removeOnceExtracted
-        c=transcoder.database.cursor()
         sql = """SELECT CR.pk, CR.command, CR.GroupMember
         FROM CommandRelationships AS CR
         JOIN FileIDs ON CR.fileID=FileIDs.pk
         JOIN CommandClassifications ON CR.commandClassification = CommandClassifications.pk
         WHERE FileIDs.description='A .pst file'
         AND CommandClassifications.classification = 'extract';"""
-        c.execute(sql)
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             ret.append(row)
             row = c.fetchone()
+        sqlLock.release()
 
     #check if not to remove
     for extension in removeOnceExtractedSkip:

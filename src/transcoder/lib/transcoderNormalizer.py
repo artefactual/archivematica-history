@@ -36,6 +36,7 @@ from fileOperations import updateSizeAndChecksum
 from getPronomsFromPremis import getPronomsFromPremis
 from databaseFunctions import insertIntoEvents
 from databaseFunctions import insertIntoDerivations
+import databaseInterface
 
 
 global replacementDic
@@ -59,7 +60,6 @@ def inPreservationFormat():
 
 def onceNormalized(command):
     transcodedFiles = []
-
     if not command.outputLocation:
         command.outputLocation = ""
     elif os.path.isfile(command.outputLocation):
@@ -118,7 +118,6 @@ def onceNormalized(command):
 def identifyCommands(fileName):
     """Identify file type(s)"""
     ret = []
-    c=transcoder.database.cursor()
     premisFile = opts.logsDirectory + "fileMeta/" + opts.fileUUID + ".xml"
     try:
         for pronomID in getPronomsFromPremis(premisFile):
@@ -129,11 +128,12 @@ def identifyCommands(fileName):
             JOIN FileIDsByPronom AS FIBP  ON FileIDs.pk = FIBP.FileIDs
             WHERE FIBP.FileID = '""" + pronomID.__str__() + """'
             AND CommandClassifications.classification = '""" + opts.commandClassifications +"""';"""
-            c.execute(sql)
+            c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             while row != None:
                 ret.append(row)
                 row = c.fetchone()
+            sqlLock.release()
     except:
         print >>sys.stderr, "Failed to retrieve pronomIDs."
         ret = []
@@ -146,11 +146,12 @@ def identifyCommands(fileName):
         JOIN FileIDsByExtension AS FIBE  ON FileIDs.pk = FIBE.FileIDs
         WHERE FIBE.Extension = '""" + transcoder.fileExtension.__str__() + """'
         AND CommandClassifications.classification = '""" + opts.commandClassifications +"""';"""
-        c.execute(sql)
+        c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             ret.append(row)
             row = c.fetchone()
+        sqlLock.release()
 
     if not len(ret):
         if opts.commandClassifications == "preservation":
@@ -166,14 +167,12 @@ def identifyCommands(fileName):
             FROM CommandRelationships AS CR
             JOIN Commands AS C ON CR.command = C.pk
             WHERE C.description = 'Copying File.';"""
-            c.execute(sql)
-            row = c.fetchone()
-            while row != None:
+            rows = databaseInterface.queryAllSQL(sql)
+            for row in rows:
                 cl = transcoder.CommandLinker(row)
                 copyExitCode = cl.execute()
                 if copyExitCode:
                     exit(copyExitCode)
-                row = c.fetchone()
             if inAccessFormat():
                 print "Already in access format."
                 exit(0)
