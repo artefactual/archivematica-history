@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # This file is part of Archivematica.
 #
 # Copyright 2010-2012 Artefactual Systems Inc. <http://artefactual.com>

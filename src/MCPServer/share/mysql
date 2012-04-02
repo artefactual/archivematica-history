@@ -2806,16 +2806,121 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+set @PassedComplianceMicroServiceChainLink = @MicroServiceChainLink;
 
+
+
+SET @microserviceGroup  = 'Failed transfer compliance';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/activeTransfers/standardTransfer/." "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Failed compliance. See output in dashboard. Transfer moved back to activeTransfers.');
+    (0,      LAST_INSERT_ID(), 'Move transfer back to activeTransfers directory.');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
-set @FailTransferComplianceChainLink = LAST_INSERT_ID();
+SET @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Move transfer back to activeTransfers directory');
+set @MovetransferbacktoactiveTransfersdirectoryMicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'restructureForCompliance_v0.0', '"%SIPDirectory%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Attempt restructure for compliance');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+SET @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+-- move to processing directory --
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, @moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Attempt restructure for compliance');
+set @restructureForComplianceMicroServiceChain = LAST_INSERT_ID();
+
+
+-- choice auto restructure for compliance --
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (2,      LAST_INSERT_ID(), 'Attempt restructure for compliance?');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @restructureForComplianceMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @MovetransferbacktoactiveTransfersdirectoryMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES                
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+set @failedComplianceRestructureMagicChainLink =  @MicroServiceChainLink;
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, NULL, NULL);
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (4,      LAST_INSERT_ID(), 'Find branch to continue processing');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+
+
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Failed compliance');
+set @MicroServiceChain = LAST_INSERT_ID();
+
+INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
+    VALUES ('%watchDirectoryPath%system/autoRestructureForCompliance/', @MicroServiceChain, @expectedTypeTransfer);
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/system/autoRestructureForCompliance/." "%SIPUUID%" "%sharedPath%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Failed compliance.');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, @failedComplianceRestructureMagicChainLink, NULL);
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (3,      LAST_INSERT_ID(), 'Designate to process as a standard transfer');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+set @FailTransferComplianceChainLink = @MicroServiceChainLink;
+
+
 
 SET @microserviceGroup  = 'Verify transfer compliance';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -2829,8 +2934,10 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailTransferComplianceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+    VALUES (@MicroServiceChainLink, 0, @PassedComplianceMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -3498,13 +3605,17 @@ CREATE OR REPLACE VIEW PDI_by_unit AS
         SEC_TO_TIME(sum(TIME_TO_SEC(Time_spent_processing))/Number_of_tasks) AS 'Average time per task', 
         sum(Files.fileSize) AS 'total file size',
         count(Files.fileUUID) AS 'number of files',
+        count( DISTINCT Files.fileUUID),
         sum(Files.fileSize)/count(Files.fileUUID)/1000 AS 'average file size KB',
         sum(Files.fileSize)/count(Files.fileUUID)/1000000 AS 'average file size MB',
+        SEC_TO_TIME(TIME_TO_SEC(SEC_TO_TIME(sum(TIME_TO_SEC(Time_spent_processing))/Number_of_tasks))/ (sum(Files.fileSize)/count(Files.fileUUID)/1000000)) AS 'time per task per MB',
         processingDurationInformation.currentLocation, 
         processingDurationInformation.currentPath
     FROM 
         processingDurationInformation
-        JOIN Files ON processingDurationInformation.SIP_OR_TRANSFER_UUID = Files.sipUUID OR processingDurationInformation.SIP_OR_TRANSFER_UUID = Files.transferUUID
+        JOIN Files ON 
+            processingDurationInformation.SIP_OR_TRANSFER_UUID = Files.sipUUID OR 
+            processingDurationInformation.SIP_OR_TRANSFER_UUID = Files.transferUUID
     GROUP BY 
         SIP_OR_TRANSFER_UUID
 ;
