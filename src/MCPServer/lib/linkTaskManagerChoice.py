@@ -33,6 +33,7 @@ import time
 
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
+from executeOrRunSubProcess import executeOrRun
 import jobChain
 import databaseInterface
 import lxml.etree as etree
@@ -79,7 +80,7 @@ class linkTaskManagerChoice:
     def checkForPreconfiguredXML(self):
         ret = None
         xmlFilePath = os.path.join( \
-                                        self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1) + "/", \
+                                        self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
                                         archivematicaMCP.config.get('MCPServer', "processingXMLFile") \
                                     )
 
@@ -87,6 +88,10 @@ class linkTaskManagerChoice:
             # For a list of items with pks:
             # SELECT TasksConfigs.description, choiceAvailableAtLink, ' ' AS 'SPACE', MicroServiceChains.description, chainAvailable FROM MicroServiceChainChoice Join MicroServiceChains on MicroServiceChainChoice.chainAvailable = MicroServiceChains.pk Join MicroServiceChainLinks on MicroServiceChainLinks.pk = MicroServiceChainChoice.choiceAvailableAtLink Join TasksConfigs on TasksConfigs.pk = MicroServiceChainLinks.currentTask ORDER BY choiceAvailableAtLink desc;
             try:
+                command = "sudo chmod 774 \"" + xmlFilePath + "\""
+                if isinstance(command, unicode):
+                    command = command.encode("utf-8")
+                exitCode, stdOut, stdError = executeOrRun("command", command, "", printing=False)
                 tree = etree.parse(xmlFilePath)
                 root = tree.getroot()
                 for preconfiguredChoice in root.find("preconfiguredChoices"):
