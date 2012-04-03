@@ -120,8 +120,8 @@ class linkTaskManagerFiles:
 
             for key in SIPReplacementDic.iterkeys():
                 value = SIPReplacementDic[key].replace("\"", ("\\\""))
-                print "key", type(key), key
-                print "value", type(value), value
+                #print "key", type(key), key
+                #print "value", type(value), value
                 if isinstance(value, unicode):
                     value = value.encode("utf-8")
                 #key = key.encode("utf-8")
