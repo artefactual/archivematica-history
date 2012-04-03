@@ -379,28 +379,6 @@ CREATE TABLE Tasks (
     exitCode        BIGINT
 ) DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS Jobs;
-CREATE TABLE Jobs (
-    jobUUID         VARCHAR(50) PRIMARY KEY,
-    jobType         VARCHAR(250),
-    createdTime     TIMESTAMP DEFAULT NOW(),
-    createdTimeDec  decimal(24,10) NOT NULL DEFAULT 0,
-    directory       VARCHAR(250),
-    SIPUUID         VARCHAR(50),
-    unitType        VARCHAR(50),
-    currentStep     VARCHAR(50),
-    microserviceGroup VARCHAR(50),
-    hidden          BOOLEAN NOT NULL DEFAULT 0
-) DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS jobStepCompleted;
-CREATE TABLE jobStepCompleted (
-    pk              BIGINT PRIMARY KEY AUTO_INCREMENT,
-    jobUUID         VARCHAR(50),
-    completedTime   TIMESTAMP DEFAULT NOW(),
-    step            VARCHAR(50)
-) DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS SIPs;
 CREATE TABLE SIPs (
     sipUUID         VARCHAR(50) PRIMARY KEY,
@@ -559,6 +537,22 @@ CREATE TABLE MicroServiceChainLinksExitCodes (
     playSound   INT UNSIGNED,
     Foreign Key (playSound) references Sounds(pk),
     exitMessage  VARCHAR(50) DEFAULT 'Completed successfully'
+) DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS Jobs;
+CREATE TABLE Jobs (
+    jobUUID         VARCHAR(50) PRIMARY KEY,
+    jobType         VARCHAR(250),
+    createdTime     TIMESTAMP DEFAULT NOW(),
+    createdTimeDec  decimal(24,10) NOT NULL DEFAULT 0,
+    directory       VARCHAR(250),
+    SIPUUID         VARCHAR(50),
+    unitType        VARCHAR(50),
+    currentStep     VARCHAR(50),
+    microserviceGroup VARCHAR(50),
+    hidden          BOOLEAN NOT NULL DEFAULT 0,
+    MicroServiceChainLinksPK INT UNSIGNED,
+    Foreign Key (MicroServiceChainLinksPK) references MicroServiceChainLinks(pk)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS MicroServiceChains;
