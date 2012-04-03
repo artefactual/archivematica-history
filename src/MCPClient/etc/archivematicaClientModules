@@ -83,6 +83,6 @@ copyTransferSubmissionDocumentation_v0.0 = %clientScriptsDirectory%copyTransferS
 removeEmptyDirectories_v0.0 = %clientScriptsDirectory%removeEmptyDirectories.py
 loadLabelsFromCSV_v0.0 = %clientScriptsDirectory%loadLabelsFromCSV.py
 removeHiddenFilesAndDirectories_v0.0 = %clientScriptsDirectory%removeHiddenFilesAndDirectories.py
-restructureForCompliance_v0.0 = /usr/lib/archivematica/SIPCreationTools/restructureForCompliance/restructureForCompliance.sh
+restructureForCompliance_v0.0 = %clientScriptsDirectory%restructureForCompliance.py
 
 
