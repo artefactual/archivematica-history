@@ -107,6 +107,11 @@ def runSQL(sql):
             print >>sys.stderr, "Error with query: ", sql
             print >>sys.stderr, "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
             exit(-100)
+    except Exception as inst:
+            print >>sys.stderr, "Error query: ", sql
+            print >>sys.stderr, type(inst)     # the exception instance
+            print >>sys.stderr, inst.args
+            raise Exception(inst)
     db.commit()
     sqlLock.release()
     return
@@ -135,6 +140,11 @@ def querySQL(sql):
         else:
             print >>sys.stderr, "Error with query: ", sql
             print >>sys.stderr, "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
+    except Exception as inst:
+        print >>sys.stderr, "Error query: ", sql
+        print >>sys.stderr, type(inst)     # the exception instance
+        print >>sys.stderr, inst.args
+        raise Exception(inst)
     return c, sqlLock
 #        row = c.fetchone()
 #        while row != None:
@@ -172,4 +182,9 @@ def queryAllSQL(sql):
             print >>sys.stderr, "Error %d:\n%s" % (message[ 0 ], message[ 1 ] )
             exit(-100)
             sqlLock.release()
+    except Exception as inst:
+        print >>sys.stderr, "Error query: ", sql
+        print >>sys.stderr, type(inst)     # the exception instance
+        print >>sys.stderr, inst.args
+        raise Exception(inst)
     return rows
