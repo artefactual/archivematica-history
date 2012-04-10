@@ -198,5 +198,5 @@ def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIde
     insertIntoEvents(fileUUID=fileUUID, eventIdentifierUUID=eventIdentifierUUID, eventType=eventType, eventDateTime=eventDateTime, eventDetail=eventDetail, eventOutcome="", eventOutcomeDetailNote=eventOutcomeDetailNote)
 
     #UPDATE THE CURRENT FILE PATH
-    sql =  """UPDATE Files SET currentLocation='%s' WHERE fileUUID='%s';""" % (dst, fileUUID)
+    sql =  """UPDATE Files SET currentLocation='%s' WHERE fileUUID='%s';""" % (MySQLdb.escape_string(dst), fileUUID)
     databaseInterface.runSQL(sql)

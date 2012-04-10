@@ -111,6 +111,8 @@ class Command:
             self.outputLocation, \
             self.description = \
             row
+            if isinstance(self.command, unicode):
+                self.command = self.command.encode('utf-8')
             row = c.fetchone()
         sqlLock.release()
         if self.verificationCommand:
