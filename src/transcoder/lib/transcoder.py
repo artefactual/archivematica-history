@@ -87,6 +87,11 @@ global replacementDic
 replacementDic = {}
 identifyCommands=None
 
+def toStrFromUnicode(inputString, encoding='utf-8'):
+    """Converts to str, if it's unicode input type."""
+    if isinstance(inputString, unicode):
+        inputString = inputString.encode('utf-8')
+    return inputString
 
 
 class Command:
@@ -104,13 +109,16 @@ class Command:
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
+            rowSTR = []
+            for colIndex in range(len(row)):
+                rowSTR.append(toStrFromUnicode(row[colIndex])) 
             self.type, \
             self.verificationCommand, \
             self.eventDetailCommand, \
             self.command, \
             self.outputLocation, \
             self.description = \
-            row
+            rowSTR
             if isinstance(self.command, unicode):
                 self.command = self.command.encode('utf-8')
             row = c.fetchone()
@@ -150,11 +158,14 @@ class Command:
         global replacementDic
 
         #for each key replace all instances of the key in the command string
-        for key in replacementDic.iterkeys():
+        for key, value in replacementDic.iteritems():
+            key = toStrFromUnicode(key)
+            replacementDic[key] = toStrFromUnicode(value)
+            #self.outputLocation = toStrFromUnicode(self.outputLocation)
             #self.command = self.command.replace ( key, quote(replacementDic[key]) )
             self.command = self.command.replace( key, escapeForCommand(replacementDic[key]) )
             if self.outputLocation:
-                self.outputLocation = self.outputLocation.replace ( key, replacementDic[key] )
+                self.outputLocation = self.outputLocation.replace( key, replacementDic[key] )
         print "Running: "
         print self.__str__()
 

@@ -139,9 +139,7 @@ class unitTransfer(unit):
                     self.fileList[currentPath].UUID = UUID
                     self.fileList[currentPath].fileGrpUse = fileGrpUse
                 else:
-                    print >>sys.stderr, self.fileList
-                    eventDetail = "Transfer {" + self.UUID + "} has file {" + UUID + "}\"" + currentPath + "\" in the database, but file doesn't exist in the file system."
-                    print >>sys.stderr, "!!!", eventDetail, "!!!"
+                    print >>sys.stderr, "!!!", "Transfer {" + self.UUID + "} has file {" + UUID + "}\"", currentPath, "\" in the database, but file doesn't exist in the file system.", "!!!"
                 row = c.fetchone()
             sqlLock.release()
 
