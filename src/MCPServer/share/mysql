@@ -3545,6 +3545,46 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
 
 
 -- VIEWS --
+CREATE OR REPLACE VIEW taskDurationsView AS
+    SELECT
+        taskUUID,
+        UNIX_TIMESTAMP(endTime) - UNIX_TIMESTAMP(startTime) AS 'Time_spent_processing_in_seconds',
+        SEC_TO_TIME(UNIX_TIMESTAMP(endTime) - UNIX_TIMESTAMP(startTime)) AS 'Time_spent_processing'
+    FROM
+        Tasks
+    ORDER BY
+        UNIX_TIMESTAMP(endTime) - UNIX_TIMESTAMP(startTime) DESC
+;
+
+CREATE OR REPLACE VIEW jobDurationsView AS
+    SELECT
+        Jobs.jobUUID,
+        sum(taskDurationsView.Time_spent_processing_in_seconds) AS 'Time_spent_processing_in_seconds',
+        SEC_TO_TIME(sum(taskDurationsView.Time_spent_processing_in_seconds)) AS 'Time_spent_processing',
+        Jobs.jobType,
+        Jobs.createdTime,
+        min(Tasks.startTime) AS 'startTime', 
+        max(Tasks.endTime) AS 'endTime',
+        UNIX_TIMESTAMP(max(Tasks.endTime)) - UNIX_TIMESTAMP(min(Tasks.startTime)) AS 'time_from_start_of_processing_till_end_of_processing_in_seconds',
+        UNIX_TIMESTAMP(min(Tasks.startTime)) - UNIX_TIMESTAMP(Jobs.createdTime) AS 'time_from_job_created_till_start_of_processing_in_seconds',
+        UNIX_TIMESTAMP(max(Tasks.endTime)) - UNIX_TIMESTAMP(Jobs.createdTime) AS 'time_from_job_created_till_end_of_processing_in_seconds',
+        Jobs.createdTimeDec,
+        Jobs.directory,
+        Jobs.SIPUUID,
+        Jobs.unitType,
+        Jobs.currentStep,
+        Jobs.microserviceGroup,
+        Jobs.MicroServiceChainLinksPK
+    FROM
+        Jobs 
+        Join Tasks ON Tasks.jobUUID = Jobs.jobUUID
+        Join taskDurationsView ON Tasks.taskUUID = taskDurationsView.taskUUID
+    GROUP BY
+        Jobs.jobUUID
+    ORDER BY
+        sum(taskDurationsView.Time_spent_processing_in_seconds) DESC
+;
+
 -- SELECT count(taskUUID) from lastJobsTasks;
 CREATE OR REPLACE VIEW transfersAndSIPs AS
     SELECT 
