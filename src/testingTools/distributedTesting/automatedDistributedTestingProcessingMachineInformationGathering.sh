@@ -23,21 +23,16 @@
 
 
 #-- configuration
-databaseUser="root"
-databasePassword=""
+
 
 #-- script
 DATE="`date +"%Y.%m.%d-%H.%M.%S"`"
 
-if [[ $databasePassword != "" ]]; then
-        dbPwd="-p${databasePassword}"
-    else
-        dbPwd=""
-fi
+echo TODO - get archivematica revision
+echo TODO - get ram speed and timings
+echo TODO - get disk read/write speed to shared directory
 
-mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM PDI_by_unit;" > ${DATE}_PDI_by_unit.html
-mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM processingDurationInformation;" > ${DATE}_processingDurationInformation.html
-mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM jobDurationsView" > ${DATE}_jobDurationsView.html
-
-mysqldump -u ${databaseUser} ${dbPwd} MCP > ${DATE}_MCP_DUMP.sql
+sudo cat /proc/cpuinfo > ${HOSTNAME}_${DATE}_cpuinfo.log
+free  > ${HOSTNAME}_${DATE}_free.log
+/sbin/ifconfig|grep inet|head -1|sed 's/\:/ /'|awk '{print $3}' > ${HOSTNAME}_${DATE}_IP.log
 
