@@ -35,9 +35,9 @@ if [[ $databasePassword != "" ]]; then
         dbPwd=""
 fi
 
-mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM PDI_by_unit;" > PDI_by_unit_${DATE}.html
-mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM processingDurationInformation;" > processingDurationInformation_${DATE}.html
-mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM jobDurationsView" > jobDurationsView_${DATE}.html
+mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM PDI_by_unit;" > ${DATE}_PDI_by_unit.html
+mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM processingDurationInformation;" > ${DATE}_processingDurationInformation.html
+mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM jobDurationsView" > ${DATE}_jobDurationsView.html
 
-mysqldump -u ${databaseUser} ${dbPwd} MCP > MCP_DUMP_${DATE}.sql
+mysqldump -u ${databaseUser} ${dbPwd} MCP > ${DATE}_MCP_DUMP.sql
 
