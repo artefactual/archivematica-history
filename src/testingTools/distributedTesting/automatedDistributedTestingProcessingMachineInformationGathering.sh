@@ -28,7 +28,7 @@
 #-- script
 DATE="`date +"%Y.%m.%d-%H.%M.%S"`"
 
-echo TODO - get archivematica revision
+echo TODO - get archivematica revision/version
 echo TODO - get ram speed and timings
 echo TODO - get disk read/write speed to shared directory
 

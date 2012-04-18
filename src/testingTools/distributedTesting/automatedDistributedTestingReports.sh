@@ -35,9 +35,11 @@ if [[ $databasePassword != "" ]]; then
         dbPwd=""
 fi
 
-mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM PDI_by_unit;" > ${DATE}_PDI_by_unit.html
-mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM processingDurationInformation;" > ${DATE}_processingDurationInformation.html
-mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM jobDurationsView" > ${DATE}_jobDurationsView.html
+mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM PDI_by_unit;" > ${DATE}_${HOSTNAME}_PDI_by_unit.html
+mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM processingDurationInformation;" > ${DATE}_${HOSTNAME}_processingDurationInformation.html
+mysql MCP -H -u ${databaseUser} ${dbPwd} -e "SELECT * FROM jobDurationsView" > ${DATE}_${HOSTNAME}_jobDurationsView.html
+mysql MCP -H -u ${databaseUser} ${dbPwd} -e "status" > ${DATE}_${HOSTNAME}_mysql_status.log
+mysqldump -u ${databaseUser} ${dbPwd} MCP > ${DATE}_${HOSTNAME}_MCP_DUMP.sql
+netstat -s > ${DATE}_${HOSTNAME}_netstat_summary.log
 
-mysqldump -u ${databaseUser} ${dbPwd} MCP > ${DATE}_MCP_DUMP.sql
 
