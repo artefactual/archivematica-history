@@ -1,3 +1,6 @@
+if [ ! -f  /usr/bin/dot ]; then
+   sudo apt-get install graphviz
+fi
 rm ./*.png
 set -e
 ./main.py
