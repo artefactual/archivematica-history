@@ -274,11 +274,17 @@ def main(fileName):
         commandLinkerObjects[pk] = cl
 
     #execute
+    #Execute everything in the groups above zero
+    #exit code/success is checked below - at leat one must be successful
     for g in groupObjects:
         if (g > 0 or g < LowerEndMainGroupMax) and len(groupObjects[g]):
             for group in groupObjects[g]:
                 for cl in group.members:
                     cl.execute()
+    
+    #groups zero to lowerEndMainGroupMax are the main groups
+    #Everything in the group must be successful, or it tries to execute the next group (decrement)
+    #quit -1 if no main group is successful
     mainGroup = 0
     while True :
         if mainGroup in groupObjects:
@@ -292,7 +298,7 @@ def main(fileName):
             quit(-1)
         mainGroup = mainGroup - 1
 
-
+    #these are executed above.
     #look for problems
     for g in groupObjects:
         #Groups that require at least one good one.
