@@ -91,7 +91,7 @@ def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
             else:
                 processedJobChainLinks.append(pk)
 
-        if taskType == 0 or taskType == 1 or taskType == 3: #|    0 | one instance |    1 | for each file                   | 
+        if taskType == 0 or taskType == 1 or taskType == 3 or taskType == 5: #|    0 | one instance |    1 | for each file                   | 
             
             sql = """SELECT exitCode, nextMicroServiceChainLink, exitMessage FROM MicroServiceChainLinksExitCodes WHERE microServiceChainLink = '%s';""" % (pk.__str__())
             rows2 = databaseInterface.queryAllSQL(sql)
