@@ -583,8 +583,8 @@ INSERT INTO Commands
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
     (CONCAT('convert "%fileFullName%" -thumbnail ', @ThumbnailDimentions, ' -layers merge
- "%outputDirectory%%prefix%%fileName%%postfix%.jpg"')),
-    '%outputDirectory%%prefix%%fileName%%postfix%.jpg',
+ "%outputDirectory%%postfix%.jpg"')),
+    '%outputDirectory%%postfix%.jpg',
     @convertEventDetailCommandID,
     @standardVerificationCommand,
     ('Transcoding to jpg thumbnail with convert')
