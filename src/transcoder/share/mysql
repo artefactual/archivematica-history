@@ -155,6 +155,7 @@ INSERT INTO FileIDs
     (description) VALUES
     ('Normalize Defaults'), 
     ('Access Defaults'), 
+    ('Thumbnail Defaults'), 
     ('Extract Defaults'),
     ('7ZipCompatable'),
     ('unrar-nonfreeCompatable')
@@ -212,7 +213,7 @@ INSERT INTO Commands
 
 set @accessNoOpCommandID = LAST_INSERT_ID();
 
--- Default copy command --
+-- Default access copy command --
 INSERT INTO Commands 
     (commandType, verificationCommand, command, outputLocation, description) 
     VALUES 
@@ -220,7 +221,29 @@ INSERT INTO Commands
     (SELECT pk FROM  (Select * From Commands) AS temp WHERE description = 'Verifying file exists and is not size 0'),
     'cp -R "%inputFile%" "%outputDirectory%%prefix%%fileName%%postfix%%fileExtensionWithDot%"',
     '%outputDirectory%%prefix%%fileName%%postfix%%fileExtensionWithDot%',
-    'Copying File.');
+    'Copying file to access directory.');
+
+set @copyFileCommandID = LAST_INSERT_ID();
+
+-- Associate default access with copy --
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @copyFileCommandID,
+    (SELECT pk FROM FileIDs WHERE description = 'Access Defaults')
+);
+
+-- Default Thumbnail command --
+INSERT INTO Commands 
+    (commandType, verificationCommand, command, outputLocation, description) 
+    VALUES 
+    ((SELECT pk FROM CommandTypes WHERE type = 'command'),
+    (SELECT pk FROM  (Select * From Commands) AS temp WHERE description = 'Verifying file exists and is not size 0'),
+    'cp -R "/var/archivematica/sharedDirectory/sharedMicroServiceTasksConfigs/transcoder/defaultIcons/default.jpg" "%outputDirectory%%postfix%.jpg"',
+    '%outputDirectory%%postfix%.jpg',
+    'Using default thumbnail.');
 
 set @copyFileCommandID = LAST_INSERT_ID();
 

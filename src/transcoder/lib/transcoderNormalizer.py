@@ -166,7 +166,7 @@ def identifyCommands(fileName):
             sql = """SELECT CR.pk, CR.command, CR.GroupMember
             FROM CommandRelationships AS CR
             JOIN Commands AS C ON CR.command = C.pk
-            WHERE C.description = 'Copying File.';"""
+            WHERE C.description = 'Copying file to access directory.';"""
             rows = databaseInterface.queryAllSQL(sql)
             for row in rows:
                 cl = transcoder.CommandLinker(row)
@@ -180,6 +180,20 @@ def identifyCommands(fileName):
                 print >>sys.stderr, "Unable to verify access readiness."
                 #Issue 528: related to exit code
                 exit(0)
+        
+        elif opts.commandClassifications == "thumbnail":
+            #use default thumbnail
+            print "Using default thumbnail"
+            sql = """SELECT CR.pk, CR.command, CR.GroupMember
+            FROM CommandRelationships AS CR
+            JOIN Commands AS C ON CR.command = C.pk
+            WHERE C.description = 'Using default thumbnail.';"""
+            rows = databaseInterface.queryAllSQL(sql)
+            for row in rows:
+                cl = transcoder.CommandLinker(row)
+                copyExitCode = cl.execute()
+                exit(copyExitCode)
+                
     return ret
 
 if __name__ == '__main__':
@@ -195,6 +209,7 @@ if __name__ == '__main__':
     parser.add_option("-o",  "--objectsDirectory",   action="store", dest="objectsDirectory", default="")
     parser.add_option("-l",  "--logsDirectory",      action="store", dest="logsDirectory", default="")
     parser.add_option("-a",  "--accessDirectory",    action="store", dest="accessDirectory", default="")
+    parser.add_option("-b",  "--thumbnailDirectory",    action="store", dest="thumbnailDirectory", default="")
     parser.add_option("-e",  "--excludeDirectory",    action="store", dest="excludeDirectory", default="")
     parser.add_option("-d",  "--date",   action="store", dest="date", default="")
     parser.add_option("-s",  "--sipUUID",   action="store", dest="sipUUID", default="")
@@ -229,6 +244,9 @@ if __name__ == '__main__':
     elif opts.commandClassifications == "access":
         prefix = opts.fileUUID + "-"
         outputDirectory = opts.accessDirectory
+    elif opts.commandClassifications == "thumbnail":
+        outputDirectory = opts.thumbnailDirectory
+        postfix = opts.fileUUID
     else:
         print >>sys.stderr, "Unsupported command classification."
         exit(2)
