@@ -1,0 +1,37 @@
+{% extends "layout_fluid.html" %}
+{% load breadcumbs %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block js %}
+  <script src="{{ STATIC_URL }}vendor/jquery.inputmask.js" type="text/javascript"></script>
+  <script src="{{ STATIC_URL }}js/rights_edit.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="span12">
+
+      {% if request.method == 'POST' %}
+        {% if form.is_valid %}
+          <div class="alert-message success">
+            <p><strong>Saved!</p>
+          </div>
+        {% else %}
+          <div class="alert-message error">
+            <p>An error has occurred.</p>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      <form action='/transfer/add/' method='POST'>
+        {{ form.as_p }}
+
+        <input type='submit' value='Add' />
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -544,6 +544,16 @@ def transfer_grid(request):
     microservices_help = django_settings.MICROSERVICES_HELP
     return render(request, 'main/transfer/grid.html', locals())
 
+def transfer_add(request):
+    if request.method == 'POST':
+        form = forms.TransferForm(request.POST)
+        if form.is_valid():
+          return HttpResponseRedirect('/transfer/')
+    else:
+        form = forms.TransferForm()
+
+    return render(request, 'main/transfer/add.html', locals())
+
 def transfer_status(request, uuid=None):
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
     objects = models.Job.objects.filter(hidden=False, unittype__exact='unitTransfer').values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')

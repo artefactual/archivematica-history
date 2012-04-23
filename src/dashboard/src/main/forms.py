@@ -27,6 +27,9 @@ class DublinCoreMetadataForm(forms.Form):
 class AdministrationForm(forms.Form):
     arguments = forms.CharField(required=False, widget=Textarea(attrs=TEXTAREA_ATTRS))
 
+class TransferForm(forms.Form):
+    name = forms.CharField(required=True)
+
 class RightsForm(ModelForm):
     rightsbasis = forms.ChoiceField(label="Basis", choices=(
         ('Copyright', 'Copyright'),
