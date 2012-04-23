@@ -26,7 +26,7 @@ import sys
 import os
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import removeFileByFileUUID
-removeIfFileNameIs = ["Thumbs.db"]
+removeIfFileNameIs = ["Thumbs.db", "Icon", u"Icon\u000D"]
 
 def removableFile(target):
     global eventDetailText

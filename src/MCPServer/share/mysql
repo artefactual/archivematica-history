@@ -2023,7 +2023,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, 'objects', TRUE, '%SIPLogsDirectory%removeUnneededFiles.log', '%SIPLogsDirectory%removeUnneededFiles.log', 'removeUnneededFiles_v0.0',  '"%relativeLocation%" "%fileUUID%" "%SIPLogsDirectory%" "%date%" "%taskUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Remove thumbs.db files');
+    (1,      LAST_INSERT_ID(), 'Remove cache files');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
