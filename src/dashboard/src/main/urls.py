@@ -64,7 +64,9 @@ urlpatterns = patterns('main.views',
 
     # Administration
     (r'administration/$', 'administration'),
-    (r'administration/edit/(?P<id>\d+)/$', 'administration_edit'),
+    #(r'administration/edit/(?P<id>\d+)/$', 'administration_edit'),
+    (r'administration/dip/$', 'administration_dip'),
+    (r'administration/dip/edit/(?P<id>\d+)/$', 'administration_dip_edit'),
 
     #Status
     (r'status/$', 'status'),
