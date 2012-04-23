@@ -166,7 +166,7 @@ def startThreads(t=1):
 
 if __name__ == '__main__':
     loadSupportedModules(config.get('MCPClient', "archivematicaClientModules"))
-    startThreads(0)
+    startThreads(config.getint('MCPClient', "numberOfTasks"))
     tl = threading.Lock()
     tl.acquire()
     tl.acquire()
