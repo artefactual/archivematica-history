@@ -766,10 +766,13 @@ def access_delete(request, id):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def administration(request):
-    upload_setting = models.StandardTaskConfig.objects.get(execute="upload-qubit_v0.0")
     return render(request, 'main/administration/index.html', locals())
 
-def administration_edit(request, id):
+def administration_dip(request):
+    upload_setting = models.StandardTaskConfig.objects.get(execute="upload-qubit_v0.0")
+    return render(request, 'main/administration/dip.html', locals())
+
+def administration_dip_edit(request, id):
     if request.method == 'POST':
         upload_setting = models.StandardTaskConfig.objects.get(pk=id)
         form = forms.AdministrationForm(request.POST)
@@ -777,7 +780,7 @@ def administration_edit(request, id):
             upload_setting.arguments = form.cleaned_data['arguments']
             upload_setting.save()
 
-    return HttpResponseRedirect(reverse("main.views.administration"))
+    return HttpResponseRedirect(reverse("main.views.administration_dip"))
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc
