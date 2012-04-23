@@ -622,6 +622,13 @@ CREATE TABLE StandardTasksConfigs (
 ) DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS SourceDirectories;
+CREATE TABLE SourceDirectories (
+  pk int(10) unsigned NOT NULL AUTO_INCREMENT,
+  path longtext,
+  PRIMARY KEY (pk)
+) DEFAULT CHARSET=utf8;
+
 
 -- Move To Failed Directory --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
