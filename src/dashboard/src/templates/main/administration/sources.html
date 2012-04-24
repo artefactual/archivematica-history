@@ -4,11 +4,56 @@
 {% block h1 %}Administration{% endblock %}
 {% block page_id %}Administration{% endblock %}
 
+{% block js %}
+  <script type="text/javascript" src="{{ STATIC_URL }}js/file-explorer.js"></script>
+{% endblock %}
+
 {% block sidebar %}
   {% include "main/administration/_sidebar.html" %}
 {% endblock %}
 
+{% block css %}
+<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/backbone-file-explorer.css" />
+<style>
+.backbone-file-explorer-directory {
+  background-image: url('{{ STATIC_URL }}images/filefolder.png');
+}
+
+.backbone-file-explorer-directory_open {
+  background-image: url('{{ STATIC_URL }}images/filefolderopen.png');
+}
+</style>
+{% endblock %}
+
 {% block content %}
+
+<script>
+function fileSelector() {
+
+  var fileExplorer = new FileExplorer({
+    el:                $('#explorer'),
+    structure:         {},
+    levelTemplate:     $('#template-dir-level').html(),
+    entryTemplate:     $('#template-dir-entry').html(),
+    hideChildren:      true,
+    nameClickHandler: function(result) {
+      if (result.type == 'directory') {
+        alert('User clicked name of ' + result.type + ' at path ' + result.path);
+      }
+    }
+  });
+
+  return fileExplorer;
+}
+
+$(document).ready(function() {
+  var fileExplorer = fileSelector();
+  $.get('/filesystem/contents/', function(results) {
+    fileExplorer.structure = results;
+    fileExplorer.render();
+  });
+});
+</script>
 
   <h1>Administration</h1>
 
@@ -27,11 +72,25 @@
     </tbody>
   </table>
 
+  <div id='explorer'></div>
+
   <form action='' method='POST'>
     <p>
       Add Path: <input name='path' type='text' />
       <input type='submit' value='Add' class='btn' />
     </p>
   <form>
+
+<script type="text/template" id='template-dir-level'>
+  <div class="backbone-file-explorer-level"></div>
+</script>
+
+<script type="text/template" id='template-dir-entry'>
+  <div style='clear:both'>
+    <span class="backbone-file-explorer-directory_icon_button"></span>
+    <span class="backbone-file-explorer-directory_entry_name"><%= name %></span>
+    <span class="backbone-file-explorer-directory_entry_actions"></span>
+  </div>
+</script>
 
 {% endblock %}
