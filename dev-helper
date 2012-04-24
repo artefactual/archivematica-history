@@ -28,6 +28,8 @@ fn_exists()
   type $1 2>/dev/null | grep -q 'is a function'
 }
 
+colour () { "$@" 2>&1>&3|sed 's,.*,\x1B[31m&\x1B[0m,'>&2;} 3>&1
+
 function svn-update() {
   part="svn up"
   echo -n "\"Would you like to ${part}?\" (y/N) "
@@ -36,7 +38,7 @@ function svn-update() {
       echo "doing ${part} ..."
       echo "cleaning up..."
       cd localDevSetup/
-      ./cleanup.sh
+      colour ./cleanup.sh
       cd ..
 
       echo "UPDATING..."
@@ -44,7 +46,7 @@ function svn-update() {
 
       echo "integrating into environment..."
       cd localDevSetup/
-      ./createLocalDevDirectories.sh
+      colour ./createLocalDevDirectories.sh
       cd ..
   else
           echo "not going to ${part}"
@@ -58,22 +60,22 @@ function package-update() {
   if [[ $a == "Y" || $a == "y" ]]; then
           echo "Going to ${part} ..."
           cd localDevSetup/
-          sudo apt-get update
-          ./installDependsFromDebianFile.py ./../src/archivematicaCommon/debian/control
-          ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
-          ./installDependsFromDebianFile.py ./../src/dashboard/debian/control
+          colour sudo apt-get update
+          colour ./installDependsFromDebianFile.py ./../src/archivematicaCommon/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/dashboard/debian/control
           #./installDependsFromDebianFile.py ./../src/easy-extract/debian/control
-          ./installDependsFromDebianFile.py ./../src/MCPClient/debian/control
-          ./installDependsFromDebianFile.py ./../src/MCPrpcCLI/debian/control
-          ./installDependsFromDebianFile.py ./../src/MCPServer/debian/control
-          #./installDependsFromDebianFile.py ./../src/metaPackage-forensic-tools/debian/control
-          #./installDependsFromDebianFile.py ./../src/metaPackage-shotgun/debian/control
-          ./installDependsFromDebianFile.py ./../src/sanitizeNames/debian/control
-          ./installDependsFromDebianFile.py ./../src/SIPCreationTools/debian/control
-          ./installDependsFromDebianFile.py ./../src/transcoder/debian/control
-          ./installDependsFromDebianFile.py ./../src/upload-qubit/debian/control
-          #./installDependsFromDebianFile.py ./../src/vm-includes/debian/control
-          ./installDependsFromDebianFile.py ./../src/xubuntuGuiScriptsEditor/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/MCPClient/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/MCPrpcCLI/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/MCPServer/debian/control
+          colour #./installDependsFromDebianFile.py ./../src/metaPackage-forensic-tools/debian/control
+          colour #./installDependsFromDebianFile.py ./../src/metaPackage-shotgun/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/sanitizeNames/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/SIPCreationTools/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/transcoder/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/upload-qubit/debian/control
+          colour #./installDependsFromDebianFile.py ./../src/vm-includes/debian/control
+          colour ./installDependsFromDebianFile.py ./../src/xubuntuGuiScriptsEditor/debian/control
           cd ..
   else
           echo "Not going to ${part}."
@@ -109,9 +111,9 @@ function restart() {
 
           sleep 3
           sudo rm /tmp/archivematicaMCP*
-          sudo start archivematica-mcp-server
-          sudo start archivematica-mcp-client
-          sudo apache2ctl restart
+          colour sudo start archivematica-mcp-server
+          colour sudo start archivematica-mcp-client
+          colour sudo apache2ctl restart
   else
           echo "Not going to ${part}."
   fi
@@ -124,7 +126,7 @@ function export-sampledata() {
   if [[ $a == "Y" || $a == "y" ]]; then
           rev="`svn info | grep \"Revision: \" | awk -F " " '{print $2}'`"
           echo Going to export to '~/'sampledata-$rev ...
-          svn export sampledata ~/sampledata-${rev}
+          colour svn export sampledata ~/sampledata-${rev}
   else
           echo "Not going to ${part}."
   fi
@@ -138,7 +140,7 @@ function install-gui() {
           rm /home/$USER/.config/Thunar/uca.xml
           tmp="`pwd`"
           cd src/xubuntuGuiScriptsEditor/share
-          ./addArchivematicaGUIScripts.sh
+          colour ./addArchivematicaGUIScripts.sh
           cd "$tmp"
   else
           echo "Not going to ${part}."
@@ -151,7 +153,7 @@ function update-qubit() {
   read a
   if [[ $a == "Y" || $a == "y" ]]; then
           sudo chmod -R 777 qubit-svn
-          svn update qubit-svn
+          colour svn update qubit-svn
           sudo chmod -R 777 qubit-svn
           sudo stop qubit-sword
           sudo start qubit-sword
