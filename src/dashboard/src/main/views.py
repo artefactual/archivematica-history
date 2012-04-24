@@ -797,6 +797,34 @@ def administration_sources_delete(request, id):
     models.SourceDirectory.objects.get(pk=id).delete()
     return HttpResponseRedirect(reverse('main.views.administration_sources'))
 
+def filesystem_contents(request):
+    response = {
+        'name': 'main',
+        'parent': 'test',
+        'children': [
+            {
+                'name': 'stuff',
+                'children': [
+                    {
+                        'name': 'goat',
+                        'children': [
+                            {
+                                'name': 'rob',
+                                'children': []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                'name': 'bing',
+                'children': []
+            }
+        ]
+    }
+
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """

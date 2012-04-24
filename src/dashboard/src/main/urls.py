@@ -70,7 +70,7 @@ urlpatterns = patterns('main.views',
     (r'administration/sources/$', 'administration_sources'),
     (r'administration/sources/delete/(?P<id>\d+)/$', 'administration_sources_delete'),
 
-    #Status
+    # JSON feeds
     (r'status/$', 'status'),
-
+    (r'filesystem/contents/$', 'filesystem_contents'),
 )
