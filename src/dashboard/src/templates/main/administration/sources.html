@@ -1,0 +1,37 @@
+{% extends "layout_fluid.html" %}
+
+{% block title %}Administration{% endblock %}
+{% block h1 %}Administration{% endblock %}
+{% block page_id %}Administration{% endblock %}
+
+{% block sidebar %}
+  {% include "main/administration/_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <h1>Administration</h1>
+
+  <table>
+    <thead>
+      <th>Path</th>
+      <th></th>
+    </thead>
+    <tbody>
+      {% for dir in directories %}
+        <tr>
+          <td>{{ dir.path }}</td>
+          <td><a href='{% url main.views.administration_sources_delete dir.id %}' class='btn' style='float:right'>Delete</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <form action='' method='POST'>
+    <p>
+      Add Path: <input name='path' type='text' />
+      <input type='submit' value='Add' class='btn' />
+    </p>
+  <form>
+
+{% endblock %}
