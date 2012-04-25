@@ -797,32 +797,32 @@ def administration_sources_delete(request, id):
     models.SourceDirectory.objects.get(pk=id).delete()
     return HttpResponseRedirect(reverse('main.views.administration_sources'))
 
-def filesystem_contents(request):
-    response = {
-        'name': 'main',
-        'parent': 'test',
-        'children': [
-            {
-                'name': 'stuff',
-                'children': [
-                    {
-                        'name': 'goat',
-                        'children': [
-                            {
-                                'name': 'rob',
-                                'children': []
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                'name': 'bing',
-                'children': []
-            }
-        ]
-    }
+def dir2dict(path, directory={}, entry=False):
+    # if starting traversal, set entry to directory root
+    if (entry == False):
+        entry = directory
+        entry['parent'] = os.path.dirname(path)
 
+    # set standard entry properties
+    entry['name'] = os.path.basename(path)
+    entry['children'] = []
+
+    # define entries
+    for file in os.listdir(path):
+        new_entry = {}
+        new_entry['name'] = file
+        entry['children'].append(new_entry)
+
+        # if entry is a directory, recurse
+        child_path = path + '/' + file
+        if os.path.isdir(child_path) and os.access(child_path, os.R_OK):
+            dir2dict(child_path, directory, new_entry)
+
+    # return fully traversed data
+    return directory
+
+def filesystem_contents(request):
+    response = dir2dict('/home')
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
