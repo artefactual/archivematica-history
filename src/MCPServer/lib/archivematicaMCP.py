@@ -141,6 +141,8 @@ def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
     return UUID
 
 def createUnitAndJobChain(path, config, terminate=False):
+    if os.path.isdir(path):
+            path = path + "/"
     print "createUnitAndJobChain", path, config
     unit = None
     if os.path.isdir(path):
@@ -197,7 +199,6 @@ def watchDirectories():
     sqlLock.release()
 
     for row in rows:
-        print row
         directory = row[0].replace("%watchDirectoryPath%", config.get('MCPServer', "watchDirectoryPath"), 1)
         if not os.path.isdir(directory):
             os.makedirs(directory)
@@ -205,13 +206,14 @@ def watchDirectories():
             if item == ".svn":
                 continue
             path = os.path.join(directory, item)
-            if os.path.isdir(path):
-                path = path + "/"
             #createUnitAndJobChain(path, row)
             while(limitTaskThreads <= threading.activeCount() + reservedAsTaskProcessingThreads ):
                 time.sleep(1)
             createUnitAndJobChainThreaded(path, row, terminate=False)
-        watchDirectory.archivematicaWatchDirectory(directory,row, createUnitAndJobChainThreaded)
+        actOnFiles=True
+        if row[2]: #onlyActOnDirectories
+            actOnFiles=False
+        watchDirectory.archivematicaWatchDirectory(directory,variablesAdded=row, callBackFunctionAdded=createUnitAndJobChainThreaded, alertOnFiles=actOnFiles, interval=config.getint('MCPServer', "watchDirectoriesPollInterval"))
 
 #if __name__ == '__main__':
 #    signal.signal(signal.SIGTERM, signal_handler)
