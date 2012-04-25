@@ -21,116 +21,88 @@
 # @subpackage MCPServer
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
+# @thanks to http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html
 import os
-import pyinotify
+import time
 import threading
-from pyinotify import WatchManager
-from pyinotify import Notifier
-from pyinotify import ThreadedNotifier
-from pyinotify import EventsCodes
-from pyinotify import ProcessEvent
 
-from archivematicaMCP import config
-from archivematicaMCP import movingDirectoryLock
 from archivematicaMCP import debug
-
-#depends on OS whether you need one line or other. I think Events.Codes is older.
-mask = pyinotify.IN_CREATE | pyinotify.IN_MOVED_TO  #watched events
-maskForCopied = pyinotify.IN_CREATE | pyinotify.IN_MODIFY
-createNotifiers = {}
-#mask = EventsCodes.IN_CREATE | EventsCodes.IN_MOVED_TO  #watched events
-
-#Used to monitor directories copied to the MCP, to act when they are done copying.
-class archivematicaWatchDirectoryTimer():
-    def __init__(self, watchDirectoryProcessEvent, event, watchManager, path, delay=config.getint('MCPServer', "MCPWaitForCopyToCompleteSeconds")):
-        self.watchDirectoryProcessEvent = watchDirectoryProcessEvent
-        self.event = event
-        self.delay = delay
-        self.watchManager = watchManager
-        self.path = path
-        self.timerLock = threading.Lock()
-        args=[self]
-        self.timer = threading.Timer(self.delay, self.timerExpired)
-        self.timer.start()
-
-    def resetDelay(self):
-        self.timerLock.acquire()
-        #print "resetting delay: ", self
-        self.timer.cancel()
-        self.timer = threading.Timer(self.delay, self.timerExpired)
-        self.timer.start()
-        self.timerLock.release()
-
-    def timerExpired(self):
-        self.timerLock.acquire()
-        #print "time expired", self
-        wd = self.watchManager.get_wd(self.path)
-        self.watchManager.rm_watch(wd, rec=True)
-        self.watchDirectoryProcessEvent.process_IN_MOVED_TO(self.event)
-        createNotifiers.pop(self.path).stop()
-
-#Used to monitor directories copied to the MCP, to see when they are done copying.
-class directoryCreated(ProcessEvent):
-    """Determine which action to take based on the watch directory. """
-    def __init__(self, watchDirectoryProcessEvent, event, watchManager, path, timer=None):
-        self.timer = timer
-        if self.timer == None:
-            self.timer = archivematicaWatchDirectoryTimer(watchDirectoryProcessEvent, event, watchManager, path) # self to rm, wd and event to activate Processing.
-
-    def process_IN_CREATE(self, event):
-        self.process_IN_MODIFY(event)
-
-    def process_IN_MODIFY(self, event):
-        self.timer.resetDelay()
-
-
-#This class holds the relation betwen watched directories, and their configs.
-#This is a one to one relationship.
-class watchDirectoryProcessEvent(ProcessEvent):
-    """Determine which action to take based on the watch directory. """
-    config = None
-    def __init__(self, config, callBackFunction):
-        self.config = config
-        self.callBackFunction = callBackFunction
-    def process_IN_CREATE(self, event):
-        if config.get('MCPServer', "actOnCopied").lower() == "true":
-            if os.path.isdir(os.path.join(event.path, event.name)):
-                wm = WatchManager()
-                notifier = ThreadedNotifier(wm, directoryCreated(self, event, wm, os.path.join(event.path, event.name)))
-                wdd = wm.add_watch(os.path.join(event.path, event.name), maskForCopied, rec=True, auto_add=True)
-                createNotifiers[os.path.join(event.path, event.name)] = notifier
-                notifier.start()
-            else:
-                print "Warning: %s was created. It is a file, not a directory."
-        else:
-            print "Warning: %s was created. Was something copied into this directory?" %  os.path.join(event.path, event.name)
-
-    def process_IN_MOVED_TO(self, event):
-        """Create a Job based on what was moved into the directory and process it."""
-        #ensure no directories are in the process of moving. (so none will be in the middle of moving INTO this directory)
-        movingDirectoryLock.acquire()
-        movingDirectoryLock.release()
-        path = os.path.join(event.path, event.name)
-        if os.path.isdir(path):
-            path = path + "/"
-
-        self.callBackFunction(path, self.config)
-
-    def process_default(self, event):
-        print event
-
+DEBUG = debug
 
 class archivematicaWatchDirectory:
-    def __init__(self, directory, variables, callBackFunction):
-        #directory = directory.replace("%watchDirectoryPath%", config.get('MCPServer', "watchDirectoryPath"), 1)
+    """Watches for new files/directories.""" 
+    def __init__(self, directory, 
+                 variablesAdded=None, 
+                 callBackFunctionAdded=None, 
+                 variablesRemoved=None, 
+                 callBackFunctionRemoved=None, 
+                 alertOnDirectories=True, 
+                 alertOnFiles=True, 
+                 interval=1, 
+                 threaded=True):
+        self.run = False
+        self.variablesAdded = variablesAdded
+        self.callBackFunctionAdded = callBackFunctionAdded 
+        self.variablesRemoved = variablesRemoved 
+        self.callBackFunctionRemoved = callBackFunctionRemoved
+        self.directory = directory
+        self.alertOnDirectories = alertOnDirectories
+        self.alertOnFiles = alertOnFiles
+        self.interval= interval
+        
         if not os.path.isdir(directory):
             os.makedirs(directory)
-        print "watching directory: ", directory
-        wm = WatchManager()
+        
+        if threaded:
+            t = threading.Thread(target=self.start)
+            t.daemon = True
+            t.start()
+        else:
+            self.start()
+    
+    def start(self):
+        """Based on polling example: http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html"""
+        self.run = True
+        if DEBUG:
+            print "watching directory: ", self.directory
+        before = dict ([(f, None) for f in os.listdir (self.directory)])
+        while self.run:
+            time.sleep (self.interval)
+            after = dict ([(f, None) for f in os.listdir (self.directory)])
+            added = [f for f in after if not f in before]
+            removed = [f for f in before if not f in after]
+            if added: 
+                if DEBUG:
+                    print "Added: ", ", ".join (added)
+                for i in added:
+                    self.event(os.path.join(self.directory, i), self.variablesAdded, self.callBackFunctionAdded)
+            if removed:
+                if DEBUG: 
+                    print "Removed: ", ", ".join (removed)
+                for i in removed:
+                    self.event(os.path.join(self.directory, i), self.variablesRemoved, self.callBackFunctionRemoved)
+            before = after
+    
+    def event(self, path, variables, function):
+        if not function:
+            return
+        if os.path.isdir(path) and self.alertOnDirectories:
+            function(path, variables)
+        if os.path.isfile(path) and self.alertOnFiles:
+            function(path, variables)
+    
+    def stop(self):
+        self.run = False
+            
+def testCallBackFunction(path, variables):
+    print path, variables
+    
 
-        #wm.add_watch(directory, , proc_fun=MyProcessing())
-        #if debug:
-        #    mask = pyinotify.ALL_EVENTS
-        notifier = ThreadedNotifier(wm, watchDirectoryProcessEvent(variables, callBackFunction))
-        wdd = wm.add_watch(directory, mask, rec=False)
-        notifier.start()
+if __name__ == '__main__':
+    print "example use"
+    directory = "/tmp/"
+    #directory = "."
+    variablesOnAdded = {"something":"yes", "nothing":"no"}
+    archivematicaWatchDirectory(directory, threaded=False, variablesAdded=variablesOnAdded, callBackFunctionAdded=testCallBackFunction, callBackFunctionRemoved=testCallBackFunction)
+                  
+    
