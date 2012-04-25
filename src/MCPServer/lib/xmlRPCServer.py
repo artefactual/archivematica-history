@@ -27,11 +27,35 @@ from linkTaskManagerChoice import choicesAvailableForUnits
 import lxml.etree as etree
 import gearman
 import cPickle
+import time
 from socket import gethostname
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
 
+def rpcError(code="", details=""):
+    ret = etree.Element("Error")
+    etree.SubElement(ret, "code").text = code.__str__()
+    etree.SubElement(ret, "details").text = details.__str__()
+    return ret
+    
+def verifyDatabaseIsNotLocked():
+    timeBeforeReturningErrorLockedDB = 4
+    timeToSleep = 0.1
+    numberOfRuns = 0
+    while not databaseInterface.sqlLock.acquire(False):
+        time.sleep(timeToSleep)
+        numberOfRuns += 1
+        if numberOfRuns * timeToSleep > timeBeforeReturningErrorLockedDB:
+            return rpcError(code="DatabaseLock", details="Couldn't acquire database lock")           
+    databaseInterface.sqlLock.release()
+    return None
 
 def getJobsAwaitingApproval():
     ret = etree.Element("choicesAvailableForUnits")
+    dbStatus = verifyDatabaseIsNotLocked()
+    if dbStatus:
+        print etree.tostring(dbStatus)
+        return etree.tostring(dbStatus)
     for UUID, choice in choicesAvailableForUnits.items():
         ret.append(choice.xmlify())
     return etree.tostring(ret, pretty_print=True)
