@@ -294,7 +294,7 @@ if __name__ == '__main__':
         import getpass
         print "user: ", getpass.getuser()
         os.setuid(333)
-    if True:
+    if False:
         t = threading.Thread(target=debugMonitor)
         t.daemon = True
         t.start()
