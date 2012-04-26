@@ -793,6 +793,27 @@ def administration_sources(request):
     directories = models.SourceDirectory.objects.all()
     return render(request, 'main/administration/sources.html', locals())
 
+def administration_sources_json(request):
+    message = ''
+    if request.method == 'POST':
+         path = request.POST.get('path', '')
+         if path != '':
+              # save dir
+              source_dir = models.SourceDirectory()
+              source_dir.path = path
+              source_dir.save()
+              message = 'Directory added.'
+         else:
+              message = 'Path is empty.'
+
+    response = {}
+    response['message'] = message
+    response['directories'] = []
+
+    for directory in models.SourceDirectory.objects.all():
+      response['directories'].append(directory.path)
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
 def administration_sources_delete(request, id):
     models.SourceDirectory.objects.get(pk=id).delete()
     return HttpResponseRedirect(reverse('main.views.administration_sources'))
