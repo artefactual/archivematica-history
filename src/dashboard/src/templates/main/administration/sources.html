@@ -83,10 +83,21 @@ function addSource(fileExplorer, path) {
 
 function updateSources(cb) {
   $.get('/administration/sources/json/', function(results) {
+    tableTemplate = _.template($('#template-source-directory-table').html());
+    rowTemplate   = _.template($('#template-source-directory-table-row').html());
+
     $('#directories').empty();
+    rowHtml = '';
+
     for(var index in results['directories']) {
-      $('#directories').append('<p>' + results.directories[index] + '</p>');
+      rowHtml += rowTemplate({
+          id: 333,
+          path: results.directories[index]
+      });
     }
+
+    $('#directories').append(tableTemplate({rows: rowHtml}));
+
     if (cb != undefined) {
       cb();
     }
@@ -129,13 +140,6 @@ $(document).ready(function() {
 
   <div id='explorer' class='backbone-file-explorer'></div>
 
-  <form action='' method='POST'>
-    <p>
-      Add Path: <input name='path' type='text' />
-      <input type='submit' value='Add' class='btn' />
-    </p>
-  <form>
-
 <script type="text/template" id='template-dir-level'>
   <div class="backbone-file-explorer-level"></div>
 </script>
@@ -146,6 +150,25 @@ $(document).ready(function() {
     <span class="backbone-file-explorer-directory_entry_name"><%= name %></span>
     <span class="backbone-file-explorer-directory_entry_actions"></span>
   </div>
+</script>
+
+<script type="text/template" id="template-source-directory-table">
+<table>
+  <thead>
+    <th>Path</th>
+    <th></th>
+  </thead>
+  <tbody>
+  <%= rows %>
+  </tbody>
+</table>
+</script>
+
+<script type="text/template" id="template-source-directory-table-row">
+  <tr>
+    <td><%= path %></td>
+    <td><a href='/administration/sources/delete/<%= id %>' class='btn' style='float:right'>Delete</a></td>
+  </tr>
 </script>
 
 {% endblock %}
