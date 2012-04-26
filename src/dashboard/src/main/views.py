@@ -803,7 +803,10 @@ def administration_sources_json(request):
     response['directories'] = []
 
     for directory in models.SourceDirectory.objects.all():
-      response['directories'].append(directory.path)
+      response['directories'].append({
+        'id':   directory.id,
+        'path': directory.path
+      })
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 def administration_sources_delete(request, id):
