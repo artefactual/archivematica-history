@@ -91,8 +91,8 @@ function updateSources(cb) {
 
     for(var index in results['directories']) {
       rowHtml += rowTemplate({
-          id: 333,
-          path: results.directories[index]
+          id:   results.directories[index].id,
+          path: results.directories[index].path
       });
     }
 
