@@ -60,7 +60,7 @@ function fileSelector() {
         description: 'Add Source Directory',
         iconHtml: '<b>Add</b>',
         logic: function(result) {
-          alert(result.path);
+          addSource(fileExplorer, result.path);
         }
       }
     ]
@@ -69,19 +69,46 @@ function fileSelector() {
   return fileExplorer;
 }
 
+function addSource(fileExplorer, path) {
+  alert(path);
+  $.post(
+    '/administration/sources/json/',
+    {path: path},
+    function(response) {
+      alert(response.message);
+      updateSources();
+    }
+  );
+}
+
+function updateSources(cb) {
+  $.get('/administration/sources/json/', function(results) {
+    $('#directories').empty();
+    for(var index in results['directories']) {
+      $('#directories').append('<p>' + results.directories[index] + '</p>');
+    }
+    if (cb != undefined) {
+      cb();
+    }
+  });
+}
+
 $(document).ready(function() {
-  var fileExplorer = fileSelector();
-  fileExplorer.busy();
-  $.get('/filesystem/contents/', function(results) {
-    fileExplorer.structure = results;
-    fileExplorer.render();
-    fileExplorer.idle();
+  updateSources(function() {
+    var fileExplorer = fileSelector();
+    fileExplorer.busy();
+    $.get('/filesystem/contents/', function(results) {
+      fileExplorer.structure = results;
+      fileExplorer.render();
+      fileExplorer.idle();
+    });
   });
 });
 </script>
 
   <h1>Administration</h1>
 
+  <!--
   <table>
     <thead>
       <th>Path</th>
@@ -96,6 +123,9 @@ $(document).ready(function() {
       {% endfor %}
     </tbody>
   </table>
+  -->
+
+  <div id='directories'></div>
 
   <div id='explorer' class='backbone-file-explorer'></div>
 
