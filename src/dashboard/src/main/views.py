@@ -801,7 +801,8 @@ def dir2dict(path, directory={}, entry=False):
     # if starting traversal, set entry to directory root
     if (entry == False):
         entry = directory
-        entry['parent'] = os.path.dirname(path)
+        # remove leading slash
+        entry['parent'] = os.path.dirname(path)[1:]
 
     # set standard entry properties
     entry['name'] = os.path.basename(path)
