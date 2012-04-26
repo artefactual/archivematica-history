@@ -43,17 +43,27 @@
 function fileSelector() {
 
   var fileExplorer = new FileExplorer({
-    el:                $('#explorer'),
-    structure:         {},
-    levelTemplate:     $('#template-dir-level').html(),
-    entryTemplate:     $('#template-dir-entry').html(),
+    el:               $('#explorer'),
+    structure:        {},
+    levelTemplate:    $('#template-dir-level').html(),
+    entryTemplate:    $('#template-dir-entry').html(),
     closeDirsByDefault: true,
-    hideChildren:      true,
+    hideFiles:        true,
     nameClickHandler: function(result) {
       if (result.type == 'directory') {
         alert('User clicked name of ' + result.type + ' at path ' + result.path);
       }
-    }
+    },
+    actionHandlers: [
+      {
+        name: 'Add Source',
+        description: 'Add Source Directory',
+        iconHtml: '<b>Add</b>',
+        logic: function(result) {
+          alert(result.path);
+        }
+      }
+    ]
   });
 
   return fileExplorer;
