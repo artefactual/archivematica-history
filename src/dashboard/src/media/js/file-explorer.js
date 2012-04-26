@@ -128,10 +128,11 @@ var DirectoryView = Backbone.View.extend({
 
   initialize: function() {
     this.model = this.options.directory;
-    this.levelTemplate = _.template(this.options.levelTemplate);
-    this.entryTemplate = _.template(this.options.entryTemplate);
+    this.levelTemplate    = _.template(this.options.levelTemplate);
+    this.entryTemplate    = _.template(this.options.entryTemplate);
+    this.hideFiles     = this.options.hideFiles;
     this.nameClickHandler = this.options.nameClickHandler;
-    this.actionHandlers = this.options.actionHandlers;
+    this.actionHandlers   = this.options.actionHandlers;
     this.idPaths = {};
   },
 
@@ -146,21 +147,23 @@ var DirectoryView = Backbone.View.extend({
       for (var index in entry.children) {
         var child = entry.children[index];
 
-        // take note of file paths that correspond to CSS IDs
-        // so they can be referenced by any external logic
-        this.idPaths[child.id()] = child.path();
-        var entryView = new EntryView({
-          entry: child,
-          template: this.entryTemplate,
-          nameClickHandler: this.nameClickHandler,
-          actionHandlers: this.actionHandlers
-        });
-        var entryEl = entryView.render().el;
-        if (child.children != undefined) {
-          $(entryEl).addClass('backbone-file-explorer-directory_open');
+        if (child.children != undefined || this.hideFiles != true) {
+          // take note of file paths that correspond to CSS IDs
+          // so they can be referenced by any external logic
+          this.idPaths[child.id()] = child.path();
+          var entryView = new EntryView({
+            entry: child,
+            template: this.entryTemplate,
+            nameClickHandler: this.nameClickHandler,
+            actionHandlers: this.actionHandlers
+          });
+          var entryEl = entryView.render().el;
+          if (child.children != undefined) {
+            $(entryEl).addClass('backbone-file-explorer-directory_open');
+          }
+          $(levelEl).append(entryEl);
+          this.renderDirectoryLevel(levelEl, child, level + 1);
         }
-        $(levelEl).append(entryEl);
-        this.renderDirectoryLevel(levelEl, child, level + 1);
       }
     }
   },
@@ -191,8 +194,7 @@ var FileExplorer = Backbone.View.extend({
   initialize: function() {
     this.directory = this.options.directory;
     this.structure = this.options.structure;
-    //_.bindAll(this, 'render');
-    this.idPaths = {};
+    this.idPaths   = {};
     this.render();
   },
 
@@ -222,13 +224,13 @@ var FileExplorer = Backbone.View.extend({
   busy: function() {
     $(this.el).css('background-color', '#eee');
     $(this.el).css('opacity', .5);
-    $(this.el).css('background-image', "url('img/ajax-loader.gif')");
+    $(this.el).addClass('backbone-file-explorer-busy');
   },
 
   idle: function() {
     $(this.el).css('background-color', 'white');
     $(this.el).css('opacity', 1);
-    $(this.el).css('background-image', '');
+    $(this.el).addClass('backbone-file-explorer-idle');
   },
 
   snapShotToggledFolders: function() {
@@ -273,6 +275,7 @@ var FileExplorer = Backbone.View.extend({
       directory: directory,
       levelTemplate: this.options.levelTemplate,
       entryTemplate: this.options.entryTemplate,
+      hideFiles: this.options.hideFiles,
       nameClickHandler: this.options.nameClickHandler,
       actionHandlers: this.options.actionHandlers
     });
