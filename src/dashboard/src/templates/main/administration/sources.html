@@ -47,6 +47,7 @@ function fileSelector() {
     structure:         {},
     levelTemplate:     $('#template-dir-level').html(),
     entryTemplate:     $('#template-dir-entry').html(),
+    closeDirsByDefault: true,
     hideChildren:      true,
     nameClickHandler: function(result) {
       if (result.type == 'directory') {
