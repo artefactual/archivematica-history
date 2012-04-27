@@ -1718,7 +1718,7 @@ INSERT INTO Commands
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('echo program=\\"ffmpeg\\"\\; version=\\"`ffmpeg 2>&1 | grep \"FFmpeg version\"`\\"'),
-    ('Get event detail text for unrar extraction')
+    ('Get event detail text for ffmpeg extraction')
 );
 
 set @ffmpegEventDetailCommandID = LAST_INSERT_ID();
@@ -2203,7 +2203,7 @@ INSERT INTO Commands
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'bashScript'),
     ('echo program=\\"ffmpeg\\"\\; version=\\"`ffmpeg 2>&1 | grep \"FFmpeg version\"`\\"'),
-    ('Get event detail text for unrar extraction')
+    ('Get event detail text for ffmpeg extraction')
 );
 
 set @ffmpegEventDetailCommandID = LAST_INSERT_ID();
