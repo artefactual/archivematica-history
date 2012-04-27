@@ -55,9 +55,16 @@ def something(SIPDirectory, accessDirectory, objectsDirectory, DIPDirectory, SIP
                     exitCode = 1
                 update = []
                 while row != None:
-                    print row
                     objectUUID = row[0]
                     objectPath = row[1]
+                    objectExtension = objectPath.replace(objectNameLike, "", 1)
+                    print objectName[objectNameExtensionIndex + 1:], objectExtension, "\t",
+                    if objectExtension.find(".") != -1:
+                        print
+                        row = c.fetchone()
+                        continue
+                    print objectName[objectNameExtensionIndex + 1:], objectExtension, "\t",
+                    print row  
                     dipPath = os.path.join(DIPDirectory,  "objects", "%s-%s" % (objectUUID, os.path.basename(accessPath)))
                     if copy:
                         print "TODO - copy not supported yet"
