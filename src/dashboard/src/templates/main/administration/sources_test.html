@@ -1,0 +1,186 @@
+{% extends "layout_fluid.html" %}
+
+{% block title %}Administration{% endblock %}
+{% block h1 %}Administration{% endblock %}
+{% block page_id %}Administration{% endblock %}
+
+{% block js %}
+  <script type="text/javascript" src="{{ STATIC_URL }}js/file-explorer.js"></script>
+{% endblock %}
+
+{% block sidebar %}
+  {% include "main/administration/_sidebar.html" %}
+{% endblock %}
+
+{% block css %}
+<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/backbone-file-explorer.css" />
+<style>
+.backbone-file-explorer {
+  width: 500px;
+}
+
+.backbone-file-explorer-directory {
+  background-image: url('{{ STATIC_URL }}images/filefolder.png');
+}
+
+.backbone-file-explorer-directory_open {
+  background-image: url('{{ STATIC_URL }}images/filefolderopen.png');
+}
+
+.backbone-file-explorer-busy {
+  background-image: url('{{ STATIC_URL }}images/ajax-loader.gif')
+}
+
+.backbone-file-explorer-idle {
+  background-image: url('')
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<script>
+function fileSelector() {
+
+  var fileExplorer;
+
+  fileExplorer = new FileExplorer({
+    el:               $('#explorer'),
+    structure:        {},
+    levelTemplate:    $('#template-dir-level').html(),
+    entryTemplate:    $('#template-dir-entry').html(),
+    closeDirsByDefault: true,
+    hideFiles:        true,
+    nameClickHandler: function(result) {
+      if (result.type == 'directory') {
+console.log(result.path);
+        changePath(fileExplorer, '/' + result.path, function() {});
+        //alert('User clicked name of ' + result.type + ' at path ' + result.path);
+      }
+    },
+    actionHandlers: [
+      {
+        name: 'Add Source',
+        description: 'Add Source Directory',
+        iconHtml: '<b>Add</b>',
+        logic: function(result) {
+          addSource(fileExplorer, result.path);
+        }
+      }
+    ]
+  });
+
+  return fileExplorer;
+}
+
+function addSource(fileExplorer, path) {
+  alert(path);
+  $.post(
+    '/administration/sources/json/',
+    {path: path},
+    function(response) {
+      alert(response.message);
+      updateSources();
+    }
+  );
+}
+
+function updateSources(cb) {
+  $.get('/administration/sources/json/', function(results) {
+    tableTemplate = _.template($('#template-source-directory-table').html());
+    rowTemplate   = _.template($('#template-source-directory-table-row').html());
+
+    $('#directories').empty();
+    rowHtml = '';
+
+    for(var index in results['directories']) {
+      rowHtml += rowTemplate({
+          id:   results.directories[index].id,
+          path: results.directories[index].path
+      });
+    }
+
+    $('#directories').append(tableTemplate({rows: rowHtml}));
+
+    if (cb != undefined) {
+      cb();
+    }
+  });
+}
+
+function changePath(fileExplorer, path, cb) {
+  fileExplorer.busy();
+  request = {
+    path: path
+  };
+  $.get('/filesystem/contents/', request, function(results) {
+    fileExplorer.structure = results;
+    fileExplorer.render();
+    fileExplorer.idle();
+  });
+  cb();
+}
+
+$(document).ready(function() {
+  updateSources(function() {
+    var fileExplorer = fileSelector();
+    changePath(fileExplorer, '/home', function() {});
+  });
+});
+</script>
+
+  <h1>Administration</h1>
+
+  <!--
+  <table>
+    <thead>
+      <th>Path</th>
+      <th></th>
+    </thead>
+    <tbody>
+      {% for dir in directories %}
+        <tr>
+          <td>{{ dir.path }}</td>
+          <td><a href='{% url main.views.administration_sources_delete dir.id %}' class='btn' style='float:right'>Delete</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  -->
+
+  <div id='directories'></div>
+
+  <div id='explorer' class='backbone-file-explorer'></div>
+
+<script type="text/template" id='template-dir-level'>
+  <div class="backbone-file-explorer-level"></div>
+</script>
+
+<script type="text/template" id='template-dir-entry'>
+  <div class="backbone-file-explorer-entry" style='clear:both'>
+    <span class="backbone-file-explorer-directory_icon_button"></span>
+    <span class="backbone-file-explorer-directory_entry_name"><%= name %></span>
+    <span class="backbone-file-explorer-directory_entry_actions"></span>
+  </div>
+</script>
+
+<script type="text/template" id="template-source-directory-table">
+<table>
+  <thead>
+    <th>Path</th>
+    <th></th>
+  </thead>
+  <tbody>
+  <%= rows %>
+  </tbody>
+</table>
+</script>
+
+<script type="text/template" id="template-source-directory-table-row">
+  <tr>
+    <td><%= path %></td>
+    <td><a href='/administration/sources/delete/<%= id %>' class='btn' style='float:right'>Delete</a></td>
+  </tr>
+</script>
+
+{% endblock %}
