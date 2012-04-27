@@ -3239,7 +3239,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 SET @microserviceGroup  = 'Characterize and extract metadata';
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      @loadLabelsFromCSVTask, 'Load labels from metadata/file_labels.csv');
+    (0,      @loadLabelsFromCSVTask, 'Load labels from metadata/file_labels.csv');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
@@ -3295,7 +3295,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     ('mets.xml', NULL, 'objects', FALSE, NULL, NULL, 'identifyDspaceMETSFiles_v0.0', '"%fileUUID%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Identify DSpace license files');
+    (1,      LAST_INSERT_ID(), 'Identify DSpace mets files');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
