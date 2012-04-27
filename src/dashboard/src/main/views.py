@@ -839,7 +839,8 @@ def dir2dict(path, directory={}, entry=False):
     return directory
 
 def filesystem_contents(request):
-    response = dir2dict('/home')
+    path = request.GET.get('path', '/home')
+    response = dir2dict(path)
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
