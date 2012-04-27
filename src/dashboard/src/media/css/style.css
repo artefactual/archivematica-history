@@ -412,7 +412,7 @@ body {
   display: none;
 }
 
-.w-lte-1020 .job-detail-microservice > span:first-child {
+.w-lte-1020 > span:first-child {
   display: none;
 }
 
