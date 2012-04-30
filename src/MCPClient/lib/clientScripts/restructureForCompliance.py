@@ -28,6 +28,31 @@ import shutil
 requiredDirectories = ["logs", "logs/fileMeta", "metadata", "metadata/submissionDocumentation", "objects"]
 optionalFiles = "processingMCP.xml"
 
+def restructureBagForComplianceFileUUIDsAssigned(unitPath, unitIdentifier, unitIdentifierType):
+	#joseph@asterix:~/archivematica/src/MCPServer/sharedDirectoryStructure/watchedDirectories/workFlowDecisions/quarantineSIP/ImagesBAG-566b6320-9711-406e-8895-12b18a38a6b3/objects$ ls
+	#bag-info.txt  bagit.txt  data  manifest-md5.txt  tagmanifest-md5.txt
+	#joseph@asterix:~/archivematica/src/MCPServer/sharedDirectoryStructure/watchedDirectories/workFlowDecisions/quarantineSIP/ImagesBAG-566b6320-9711-406e-8895-12b18a38a6b3/objects$ ls data
+	#data/objects
+	for dir in requiredDirectories:
+		dirPath = os.path.join(unitPath, dir)
+		if not os.path.isdir(dirPath):
+			os.mkdir(dirPath)
+			print "creating: ", dir
+	for item in os.listdir(unitPath):
+		dst = os.path.join(unitPath, "objects") + "/."
+		itemPath =  os.path.join(unitPath, item)
+		if os.path.isdir(itemPath) and item not in requiredDirectories:
+			shutil.move(itemPath, dst)
+			print "moving directory to objects: ", item
+		elif os.path.isfile(itemPath) and item not in optionalFiles:
+			shutil.move(itemPath, dst)
+			print "moving file to objects: ", item
+	
+
+def restructureForComplianceFileUUIDsAssigned(unitPath, unitIdentifier, unitIdentifierType):
+	print "Not implemented"
+	print unitUUID, unitType
+
 def restructureDirectory(unitPath):
 	for dir in requiredDirectories:
 		dirPath = os.path.join(unitPath, dir)
