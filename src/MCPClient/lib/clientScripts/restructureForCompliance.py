@@ -24,30 +24,47 @@
 import os
 import sys
 import shutil
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from fileOperations import updateDirectoryLocation
+
 
 requiredDirectories = ["logs", "logs/fileMeta", "metadata", "metadata/submissionDocumentation", "objects"]
 optionalFiles = "processingMCP.xml"
 
-def restructureBagForComplianceFileUUIDsAssigned(unitPath, unitIdentifier, unitIdentifierType):
-	#joseph@asterix:~/archivematica/src/MCPServer/sharedDirectoryStructure/watchedDirectories/workFlowDecisions/quarantineSIP/ImagesBAG-566b6320-9711-406e-8895-12b18a38a6b3/objects$ ls
-	#bag-info.txt  bagit.txt  data  manifest-md5.txt  tagmanifest-md5.txt
-	#joseph@asterix:~/archivematica/src/MCPServer/sharedDirectoryStructure/watchedDirectories/workFlowDecisions/quarantineSIP/ImagesBAG-566b6320-9711-406e-8895-12b18a38a6b3/objects$ ls data
-	#data/objects
+def restructureBagForComplianceFileUUIDsAssigned(unitPath, unitIdentifier, unitIdentifierType, unitPathReplaceWith = "%transferDirectory%"):
+	bagFileDefaultDest = os.path.join(unitPath, "logs", "BagIt")
+	requiredDirectories.append(bagFileDefaultDest)
+	unitDataPath = os.path.join(unitPath, "data")
 	for dir in requiredDirectories:
 		dirPath = os.path.join(unitPath, dir)
-		if not os.path.isdir(dirPath):
-			os.mkdir(dirPath)
+		dirDataPath = os.path.join(unitPath, "data", dir)
+		if os.path.isdir(dirDataPath):
+			#move to the top level
+			src = dirDataPath 
+			dst = dirPath
+			updateDirectoryLocation(src, dst, unitPath, unitIdentifier, unitIdentifierType, unitPathReplaceWith)
+			print "moving directory ", dir 
+		else:
 			print "creating: ", dir
+			os.mkdir(dirPath)
 	for item in os.listdir(unitPath):
+		src = os.path.join(unitPath, item)
+		if item.startswith("manifest"):
+			dst = os.path.join(unitPath, "metadata")
+		else:
+			dst = bagFileDefaultDest
+		print "Todo move files with uuids", src, dst
+	for item in os.listdir(unitDataPath):
 		dst = os.path.join(unitPath, "objects") + "/."
-		itemPath =  os.path.join(unitPath, item)
+		itemPath =  os.path.join(unitDataPath, item)
 		if os.path.isdir(itemPath) and item not in requiredDirectories:
 			shutil.move(itemPath, dst)
 			print "moving directory to objects: ", item
 		elif os.path.isfile(itemPath) and item not in optionalFiles:
 			shutil.move(itemPath, dst)
 			print "moving file to objects: ", item
-	
+	print "removing empty data directory"
+	os.rmdir(unitDataPath)
 
 def restructureForComplianceFileUUIDsAssigned(unitPath, unitIdentifier, unitIdentifierType):
 	print "Not implemented"

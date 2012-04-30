@@ -32,21 +32,24 @@ verificationCommands = []
 verificationCommandsOutputs = []
 
 def verifyBag(bag):
+    global exitCode
     verificationCommands = [
-        "/usr/share/bagit/bin/bag verifyvalid " + bag, 
-        "/usr/share/bagit/bin/bag checkpayloadoxum " + bag, 
-        "/usr/share/bagit/bin/bag verifycomplete " + bag, 
-        "/usr/share/bagit/bin/bag verifypayloadmanifests " + bag, 
-        "/usr/share/bagit/bin/bag verifytagmanifests " + bag ]
+        "/usr/share/bagit/bin/bag verifyvalid \"" + bag + "\"", 
+        "/usr/share/bagit/bin/bag checkpayloadoxum \"" + bag + "\"", 
+        "/usr/share/bagit/bin/bag verifycomplete \"" + bag + "\"", 
+        "/usr/share/bagit/bin/bag verifypayloadmanifests \"" + bag + "\"", 
+        "/usr/share/bagit/bin/bag verifytagmanifests \"" + bag + "\"" ]
     for command in verificationCommands:
         ret = executeOrRun("command", command, printing=printSubProcessOutput)
         verificationCommandsOutputs.append(ret)
         exit, stdOut, stdErr = ret
         if exit != 0:
             print >>sys.stderr, "Failed test: ", command
+            print >>sys.stderr, stdErr
+            print >>sys.stderr
             exitCode += 1
         else:
-            print >>sys.stderr, "Passed test: ", command
+            print "Passed test: ", command
     
 
 
@@ -56,11 +59,6 @@ if __name__ == '__main__':
     verifyBag(target)
     if exitCode != 0:
         print >>sys.stderr, "Failed bagit compliance. Not restructuring."
-        for i in range(len(verificationCommands)):
-            print verificationCommands[i]
-            exitC, stdOut, stdErr = verificationCommandsOutputs
-            print exitC, stdOut 
-            print >>sys.stderr, stdErr
         exit(exitCode) 
     restructureBagForComplianceFileUUIDsAssigned(target, transferUUID, "transferUUID")
     for i in range(len(verificationCommands)):
