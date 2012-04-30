@@ -34,34 +34,12 @@ import pyinotify
 import threading
 import shutil
 import MySQLdb
-from pyinotify import WatchManager
-from pyinotify import Notifier
-from pyinotify import ThreadedNotifier
-from pyinotify import EventsCodes
-from pyinotify import ProcessEvent
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import lxml.etree as etree
 from fileOperations import renameAsSudo
 from databaseFunctions import insertIntoEvents
 
-a = """
-class watchDirectoryProcessEvent(ProcessEvent):
-    ""Determine which action to take based on the watch directory. ""
-    config = None
-    def __init__(self, unit):
-        self.unit = unit
-        self.cookie = None
-
-    def process_IN_MOVED_TO(self, event):
-        if self.cookie == event.cookie:
-            unit.updateLocation(os.path.join(event.path, event.name) + "/")
-            self.cookie = None
-
-    def process_IN_MOVED_FROM(self, event):
-        if self.unit.currentPath == os.path.join(event.path, event.name) + "/" :
-            self.cookie = event.cookie
-"""
 class unitTransfer(unit):
     def __init__(self, currentPath, UUID=""):
         #Just Use the end of the directory name
@@ -94,15 +72,7 @@ class unitTransfer(unit):
         self.currentPath = currentPath2
         self.UUID = UUID
         self.fileList = {}
-        #create a watch of the transfer directory path /.. watching for moves
-        a = """wm = WatchManager()
-        notifier = ThreadedNotifier(wm, watchDirectoryProcessEvent(self))
-        mask = pyinotify.IN_MOVED_TO | pyinotify.IN_MOVED_FROM
-        wdd = wm.add_watch(self.currentPath + "..", mask, rec=False)
-        notifier.start()
-        self.notifier = notifier
-        #^ if the item moved is this unit:
-        #update this unit's current location - here and db?"""
+
 
     def reloadFileList(self):
         print "DEBUG reloading transfer file list: ", self.UUID
@@ -224,9 +194,3 @@ class unitTransfer(unit):
         etree.SubElement(unitXML, "currentPath").text = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
         return ret
 
-a = """
-    def __del__(self):
-        #TODO - cleanup the watch directory for this unit
-        self. notifier.stop()
-        super.__del__()
-"""

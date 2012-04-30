@@ -3725,41 +3725,6 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
 
 
 -- BAGIT Transfer
-/*
-@bagitJoinStandardProcessingLink
-
--- place bagit check logs in logs directory
-
--- restructure for compliance
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'restructureForComplianceFileUUIDsAssigned_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/activeTransfers/Dspace1.7/." "%SIPUUID%" "%sharedPath%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Restructure for compliance');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
-
--- verify bag [premis events]
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'verifyBAG_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/activeTransfers/Dspace1.7/." "%SIPUUID%" "%sharedPath%"');
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(), 'Verify Bag');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
-set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
-set @NextMicroServiceChainLink = @MicroServiceChainLink;
-*/
-
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, TRUE, NULL, NULL, 'verifyAndRestructureTransferBag_v0.0',  '"%SIPDirectory%" "%SIPUUID%"');
@@ -3775,7 +3740,6 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
 -- Assign file uuid's
-SET @microserviceGroup  = 'Assign file UUIDs and checksums';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'NULL', FALSE, NULL, NULL, 'updateSizeAndChecksum_v0.0',  '--filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%"');
@@ -3814,6 +3778,7 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+set @chainLinkAfterZippedBagitTransferExtracted = @MicroServiceChainLink;
 
 -- move to processing directory --
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
@@ -3860,15 +3825,20 @@ set @MicroServiceChain = LAST_INSERT_ID();
 INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
     VALUES ('%watchDirectoryPath%activeTransfers/baggitDirectory', @MicroServiceChain, @expectedTypeTransfer);
 
-
--- extract
--- move to processing directory --
+-- extractBag
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, TRUE, NULL, NULL, 'extractBagTransfer_v0.0',  '"%SIPDirectory%" "%SIPUUID%" "%processingDirectory%"  %sharedPath%');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(), 'Extract zipped bag transfer');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, @moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+    VALUES (@MicroServiceChainLink, 0, @chainLinkAfterZippedBagitTransferExtracted);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
 
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, @setFilePermissionsTaskConfig, @defaultNextChainLink);
@@ -3904,8 +3874,8 @@ INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroService
 set @MicroServiceChain = LAST_INSERT_ID();
 
 -- watchedDirectories/activeTransfers/baggitZippedDirectory
-INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
-    VALUES ('%watchDirectoryPath%activeTransfers/baggitZippedDirectory', @MicroServiceChain, @expectedTypeTransfer);
+INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType, onlyActOnDirectories)
+    VALUES ('%watchDirectoryPath%activeTransfers/baggitZippedDirectory', @MicroServiceChain, @expectedTypeTransfer, FALSE);
 -- /BAGIT Transfer
 
 -- VIEWS --
