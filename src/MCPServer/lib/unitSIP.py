@@ -51,7 +51,10 @@ class unitSIP(unit):
         for directory, subDirectories, files in os.walk(currentPath):
             directory = directory.replace( currentPath, "%SIPDirectory%", 1)
             for file in files:
-                filePath = os.path.join(directory, file)
+                if directory != "%SIPDirectory%":
+                    filePath = os.path.join(directory, file)
+                else:
+                    filePath = directory + file
                 #print filePath
                 self.fileList[filePath] = unitFile(filePath)
 
