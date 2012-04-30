@@ -110,20 +110,19 @@ class unitTransfer(unit):
         #os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])
         currentPath = self.currentPath.replace("%sharedPath%", \
                                                archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1) + "/"
-        print "currentPath: ", currentPath, type(currentPath)
+        #print "currentPath: ", currentPath, type(currentPath)
         try:
             print currentPath, type(currentPath)
             for directory, subDirectories, files in os.walk(currentPath.encode("utf-8")):
-                directory = directory.replace( currentPath.encode("utf-8"), "%transferDirectory%", 1)
-                print directory, type(directory)
-                #directory = directory.encode("utf-8")
+                directory = directory.replace( currentPath.encode("utf-8"), "%transferDirectory%", 1) 
                 for file in files:
-                    print file, type(file)
-                    #file = file.encode("utf-8")
-                    filePath = os.path.join(directory, file)
+                    if "%transferDirectory%" !=  directory:
+                        filePath = os.path.join(directory, file)
+                    else:
+                        filePath = directory + file
+                    print "filePath", filePath
                     self.fileList[filePath] = unitFile(filePath)
 
-            print "made it this far"
             sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND transferUUID =  '""" + self.UUID + "'"
             print sql
             c, sqlLock = databaseInterface.querySQL(sql)

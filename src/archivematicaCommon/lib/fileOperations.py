@@ -195,9 +195,12 @@ def updateDirectoryLocation(src, dst, unitPath, unitIdentifier, unitIdentifierTy
 def updateFileLocation2(src, dst, unitPath, unitIdentifier, unitIdentifierType, unitPathReplaceWith):
     """Dest needs to be the actual full destination path with filename."""
     srcDB = src.replace(unitPath, unitPathReplaceWith)
-    dstDB = src.replace(unitPath, unitPathReplaceWith)
+    dstDB = dst.replace(unitPath, unitPathReplaceWith)
     sql = "SELECT Files.fileUUID, Files.currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(srcDB) + "' AND " + unitIdentifierType + " = '" + unitIdentifier + "';"
     rows = databaseInterface.queryAllSQL(sql)
+    if len(rows) != 1:
+        print sys.stderr, len(rows), "rows", sql, rows
+        exit(4)
     for row in rows:
         fileUUID = row[0]
         location = row[1]
