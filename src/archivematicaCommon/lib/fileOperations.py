@@ -25,6 +25,7 @@ import os
 import uuid
 import sys
 import databaseInterface
+import shutil
 from databaseFunctions import insertIntoFiles
 from executeOrRunSubProcess import executeOrRun
 from externals.checksummingTools import sha_for_file
@@ -166,6 +167,34 @@ def renameAsSudo(source, destination):
         print >>sys.stderr, stdOut
         print >>sys.stderr, stdError
         exit(exitCode)
+
+
+def updateDirectoryLocation(src, dst, unitPath, unitIdentifier, unitIdentifierType, unitPathReplaceWith):
+    srcDB = src.replace(unitPath, unitPathReplaceWith)
+    if not srcDB.endswith("/") and srcDB != unitPathReplaceWith:
+        srcDB += "/"
+    dstDB = src.replace(unitPath, unitPathReplaceWith)
+    if not dstDB.endswith("/") and dstDB != unitPathReplaceWith:
+        dstDB += "/"
+    sql = "SELECT Files.fileUUID, Files.currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation LIKE '" + MySQLdb.escape_string(srcDB) + "%' AND " + unitIdentifierType + " = '" + unitIdentifier + "';"
+    rows = databaseInterface.queryAllSQL(sql)
+    for row in rows:
+        fileUUID = row[0]
+        location = row[1]
+        destDB = location.replace(srcDB, dstDB)
+        sql =  """UPDATE Files SET currentLocation='%s' WHERE fileUUID='%s';""" % (MySQLdb.escape_string(destDB), fileUUID)
+        databaseInterface.runSQL(sql)
+    if os.path.isdir(dst):
+        if dst.endswith("/"):
+            dst += "."
+        else:
+            dst += "/."
+    print "moving: ", src, dst
+    shutil.move(src, dst)
+
+def updateFileLocation2():
+    print "not implemented"
+    exit(3)
 
 #import lxml.etree as etree
 def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIdentifierUUID = uuid.uuid4().__str__(), fileUUID="None", sipUUID = None, transferUUID=None, eventOutcomeDetailNote = ""):
