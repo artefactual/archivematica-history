@@ -26,6 +26,7 @@ import sys
 import shutil
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from fileOperations import updateDirectoryLocation
+from fileOperations import updateFileLocation2
 
 
 requiredDirectories = ["logs", "logs/fileMeta", "metadata", "metadata/submissionDocumentation", "objects"]
@@ -49,20 +50,22 @@ def restructureBagForComplianceFileUUIDsAssigned(unitPath, unitIdentifier, unitI
 			os.mkdir(dirPath)
 	for item in os.listdir(unitPath):
 		src = os.path.join(unitPath, item)
-		if item.startswith("manifest"):
-			dst = os.path.join(unitPath, "metadata")
-		else:
-			dst = bagFileDefaultDest
-		print "Todo move files with uuids", src, dst
+		if os.path.isfile(src):
+			if item.startswith("manifest"):
+				dst = os.path.join(unitPath, "metadata", item)
+			else:
+				dst = os.path.join(bagFileDefaultDest, item)
+			updateFileLocation2(src, dst, unitPath, unitIdentifier, unitIdentifierType, unitPathReplaceWith)
 	for item in os.listdir(unitDataPath):
-		dst = os.path.join(unitPath, "objects") + "/."
 		itemPath =  os.path.join(unitDataPath, item)
 		if os.path.isdir(itemPath) and item not in requiredDirectories:
-			shutil.move(itemPath, dst)
 			print "moving directory to objects: ", item
+			dst = os.path.join(unitPath, "objects")
+			updateDirectoryLocation(itemPath, dst, unitPath, unitIdentifier, unitIdentifierType, unitPathReplaceWith)
 		elif os.path.isfile(itemPath) and item not in optionalFiles:
-			shutil.move(itemPath, dst)
 			print "moving file to objects: ", item
+			dst = os.path.join(unitPath, "objects", item)
+			updateFileLocation2(itemPath, dst, unitPath, unitIdentifier, unitIdentifierType, unitPathReplaceWith)
 	print "removing empty data directory"
 	os.rmdir(unitDataPath)
 
