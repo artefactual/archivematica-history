@@ -15,31 +15,7 @@
 
 {% block css %}
 <link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/backbone-file-explorer.css" />
-<style>
-.backbone-file-explorer {
-  width: 500px;
-}
-
-.backbone-file-explorer-busy {
-  background-image: url('{{ STATIC_URL }}img/ajax-loader.gif')
-}
-
-.backbone-file-explorer-directory {
-  background-image: url('{{ STATIC_URL }}images/filefolder.png');
-}
-
-.backbone-file-explorer-directory_open {
-  background-image: url('{{ STATIC_URL }}images/filefolderopen.png');
-}
-
-.backbone-file-explorer-busy {
-  background-image: url('{{ STATIC_URL }}images/ajax-loader.gif')
-}
-
-.backbone-file-explorer-idle {
-  background-image: url('')
-}
-</style>
+<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/directory_picker.css" />
 {% endblock %}
 
 {% block content %}

@@ -1,0 +1,23 @@
+.backbone-file-explorer {
+  width: 500px;
+}
+
+.backbone-file-explorer-busy {
+  background-image: url('../img/ajax-loader.gif')
+}
+
+.backbone-file-explorer-directory {
+  background-image: url('../images/filefolder.png');
+}
+
+.backbone-file-explorer-directory_open {
+  background-image: url('../images/filefolderopen.png');
+}
+
+.backbone-file-explorer-busy {
+  background-image: url('../images/ajax-loader.gif')
+}
+
+.backbone-file-explorer-idle {
+  background-image: url('')
+}
