@@ -25,7 +25,7 @@
 #source /etc/archivematica/archivematicaConfig.conf
 
 target="$1"
-if [ -d "${target}" ]; then
+if [ -e "${target}" ]; then
 	sudo chown -R archivematica:archivematica "${target}"  
 	echo `basename "${target}"` owned by "archivematica:archivematica" now 
 	chmod -R 750 "${target}"

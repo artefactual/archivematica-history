@@ -156,9 +156,12 @@ def createUnitAndJobChain(path, config, terminate=False):
             #UUID = findOrCreateSipInDB(path)
             unit = unitTransfer(path)
     elif os.path.isfile(path):
-        return
-        UUID = uuid.uuid4()
-        unit = unitFile(path, UUID)
+        if config[3] == "Transfer":
+            unit = unitTransfer(path)
+        else:
+            return
+            UUID = uuid.uuid4()
+            unit = unitFile(path, UUID)
     else:
         return
     jobChain(unit, config[1])
