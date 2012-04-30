@@ -6,6 +6,7 @@
 
 {% block js %}
   <script type="text/javascript" src="{{ STATIC_URL }}js/file-explorer.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/directory_picker.js"></script>
 {% endblock %}
 
 {% block sidebar %}
@@ -44,100 +45,29 @@
 {% block content %}
 
 <script>
-function fileSelector() {
-
-  var fileExplorer = new FileExplorer({
-    el:               $('#explorer'),
-    structure:        {},
-    levelTemplate:    $('#template-dir-level').html(),
-    entryTemplate:    $('#template-dir-entry').html(),
-    closeDirsByDefault: true,
-    hideFiles:        true,
-    nameClickHandler: function(result) {
-      if (result.type == 'directory') {
-        alert('User clicked name of ' + result.type + ' at path ' + result.path);
-      }
-    },
-    actionHandlers: [
-      {
-        name: 'Add Source',
-        description: 'Add Source Directory',
-        iconHtml: '<b>Add</b>',
-        logic: function(result) {
-          addSource(fileExplorer, result.path);
-        }
-      }
-    ]
-  });
-
-  return fileExplorer;
-}
-
-function addSource(fileExplorer, path) {
-  $.post(
-    '/administration/sources/json/',
-    {path: path},
-    function(response) {
-      alert(response.message);
-      updateSources();
-    }
-  );
-}
-
-function updateSources(cb) {
-  $.get('/administration/sources/json/', function(results) {
-    tableTemplate = _.template($('#template-source-directory-table').html());
-    rowTemplate   = _.template($('#template-source-directory-table-row').html());
-
-    $('#directories').empty();
-    rowHtml = '';
-
-    for(var index in results['directories']) {
-      rowHtml += rowTemplate({
-          id:   results.directories[index].id,
-          path: results.directories[index].path
-      });
-    }
-
-    $('#directories').append(tableTemplate({rows: rowHtml}));
-
-    if (cb != undefined) {
-      cb();
-    }
-  });
-}
-
 $(document).ready(function() {
-  updateSources(function() {
-    var fileExplorer = fileSelector();
-    fileExplorer.busy();
+  var picker = new DirectoryPickerView({
+      el: $('#explorer'),
+      levelTemplate: $('#template-dir-level').html(),
+      entryTemplate: $('#template-dir-entry').html()
+  });
+  picker.updateSources(function() {
+    var picker = new DirectoryPickerView({
+      el: $('#explorer'),
+      levelTemplate: $('#template-dir-level').html(),
+      entryTemplate: $('#template-dir-entry').html()
+    });
+    picker.busy();
     $.get('/filesystem/contents/', function(results) {
-      fileExplorer.structure = results;
-      fileExplorer.render();
-      fileExplorer.idle();
+      picker.structure = results;
+      picker.render();
+      picker.idle();
     });
   });
 });
 </script>
 
   <h1>Administration</h1>
-
-  <!--
-  <table>
-    <thead>
-      <th>Path</th>
-      <th></th>
-    </thead>
-    <tbody>
-      {% for dir in directories %}
-        <tr>
-          <td>{{ dir.path }}</td>
-          <td><a href='{% url main.views.administration_sources_delete dir.id %}' class='btn' style='float:right'>Delete</a></td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  -->
 
   <div id='directories'></div>
 
