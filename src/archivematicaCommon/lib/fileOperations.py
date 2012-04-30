@@ -173,7 +173,7 @@ def updateDirectoryLocation(src, dst, unitPath, unitIdentifier, unitIdentifierTy
     srcDB = src.replace(unitPath, unitPathReplaceWith)
     if not srcDB.endswith("/") and srcDB != unitPathReplaceWith:
         srcDB += "/"
-    dstDB = src.replace(unitPath, unitPathReplaceWith)
+    dstDB = dst.replace(unitPath, unitPathReplaceWith)
     if not dstDB.endswith("/") and dstDB != unitPathReplaceWith:
         dstDB += "/"
     sql = "SELECT Files.fileUUID, Files.currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation LIKE '" + MySQLdb.escape_string(srcDB) + "%' AND " + unitIdentifierType + " = '" + unitIdentifier + "';"
@@ -192,9 +192,19 @@ def updateDirectoryLocation(src, dst, unitPath, unitIdentifier, unitIdentifierTy
     print "moving: ", src, dst
     shutil.move(src, dst)
 
-def updateFileLocation2():
-    print "not implemented"
-    exit(3)
+def updateFileLocation2(src, dst, unitPath, unitIdentifier, unitIdentifierType, unitPathReplaceWith):
+    """Dest needs to be the actual full destination path with filename."""
+    srcDB = src.replace(unitPath, unitPathReplaceWith)
+    dstDB = src.replace(unitPath, unitPathReplaceWith)
+    sql = "SELECT Files.fileUUID, Files.currentLocation FROM Files WHERE removedTime = 0 AND Files.currentLocation = '" + MySQLdb.escape_string(srcDB) + "' AND " + unitIdentifierType + " = '" + unitIdentifier + "';"
+    rows = databaseInterface.queryAllSQL(sql)
+    for row in rows:
+        fileUUID = row[0]
+        location = row[1]
+        sql =  """UPDATE Files SET currentLocation='%s' WHERE fileUUID='%s';""" % (MySQLdb.escape_string(dstDB), fileUUID)
+        databaseInterface.runSQL(sql)
+    print "moving: ", src, dst
+    shutil.move(src, dst)
 
 #import lxml.etree as etree
 def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIdentifierUUID = uuid.uuid4().__str__(), fileUUID="None", sipUUID = None, transferUUID=None, eventOutcomeDetailNote = ""):
