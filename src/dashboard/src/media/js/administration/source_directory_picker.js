@@ -1,5 +1,6 @@
 $(document).ready(function() {
   $('#directories').hide();
+  $('#source_page_instructions').hide();
   var picker = new DirectoryPickerView({
       el: $('#explorer'),
       levelTemplate: $('#template-dir-level').html(),
@@ -16,7 +17,8 @@ $(document).ready(function() {
       picker.structure = results;
       picker.render();
       picker.idle();
-      $('#directories').show();
+      $('#directories').slideDown();
+      $('#source_page_instructions').fadeIn();
    });
   });
 });
