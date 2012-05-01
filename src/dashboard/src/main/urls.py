@@ -68,7 +68,7 @@ urlpatterns = patterns('main.views',
     (r'administration/dip/$', 'administration_dip'),
     (r'administration/dip/edit/(?P<id>\d+)/$', 'administration_dip_edit'),
     (r'administration/sources/$', 'administration_sources'),
-    (r'administration/sources/delete/(?P<id>\d+)/$', 'administration_sources_delete'),
+    (r'administration/sources/delete/json/(?P<id>\d+)/$', 'administration_sources_delete_json'),
     (r'administration/sources/json/$', 'administration_sources_json'),
 
     # JSON feeds
