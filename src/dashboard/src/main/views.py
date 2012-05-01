@@ -570,7 +570,7 @@ def transfer_status(request, uuid=None):
             if models.Transfer.objects.is_hidden(item['sipuuid']):
                 continue
             jobs = get_jobs_by_sipuuid(item['sipuuid'])
-            item['directory'] = utils.get_directory_name(jobs[0])
+            item['directory'] = os.path.basename(utils.get_directory_name(jobs[0]))
             item['timestamp'] = calendar.timegm(item['timestamp'].timetuple())
             item['uuid'] = item['sipuuid']
             item['id'] = item['sipuuid']
