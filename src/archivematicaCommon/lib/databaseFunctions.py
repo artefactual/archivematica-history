@@ -57,6 +57,8 @@ def insertIntoFiles(fileUUID, filePath, enteredSystem=databaseInterface.getUTCDa
         raise Exception("not supported yet - both SIP and transfer UUID's defined (or neither defined)", sipUUID + "-" + transferUUID)
 
 def insertIntoEvents(fileUUID="", eventIdentifierUUID="", eventType="", eventDateTime=databaseInterface.getUTCDate(), eventDetail="", eventOutcome="", eventOutcomeDetailNote=""):
+    if eventIdentifierUUID == "":
+        eventIdentifierUUID = uuid.uuid4().__str__()
     databaseInterface.runSQL("""INSERT INTO Events (fileUUID, eventIdentifierUUID, eventType, eventDateTime, eventDetail, eventOutcome, eventOutcomeDetailNote)
             VALUES ( '"""   + escapeForDB(fileUUID) + databaseInterface.separator \
                             + escapeForDB(eventIdentifierUUID) + databaseInterface.separator \
