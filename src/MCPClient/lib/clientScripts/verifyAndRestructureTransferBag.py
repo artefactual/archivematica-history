@@ -25,6 +25,8 @@ import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
 from restructureForCompliance import restructureBagForComplianceFileUUIDsAssigned
+from databaseFunctions import insertIntoEvents
+import databaseInterface
 
 printSubProcessOutput=False
 exitCode = 0
@@ -51,8 +53,6 @@ def verifyBag(bag):
         else:
             print "Passed test: ", command
     
-
-
 if __name__ == '__main__':
     target = sys.argv[1]
     transferUUID =  sys.argv[2]
@@ -65,4 +65,13 @@ if __name__ == '__main__':
         print verificationCommands[i]
         print verificationCommandsOutputs[i]
         print
+        
+    sql = "SELECT Files.fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation LIKE '%%transferDirectory%%objects/%' AND transferUUID = '" + transferUUID + "';"
+    rows = databaseInterface.queryAllSQL(sql)
+    for row in rows:
+        insertIntoEvents(fileUUID=row[0], \
+                     eventType="fixity check", \
+                     eventDetail="Bagit - verifypayloadmanifests", \
+                     eventOutcome="Pass")
+    
     exit(exitCode)
