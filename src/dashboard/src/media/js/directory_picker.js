@@ -10,7 +10,10 @@ var DirectoryPickerView = FileExplorer.extend({
     var self;
     this.options.nameClickHandler = function(result) { 
       if (result.type == 'directory') { 
-        self.alert('User clicked name of ' + result.type + ' at path ' + result.path); 
+        self.alert(
+          'Click',
+          'User clicked name of ' + result.type + ' at path ' + result.path
+        ); 
       } 
     };
 
@@ -33,7 +36,10 @@ var DirectoryPickerView = FileExplorer.extend({
       '/administration/sources/json/',
       {path: path},
       function(response) {
-        self.alert(response.message);
+        self.alert(
+          'Add source directory',
+          response.message
+        );
         self.updateSources();
       }
     );
@@ -41,16 +47,23 @@ var DirectoryPickerView = FileExplorer.extend({
 
   deleteSource: function(id) {
     var self = this;
-    if (confirm('Are you sure you want to delete this?')) {
-      $.post(
-        '/administration/sources/delete/json/' + id + '/',
-        {},
-        function(response) {
-          self.alert(response.message);
-          self.updateSources();
-        }
-      );
-    }
+    this.confirm(
+      'Delete source directory',
+      'Are you sure you want to delete this?',
+      function() {
+        $.post(
+          '/administration/sources/delete/json/' + id + '/',
+          {},
+          function(response) {
+            self.alert(
+              'Delete source directory',
+              response.message
+            );
+            self.updateSources();
+          }
+        );
+      }
+    );
   },
 
   updateSources: function(cb) {
@@ -86,8 +99,7 @@ var DirectoryPickerView = FileExplorer.extend({
     });
   },
 
-  alert: function(message, title) {
-    title = title || '';
+  alert: function(title, message) {
     $('<div class="task-dialog">' + message + '</div>')
       .dialog({
         title: title,
@@ -105,6 +117,28 @@ var DirectoryPickerView = FileExplorer.extend({
       });
   },
 
-  bootstrapConfirm: function(message, logic) {
+  confirm: function(title, message, logic) {
+    $('<div class="task-dialog">' + message + '</div>')
+      .dialog({
+        title: title,
+        width: 200,
+        height: 200,
+        modal: true,
+        buttons: [
+          {
+            text: 'Yes',
+            click: function() {
+              $(this).dialog('close');
+              logic();
+            }
+          },
+          {
+            text: 'Cancel',
+            click: function() {
+              $(this).dialog('close');
+            }
+          }
+        ]
+      });
   }
 });
