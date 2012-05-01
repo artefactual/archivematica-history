@@ -316,7 +316,6 @@ var BaseSipView = Backbone.View.extend({
       // refresh DOM
       this.$jobContainer.empty();
 
-var firstGroupRendered = false;
       // display groups
       for(group in groups) {
         var group = new MicroserviceGroupView({
@@ -327,14 +326,6 @@ var firstGroupRendered = false;
           $('#microservice-group-template').html()
         );
         this.$jobContainer.append(group.render().el);
-if (!firstGroupRendered) {
-  var actionsFound = $(group.el).children(':nth-child(2)').children(':first-child').children('.job-detail-actions').children('select');
-  // if first job requires an action and an action doesn't exist for group, then do it
-  if (actionsFound.length > 0 && 1) {
-    $(group.el).children('.microservice-group:first-child').children('.microservice-group-name').append(actionsFound);
-  }
-  firstGroupRendered = true;
-}
       }
 
       // re-open any groups that were open before the DOM elements were refreshed
