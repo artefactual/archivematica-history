@@ -7,9 +7,10 @@ var DirectoryPickerView = FileExplorer.extend({
 
     this.render();
 
+    var self;
     this.options.nameClickHandler = function(result) { 
       if (result.type == 'directory') { 
-        alert('User clicked name of ' + result.type + ' at path ' + result.path); 
+        self.alert('User clicked name of ' + result.type + ' at path ' + result.path); 
       } 
     };
 
@@ -32,7 +33,7 @@ var DirectoryPickerView = FileExplorer.extend({
       '/administration/sources/json/',
       {path: path},
       function(response) {
-        alert(response.message);
+        self.alert(response.message);
         self.updateSources();
       }
     );
@@ -45,7 +46,7 @@ var DirectoryPickerView = FileExplorer.extend({
         '/administration/sources/delete/json/' + id + '/',
         {},
         function(response) {
-          alert(response.message);
+          self.alert(response.message);
           self.updateSources();
         }
       );
@@ -83,5 +84,27 @@ var DirectoryPickerView = FileExplorer.extend({
         cb();
       }
     });
+  },
+
+  alert: function(message, title) {
+    title = title || '';
+    $('<div class="task-dialog">' + message + '</div>')
+      .dialog({
+        title: title,
+        width: 200,
+        height: 200,
+        modal: true,
+        buttons: [
+          {
+            text: 'Okay',
+            click: function() {
+              $(this).dialog('close');
+            }
+          }
+        ]
+      });
+  },
+
+  bootstrapConfirm: function(message, logic) {
   }
 });
