@@ -790,11 +790,16 @@ def administration_sources_json(request):
     if request.method == 'POST':
          path = request.POST.get('path', '')
          if path != '':
-              # save dir
-              source_dir = models.SourceDirectory()
-              source_dir.path = path
-              source_dir.save()
-              message = 'Directory added.'
+              try:
+                  models.SourceDirectory.objects.get(path=path)
+              except models.SourceDirectory.DoesNotExist:
+                  # save dir
+                  source_dir = models.SourceDirectory()
+                  source_dir.path = path
+                  source_dir.save()
+                  message = 'Directory added.'
+              else:
+                  message = 'Directory already added.'
          else:
               message = 'Path is empty.'
 
