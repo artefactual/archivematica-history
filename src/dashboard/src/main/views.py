@@ -821,7 +821,7 @@ def administration_sources_delete_json(request, id):
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
     #return HttpResponseRedirect(reverse('main.views.administration_sources'))
 
-def dir2dict(path, directory={}, entry=False):
+def filesystem_directory_to_dict(path, directory={}, entry=False):
     # if starting traversal, set entry to directory root
     if (entry == False):
         entry = directory
@@ -841,14 +841,14 @@ def dir2dict(path, directory={}, entry=False):
         # if entry is a directory, recurse
         child_path = path + '/' + file
         if os.path.isdir(child_path) and os.access(child_path, os.R_OK):
-            dir2dict(child_path, directory, new_entry)
+            filesystem_directory_to_dict(child_path, directory, new_entry)
 
     # return fully traversed data
     return directory
 
 def filesystem_contents(request):
     path = request.GET.get('path', '/home')
-    response = dir2dict(path)
+    response = filesystem_directory_to_dict(path)
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
