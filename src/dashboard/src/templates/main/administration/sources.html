@@ -1,4 +1,5 @@
 {% extends "layout_fluid.html" %}
+{% load breadcumbs %}
 
 {% block title %}Administration{% endblock %}
 {% block h1 %}Administration{% endblock %}
@@ -19,6 +20,11 @@
 {% endblock %}
 
 {% block content %}
+
+<ul class="breadcrumb">
+  {% breadcrumb_url 'Administration' main.views.administration %}
+  {% breadcrumb 'Source Directories' %}
+</ul>
 
 <script>
 $(document).ready(function() {
@@ -43,11 +49,13 @@ $(document).ready(function() {
 });
 </script>
 
-  <h1>Administration</h1>
+<h1>Source Directories</h1>
 
-  <div id='directories'></div>
+<div id='directories'></div>
 
-  <div id='explorer' class='backbone-file-explorer'></div>
+<div id='explorer' class='backbone-file-explorer'></div>
+
+<!-- templates below -->
 
 <script type="text/template" id='template-dir-level'>
   <div class="backbone-file-explorer-level"></div>
