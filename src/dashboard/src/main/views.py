@@ -809,9 +809,12 @@ def administration_sources_json(request):
       })
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
-def administration_sources_delete(request, id):
+def administration_sources_delete_json(request, id):
     models.SourceDirectory.objects.get(pk=id).delete()
-    return HttpResponseRedirect(reverse('main.views.administration_sources'))
+    response = {}
+    response['message'] = 'Deleted.'
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+    #return HttpResponseRedirect(reverse('main.views.administration_sources'))
 
 def dir2dict(path, directory={}, entry=False):
     # if starting traversal, set entry to directory root

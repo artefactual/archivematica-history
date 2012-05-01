@@ -68,7 +68,7 @@ $(document).ready(function() {
     <th></th>
   </thead>
   <tbody>
-  <%= rows %>
+    <%= rows %>
   </tbody>
 </table>
 </script>
@@ -76,7 +76,7 @@ $(document).ready(function() {
 <script type="text/template" id="template-source-directory-table-row">
   <tr>
     <td><%= path %></td>
-    <td><a href='/administration/sources/delete/<%= id %>' class='btn' style='float:right'>Delete</a></td>
+    <td><a href='#' id='directory_<%= id %>' class='btn' style='float:right'>Delete</a></td>
   </tr>
 </script>
 

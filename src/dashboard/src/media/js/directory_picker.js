@@ -38,22 +38,46 @@ var DirectoryPickerView = FileExplorer.extend({
     );
   },
 
+  deleteSource: function(id) {
+    var self = this;
+    if (confirm('Are you sure you want to delete this?')) {
+      $.post(
+        '/administration/sources/delete/json/' + id + '/',
+        {},
+        function(response) {
+          alert(response.message);
+          self.updateSources();
+        }
+      );
+    }
+  },
+
   updateSources: function(cb) {
+    var self = this;
     $.get('/administration/sources/json/', function(results) {
       tableTemplate = _.template($('#template-source-directory-table').html());
       rowTemplate   = _.template($('#template-source-directory-table-row').html());
 
       $('#directories').empty();
-      rowHtml = '';
+      $('#directories').off('click');
 
-      for(var index in results['directories']) {
-        rowHtml += rowTemplate({
-          id:   results.directories[index].id,
-          path: results.directories[index].path
+      if (results['directories'].length) {
+        var rowHtml = '';
+
+        for(var index in results['directories']) {
+          rowHtml += rowTemplate({
+            id:   results.directories[index].id,
+            path: results.directories[index].path
+          });
+        }
+
+        $('#directories').append(tableTemplate({rows: rowHtml}));
+
+        $('#directories').on('click', 'a', function() {
+          var directoryId = $(this).attr('id').replace('directory_', '');
+          self.deleteSource(directoryId);
         });
       }
-
-      $('#directories').append(tableTemplate({rows: rowHtml}));
 
       if (cb != undefined) {
         cb();
