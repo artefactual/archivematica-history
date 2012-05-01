@@ -8,6 +8,7 @@
 {% block js %}
   <script type="text/javascript" src="{{ STATIC_URL }}js/file-explorer.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}js/directory_picker.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/administration/source_directory_picker.js"></script>
 {% endblock %}
 
 {% block sidebar %}
@@ -25,29 +26,6 @@
   {% breadcrumb_url 'Administration' main.views.administration %}
   {% breadcrumb 'Source Directories' %}
 </ul>
-
-<script>
-$(document).ready(function() {
-  var picker = new DirectoryPickerView({
-      el: $('#explorer'),
-      levelTemplate: $('#template-dir-level').html(),
-      entryTemplate: $('#template-dir-entry').html()
-  });
-  picker.updateSources(function() {
-    var picker = new DirectoryPickerView({
-      el: $('#explorer'),
-      levelTemplate: $('#template-dir-level').html(),
-      entryTemplate: $('#template-dir-entry').html()
-    });
-    picker.busy();
-    $.get('/filesystem/contents/', function(results) {
-      picker.structure = results;
-      picker.render();
-      picker.idle();
-    });
-  });
-});
-</script>
 
 <h1>Source Directories</h1>
 
