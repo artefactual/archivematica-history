@@ -142,14 +142,6 @@ class File(models.Model):
     class Meta:
         db_table = u'Files'
 
-class StandardTaskConfig(models.Model):
-    id = models.AutoField(primary_key=True, db_column='pk')
-    execute = models.TextField(db_column='execute', blank=True)
-    arguments = models.TextField(db_column='arguments', blank=True)
-
-    class Meta:
-        db_table = u'StandardTasksConfigs'
-
 class Task(models.Model):
     taskuuid = models.CharField(max_length=50, primary_key=True, db_column='taskUUID')
     job = models.ForeignKey(Job, db_column='jobuuid', to_field = 'jobuuid')
@@ -280,3 +272,53 @@ class SourceDirectory(models.Model):
 
     class Meta:
         db_table = u'SourceDirectories'
+
+""" MCP data interoperability """
+
+class MicroServiceChain(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk')
+    startinglink = models.IntegerField(db_column='startingLink')
+    description = models.TextField(db_column='description')
+
+    class Meta:
+        db_table = u'MicroServiceChains'
+
+class MicroServiceChainLink(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk')
+    currenttask =  models.IntegerField(db_column='currentTask')
+    defaultnextchainlink = models.IntegerField(default=1, db_column='defaultNextChainLink')
+    defaultplaysound = models.IntegerField(null=True, db_column='defaultPlaySound')
+    microservicegroup = models.IntegerField(null=True, db_column='microserviceGroup')
+    reloadfilelist = models.IntegerField(default=1, db_column='reloadFileList')
+    defaultexitmessage = models.TextField(default='Failed', db_column='defaultExitMessage')
+
+    class Meta:
+        db_table = u'MicroServiceChainLinks'
+
+class MicroServiceChainLinkExitCode(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk')
+    microservicechainlink = models.IntegerField(db_column='microServiceChainLink')
+    exitcode = models.IntegerField(db_column='exitCode')
+    nextmicroservicechainlink = models.IntegerField(db_column='nextMicroServiceChainLink')
+    playsound = models.IntegerField(null=True, db_column='playSound')
+    exitmessage = models.TextField(db_column='exitMessage')
+
+    class Meta:
+        db_table = u'MicroServiceChainLinksExitCodes'
+
+class StandardTaskConfig(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk')
+    execute = models.TextField(db_column='execute', blank=True)
+    arguments = models.TextField(db_column='arguments', blank=True)
+
+    class Meta:
+        db_table = u'StandardTasksConfigs'
+
+class TaskConfig(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk')
+    tasktype = models.IntegerField(db_column='taskType')
+    tasktypepkreference = models.IntegerField(db_column='taskTypePKReference')
+    description = models.TextField(db_column='description')
+
+    class Meta:
+        db_table = u'TasksConfigs'
