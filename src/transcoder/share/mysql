@@ -29,7 +29,7 @@ DROP TABLE IF EXISTS CommandTypes;
 CREATE TABLE CommandTypes (
     pk INT PRIMARY KEY AUTO_INCREMENT,
     type TEXT
-);
+)DEFAULT CHARSET=utf8;
 
 INSERT INTO CommandTypes (type) 
     VALUES 
@@ -41,7 +41,7 @@ DROP TABLE IF EXISTS CommandClassifications;
 CREATE TABLE CommandClassifications (
     pk INT PRIMARY KEY AUTO_INCREMENT,
     classification TEXT
-);
+)DEFAULT CHARSET=utf8;
 
 
 INSERT INTO CommandClassifications
@@ -59,14 +59,23 @@ CREATE TABLE Commands (
     eventDetailCommand INT,
     Foreign Key (eventDetailCommand) references Commands(pk),
     description LONGTEXT
-);
+)DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS FileIDs;
 CREATE TABLE FileIDs (
     pk INT PRIMARY KEY AUTO_INCREMENT,
     description TEXT
-);
+)DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS FilesIdentifiedIDs;
+CREATE TABLE FilesIdentifiedIDs (
+    pk INT PRIMARY KEY AUTO_INCREMENT,
+    fileUUID  varchar(50),
+    Foreign Key (fileUUID) references Files(fileUUID),    
+    fileID INT,
+    Foreign Key (fileID) references FileIDs(pk)
+)DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS CommandRelationships;
 CREATE TABLE CommandRelationships (
@@ -81,7 +90,7 @@ CREATE TABLE CommandRelationships (
     countAttempts INT UNSIGNED DEFAULT 0,
     countOK INT UNSIGNED DEFAULT 0,
     countNotOK INT UNSIGNED DEFAULT 0
-);
+)DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS FileIDsByExtension;
@@ -90,7 +99,7 @@ CREATE TABLE FileIDsByExtension (
     Extension TEXT,
     FileIDs INT,
     Foreign Key (FileIDs) references FileIDs(pk)
-);
+)DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS FileIDsByPronom;
 CREATE TABLE FileIDsByPronom (
@@ -98,13 +107,13 @@ CREATE TABLE FileIDsByPronom (
     fileID TEXT,
     FileIDs INT,
     Foreign Key (FileIDs) references FileIDs(pk)
-);
+)DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Groups;
 CREATE TABLE Groups (
     pk INT PRIMARY KEY AUTO_INCREMENT,
     description TEXT
-);
+)DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS FileIDGroupMembers;
 CREATE TABLE FileIDGroupMembers (
@@ -113,7 +122,7 @@ CREATE TABLE FileIDGroupMembers (
     foreign Key (fileID) references FileIDs(pk),
     groupID INT,
     foreign Key (groupID) references Groups(pk)    
-);
+)DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS SubGroups;
 CREATE TABLE SubGroups (
@@ -122,7 +131,7 @@ CREATE TABLE SubGroups (
     Foreign Key (parentGroupID) references Groups(pk),    
     childGroupID INT,
     Foreign Key (childGroupID) references Groups(pk)    
-);
+)DEFAULT CHARSET=utf8;
 
 INSERT INTO Groups (description) VALUES ('Raster Image');
 set @rasterImageGroup = LAST_INSERT_ID();
