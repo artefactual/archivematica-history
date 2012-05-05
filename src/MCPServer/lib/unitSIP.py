@@ -42,6 +42,7 @@ class unitSIP(unit):
         self.UUID = UUID
         self.fileList = {}
         self.pathString = "%SIPDirectory%"
+        self.owningUnit = None
 
     def reloadFileList(self):
         self.fileList = {}
@@ -56,7 +57,7 @@ class unitSIP(unit):
                 else:
                     filePath = directory + file
                 #print filePath
-                self.fileList[filePath] = unitFile(filePath)
+                self.fileList[filePath] = unitFile(filePath, owningUnit=self)
 
         sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND sipUUID =  '""" + self.UUID + "'"
         c, sqlLock = databaseInterface.querySQL(sql)

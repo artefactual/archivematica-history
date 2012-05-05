@@ -51,14 +51,14 @@ class linkTaskManagerChoice:
         self.jobChainLink = jobChainLink
         self.UUID = uuid.uuid4().__str__()
         self.unit = unit
-        sql = """SELECT chainAvailable, description FROM MicroServiceChainChoice JOIN MicroServiceChains on chainAvailable = MicroServiceChains.pk WHERE choiceAvailableAtLink = """ + jobChainLink.pk.__str__()
+        sql = """SELECT chainAvailable, description FROM MicroServiceChainChoice JOIN MicroServiceChains on chainAvailable = MicroServiceChains.pk WHERE choiceAvailableAtLink = %s ORDER BY MicroServiceChainChoice.pk;""" % (jobChainLink.pk.__str__())
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
             print row
             chainAvailable = row[0]
             description = row[1]
-            self.choices.append((chainAvailable, description))
+            self.choices.append((chainAvailable, description,))
             row = c.fetchone()
         sqlLock.release()
 

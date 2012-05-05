@@ -278,7 +278,10 @@ def startTransferD():
     while p.is_alive():
         time.sleep(5)
     print >>sys.stderr, "transferD crashed\n exitCode:", p.exitcode 
-    
+
+def removeOldJobsAwaitingApproval():
+    sql = """DELETE FROM Jobs WHERE Jobs.currentStep = 'Awaiting decision';"""
+    databaseInterface.runSQL(sql)
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
@@ -306,6 +309,7 @@ if __name__ == '__main__':
         t.daemon = True
         t.start()
 
+    removeOldJobsAwaitingApproval()
     watchDirectories()
     #t = threading.Thread(target=startTransferD)
     #t.daemon = True

@@ -68,8 +68,9 @@ class linkTaskManagerFiles:
         else:
             outputLock = None
 
+        print "DEBUG - arguments 1. ", self.arguments
         SIPReplacementDic = unit.getReplacementDic(unit.currentPath)
-
+        print "DEBUG - RD11", SIPReplacementDic
         self.tasksLock.acquire()
         for file, fileUnit in unit.fileList.items():
             #print "file:", file, fileUnit
@@ -80,7 +81,7 @@ class linkTaskManagerFiles:
                 if not os.path.basename(file).startswith(filterFileStart):
                     continue
             if filterSubDir:
-                print "file", file, type(file)
+                #print "file", file, type(file)
                 #print unit.pathString, type(unit.pathString)
                 #filterSubDir = filterSubDir.encode('utf-8')
                 #print filterSubDir, type(filterSubDir)
@@ -93,13 +94,16 @@ class linkTaskManagerFiles:
             execute = self.execute
             arguments = self.arguments
             
+            print "DEBUG - arguments 2. ", arguments
+            
             if self.jobChainLink.passVar != None:
                 if isinstance(self.jobChainLink.passVar, replacementDic):
                     execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
-
+            
+            print "DEBUG - arguments 3. ", arguments
 
             commandReplacementDic = fileUnit.getReplacementDic()
-            print commandReplacementDic
+            print "DEBUG - RD22", commandReplacementDic
             for key in commandReplacementDic.iterkeys():
                 value = commandReplacementDic[key].replace("\"", ("\\\""))
                 #print "key", type(key), key
@@ -117,7 +121,7 @@ class linkTaskManagerFiles:
                 if standardErrorFile:
                     standardErrorFile = standardErrorFile.replace(key, value)
 
-
+            print "DEBUG - arguments 4. ", arguments
             for key in SIPReplacementDic.iterkeys():
                 value = SIPReplacementDic[key].replace("\"", ("\\\""))
                 #print "key", type(key), key
