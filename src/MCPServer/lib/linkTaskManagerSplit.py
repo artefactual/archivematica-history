@@ -99,9 +99,7 @@ class linkTaskManagerSplit:
                 if isinstance(self.jobChainLink.passVar, replacementDic):
                     execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
 
-            print "DEBUG - arguments 1 ", arguments
             commandReplacementDic = fileUnit.getReplacementDic()
-            print "DEBUG - RD1", commandReplacementDic
             for key in commandReplacementDic.iterkeys():
                 value = commandReplacementDic[key].replace("\"", ("\\\""))
                 #print "key", type(key), key
@@ -118,8 +116,6 @@ class linkTaskManagerSplit:
                     standardOutputFile = standardOutputFile.replace(key, value)
                 if standardErrorFile:
                     standardErrorFile = standardErrorFile.replace(key, value)
-            print "DEBUG - arguments 2 ", arguments
-            print "DEBUG - RD2", SIPReplacementDic
             for key in SIPReplacementDic.iterkeys():
                 value = SIPReplacementDic[key].replace("\"", ("\\\""))
                 #print "key", type(key), key
@@ -137,7 +133,6 @@ class linkTaskManagerSplit:
                     standardOutputFile = standardOutputFile.replace(key, value)
                 if standardErrorFile:
                     standardErrorFile = standardErrorFile.replace(key, value)
-            print "DEBUG - arguments 3 ", arguments
             UUID = uuid.uuid4().__str__()
             self.tasks[UUID] = None
             t = threading.Thread(target=jobChain.jobChain, args=(fileUnit, execute, self.taskCompletedCallBackFunction,), kwargs={"passVar":self.jobChainLink.passVar, "UUID":UUID} )
@@ -148,17 +143,14 @@ class linkTaskManagerSplit:
                 time.sleep(archivematicaMCP.limitTaskThreadsSleep)
                 self.tasksLock.acquire()
             print "Active threads:", threading.activeCount()
-            print "DEBUG - ", file, fileUnit
             t.start()
         self.clearToNextLink = True
         self.tasksLock.release()
         if self.tasks == {} :
-            print "DEBUG - Finished creating tasks, but have and empty tasks list"
             self.jobChainLink.linkProcessingComplete(self.exitCode)
 
 
     def taskCompletedCallBackFunction(self, jobChain):
-        print "DEBUG - taskCompletedCallBackFunction(self, jobChain):", self, jobChain
         if jobChain.UUID in self.tasks:
             del self.tasks[jobChain.UUID]
         else:

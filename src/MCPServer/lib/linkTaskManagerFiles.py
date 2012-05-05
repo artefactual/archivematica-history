@@ -48,7 +48,6 @@ class linkTaskManagerFiles:
         self.jobChainLink = jobChainLink
         self.exitCode = 0
         self.clearToNextLink = False
-        print "DEBUG pk:", pk
         sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__()
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
@@ -68,9 +67,7 @@ class linkTaskManagerFiles:
         else:
             outputLock = None
 
-        print "DEBUG - arguments 1. ", self.arguments
         SIPReplacementDic = unit.getReplacementDic(unit.currentPath)
-        print "DEBUG - RD11", SIPReplacementDic
         self.tasksLock.acquire()
         for file, fileUnit in unit.fileList.items():
             #print "file:", file, fileUnit
@@ -94,16 +91,11 @@ class linkTaskManagerFiles:
             execute = self.execute
             arguments = self.arguments
             
-            print "DEBUG - arguments 2. ", arguments
-            
             if self.jobChainLink.passVar != None:
                 if isinstance(self.jobChainLink.passVar, replacementDic):
                     execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
-            
-            print "DEBUG - arguments 3. ", arguments
 
             commandReplacementDic = fileUnit.getReplacementDic()
-            print "DEBUG - RD22", commandReplacementDic
             for key in commandReplacementDic.iterkeys():
                 value = commandReplacementDic[key].replace("\"", ("\\\""))
                 #print "key", type(key), key
@@ -121,7 +113,6 @@ class linkTaskManagerFiles:
                 if standardErrorFile:
                     standardErrorFile = standardErrorFile.replace(key, value)
 
-            print "DEBUG - arguments 4. ", arguments
             for key in SIPReplacementDic.iterkeys():
                 value = SIPReplacementDic[key].replace("\"", ("\\\""))
                 #print "key", type(key), key
