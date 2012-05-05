@@ -26,19 +26,32 @@ from unit import unit
 
 class unitFile(unit):
     """For objects representing a File"""
-    def __init__(self, currentPath, UUID="None"):
+    def __init__(self, currentPath, UUID="None", owningUnit=None):
         self.currentPath = currentPath
         self.UUID = UUID
+        self.owningUnit = owningUnit
         self.fileGrpUse = 'None'
+        self.fileList={currentPath:self}
+        self.pathString = ""
+        if owningUnit:
+            self.pathString = owningUnit.pathString
 
-    def getReplacementDic(self):
+    def getReplacementDic(self, target=None):
+        if target != None and self.owningUnit:
+            return self.owningUnit.getReplacementDic(self.owningUnit.currentPath)
         # self.currentPath = currentPath.__str__()
         # self.UUID = uuid.uuid4().__str__()
         #Pre do some variables, that other variables rely on, because dictionaries don't maintain order
-
-        ret = {\
-               "%relativeLocation%": self.currentPath, \
-               "%fileUUID%": self.UUID, \
-               "%fileGrpUse%": self.fileGrpUse
-        }
-        return ret
+        else:
+            ret = {\
+                   "%relativeLocation%": self.currentPath, \
+                   "%fileUUID%": self.UUID, \
+                   "%fileGrpUse%": self.fileGrpUse
+            }
+            return ret
+    
+    def reload(self):
+        return 
+    
+    def reloadFileList(self):
+        return

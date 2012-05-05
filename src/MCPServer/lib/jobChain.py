@@ -35,12 +35,14 @@ import databaseInterface
 #potentialToHold/getFromDB
 #-previous chain links
 class jobChain:
-    def __init__(self, unit, chainPK):
+    def __init__(self, unit, chainPK, notifyComplete=None, passVar=None, UUID=None):
         print "jobChain",  unit, chainPK
         if chainPK == None:
             return None
         self.unit = unit
         self.pk = chainPK
+        self.notifyComplete = notifyComplete
+        self.UUID = UUID
         sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__()
         print sql
         c, sqlLock = databaseInterface.querySQL(sql)
@@ -55,7 +57,7 @@ class jobChain:
             self.description = row[2]
             row = c.fetchone()
         sqlLock.release()
-        self.currentLink = jobChainLink(self, self.startingChainLink, unit)
+        self.currentLink = jobChainLink(self, self.startingChainLink, unit, passVar)
         if self.currentLink == None:
             return None
 
@@ -65,7 +67,9 @@ class jobChain:
             t.daemon = True
             t.start()
         else:
-            print "Done with SIP:" + self.unit.UUID
+            print "Done with UNIT:" + self.unit.UUID
+            if self.notifyComplete:
+                self.notifyComplete(self)
 
     def nextChainLinkThreaded(self, pk, passVar=None):
         self.currentLink = jobChainLink(self, pk, self.unit, passVar)

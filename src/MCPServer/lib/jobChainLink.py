@@ -30,6 +30,7 @@ from linkTaskManagerChoice import linkTaskManagerChoice
 from linkTaskManagerAssignMagicLink import linkTaskManagerAssignMagicLink
 from linkTaskManagerLoadMagicLink import linkTaskManagerLoadMagicLink
 from linkTaskManagerReplacementDicFromChoice import linkTaskManagerReplacementDicFromChoice
+from linkTaskManagerSplit import linkTaskManagerSplit
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import logJobCreatedSQL
@@ -42,6 +43,7 @@ constSelectPathTask = 2
 constSetMagicLink = 3
 constLoadMagicLink = 4
 constGetReplacementDic = 5
+constSplitByFile = 6
 
 class jobChainLink:
     def __init__(self, jobChain, jobChainLinkPK, unit, passVar=None):
@@ -88,7 +90,6 @@ class jobChainLink:
     def createTasks(self, taskType, taskTypePKReference):
         if taskType == constOneTask:
             linkTaskManagerDirectories(self, taskTypePKReference, self.unit)
-
         elif taskType == constTaskForEachFile:
             if self.reloadFileList:
                 self.unit.reloadFileList();
@@ -101,6 +102,10 @@ class jobChainLink:
             linkTaskManagerLoadMagicLink(self, taskTypePKReference, self.unit)
         elif taskType == constGetReplacementDic:
             linkTaskManagerReplacementDicFromChoice(self, taskTypePKReference, self.unit)
+        elif taskType == constSplitByFile:
+            if self.reloadFileList:
+                self.unit.reloadFileList();
+            linkTaskManagerSplit(self, taskTypePKReference, self.unit)
         else:
             print sys.stderr, "unsupported task type: ", taskType
 

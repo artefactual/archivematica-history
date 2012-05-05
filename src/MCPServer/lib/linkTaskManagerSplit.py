@@ -26,6 +26,7 @@ from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
 from unitFile import unitFile
 from replacementDic import replacementDic
+import jobChain
 import databaseInterface
 import threading
 import math
@@ -40,7 +41,7 @@ from databaseFunctions import deUnicode
 import os
 
 
-class linkTaskManagerFiles:
+class linkTaskManagerSplit:
     def __init__(self, jobChainLink, pk, unit):
         self.tasks = {}
         self.tasksLock = threading.Lock()
@@ -48,7 +49,6 @@ class linkTaskManagerFiles:
         self.jobChainLink = jobChainLink
         self.exitCode = 0
         self.clearToNextLink = False
-        print "DEBUG pk:", pk
         sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__()
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
@@ -68,10 +68,10 @@ class linkTaskManagerFiles:
         else:
             outputLock = None
 
-        print "DEBUG - arguments 1. ", self.arguments
         SIPReplacementDic = unit.getReplacementDic(unit.currentPath)
-        print "DEBUG - RD11", SIPReplacementDic
+
         self.tasksLock.acquire()
+        print "Debug - ", unit.fileList.items()
         for file, fileUnit in unit.fileList.items():
             #print "file:", file, fileUnit
             if filterFileEnd:
@@ -87,6 +87,7 @@ class linkTaskManagerFiles:
                 #print filterSubDir, type(filterSubDir)
 
                 if not file.startswith(unit.pathString + filterSubDir):
+                    print "skipping file", file, filterSubDir
                     continue
 
             standardOutputFile = self.standardOutputFile
@@ -94,16 +95,13 @@ class linkTaskManagerFiles:
             execute = self.execute
             arguments = self.arguments
             
-            print "DEBUG - arguments 2. ", arguments
-            
             if self.jobChainLink.passVar != None:
                 if isinstance(self.jobChainLink.passVar, replacementDic):
                     execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
-            
-            print "DEBUG - arguments 3. ", arguments
 
+            print "DEBUG - arguments 1 ", arguments
             commandReplacementDic = fileUnit.getReplacementDic()
-            print "DEBUG - RD22", commandReplacementDic
+            print "DEBUG - RD1", commandReplacementDic
             for key in commandReplacementDic.iterkeys():
                 value = commandReplacementDic[key].replace("\"", ("\\\""))
                 #print "key", type(key), key
@@ -120,8 +118,8 @@ class linkTaskManagerFiles:
                     standardOutputFile = standardOutputFile.replace(key, value)
                 if standardErrorFile:
                     standardErrorFile = standardErrorFile.replace(key, value)
-
-            print "DEBUG - arguments 4. ", arguments
+            print "DEBUG - arguments 2 ", arguments
+            print "DEBUG - RD2", SIPReplacementDic
             for key in SIPReplacementDic.iterkeys():
                 value = SIPReplacementDic[key].replace("\"", ("\\\""))
                 #print "key", type(key), key
@@ -139,38 +137,32 @@ class linkTaskManagerFiles:
                     standardOutputFile = standardOutputFile.replace(key, value)
                 if standardErrorFile:
                     standardErrorFile = standardErrorFile.replace(key, value)
-
+            print "DEBUG - arguments 3 ", arguments
             UUID = uuid.uuid4().__str__()
-            task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, outputLock=outputLock, UUID=UUID)
-            self.tasks[UUID] = task
-            databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
-            t = threading.Thread(target=task.performTask)
+            self.tasks[UUID] = None
+            t = threading.Thread(target=jobChain.jobChain, args=(fileUnit, execute, self.taskCompletedCallBackFunction,), kwargs={"passVar":self.jobChainLink.passVar, "UUID":UUID} )
             t.daemon = True
-            while(archivematicaMCP.limitTaskThreads <= threading.activeCount()):
+            while(archivematicaMCP.limitTaskThreads <= threading.activeCount() + 10):
                 print "Waiting for active threads", threading.activeCount()
                 self.tasksLock.release()
                 time.sleep(archivematicaMCP.limitTaskThreadsSleep)
                 self.tasksLock.acquire()
             print "Active threads:", threading.activeCount()
+            print "DEBUG - ", file, fileUnit
             t.start()
-
-
         self.clearToNextLink = True
         self.tasksLock.release()
         if self.tasks == {} :
+            print "DEBUG - Finished creating tasks, but have and empty tasks list"
             self.jobChainLink.linkProcessingComplete(self.exitCode)
 
 
-    def taskCompletedCallBackFunction(self, task):
-        print task
-        #logTaskCompleted()
-        self.exitCode += math.fabs(task.results["exitCode"])
-        databaseFunctions.logTaskCompletedSQL(task)
-
-        if task.UUID in self.tasks:
-            del self.tasks[task.UUID]
+    def taskCompletedCallBackFunction(self, jobChain):
+        print "DEBUG - taskCompletedCallBackFunction(self, jobChain):", self, jobChain
+        if jobChain.UUID in self.tasks:
+            del self.tasks[jobChain.UUID]
         else:
-            print >>sys.stderr, "Key Value Error:", task.UUID
+            print >>sys.stderr, "Key Value Error:", jobChain.UUID
             print >>sys.stderr, "Key Value Error:", self.tasks
             exit(1)
 

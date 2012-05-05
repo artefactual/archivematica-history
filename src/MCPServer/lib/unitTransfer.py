@@ -42,6 +42,7 @@ from databaseFunctions import insertIntoEvents
 
 class unitTransfer(unit):
     def __init__(self, currentPath, UUID=""):
+        self.owningUnit = None
         #Just Use the end of the directory name
         self.pathString = "%transferDirectory%"
         currentPath2 = currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), \
@@ -91,7 +92,7 @@ class unitTransfer(unit):
                     else:
                         filePath = directory + file
                     print "filePath", filePath
-                    self.fileList[filePath] = unitFile(filePath)
+                    self.fileList[filePath] = unitFile(filePath, owningUnit=self)
 
             sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND transferUUID =  '""" + self.UUID + "'"
             print sql
