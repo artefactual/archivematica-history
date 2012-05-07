@@ -306,6 +306,11 @@ class MicroServiceChainLinkExitCode(models.Model):
     class Meta:
         db_table = u'MicroServiceChainLinksExitCodes'
 
+class MicroServiceChainChoice(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk')
+    choiceavailableatlink = models.IntegerField(db_column='choiceAvailableAtLink')
+    chainavailable = models.IntegerField(db_column='chainAvailable')
+
 class StandardTaskConfig(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     execute = models.TextField(db_column='execute', blank=True)
