@@ -286,7 +286,7 @@ class MicroServiceChain(models.Model):
 class MicroServiceChainLink(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     currenttask =  models.IntegerField(db_column='currentTask')
-    defaultnextchainlink = models.IntegerField(default=1, db_column='defaultNextChainLink')
+    defaultnextchainlink = models.IntegerField(null=True, default=1, db_column='defaultNextChainLink')
     defaultplaysound = models.IntegerField(null=True, db_column='defaultPlaySound')
     microservicegroup = models.TextField(db_column='microserviceGroup')
     reloadfilelist = models.IntegerField(default=1, db_column='reloadFileList')
