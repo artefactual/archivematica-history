@@ -1002,7 +1002,7 @@ def chain_insert():
     standardTaskConfig.save()
 
     taskConfig = models.TaskConfig()
-    taskConfig.type = 2
+    taskConfig.tasktype = 2
     taskConfig.tasktypepkreference = standardTaskConfig.id
     taskConfig.description = 'Test'
     taskConfig.save()
@@ -1018,24 +1018,10 @@ def chain_insert():
     choice.chainavailable = chain.id
     choice.save()
 
-    #second choice
-    standardTaskConfig = models.StandardTaskConfig()
-    standardTaskConfig.save()
-
-    taskConfig = models.TaskConfig()
-    taskConfig.type = 2
-    taskConfig.tasktypepkreference = standardTaskConfig.id
-    taskConfig.description = 'Test 2'
-    taskConfig.save()
-
-    link = models.MicroServiceChainLink()
-    link.microservicegroup = 'Upload DIP'
-    link.currenttask = taskConfig.id
-    link.save()
-
     choice = models.MicroServiceChainChoice()
     choice.choiceavailableatlink = link.id
-    choice.chainavailable = chain.id
+    #choice.chainavailable = chain.id
+    choice.chainavailable = 1 # experiment getting it to go to Reject
     choice.save()
 
     # take note of ID of existing chain to points to ICA AtoM DIP upload links
@@ -1044,4 +1030,3 @@ def chain_insert():
     chain.startinglink = start_link_id
     chain.description = 'UUpload to ICA-AAATTT'
     chain.save()
-    #chain_id = chain.id
