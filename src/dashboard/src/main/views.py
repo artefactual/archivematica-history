@@ -989,3 +989,59 @@ def jobs_explore(request, uuid):
             newItem['size'] = os.path.getsize(os.path.join(directory, item))
         contents.append(newItem)
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
+def chain_insert():
+    # make new chain to point to ICA AtoM DIP upload links
+    chain = models.MicroServiceChain()
+    chain.startingLink = 4
+    chain.description = 'Upload DIP to ICA-ATOM' 
+    chain.save()
+
+    # first choice
+    standardTaskConfig = models.StandardTaskConfig()
+    standardTaskConfig.save()
+
+    taskConfig = models.TaskConfig()
+    taskConfig.type = 2
+    taskConfig.tasktypepkreference = standardTaskConfig.id
+    taskConfig.description = 'Test'
+    taskConfig.save()
+
+    link = models.MicroServiceChainLink()
+    link.microservicegroup = 'Upload DIP'
+    link.currenttask = taskConfig.id
+    link.save()
+    start_link_id = link.id
+
+    choice = models.MicroServiceChainChoice()
+    choice.choiceavailableatlink = link.id
+    choice.chainavailable = chain.id
+    choice.save()
+
+    #second choice
+    standardTaskConfig = models.StandardTaskConfig()
+    standardTaskConfig.save()
+
+    taskConfig = models.TaskConfig()
+    taskConfig.type = 2
+    taskConfig.tasktypepkreference = standardTaskConfig.id
+    taskConfig.description = 'Test 2'
+    taskConfig.save()
+
+    link = models.MicroServiceChainLink()
+    link.microservicegroup = 'Upload DIP'
+    link.currenttask = taskConfig.id
+    link.save()
+
+    choice = models.MicroServiceChainChoice()
+    choice.choiceavailableatlink = link.id
+    choice.chainavailable = chain.id
+    choice.save()
+
+    # take note of ID of existing chain to points to ICA AtoM DIP upload links
+    chains = models.MicroServiceChain.objects.filter(description='Upload DIP to ICA-ATOM')
+    chain = chains[0]
+    chain.startinglink = start_link_id
+    chain.description = 'UUpload to ICA-AAATTT'
+    chain.save()
+    #chain_id = chain.id
