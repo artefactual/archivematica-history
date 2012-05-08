@@ -994,7 +994,7 @@ def chain_insert():
     # make new chain to point to ICA AtoM DIP upload links
     chain = models.MicroServiceChain()
     chain.startingLink = 4
-    chain.description = 'Upload DIP to ICA-ATOM' 
+    chain.description = 'Select DIP destination' 
     chain.save()
 
     # first choice
@@ -1002,10 +1002,13 @@ def chain_insert():
     standardTaskConfig.save()
 
     taskConfig = models.TaskConfig()
-    taskConfig.tasktype = 2
+    taskConfig.tasktype = 5
     taskConfig.tasktypepkreference = standardTaskConfig.id
-    taskConfig.description = 'Test'
+    taskConfig.description = 'Select DIP upload destination'
     taskConfig.save()
+
+    code = models.MicroServiceChainLinkExitCode()
+    # populate this model
 
     link = models.MicroServiceChainLink()
     link.microservicegroup = 'Upload DIP'
@@ -1013,6 +1016,19 @@ def chain_insert():
     link.save()
     start_link_id = link.id
 
+    choice = models.MicroServiceChoiceReplacementDic()
+    choice.choiceavailableatlink = link.id
+    choice.description = 'Test dict 1'
+    choice.replacementDic = '{}'
+    choice.save()
+
+    choice = models.MicroServiceChoiceReplacementDic()
+    choice.choiceavailableatlink = link.id
+    choice.description = 'Test dict 2'
+    choice.replacementDic = '{}'
+    choice.save()
+
+    """
     choice = models.MicroServiceChainChoice()
     choice.choiceavailableatlink = link.id
     choice.chainavailable = chain.id
@@ -1023,10 +1039,11 @@ def chain_insert():
     #choice.chainavailable = chain.id
     choice.chainavailable = 1 # experiment getting it to go to Reject
     choice.save()
+    """
 
     # take note of ID of existing chain to points to ICA AtoM DIP upload links
     chains = models.MicroServiceChain.objects.filter(description='Upload DIP to ICA-ATOM')
     chain = chains[0]
     chain.startinglink = start_link_id
-    chain.description = 'UUpload to ICA-AAATTT'
+    chain.description = 'Upload DIP to ICA-ATOM'
     chain.save()
