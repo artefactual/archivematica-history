@@ -314,6 +314,15 @@ class MicroServiceChainChoice(models.Model):
     class Meta:
         db_table = u'MicroServiceChainChoice'
 
+class MicroServiceChoiceReplacementDic(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk')
+    choiceavailableatlink = models.IntegerField(db_column='choiceAvailableAtLink')
+    description = models.TextField(db_column='description')
+    replacementdic = models.TextField(db_column='replacementDic')
+
+    class Meta:
+        db_table = u'MicroServiceChoiceReplacementDic'
+
 class StandardTaskConfig(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     execute = models.TextField(db_column='execute', blank=True)
