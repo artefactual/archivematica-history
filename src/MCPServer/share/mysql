@@ -859,7 +859,7 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'Store AIP in stanard Archivematica Directory', '{"%AIPsStore%":"%sharedPath%www/AIPsStore/"}');
+    VALUES (@MicroServiceChainLink, 'Store AIP in standard Archivematica Directory', '{"%AIPsStore%":"%sharedPath%www/AIPsStore/"}');
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 
