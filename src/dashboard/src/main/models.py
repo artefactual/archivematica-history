@@ -288,7 +288,7 @@ class MicroServiceChainLink(models.Model):
     currenttask =  models.IntegerField(db_column='currentTask')
     defaultnextchainlink = models.IntegerField(default=1, db_column='defaultNextChainLink')
     defaultplaysound = models.IntegerField(null=True, db_column='defaultPlaySound')
-    microservicegroup = models.IntegerField(null=True, db_column='microserviceGroup')
+    microservicegroup = models.TextField(db_column='microserviceGroup')
     reloadfilelist = models.IntegerField(default=1, db_column='reloadFileList')
     defaultexitmessage = models.TextField(default='Failed', db_column='defaultExitMessage')
 
@@ -310,6 +310,9 @@ class MicroServiceChainChoice(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     choiceavailableatlink = models.IntegerField(db_column='choiceAvailableAtLink')
     chainavailable = models.IntegerField(db_column='chainAvailable')
+
+    class Meta:
+        db_table = u'MicroServiceChainChoice'
 
 class StandardTaskConfig(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
