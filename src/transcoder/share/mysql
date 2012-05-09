@@ -24,6 +24,7 @@
 set @fileIDByExtensionDefaultGroupMemberID = 0;
 set @fileIDByPronomDefaultGroupMemberID = -1;
 SET @ThumbnailDimentions = '100x100';
+SET @microserviceGroup = 'Normalize';
 
 DROP TABLE IF EXISTS CommandTypes;
 CREATE TABLE CommandTypes (
@@ -641,6 +642,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -649,6 +660,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .JPG --
 
@@ -680,6 +701,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -688,6 +719,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .JPEG --
 
 -- ADD Normalization Path for .GIF --
@@ -718,6 +759,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -727,6 +778,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -735,6 +796,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .GIF --
 
 -- ADD Normalization Path for .GIFF --
@@ -765,6 +836,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -774,6 +855,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -782,6 +873,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .GIFF --
 
 -- ADD Normalization Path for .PCT --
@@ -812,6 +913,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -821,6 +932,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -829,6 +950,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .PCT --
 
 -- ADD Normalization Path for .TIF --
@@ -859,6 +990,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -868,6 +1009,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -876,6 +1027,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .TIF --
 
 -- ADD Normalization Path for .TIFF --
@@ -907,6 +1068,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -916,6 +1087,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -924,6 +1105,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .TIFF --
 
 
@@ -955,6 +1146,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -964,6 +1165,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -972,6 +1183,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .PSD --
 
 -- ADD Normalization Path for .JP2 --
@@ -1002,6 +1223,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1010,6 +1241,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .JP2 --
 
 -- ADD Normalization Path for .PNG --
@@ -1040,6 +1281,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1048,6 +1299,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .PNG --
 
 -- ADD Normalization Path for .TGA --
@@ -1078,6 +1339,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1087,6 +1358,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1095,6 +1376,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .TGA --
 
 -- ADD Normalization Path for .BMP --
@@ -1125,6 +1416,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1134,6 +1435,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1142,6 +1453,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .BMP --
 
 -- ADD Normalization Path for .3FR --
@@ -1172,6 +1493,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1180,6 +1511,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .3FR --
 
 -- ADD Normalization Path for .ARW --
@@ -1210,6 +1551,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1218,6 +1569,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .ARW --
 
 -- ADD Normalization Path for .CR2 --
@@ -1248,6 +1609,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1256,6 +1627,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .CR2 --
 
 -- ADD Normalization Path for .CRW --
@@ -1286,6 +1667,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1294,6 +1685,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .CRW --
 
 -- ADD Normalization Path for .DCR --
@@ -1324,6 +1725,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1332,6 +1743,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .DCR --
 
 -- ADD Normalization Path for .ERF --
@@ -1362,6 +1783,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1370,6 +1801,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .ERF --
 
 -- ADD Normalization Path for .KDC --
@@ -1400,6 +1841,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1408,6 +1859,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .KDC --
 
 -- ADD Normalization Path for .MRW --
@@ -1438,6 +1899,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1446,6 +1917,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .MRW --
 
 
@@ -1477,6 +1958,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1485,6 +1976,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .NEF --
 
 
@@ -1516,6 +2017,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1524,6 +2035,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .ORF --
 
 
@@ -1555,6 +2076,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1563,6 +2094,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .PEF --
 
 
@@ -1594,6 +2135,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1602,6 +2153,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .RAF --
 
 
@@ -1633,6 +2194,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1641,6 +2212,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .RAW --
 
 
@@ -1672,6 +2253,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1680,6 +2271,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .X3F --
 
 -- ADD Normalization Path for .DNG --
@@ -1710,6 +2311,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1718,6 +2329,16 @@ INSERT INTO CommandRelationships
     @convertToJpgThumbnailWithConvertCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .DNG --
 
 -- Commands for handling Video files --
@@ -1844,6 +2465,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1852,6 +2483,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .M2V --
 
@@ -1883,6 +2524,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1891,6 +2542,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 
 -- ADD Normalization Path for .WMV --
@@ -1921,6 +2582,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1929,6 +2600,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .WMV --
 
@@ -1960,6 +2641,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -1968,6 +2659,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .SWF --
 
@@ -1999,6 +2700,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2007,6 +2718,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .AVI --
 
@@ -2038,6 +2759,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2046,6 +2777,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .MOV --
 
@@ -2077,6 +2818,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2085,6 +2836,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .FLV --
 
@@ -2116,6 +2877,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2124,6 +2895,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .MPEG --
 
@@ -2155,6 +2936,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2163,6 +2954,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .MPG --
 
@@ -2194,6 +2995,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2202,6 +3013,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP4CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .MP4 --
 
@@ -2272,6 +3093,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2280,6 +3111,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP3CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .AC3 --
 
@@ -2311,6 +3152,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2319,6 +3170,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP3CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .AIF --
 
@@ -2350,6 +3211,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2358,6 +3229,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP3CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .AIFF --
 
@@ -2389,6 +3270,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2397,6 +3288,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP3CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .MP3 --
 
@@ -2428,6 +3329,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 -- End Of ADD Normalization Path for .WAV --
 
 -- ADD Normalization Path for .WMA --
@@ -2458,6 +3369,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2466,6 +3387,16 @@ INSERT INTO CommandRelationships
     @ffmpegToMP3CommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .WMA --
 
@@ -2557,6 +3488,18 @@ INSERT INTO CommandRelationships
     @transcoderAIToSVGsCommandID,
     @fileID
 );
+
+
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 */
 
 INSERT INTO Commands 
@@ -2589,6 +3532,16 @@ INSERT INTO CommandRelationships
     @ps2pdfAIToPDFCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .AI --
 
@@ -2656,6 +3609,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -2664,6 +3627,16 @@ INSERT INTO CommandRelationships
     @inkscapeToPlainSVGCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .SVG --
 /*
@@ -2750,6 +3723,16 @@ INSERT INTO CommandRelationships
     @mboxToZippedHTMLCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 -- End Of ADD Normalization Path for .MBOX --
 */
 
@@ -2804,6 +3787,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 
 /*
 -- fmt/14	Acrobat PDF 1.0 - Portable Document Format
@@ -2830,6 +3823,17 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 -- fmt/15	Acrobat PDF 1.1 - Portable Document Format
 INSERT INTO FileIDs 
     (description)
@@ -2853,6 +3857,16 @@ INSERT INTO CommandRelationships
     @gsToPDFACommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- fmt/16	Acrobat PDF 1.2 - Portable Document Format
 INSERT INTO FileIDs 
@@ -2878,6 +3892,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 -- fmt/17	Acrobat PDF 1.3 - Portable Document Format
 INSERT INTO FileIDs 
     (description)
@@ -2901,6 +3925,16 @@ INSERT INTO CommandRelationships
     @gsToPDFACommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- fmt/18	Acrobat PDF 1.4 - Portable Document Format
 INSERT INTO FileIDs 
@@ -2926,6 +3960,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 -- fmt/19	Acrobat PDF 1.5 - Portable Document Format
 INSERT INTO FileIDs 
     (description)
@@ -2949,6 +3993,16 @@ INSERT INTO CommandRelationships
     @gsToPDFACommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- fmt/20	Acrobat PDF 1.6 - Portable Document Format
 INSERT INTO FileIDs 
@@ -2974,6 +4028,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 -- fmt/276	Acrobat PDF 1.7 - Portable Document Format
 INSERT INTO FileIDs 
     (description)
@@ -2997,6 +4061,16 @@ INSERT INTO CommandRelationships
     @gsToPDFACommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- fmt/144	Acrobat PDF/X - Portable Document Format - Exchange 1:1999
 INSERT INTO FileIDs 
@@ -3022,6 +4096,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 -- fmt/145	Acrobat PDF/X - Portable Document Format - Exchange 1:2001
 INSERT INTO FileIDs 
     (description)
@@ -3045,6 +4129,16 @@ INSERT INTO CommandRelationships
     @gsToPDFACommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- fmt/157	Acrobat PDF/X - Portable Document Format - Exchange 1a:2001
 INSERT INTO FileIDs 
@@ -3070,6 +4164,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 -- fmt/146	Acrobat PDF/X - Portable Document Format - Exchange 1a:2003
 INSERT INTO FileIDs 
     (description)
@@ -3093,6 +4197,16 @@ INSERT INTO CommandRelationships
     @gsToPDFACommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- fmt/147	Acrobat PDF/X - Portable Document Format - Exchange 2:2003
 INSERT INTO FileIDs 
@@ -3118,6 +4232,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 -- fmt/158	Acrobat PDF/X - Portable Document Format - Exchange 3:2002
 INSERT INTO FileIDs 
     (description)
@@ -3142,6 +4266,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
+
 -- fmt/148	Acrobat PDF/X - Portable Document Format - Exchange 3:2003
 INSERT INTO FileIDs 
     (description)
@@ -3165,6 +4299,16 @@ INSERT INTO CommandRelationships
     @gsToPDFACommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 */
 
 -- End Of ADD Normalization Path for .PDF --
@@ -3211,6 +4355,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -3220,6 +4374,16 @@ INSERT INTO CommandRelationships
     @inkscapeToPlainSVGCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .EPS --
 
@@ -3437,6 +4601,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 -- End Of ADD Normalization Path for .DOC --
 
 -- ADD Normalization Path for .WBK --
@@ -3467,6 +4641,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -3475,6 +4659,16 @@ INSERT INTO CommandRelationships
     @openOfficeToODTCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .WBK --
 
@@ -3506,6 +4700,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -3514,6 +4718,16 @@ INSERT INTO CommandRelationships
     @openOfficeToODTCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .WPD --
 
@@ -3545,6 +4759,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -3553,6 +4777,16 @@ INSERT INTO CommandRelationships
     @openOfficeToODTCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize preservation');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultPreservationNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultPreservationNormalizationSucceededLink);
+
 
 -- fmt/47
 
@@ -3586,6 +4820,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 -- End Of ADD Normalization Path for .ODT --
 
 -- ADD Normalization Path for .ODP --
@@ -3615,6 +4859,16 @@ INSERT INTO CommandRelationships
     @openOfficeToPDFCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .ODP --
 
@@ -3650,6 +4904,16 @@ INSERT INTO CommandRelationships
     @fileID
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
+
 -- End Of ADD Normalization Path for .PPTX --
 
 -- ADD Normalization Path for .PPT --
@@ -3679,6 +4943,16 @@ INSERT INTO CommandRelationships
     @openOfficeToPDFCommandID,
     @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+
 
 -- End Of ADD Normalization Path for .PPT --
 

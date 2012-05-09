@@ -31,12 +31,15 @@ from linkTaskManagerAssignMagicLink import linkTaskManagerAssignMagicLink
 from linkTaskManagerLoadMagicLink import linkTaskManagerLoadMagicLink
 from linkTaskManagerReplacementDicFromChoice import linkTaskManagerReplacementDicFromChoice
 from linkTaskManagerSplit import linkTaskManagerSplit
+from linkTaskManagerSplitOnFileIdAndruleset import linkTaskManagerSplitOnFileIdAndruleset
+from linkTaskManagerTranscoderCommand import linkTaskManagerTranscoderCommand
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import logJobCreatedSQL
 from playAudioFileInCVLC import playAudioFileInThread
 
 #Constants
+# SELECT * FROM TaskTypes;
 constOneTask = 0
 constTaskForEachFile = 1
 constSelectPathTask = 2
@@ -44,6 +47,8 @@ constSetMagicLink = 3
 constLoadMagicLink = 4
 constGetReplacementDic = 5
 constSplitByFile = 6
+constlinkTaskManagerSplitOnFileIdAndruleset = 7
+constTranscoderTaskLink = 8
 
 class jobChainLink:
     def __init__(self, jobChain, jobChainLinkPK, unit, passVar=None):
@@ -106,6 +111,14 @@ class jobChainLink:
             if self.reloadFileList:
                 self.unit.reloadFileList();
             linkTaskManagerSplit(self, taskTypePKReference, self.unit)
+        elif taskType == constlinkTaskManagerSplitOnFileIdAndruleset:
+            if self.reloadFileList:
+                self.unit.reloadFileList();
+            linkTaskManagerSplitOnFileIdAndruleset(self, taskTypePKReference, self.unit)
+        elif taskType == constTranscoderTaskLink:
+            if self.reloadFileList:
+                self.unit.reloadFileList();
+            linkTaskManagerTranscoderCommand(self, taskTypePKReference, self.unit)
         else:
             print sys.stderr, "unsupported task type: ", taskType
 
@@ -145,10 +158,8 @@ class jobChainLink:
             if row != None:
                 ret = row[0]
             sqlLock.release()
-
         if ret != None:
             self.setExitMessage(ret)
-
         else:
             print "No exit message"
 

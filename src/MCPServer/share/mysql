@@ -485,7 +485,9 @@ INSERT INTO TaskTypes
     ( 3, 'assign magic link'),
     ( 4, 'goto magic link'),
     ( 5, 'get replacement dic from user choice'),
-    ( 6, 'Split as single Job');
+    ( 6, 'Split creating Jobs for each file'),
+    ( 7, 'Split Job into many links based on file ID'),
+    ( 8, 'Transcoder task type');
 
 DROP TABLE IF EXISTS TasksConfigs;
 CREATE TABLE TasksConfigs (
@@ -1379,27 +1381,26 @@ set @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'transcoderNormalizePreservation_v0.0', '--inputFile "%relativeLocation%" --commandClassifications "preservation" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%" --sipUUID "%SIPUUID%" --sipPath "%SIPDirectory%" --fileGrpUse "%fileGrpUse%"');
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'preservation', Null);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      LAST_INSERT_ID(), 'Normalize preservation');
+    (7,       LAST_INSERT_ID(), 'Find preservation links to run.');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), Null);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, Null);
+    VALUES (@MicroServiceChainLink, 0, NULL);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'transcoderNormalizeThumbnails_v0.0', '--inputFile "%relativeLocation%" --commandClassifications "thumbnail" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --excludeDirectory "%SIPObjectsDirectory%submissionDocumentation/" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%" --thumbnailDirectory "%SIPDirectory%thumbnails/" --fileGrpUse "%fileGrpUse%"');
-SET @normalizeThumbnailsTask = LAST_INSERT_ID();
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'thumbnail', Null);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      @normalizeThumbnailsTask, 'Normalize thumbnails');
+    (7,       LAST_INSERT_ID(), 'Find thumbnail links to run.');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -1408,16 +1409,19 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Preservation'); -- preservation normalization for sip with access directory --
 set @normalizePreservationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
 
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'access', Null);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (1,      @RemovefileswithoutlinkinginformationTask, 'Remove files without linking information (failed normalization artifacts etc.)');
+    (7,       LAST_INSERT_ID(), 'Find access links to run.');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
-
+/*
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'transcoderNormalizeAccess_v0.0', '--inputFile "%relativeLocation%" --commandClassifications "access" --fileUUID "%fileUUID%" --taskUUID "%taskUUID%" --excludeDirectory "%SIPObjectsDirectory%submissionDocumentation/" --objectsDirectory "%SIPObjectsDirectory%" --logsDirectory "%SIPLogsDirectory%" --date "%date%" --accessDirectory "%SIPDirectory%DIP/objects/" --fileGrpUse "%fileGrpUse%"');
@@ -1431,6 +1435,7 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+*/
 
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize preservation and access');
 set @NormalizePreservationAndAccessChain = LAST_INSERT_ID();
