@@ -24,6 +24,14 @@
         <tr style="display: none;">
           <td colspan="3">{{ item.arguments }}</td>
         </tr>
+        {% if item.execution %}
+          <tr>
+            <td colspan="3" class="execution">
+              <p>EXECUTION</p>
+              <pre>{{ item.execution }}</pre>
+            </td>
+          </tr>
+        {% endif %}
         {% if item.stdout %}
           <tr>
             <td colspan="3" class="stderror">
