@@ -992,10 +992,10 @@ def jobs_explore(request, uuid):
 
 def chain_insert():
     # make new chain to point to ICA AtoM DIP upload links
-    chain = models.MicroServiceChain()
-    chain.startingLink = 4
-    chain.description = 'Select DIP destination' 
-    chain.save()
+    #chain = models.MicroServiceChain()
+    #chain.startingLink = 4
+    #chain.description = 'Select DIP destination' 
+    #chain.save()
 
     # first choice
     standardTaskConfig = models.StandardTaskConfig()
@@ -1007,14 +1007,11 @@ def chain_insert():
     taskConfig.description = 'Select DIP upload destination'
     taskConfig.save()
 
-    code = models.MicroServiceChainLinkExitCode()
-    # populate this model
-
     link = models.MicroServiceChainLink()
     link.microservicegroup = 'Upload DIP'
     link.currenttask = taskConfig.id
     link.save()
-    start_link_id = link.id
+    choice_link_id = link.id
 
     choice = models.MicroServiceChoiceReplacementDic()
     choice.choiceavailableatlink = link.id
@@ -1028,22 +1025,18 @@ def chain_insert():
     choice.replacementDic = '{}'
     choice.save()
 
-    """
-    choice = models.MicroServiceChainChoice()
-    choice.choiceavailableatlink = link.id
-    choice.chainavailable = chain.id
-    choice.save()
-
-    choice = models.MicroServiceChainChoice()
-    choice.choiceavailableatlink = link.id
-    #choice.chainavailable = chain.id
-    choice.chainavailable = 1 # experiment getting it to go to Reject
-    choice.save()
-    """
-
     # take note of ID of existing chain to points to ICA AtoM DIP upload links
     chains = models.MicroServiceChain.objects.filter(description='Upload DIP to ICA-ATOM')
     chain = chains[0]
-    chain.startinglink = start_link_id
-    chain.description = 'Upload DIP to ICA-ATOM'
+    upload_start_link_id = chain.startinglink
+    chain.startinglink = choice_link_id
+    chain.description = 'Select Upload Destination'
     chain.save()
+
+    # add exit code to the choice link that points to the Qubit upload link
+    code = models.MicroServiceChainLinkExitCode()
+    code.exitcode = 0
+    code.microservicechainlink = choice_link_id
+    code.nextmicroservicechainlink = 4
+    code.exitmessage = 'Completed successfully'
+    code.save()
