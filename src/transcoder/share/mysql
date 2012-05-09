@@ -48,6 +48,16 @@ CREATE TABLE CommandClassifications (
 INSERT INTO CommandClassifications
     (classification) VALUES('preservation'), ('access'), ('extract'), ('thumbnail');
 
+DROP TABLE IF EXISTS CommandsSupportedBy;
+CREATE TABLE CommandsSupportedBy (
+    pk INT PRIMARY KEY AUTO_INCREMENT,
+    description TEXT
+)DEFAULT CHARSET=utf8;
+
+
+INSERT INTO CommandsSupportedBy (pk, description)
+    VALUES (1, 'supported by default archivematica client');
+
 DROP TABLE IF EXISTS Commands;
 CREATE TABLE Commands (
     pk INT PRIMARY KEY AUTO_INCREMENT,
@@ -59,7 +69,9 @@ CREATE TABLE Commands (
     outputLocation TEXT,
     eventDetailCommand INT,
     Foreign Key (eventDetailCommand) references Commands(pk),
-    description LONGTEXT
+    description LONGTEXT,
+    supportedBy INT DEFAULT '1',
+    Foreign Key (supportedBy) references CommandsSupportedBy(pk)
 )DEFAULT CHARSET=utf8;
 
 
