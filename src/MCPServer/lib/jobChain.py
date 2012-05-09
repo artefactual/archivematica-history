@@ -43,6 +43,7 @@ class jobChain:
         self.pk = chainPK
         self.notifyComplete = notifyComplete
         self.UUID = UUID
+        self.linkSplitCount = 1
         sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__()
         print sql
         c, sqlLock = databaseInterface.querySQL(sql)
@@ -61,15 +62,22 @@ class jobChain:
         if self.currentLink == None:
             return None
 
-    def nextChainLink(self, pk, passVar=None):
+    def nextChainLink(self, pk, passVar=None, incrementLinkSplit=False):
+        if incrementLinkSplit:
+            self.linkSplitCount += 1
         if pk != None:
-            t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk,), kwargs={"passVar":passVar} )
-            t.daemon = True
-            t.start()
+            # may 2012 - can't think why I'm threading this - TODO 
+            # I think it was threaded to avoid nasty stack trace problems
+            #t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk,), kwargs={"passVar":passVar} )
+            #t.daemon = True
+            #t.start()
+            jobChainLink(self, pk, self.unit, passVar=passVar)
         else:
-            print "Done with UNIT:" + self.unit.UUID
-            if self.notifyComplete:
-                self.notifyComplete(self)
+            self.linkSplitCount -= 1
+            if self.linkSplitCount == 0:
+                print "Done with UNIT:" + self.unit.UUID
+                if self.notifyComplete:
+                    self.notifyComplete(self)
 
     def nextChainLinkThreaded(self, pk, passVar=None):
         self.currentLink = jobChainLink(self, pk, self.unit, passVar)
