@@ -2,6 +2,13 @@ body {
   padding-top: 60px !important;
 }
 
+#page-transfer > .container-fluid > .content > #sip-container > #sip-header {
+  background-color: #f9fcda;
+}
+#page-ingest > .container-fluid > .content > #sip-container > #sip-header {
+  background-color: #ebf7f8;
+}
+
 .topbar .brand {
   background: transparent url(../../media/images/logo.r.png) no-repeat 50% 50%;
   width: 229px;
