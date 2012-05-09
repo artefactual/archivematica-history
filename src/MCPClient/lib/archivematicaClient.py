@@ -37,6 +37,7 @@ import threading
 import string
 import ConfigParser
 from socket import gethostname
+from transcoderNormalizer import executeCommandReleationship
 import gearman
 import threading
 import cPickle
@@ -45,6 +46,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
 import databaseInterface
 from databaseFunctions import logTaskAssignedSQL
+printOutputLock = threading.Lock()
 
 config = ConfigParser.SafeConfigParser({'MCPArchivematicaServerInterface': ""})
 config.read("/etc/archivematica/MCPClient/clientConfig.conf")
@@ -94,8 +96,6 @@ def executeCommand(gearman_worker, gearman_job):
         #    print clientID, execute, data
         logTaskAssignedSQL(gearman_job.unique.__str__(), clientID, utcDate)
 
-
-
         if execute not in supportedModules:
             output = ["Error!", "Error! - Tried to run and unsupported command." ]
             exitCode = -1
@@ -117,20 +117,26 @@ def executeCommand(gearman_worker, gearman_job):
         #execute command
 
         command += " " + arguments
+        printOutputLock.acquire()
         print >>sys.stderr, "<processingCommand>{" + gearman_job.unique + "}" + command.__str__() + "</processingCommand>"
+        printOutputLock.release()
         exitCode, stdOut, stdError = executeOrRun("command", command, sInput, printing=False)
         return cPickle.dumps({"exitCode" : exitCode, "stdOut": stdOut, "stdError": stdError})
     #catch OS errors
     except OSError, ose:
         traceback.print_exc(file=sys.stdout)
+        printOutputLock.acquire()
         print >>sys.stderr, "Execution failed:", ose
+        printOutputLock.release()
         output = ["Config Error!", ose.__str__() ]
         exitCode = 1
         return cPickle.dumps({"exitCode" : exitCode, "stdOut": output[0], "stdError": output[1]})
     except:
         traceback.print_exc(file=sys.stdout)
+        printOutputLock.acquire()
         print sys.exc_info().__str__()
         print "Unexpected error:", sys.exc_info()[0]
+        printOutputLock.release()
         output = ["", sys.exc_info().__str__()]
         return cPickle.dumps({"exitCode" : -1, "stdOut": output[0], "stdError": output[1]})
 
@@ -140,8 +146,22 @@ def startThread(threadNumber):
     hostID = gethostname() + "_" + threadNumber.__str__()
     gm_worker.set_client_id(hostID)
     for key in supportedModules.iterkeys():
+        printOutputLock.acquire()
         print "registering:", '"' + key + '"'
+        printOutputLock.release()
         gm_worker.register_task(key, executeCommand)
+    
+    #load transoder jobs
+    sql = """SELECT CommandRelationships.pk FROM CommandRelationships JOIN Commands on CommandRelationships.command = Commands.pk WHERE supportedBy = 1;"""
+    rows = databaseInterface.queryAllSQL(sql)
+    if rows:
+        for row in rows:
+            CommandRelationshipsPK = row[0]
+            key = "transcoder_cr%d" % (CommandRelationshipsPK)
+            printOutputLock.acquire()
+            print "registering:", '"' + key + '"'
+            printOutputLock.release()
+            gm_worker.register_task(key, executeCommandReleationship)
     gm_worker.work()
 
 

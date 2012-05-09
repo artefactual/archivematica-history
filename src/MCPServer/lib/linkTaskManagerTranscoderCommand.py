@@ -138,7 +138,8 @@ class linkTaskManagerTranscoderCommand:
         if rows:
             for row in rows:
                 UUID = uuid.uuid4().__str__()
-                execute = "echo_v0.0" 
+                execute = "transcoder_cr%d" % (pk)  
+                deUnicode(execute)
                 arguments = row.__str__()
                 standardOutputFile = None 
                 standardErrorFile = None 
