@@ -48,93 +48,29 @@ class linkTaskManagerTranscoderCommand:
         self.jobChainLink = jobChainLink
         self.exitCode = 0
         self.clearToNextLink = False
-        sql = """SELECT * FROM StandardTasksConfigs where pk = """ + pk.__str__()
-        a = """"c, sqlLock = databaseInterface.querySQL(sql)
-        row = c.fetchone()
-        while row != None:
-            filterFileEnd = deUnicode(row[1])
-            filterFileStart = deUnicode(row[2])
-            filterSubDir = deUnicode(row[3])
-            requiresOutputLock = row[4]
-            self.standardOutputFile = deUnicode(row[5])
-            self.standardErrorFile = deUnicode(row[6])
-            self.execute = deUnicode(row[7])
-            self.arguments = deUnicode(row[8])
-            row = c.fetchone()
-        sqlLock.release()
-        if requiresOutputLock:
-            outputLock = threading.Lock()
-        else:
-            outputLock = None
 
+        opts = {"inputFile":"%relativeLocation%", "commandClassifications":"preservation", "fileUUID":"%fileUUID%", "taskUUID":"%taskUUID%", "objectsDirectory":"%SIPObjectsDirectory%", "logsDirectory":"%SIPLogsDirectory%", "sipUUID":"%SIPUUID%", "sipPath":"%SIPDirectory%", "fileGrpUse":"%fileGrpUse%", "normalizeFileGrpUse":"%normalizeFileGrpUse%", "excludeDirectory":"%excludeDirectory%"}
+        
         SIPReplacementDic = unit.getReplacementDic(unit.currentPath)
-        self.tasksLock.acquire()
-        for file, fileUnit in unit.fileList.items():
-            #print "file:", file, fileUnit
-            if filterFileEnd:
-                if not file.endswith(filterFileEnd):
-                    continue
-            if filterFileStart:
-                if not os.path.basename(file).startswith(filterFileStart):
-                    continue
-            if filterSubDir:
-                #print "file", file, type(file)
-                #print unit.pathString, type(unit.pathString)
-                #filterSubDir = filterSubDir.encode('utf-8')
-                #print filterSubDir, type(filterSubDir)
-
-                if not file.startswith(unit.pathString + filterSubDir):
-                    continue
-
-            standardOutputFile = self.standardOutputFile
-            standardErrorFile = self.standardErrorFile
-            execute = self.execute
-            arguments = self.arguments
-            
+        for optsKey, optsValue in opts.iteritems():
             if self.jobChainLink.passVar != None:
                 if isinstance(self.jobChainLink.passVar, replacementDic):
-                    execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
+                    opts[optsKey] = self.jobChainLink.passVar.replace(opts[optsKey])[0]
 
-            commandReplacementDic = fileUnit.getReplacementDic()
-            for key in commandReplacementDic.iterkeys():
-                value = commandReplacementDic[key].replace("\"", ("\\\""))
-                #print "key", type(key), key
-                #print "value", type(value), value
-                if isinstance(value, unicode):
-                    value = value.encode("utf-8")
-                #key = key.encode("utf-8")
-                #value = value.encode("utf-8")
-                if execute:
-                    execute = execute.replace(key, value)
-                if arguments:
-                    arguments = arguments.replace(key, value)
-                if standardOutputFile:
-                    standardOutputFile = standardOutputFile.replace(key, value)
-                if standardErrorFile:
-                    standardErrorFile = standardErrorFile.replace(key, value)
-
-            for key in SIPReplacementDic.iterkeys():
-                value = SIPReplacementDic[key].replace("\"", ("\\\""))
-                #print "key", type(key), key
-                #print "value", type(value), value
-                if isinstance(value, unicode):
-                    value = value.encode("utf-8")
-                #key = key.encode("utf-8")
-                #value = value.encode("utf-8")
-
-                if execute:
-                    execute = execute.replace(key, value)
-                if arguments:
-                    arguments = arguments.replace(key, value)
-                if standardOutputFile:
-                    standardOutputFile = standardOutputFile.replace(key, value)
-                if standardErrorFile:
-                    standardErrorFile = standardErrorFile.replace(key, value)
-            """
+            commandReplacementDic = unit.getReplacementDic()
+            print "DEBUG", commandReplacementDic 
+            for key, value in commandReplacementDic.iteritems():
+                opts[optsKey] = opts[optsKey].replace(key, value)
+            
+            print "DEBUG", SIPReplacementDic
+            for key, value in SIPReplacementDic.iteritems():
+                opts[optsKey] = opts[optsKey].replace(key, value)
+        print "DEBUG opts 1 ", opts
         self.tasksLock.acquire()
         commandReplacementDic = unit.getReplacementDic()
         sql = """SELECT * FROM CommandRelationships JOIN Commands on CommandRelationships.command = Commands.pk WHERE CommandRelationships.pk = %s;""" % (pk.__str__())
         rows = databaseInterface.queryAllSQL(sql)
+        taskCount = 0
         if rows:
             for row in rows:
                 UUID = uuid.uuid4().__str__()
@@ -148,7 +84,8 @@ class linkTaskManagerTranscoderCommand:
                 self.standardErrorFile = standardErrorFile
                 self.execute = execute
                 self.arguments = arguments
-                task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, outputLock=outputLock, UUID=UUID)
+                task = taskStandard(self, execute, opts, standardOutputFile, standardErrorFile, outputLock=outputLock, UUID=UUID)
+                print "DEBUG opts 2 ", opts
                 self.tasks[UUID] = task
                 databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
                 t = threading.Thread(target=task.performTask)
@@ -159,12 +96,13 @@ class linkTaskManagerTranscoderCommand:
                     time.sleep(archivematicaMCP.limitTaskThreadsSleep)
                     self.tasksLock.acquire()
                 print "Active threads:", threading.activeCount()
+                taskCount += 1
                 t.start()
 
 
         self.clearToNextLink = True
         self.tasksLock.release()
-        if self.tasks == {} :
+        if taskCount == 0:
             self.jobChainLink.linkProcessingComplete(self.exitCode)
 
 

@@ -37,7 +37,7 @@ import threading
 import string
 import ConfigParser
 from socket import gethostname
-from transcoderNormalizer import executeCommandReleationship
+import transcoderNormalizer 
 import gearman
 import threading
 import cPickle
@@ -161,7 +161,7 @@ def startThread(threadNumber):
             printOutputLock.acquire()
             print "registering:", '"' + key + '"'
             printOutputLock.release()
-            gm_worker.register_task(key, executeCommandReleationship)
+            gm_worker.register_task(key, transcoderNormalizer.executeCommandReleationship)
     gm_worker.work()
 
 

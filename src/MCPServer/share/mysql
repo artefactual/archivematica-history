@@ -1381,7 +1381,7 @@ set @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'preservation', Null);
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'preservation', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find preservation links to run.');
@@ -1395,7 +1395,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'thumbnail', Null);
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'thumbnail', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find thumbnail links to run.');
@@ -1411,7 +1411,7 @@ set @normalizePreservationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID(
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'access', Null);
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'access', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find access links to run.');
