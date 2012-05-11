@@ -35,30 +35,24 @@ def executeCommandReleationship(gearman_worker, gearman_job):
         print "executing:", execute, "{", gearman_job.unique, "}"
         data = cPickle.loads(gearman_job.data)
         utcDate = databaseInterface.getUTCDate()
-        arguments = data["arguments"]#.encode("utf-8")
-        if isinstance(arguments, unicode):
-            arguments = arguments.encode("utf-8")
+        opts = data["arguments"]#.encode("utf-8")
+        #if isinstance(arguments, unicode):
+        #    arguments = arguments.encode("utf-8")
         #if isinstance(arguments, str):
         #    arguments = unicode(arguments)
         
         sInput = ""
         clientID = gearman_worker.worker_client_id
 
+        opts["date"] = utcDate
+        print opts
         #if True:
         #    print clientID, execute, data
-        logTaskAssignedSQL(gearman_job.unique.__str__(), clientID, utcDate)
+        archivematicaClient.logTaskAssignedSQL(gearman_job.unique.__str__(), clientID, utcDate)
+
+        #TODO add date to ops
 
 
-
-        if execute not in supportedModules:
-            output = ["Error!", "Error! - Tried to run and unsupported command." ]
-            exitCode = -1
-            return cPickle.dumps({"exitCode" : exitCode, "stdOut": output[0], "stdError": output[1]})
-        command = supportedModules[execute]
-
-
-        replacementDic["%date%"] = utcDate
-        replacementDic["%jobCreatedDate%"] = data["createdDate"]
         #Replace replacement strings
         for key in replacementDic.iterkeys():
             command = command.replace ( key, replacementDic[key] )

@@ -101,10 +101,13 @@ class linkTaskManagerSplitOnFileIdAndruleset:
 
             fileUUID = unit.UUID
             ComandClassification = self.execute
+            passVar=self.jobChainLink.passVar
+            print "DEBUG - arguments", arguments
+            passVar=replacementDic(eval(arguments))
             sql = """SELECT MicroServiceChainLinks.pk FROM FilesIdentifiedIDs JOIN CommandRelationships ON FilesIdentifiedIDs.fileID = CommandRelationships.fileID JOIN CommandClassifications ON CommandClassifications.pk = CommandRelationships.commandClassification JOIN TasksConfigs ON TasksConfigs.taskTypePKReference = CommandRelationships.pk JOIN MicroServiceChainLinks ON MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE TasksConfigs.taskType = 8 AND FilesIdentifiedIDs.fileUUID = '%s' AND CommandClassifications.classification = '%s';""" % (fileUUID, ComandClassification)
             rows = databaseInterface.queryAllSQL(sql)
             if rows:
                 for row in rows:
-                     jobChainLink.jobChain.nextChainLink(row[0], passVar=self.jobChainLink.passVar, incrementLinkSplit=True)
+                     jobChainLink.jobChain.nextChainLink(row[0], passVar=passVar, incrementLinkSplit=True)
 
             self.jobChainLink.linkProcessingComplete(self.exitCode, passVar=self.jobChainLink.passVar)
