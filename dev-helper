@@ -42,7 +42,7 @@ function svn-update() {
       cd ..
 
       echo "UPDATING..."
-      svn update -r 2508
+      svn update 
 
       echo "integrating into environment..."
       cd localDevSetup/

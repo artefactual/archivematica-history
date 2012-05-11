@@ -232,7 +232,6 @@ class CommandLinker:
                 column = "countOK"
             sql = "UPDATE CommandRelationships SET " + column + "=" + column + "+1 WHERE pk=" + self.pk.__str__() + ";"
             databaseInterface.runSQL(sql)
-            row = c.fetchone()
             return self.commandObject.exitCode
         else:
             ret = self.commandObject.execute()

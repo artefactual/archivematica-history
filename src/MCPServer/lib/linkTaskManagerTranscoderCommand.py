@@ -58,22 +58,22 @@ class linkTaskManagerTranscoderCommand:
                     opts[optsKey] = self.jobChainLink.passVar.replace(opts[optsKey])[0]
 
             commandReplacementDic = unit.getReplacementDic()
-            print "DEBUG", commandReplacementDic 
             for key, value in commandReplacementDic.iteritems():
                 opts[optsKey] = opts[optsKey].replace(key, value)
             
-            print "DEBUG", SIPReplacementDic
             for key, value in SIPReplacementDic.iteritems():
                 opts[optsKey] = opts[optsKey].replace(key, value)
-        print "DEBUG opts 1 ", opts
+
         self.tasksLock.acquire()
         commandReplacementDic = unit.getReplacementDic()
-        sql = """SELECT * FROM CommandRelationships JOIN Commands on CommandRelationships.command = Commands.pk WHERE CommandRelationships.pk = %s;""" % (pk.__str__())
+        sql = """SELECT CommandRelationships.pk FROM CommandRelationships JOIN Commands on CommandRelationships.command = Commands.pk WHERE CommandRelationships.pk = %s;""" % (pk.__str__())
         rows = databaseInterface.queryAllSQL(sql)
         taskCount = 0
         if rows:
             for row in rows:
                 UUID = uuid.uuid4().__str__()
+                opts["taskUUID"] = UUID
+                opts["CommandRelationship"] = pk.__str__()
                 execute = "transcoder_cr%d" % (pk)  
                 deUnicode(execute)
                 arguments = row.__str__()
@@ -85,7 +85,6 @@ class linkTaskManagerTranscoderCommand:
                 self.execute = execute
                 self.arguments = arguments
                 task = taskStandard(self, execute, opts, standardOutputFile, standardErrorFile, outputLock=outputLock, UUID=UUID)
-                print "DEBUG opts 2 ", opts
                 self.tasks[UUID] = task
                 databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)
                 t = threading.Thread(target=task.performTask)
