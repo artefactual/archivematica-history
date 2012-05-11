@@ -100,12 +100,13 @@ def fileNoLongerExists(root, objectsDir):
         print currentName
         return 1
 
-def escapeForCommand(str):
-    ret = str
-    ret = ret.replace("\\", "\\\\")
-    ret = ret.replace("\"", "\\\"")
-    #ret = ret.replace("'", "\\'")
-    ret = ret.replace("$", "\\$")
+def escapeForCommand(string):
+    ret = string
+    if isinstance(ret, unicode) or isinstance(ret,str) :
+        ret = ret.replace("\\", "\\\\")
+        ret = ret.replace("\"", "\\\"")
+        #ret = ret.replace("'", "\\'")
+        ret = ret.replace("$", "\\$")
     return ret
 
 def escape(string):
