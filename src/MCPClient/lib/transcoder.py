@@ -113,13 +113,18 @@ class Command:
             if self.outputLocation:
                 self.outputLocation = self.outputLocation.replace( key, self.replacementDic[key] )
         print "Running: "
-        print self.__str__()
+        selfstr = self.__str__()
+        print selfstr
+        if self.opts:
+            self.opts["prependStdOut"] += "\r\nRunning: \r\n%s" % (selfstr)
 
         self.exitCode, self.stdOut, self.stdError = executeOrRun(self.type, self.command)
 
 
         if (not self.exitCode) and self.verificationCommand:
             print
+            if self.opts:
+                self.opts["prependStdOut"] += "\r\n"
             self.exitCode = self.verificationCommand.execute(skipOnSuccess=True)
 
         if (not self.exitCode) and self.eventDetailCommand:

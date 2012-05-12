@@ -59,19 +59,18 @@ def executeCommandReleationship(gearman_worker, gearman_job):
             for key2 in opts:
                 opts[key2] = opts[key2].replace(key, value)
         replacementDic = getReplacementDic(opts)
-        print replacementDic
-        
-        
-        
         #if True:
+        opts["prependStdOut"] =    """Operating on file: %s \r\nUsing  %s  command classifications""" % (replacementDic["%fileName%"], opts["commandClassification"])
+        opts["prependStdError"] = ""
         #    print clientID, execute, data
         archivematicaClient.logTaskAssignedSQL(gearman_job.unique.__str__(), clientID, utcDate)
         cl = transcoder.CommandLinker(opts["CommandRelationship"], replacementDic, opts, onceNormalized)
         cl.execute()
+        
         co = cl.commandObject
         exitCode = co.exitCode
-        stdOut = co.stdOut
-        stdError = co.stdError
+        stdOut = "%s \r\n%s" % (opts["prependStdOut"], co.stdOut)
+        stdError = "%s \r\n%s" % (opts["prependStdError"], co.stdError)
         
         #TODO add date to ops
 
@@ -140,6 +139,7 @@ def getReplacementDic(opts):
     rows = databaseInterface.queryAllSQL(sql)
     if rows:
         for row in rows:
+            opts["commandClassification"] = row[0]
             if row[0] == "preservation":
                 postfix = "-" + opts["taskUUID"]
                 outputFileUUID = opts["taskUUID"]
