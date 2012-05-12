@@ -991,12 +991,6 @@ def jobs_explore(request, uuid):
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 def chain_insert():
-    # make new chain to point to ICA AtoM DIP upload links
-    #chain = models.MicroServiceChain()
-    #chain.startingLink = 4
-    #chain.description = 'Select DIP destination' 
-    #chain.save()
-
     # first choice
     standardTaskConfig = models.StandardTaskConfig()
     standardTaskConfig.save()
@@ -1016,22 +1010,35 @@ def chain_insert():
     choice = models.MicroServiceChoiceReplacementDic()
     choice.choiceavailableatlink = link.id
     choice.description = 'Test dict 1'
-    choice.replacementDic = '{}'
+    choice.replacementdic = '{}'
     choice.save()
 
     choice = models.MicroServiceChoiceReplacementDic()
     choice.choiceavailableatlink = link.id
     choice.description = 'Test dict 2'
-    choice.replacementDic = '{}'
+    choice.replacementdic = '{}'
     choice.save()
 
     # take note of ID of existing chain to points to ICA AtoM DIP upload links
-    chains = models.MicroServiceChain.objects.filter(description='Upload DIP to ICA-ATOM')
-    chain = chains[0]
-    upload_start_link_id = chain.startinglink
+    #chains = models.MicroServiceChain.objects.filter(description='Upload DIP to ICA-ATOM')
+    #chain = chains[0]
+    #upload_start_link_id = chain.startinglink
+    #chain.startinglink = choice_link_id
+    #chain.description = 'Select Upload Destination'
+    #chain.save()
+
+
+    # make new chain to point to ICA AtoM DIP upload links
+    chain = models.MicroServiceChain()
     chain.startinglink = choice_link_id
-    chain.description = 'Select Upload Destination'
+    chain.description = 'Select DIP destination' 
     chain.save()
+
+    # rewire old choice to point to new chain
+    choices = models.MicroServiceChainChoice.objects.filter(chainavailable=2)
+    choice = choices[0]
+    choice.chainavailable = chain.id
+    choice.save()
 
     # add exit code to the choice link that points to the Qubit upload link
     code = models.MicroServiceChainLinkExitCode()
