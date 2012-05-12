@@ -2192,7 +2192,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 SET @microserviceGroup  = 'Include default SIP processingMCP.xml';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '"%sharedPath%sharedMicroServiceTasksConfigs/processingMCPConfigs/defaultSIPProcessingMCP.xml" "%SIPDirectory%processingMCP.xml" -n');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '"%sharedPath%sharedMicroServiceTasksConfigs/processingMCPConfigs/defaultProcessingMCP.xml" "%SIPDirectory%processingMCP.xml" -n');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Include default SIP processingMCP.xml');
@@ -3027,7 +3027,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 SET @microserviceGroup  = 'Include default Transfer processingMCP.xml';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '"%sharedPath%sharedMicroServiceTasksConfigs/processingMCPConfigs/defaultTransferProcessingMCP.xml" "%SIPDirectory%processingMCP.xml" -n');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'copy_v0.0', '"%sharedPath%sharedMicroServiceTasksConfigs/processingMCPConfigs/defaultProcessingMCP.xml" "%SIPDirectory%processingMCP.xml" -n');
 SET @IncludedefaultTransferprocessingMCPxmlTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
