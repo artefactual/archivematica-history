@@ -135,7 +135,8 @@ class linkTaskManagerSplit:
                     standardErrorFile = standardErrorFile.replace(key, value)
             UUID = uuid.uuid4().__str__()
             self.tasks[UUID] = None
-            t = threading.Thread(target=jobChain.jobChain, args=(fileUnit, execute, self.taskCompletedCallBackFunction,), kwargs={"passVar":self.jobChainLink.passVar, "UUID":UUID} )
+            ## passVar = [{preservationJobUUID, accessJobUUID, thumbnailsJobUUID}] #an idea not in use
+            t = threading.Thread(target=jobChain.jobChain, args=(fileUnit, execute, self.taskCompletedCallBackFunction,), kwargs={"passVar":self.jobChainLink.passVar, "UUID":UUID, "subJobOf":self.jobChainLink.jobChain.UUID.__str__()} )
             t.daemon = True
             while(archivematicaMCP.limitTaskThreads <= threading.activeCount() + 10):
                 print "Waiting for active threads", threading.activeCount()

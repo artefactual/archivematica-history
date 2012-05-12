@@ -106,6 +106,6 @@ class linkTaskManagerSplitOnFileIdAndruleset:
             rows = databaseInterface.queryAllSQL(sql)
             if rows:
                 for row in rows:
-                     jobChainLink.jobChain.nextChainLink(row[0], passVar=passVar, incrementLinkSplit=True)
+                     jobChainLink.jobChain.nextChainLink(row[0], passVar=passVar, incrementLinkSplit=True, subJobOf=self.jobChainLink.jobChain.UUID)
 
             self.jobChainLink.linkProcessingComplete(self.exitCode, passVar=self.jobChainLink.passVar)

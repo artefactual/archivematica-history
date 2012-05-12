@@ -35,7 +35,7 @@ import databaseInterface
 #potentialToHold/getFromDB
 #-previous chain links
 class jobChain:
-    def __init__(self, unit, chainPK, notifyComplete=None, passVar=None, UUID=None):
+    def __init__(self, unit, chainPK, notifyComplete=None, passVar=None, UUID=None, subJobOf=""):
         print "jobChain",  unit, chainPK
         if chainPK == None:
             return None
@@ -44,6 +44,7 @@ class jobChain:
         self.notifyComplete = notifyComplete
         self.UUID = UUID
         self.linkSplitCount = 1
+        self.subJobOf = subJobOf
         sql = """SELECT * FROM MicroServiceChains WHERE pk =  """ + chainPK.__str__()
         print sql
         c, sqlLock = databaseInterface.querySQL(sql)
@@ -62,7 +63,9 @@ class jobChain:
         if self.currentLink == None:
             return None
 
-    def nextChainLink(self, pk, passVar=None, incrementLinkSplit=False):
+    def nextChainLink(self, pk, passVar=None, incrementLinkSplit=False, subJobOf=""):
+        if self.subJobOf and not subJobOf:
+            subJobOf = self.subJobOf
         if incrementLinkSplit:
             self.linkSplitCount += 1
         if pk != None:
@@ -71,7 +74,7 @@ class jobChain:
             #t = threading.Thread(target=self.nextChainLinkThreaded, args=(pk,), kwargs={"passVar":passVar} )
             #t.daemon = True
             #t.start()
-            jobChainLink(self, pk, self.unit, passVar=passVar)
+            jobChainLink(self, pk, self.unit, passVar=passVar, subJobOf=subJobOf)
         else:
             self.linkSplitCount -= 1
             if self.linkSplitCount == 0:

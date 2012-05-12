@@ -51,7 +51,7 @@ constlinkTaskManagerSplitOnFileIdAndruleset = 7
 constTranscoderTaskLink = 8
 
 class jobChainLink:
-    def __init__(self, jobChain, jobChainLinkPK, unit, passVar=None):
+    def __init__(self, jobChain, jobChainLinkPK, unit, passVar=None, subJobOf=""):
         if jobChainLinkPK == None:
             return None
         self.UUID = uuid.uuid4().__str__()
@@ -60,6 +60,7 @@ class jobChainLink:
         self.unit = unit
         self.passVar=passVar
         self.createdDate = databaseInterface.getUTCDate()
+        self.subJobOf = subJobOf
         sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description, MicroServiceChainLinks.reloadFileList, Sounds.fileLocation, MicroServiceChainLinks.defaultExitMessage, MicroServiceChainLinks.microserviceGroup FROM MicroServiceChainLinks LEFT OUTER JOIN Sounds ON MicroServiceChainLinks.defaultPlaySound = Sounds.pk JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = """ + jobChainLinkPK.__str__()
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()

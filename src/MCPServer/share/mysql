@@ -555,7 +555,8 @@ CREATE TABLE Jobs (
     microserviceGroup VARCHAR(50),
     hidden          BOOLEAN NOT NULL DEFAULT 0,
     MicroServiceChainLinksPK INT UNSIGNED,
-    Foreign Key (MicroServiceChainLinksPK) references MicroServiceChainLinks(pk)
+    Foreign Key (MicroServiceChainLinksPK) references MicroServiceChainLinks(pk),
+    subJobOf         VARCHAR(50)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS MicroServiceChains;
