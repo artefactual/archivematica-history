@@ -782,6 +782,19 @@ def administration_dip_edit(request, id):
 
     return HttpResponseRedirect(reverse("main.views.administration_dip"))
 
+def administration_dips(request):
+    upload_setting = models.StandardTaskConfig.objects.get(execute="upload-qubit_v0.0")
+    return render(request, 'main/administration/dips.html', locals())
+
+def administration_dip_configs():
+    configs = []
+    taskconfigs = models.TaskConfig.objects.filter(description='Select DIP upload destination')
+    taskconfig = taskconfigs[0]
+    links = models.MicroServiceChainLink.objects.filter(currenttask=taskconfig.id)
+    link = links[0]
+    choices = models.MicroServiceChoiceReplacementDic.objects.filter(choiceavailableatlink=link.id)
+    return configs
+
 def administration_sources(request):
     return render(request, 'main/administration/sources.html', locals())
 
