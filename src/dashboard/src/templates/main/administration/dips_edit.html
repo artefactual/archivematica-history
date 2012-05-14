@@ -1,0 +1,50 @@
+{% extends "layout_fluid.html" %}
+{% load breadcumbs %}
+
+{% block title %}Administration{% endblock %}
+{% block h1 %}Administration{% endblock %}
+{% block page_id %}Administration{% endblock %}
+
+{% block sidebar %}
+  {% include "main/administration/_sidebar.html" %}
+{% endblock %}
+
+{% block css %}
+  <style type="text/css">
+
+    td.option {
+      white-space: nowrap;
+    }
+
+  </style>
+{% endblock %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+  {% breadcrumb_url 'Administration' main.views.administration %}
+  {% breadcrumb 'Upload DIP' %}
+</ul>
+
+{% if request.method == 'POST' %}
+  {% if formset.is_valid %}
+    <div class="alert-message success">
+      <p><strong>Saved!</p>
+    </div>
+  {% else %}
+    <div class="alert-message error">
+      <p>An error has occurred.</p>
+    </div>
+  {% endif %}
+{% endif %}
+
+<form class="form-stacked" method="post" action="{% url main.views.administration_dips %}">
+  {% include "_formset.html" with formset=formset %}
+  {% include "_form.html" %}
+
+  <div class="actions">
+    <button type="submit" class="btn primary">Save</button>
+  </div>
+</form>
+
+{% endblock %}
