@@ -102,3 +102,13 @@ class RightsLicenseNoteForm(ModelForm):
         model = models.RightsStatementLicenseNote
         widgets = {
             'licensenote': Textarea(attrs=TEXTAREA_ATTRS), }
+
+class MicroServiceChoiceReplacementDicForm(ModelForm):
+    class Meta:
+        model = models.MicroServiceChoiceReplacementDic
+        exclude = (
+            'id',
+            'choiceavailableatlink',)
+        widgets = {
+            'description': TextInput(attrs=INPUT_ATTRS),
+            'replacementdic': Textarea(attrs=TEXTAREA_ATTRS), }

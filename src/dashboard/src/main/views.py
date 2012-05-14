@@ -783,17 +783,34 @@ def administration_dip_edit(request, id):
     return HttpResponseRedirect(reverse("main.views.administration_dip"))
 
 def administration_dips(request):
-    upload_setting = models.StandardTaskConfig.objects.get(execute="upload-qubit_v0.0")
-    return render(request, 'main/administration/dips.html', locals())
+    link_id = administration_dip_destination_select_link_id()
+    ReplaceDirChoiceFormSet = modelformset_factory(
+        models.MicroServiceChoiceReplacementDic,
+        form=forms.MicroServiceChoiceReplacementDicForm,
+        extra=1
+    )
+    ReplaceDirChoices = models.MicroServiceChoiceReplacementDic.objects.filter(choiceavailableatlink=link_id)
 
-def administration_dip_configs():
-    configs = []
+    if request.method == 'POST':
+        formset = ReplaceDirChoiceFormSet(request.POST)
+        #, queryset=ReplaceDirChoices)
+        if formset.is_valid():
+            instances = formset.save()
+            for instance in instances:
+                instance.choiceavailableatlink = link_id
+                instance.save()
+    else:
+        formset = ReplaceDirChoiceFormSet(queryset=ReplaceDirChoices)
+
+    #return HttpResponse('ffff')
+    return render(request, 'main/administration/dips_edit.html', locals())
+
+def administration_dip_destination_select_link_id():
     taskconfigs = models.TaskConfig.objects.filter(description='Select DIP upload destination')
     taskconfig = taskconfigs[0]
     links = models.MicroServiceChainLink.objects.filter(currenttask=taskconfig.id)
     link = links[0]
-    choices = models.MicroServiceChoiceReplacementDic.objects.filter(choiceavailableatlink=link.id)
-    return configs
+    return link.id
 
 def administration_sources(request):
     return render(request, 'main/administration/sources.html', locals())
