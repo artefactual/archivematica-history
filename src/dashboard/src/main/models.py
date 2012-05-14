@@ -4,6 +4,8 @@
 
 from django.db import models
 from contrib import utils
+from django import forms
+import ast
 import main
 
 class Access(models.Model):
@@ -319,6 +321,19 @@ class MicroServiceChoiceReplacementDic(models.Model):
     choiceavailableatlink = models.IntegerField(db_column='choiceAvailableAtLink')
     description = models.TextField(db_column='description')
     replacementdic = models.TextField(db_column='replacementDic')
+
+    def clean(self):
+        error = None
+        try:
+            config = ast.literal_eval(self.replacementdic)
+        except ValueError:
+            error = 'Invalid syntax.'
+        except SyntaxError:
+            error = 'Invalid syntax.'
+        if error == None and not type(config) is dict:
+            error = 'Invalid syntax.'
+        if error != None:
+            raise forms.ValidationError(error)
 
     class Meta:
         db_table = u'MicroServiceChoiceReplacementDic'
