@@ -784,16 +784,16 @@ def administration_dip_edit(request, id):
 
 def administration_dips(request):
     link_id = administration_dip_destination_select_link_id()
+    ReplaceDirChoices = models.MicroServiceChoiceReplacementDic.objects.filter(choiceavailableatlink=link_id)
+
     ReplaceDirChoiceFormSet = modelformset_factory(
         models.MicroServiceChoiceReplacementDic,
         form=forms.MicroServiceChoiceReplacementDicForm,
         extra=1
     )
-    ReplaceDirChoices = models.MicroServiceChoiceReplacementDic.objects.filter(choiceavailableatlink=link_id)
 
     if request.method == 'POST':
         formset = ReplaceDirChoiceFormSet(request.POST)
-        #, queryset=ReplaceDirChoices)
         if formset.is_valid():
             instances = formset.save()
             for instance in instances:
@@ -802,7 +802,6 @@ def administration_dips(request):
     else:
         formset = ReplaceDirChoiceFormSet(queryset=ReplaceDirChoices)
 
-    #return HttpResponse('ffff')
     return render(request, 'main/administration/dips_edit.html', locals())
 
 def administration_dip_destination_select_link_id():
