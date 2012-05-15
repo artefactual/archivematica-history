@@ -59,7 +59,7 @@ class jobChain:
             self.description = row[2]
             row = c.fetchone()
         sqlLock.release()
-        self.currentLink = jobChainLink(self, self.startingChainLink, unit, passVar)
+        self.currentLink = jobChainLink(self, self.startingChainLink, unit, passVar=passVar, subJobOf=subJobOf)
         if self.currentLink == None:
             return None
 
