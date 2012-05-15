@@ -223,9 +223,9 @@ var BaseSipView = Backbone.View.extend({
   className: 'sip',
 
   events: {
-    'click .sip-row': 'openPanel',
+    'click .sip-row': 'toggleJobs',
     'click .sip-row > .sip-detail-actions > .btn_show_panel': 'openPanel',
-    'click .sip-row > .sip-detail-actions > .btn_show_jobs': 'toggleJobs',
+    'click .sip-row > .sip-detail-actions > .btn_show_metadata': 'openPanel',
     'click .sip-row > .sip-detail-actions > .btn_remove_sip': 'remove'
   },
 

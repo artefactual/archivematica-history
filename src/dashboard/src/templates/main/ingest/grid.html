@@ -66,7 +66,7 @@
       <div class="sip-detail-uuid"><%= uuid %></div>
       <div class="sip-detail-timestamp"><%= this.getIngestStartTime() %></div>
       <div class="sip-detail-actions">
-        <a class="btn_show_jobs" href="#" title="Micro-Services"><span>Micro-Services</span></a>
+        <a class="btn_show_metadata" href="#" title="Metadata"><span>Micro-Services</span></a>
         <a class="btn_show_panel" href="#" title="Panel"><span>Panel</span></a>
         <a class="btn_remove_sip" href="#" title="Remove"><span>Remove</span></a>
       </div>
@@ -77,13 +77,13 @@
   <script type="text/template" id="microservice-group-template">
     <div class="microservice-group" style="padding-bottom: 3px">
       &nbsp;<span class="microservice-group-arrow">&#x25B8;</span> 
-      Micro-service: <span class="microservice-group-name"><%= name %></span> microservice
+      <span class="microservice-group-name"><%= name %></span> microservice
     </div>
   </script>
 
   <script type="text/template" id="job-template">
     <div class="job-detail-microservice">
-      <span>Task:&nbsp;</span><span title="<%= uuid %>"><%= type %></span>
+      <span>Micro-Service:&nbsp;</span><span title="<%= uuid %>"><%= type %></span>
       <% tmp = window.microservices_help[type]; %>
       <% if (tmp !== undefined) { %>
         [<a href="#" title="<%= tmp %>">?</a>]

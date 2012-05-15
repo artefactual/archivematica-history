@@ -2,13 +2,6 @@ body {
   padding-top: 60px !important;
 }
 
-#page-transfer > .container-fluid > .content > #sip-container > #sip-header {
-  background-color: #f9fcda;
-}
-#page-ingest > .container-fluid > .content > #sip-container > #sip-header {
-  background-color: #ebf7f8;
-}
-
 .topbar .brand {
   background: transparent url(../../media/images/logo.r.png) no-repeat 50% 50%;
   width: 229px;
@@ -171,8 +164,8 @@ body {
   display: none;
 }
 
-.btn_show_jobs { background-image: url(/media/images/zoom.png); }
-.sip-selected .btn_show_jobs { background-image: url(/media/images/zoom_out.png); }
+.btn_show_metadata { background-image: url(/media/images/zoom.png); }
+.sip-selected .btn_show_metadata { background-image: url(/media/images/zoom_out.png); }
 .btn_remove_sip { background-image: url(/media/images/delete.png); }
 .btn_edit_metadata { background-image: url(/media/images/table_edit.png); }
 .btn_show_panel { background-image: url(/media/images/layout.png); }
@@ -419,7 +412,7 @@ body {
   display: none;
 }
 
-.w-lte-1020 > span:first-child {
+.w-lte-1020 .job-detail-microservice > span:first-child {
   display: none;
 }
 
