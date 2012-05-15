@@ -31,6 +31,7 @@ import databaseInterface
 f = open('plantUML.txt', 'w')
 global processedJobChainLinks
 processedJobChainLinks = []
+subChains = {}
 def writePlant(*items):
     p = ""
     for str in items:
@@ -51,8 +52,9 @@ def jobChainLinkExitCodesTextGet(indent, exitCode, nextMicroServiceChainLink, ex
    
 
 def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
+    global subChains
     global processedJobChainLinks
-    sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description, MicroServiceChainLinks.reloadFileList, Sounds.fileLocation, MicroServiceChainLinks.defaultExitMessage, MicroServiceChainLinks.microserviceGroup FROM MicroServiceChainLinks LEFT OUTER JOIN Sounds ON MicroServiceChainLinks.defaultPlaySound = Sounds.pk JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE MicroServiceChainLinks.pk = '%s';""" % (pk.__str__())
+    sql = """SELECT MicroServiceChainLinks.currentTask, MicroServiceChainLinks.defaultNextChainLink, TasksConfigs.taskType, TasksConfigs.taskTypePKReference, TasksConfigs.description, MicroServiceChainLinks.reloadFileList, Sounds.fileLocation, MicroServiceChainLinks.defaultExitMessage, MicroServiceChainLinks.microserviceGroup, StandardTasksConfigs.execute FROM MicroServiceChainLinks LEFT OUTER JOIN Sounds ON MicroServiceChainLinks.defaultPlaySound = Sounds.pk JOIN TasksConfigs on MicroServiceChainLinks.currentTask = TasksConfigs.pk LEFT OUTER JOIN StandardTasksConfigs ON TasksConfigs.taskTypePKReference = StandardTasksConfigs.pk WHERE MicroServiceChainLinks.pk = '%s';""" % (pk.__str__())
     print sql
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
@@ -65,6 +67,7 @@ def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
         defaultSoundFile = row[6]
         defaultExitMessage = row[7]
         microserviceGroup = row[8]
+        execute = row[9]
         
         if taskType == 3:
             sql = """SELECT execute FROM StandardTasksConfigs WHERE pk = %d; """ % (taskTypePKReference)
@@ -91,8 +94,7 @@ def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
             else:
                 processedJobChainLinks.append(pk)
 
-        if taskType == 0 or taskType == 1 or taskType == 3 or taskType == 5: #|    0 | one instance |    1 | for each file                   | 
-            
+        if taskType == 0 or taskType == 1 or taskType == 3 or taskType == 5  or taskType == 6  or taskType == 7: #|    0 | one instance |    1 | for each file                   | 
             sql = """SELECT exitCode, nextMicroServiceChainLink, exitMessage FROM MicroServiceChainLinksExitCodes WHERE microServiceChainLink = '%s';""" % (pk.__str__())
             rows2 = databaseInterface.queryAllSQL(sql)
             set = False
@@ -122,6 +124,9 @@ def jobChainLinkTextGet(indent, leadIn, pk, label = ""):
                 writePlant( ifindent + " ", """endif""")
                 ifindent = ifindent[:-1]
             writePlant( ifindent, """endif""" )
+            
+            if taskType == 6:
+                subChains[execute] = None #tag the sub chain to proceed down
             
         elif taskType == 2: #
             sql = """SELECT description, chainAvailable from MicroServiceChainChoice Join MicroServiceChains ON MicroServiceChainChoice.chainAvailable = MicroServiceChains.pk WHERE choiceAvailableAtLink = %d;""" % (pk)
@@ -186,7 +191,17 @@ def createLoadMagic():
         jobChainLinkTextGet("", "(*) --> [" + description + "]", int(chainLink), label = "")
         writePlant( "@enduml" )
         i+=1
-        
+
+def createSubChains():
+    global subChains
+    for chain in subChains.iterkeys():
+        writePlant( "@startuml SubChain-", chain.__str__() + ".png" ) #img/activity_img10.png
+        writePlant( "title " + chain )
+        jobChainTextGet("(*) --> [" + chain + "]" , chain)
+        writePlant( "@enduml" )
+    
+
 if __name__ == '__main__':
     createWatchedDirectories()
     createLoadMagic()
+    createSubChains()
