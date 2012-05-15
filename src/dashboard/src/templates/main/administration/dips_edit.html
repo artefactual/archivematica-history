@@ -30,11 +30,13 @@
 
   <div class="span12">
 
+    <div class="preview-help-text">
+
     <h3>Upload DIP</h3>
 
-    <p>Archivematica provides a micro-service to upload generated DIPs to <a href="http://www.qubit-toolkit.org">Qubit Toolkit</a>, only compatible with release 1.2 or newer. In the future we will extend this feature to other access systems. <a id='dip_upload_help_toggle' href='#'>(read more)</a></p>
+    <p class='preview'>Archivematica provides a micro-service to upload generated DIPs to <a href="http://www.qubit-toolkit.org">Qubit Toolkit</a>, only compatible with release 1.2 or newer. In the future we will extend this feature to other access systems. <a href='#'>(read more)</a></p>
 
-    <div id='dip_upload_help' style='display: none'>
+    <div class='content' style='margin-bottom: 20px'>
 
       <p>The arguments below are passed to a Python script called upload-qubit.py. Please note that some arguments are mandatory:</p>
 
@@ -85,6 +87,7 @@
         </tbody>
       </table>
     </div>
+    </div>
 
     {% if request.method == 'POST' %}
       {% if valid_submission %}
@@ -107,18 +110,5 @@
 
   </div>
 </form>
-
-<script>
-$(document).ready(function () {
-  $('#dip_upload_help_toggle').click(function() {
-    $('#dip_upload_help').toggle();
-    if ($('#dip_upload_help').is(':visible')) {
-      $('#dip_upload_help_toggle').text('(collapse)');
-    } else {
-      $('#dip_upload_help_toggle').text('(read more)');
-    }
-  });
-});
-</script>
 
 {% endblock %}
