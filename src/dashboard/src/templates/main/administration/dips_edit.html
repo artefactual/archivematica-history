@@ -77,7 +77,7 @@
           <tr>
             <td class="option">rsync-command</td>
             <td><span class="label">Optional</span></td>
-            <td>If --rsync-target is used, you can use this argument to specify the remote shell manually. For example: "ssh -p 22222 -l user".</td>
+            <td>If rsync-target is used, you can use this argument to specify the remote shell manually. For example: "ssh -p 22222 -l user".</td>
           </tr>
           <tr>
             <td class="option">debug</td>
@@ -86,6 +86,9 @@
           </tr>
         </tbody>
       </table>
+
+      <p><strong>Example configuration:</strong></p>
+      <pre>{'url': 'http://mysite.com', 'email': 'http://bob@example.com', 'password': 'secret', 'uuid': '%SIPUUID%'}</pre>
     </div>
     </div>
 
