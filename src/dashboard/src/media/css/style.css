@@ -168,7 +168,6 @@ body {
 .sip-selected .btn_show_metadata { background-image: url(/media/images/zoom_out.png); }
 .btn_remove_sip { background-image: url(/media/images/delete.png); }
 .btn_edit_metadata { background-image: url(/media/images/table_edit.png); }
-.btn_show_panel { background-image: url(/media/images/layout.png); }
 
 .sip-removing .sip-detail-actions > a,
 .sip:hover .sip-detail-actions > a,
