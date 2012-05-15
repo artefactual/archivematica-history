@@ -319,8 +319,8 @@ class MicroServiceChainChoice(models.Model):
 class MicroServiceChoiceReplacementDic(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     choiceavailableatlink = models.IntegerField(db_column='choiceAvailableAtLink')
-    description = models.TextField(db_column='description')
-    replacementdic = models.TextField(db_column='replacementDic')
+    description = models.TextField(db_column='description', verbose_name='Description')
+    replacementdic = models.TextField(db_column='replacementDic', verbose_name='Configuration')
 
     def clean(self):
         error = None
