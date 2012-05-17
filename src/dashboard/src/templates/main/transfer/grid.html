@@ -43,6 +43,13 @@
 
 {% block content %}
 
+  {% if form %}
+    <form action='/transfer/add/' method='POST'>
+    {% include "_form.html" %}
+    <input type='submit'/>
+    </form>
+  {% endif %}
+
   <div class="span12" id="sip-container">
     <div id="sip-header">
       <div id="sip-header-directory">Transfer</div>

@@ -540,6 +540,9 @@ def ingest_normalization_report(request, uuid):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def transfer_grid(request):
+    if request.GET.get('test', ''):
+        form = forms.TransferForm()
+
     polling_interval = django_settings.POLLING_INTERVAL
     microservices_help = django_settings.MICROSERVICES_HELP
     return render(request, 'main/transfer/grid.html', locals())
