@@ -29,6 +29,10 @@ class AdministrationForm(forms.Form):
 
 class TransferForm(forms.Form):
     name = forms.CharField(required=True)
+    source_directory = forms.ModelChoiceField(
+        required=True,
+        queryset=models.SourceDirectory.objects.all()
+    )
 
 class RightsForm(ModelForm):
     rightsbasis = forms.ChoiceField(label="Basis", choices=(

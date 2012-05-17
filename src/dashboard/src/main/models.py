@@ -272,6 +272,9 @@ class SourceDirectory(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     path = models.TextField(db_column='path')
 
+    def __unicode__(self):
+        return self.path
+
     class Meta:
         db_table = u'SourceDirectories'
 
