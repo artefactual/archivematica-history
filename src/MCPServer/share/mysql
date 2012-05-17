@@ -632,8 +632,7 @@ CREATE TABLE SourceDirectories (
   path longtext,
   PRIMARY KEY (pk)
 ) DEFAULT CHARSET=utf8;
-
-SET @microserviceGroup  = 'Normalize';
+SET @microserviceGroup  = 'Process submission documentation';
 --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -651,7 +650,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize submission documentation to preservation');
 set @NormalizePreservationChainForSubmissionDocumentation = LAST_INSERT_ID();
 --
-
+SET @microserviceGroup  = 'Normalize';
 -- 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -803,8 +802,8 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(),  'Move to the failed directory');
 
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink, defaultPlaySound) 
-    VALUES (LAST_INSERT_ID(), NULL, @errorSound); 
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink, defaultPlaySound) 
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL, @errorSound); 
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, NULL);
@@ -1416,6 +1415,35 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+SET @microserviceGroup  = 'Normalize';
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, 'objects', FALSE, NULL, NULL, @NormalizeThumbnailsChain, Null); 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (6,      LAST_INSERT_ID(), 'Normalize thumbnails');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'createDirectory_v0.0', '-m 770 "%SIPDirectory%thumbnails/"');
+SET @createThumbnailsDirectoryTask = LAST_INSERT_ID();
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @createThumbnailsDirectoryTask, 'Create thumbnails directory');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'No normalization'); -- No normalization for sip with access directory --
 set @noNormalizationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
 
@@ -1524,10 +1552,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @ResumeAferTranscodingPreservationAndAccessLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'createDirectory_v0.0', '-m 770 "%SIPDirectory%thumbnails/"');
-SET @createThumbnailsDirectoryTask = LAST_INSERT_ID();
+
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      @createThumbnailsDirectoryTask, 'Create thumbnails directory');
