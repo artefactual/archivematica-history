@@ -78,7 +78,9 @@ CREATE TABLE Commands (
 DROP TABLE IF EXISTS FileIDs;
 CREATE TABLE FileIDs (
     pk INT PRIMARY KEY AUTO_INCREMENT,
-    description TEXT
+    description TEXT,
+    validPreservationFormat BOOL DEFAULT FALSE,
+    validAccessFormat       BOOL DEFAULT FALSE
 )DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS FilesIdentifiedIDs;
@@ -121,6 +123,215 @@ CREATE TABLE FileIDsByPronom (
     FileIDs INT,
     Foreign Key (FileIDs) references FileIDs(pk)
 )DEFAULT CHARSET=utf8;
+
+/*
+
+def inPreservationFormat():
+    ex=["PPT"
+        "JP2", "PNG", \
+        "SVG", "WAV", "TIF", "TIFF", "ODG", "ODP", "MKV", "MXF", "ODT", "MBOX", "MBOXI", "AI", \
+    "PPTX", \
+    "DNG" ]
+*/
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .ods file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'ods',
+    @fileID
+);
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .xlsx file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'xlsx',
+    @fileID
+);
+
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .xsl file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'xsl',
+    @fileID
+);
+
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .xml file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'xml',
+    @fileID
+);
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .txt file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'txt',
+    @fileID
+);
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .log file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'log',
+    @fileID
+);
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .HTML file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'HTML',
+    @fileID
+);
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .docx file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'docx',
+    @fileID
+);
+
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .css file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'css',
+    @fileID
+);
+
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .cvs file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'cvs',
+    @fileID
+);
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .css file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'css',
+    @fileID
+);
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .odg file', TRUE, FALSE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'odg',
+    @fileID
+);
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .mxf file', TRUE, FALSE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'mxf',
+    @fileID
+);
+
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .mbox file', TRUE, FALSE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'mbox',
+    @fileID
+);
 
 DROP TABLE IF EXISTS Groups;
 CREATE TABLE Groups (
@@ -536,9 +747,9 @@ INSERT INTO CommandRelationships
 
 -- ADD Normalization Path for .MBOXI --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .mboxi file'
+    'A .mboxi file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -628,9 +839,9 @@ set @convertToJpg70percentCommandID = LAST_INSERT_ID();
 
 -- ADD Normalization Path for .JPG --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .jpg file'
+    'A .jpg file', FALSE, TRUE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -976,9 +1187,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .TIF --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .tif file'
+    'A .tif file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -1053,9 +1264,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .TIFF --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .tiff file'
+    'A .tiff file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -1209,9 +1420,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .JP2 --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .jp2 file'
+    'A .jp2 file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -1267,9 +1478,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .PNG --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .png file'
+    'A .png file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -2297,9 +2508,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .DNG --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .dng file'
+    'A .dng file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -2510,9 +2721,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .MKV --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .mkv file'
+    'A .mkv file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -2922,9 +3133,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .MPG --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .mpg file'
+    'A .mpg file', FALSE, TRUE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -3256,9 +3467,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .MP3 --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .mp3 file'
+    'A .mp3 file', FALSE, TRUE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -3315,9 +3526,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .WAV --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .wav file'
+    'A .wav file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -3415,9 +3626,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .AI --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .ai file'
+    'A .ai file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -3559,9 +3770,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .SVG --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .svg file'
+    'A .svg file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -3750,9 +3961,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .PDF --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .pdf file'
+    'A .pdf file', TRUE, TRUE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -4587,9 +4798,9 @@ set @openOfficeToODSCommandID = LAST_INSERT_ID();
 
 -- ADD Normalization Path for .DOC --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .doc file'
+    'A .doc file', True, False
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -4806,9 +5017,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .ODT --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .odt file'
+    'A .odt file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -4846,9 +5057,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .ODP --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .odp file'
+    'A .odp file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -4886,9 +5097,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .PPTX --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .pptx file'
+    'A .pptx file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -4930,9 +5141,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .PPT --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .ppt file'
+    'A .ppt file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -4988,4 +5199,8 @@ INSERT INTO FileIDGroupMembers
     VALUES (@fileID, @spreadsheetGroup);
 
 -- End Of ADD Normalization Path for .XLS --
+
+
+CREATE OR REPLACE VIEW filesPreservationAccessFormatStatus AS
+    SELECT Files.fileUUID, max(FileIDs.validPreservationFormat) AS 'inPreservationFormat', max(FileIDs.validAccessFormat) AS 'inAccessFormat' FROM Files LEFT OUTER JOIN FilesIdentifiedIDs ON Files.fileUUID = FilesIdentifiedIDs.fileUUID LEFT OUTER JOIN FileIDs ON FilesIdentifiedIDs.fileID = FileIDs.pk WHERE Files.fileGrpUse = 'original' GROUP BY Files.FileUUID;
 
