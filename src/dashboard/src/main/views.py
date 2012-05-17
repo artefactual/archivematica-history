@@ -426,7 +426,7 @@ def ingest_upload(request, uuid):
 
 def ingest_normalization_report(request, uuid):
     query = """
-      SELECT
+SELECT
 
         Tasks.fileUUID AS U,
         Tasks.fileName,
@@ -437,7 +437,7 @@ def ingest_normalization_report(request, uuid):
           JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
           WHERE
             Jobs.SIPUUID = %s AND
-            Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+            Jobs.jobType = 'Normalize preservation' AND
             Tasks.stdOut LIKE '%%[Command]%%')
         AS 'Preservation normalization attempted',
 
@@ -447,21 +447,12 @@ def ingest_normalization_report(request, uuid):
           JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
           WHERE
             Jobs.SIPUUID = %s AND
-            Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
+            Jobs.jobType = 'Normalize preservation' AND
             Tasks.fileUUID = U
         ) != 0
         AS 'Preservation normalization failed',
 
-        Tasks.fileUUID IN (
-          SELECT Tasks.fileUUID
-          FROM Tasks
-          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-          WHERE
-            Jobs.SIPUUID = %s AND
-            Tasks.exitCode = 0 AND
-            Tasks.exec = 'transcoderNormalizePreservation_v0.0' AND
-            Tasks.stdOut LIKE '%%Already in preservation format%%')
-        AS 'Already in preservation format',
+       filesPreservationAccessFormatStatus.inPreservationFormat AS 'Already in preservation format',
 
         Tasks.fileUUID NOT IN (
           SELECT Tasks.fileUUID
@@ -477,7 +468,7 @@ def ingest_normalization_report(request, uuid):
               JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
               WHERE
                 Jobs.SIPUUID = %s AND
-                Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+                Jobs.jobType = 'Normalize access' AND
                 Tasks.stdOut LIKE '%%[Command]%%') AND
             Tasks.fileUUID NOT IN (
               SELECT Tasks.fileUUID
@@ -485,7 +476,7 @@ def ingest_normalization_report(request, uuid):
                 JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
               WHERE
                 Jobs.SIPUUID = %s AND
-                Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+                Jobs.jobType = 'Normalize access' AND
                 Tasks.stdOut LIKE '%%Not including %% in DIP.%%')
         AS 'Access normalization attempted',
 
@@ -495,21 +486,12 @@ def ingest_normalization_report(request, uuid):
           JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
           WHERE
             Jobs.SIPUUID = %s AND
-            Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
+            Jobs.jobType = 'Normalize access' AND
             Tasks.fileUUID = U
         ) != 0
         AS 'Access normalization failed',
 
-        Tasks.fileUUID IN (
-          SELECT Tasks.fileUUID
-          FROM Tasks
-          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-          WHERE
-            Jobs.SIPUUID = %s AND
-            Tasks.exitCode = 0 AND
-            Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
-            Tasks.stdOut LIKE '%%Already in access format%%')
-        AS 'Already in access format',
+        filesPreservationAccessFormatStatus.inAccessFormat AS 'Already in access format',
 
         (
           SELECT Files.originalLocation
@@ -519,17 +501,18 @@ def ingest_normalization_report(request, uuid):
         )
         AS 'Location'
 
-      FROM Tasks
-      JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+      FROM filesPreservationAccessFormatStatus
+      LEFT OUTER JOIN Tasks ON filesPreservationAccessFormatStatus.fileUUID = Tasks.fileUUID
+      LEFT OUTER JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
       WHERE
-        (Tasks.exec = 'transcoderNormalizePreservation_v0.0' OR Tasks.exec = 'transcoderNormalizeAccess_v0.0') AND
+        (Jobs.jobType = 'Normalize preservation' OR Jobs.jobType = 'Normalize access') AND
         Jobs.SIPUUID = %s
       GROUP BY Tasks.fileUUID
-      ORDER BY Tasks.fileName"""
+      ORDER BY Tasks.fileName;"""
 
     cursor = connection.cursor()
     cursor.execute(query, (
-      uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid
+      uuid, uuid, uuid, uuid, uuid, uuid, uuid
     ))
     objects = cursor.fetchall()
 

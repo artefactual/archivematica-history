@@ -193,6 +193,9 @@ def onceNormalized(command, opts, replacementDic):
         command.exitCode = -2
 
     derivationEventUUID = uuid.uuid4().__str__()
+    eventDetail = ""
+    if command.eventDetailCommand != None:
+        eventDetail = eventDetail=command.eventDetailCommand.stdOut
     for ef in transcodedFiles:
         if opts["commandClassifications"] == "preservation":
             #Add the new file to the sip
@@ -205,7 +208,7 @@ def onceNormalized(command, opts, replacementDic):
                eventIdentifierUUID=derivationEventUUID, \
                eventType="normalization", \
                eventDateTime=opts["date"], \
-               eventDetail=command.eventDetailCommand.stdOut, \
+               eventDetail=eventDetail, \
                eventOutcome="", \
                eventOutcomeDetailNote=filePathRelativeToSIP)
 

@@ -21,6 +21,7 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 */
+
 set @fileIDByExtensionDefaultGroupMemberID = 0;
 set @fileIDByPronomDefaultGroupMemberID = -1;
 SET @ThumbnailDimentions = '100x100';
@@ -479,17 +480,73 @@ INSERT INTO Commands
     '%outputDirectory%%postfix%.jpg',
     'Using default thumbnail.');
 
-set @copyFileCommandID = LAST_INSERT_ID();
+set @copyFileCommandID2 = LAST_INSERT_ID();
 
--- Associate default access with copy --
+-- Associate default thumbnail with copy --
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'thumbnail'),
+    @copyFileCommandID2,
+    (SELECT pk FROM FileIDs WHERE description = 'Access Defaults')
+);
+
+
+-- 
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Access normalization failed'
+);
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
     @fileIDByExtensionDefaultGroupMemberID,
     (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
     @copyFileCommandID,
-    (SELECT pk FROM FileIDs WHERE description = 'Access Defaults')
+    @fileID
 );
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Access normalization failed - copying');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+SET @defaultAccessNormalizationFailedLink = @MicroServiceChainLink;
+-- 
+
+-- 
+INSERT INTO FileIDs 
+    (description)
+    VALUES (
+    'Thumbnail normalization failed'
+);
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'thumbnail'),
+    @copyFileCommandID2,
+    @fileID
+);
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'thumbnail normalization failed - copying');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+SET @defaultThumbnailNormalizationFailedLink = @MicroServiceChainLink;
+-- 
+
 
 -- 7ZipCompatable
 
