@@ -33,7 +33,7 @@ def parse_attachment(message_part):
 
             for param in dispositions[1:]:
                 name,value = param.split("=")
-                name = name.lower()
+                name = name.lower().strip()
 
                 if name == "filename":
                     attachment.name = value
