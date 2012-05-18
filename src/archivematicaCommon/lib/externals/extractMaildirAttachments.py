@@ -35,8 +35,7 @@ def parse_attachment(message_part):
 
             for param in dispositions[1:]:
                 name,value = param.split("=")
-                name = name.lower()
-
+                name = name.lower().strip() 
                 if name == "filename":
                     attachment.name = value
                 elif name == "create-date":
@@ -96,19 +95,44 @@ def parse(content):
         'from' : parseaddr(msgobj.get('From'))[1], # 名前は除いてメールアドレスのみ抽出
         'to' : parseaddr(msgobj.get('To'))[1], # 名前は除いてメールアドレスのみ抽出
         'attachments': attachments,
+        'msgobj' : msgobj,
     }
     
 if __name__ == '__main__':
     #http://www.doughellmann.com/PyMOTW/mailbox/
     maildir = sys.argv[1]
-    import time
-    print "Extracting attachments from: " + maildir
+    import lxml.etree as etree
+    #print "Extracting attachments from: " + maildir
+    root = etree.Element("ArchivematicaMaildirAttachmentExtractionRecord")
+    root.set("directory", maildir) 
     for maildirsub2 in os.listdir(maildir):
         maildirsub = os.path.join(maildir, maildirsub2)
         #print "Extracting attachments from: " + maildirsub
         md = mailbox.Maildir(maildirsub)
+        directory = etree.SubElement(root, "subDir")
+        directory.set("dir", maildirsub2)
         for item in md.iterkeys():
-            print maildirsub2, item
+            #print maildirsub2, item
             fil = md.get_file(item)
             out = parse(fil)
-            print  out["subject"], " \t", len(out['attachments'])
+            #for i in out.iterkeys():
+                #print i
+            if len(out['attachments']):
+                msg = etree.SubElement(directory, "msg")
+                etree.SubElement(msg, "Subject").text = out["subject"] 
+                etree.SubElement(msg, "Date").text = out['msgobj']['date']
+                etree.SubElement(msg, "To").text = out["to"]
+                etree.SubElement(msg, "From").text = out["from"]
+                for i in range(len(out['attachments'])):
+                    attachment = out['attachments'][i]
+                    #attachment = StringIO(file_data) TODO LOG TO FILE
+                    attch = etree.SubElement(msg, "attachment")
+                    etree.SubElement(attch, "name").text = attachment.name
+                    etree.SubElement(attch, "content_type").text = attachment.content_type
+                    etree.SubElement(attch, "size").text = str(attachment.size)
+                    etree.SubElement(attch, "create_date").text = attachment.create_date
+                    etree.SubElement(attch, "mod_date").text = attachment.mod_date
+                    etree.SubElement(attch, "read_date").text = attachment.read_date
+    print etree.tostring(root, pretty_print=True)
+
+                    
