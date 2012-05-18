@@ -49,12 +49,12 @@ def parse_attachment(message_part):
 
     return None
 
-def parse(msgobj):
+def parse(content):
     """
     Eメールのコンテンツを受け取りparse,encodeして返す
     """
-    #p = EmailParser()
-    #msgobj = p.parse(content)
+    p = EmailParser()
+    msgobj = p.parse(content)
     if msgobj['Subject'] is not None:
         decodefrag = decode_header(msgobj['Subject'])
         subj_fragments = []
@@ -103,14 +103,12 @@ if __name__ == '__main__':
     maildir = sys.argv[1]
     import time
     print "Extracting attachments from: " + maildir
-    for maildirsub in os.listdir(maildir):
-        maildirsub = os.path.join(maildir, maildirsub)
+    for maildirsub2 in os.listdir(maildir):
+        maildirsub = os.path.join(maildir, maildirsub2)
         #print "Extracting attachments from: " + maildirsub
         md = mailbox.Maildir(maildirsub)
-        for message in md:
-            print message['Subject']
-            for key in message.keys():
-                print "\tkey:", key
-                print "\t\tvalue:", message[key]
-            #msg = parse(message)
-            #print msg
+        for item in md.iterkeys():
+            print maildirsub2, item
+            fil = md.get_file(item)
+            out = parse(fil)
+            print  out["subject"], " \t", len(out['attachments'])
