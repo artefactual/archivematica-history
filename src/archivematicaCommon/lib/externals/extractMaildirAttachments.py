@@ -1,9 +1,10 @@
-#!/usr/local/bin/python
+#!/usr/bin/python -OO
 # vim:fileencoding=utf8
 
 #Author Ian Lewis
 #http://www.ianlewis.org/en/parsing-email-attachments-python
 
+import mailbox
 from email.Header import decode_header
 import email
 from base64 import b64decode
@@ -12,6 +13,7 @@ from email.Parser import Parser as EmailParser
 from email.utils import parseaddr
 # cStringIOはダメ
 from StringIO import StringIO
+import os
 
 class NotSupportedMailFormat(Exception):
     pass
@@ -47,12 +49,12 @@ def parse_attachment(message_part):
 
     return None
 
-def parse(content):
+def parse(msgobj):
     """
     Eメールのコンテンツを受け取りparse,encodeして返す
     """
-    p = EmailParser()
-    msgobj = p.parse(content)
+    #p = EmailParser()
+    #msgobj = p.parse(content)
     if msgobj['Subject'] is not None:
         decodefrag = decode_header(msgobj['Subject'])
         subj_fragments = []
@@ -95,3 +97,20 @@ def parse(content):
         'to' : parseaddr(msgobj.get('To'))[1], # 名前は除いてメールアドレスのみ抽出
         'attachments': attachments,
     }
+    
+if __name__ == '__main__':
+    #http://www.doughellmann.com/PyMOTW/mailbox/
+    maildir = sys.argv[1]
+    import time
+    print "Extracting attachments from: " + maildir
+    for maildirsub in os.listdir(maildir):
+        maildirsub = os.path.join(maildir, maildirsub)
+        #print "Extracting attachments from: " + maildirsub
+        md = mailbox.Maildir(maildirsub)
+        for message in md:
+            print message['Subject']
+            for key in message.keys():
+                print "\tkey:", key
+                print "\t\tvalue:", message[key]
+            #msg = parse(message)
+            #print msg
