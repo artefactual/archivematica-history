@@ -28,6 +28,18 @@ import os
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from externals.extractMaildirAttachments import parse
 
+def writeFile(filePath, fileContents):
+    print filePath
+    print type(fileContents)
+    
+    try:
+        os.makedirs(os.path.dirname(filePath))
+    except:
+        pass
+    FILE = open(filePath,"w")
+    FILE.writelines(fileContents)    
+    FILE.close()
+
    
 if __name__ == '__main__':
     #http://www.doughellmann.com/PyMOTW/mailbox/
@@ -58,12 +70,15 @@ if __name__ == '__main__':
                     attachment = out['attachments'][i]
                     #attachment = StringIO(file_data) TODO LOG TO FILE
                     attch = etree.SubElement(msg, "attachment")
+                    attachment.name = attachment.name[1:-1]
                     etree.SubElement(attch, "name").text = attachment.name
                     etree.SubElement(attch, "content_type").text = attachment.content_type
                     etree.SubElement(attch, "size").text = str(attachment.size)
                     etree.SubElement(attch, "create_date").text = attachment.create_date
                     etree.SubElement(attch, "mod_date").text = attachment.mod_date
                     etree.SubElement(attch, "read_date").text = attachment.read_date
+                    writeFile(os.path.join(os.path.dirname(maildir), "extracted", maildirsub2, "[%s]%s" % (out["subject"], attachment.name)), \
+                             attachment)
     print etree.tostring(root, pretty_print=True)
 
                     
