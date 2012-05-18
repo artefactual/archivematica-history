@@ -28,10 +28,7 @@ import os
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from externals.extractMaildirAttachments import parse
 
-def writeFile(filePath, fileContents):
-    print filePath
-    print type(fileContents)
-    
+def writeFile(filePath, fileContents):   
     try:
         os.makedirs(os.path.dirname(filePath))
     except:
@@ -58,14 +55,14 @@ if __name__ == '__main__':
             #print maildirsub2, item
             fil = md.get_file(item)
             out = parse(fil)
-            #for i in out.iterkeys():
-                #print i
+            print fil
             if len(out['attachments']):
                 msg = etree.SubElement(directory, "msg")
                 etree.SubElement(msg, "Subject").text = out["subject"] 
                 etree.SubElement(msg, "Date").text = out['msgobj']['date']
                 etree.SubElement(msg, "To").text = out["to"]
                 etree.SubElement(msg, "From").text = out["from"]
+                etree.SubElement(msg, "Message-ID").text = out['msgobj']['Message-ID'][1:-1]
                 for i in range(len(out['attachments'])):
                     attachment = out['attachments'][i]
                     #attachment = StringIO(file_data) TODO LOG TO FILE
@@ -79,6 +76,14 @@ if __name__ == '__main__':
                     etree.SubElement(attch, "read_date").text = attachment.read_date
                     writeFile(os.path.join(os.path.dirname(maildir), "extracted", maildirsub2, "[%s]%s" % (out["subject"], attachment.name)), \
                              attachment)
+            else:
+                print out['msgobj']['Message-ID']
     print etree.tostring(root, pretty_print=True)
+    try:
+        os.makedirs(os.path.join(os.path.dirname(maildir), "extracted"))
+    except:
+        pass
+    tree = etree.ElementTree(root)
+    tree.write(os.path.join(os.path.dirname(maildir), "extracted", "extractedIndex.xml"), pretty_print=True, xml_declaration=True)
 
                     
