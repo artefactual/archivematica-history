@@ -1,4 +1,4 @@
-var DirectoryPickerView = FileExplorer.extend({
+var DirectoryPickerView = fileBrowser.FileExplorer.extend({
 
   initialize: function() {
     this.structure=         {};
