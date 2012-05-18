@@ -1,3 +1,9 @@
+var Data = {
+  idPaths: {},
+  startX: {},
+  startY: {}
+};
+
 var File = Backbone.Model.extend({
 
   // generate id without slashes
@@ -47,6 +53,7 @@ var EntryView = Backbone.View.extend({
 
   initialize: function() {
     this.model = this.options.entry;
+    this.parentId = this.options.parentId;
     this.className = (this.model.children != undefined)
       ? 'backbone-file-explorer-directory'
       : 'directory-file';
@@ -70,7 +77,8 @@ var EntryView = Backbone.View.extend({
 
     // set CSS ID for entries (used to capture whether directory is
     // open/closed by user between data refreshes, etc.)
-    $(this.el).attr('id', this.model.id());
+    var id = (this.parentId) ? this.parentId + '_' : '';
+    $(this.el).attr('id', id + this.model.id());
 
     // add click handler if specified
     if (this.nameClickHandler) {
@@ -128,13 +136,13 @@ var DirectoryView = Backbone.View.extend({
 
   initialize: function() {
     this.model = this.options.directory;
+    this.parentId = this.options.parentId;
     this.levelTemplate    = _.template(this.options.levelTemplate);
     this.entryTemplate    = _.template(this.options.entryTemplate);
     this.closeDirsByDefault = this.options.closeDirsByDefault;
     this.hideFiles        = this.options.hideFiles;
     this.nameClickHandler = this.options.nameClickHandler;
     this.actionHandlers   = this.options.actionHandlers;
-    this.idPaths = {};
   },
 
   renderChildren: function (self, entry, levelEl, level) {
@@ -148,10 +156,13 @@ var DirectoryView = Backbone.View.extend({
         if (child.children != undefined || self.hideFiles != true) {
           // take note of file paths that correspond to CSS IDs
           // so they can be referenced by any external logic
-          self.idPaths[child.id()] = child.path();
+          var id = (this.parentId) ? this.parentId + '_' : '';
+          id = id + child.id();
+          Data.idPaths[id] = child.path();
 
           // render entry
           var entryView = new EntryView({
+            parentId: self.parentId,
             entry: child,
             template: self.entryTemplate,
             nameClickHandler: self.nameClickHandler,
@@ -214,6 +225,7 @@ var DirectoryView = Backbone.View.extend({
 
   render: function() {
     var entryView = new EntryView({
+      parentId: this.parentId,
       entry: this.model,
       template: this.entryTemplate
     });
@@ -241,15 +253,22 @@ var FileExplorer = Backbone.View.extend({
   initialize: function() {
     this.directory = this.options.directory;
     this.structure = this.options.structure;
-    this.idPaths   = {};
     this.moveHandler = this.options.moveHandler;
+
+    this.id = $(this.el).attr('id');
+
     this.render();
 
     if (this.moveHandler) {
       // bind drag-and-drop functionality
       var self = this;
-      $('.backbone-file-explorer-directory:not(:first)').bind('drag', {'self': self}, self.dragHandler);
-      $('.backbone-file-explorer-directory:not(:first)').bind('drop', {'self': self}, self.dropHandler);
+      $(this.el)
+        .find('.backbone-file-explorer-directory:not(:first)')
+        .bind('drag', {'self': self}, self.dragHandler);
+
+      $(this.el)
+        .find('.backbone-file-explorer-directory:not(:first)')
+        .bind('drop', {'self': self}, self.dropHandler);
     }
   },
 
@@ -317,12 +336,14 @@ var FileExplorer = Backbone.View.extend({
       , $el = $('#' + event.currentTarget.id)
       , offsets = $el.offset();
 
-    if (startY[id] == undefined) {
-      startY[id] = offsets.top;
+    if (Data.startY[id] == undefined) {
+      Data.startX[id] = offsets.left;
+      Data.startY[id] = offsets.top;
     }
 
     $el.css({'z-index': 1});
-    $el.css({top: event.offsetY - startY[id]});
+    $el.css({left: event.offsetX - Data.startX[id]});
+    $el.css({top: event.offsetY - Data.startY[id]});
   },
 
   dropHandler: function(event) {
@@ -331,8 +352,8 @@ var FileExplorer = Backbone.View.extend({
     var self = event.data.self;
 
     if (droppedId != containerId) {
-      var droppedPath = self.idPaths[droppedId];
-      var containerPath = self.idPaths[containerId];
+      var droppedPath = Data.idPaths[droppedId];
+      var containerPath = Data.idPaths[containerId];
       var moveAllowed = containerPath.indexOf(droppedPath) != 0;
       self.moveHandler({
         'self': self,
@@ -341,6 +362,7 @@ var FileExplorer = Backbone.View.extend({
         'allowed': moveAllowed
       });
     }
+    $('#' + droppedId).css({left: 0});
     $('#' + droppedId).css({top: 0});
   },
 
@@ -359,6 +381,7 @@ var FileExplorer = Backbone.View.extend({
     var toggledFolders = this.snapShotToggledFolders();
 
     this.dirView = new DirectoryView({
+      parentId: this.id,
       directory: directory,
       levelTemplate: this.options.levelTemplate,
       entryTemplate: this.options.entryTemplate,
@@ -367,8 +390,6 @@ var FileExplorer = Backbone.View.extend({
       nameClickHandler: this.options.nameClickHandler,
       actionHandlers: this.options.actionHandlers
     });
-
-    this.idPaths = this.dirView.idPaths;
 
     $(this.el)
       .empty()
