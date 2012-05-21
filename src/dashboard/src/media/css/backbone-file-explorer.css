@@ -7,7 +7,7 @@
 .backbone-file-explorer-busy {
   background-color: '#eee';
   opacity: .5;
-  background-image: url('../img/ajax-loader.gif');
+  background-image: url('../images/ajax-loader.gif');
 }
 
 .backbone-file-explorer-idle {
@@ -22,7 +22,7 @@
 
 .backbone-file-explorer-directory {
   position: relative;
-  background-image: url('../img/folder.png');
+  background-image: url('../images/folder.png');
   background-repeat: no-repeat;
 }
 
