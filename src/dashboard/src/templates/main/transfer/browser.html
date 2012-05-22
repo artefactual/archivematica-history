@@ -1,0 +1,88 @@
+{% extends "layout_fluid.html" %}
+{% load breadcumbs %}
+
+{% block title %}Administration{% endblock %}
+{% block h1 %}Administration{% endblock %}
+{% block page_id %}Administration{% endblock %}
+
+{% block js %}
+  <script type="text/javascript" src="{{ STATIC_URL }}vendor/jquery.event.drag-1.5.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}vendor/jquery.event.drop-1.1.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/file-explorer.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/file_browser.js"></script>
+{% endblock %}
+
+{% block sidebar %}
+  {% include "main/administration/_sidebar.html" %}
+{% endblock %}
+
+{% block css %}
+<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/backbone-file-explorer.css" />
+<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/directory_picker.css" />
+{% endblock %}
+
+{% block content %}
+
+<div id='explorer' class='backbone-file-explorer'></div>
+
+<script>
+$(document).ready(function() {
+  var picker = new FileExplorer({
+      el: $('#explorer'),
+      levelTemplate: $('#template-dir-level').html(),
+      entryTemplate: $('#template-dir-entry').html()
+  });
+  picker.updateSources(function() {
+    var picker = new FileExplorer({
+      el: $('#explorer'),
+      levelTemplate: $('#template-dir-level').html(),
+      entryTemplate: $('#template-dir-entry').html()
+    });
+    picker.busy();
+    $.get('/filesystem/contents/', function(results) {
+      picker.structure = results;
+      picker.render();
+      picker.idle();
+      //$('#directories').slideDown();
+      //$('#source_page_instructions').fadeIn();
+   });
+  });
+});
+
+
+</script>
+
+<!-- templates below -->
+
+<script type="text/template" id='template-dir-level'>
+  <div class="backbone-file-explorer-level"></div>
+</script>
+
+<script type="text/template" id='template-dir-entry'>
+  <div class="backbone-file-explorer-entry" style='clear:both'>
+    <span class="backbone-file-explorer-directory_icon_button"></span>
+    <span class="backbone-file-explorer-directory_entry_name"><%= name %></span>
+    <span class="backbone-file-explorer-directory_entry_actions"></span>
+  </div>
+</script>
+
+<script type="text/template" id="template-source-directory-table">
+<table>
+  <thead>
+    <th>Path</th>
+    <th></th>
+  </thead>
+  <tbody>
+    <%= rows %>
+  </tbody>
+</table>
+</script>
+
+<script type="text/template" id="template-source-directory-table-row">
+  <tr>
+    <td><%= path %></td>
+    <td><a href='#' id='directory_<%= id %>' class='btn' style='float:right'>Delete</a></td>
+  </tr>
+</script>
+
+{% endblock %}

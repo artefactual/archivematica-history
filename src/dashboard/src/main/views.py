@@ -540,6 +540,10 @@ def transfer_add(request):
 
     return render(request, 'main/transfer/add.html', locals())
 
+def transfer_browser(request):
+    directory = '/home/demo'
+    return render(request, 'main/transfer/browser.html', locals())
+
 def transfer_status(request, uuid=None):
     # Equivalent to: "SELECT SIPUUID, MAX(createdTime) AS latest FROM Jobs GROUP BY SIPUUID
     objects = models.Job.objects.filter(hidden=False, unittype__exact='unitTransfer').values('sipuuid').annotate(timestamp=Max('createdtime')).exclude(sipuuid__icontains = 'None')
