@@ -907,7 +907,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --servers 127.0.0.1');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --servers 127.0.0.1  --collection "%ContentdmCollection%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Upload DIP to contentDM');
@@ -920,7 +920,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'restructureDIPForContentDMUpload_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'restructureDIPForContentDMUpload_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --collection "%ContentdmCollection%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Restructure DIP for content DM upload');
@@ -931,6 +931,23 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (5,      LAST_INSERT_ID(), 'Select target CONTENTdm collection');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, 'localhost', '{"%ContentdmCollection%":"localhost"}');
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, 'other choice', '{"%ContentdmCollection%":"0.0.0.0"}');
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 -- disabled, because it uses the SIP uuid and updates the SIP/AIP directory location with that of the DIP --
 /*
