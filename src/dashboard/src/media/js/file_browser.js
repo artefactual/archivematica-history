@@ -21,7 +21,7 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
       { 
         name: 'Delete', 
         description: 'Delete file or directory', 
-        iconHtml: '<b>D</b>', 
+        iconHtml: "<img src='/media/images/delete.png' />", 
         logic: function(result) { 
           self.deleteEntry(result.path, result.type); 
         } 
@@ -39,15 +39,24 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
           'Delete',
           response.message
         );
-        //self.refresh();
+        self.refresh();
       }
     );
-
-    console.log('do delete');
   },
 
   refresh: function() {
-    console.log('refresh');
+    $(this.el).empty();
+    this.initialize();
+    this.busy();
+
+    var self = this;
+    $.get('/filesystem/contents/', function(results) {
+      self.structure = results;
+      self.render();
+      self.idle();
+      //$('#directories').slideDown();
+      //$('#source_page_instructions').fadeIn();
+    });
   },
 
   moveHandler: function(move) {
