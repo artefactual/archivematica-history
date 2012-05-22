@@ -33,6 +33,7 @@ if __name__ == '__main__':
     parser.add_argument('--uuid', action="store", dest='uuid', metavar='UUID', help='AIP-UUID')
     parser.add_argument('--dipDir', action="store", dest='dipDir', metavar='dipDir', help='DIP Directory')
     parser.add_argument('--servers', nargs='*', action="store", dest='servers', metavar='servers', help='Space delimited set of server(s) to upload to.')
+    parser.add_argument('--collection', nargs='*', action="store", dest='servers', metavar='servers', help='???')
     
     args = parser.parse_args()
     

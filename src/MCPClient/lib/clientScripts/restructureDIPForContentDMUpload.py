@@ -32,6 +32,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='restructure')
     parser.add_argument('--uuid', action="store", dest='uuid', metavar='UUID', help='AIP-UUID')
     parser.add_argument('--dipDir', action="store", dest='dipDir', metavar='dipDir', help='DIP Directory')
+    parser.add_argument('--collection', nargs='*', action="store", dest='servers', metavar='servers', help='???')
     
     args = parser.parse_args()
     

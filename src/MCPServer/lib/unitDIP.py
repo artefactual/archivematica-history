@@ -38,6 +38,7 @@ class unitDIP(unit):
         self.currentPath = currentPath.__str__()
         self.UUID = UUID
         self.fileList = {}
+        self.owningUnit = None
 
     def reloadFileList(self):
         self.fileList = {}

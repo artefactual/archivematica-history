@@ -72,9 +72,10 @@ if __name__ == '__main__':
                     etree.SubElement(attch, "name").text = attachment.name
                     etree.SubElement(attch, "content_type").text = attachment.content_type
                     etree.SubElement(attch, "size").text = str(attachment.size)
-                    etree.SubElement(attch, "create_date").text = attachment.create_date
-                    etree.SubElement(attch, "mod_date").text = attachment.mod_date
-                    etree.SubElement(attch, "read_date").text = attachment.read_date
+                    # Dates don't appear to be working. Disabling for the moment - Todo
+                    #etree.SubElement(attch, "create_date").text = attachment.create_date
+                    #etree.SubElement(attch, "mod_date").text = attachment.mod_date
+                    #etree.SubElement(attch, "read_date").text = attachment.read_date
                     writeFile(os.path.join(os.path.dirname(maildir), "extracted", maildirsub2, "[%s][%s]%s" % (item, out["subject"], attachment.name)), \
                              attachment)
             #else:
