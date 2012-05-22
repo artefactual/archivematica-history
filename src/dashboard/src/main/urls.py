@@ -21,6 +21,7 @@ urlpatterns = patterns('main.views',
     (r'transfer/status/$', 'transfer_status'),
     (r'transfer/status/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer_status'),
     (r'transfer/add/$', 'transfer_add'),
+    (r'transfer/browser/$', 'transfer_browser'),
 
     # Ingest
     (r'ingest/$', 'ingest_grid'),
