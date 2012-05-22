@@ -7,7 +7,7 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
     this.render();
     this.initDragAndDrag();
 
-    var self;
+    var self = this;
     this.options.nameClickHandler = function(result) { 
       if (result.type == 'directory') { 
         self.alert(
@@ -17,17 +17,37 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
       } 
     };
 
-    var self = this;
     this.options.actionHandlers = [ 
       { 
-        name: 'Add Source', 
-        description: 'Add Source Directory', 
-        iconHtml: '<b>Add</b>', 
+        name: 'Delete', 
+        description: 'Delete file or directory', 
+        iconHtml: '<b>D</b>', 
         logic: function(result) { 
-          self.addSource(self, result.path); 
+          self.deleteEntry(result.path, result.type); 
         } 
       } 
     ]; 
+  },
+
+  deleteEntry: function(path, type) {
+    var self = this;
+    $.post(
+      '/filesystem/delete/',
+      {filepath: path},
+      function(response) {
+        self.alert(
+          'Delete',
+          response.message
+        );
+        //self.refresh();
+      }
+    );
+
+    console.log('do delete');
+  },
+
+  refresh: function() {
+    console.log('refresh');
   },
 
   moveHandler: function(move) {
