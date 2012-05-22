@@ -90,8 +90,13 @@ function recreate-db() {
           echo "Going to ${part} ..."
           cd localDevSetup/
           sudo stop archivematica-mcp-server
+          sudo stop archivematica-mcp-client
+          sudo apache2ctl stop
           colour ./recreateDB.sh
           cd ..
+          sudo start archivematica-mcp-server
+          sudo start archivematica-mcp-client
+          sudo apachectl start
   else
           echo "Not going to ${part}."
   fi

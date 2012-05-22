@@ -25,22 +25,37 @@
 import mailbox
 import sys
 import os
+import uuid
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from externals.extractMaildirAttachments import parse
+from fileOperations import addFileToTransfer
+from fileOperations import updateSizeAndChecksum
 
 def writeFile(filePath, fileContents):   
     try:
         os.makedirs(os.path.dirname(filePath))
     except:
         pass
+    print filePath
     FILE = open(filePath,"w")
     FILE.writelines(fileContents)    
     FILE.close()
 
+def addFile(filePath, transferPath, transferUUID, date, eventDetail = ""): 
+    taskUUID = uuid.uuid4().__str__()
+    fileUUID = uuid.uuid4().__str__()
+    filePathRelativeToSIP = filePath.replace(transferPath, "%transferDirectory%", 1)
+    addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="unpacking", eventDetail=eventDetail)
+    updateSizeAndChecksum(fileUUID, filePath, date, uuid.uuid4.__str__())
+
    
 if __name__ == '__main__':
     #http://www.doughellmann.com/PyMOTW/mailbox/
-    maildir = sys.argv[1]
+    transferDir = sys.argv[1]
+    transferUUID =  sys.argv[2]
+    date =  sys.argv[3]
+    maildir = transferDir + "objects/Maildir/" 
+    outXML = transferDir + "logs/attachmentExtraction.xml"
     import lxml.etree as etree
     #print "Extracting attachments from: " + maildir
     root = etree.Element("ArchivematicaMaildirAttachmentExtractionRecord")
@@ -76,17 +91,17 @@ if __name__ == '__main__':
                     #etree.SubElement(attch, "create_date").text = attachment.create_date
                     #etree.SubElement(attch, "mod_date").text = attachment.mod_date
                     #etree.SubElement(attch, "read_date").text = attachment.read_date
-                    writeFile(os.path.join(os.path.dirname(maildir), "extracted", maildirsub2, "[%s][%s]%s" % (item, out["subject"], attachment.name)), \
+                    
+                    filePath = os.path.join(transferDir, "objects/attachments", maildirsub2, "[%s][%s]%s" % (item, out["subject"], attachment.name))
+                    writeFile(filePath, \
                              attachment)
-            #else:
-                #for key in out['msgobj'].keys():
-                    #print key, out['msgobj'][key][:30]
-    #print etree.tostring(root, pretty_print=True)
+                    eventDetail="Unpacked from: " + os.path.join(maildir, maildirsub2, item).replace(transferDir, "%transferDirectory%", 1)
+                    addFile(filePath, transferDir, transferUUID, date, eventDetail=eventDetail)
     try:
         os.makedirs(os.path.join(os.path.dirname(maildir), "extracted"))
     except:
         pass
     tree = etree.ElementTree(root)
-    tree.write(os.path.join(os.path.dirname(maildir), "extracted", "extractedIndex.xml"), pretty_print=True, xml_declaration=True)
+    tree.write(outXML, pretty_print=True, xml_declaration=True)
 
                     
