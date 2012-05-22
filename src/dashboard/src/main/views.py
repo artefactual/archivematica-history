@@ -881,6 +881,23 @@ def filesystem_contents(request):
     response = filesystem_directory_to_dict(path)
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
+def filesystem_delete(request):
+    error = None
+    filepath = request.GET.get('filepath', '')
+    if filepath == '':
+      error = 'No filepath provided.'
+    #check if exists
+    #check if is file or directory
+    os.remove(filepath)
+
+    response = {}
+    if error != None:
+      response['message'] = error
+    else:
+      response['message'] = 'Delete successful.'
+
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
