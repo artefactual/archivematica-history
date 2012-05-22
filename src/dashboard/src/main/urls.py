@@ -76,4 +76,5 @@ urlpatterns = patterns('main.views',
     # JSON feeds
     (r'status/$', 'status'),
     (r'filesystem/contents/$', 'filesystem_contents'),
+    (r'filesystem/delete/$', 'filesystem_delete'),
 )
