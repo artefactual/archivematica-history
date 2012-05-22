@@ -883,7 +883,7 @@ def filesystem_contents(request):
 
 def filesystem_delete(request):
     error = None
-    filepath = request.GET.get('filepath', '')
+    filepath = request.POST.get('filepath', '')
     if filepath == '':
       error = 'No filepath provided.'
     #check if exists
