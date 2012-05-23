@@ -448,6 +448,24 @@ INSERT INTO Commands
 
 set @accessNoOpCommandID = LAST_INSERT_ID();
 
+-- Create file id for not to include in DIP
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'Do not include in archivematica DIP', FALSE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @accessNoOpCommandID,
+    @fileID
+);
+--
+
 -- Default access copy command --
 INSERT INTO Commands 
     (commandType, verificationCommand, command, outputLocation, description) 

@@ -164,6 +164,9 @@ def identifyCommands(fileName):
     return ret
 
 if __name__ == '__main__':
+    #while 1:
+    #    import time
+    #    time.sleep(10)
     transcoder.onSuccess = onceExtracted
     transcoder.identifyCommands = identifyCommands
     transcoder.replacementDic = replacementDic
