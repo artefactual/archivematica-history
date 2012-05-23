@@ -54,7 +54,7 @@ def getFileUUIDofSourceFile(transferUUID, sourceFilePath):
     sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND transferUUID = '%s' AND currentLocation LIKE '%s%%';""" % (transferUUID, sourceFilePath.replace('%', '%%'))
     rows = databaseInterface.queryAllSQL(sql)
     if len(rows):
-        ret = rows[0]
+        ret = rows[0][0]
     return ret
 
 def setSourceFileToBeExcludedFromDIP(sourceFileUUID):
