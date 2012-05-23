@@ -58,7 +58,7 @@ def getFileUUIDofSourceFile(transferUUID, sourceFilePath):
     return ret
 
 def setSourceFileToBeExcludedFromDIP(sourceFileUUID):
-    sql = """INSERT INTO FilesIdentifiedIDs (fileUUID, fileID) VALUES ('%s', (SELECT pk FROM FileIDs WHERE description = 'Do not include in archivematica DIP')) """ % (sourceFileUUID)
+    sql = """INSERT INTO FilesIdentifiedIDs (fileUUID, fileID) VALUES ('%s', (SELECT pk FROM FileIDs WHERE description = 'Do not include in archivematica DIP')); """ % (sourceFileUUID)
     databaseInterface.runSQL(sql)
     
 def addKeyFileToNormalizeMaildirOffOf():
@@ -87,6 +87,7 @@ if __name__ == '__main__':
             subDir = md.get_message(item).get_subdir()
             sourceFilePath = os.path.join(maildir, maildirsub2, subDir, item).replace(transferDir, "%transferDirectory%", 1)
             sourceFileUUID = getFileUUIDofSourceFile(transferUUID, sourceFilePath)
+            setSourceFileToBeExcludedFromDIP(sourceFileUUID)
             if len(out['attachments']):
                 msg = etree.SubElement(directory, "msg")
                 etree.SubElement(msg, "Message-ID").text = out['msgobj']['Message-ID'][1:-1]
