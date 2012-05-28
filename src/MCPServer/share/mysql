@@ -636,7 +636,7 @@ SET @microserviceGroup  = 'Process submission documentation';
 --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'preservation', '{"%normalizeFileGrpUse%":"submissionDocumentation", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'preservation', '{"%normalizeFileGrpUse%":"submissionDocumentation", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find preservation links to run.');
@@ -654,7 +654,7 @@ SET @microserviceGroup  = 'Normalize';
 -- 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'thumbnail', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'thumbnail', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find thumbnail links to run.');
@@ -671,7 +671,7 @@ set @NormalizePreservationChain = LAST_INSERT_ID();
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'access', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'access', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find access links to run.');
@@ -691,7 +691,7 @@ set @NormalizeAccessChain = LAST_INSERT_ID();
 -- 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'thumbnail', '{"%normalizeFileGrpUse%":"service", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'thumbnail', '{"%normalizeFileGrpUse%":"service", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find thumbnail links to run.');
@@ -708,7 +708,7 @@ set @NormalizePreservationChain = LAST_INSERT_ID();
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'access', '{"%normalizeFileGrpUse%":"service", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'access', '{"%normalizeFileGrpUse%":"service", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find access links to run.');
@@ -728,7 +728,7 @@ set @NormalizeAccessFromServiceChain = LAST_INSERT_ID();
 -- 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'thumbnail', '{"%normalizeFileGrpUse%":"service", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'thumbnail', '{"%normalizeFileGrpUse%":"service", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find thumbnail links to run.');
@@ -746,7 +746,7 @@ set @NormalizeThumbnailsChain = LAST_INSERT_ID();
 --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'preservation', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'preservation', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find preservation links to run.');
@@ -759,7 +759,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'thumbnail', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'thumbnail', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find thumbnail links to run.');
@@ -776,7 +776,7 @@ set @NormalizePreservationChain = LAST_INSERT_ID();
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, 'access', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%normalizationLog.txt', '%SIPLogsDirectory%normalizationLog.txt', 'access', '{"%normalizeFileGrpUse%":"original", "%excludeDirectory%":"%SIPObjectsDirectory%submissionDocumentation/" }');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (7,       LAST_INSERT_ID(), 'Find access links to run.');
@@ -1088,7 +1088,7 @@ SET @microserviceGroup  = 'Prepare AIP';
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'remove_v0.0', '-R "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'remove_v0.0', '-R "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%metadata/" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%thumbnails/"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Removed bagged files');

@@ -60,7 +60,7 @@ def executeCommandReleationship(gearman_worker, gearman_job):
                 opts[key2] = opts[key2].replace(key, value)
         replacementDic = getReplacementDic(opts)
         #if True:
-        opts["prependStdOut"] =    """Operating on file: %s \r\nUsing  %s  command classifications""" % (replacementDic["%fileName%"], opts["commandClassification"])
+        opts["prependStdOut"] =    """Operating on file: {%s}%s \r\nUsing  %s  command classifications""" % (opts["fileUUID"], replacementDic["%fileName%"], opts["commandClassification"])
         opts["prependStdError"] = ""
         #    print clientID, execute, data
         archivematicaClient.logTaskAssignedSQL(gearman_job.unique.__str__(), clientID, utcDate)

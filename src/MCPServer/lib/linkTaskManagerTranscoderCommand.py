@@ -39,9 +39,13 @@ from databaseFunctions import deUnicode
 
 import os
 
+global outputLock
+outputLock = threading.Lock()
+
 
 class linkTaskManagerTranscoderCommand:
     def __init__(self, jobChainLink, pk, unit):
+        global outputLock
         self.tasks = {}
         self.tasksLock = threading.Lock()
         self.pk = pk
@@ -49,7 +53,7 @@ class linkTaskManagerTranscoderCommand:
         self.exitCode = 0
         self.clearToNextLink = False
 
-        opts = {"inputFile":"%relativeLocation%", "commandClassifications":"preservation", "fileUUID":"%fileUUID%", "taskUUID":"%taskUUID%", "objectsDirectory":"%SIPObjectsDirectory%", "logsDirectory":"%SIPLogsDirectory%", "sipUUID":"%SIPUUID%", "sipPath":"%SIPDirectory%", "fileGrpUse":"%fileGrpUse%", "normalizeFileGrpUse":"%normalizeFileGrpUse%", "excludeDirectory":"%excludeDirectory%"}
+        opts = {"inputFile":"%relativeLocation%", "commandClassifications":"preservation", "fileUUID":"%fileUUID%", "taskUUID":"%taskUUID%", "objectsDirectory":"%SIPObjectsDirectory%", "logsDirectory":"%SIPLogsDirectory%", "sipUUID":"%SIPUUID%", "sipPath":"%SIPDirectory%", "fileGrpUse":"%fileGrpUse%", "normalizeFileGrpUse":"%normalizeFileGrpUse%", "excludeDirectory":"%excludeDirectory%", "standardErrorFile":"%standardErrorFile%", "standardOutputFile":"%standardOutputFile%"}
         
         SIPReplacementDic = unit.getReplacementDic(unit.currentPath)
         for optsKey, optsValue in opts.iteritems():
@@ -77,9 +81,8 @@ class linkTaskManagerTranscoderCommand:
                 execute = "transcoder_cr%d" % (pk)  
                 deUnicode(execute)
                 arguments = row.__str__()
-                standardOutputFile = None 
-                standardErrorFile = None 
-                outputLock = None
+                standardOutputFile = opts["standardOutputFile"] 
+                standardErrorFile = opts["standardErrorFile"] 
                 self.standardOutputFile = standardOutputFile 
                 self.standardErrorFile = standardErrorFile
                 self.execute = execute
