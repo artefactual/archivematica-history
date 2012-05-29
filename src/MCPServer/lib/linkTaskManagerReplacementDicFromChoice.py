@@ -164,5 +164,8 @@ class linkTaskManagerReplacementDicFromChoice:
         #get the one at index, and go with it.
         choiceIndex, description, replacementDic2 = self.choices[int(index)]
         rd = replacementDic(eval(replacementDic2))
+        if self.jobChainLink.passVar != None:
+                if isinstance(self.jobChainLink.passVar, replacementDic):
+                    rd.dic = rd.dic.update(self.jobChainLink.passVar.dic)
         self.jobChainLink.linkProcessingComplete(0, rd)
         
