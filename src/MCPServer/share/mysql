@@ -1130,6 +1130,48 @@ set @PrepareAIPMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (5,      LAST_INSERT_ID(), 'Select compression level');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, '0 - copy mode', '{"%AIPCompressionLevel%":"0"}');
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, '1 - fastest mode', '{"%AIPCompressionLevel%":"1"}');
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, '3 - fast compression mode', '{"%AIPCompressionLevel%":"3"}');
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, '5 - normal compression mode', '{"%AIPCompressionLevel%":"5"}');
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, '7 - maximum compression', '{"%AIPCompressionLevel%":"7"}');
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, '9 - ultra compression', '{"%AIPCompressionLevel%":"9"}');
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (5,      LAST_INSERT_ID(), 'Select compression algorithm');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)    
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, 'lzma', '{"%AIPCompressionAlgorithm%":"lzma"}');
+/*INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, 'bzip', '{"%AIPCompressionAlgorithm%":"bzip"}');*/
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'bagit_v0.0', 'create "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%metadata/" "%SIPDirectory%thumbnails/" --writer filesystem --payloadmanifestalgorithm "sha512"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
