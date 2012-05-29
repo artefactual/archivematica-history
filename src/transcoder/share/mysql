@@ -4045,6 +4045,69 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 -- End Of ADD Normalization Path for .MBOX --
 */
 
+-- ADD Normalization Path for .archivematicaMaildir --
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A .archivematicaMaildir file', TRUE, FALSE
+);
+set @fileID = LAST_INSERT_ID();
+
+INSERT INTO FileIDsByExtension 
+    (Extension, FileIDs)
+    VALUES (
+    'archivematicaMaildir',
+    @fileID
+);
+
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @vectorImageGroup);
+
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('echo "/usr/lib/archivematica/transcoder/transcoderScripts/" "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.mbox"'),
+    NULL,
+    NULL,
+    NULL,
+    ('Transcoding maildir to mbox event detail')
+);
+
+INSERT INTO Commands 
+    (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
+    VALUES (
+    (SELECT pk FROM CommandTypes WHERE type = 'command'),
+    ('ps2pdf  "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.mbox"'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.mbox',
+    LAST_INSERT_ID(),
+    @standardVerificationCommand,
+    ('Transcoding maildir to mbox')
+);
+
+set @maildirToMboxCommandID = LAST_INSERT_ID();
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @maildirToMboxCommandID,
+    @fileID
+);
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+-- End Of ADD Normalization Path for .archivematicaMaildir --
+
 -- ADD Normalization Path for .PDF --
 INSERT INTO FileIDs 
     (description, validPreservationFormat, validAccessFormat)

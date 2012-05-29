@@ -61,7 +61,18 @@ def setSourceFileToBeExcludedFromDIP(sourceFileUUID):
     sql = """INSERT INTO FilesIdentifiedIDs (fileUUID, fileID) VALUES ('%s', (SELECT pk FROM FileIDs WHERE description = 'Do not include in archivematica DIP')); """ % (sourceFileUUID)
     databaseInterface.runSQL(sql)
     
-def addKeyFileToNormalizeMaildirOffOf():
+def addKeyFileToNormalizeMaildirOffOf(relativePathToRepresent, mirrorDir, transferPath, transferUUID, date, eventDetail = ""):
+    basename = os.path.basename(mirrorDir)
+    dirname = os.path.dirname(mirrorDir)
+    outFile = os.path.join(dirname, basename + ".archivematicaMaildir")
+    content = """#This file is used in the archivematica system to represent a maildir dirctory, for normalization and permission purposes.
+[archivematicaMaildir]
+path = %s
+    """ % (relativePathToRepresent)
+    f = open(outFile, 'w')
+    f.write(content)
+    f.close()
+    addFile(outFile, transferPath, transferUUID, date, eventDetail=eventDetail)
     return
    
 if __name__ == '__main__':
@@ -115,10 +126,13 @@ if __name__ == '__main__':
                              attachment)
                     eventDetail="Unpacked from: {%s}%s" % (sourceFileUUID, sourceFilePath) 
                     addFile(filePath, transferDir, transferUUID, date, eventDetail=eventDetail)
-    try:
-        os.makedirs(os.path.join(os.path.dirname(maildir), "extracted"))
-    except:
-        pass
+        mirrorDir = os.path.join(transferDir, "objects/attachments", maildirsub2)
+        try:
+            os.makedirs(mirrorDir)
+        except:
+            pass
+        eventDetail = "added for normalization purposes"
+        addKeyFileToNormalizeMaildirOffOf(mirrorDir.replace(transferDir, "%transferDirectory%", 1), mirrorDir, transferDir, transferUUID, date, eventDetail=eventDetail)
     tree = etree.ElementTree(root)
     tree.write(outXML, pretty_print=True, xml_declaration=True)
 
