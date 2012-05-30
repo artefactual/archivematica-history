@@ -1373,7 +1373,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects/submissionDocumentation', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPObjectsDirectory%" "%SIPUUID%" "%date%" "%taskUUID%" "SIPDirectory" "sipUUID"');
+    (NULL, NULL, 'objects/submissionDocumentation', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPDirectory%objects/submissionDocumentation/" "%SIPUUID%" "%date%" "%taskUUID%" "SIPDirectory" "sipUUID" "%SIPDirectory%"');
 SET @SanitizefileanddirectorynamesinsubmissiondocumentationTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
@@ -2330,10 +2330,11 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-
+-- Removed to maintain maildir --
+/* 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPObjectsDirectory%" "%SIPUUID%" "%date%" "%taskUUID%" "sipDirectory" "sipUUID"');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPObjectsDirectory%" "%SIPUUID%" "%date%" "%taskUUID%" "sipDirectory" "sipUUID" "%SIPDirectory%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Sanitize object\'s file and directory names');
@@ -2343,6 +2344,7 @@ set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
+*/
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
@@ -2770,7 +2772,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPObjectsDirectory%" "%SIPUUID%" "%date%" "%taskUUID%" "transferDirectory" "transferUUID"');
+    (NULL, NULL, 'objects', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPObjectsDirectory%" "%SIPUUID%" "%date%" "%taskUUID%" "transferDirectory" "transferUUID" "%SIPDirectory%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Sanitize object\'s file and directory names');
@@ -4240,7 +4242,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects/attachments', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPObjectsDirectory%" "%SIPUUID%" "%date%" "%taskUUID%" "transferDirectory" "transferUUID"');
+    (NULL, NULL, 'objects/attachments', FALSE, '%SIPLogsDirectory%filenameCleanup.log', '%SIPLogsDirectory%filenameCleanup.log', 'sanitizeObjectNames_v0.0', '"%SIPObjectsDirectory%attachments/" "%SIPUUID%" "%date%" "%taskUUID%" "transferDirectory" "transferUUID" "%SIPDirectory%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Sanitize object\'s file and directory names');

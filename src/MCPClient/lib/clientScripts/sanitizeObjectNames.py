@@ -34,16 +34,18 @@ from fileOperations import updateFileLocation
 from archivematicaFunctions import unicodeToStr
 
 if __name__ == '__main__':
-    objectsDirectory = sys.argv[1]
+    objectsDirectory = sys.argv[1] #the directory to run sanitization on.
     sipUUID =  sys.argv[2]
     date = sys.argv[3]
     taskUUID = sys.argv[4]
     groupType = sys.argv[5]
     groupType = "%%%s%%" % (groupType)
     groupSQL = sys.argv[6]
+    sipPath =  sys.argv[7] #the unit path
     groupID = sipUUID
 
-    relativeReplacement = "%sobjects/" % (groupType) #"%SIPDirectory%objects/"
+    #relativeReplacement = "%sobjects/" % (groupType) #"%SIPDirectory%objects/"
+    relativeReplacement = objectsDirectory.replace(sipPath, groupType, 1) #"%SIPDirectory%objects/"
 
 
     #def executeCommand(taskUUID, requiresOutputLock = "no", sInput = "", sOutput = "", sError = "", execute = "", arguments = "", serverConnection = None):
