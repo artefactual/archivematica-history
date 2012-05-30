@@ -132,7 +132,7 @@ if __name__ == '__main__':
         except:
             pass
         eventDetail = "added for normalization purposes"
-        addKeyFileToNormalizeMaildirOffOf(mirrorDir.replace(transferDir, "%transferDirectory%", 1), mirrorDir, transferDir, transferUUID, date, eventDetail=eventDetail)
+        addKeyFileToNormalizeMaildirOffOf(os.path.join(maildir, maildirsub2).replace(transferDir, "%transferDirectory%", 1), mirrorDir, transferDir, transferUUID, date, eventDetail=eventDetail)
     tree = etree.ElementTree(root)
     tree.write(outXML, pretty_print=True, xml_declaration=True)
 

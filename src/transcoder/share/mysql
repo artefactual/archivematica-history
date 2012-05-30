@@ -408,6 +408,15 @@ set @standardVerificationCommand = LAST_INSERT_ID();
 INSERT INTO Commands 
     (commandType, command, description) 
     SELECT pk,
+    'test -f "%outputLocation%"',
+    'Standard verification command'
+    FROM CommandTypes WHERE type = 'command' ;
+
+set @standardVerificationAllow0ByteFilesCommand = LAST_INSERT_ID();
+
+INSERT INTO Commands 
+    (commandType, command, description) 
+    SELECT pk,
     'exitCode=0
 filesFound=0
 function checkDirectory {
@@ -4080,10 +4089,10 @@ INSERT INTO Commands
     (commandType, command, outputLocation, eventDetailCommand, verificationCommand, description) 
     VALUES (
     (SELECT pk FROM CommandTypes WHERE type = 'command'),
-    ('ps2pdf  "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.mbox"'),
+    ('"/usr/lib/archivematica/transcoder/transcoderScripts/archivematicaMaildirToMbox.py"  "%fileFullName%" "%outputDirectory%%prefix%%fileName%%postfix%.mbox"'),
     '%outputDirectory%%prefix%%fileName%%postfix%.mbox',
     LAST_INSERT_ID(),
-    @standardVerificationCommand,
+    @standardVerificationAllow0ByteFilesCommand,
     ('Transcoding maildir to mbox')
 );
 
