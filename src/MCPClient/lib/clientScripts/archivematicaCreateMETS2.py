@@ -83,6 +83,8 @@ global globalRightsMDCounter
 globalRightsMDCounter = 0
 global globalDigiprovMDCounter
 globalDigiprovMDCounter = 0
+global fileNameToFileID #Used for mapping structMaps included with transfer
+fileNameToFileID = {} 
 
 
 
@@ -422,11 +424,41 @@ def getAMDSec(fileUUID, filePath, use, type, id, transferUUID, itemdirectoryPath
         AMD.append(a)
     return ret
 
-
+def getIncludedStructMap():
+    global fileNameToFileID
+    ret = []
+    transferMetadata = os.path.join(baseDirectoryPath, "metadata/transfers")
+    baseLocations = os.listdir(transferMetadata)
+    baseLocations.append(baseDirectoryPath)
+    for dir in baseLocations:
+        dirPath = os.path.join(transferMetadata, dir)
+        structMapXmlPath = os.path.join(dirPath, "metadata/mets_structmap.xml")
+        if not os.path.isdir(dirPath):
+            continue
+        if os.path.isfile(structMapXmlPath):
+            tree = etree.parse(structMapXmlPath)
+            root = tree.getroot() #TDOD - not root to return, but sub element structMap
+            #print etree.tostring(root)
+            structMap = root.find(metsBNS + "structMap")
+            ret.append(structMap)
+            for item in structMap.findall(".//" + metsBNS + "fptr"):
+                fileName = item.get("FILEID")
+                if fileName in fileNameToFileID:
+                    #print fileName, " -> ", fileNameToFileID[fileName]
+                    item.set("FILEID", fileNameToFileID[fileName]) 
+                else:
+                    print >>sys.stderr,"error: no fileUUID for ", fileName
+                    sharedVariablesAcrossModules.globalErrorCount += 1
+    for fileName, fileID in  fileNameToFileID.iteritems():
+        #locate file based on key
+        continue
+        print fileName 
+    return ret
 
 #DMDID="dmdSec_01" for an object goes in here
 #<file ID="file1-UUID" GROUPID="G1" DMDID="dmdSec_02" ADMID="amdSec_01">
 def createFileSec(directoryPath, structMapDiv):
+    global fileNameToFileID
     delayed = []
     filesInThisDirectory = []
     dspaceMetsDMDID = None
@@ -501,6 +533,7 @@ def createFileSec(directoryPath, structMapDiv):
         if label != None:
             fileDiv.set("LABEL", label)
         newChild(fileDiv, "fptr", sets=[("FILEID",FILEID)])
+        fileNameToFileID[item] = FILEID
 
         GROUPID = ""
         if fileGrpUUID:
@@ -634,6 +667,8 @@ if __name__ == '__main__':
 
     root.append(fileSec)
     root.append(structMap)
+    for structMapIncl in getIncludedStructMap():
+        root.append(structMapIncl)
     if False: #debug
         print etree.tostring(root, pretty_print=True)
 
