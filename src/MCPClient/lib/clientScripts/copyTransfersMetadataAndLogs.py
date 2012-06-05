@@ -52,7 +52,9 @@ def main(sipUUID, transfersDirectory, sharedPath=""):
             if not os.path.exists(transferMetaDestDir):
                 os.makedirs(transferMetaDestDir)
                 shutil.copytree(transferPath + "logs", os.path.join(transferMetaDestDir, "logs"))
+                print "copied: ", transferPath + "logs", " -> ", os.path.join(transferMetaDestDir, "logs")
                 shutil.copytree(transferPath + "metadata", os.path.join(transferMetaDestDir, "metadata"))
+                print "copied: ", transferPath + "metadata", " -> ", os.path.join(transferMetaDestDir, "metadata")
 
         except Exception as inst:
             print >>sys.stderr, type(inst)
@@ -65,6 +67,9 @@ def main(sipUUID, transfersDirectory, sharedPath=""):
     exit(exitCode)
 
 if __name__ == '__main__':
+    while False: #used to stall the mcp and stop the client for testing this module
+        import time
+        time.sleep(10)
     parser = OptionParser()
     parser.add_option("-s",  "--sipDirectory", action="store", dest="sipDirectory", default="")
     parser.add_option("-S",  "--sipUUID", action="store", dest="sipUUID", default="")
