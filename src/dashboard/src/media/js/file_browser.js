@@ -44,13 +44,18 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
     );
   },
 
-  refresh: function() {
+  refresh: function(path) {
     $(this.el).empty();
     this.initialize();
     this.busy();
 
+    var baseUrl = '/filesystem/contents/';
+    url = (path != undefined)
+      ? baseUrl + '?path=' + encodeURIComponent(path)
+      : baseUrl;
+
     var self = this;
-    $.get('/filesystem/contents/', function(results) {
+    $.get(url, function(results) {
       self.structure = results;
       self.render();
       self.idle();
