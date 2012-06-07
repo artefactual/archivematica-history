@@ -899,7 +899,7 @@ def filesystem_delete(request):
       error = 'No filepath provided.'
     #check if exists
     #check if is file or directory
-    os.remove(filepath)
+    os.remove('/' + filepath)
 
     response = {}
     if error != None:
