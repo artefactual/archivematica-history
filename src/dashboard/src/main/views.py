@@ -536,15 +536,6 @@ def transfer_add(request):
         form = forms.TransferForm(request.POST)
         if form.is_valid():
             source_directory_id = request.POST['source_directory']
-            source_directory = models.SourceDirectory.objects.get(pk=source_directory_id)
-            destination = '/var/archivematica/sharedDirectory/transferBackups/originals/' \
-                + os.path.basename(source_directory.path)
-            # need logic to check if destination exists and, if so, pad basename part until it doesn't exist
-            shutil.copytree(
-                source_directory.path,
-                destination
-            )
-            #return HttpResponse(source_directory.path)
             return HttpResponseRedirect('/transfer/select/' + source_directory_id)
     else:
         form = forms.TransferForm()
