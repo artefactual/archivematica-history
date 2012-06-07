@@ -49,9 +49,14 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
     this.initialize();
     this.busy();
 
+    if (path != undefined)
+    {
+      this.path = path;
+    }
+
     var baseUrl = '/filesystem/contents/';
-    url = (path != undefined)
-      ? baseUrl + '?path=' + encodeURIComponent(path)
+    url = (this.path != undefined)
+      ? baseUrl + '?path=' + encodeURIComponent(this.path)
       : baseUrl;
 
     var self = this;
