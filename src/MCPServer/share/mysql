@@ -500,20 +500,6 @@ CREATE TABLE TasksConfigs (
 
 
 
-DROP TABLE IF EXISTS StandardTasksConfigs;
-CREATE TABLE StandardTasksConfigs (
-    pk                  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    filterFileEnd       VARCHAR(50),
-    filterFileStart     VARCHAR(50),
-    filterSubDir        VARCHAR(50),
-    requiresOutputLock  BOOLEAN,
-    standardOutputFile  VARCHAR(250),
-    standardErrorFile   VARCHAR(250),
-    execute             VARCHAR(50),
-    arguments           LONGTEXT
-) DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS MicroServiceChainLinks;
 CREATE TABLE MicroServiceChainLinks (
     pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
