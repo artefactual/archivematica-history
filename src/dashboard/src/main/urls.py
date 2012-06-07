@@ -21,6 +21,7 @@ urlpatterns = patterns('main.views',
     (r'transfer/status/$', 'transfer_status'),
     (r'transfer/status/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer_status'),
     (r'transfer/add/$', 'transfer_add'),
+    (r'transfer/select/(?P<source_directory_id>\d+)/$', 'transfer_select'),
     (r'transfer/browser/$', 'transfer_browser'),
 
     # Ingest
@@ -77,4 +78,5 @@ urlpatterns = patterns('main.views',
     (r'status/$', 'status'),
     (r'filesystem/contents/$', 'filesystem_contents'),
     (r'filesystem/delete/$', 'filesystem_delete'),
+    (r'filesystem/copy_to_originals/$', 'filesystem_copy_to_originals'),
 )
