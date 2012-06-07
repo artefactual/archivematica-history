@@ -900,7 +900,7 @@ def filesystem_contents(request):
 
 def filesystem_delete(request):
     filepath = request.POST.get('filepath', '')
-    error = filesystem_check_filepath(filepath)
+    error = filesystem_check_filepath('/' + filepath)
 
     if error == None:
       os.remove('/' + filepath)
@@ -909,6 +909,7 @@ def filesystem_delete(request):
 
     if error != None:
       response['message'] = error
+      response['error']   = True
     else:
       response['message'] = 'Delete successful.'
 
@@ -916,12 +917,14 @@ def filesystem_delete(request):
 
 def filesystem_copy_to_originals(request):
     filepath = request.POST.get('filepath', '')
-    error = filesystem_check_filepath(filepath)
+    error = filesystem_check_filepath('/' + filepath)
 
     if error == None:
         # confine destination to subdir of originals
         filepath = '/' + filepath
         destination = '/var/archivematica/sharedDirectory/transferBackups/originals/' + os.path.basename(filepath)
+        destination = filesystem_pad_destination_filepath_if_it_already_exists(destination)
+        #error = 'Copying from ' + filepath + ' to ' + destination + '.'
         try:
             shutil.copytree(
                 filepath,
@@ -934,6 +937,7 @@ def filesystem_copy_to_originals(request):
 
     if error != None:
         response['message'] = error
+        response['error']   = True
     else:
         response['message'] = 'Copy successful.'
 
@@ -943,10 +947,29 @@ def filesystem_check_filepath(filepath):
     error = None
     if filepath == '':
         error = 'No filepath provided.'
+
     # check if exists
+    if error == None and not os.path.exists(filepath):
+        error = 'Filepath does not exist.'
+
     # check if is file or directory
-    # check for .. trickery
+
+    # check for trickery
+    try:
+        filepath.index('..')
+        error = 'Illegal path.'
+    except:
+        pass
+
     return error
+
+def filesystem_pad_destination_filepath_if_it_already_exists(filepath, original=None, attempt=0):
+    if original == None:
+        original = filepath
+    attempt = attempt + 1
+    if os.path.exists(filepath):
+        return filesystem_pad_destination_filepath_if_it_already_exists(original + '_' + str(attempt), original, attempt)
+    return filepath
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc
