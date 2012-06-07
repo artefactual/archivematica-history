@@ -903,7 +903,14 @@ def filesystem_delete(request):
     error = filesystem_check_filepath('/' + filepath)
 
     if error == None:
-      os.remove('/' + filepath)
+        filepath = '/' + filepath
+        if os.path.isdir(filepath):
+            try:
+                shutil.rmtree(filepath)
+            except:
+                error = 'Error attempting to delete directory.'
+        else:
+            os.remove('/' + filepath)
 
     response = {}
 
