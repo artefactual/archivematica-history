@@ -3,6 +3,8 @@ from django.utils import simplejson
 import os
 import shutil
 
+ORIGINALS_DIR = '/var/archivematica/sharedDirectory/transferBackups/originals'
+
 def directory_to_dict(path, directory={}, entry=False):
     # if starting traversal, set entry to directory root
     if (entry == False):
@@ -65,7 +67,7 @@ def copy_to_originals(request):
     if error == None:
         # confine destination to subdir of originals
         filepath = os.path.join('/', filepath)
-        destination = '/var/archivematica/sharedDirectory/transferBackups/originals/' + os.path.basename(filepath)
+        destination = os.path.join(ORIGINALS_DIR, os.path.basename(filepath))
         destination = pad_destination_filepath_if_it_already_exists(destination)
         #error = 'Copying from ' + filepath + ' to ' + destination + '.'
         try:
