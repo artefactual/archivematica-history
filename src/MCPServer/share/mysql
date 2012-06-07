@@ -85,7 +85,7 @@ CREATE TABLE Dublincore (
     format          LONGTEXT,
     identifier      LONGTEXT,
     source          LONGTEXT,
-    isPartOf        LONGTEXT,
+    relation        LONGTEXT,
     language        LONGTEXT,
     coverage        LONGTEXT,
     rights          LONGTEXT
