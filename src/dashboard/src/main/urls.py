@@ -76,12 +76,9 @@ urlpatterns = patterns('main.views',
 
     # JSON feeds
     (r'status/$', 'status'),
-    #(r'filesystem/contents/$', 'main.filesystem.contents'),
-    #(r'filesystem/delete/$', 'main.filesystem.delete'),
-    #(r'filesystem/copy_to_originals/$', 'main.filesystem.copy_to_originals'),
 )
 
-# Filesystem related views
+# Filesystem related JSON views
 urlpatterns += patterns('main.filesystem',
   (r'filesystem/contents/$', 'contents'),
   (r'filesystem/delete/$', 'delete'),
