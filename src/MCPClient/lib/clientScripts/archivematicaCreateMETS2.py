@@ -633,6 +633,7 @@ if __name__ == '__main__':
         baseDirectoryPath += '/'
     structMap = etree.Element("structMap")
     structMap.set("TYPE", "physical")
+    structMap.set("LABEL", "Archivematica default")
     structMapDiv = newChild(structMap, "div", sets=[("TYPE","directory"), ("LABEL","%s-%s" % (os.path.basename(baseDirectoryPath[:-1]), fileGroupIdentifier))])
     #dmdSec, dmdSecID = createDublincoreDMDSec(SIP)
     structMapDiv = newChild(structMapDiv, "div", sets=[("TYPE","directory"), ("LABEL","objects") ])
