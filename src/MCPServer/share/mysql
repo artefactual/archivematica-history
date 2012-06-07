@@ -2419,6 +2419,20 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 set @FailedSIPComplianceChainLink = @MicroServiceChainLink;
 
+SET @microserviceGroup  = 'Verify transfer compliance';
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'archivematicaVerifyMets_v0.0', '"%SIPDirectory%"');
+SET @archivematicaVerifyMetsTask = LAST_INSERT_ID();
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @archivematicaVerifyMetsTask, 'Verify mets_structmap.xml compliance');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailedSIPComplianceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 SET @microserviceGroup  = 'Verify SIP compliance';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -3358,9 +3372,17 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 set @FailTransferComplianceChainLink = @MicroServiceChainLink;
 
-
-
 SET @microserviceGroup  = 'Verify transfer compliance';
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @archivematicaVerifyMetsTask, 'Verify mets_structmap.xml compliance');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailTransferComplianceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @PassedComplianceMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'verifyTransferCompliance_v0.0', '"%SIPDirectory%"');
@@ -3372,7 +3394,7 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailTransferComplianceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
-    VALUES (@MicroServiceChainLink, 0, @PassedComplianceMicroServiceChainLink);
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -3939,6 +3961,16 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
 set @FailTransferComplianceChainLink = LAST_INSERT_ID();
 
 SET @microserviceGroup  = 'Verify transfer compliance';
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @archivematicaVerifyMetsTask, 'Verify mets_structmap.xml compliance');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailTransferComplianceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
+
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      @verifyTransferComplianceTask, 'Verify transfer compliance');
