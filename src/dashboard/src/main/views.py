@@ -535,21 +535,27 @@ def transfer_add(request):
     if request.method == 'POST':
         form = forms.TransferForm(request.POST)
         if form.is_valid():
-          source_directory_id = request.POST['source_directory']
-          source_directory = models.SourceDirectory.objects.get(pk=source_directory_id)
-          destination = '/var/archivematica/sharedDirectory/transferBackups/originals/' \
-            + os.path.basename(source_directory.path)
-          # need logic to check if destination exists and, if so, pad basename part until it doesn't exist
-          shutil.copytree(
-            source_directory.path,
-            destination
-          )
-          #return HttpResponse(source_directory.path)
-          return HttpResponseRedirect('/transfer/browser/')
+            source_directory_id = request.POST['source_directory']
+            source_directory = models.SourceDirectory.objects.get(pk=source_directory_id)
+            destination = '/var/archivematica/sharedDirectory/transferBackups/originals/' \
+                + os.path.basename(source_directory.path)
+            # need logic to check if destination exists and, if so, pad basename part until it doesn't exist
+            shutil.copytree(
+                source_directory.path,
+                destination
+            )
+            #return HttpResponse(source_directory.path)
+            return HttpResponseRedirect('/transfer/select/' + source_directory_id)
     else:
         form = forms.TransferForm()
 
     return render(request, 'main/transfer/add.html', locals())
+
+def transfer_select(request, source_directory_id):
+    source_directory = models.SourceDirectory.objects.get(pk=source_directory_id)
+    # TODO: check that path exists
+    directory = source_directory.path
+    return render(request, 'main/transfer/select_directory.html', locals())
 
 def transfer_browser(request):
     directory = '/var/archivematica/sharedDirectory/transferBackups/originals'
@@ -893,21 +899,54 @@ def filesystem_contents(request):
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
 def filesystem_delete(request):
-    error = None
     filepath = request.POST.get('filepath', '')
-    if filepath == '':
-      error = 'No filepath provided.'
-    #check if exists
-    #check if is file or directory
-    os.remove('/' + filepath)
+    error = filesystem_check_filepath(filepath)
+
+    if error == None:
+      os.remove('/' + filepath)
 
     response = {}
+
     if error != None:
       response['message'] = error
     else:
       response['message'] = 'Delete successful.'
 
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
+def filesystem_copy_to_originals(request):
+    filepath = request.POST.get('filepath', '')
+    error = filesystem_check_filepath(filepath)
+
+    if error == None:
+        # confine destination to subdir of originals
+        filepath = '/' + filepath
+        destination = '/var/archivematica/sharedDirectory/transferBackups/originals/' + os.path.basename(filepath)
+        try:
+            shutil.copytree(
+                filepath,
+                destination
+            )
+        except:
+            error = 'Error copying from ' + filepath + ' to ' + destination + '.'
+
+    response = {}
+
+    if error != None:
+        response['message'] = error
+    else:
+        response['message'] = 'Copy successful.'
+
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
+def filesystem_check_filepath(filepath):
+    error = None
+    if filepath == '':
+        error = 'No filepath provided.'
+    # check if exists
+    # check if is file or directory
+    # check for .. trickery
+    return error
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc
