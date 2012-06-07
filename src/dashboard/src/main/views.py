@@ -877,7 +877,7 @@ def filesystem_directory_to_dict(path, directory={}, entry=False):
         entry['children'].append(new_entry)
 
         # if entry is a directory, recurse
-        child_path = path + '/' + file
+        child_path = os.path.join(path, file)
         if os.path.isdir(child_path) and os.access(child_path, os.R_OK):
             filesystem_directory_to_dict(child_path, directory, new_entry)
 
@@ -891,17 +891,18 @@ def filesystem_contents(request):
 
 def filesystem_delete(request):
     filepath = request.POST.get('filepath', '')
-    error = filesystem_check_filepath('/' + filepath)
+    filepath = os.path.join('/', filepath)
+    error = filesystem_check_filepath_exists(filepath)
 
     if error == None:
-        filepath = '/' + filepath
+        filepath = os.path.join(filepath)
         if os.path.isdir(filepath):
             try:
                 shutil.rmtree(filepath)
             except:
                 error = 'Error attempting to delete directory.'
         else:
-            os.remove('/' + filepath)
+            os.remove(filepath)
 
     response = {}
 
@@ -915,11 +916,11 @@ def filesystem_delete(request):
 
 def filesystem_copy_to_originals(request):
     filepath = request.POST.get('filepath', '')
-    error = filesystem_check_filepath('/' + filepath)
+    error = filesystem_check_filepath_exists('/' + filepath)
 
     if error == None:
         # confine destination to subdir of originals
-        filepath = '/' + filepath
+        filepath = os.path.join('/', filepath)
         destination = '/var/archivematica/sharedDirectory/transferBackups/originals/' + os.path.basename(filepath)
         destination = filesystem_pad_destination_filepath_if_it_already_exists(destination)
         #error = 'Copying from ' + filepath + ' to ' + destination + '.'
@@ -941,7 +942,7 @@ def filesystem_copy_to_originals(request):
 
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
-def filesystem_check_filepath(filepath):
+def filesystem_check_filepath_exists(filepath):
     error = None
     if filepath == '':
         error = 'No filepath provided.'
