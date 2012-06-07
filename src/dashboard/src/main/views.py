@@ -38,6 +38,7 @@ from datetime import datetime
 import os
 import re
 import subprocess
+import shutil
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Utils (decorators)
@@ -534,14 +535,24 @@ def transfer_add(request):
     if request.method == 'POST':
         form = forms.TransferForm(request.POST)
         if form.is_valid():
-          return HttpResponseRedirect('/transfer/')
+          source_directory_id = request.POST['source_directory']
+          source_directory = models.SourceDirectory.objects.get(pk=source_directory_id)
+          destination = '/var/archivematica/sharedDirectory/transferBackups/originals/' \
+            + os.path.basename(source_directory.path)
+          # need logic to check if destination exists and, if so, pad basename part until it doesn't exist
+          shutil.copytree(
+            source_directory.path,
+            destination
+          )
+          #return HttpResponse(source_directory.path)
+          return HttpResponseRedirect('/transfer/browser/')
     else:
         form = forms.TransferForm()
 
     return render(request, 'main/transfer/add.html', locals())
 
 def transfer_browser(request):
-    directory = '/home/demo'
+    directory = '/var/archivematica/sharedDirectory/transferBackups/originals'
     return render(request, 'main/transfer/browser.html', locals())
 
 def transfer_status(request, uuid=None):
