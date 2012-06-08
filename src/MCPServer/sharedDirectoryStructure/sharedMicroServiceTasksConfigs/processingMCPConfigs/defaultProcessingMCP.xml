@@ -13,5 +13,13 @@
             <goToChain>Unquarantine</goToChain>
             <delay unitCtime="yes">50</delay>
         </preconfiguredChoice>
+        <preconfiguredChoice>
+            <appliesTo>Select compression algorithm</appliesTo>
+            <goToChain>lzma</goToChain>
+        </preconfiguredChoice>
+        <preconfiguredChoice>
+            <appliesTo>Select compression level</appliesTo>
+            <goToChain>5 - normal compression mode</goToChain>
+        </preconfiguredChoice>
     </preconfiguredChoices>
 </processingMCP>
