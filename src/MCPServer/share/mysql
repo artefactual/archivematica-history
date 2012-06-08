@@ -1150,8 +1150,8 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
 set @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
     VALUES (@MicroServiceChainLink, 'lzma', '{"%AIPCompressionAlgorithm%":"lzma"}');
-/*INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'bzip', '{"%AIPCompressionAlgorithm%":"bzip"}');*/
+INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
+    VALUES (@MicroServiceChainLink, 'bzip', '{"%AIPCompressionAlgorithm%":"bzip"}');
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
