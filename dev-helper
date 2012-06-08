@@ -62,7 +62,7 @@ function package-update() {
           cd localDevSetup/
           colour sudo apt-get update
           colour ./installDependsFromDebianFile.py ./../src/archivematicaCommon/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
+          #colour ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
           colour ./installDependsFromDebianFile.py ./../src/dashboard/debian/control
           #./installDependsFromDebianFile.py ./../src/easy-extract/debian/control
           colour ./installDependsFromDebianFile.py ./../src/MCPClient/debian/control

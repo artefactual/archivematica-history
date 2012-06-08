@@ -56,9 +56,9 @@ class linkTaskManagerReplacementDicFromChoice:
         choiceIndex = 0
         while row != None:
             print row
-            replacementDic = row[0]
-            description = row[1]
-            self.choices.append((choiceIndex, description, replacementDic))
+            replacementDic_ = row[0]
+            description_ = row[1]
+            self.choices.append((choiceIndex, description_, replacementDic_))
             row = c.fetchone()
             choiceIndex += 1
         sqlLock.release()
@@ -67,10 +67,18 @@ class linkTaskManagerReplacementDicFromChoice:
         preConfiguredChain = self.checkForPreconfiguredXML()
         if preConfiguredChain != None:
             if preConfiguredChain != waitingOnTimer:
-                time.sleep(archivematicaMCP.config.getint('MCPServer', "waitOnAutoApprove"))
-                print "checking for xml file for processing rules. TODO"
+                #time.sleep(archivematicaMCP.config.getint('MCPServer', "waitOnAutoApprove"))
+                #print "checking for xml file for processing rules. TODO"
                 self.jobChainLink.setExitMessage("Completed successfully")
-                jobChain.jobChain(self.unit, preConfiguredChain)
+                #jobChain.jobChain(self.unit, preConfiguredChain)
+                rd = replacementDic(eval(preConfiguredChain))
+                if self.jobChainLink.passVar != None:
+                        if isinstance(self.jobChainLink.passVar, replacementDic):
+                            new = {}
+                            new.update(self.jobChainLink.passVar.dic)
+                            new.update(rd.dic)
+                            rd.dic = new
+                self.jobChainLink.linkProcessingComplete(0, rd)
             else:
                 print "waiting on delay to resume processing on unit:", unit
         else:
@@ -96,7 +104,7 @@ class linkTaskManagerReplacementDicFromChoice:
                     #if int(preconfiguredChoice.find("appliesTo").text) == self.jobChainLink.pk:
                     if preconfiguredChoice.find("appliesTo").text == self.jobChainLink.description:
                         desiredChoice = preconfiguredChoice.find("goToChain").text
-                        sql = """SELECT MicroServiceChains.pk FROM MicroServiceChainChoice Join MicroServiceChains on MicroServiceChainChoice.chainAvailable = MicroServiceChains.pk WHERE MicroServiceChains.description = '%s' AND MicroServiceChainChoice.choiceAvailableAtLink = %s;""" % (desiredChoice, self.jobChainLink.pk.__str__())
+                        sql = """SELECT MicroServiceChoiceReplacementDic.replacementDic FROM MicroServiceChoiceReplacementDic  WHERE MicroServiceChoiceReplacementDic.description = '%s' AND MicroServiceChoiceReplacementDic.choiceAvailableAtLink = %s;""" % (desiredChoice, self.jobChainLink.pk.__str__())
                         c, sqlLock = databaseInterface.querySQL(sql)
                         row = c.fetchone()
                         while row != None:
@@ -117,8 +125,14 @@ class linkTaskManagerReplacementDicFromChoice:
                                 print "time to go:", timeToGo
                                 #print "that will be: ", (nowTime + timeToGo)
                                 self.jobChainLink.setExitMessage("Waiting till: " + datetime.datetime.fromtimestamp((nowTime + timeToGo)).ctime())
-
-                                t = threading.Timer(timeToGo, jobChain.jobChain, args=[self.unit, ret], kwargs={})
+                                rd = replacementDic(eval(ret))
+                                if self.jobChainLink.passVar != None:
+                                        if isinstance(self.jobChainLink.passVar, replacementDic):
+                                            new = {}
+                                            new.update(self.jobChainLink.passVar.dic)
+                                            new.update(rd.dic)
+                                            rd.dic = new
+                                t = threading.Timer(timeToGo, self.jobChainLink.linkProcessingComplete, args=[0, rd], kwargs={})
                                 t.daemon = True
                                 t.start()
 
@@ -166,6 +180,9 @@ class linkTaskManagerReplacementDicFromChoice:
         rd = replacementDic(eval(replacementDic2))
         if self.jobChainLink.passVar != None:
                 if isinstance(self.jobChainLink.passVar, replacementDic):
-                    rd.dic.update(self.jobChainLink.passVar.dic)
+                    new = {}
+                    new.update(self.jobChainLink.passVar.dic)
+                    new.update(rd.dic)
+                    rd.dic = new
         self.jobChainLink.linkProcessingComplete(0, rd)
         
