@@ -23,16 +23,48 @@
 
 {% block content %}
 
-<div id='explorer' class='backbone-file-explorer'></div>
+<div id='originals' class='backbone-file-explorer' style='float:left'></div>
+<div id='arrange' class='backbone-file-explorer' style='margin-left: 30px; float:left'></div>
 
 <script>
 $(document).ready(function() {
-  var explorer = new FileExplorer({
-      el: $('#explorer'),
+  function moveHandler(move) {
+    // don't allow dragging stuff from originals directory?
+    if (move.self.id != 'originals') {
+      if (move.allowed) {
+        move.self.busy();
+        $('#message').text(
+          'Dropped ID ' + move.droppedPath + ' onto ' + move.containerPath
+        );
+        setTimeout(function() {
+          move.self.idle();
+          $('#message').text('');
+        }, 2000);
+      } else {
+        alert("You can't move a directory into its subdirectory.");
+      }
+    } else {
+      alert("You can't copy into the originals directory.");
+    }
+  };
+
+  var originals = new FileExplorer({
+      el: $('#originals'),
       levelTemplate: $('#template-dir-level').html(),
       entryTemplate: $('#template-dir-entry').html()
   });
-  explorer.refresh('{{ directory }}');
+  originals.refresh('{{ directory }}');
+
+  originals.moveHandler = moveHandler;
+
+  var arrange = new FileExplorer({
+      el: $('#arrange'),
+      levelTemplate: $('#template-dir-level').html(),
+      entryTemplate: $('#template-dir-entry').html()
+  });
+  arrange.refresh('{{ arrange_directory }}');
+
+  arrange.moveHandler = moveHandler;
 });
 
 </script>
