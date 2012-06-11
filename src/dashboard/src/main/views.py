@@ -550,6 +550,7 @@ def transfer_select(request, source_directory_id):
 
 def transfer_browser(request):
     directory = '/var/archivematica/sharedDirectory/transferBackups/originals'
+    arrange_directory = '/var/archivematica/sharedDirectory/transferBackups/arrange'
     return render(request, 'main/transfer/browser.html', locals())
 
 def transfer_status(request, uuid=None):
