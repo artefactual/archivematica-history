@@ -4,10 +4,15 @@
 {% block h1 %}Transfer{% endblock %}
 {% block page_id %}transfer{% endblock %}
 
+{% block css %}
+<link href="{{ STATIC_URL }}vendor/select2/select2.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block js %}
   <script type="text/javascript" src="{{ STATIC_URL }}js/jobs.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}js/online.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}js/transfer.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}vendor/select2/select2.js"></script>
   <script type="text/javascript">
 
     $(document).ready(function()
