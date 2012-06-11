@@ -30,6 +30,10 @@ body {
   z-index: 10;
 }
 
+li.active {
+  background-color: #eee;
+} 
+
 /* Tooltips */
 
 .tooltip {
