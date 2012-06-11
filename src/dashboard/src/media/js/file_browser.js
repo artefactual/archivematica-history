@@ -26,7 +26,9 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
           self.deleteEntry(result.path, result.type); 
         } 
       } 
-    ]; 
+    ];
+
+    this.id = $(this.el).attr('id'); 
   },
 
   deleteEntry: function(path, type) {
