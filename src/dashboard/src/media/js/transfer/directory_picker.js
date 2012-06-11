@@ -31,10 +31,10 @@ function createDirectoryPicker(baseDirectory) {
         '/filesystem/copy_to_originals/',
         {filepath: result.path},
         function(result) {
-          console.log(result);
-          alert(result.message);
           if (result.error == undefined) {
             window.location = '/transfer/browser/';
+          } else {
+            alert(result.message);
           }
         }
       )
