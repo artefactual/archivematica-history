@@ -88,6 +88,37 @@ def copy_to_originals(request):
 
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
+def copy_to_arrange(request):
+    sourcepath  = request.POST.get('filepath', '')
+    destination = request.POST.get('destination', '')
+
+    error = check_filepath_exists('/' + sourcepath)
+
+    if error == None:
+        # confine destination to subdir of originals
+        sourcepath = os.path.join('/', sourcepath)
+        destination = os.path.join('/', destination) + '/' + os.path.basename(sourcepath)
+        # do a check making sure destination is a subdir of ARRANGE_DIR
+        destination = pad_destination_filepath_if_it_already_exists(destination)
+        #error = 'Copying from ' + sourcepath + ' to ' + destination + '.'
+        try:
+            shutil.copytree(
+                sourcepath,
+                destination
+            )
+        except:
+            error = 'Error copying from ' + sourcepath + ' to ' + destination + '.'
+
+    response = {}
+
+    if error != None:
+        response['message'] = error
+        response['error']   = True
+    else:
+        response['message'] = 'Copy successful.'
+
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
 def check_filepath_exists(filepath):
     error = None
     if filepath == '':

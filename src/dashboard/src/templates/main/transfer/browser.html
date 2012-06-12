@@ -33,13 +33,23 @@ $(document).ready(function() {
     if (move.self.id != 'originals') {
       if (move.allowed) {
         move.self.busy();
-        $('#message').text(
-          'Dropped ID ' + move.droppedPath + ' onto ' + move.containerPath
+
+console.log(move);
+        $.post(
+          '/filesystem/copy_to_arrange/',
+          {
+            filepath: move.droppedPath,
+            destination: move.containerPath
+          },
+          function(result) {
+            if (result.error == undefined) {
+              //window.location = '/transfer/browser/';
+            } else {
+              alert(result.message);
+            }
+console.log(result);
+          }
         );
-        setTimeout(function() {
-          move.self.idle();
-          $('#message').text('');
-        }, 2000);
       } else {
         alert("You can't move a directory into its subdirectory.");
       }
