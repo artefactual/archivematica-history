@@ -33,6 +33,8 @@ from linkTaskManagerReplacementDicFromChoice import linkTaskManagerReplacementDi
 from linkTaskManagerSplit import linkTaskManagerSplit
 from linkTaskManagerSplitOnFileIdAndruleset import linkTaskManagerSplitOnFileIdAndruleset
 from linkTaskManagerTranscoderCommand import linkTaskManagerTranscoderCommand
+from linkTaskManagerGetMicroserviceGeneratedListInStdOut import linkTaskManagerGetMicroserviceGeneratedListInStdOut
+from linkTaskManagerGetUserChoiceFromMicroserviceGeneratedList import linkTaskManagerGetUserChoiceFromMicroserviceGeneratedList
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import logJobCreatedSQL
@@ -49,6 +51,8 @@ constGetReplacementDic = 5
 constSplitByFile = 6
 constlinkTaskManagerSplitOnFileIdAndruleset = 7
 constTranscoderTaskLink = 8
+constlinkTaskManagerGetMicroserviceGeneratedListInStdOut = 9
+constlinkTaskManagerGetUserChoiceFromMicroserviceGeneratedList = 10
 
 class jobChainLink:
     def __init__(self, jobChain, jobChainLinkPK, unit, passVar=None, subJobOf=""):
@@ -120,6 +124,10 @@ class jobChainLink:
             if self.reloadFileList:
                 self.unit.reloadFileList();
             linkTaskManagerTranscoderCommand(self, taskTypePKReference, self.unit)
+        elif taskType == constlinkTaskManagerGetMicroserviceGeneratedListInStdOut:
+            linkTaskManagerGetMicroserviceGeneratedListInStdOut(self, taskTypePKReference, self.unit)
+        elif taskType == constlinkTaskManagerGetUserChoiceFromMicroserviceGeneratedList:
+            linkTaskManagerGetUserChoiceFromMicroserviceGeneratedList(self, taskTypePKReference, self.unit)
         else:
             print sys.stderr, "unsupported task type: ", taskType
 

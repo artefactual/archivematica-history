@@ -25,7 +25,7 @@
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
 from unitFile import unitFile
-from replacementDic import replacementDic
+from passClasses import *
 import jobChain
 import databaseInterface
 import threading

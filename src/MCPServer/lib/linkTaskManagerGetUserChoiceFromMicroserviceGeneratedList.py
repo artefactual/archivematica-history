@@ -28,8 +28,6 @@ import threading
 import uuid
 import sys
 import time
-#select * from MicroServiceChainChoice JOIN MicroServiceChains on chainAvailable = MicroServiceChains.pk;
-#| pk | choiceAvailableAtLink | chainAvailable | pk | startingLink | description
 
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
@@ -41,28 +39,48 @@ import archivematicaMCP
 from linkTaskManagerChoice import choicesAvailableForUnits
 from linkTaskManagerChoice import choicesAvailableForUnitsLock
 from linkTaskManagerChoice import waitingOnTimer
-from passClasses import *
+from linkTaskManagerGetMicroserviceGeneratedListInStdOut import choicesDic
+from passClasses import replacementDic
 
-class linkTaskManagerReplacementDicFromChoice:
+class linkTaskManagerGetUserChoiceFromMicroserviceGeneratedList:
     def __init__(self, jobChainLink, pk, unit):
         self.choices = []
         self.pk = pk
         self.jobChainLink = jobChainLink
         self.UUID = uuid.uuid4().__str__()
         self.unit = unit
-        sql = """SELECT replacementDic, description FROM MicroServiceChoiceReplacementDic WHERE choiceAvailableAtLink = """ + jobChainLink.pk.__str__()
+        sql = """SELECT execute FROM StandardTasksConfigs where pk = """ + pk.__str__()
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         choiceIndex = 0
         while row != None:
             print row
-            replacementDic_ = row[0]
-            description_ = row[1]
-            self.choices.append((choiceIndex, description_, replacementDic_))
+            key = row[0]
+            #self.choices.append((choiceIndex, description_, replacementDic_))
             row = c.fetchone()
-            choiceIndex += 1
+            #choiceIndex += 1
         sqlLock.release()
-        #print "choices", self.choices
+        if isinstance(self.jobChainLink.passVar, list):
+            found = False
+            for item in self.jobChainLink.passVar:
+                print >>sys.stderr
+                print >>sys.stderr
+                print >>sys.stderr
+                print >>sys.stderr, isinstance(item, choicesDic), item
+                if isinstance(item, choicesDic):
+                    for description_, value in item.dic.iteritems():
+                        replacementDic_ = {key: value}.__str__()
+                        self.choices.append((choiceIndex, description_, replacementDic_))
+                        choiceIndex += 1
+                    found = True
+                    break
+            if not found:
+                print >>sys.stderr, "self.jobChainLink.passVar", self.jobChainLink.passVar
+                throw(exception2)
+        else:
+            throw(exception)
+
+        print "choices", self.choices
 
         preConfiguredChain = self.checkForPreconfiguredXML()
         if preConfiguredChain != None:
@@ -162,7 +180,7 @@ class linkTaskManagerReplacementDicFromChoice:
         return ret
 
     def xmlify(self):
-        print "xmlify"
+        #print "xmlify"
         ret = etree.Element("choicesAvailableForUnit")
         etree.SubElement(ret, "UUID").text = self.jobChainLink.UUID
         ret.append(self.unit.xmlify())
@@ -171,7 +189,7 @@ class linkTaskManagerReplacementDicFromChoice:
             choice = etree.SubElement(choices, "choice")
             etree.SubElement(choice, "chainAvailable").text = chainAvailable.__str__()
             etree.SubElement(choice, "description").text = description
-        print etree.tostring(ret)
+        #print etree.tostring(ret)
         return ret
 
 

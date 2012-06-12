@@ -24,7 +24,8 @@
 
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
-from passClasses import *
+from passClasses import choicesDic
+from passClasses import replacementDic
 import os
 import uuid
 import sys
@@ -34,7 +35,7 @@ import databaseInterface
 import databaseFunctions
 
 
-class linkTaskManagerDirectories:
+class linkTaskManagerGetMicroserviceGeneratedListInStdOut:
     def __init__(self, jobChainLink, pk, unit):
         self.tasks = []
         self.pk = pk
@@ -102,5 +103,22 @@ class linkTaskManagerDirectories:
     def taskCompletedCallBackFunction(self, task):
         print task
         databaseFunctions.logTaskCompletedSQL(task)
+        try:
+            choices = choicesDic(eval(task.results["stdOut"]))
+        except:
+            print >>sys.stderr, "Error creating dic from output"
+            choices = choicesDic({})
+        if self.jobChainLink.passVar != None:
+            if isinstance(self.jobChainLink.passVar, list):
+                found = False
+                for passVarIndex in range(len(self.jobChainLink.passVar)):
+                    if isinstance(self.jobChainLink.passVar[passVarIndex], choicesDic):
+                        self.jobChainLink.passVar[passVarIndex] = choices
+                if not found:
+                   self.jobChainLink.passVar.append(choices)
+            else:
+                self.jobChainLink.passVar = [choices, self.jobChainLink.passVar] 
+        else:
+            self.jobChainLink.passVar = [choices]
         if True:
             self.jobChainLink.linkProcessingComplete(task.results["exitCode"], self.jobChainLink.passVar)

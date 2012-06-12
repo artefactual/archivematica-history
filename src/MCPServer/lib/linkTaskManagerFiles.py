@@ -25,7 +25,7 @@
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
 from unitFile import unitFile
-from replacementDic import replacementDic
+from passClasses import *
 import databaseInterface
 import threading
 import math
@@ -92,7 +92,11 @@ class linkTaskManagerFiles:
             arguments = self.arguments
             
             if self.jobChainLink.passVar != None:
-                if isinstance(self.jobChainLink.passVar, replacementDic):
+                if isinstance(self.jobChainLink.passVar, list):
+                    for passVar in self.jobChainLink.passVar:
+                        if isinstance(passVar, replacementDic):
+                            execute, arguments, standardOutputFile, standardErrorFile = passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
+                elif isinstance(self.jobChainLink.passVar, replacementDic):
                     execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
 
             commandReplacementDic = fileUnit.getReplacementDic()

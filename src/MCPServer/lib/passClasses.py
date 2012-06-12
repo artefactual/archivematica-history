@@ -36,16 +36,7 @@ class replacementDic:
             ret.append(orig)
         return ret
 
-#testing
-if __name__ == '__main__':
-    rd = {"a":"A", "b":"B"}
-    ins1 = "abcd"
-    ins2 = "efga"
-    ins3 = "a"
-    ins4 = None
-    ins5 = "seven"   
-    a = replacementDic(rd)
-    out = a.replace(ins1, ins2, ins3, ins4, ins5)
-    print rd
-    print ins1, ins2, ins3, ins4, ins5
-    print out 
+
+class choicesDic:
+    def __init__(self, dictionary):
+        self.dic = dictionary
