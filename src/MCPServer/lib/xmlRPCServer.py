@@ -28,6 +28,7 @@ import lxml.etree as etree
 import gearman
 import cPickle
 import time
+import traceback
 from socket import gethostname
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
@@ -54,7 +55,7 @@ def getJobsAwaitingApproval():
     ret = etree.Element("choicesAvailableForUnits")
     dbStatus = verifyDatabaseIsNotLocked()
     if dbStatus:
-        print etree.tostring(dbStatus)
+        #print etree.tostring(dbStatus)
         return etree.tostring(dbStatus)
     for UUID, choice in choicesAvailableForUnits.items():
         ret.append(choice.xmlify())
@@ -80,6 +81,7 @@ def gearmanApproveJob(gearman_worker, gearman_job):
     #catch OS errors
     except Exception as inst:
         print >>sys.stderr, "DEBUG EXCEPTION! gearmanApproveJob"
+        traceback.print_exc(file=sys.stdout)
         print >>sys.stderr, type(inst)     # the exception instance
         print >>sys.stderr, inst.args
         return ""
@@ -96,6 +98,7 @@ def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
     #catch OS errors
     except Exception as inst:
         print >>sys.stderr, "DEBUG EXCEPTION! gearmanGetJobsAwaitingApproval"
+        traceback.print_exc(file=sys.stdout)
         print >>sys.stderr, type(inst)     # the exception instance
         print >>sys.stderr, inst.args
         return ""

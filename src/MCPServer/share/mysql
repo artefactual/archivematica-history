@@ -480,14 +480,16 @@ CREATE TABLE TaskTypes (
 INSERT INTO TaskTypes
     (pk, description)
     VALUES ( 0, 'one instance'),
-    ( 1, 'for each file'),
-    ( 2, 'get user choice to proceed with'),
-    ( 3, 'assign magic link'),
-    ( 4, 'goto magic link'),
-    ( 5, 'get replacement dic from user choice'),
-    ( 6, 'Split creating Jobs for each file'),
-    ( 7, 'Split Job into many links based on file ID'),
-    ( 8, 'Transcoder task type');
+    ( 1,  'for each file'),
+    ( 2,  'get user choice to proceed with'),
+    ( 3,  'assign magic link'),
+    ( 4,  'goto magic link'),
+    ( 5,  'get replacement dic from user choice'),
+    ( 6,  'Split creating Jobs for each file'),
+    ( 7,  'Split Job into many links based on file ID'),
+    ( 8,  'Transcoder task type'),
+    ( 9,  'Get microservice generated list in stdOut'),
+    ( 10, 'Get user choice from microservice generated list');
 
 DROP TABLE IF EXISTS TasksConfigs;
 CREATE TABLE TasksConfigs (
@@ -894,7 +896,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 -- 7: 'Upload DIP to contentDM'
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --servers 127.0.0.1  --collection "%ContentdmCollection%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --collection "%ContentdmCollection%" --server "%ContentdmServer%" --ingestFormat "%ContentdmIngestFormat%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Upload DIP to contentDM');
@@ -914,7 +916,7 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 -- 6: 'Restructure DIP for content DM upload'
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'restructureDIPForContentDMUpload_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --collection "%ContentdmCollection%" --server "%ContentdmServer%" --ingestFormat "%ingestFormat%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'restructureDIPForContentDMUpload_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --collection "%ContentdmCollection%" --server "%ContentdmServer%" --ingestFormat "%ContentdmIngestFormat%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Restructure DIP for CONTENTdm upload');
@@ -948,26 +950,29 @@ set @NextMicroServiceChainLink = @MicroServiceChainLink;
 -- 4: 'Select target CONTENTdm collection'
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'select-contentDM-collection_v0.0', '');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, '%ContentdmCollection%', NULL);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (5,      LAST_INSERT_ID(), 'Select target CONTENTdm collection');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+    (10,      LAST_INSERT_ID(), 'Select destination collection');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'Drupal Integration Test Collection', '{"%ContentdmCollection%":"/ditc"}');
-INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'Archivematica test collection', '{"%ContentdmCollection%":"/archtc"}');
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink,
-            description, replacementDic)
- VALUES (@MicroServiceChainLink, 'localhost',
-            '{"%ContentdmCollection%":"localhost"}');
-
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'getContentdmCollectionList_v0.0', '"%ContentdmServer%"');
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (9,      LAST_INSERT_ID(), 'Get list of collections on server');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 -- 3: 'Select target CONTENTdm server'
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)

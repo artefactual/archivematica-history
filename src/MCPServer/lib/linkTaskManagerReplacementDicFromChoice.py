@@ -41,7 +41,7 @@ import archivematicaMCP
 from linkTaskManagerChoice import choicesAvailableForUnits
 from linkTaskManagerChoice import choicesAvailableForUnitsLock
 from linkTaskManagerChoice import waitingOnTimer
-from replacementDic import replacementDic
+from passClasses import *
 
 class linkTaskManagerReplacementDicFromChoice:
     def __init__(self, jobChainLink, pk, unit):
@@ -62,7 +62,7 @@ class linkTaskManagerReplacementDicFromChoice:
             row = c.fetchone()
             choiceIndex += 1
         sqlLock.release()
-        print "choices", self.choices
+        #print "choices", self.choices
 
         preConfiguredChain = self.checkForPreconfiguredXML()
         if preConfiguredChain != None:
@@ -73,11 +73,21 @@ class linkTaskManagerReplacementDicFromChoice:
                 #jobChain.jobChain(self.unit, preConfiguredChain)
                 rd = replacementDic(eval(preConfiguredChain))
                 if self.jobChainLink.passVar != None:
-                        if isinstance(self.jobChainLink.passVar, replacementDic):
-                            new = {}
-                            new.update(self.jobChainLink.passVar.dic)
-                            new.update(rd.dic)
-                            rd.dic = new
+                    if isinstance(self.jobChainLink.passVar, list):
+                        found = False
+                        for passVar in self.jobChainLink.passVar:
+                            if isinstance(self.jobChainLink.passVar, replacementDic):
+                                new = {}
+                                new.update(self.jobChainLink.passVar.dic)
+                                new.update(rd.dic)
+                                rd.dic = [new]
+                                found = True
+                                break
+                        if not found:
+                            self.jobChainLink.passVar.append(rd)
+                            rd = self.jobChainLink.passVar 
+                else:
+                    rd = [rd]
                 self.jobChainLink.linkProcessingComplete(0, rd)
             else:
                 print "waiting on delay to resume processing on unit:", unit
@@ -179,10 +189,20 @@ class linkTaskManagerReplacementDicFromChoice:
         choiceIndex, description, replacementDic2 = self.choices[int(index)]
         rd = replacementDic(eval(replacementDic2))
         if self.jobChainLink.passVar != None:
-                if isinstance(self.jobChainLink.passVar, replacementDic):
-                    new = {}
-                    new.update(self.jobChainLink.passVar.dic)
-                    new.update(rd.dic)
-                    rd.dic = new
+            if isinstance(self.jobChainLink.passVar, list):
+                found = False
+                for passVar in self.jobChainLink.passVar:
+                    if isinstance(self.jobChainLink.passVar, replacementDic):
+                        new = {}
+                        new.update(self.jobChainLink.passVar.dic)
+                        new.update(rd.dic)
+                        rd.dic = [new]
+                        found = True
+                        break
+                if not found:
+                    self.jobChainLink.passVar.append(rd)
+                    rd = self.jobChainLink.passVar 
+        else:
+            rd = [rd]
         self.jobChainLink.linkProcessingComplete(0, rd)
         

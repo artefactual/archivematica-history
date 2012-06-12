@@ -24,7 +24,7 @@
 
 from linkTaskManager import linkTaskManager
 from taskStandard import taskStandard
-from replacementDic import replacementDic
+from passClasses import *
 import os
 import uuid
 import sys
@@ -71,7 +71,7 @@ class linkTaskManagerDirectories:
             if isinstance(self.jobChainLink.passVar, list):
                 for passVar in self.jobChainLink.passVar:
                     if isinstance(passVar, replacementDic):
-                        execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
+                        execute, arguments, standardOutputFile, standardErrorFile = passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
             elif isinstance(self.jobChainLink.passVar, replacementDic):
                 execute, arguments, standardOutputFile, standardErrorFile = self.jobChainLink.passVar.replace(execute, arguments, standardOutputFile, standardErrorFile)
                     
