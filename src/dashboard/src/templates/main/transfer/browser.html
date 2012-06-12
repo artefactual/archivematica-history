@@ -34,7 +34,6 @@ $(document).ready(function() {
       if (move.allowed) {
         move.self.busy();
 
-console.log(move);
         $.post(
           '/filesystem/copy_to_arrange/',
           {
@@ -43,11 +42,10 @@ console.log(move);
           },
           function(result) {
             if (result.error == undefined) {
-              //window.location = '/transfer/browser/';
+              arrange.refresh('{{ arrange_directory }}');
             } else {
               alert(result.message);
             }
-console.log(result);
           }
         );
       } else {
