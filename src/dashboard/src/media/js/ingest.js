@@ -239,8 +239,7 @@ $(function()
           if (choices)
           {
             var $select = $('<select />').append('<option>Actions</option>')
-              , numberOfChoices = Object.keys(choices).length
-              , bigSelectShowing = false;
+              , numberOfChoices = Object.keys(choices).length;
 
             // use pop-up action selector for long choice lists
             if (numberOfChoices >= 10)
