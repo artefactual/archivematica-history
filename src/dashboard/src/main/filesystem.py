@@ -3,7 +3,9 @@ from django.utils import simplejson
 import os
 import shutil
 
-ORIGINALS_DIR = '/var/archivematica/sharedDirectory/transferBackups/originals'
+SHARED_DIRECTORY_ROOT = '/var/archivematica/sharedDirectory'
+ORIGINALS_DIR         = SHARED_DIRECTORY_ROOT + '/transferBackups/originals'
+STANDARD_TRANSFER_DIR = SHARED_DIRECTORY_ROOT + '/watchedDirectories/activeTransfers/standardTransfer'
 
 def directory_to_dict(path, directory={}, entry=False):
     # if starting traversal, set entry to directory root
