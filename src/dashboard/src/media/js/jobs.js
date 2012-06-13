@@ -554,6 +554,45 @@ var BaseJobView = Backbone.View.extend({
       return (statusColors[status] == undefined)
         ? '#d8f2dc'
         : statusColors[status];
+    },
+
+  // augment dashboard action select by using a pop-up with an enhanced select widget
+  activateEnhancedActionSelect: function($select, statusObject)
+    {
+      $select.hover(function() {
+        // if not showing proxy selector and modal window
+        if (!statusObject.bigSelectShowing)
+        {
+          // clone action selector
+          var $proxySelect = $select.clone();
+
+          // display action selector in modal window
+          $('<div class="modal hide" id="big-choice-select-modal"><div class="modal-header"><button type="button" class="close" id="big-choice-select-close" data-dismiss="modal">×</button><h3>Select an action...</h3></div><div class="modal-body" id="big-choice-select-body"></div><div class="modal-footer"><a href="#" class="btn" data-dismiss="modal" id="big-choice-select-cancel">Cancel</a></div></div>')
+          .modal({show: true});
+          $('#big-choice-select-body').append($proxySelect);
+
+          // style clone as Select2
+          $proxySelect.select2();
+
+          // proxy selections to action selector
+          $proxySelect.change(function()
+                  {
+            $select.val($(this).val());
+            $select.trigger('change');
+            $('#big-choice-select-modal').remove();
+          });
+
+          // allow another instance to show if modal is closed
+          $('#big-choice-select-close, #big-choice-select-cancel').click(function()
+          {
+            statusObject.bigSelectShowing = false;
+            $('#big-choice-select-modal').remove();
+          });
+
+          // prevent multiple instances of this from displaying at once
+          statusObject.bigSelectShowing = true;
+        }
+      });
     }
 });
 
