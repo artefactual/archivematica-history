@@ -233,6 +233,14 @@ class RightsStatementRightsGranted(models.Model):
     class Meta:
         db_table = u'RightsStatementRightsGranted'
 
+class RightsStatementRightsGrantedNote(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk', editable=False)
+    rightsgranted = models.ForeignKey(RightsStatementRightsGranted, db_column='fkRightsStatementRightsGranted')
+    rightsgrantednote = models.TextField(db_column='rightsGrantedNote', blank=True, verbose_name='Rights note')
+
+    class Meta:
+        db_table = u'RightsStatementRightsGrantedNote'
+
 class RightsStatementRightsGrantedRestriction(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     rightsgranted = models.ForeignKey(RightsStatementRightsGranted, db_column='fkRightsStatementRightsGranted')
