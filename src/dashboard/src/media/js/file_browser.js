@@ -17,16 +17,18 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
       } 
     };
 
-    this.options.actionHandlers = [ 
-      { 
+    if (this.options.actionHandlers == undefined) {
+      this.options.actionHandlers = [];
+    }
+
+    this.options.actionHandlers.push({ 
         name: 'Delete', 
         description: 'Delete file or directory', 
         iconHtml: "<img src='/media/images/delete.png' />", 
         logic: function(result) { 
           self.deleteEntry(result.path, result.type); 
         } 
-      } 
-    ];
+    });
 
     this.id = $(this.el).attr('id'); 
   },
@@ -48,7 +50,8 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
 
   refresh: function(path) {
     $(this.el).empty();
-    this.initialize();
+    this.render();
+    this.initDragAndDrag();
     this.busy();
 
     if (path != undefined)

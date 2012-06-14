@@ -54,7 +54,7 @@ $(document).ready(function() {
     } else {
       alert("You can't copy into the originals directory.");
     }
-  };
+  }
 
   var originals = new FileExplorer({
       el: $('#originals'),
@@ -68,8 +68,23 @@ $(document).ready(function() {
   var arrange = new FileExplorer({
       el: $('#arrange'),
       levelTemplate: $('#template-dir-level').html(),
-      entryTemplate: $('#template-dir-entry').html()
+      entryTemplate: $('#template-dir-entry').html(),
+      actionHandlers: [{
+        name: 'Start transfer',
+        description: 'Start transfer',
+        iconHtml: '<img src="/media/images/accept.png" />',
+        logic: function(result) {
+          $.post(
+            '/filesystem/copy_from_arrange/',
+            {filepath: result.path},
+            function(result) {
+              alert(result.message);
+            }
+          )
+        }
+      }]
   });
+
   arrange.refresh('{{ arrange_directory }}');
 
   arrange.moveHandler = moveHandler;
