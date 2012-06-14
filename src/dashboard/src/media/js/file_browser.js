@@ -58,7 +58,7 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
     }
 
     var baseUrl = '/filesystem/contents/';
-    url = (this.path != undefined)
+    var url = (this.path != undefined)
       ? baseUrl + '?path=' + encodeURIComponent(this.path)
       : baseUrl;
 
