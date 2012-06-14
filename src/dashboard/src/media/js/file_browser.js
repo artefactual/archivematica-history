@@ -50,8 +50,6 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
 
   refresh: function(path) {
     $(this.el).empty();
-    this.render();
-    this.initDragAndDrop();
     this.busy();
 
     if (path != undefined)
@@ -68,9 +66,8 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
     $.get(url, function(results) {
       self.structure = results;
       self.render();
+      self.initDragAndDrop();
       self.idle();
-      //$('#directories').slideDown();
-      //$('#source_page_instructions').fadeIn();
     });
   },
 
