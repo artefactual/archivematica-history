@@ -219,7 +219,7 @@
 
             // re-bind drag/drop
             if (self.explorer.moveHandler) {
-              self.explorer.initDragAndDrag();
+              self.explorer.initDragAndDrop();
             }
 
             rendered = true;
@@ -238,6 +238,8 @@
       });
 
       var entryEl = entryView.render().el;
+
+      exports.Data.idPaths[ this.explorer.id + '_' + entryView.model.id()] = entryView.model.path();
 
       if (!this.closeDirsByDefault) {
         $(entryEl).addClass('backbone-file-explorer-directory_open');
@@ -264,13 +266,25 @@
 
       this.id = $(this.el).attr('id');
       this.render();
-      this.initDragAndDrag();
+      this.initDragAndDrop();
     },
 
-    initDragAndDrag: function() {
+    initDragAndDrop: function() {
       if (this.moveHandler) {
         // bind drag-and-drop functionality
         var self = this;
+
+       $(this.el)
+          .find('.backbone-file-explorer-directory:not(:first)')
+          .unbind('drag')
+          .bind('drag', {'self': self}, self.dragHandler);
+
+       $(this.el)
+          .find('.backbone-file-explorer-directory')
+          .unbind('drop')
+          .bind('drop', {'self': self}, self.dropHandler);
+
+       /*
        $(this.el)
           .find('.backbone-file-explorer-directory:not(:first)')
           .unbind('drag')
@@ -278,15 +292,11 @@
        $(this.el)
           .find('.backbone-file-explorer-directory:not(:first)')
           .each(function() {
-            //var events = $(this).data('events');
-            //if (events == undefined || events.drag == undefined) {
               $(this).bind('drag', {'self': self}, self.dragHandler);
-            //}
-            //if (events == undefined || events.drop == undefined) {
               $(this).bind('drop', {'self': self}, self.dropHandler);
-            //}
           }
         );
+        */
       }
     },
 
@@ -328,7 +338,7 @@
     snapShotToggledFolders: function() {
       this.toggled = [];
       var self = this;
-      $('.directory').each(function(index, value) {
+      $('.backbone-file-explorer-directory').each(function(index, value) {
         if (!$(value).next().is(':visible')) {
           self.toggled.push($(value).attr('id'));
         }
