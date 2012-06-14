@@ -5,7 +5,7 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
     this.options.closeDirsByDefault = true;
 
     this.render();
-    this.initDragAndDrag();
+    this.initDragAndDrop();
 
     var self = this;
     this.options.nameClickHandler = function(result) { 
@@ -51,7 +51,7 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
   refresh: function(path) {
     $(this.el).empty();
     this.render();
-    this.initDragAndDrag();
+    this.initDragAndDrop();
     this.busy();
 
     if (path != undefined)
