@@ -90,6 +90,37 @@ def copy_to_originals(request):
 
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
+def copy_from_arrange_to_start_transfer(request):
+    sourcepath  = request.POST.get('filepath', '')
+
+    error = check_filepath_exists('/' + sourcepath)
+
+    if error == None:
+        sourcepath = os.path.join('/', sourcepath)
+        destination = os.path.join(STANDARD_TRANSFER_DIR, os.path.basename(sourcepath))
+
+        # do check if directory already exists
+        if os.path.exists(destination):
+            error = 'A transfer with this directory name has already been started.'
+        else:
+            try:
+                shutil.copytree(
+                    sourcepath,
+                    destination
+                )
+            except:
+                error = 'Error copying from ' + filepath + ' to ' + destination + '.'
+
+    response = {}
+
+    if error != None:
+        response['message'] = error
+        response['error']   = True
+    else:
+        response['message'] = 'Transfer started.'
+
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
 def copy_to_arrange(request):
     sourcepath  = request.POST.get('filepath', '')
     destination = request.POST.get('destination', '')
