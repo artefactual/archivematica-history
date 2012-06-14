@@ -45,6 +45,7 @@ $(document).ready(function() {
               arrange.refresh('{{ arrange_directory }}');
             } else {
               alert(result.message);
+              move.self.idle();
             }
           }
         );
