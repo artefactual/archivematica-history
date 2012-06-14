@@ -159,7 +159,7 @@ def check_filepath_exists(filepath):
 
     # check if exists
     if error == None and not os.path.exists(filepath):
-        error = 'Filepath does not exist.'
+        error = 'Filepath ' + filepath + ' does not exist.'
 
     # check if is file or directory
 
