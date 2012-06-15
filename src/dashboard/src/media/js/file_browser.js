@@ -21,13 +21,20 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
       this.options.actionHandlers = [];
     }
 
+    var self = this;
     this.options.actionHandlers.push({ 
         name: 'Delete', 
         description: 'Delete file or directory', 
         iconHtml: "<img src='/media/images/delete.png' />", 
         logic: function(result) { 
-          self.deleteEntry(result.path, result.type); 
-        } 
+          self.confirm(
+            'Delete',
+            'Are you sure you want to delete this directory or file?',
+            function() {
+              self.deleteEntry(result.path, result.type);
+            }
+          );
+        }
     });
 
     this.id = $(this.el).attr('id'); 
