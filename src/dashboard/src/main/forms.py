@@ -65,6 +65,12 @@ class RightsGrantedForm(ModelForm):
             'startdate': TextInput(attrs=INPUT_ATTRS),
             'enddate': TextInput(attrs=INPUT_ATTRS), }
 
+class RightsGrantedNotesForm(ModelForm):
+    class Meta:
+        model = models.RightsStatementRightsGrantedNote
+        widgets = {
+            'rightsgranted': TextInput(attrs=TEXTAREA_ATTRS), }
+
 class RightsCopyrightForm(ModelForm):
     class Meta:
         model = models.RightsStatementCopyright
