@@ -80,13 +80,23 @@ $(document).ready(function() {
         description: 'Start transfer',
         iconHtml: '<img src="/media/images/accept.png" />',
         logic: function(result) {
-          $.post(
-            '/filesystem/copy_from_arrange/',
-            {filepath: result.path},
-            function(result) {
-              alert(result.message);
+          arrange.confirm(
+            'Add transfer',
+            'Are you sure you want to add this as a transfer?',
+            function() {
+              $.post(
+                '/filesystem/copy_from_arrange/',
+                {filepath: result.path},
+                function(result) {
+                  var title = (result.error) ? 'Error' : '';
+                  arrange.alert(
+                    title,
+                    result.message
+                  );
+                }
+              );
             }
-          )
+          );
         }
       }]
   });
