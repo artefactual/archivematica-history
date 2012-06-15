@@ -21,6 +21,11 @@
 
 {% block content %}
 
+<ul class="breadcrumb">
+  {% breadcrumb_url 'Transfer' main.views.transfer_grid %}
+  {% breadcrumb 'Add Files to Backlog' %}
+</ul>
+
 <h1>Select Directory</h1>
 
 <p id='page_instructions' style='margin-left: 5px'>Please select a subdirectory of {{ directory }} using the selector below:</p>
