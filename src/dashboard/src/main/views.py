@@ -133,6 +133,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             form.save()
         # determine how many empty forms should be shown for children
         extra_grant_forms = 1 #max_notes - models.RightsStatementRightsGranted.objects.filter(rightsstatement=viewRights).count()
+        extra_grant_notes = 1
         extra_copyright_forms = max_notes - models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights).count()
         extra_copyright_notes = 1 # max_notes - models.RightsStatementCopyrightNote.objects.filter(rightsstatement=viewRights).count()
         extra_statute_forms = max_notes - models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights).count()
@@ -150,6 +151,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             form = forms.RightsForm()
             viewRights = models.RightsStatement()
         extra_grant_forms = max_notes
+        extra_grant_notes = max_notes
         extra_copyright_forms = max_notes
         extra_copyright_notes = max_notes
         extra_statute_forms = max_notes
@@ -159,7 +161,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
     # create inline formsets for child elements
     GrantFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementRightsGranted, extra=extra_grant_forms, can_delete=False, form=forms.RightsGrantedForm)
-    #GrantNotesFormSet = 
+    GrantNotesFormSet = inlineformset_factory(models.RightsStatementRightsGranted, models.RightsStatementRightsGrantedNote, extra=extra_grant_notes, can_delete=False, form=forms.RightsGrantedNotesForm)
     CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
     CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes, can_delete=False, form=forms.RightsCopyrightNoteForm)
     StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
