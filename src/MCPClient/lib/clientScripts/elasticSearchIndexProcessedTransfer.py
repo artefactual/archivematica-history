@@ -22,10 +22,60 @@
 # @author Mike Cantelon <mike@artefactual.com>
 # @version svn: $Id$
 import sys
+import os
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-    
+sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
+from pyes import *
+
+exitCode = 0
+pathToElasticSearchServer='/opt/elasticsearch/bin/elasticsearch'
+
+def index_transfer(conn, uuid, pathToTransfer):
+    filesIndexed = 0
+    for filepath in list_files_in_dir(pathToTransfer):
+        if os.path.isfile(filepath):
+            print filepath
+            print os.path.basename(filepath)
+            filesIndexed = filesIndexed + 1
+    # cycle through all files
+    # store timestamp, relative filepath, extension, size
+    return filesIndexed
+
+def list_files_in_dir(path, filepaths=[]):
+    # define entries
+    for file in os.listdir(path):
+        child_path = os.path.join(path, file)
+        filepaths.append(child_path)
+
+        # if entry is a directory, recurse
+        if os.path.isdir(child_path) and os.access(child_path, os.R_OK):
+            list_files_in_dir(child_path, filepaths)
+
+    # return fully traversed data
+    return filepaths
+
 if __name__ == '__main__':
-    transferUUID = sys.argv[1]
-    transferType = sys.argv[2]
-    
-    print 'TEsting'
+    pathToTransfer = sys.argv[1] + 'objects'
+    transferUUID = sys.argv[2]
+
+    # make sure elasticsearch is installed
+    if (os.path.exists(pathToElasticSearchServer)):
+
+        # make sure transfer files exist
+        if (os.path.exists(pathToTransfer)): 
+            conn = ES('127.0.0.1:9200')
+
+            filesIndexed = index_transfer(conn, transferUUID, pathToTransfer)
+
+            print 'Path to transfer objects: ' + pathToTransfer
+            print 'Transfer UUID: ' + transferUUID
+            print 'Files indexed: ' + str(filesIndexed)
+
+        else:
+            print >>sys.stderr, "Directory does not exist: ", pathToTransfer
+            exitCode = 1
+    else:
+        print >>sys.stderr, "Elasticsearch not found, normally installed at ", pathToElasticSearchServer
+        exitCode = 1
+
+quit(exitCode)
