@@ -29,6 +29,7 @@ upload-contentDM_v0.0 = %clientScriptsDirectory%upload-contentDM.py
 restructureDIPForContentDMUpload_v0.0 = %clientScriptsDirectory%restructureDIPForContentDMUpload.py
 storeAIP_v0.0 = %clientScriptsDirectory%storeAIP.py
 7z_v0.0 = /usr/bin/7z
+elasticSearchIndex_v0.0 = %clientScriptsDirectory%elasticSearchIndexProcessedTransfer.py
 
 [supportedCommands]
 echo_v0.0 = /bin/echo
@@ -91,6 +92,5 @@ extractBagTransfer_v0.0 = %clientScriptsDirectory%extractBagTransfer.py
 identifyFilesByExtension_v0.0 = %clientScriptsDirectory%identifyFilesByExtension.py
 extractMaildirAttachments_v0.0 = %clientScriptsDirectory%extractMaildirAttachments.py
 archivematicaVerifyMets_v0.0 = %clientScriptsDirectory%archivematicaVerifyMets.sh
-getContentdmCollectionList_v0.0 = %clientScriptsDirectory%getContentdmCollectionList.py
 
 
