@@ -92,5 +92,5 @@ extractBagTransfer_v0.0 = %clientScriptsDirectory%extractBagTransfer.py
 identifyFilesByExtension_v0.0 = %clientScriptsDirectory%identifyFilesByExtension.py
 extractMaildirAttachments_v0.0 = %clientScriptsDirectory%extractMaildirAttachments.py
 archivematicaVerifyMets_v0.0 = %clientScriptsDirectory%archivematicaVerifyMets.sh
-
+getContentdmCollectionList_v0.0 = %clientScriptsDirectory%getContentdmCollectionList.py
 
