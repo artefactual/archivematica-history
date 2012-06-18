@@ -23,22 +23,37 @@
 # @version svn: $Id$
 import sys
 import os
+import time
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
-from pyes import *
+import pyes
 
 exitCode = 0
 pathToElasticSearchServer='/opt/elasticsearch/bin/elasticsearch'
 
 def index_transfer(conn, uuid, pathToTransfer):
     filesIndexed = 0
+
+    # document structure
+    transferData = {
+      'uuid': uuid,
+      'created': time.time()
+    }
+
+    # compile file data (relative filepath, extension, size)
+    fileData = {}
     for filepath in list_files_in_dir(pathToTransfer):
         if os.path.isfile(filepath):
-            print filepath
-            print os.path.basename(filepath)
+            fileData[filepath] = {
+              'basename': os.path.basename(filepath)
+            }
             filesIndexed = filesIndexed + 1
-    # cycle through all files
-    # store timestamp, relative filepath, extension, size
+
+    transferData['filepaths'] = fileData
+
+    # add document to index
+    conn.index(transferData, 'transfers', 'transfer')
+
     return filesIndexed
 
 def list_files_in_dir(path, filepaths=[]):
@@ -63,11 +78,14 @@ if __name__ == '__main__':
 
         # make sure transfer files exist
         if (os.path.exists(pathToTransfer)): 
-            conn = ES('127.0.0.1:9200')
+            conn = pyes.ES('127.0.0.1:9200')
+            try:
+                conn.create_index('transfers')
+            except pyes.exceptions.IndexAlreadyExistsException:
+                pass
 
             filesIndexed = index_transfer(conn, transferUUID, pathToTransfer)
 
-            print 'Path to transfer objects: ' + pathToTransfer
             print 'Transfer UUID: ' + transferUUID
             print 'Files indexed: ' + str(filesIndexed)
 
