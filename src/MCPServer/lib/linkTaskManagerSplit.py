@@ -138,8 +138,8 @@ class linkTaskManagerSplit:
             ## passVar = [{preservationJobUUID, accessJobUUID, thumbnailsJobUUID}] #an idea not in use
             t = threading.Thread(target=jobChain.jobChain, args=(fileUnit, execute, self.taskCompletedCallBackFunction,), kwargs={"passVar":self.jobChainLink.passVar, "UUID":UUID, "subJobOf":self.jobChainLink.UUID.__str__()} )
             t.daemon = True
-            while(archivematicaMCP.limitTaskThreads <= threading.activeCount() + 10):
-                print "Waiting for active threads", threading.activeCount()
+            while(archivematicaMCP.limitTaskThreads/2 <= threading.activeCount()):
+                #print "Waiting for active threads", threading.activeCount()
                 self.tasksLock.release()
                 time.sleep(archivematicaMCP.limitTaskThreadsSleep)
                 self.tasksLock.acquire()
