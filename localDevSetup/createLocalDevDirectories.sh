@@ -38,6 +38,9 @@ fi
 if [ ! -e  /etc/init/openoffice-service.conf ] ; then
 	sudo ln "${svnDir}src/MCPClient/init/openoffice-service.conf" "/etc/init/"
 fi
+if [ ! -e  /etc/init/openoffice-service.conf ] ; then
+        sudo ln "${svnDir}../qubit-svn/init/qubit-sword.conf" "/etc/init/"
+fi
 
 sudo ln "${svnDir}src/upload-qubit/upload-qubit" "/usr/bin/" 
 sudo ln "${svnDir}src/transcoder/bin/transcoder" "/usr/bin/"

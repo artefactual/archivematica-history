@@ -152,9 +152,11 @@ if [[ $a == "Y" || $a == "y" ]]; then
         sudo rm \
           /etc/init/archivematica-mcp-server.conf \
           /etc/init/archivematica-mcp-client.conf \
-          /etc/init/qubit-sword.conf
+          /etc/init/qubit-sword.conf \
+          /etc/init/openoffice-service.conf
         sudo ln src/MCPServer/init/archivematica-mcp-server.conf /etc/init/
         sudo ln src/MCPClient/init/archivematica-mcp-client.conf /etc/init/
+        sudo ln src/MCPClient/init/openoffice-service.conf /etc/init/
         sudo ln qubit-svn/init/qubit-sword.conf /etc/init/
 else
         echo "Not going to ${part}."

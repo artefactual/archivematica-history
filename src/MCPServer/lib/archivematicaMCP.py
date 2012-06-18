@@ -182,8 +182,8 @@ def createUnitAndJobChainThreaded(path, config, terminate=True):
                 print "Signal was received; stopping createUnitAndJobChainThreaded(path, config)"
                 exit(0)
             print threading.activeCount().__str__()
-            print "DEBUG createUnitAndJobChainThreaded waiting on thread count", threading.activeCount()
-            time.sleep(4)
+            #print "DEBUG createUnitAndJobChainThreaded waiting on thread count", threading.activeCount()
+            time.sleep(.5)
         countOfCreateUnitAndJobChainThreaded -= 1
         t.start()
     except Exception as inst:
@@ -263,7 +263,7 @@ def debugMonitor():
             databaseInterface.sqlLock.release()
             dblockstatus = "SQL Lock: Unlocked"
         print "<DEBUG type=\"archivematicaMCP\">", "\tDate Time: ", databaseInterface.getUTCDate(), "\tThreadCount: ", threading.activeCount(), "\tcountOfCreateUnitAndJobChainThreaded", countOfCreateUnitAndJobChainThreaded, dblockstatus, "</DEBUG>"
-        time.sleep(10)
+        time.sleep(60)
 
 def flushOutputs():
     while True:
