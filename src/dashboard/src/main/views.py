@@ -819,7 +819,7 @@ def administration_atom_dip_destination_select_link_id():
     return link.id
 
 def administration_contentdm_dip_destination_select_link_id():
-    taskconfigs = models.TaskConfig.objects.filter(description='Upload DIP to contentDM')
+    taskconfigs = models.TaskConfig.objects.filter(description='Select target CONTENTdm server')
     taskconfig = taskconfigs[0]
     links = models.MicroServiceChainLink.objects.filter(currenttask=taskconfig.id)
     link = links[0]
