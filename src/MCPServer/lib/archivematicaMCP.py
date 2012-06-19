@@ -41,7 +41,7 @@ from unitFile import unitFile
 from unitTransfer import unitTransfer
 from pyinotify import ThreadedNotifier
 import transferD
-import xmlRPCServer
+import RPCServer
 import MySQLdb
 
 import signal
@@ -67,7 +67,6 @@ import databaseFunctions
 import multiprocessing 
 from externals.singleInstance import singleinstance
 
-global xmlRPCServerServer
 global countOfCreateUnitAndJobChainThreaded
 countOfCreateUnitAndJobChainThreaded = 0
 
@@ -315,6 +314,5 @@ if __name__ == '__main__':
     #t.daemon = True
     #t.start()
 
-    # Start "XMLRPC" Gearman worker
     # This is blocking the main thread with the worker loop
-    xmlRPCServer.startXMLRPCServer()
+    RPCServer.startRPCServer()

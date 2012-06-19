@@ -104,7 +104,7 @@ def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
         return ""
 
 
-def startXMLRPCServer():
+def startRPCServer():
     gm_worker = gearman.GearmanWorker([archivematicaMCP.config.get('MCPServer', 'GearmanServerWorker')])
     hostID = gethostname() + "_MCPServer"
     gm_worker.set_client_id(hostID)
