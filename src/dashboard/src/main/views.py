@@ -333,7 +333,7 @@ def ingest_metadata_edit(request, uuid, id=None):
 
     fields = ['title', 'creator', 'subject', 'description', 'publisher',
               'contributor', 'date', 'type', 'format', 'identifier',
-              'source', 'isPartOf', 'language', 'coverage', 'rights']
+              'source', 'relation', 'language', 'coverage', 'rights']
 
     if request.method == 'POST':
         form = forms.DublinCoreMetadataForm(request.POST)

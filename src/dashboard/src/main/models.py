@@ -68,7 +68,7 @@ class DublinCore(models.Model):
     format = models.TextField(db_column='format', blank=True)
     identifier = models.TextField(db_column='identifier', blank=True)
     source = models.TextField(db_column='source', blank=True)
-    isPartOf = models.TextField(db_column='isPartOf', blank=True)
+    relation = models.TextField(db_column='relation', blank=True)
     language = models.TextField(db_column='language', blank=True)
     coverage = models.TextField(db_column='coverage', blank=True)
     rights = models.TextField(db_column='rights', blank=True)
