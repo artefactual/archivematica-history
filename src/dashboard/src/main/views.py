@@ -817,8 +817,48 @@ def administration_atom_dips(request):
 
     return render(request, 'main/administration/dips_edit.html', locals())
 
+def administration_contentdm_dips(request):
+    link_id = administration_contentdm_dip_destination_select_link_id()
+    ReplaceDirChoices = models.MicroServiceChoiceReplacementDic.objects.filter(choiceavailableatlink=link_id)
+
+    ReplaceDirChoiceFormSet = modelformset_factory(
+        models.MicroServiceChoiceReplacementDic,
+        form=forms.MicroServiceChoiceReplacementDicForm,
+        extra=1,
+        can_delete=True
+    )
+
+    if request.method == 'POST':
+        formset = ReplaceDirChoiceFormSet(request.POST)
+
+        # take note of formset validity because if submission was successful
+        # we reload it to reflect
+        # deletions, etc.
+        valid_submission = formset.is_valid()
+
+        if valid_submission:
+            # save/delete partial data (without association with specific link)
+            instances = formset.save()
+
+            # restore link association
+            for instance in instances:
+                instance.choiceavailableatlink = link_id
+                instance.save()
+
+    if request.method != 'POST' or valid_submission:
+        formset = ReplaceDirChoiceFormSet(queryset=ReplaceDirChoices)
+
+    return render(request, 'main/administration/dips_contentdm_edit.html', locals())
+
 def administration_atom_dip_destination_select_link_id():
     taskconfigs = models.TaskConfig.objects.filter(description='Select DIP upload destination')
+    taskconfig = taskconfigs[0]
+    links = models.MicroServiceChainLink.objects.filter(currenttask=taskconfig.id)
+    link = links[0]
+    return link.id
+
+def administration_contentdm_dip_destination_select_link_id():
+    taskconfigs = models.TaskConfig.objects.filter(description='Upload DIP to contentDM')
     taskconfig = taskconfigs[0]
     links = models.MicroServiceChainLink.objects.filter(currenttask=taskconfig.id)
     link = links[0]
