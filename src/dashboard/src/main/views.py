@@ -528,7 +528,7 @@ SELECT
 
 def transfer_grid(request):
     if request.GET.get('test', ''):
-        if models.SourceDirectory.objects.count() > 1:
+        if models.SourceDirectory.objects.count() > 0:
             form = forms.TransferForm()
 
     polling_interval = django_settings.POLLING_INTERVAL
