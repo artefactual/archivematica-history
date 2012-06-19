@@ -31,6 +31,11 @@
       {% endfor %}
     };
 
+    // briefly show message if source directories not configured
+    setTimeout(function() {
+      $('.content > footer').fadeOut();
+    }, 4000);
+
   </script>
 {% endblock %}
 
@@ -65,6 +70,11 @@
     <div id="sip-body">
     </div>
   </div>
+
+  {% if not form %}
+     <footer>If you wish to add transfers using the web interface,
+     configure your source directories <a href='/administration/sources/'>here</a>.</footer>
+  {% endif %}
 
   <!-- Templates -->
 
