@@ -540,7 +540,7 @@ def transfer_add(request):
         form = forms.TransferForm(request.POST)
         if form.is_valid():
             source_directory_id = request.POST['source_directory']
-            return HttpResponseRedirect('/transfer/select/' + source_directory_id)
+            return HttpResponseRedirect(reverse('main.views.transfer_select', args=source_directory_id))
     else:
         form = forms.TransferForm()
 
