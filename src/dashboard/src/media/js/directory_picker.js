@@ -7,22 +7,12 @@ var DirectoryPickerView = fileBrowser.FileExplorer.extend({
 
     this.render();
 
-    var self;
-    this.options.nameClickHandler = function(result) { 
-      if (result.type == 'directory') { 
-        self.alert(
-          'Click',
-          'User clicked name of ' + result.type + ' at path ' + result.path
-        ); 
-      } 
-    };
-
     var self = this;
     this.options.actionHandlers = [ 
       { 
-        name: 'Add Source', 
-        description: 'Add Source Directory', 
-        iconHtml: '<b>Add</b>', 
+        name: 'Select', 
+        description: 'Select directory', 
+        iconHtml: '<img src="/media/images/accept.png" />', 
         logic: function(result) { 
           self.addSource(self, result.path); 
         } 
