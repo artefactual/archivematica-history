@@ -25,7 +25,7 @@ function createDirectoryPicker(baseDirectory) {
   selector.options.actionHandlers.push({
     name: 'Select',
     description: 'Select',
-    iconHtml: '<b>Select</b>',
+    iconHtml: '<img src="/media/images/accept.png" />',
     logic: function(result) {
       $.post(
         '/filesystem/copy_to_originals/',
