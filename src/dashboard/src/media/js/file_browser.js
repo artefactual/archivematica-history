@@ -70,11 +70,17 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
       : baseUrl;
 
     var self = this;
-    $.get(url, function(results) {
-      self.structure = results;
-      self.render();
-      self.initDragAndDrop();
-      self.idle();
+
+    $.ajax({
+      url: url,
+      async: false,
+      cache: false,
+      success: function(results) {
+        self.structure = results;
+        self.render();
+        self.initDragAndDrop();
+        self.idle();
+      }
     });
   },
 
