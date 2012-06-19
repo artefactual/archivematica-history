@@ -903,14 +903,6 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 set @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'localhost', '{"%ContentdmServer%":"localhost"}');
-INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'content.lib.sfu.ca', '{"%ContentdmServer%":"142.58.129.69"}');
-INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'be.cdm6.library.ubc.ca', '{"%ContentdmServer%":"142.103.160.77"}');
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 set @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 -- 6: 'Restructure DIP for content DM upload'
