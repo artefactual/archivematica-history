@@ -788,29 +788,9 @@ def administration_atom_dips(request):
     link_id = administration_atom_dip_destination_select_link_id()
     ReplaceDirChoices = models.MicroServiceChoiceReplacementDic.objects.filter(choiceavailableatlink=link_id)
 
-    ReplaceDirChoiceFormSet = modelformset_factory(
-        models.MicroServiceChoiceReplacementDic,
-        form=forms.MicroServiceChoiceReplacementDicForm,
-        extra=1,
-        can_delete=True
-    )
+    ReplaceDirChoiceFormSet = administration_dips_formset()
 
-    if request.method == 'POST':
-        formset = ReplaceDirChoiceFormSet(request.POST)
-
-        # take note of formset validity because if submission was successful
-        # we reload it to reflect
-        # deletions, etc.
-        valid_submission = formset.is_valid()
-
-        if valid_submission:
-            # save/delete partial data (without association with specific link)
-            instances = formset.save()
-
-            # restore link association
-            for instance in instances:
-                instance.choiceavailableatlink = link_id
-                instance.save()
+    valid_submission, formset = administration_dips_handle_updates(request, link_id, ReplaceDirChoiceFormSet)
 
     if request.method != 'POST' or valid_submission:
         formset = ReplaceDirChoiceFormSet(queryset=ReplaceDirChoices)
@@ -821,29 +801,9 @@ def administration_contentdm_dips(request):
     link_id = administration_contentdm_dip_destination_select_link_id()
     ReplaceDirChoices = models.MicroServiceChoiceReplacementDic.objects.filter(choiceavailableatlink=link_id)
 
-    ReplaceDirChoiceFormSet = modelformset_factory(
-        models.MicroServiceChoiceReplacementDic,
-        form=forms.MicroServiceChoiceReplacementDicForm,
-        extra=1,
-        can_delete=True
-    )
+    ReplaceDirChoiceFormSet = administration_dips_formset()
 
-    if request.method == 'POST':
-        formset = ReplaceDirChoiceFormSet(request.POST)
-
-        # take note of formset validity because if submission was successful
-        # we reload it to reflect
-        # deletions, etc.
-        valid_submission = formset.is_valid()
-
-        if valid_submission:
-            # save/delete partial data (without association with specific link)
-            instances = formset.save()
-
-            # restore link association
-            for instance in instances:
-                instance.choiceavailableatlink = link_id
-                instance.save()
+    valid_submission, formset = administration_dips_handle_updates(request, link_id, ReplaceDirChoiceFormSet)
 
     if request.method != 'POST' or valid_submission:
         formset = ReplaceDirChoiceFormSet(queryset=ReplaceDirChoices)
@@ -863,6 +823,36 @@ def administration_contentdm_dip_destination_select_link_id():
     links = models.MicroServiceChainLink.objects.filter(currenttask=taskconfig.id)
     link = links[0]
     return link.id
+
+def administration_dips_formset():
+    return modelformset_factory(
+        models.MicroServiceChoiceReplacementDic,
+        form=forms.MicroServiceChoiceReplacementDicForm,
+        extra=1,
+        can_delete=True
+    )
+
+def administration_dips_handle_updates(request, link_id, ReplaceDirChoiceFormSet):
+    valid_submission = True
+    formset = None
+
+    if request.method == 'POST':
+        formset = ReplaceDirChoiceFormSet(request.POST)
+
+        # take note of formset validity because if submission was successful
+        # we reload it to reflect
+        # deletions, etc.
+        valid_submission = formset.is_valid()
+
+        if valid_submission:
+            # save/delete partial data (without association with specific link)
+            instances = formset.save()
+
+            # restore link association
+            for instance in instances:
+                instance.choiceavailableatlink = link_id
+                instance.save()
+    return valid_submission, formset
 
 def administration_sources(request):
     return render(request, 'main/administration/sources.html', locals())
