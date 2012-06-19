@@ -784,8 +784,8 @@ def administration_dip_edit(request, id):
 
     return HttpResponseRedirect(reverse("main.views.administration_dip"))
 
-def administration_dips(request):
-    link_id = administration_dip_destination_select_link_id()
+def administration_atom_dips(request):
+    link_id = administration_atom_dip_destination_select_link_id()
     ReplaceDirChoices = models.MicroServiceChoiceReplacementDic.objects.filter(choiceavailableatlink=link_id)
 
     ReplaceDirChoiceFormSet = modelformset_factory(
@@ -817,7 +817,7 @@ def administration_dips(request):
 
     return render(request, 'main/administration/dips_edit.html', locals())
 
-def administration_dip_destination_select_link_id():
+def administration_atom_dip_destination_select_link_id():
     taskconfigs = models.TaskConfig.objects.filter(description='Select DIP upload destination')
     taskconfig = taskconfigs[0]
     links = models.MicroServiceChainLink.objects.filter(currenttask=taskconfig.id)
