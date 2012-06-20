@@ -816,7 +816,7 @@ BaseAppView = Backbone.View.extend({
         context: this,
         dataType: 'json',
         type: 'GET',
-        url: this.statusUrl,
+        url: this.statusUrl + '?' + new Date().getTime(),
         beforeSend: function()
           {
             window.statusWidget.startPoll();
