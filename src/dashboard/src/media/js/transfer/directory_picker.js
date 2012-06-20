@@ -27,6 +27,12 @@ function createDirectoryPicker(baseDirectory) {
     description: 'Select',
     iconHtml: '<img src="/media/images/accept.png" />',
     logic: function(result) {
+      $('#explorer').hide();
+
+      $('#page_instructions')
+        .text('Copying to backlog... ')
+        .append('<img src="/media/images/ajax-loader.gif"/>');
+
       $.post(
         '/filesystem/copy_to_originals/',
         {filepath: result.path},
@@ -34,6 +40,8 @@ function createDirectoryPicker(baseDirectory) {
           if (result.error == undefined) {
             window.location = '/transfer/browser/';
           } else {
+            $('#explorer').show();
+            $('#page_instructions').text('');
             alert(result.message);
           }
         }
