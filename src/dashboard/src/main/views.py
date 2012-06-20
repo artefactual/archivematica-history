@@ -527,9 +527,8 @@ SELECT
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def transfer_grid(request):
-    if request.GET.get('test', ''):
-        if models.SourceDirectory.objects.count() > 0:
-            form = forms.TransferForm()
+    if models.SourceDirectory.objects.count() > 0:
+        form = forms.TransferForm()
 
     polling_interval = django_settings.POLLING_INTERVAL
     microservices_help = django_settings.MICROSERVICES_HELP
