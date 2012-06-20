@@ -913,7 +913,7 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 -- 7: 'Upload DIP to contentDM'
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --collection "%ContentdmCollection%" --server "%ContentdmServer%" --ingestFormat "%ContentdmIngestFormat%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPName%-%SIPUUID%" --dipDir "%SIPDirectory%" --collection "%ContentdmCollection%" --server "%ContentdmServer%" --ingestFormat "%ContentdmIngestFormat%" --outputDir "%watchDirectoryPath%uploadedDIPs"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Upload DIP to contentDM');
@@ -925,7 +925,7 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 -- 6: 'Restructure DIP for content DM upload'
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'restructureDIPForContentDMUpload_v0.0', '--uuid="%SIPUUID%" --dipDir "%SIPDirectory%" --collection "%ContentdmCollection%" --server "%ContentdmServer%" --ingestFormat "%ContentdmIngestFormat%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'restructureDIPForContentDMUpload_v0.0', '--uuid="%SIPName%-%SIPUUID%" --dipDir "%SIPDirectory%" --collection "%ContentdmCollection%" --server "%ContentdmServer%" --ingestFormat "%ContentdmIngestFormat%" --outputDir "%watchDirectoryPath%uploadedDIPs"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Restructure DIP for CONTENTdm upload');
