@@ -26,8 +26,7 @@ import json
 import urllib
 
 # The base URL will be specific to each CONTENTdm server; everything including and following 'dmwebservices' is the same.
-CollectionListUrl = 'http://content.lib.sfu.ca:81/dmwebservices/index.php?q=dmGetCollectionList/json'
-#CollectionListUrl = 'http://%s/dmGetCollectionList/json' % (sys.argv[1])
+CollectionListUrl = 'http://%s/dmwebservices/index.php?q=dmGetCollectionList/json' % (sys.argv[1])
 f = urllib.urlopen(CollectionListUrl)
 collectionListString = f.read()
 collectionList = json.loads(collectionListString)
