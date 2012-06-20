@@ -133,10 +133,10 @@ li.active {
 .sip-row                { cursor: pointer; }
 .sip-row > div          { float:  left; }
 .sip-detail-icon-status { width:  26px; padding: 4px 0px; text-align: center; }
-.sip-detail-directory   { width: 300px; padding: 4px 0px; display: table-cell; white-space: nowrap; }
-.sip-detail-uuid        { width: 310px; padding: 4px 0px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
-.sip-detail-timestamp   { width: 180px; padding: 4px 0px; }
-.sip-detail-actions     { }
+.sip-detail-directory   {float: left; width: 300px; padding: 4px 0px; display: table-cell; white-space: nowrap; }
+.sip-detail-uuid        {float: left; width: 310px; padding: 4px 0px; font-family: "Courier New", Courier, "Lucida Console", monospace; }
+.sip-detail-timestamp   {float: left; width: 180px; padding: 4px 0px; }
+.sip-detail-actions     {float: left; }
 
 /* Clearfix in .sip-row */
 .sip-row { *zoom: 1; }
