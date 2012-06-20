@@ -1,7 +1,5 @@
 #!/usr/bin/python -OO
 
-# @todo: In 0.9 dev, there is a thumbnails directory (sibling of objects and METS file) that
-#   contains .jpg files with names the same as the front-end UUIDs of the files in the objects directory.
 
 # This file is part of Archivematica.
 #
@@ -38,7 +36,6 @@ import zipfile
 import pprint # remove for production
 from xml.dom.minidom import parse, parseString
 
-
 # Create the output dir for the CONTENTdm DIP. importMethod is either 'projectclient'
 # or 'directimport'. Also return the path. 
 def prepareOutputDir(outputDipDir, importMethod, dipUuid):
@@ -58,7 +55,7 @@ def parseDcXml(dublincore):
     # Check to see if there is a title (required by CONTENTdm). If not, assign a 
     # placeholder title.
     dcTitlesDom = dublincore.getElementsByTagName('title')  # This is the line thowing the error
-    if not len(dcTitlesDom):
+    if not dcTitlesDom:
         return {'title' : ['Placeholder title']} 
 
     # Get the element (regardless of namespace) found in the incoming DC XML DOM object.
@@ -136,12 +133,13 @@ def getFptrObjectFilename(fptrValue, filesInObjectDir):
 
 # Generate a directory containing 1) 'mappings', a nested dictionary with DCTERMS elememts as keys,
 # each of which has as its values the CONTENTdm nick and name for the corresponding field in the
-# current collection and 2, 'order', a list of the collection's field nicks, which is needed
-# to write out the metadata in the correct field order.
+# current collection and 2), 'order', a list of the collection's field nicks, which is needed
+# to write out the metadata in the correct field order. Archivematica only uses the legacy
+# unqualified DC elements but we include the entire CONTENTdm DCTERMS mappings for good measure.
 def getContentdmCollectionFieldInfo(contentdmServer, targetCollection):
     collectionFieldInfo = {}
     pp = pprint.PrettyPrinter(indent=4) # Remove after development.
-    # First, define the CONTENTdm DC nicknames -> DCTERMs mapping.
+    # First, define the CONTENTdm DC nicknames -> DCTERMs mapping. 
     contentdmDctermsMap = {
          'describ' : 'abstract',
          'rightsa' : 'accessRights',
@@ -236,13 +234,13 @@ def getDmdSec(metsDom, dmdSecId = 'dmdSec_1', dublinCore = True):
 # can be subdirectories in the objects directory, assumes each file should have a unique name.
 # Optionally include the paths for each file.
 def getObjectDirectoryFiles(objectDir):
-    print "Debug: objectDir is " + objectDir
     fileList = []
     for root, subFolders, files in os.walk(objectDir):
         for file in files:
             fileList.append(os.path.join(root, file))
             # print "Debug: file is " + os.path.join(root, file)
     return fileList
+
 
 # Create a .zip from the DIP file produced by generateXXProjectClientPackage functions.
 # Zip files are written in the uploadedDIPs directory.
@@ -255,15 +253,86 @@ def zipProjectClientOutput(outputDipDir, dipUuid):
         outputFile.write(sourceFilename, destFilename, zipfile.ZIP_DEFLATED)
     outputFile.close()
 
+# Generate a .desc file used in CONTENTdm 'direct import' packages.
+ # .desc file looks like this:
+ # <?xml version="1.0" encoding="utf-8"?>
+ # <itemmetadata>
+ # <title>wall</title>
+ #  [... every collection field, empty and with values]
+ # <is></is>
+ # <transc></transc>
+ # <fullrs />
+ # <dmoclcno></dmoclcno>
+ # <dmcreated></dmcreated>
+ # <dmmodified></dmmodified>
+ # <dmrecord></dmrecord>
+ # <find></find>
+ # <dmimage></dmimage>
+ # <dmad1></dmad1>
+ # <dmad2></dmad2>
+ # <dmaccess></dmaccess>
+ # </itemmetadata>
+# @todo: DC element names need to be converted to CONTENTdm nicknames.
+def generateDescFile(dcMetadata):
+    collectionFieldInfo = getContentdmCollectionFieldInfo(args.contentdmServer, args.targetCollection)
+    output = '<?xml version="1.0" encoding="utf-8"?>' + "\n"
+    output += "<itemmetadata>\n"
+    for key in dcMetadata:
+        # @todo: This dict value needs to be tested.
+        output += '<' + collectionFieldInfo[key][nick] + '>'
+        values = ''
+        for v in dcMetadata[key]:
+            values += v + '; '
+        output += values.rstrip('; ')
+        output += '</' + key + ">\n"
+    output += "<is></is>\n"
+    output += "<transc></transc>\n"
+    output += "<fullrs />\n"
+    output += "<dmoclcno></dmoclcno>\n"
+    output += "<dmcreated></dmcreated>\n"
+    output += "<dmmodified></dmmodified>\n"
+    output += "<dmrecord></dmrecord>\n"
+    output += "<find></find>\n"
+    output += "<dmimage></dmimage>\n"
+    output += "<dmad1></dmad1>\n"
+    output += "<dmad2></dmad2>\n"
+    output += "<dmaccess></dmaccess>\n"
+    output += "</itemmetadata>\n"
+    return output
 
-def generateSimpleContentDMIngestPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory):
-    for file in filesInObjectDirectory:
-      print file 
-    #  Simple items - one file in the DIP objects directory. No need to check METS structMap, just
-    #    write out the required CONTENTdm import package files, i.e., copy the file, create an icon,
-    #    create a .desc file (metadata), create a .full (manifest) file.
+
+# Generate a 'direct upload' (i.e., single object file) package for a simple item from the 
+# Archivematica DIP. This package will contain the object file, its thumbnail, a .desc (DC metadata)
+# file, and a .full (manifest) file.
+def generateSimpleContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory):
+    dmdSec = getDmdSec(metsDom)
+    dcMetadata = parseDcXml(dmdSec)
+
+    descFile = generateDescFile(dcMetadata)
+
+    outputDipDir = prepareOutputDir(outputDipDir, 'directupload', dipUuid)
+
+    print "Debug: files in thumbnail directory - " + filesInThumbnailDirectory
+    print "Debug: outputDipDir - " + outputDipDir
+
+    # In 0.9 dev, there is a thumbnails directory (sibling of objects and METS file) that
+    # contains .jpg files with names the same as the front-end UUIDs (i.e., first 36 characters
+    # of the object filename) of the files in the objects directory.
+
+    # .full file looks like this:
+ # <item>
+ #  <title>wall</title>
+ #  <object>142_58_131_27_2012-3-28_8525511-14722693060.jpg</object>
+ #  <desc>142_58_131_27_2012-3-28_8525511-14722693060.desc</desc>
+ #  <icon>142_58_131_27_2012-3-28_8525511-14722693060.icon</icon>
+ #  <update>0</update>
+ # <info>nopdf</info>
+ # </item>
 
 
+# Generate a 'project client' package for a simple item from the Archivematica DIP.
+# This package will contain the object file and a delimited metadata file in a format
+# suitable for importing into CONTENTdm using its Project Client.
 def generateSimpleContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory):
     dmdSec = getDmdSec(metsDom)
     dcMetadata = parseDcXml(dmdSec)
@@ -311,9 +380,10 @@ def generateSimpleContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir, 
     delimitedFile.close()
 
     zipProjectClientOutput(outputDipDir, dipUuid)
+    # Delete the unzipped version of the DIP since we don't use it anyway.
     shutil.rmtree(outputDipDir)
 
-def generateCompoundContentDMIngestPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory):
+def generateCompoundContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory):
     for file in filesInObjectDirectory:
       print file 
     #  Compound items - multiple files in the DIP objects directory, ordered by the METS structMap.
@@ -322,11 +392,17 @@ def generateCompoundContentDMIngestPackage(metsDom, dipUuid, outputDipDir, files
     #    and ready.txt.
 
 
+# Generate a 'project client' package for a compound CONTENTdm item from the Archivematica DIP.
+# This package will contain the object file and a delimited metadata file in a format suitable
+# for importing into CONTENTdm using its Project Client.
 def generateCompoundContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory):
     pp = pprint.PrettyPrinter(indent=4) # Remove after development.
     dmdSec = getDmdSec(metsDom)
     dcMetadata = parseDcXml(dmdSec)
 
+    # Archivematica's stuctMap is always the first one; the user-submitted structMap
+    # is always the second one. @todo: If the user-submitted structMap is present,
+    # parse it for the SIP structure so we can use that structure in the CONTENTdm packages.
     structMapDom =  metsDom.getElementsByTagName('structMap')[0]
     structMapDict = parseStructMap(structMapDom, filesInObjectDirectory)
 
@@ -434,24 +510,23 @@ if __name__ == '__main__':
         print "Sorry, ingestFormat must be either 'directupload' or 'projectclient'"
         sys.exit(1)
 
-    # Read and parse the METS file.
-    # Useful: http://developer.yahoo.com/python/python-xml.html
-    # Assumes there is one METS file in the DIP directory.
+    # Read and parse the METS file. Assumes there is one METS file in the DIP directory.
     for infile in glob.glob(os.path.join(inputDipDir, "METS*.xml")):
         metsFile = infile
     metsDom = parse(metsFile)
 
     # Check to see if we're dealing with a simple or compound item, and fire the
-    # appropriate output function.
+    # appropriate DIP-generation function.
     filesInObjectDirectory = getObjectDirectoryFiles(os.path.join(inputDipDir, 'objects'))
+    if os.path.exists(os.path.join(inputDipDir, 'thumbnails')):
+        filesInThumbnailDirectory = glob.glob(os.path.join(inputDipDir, 'thumbnails', "*.jpg"))
 
     if len(filesInObjectDirectory) == 1 and args.ingestFormat == 'directupload':
-        generateSimpleContentDMIngestPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory)
+        generateSimpleContentDMDirectUploadPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory)
     if len(filesInObjectDirectory) == 1 and args.ingestFormat == 'projectclient':
         generateSimpleContentDMProjectClientPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory)
 
     if len(filesInObjectDirectory) > 1 and args.ingestFormat == 'directupload':
-        generateCompoundContentDMIngestPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory)
+        generateCompoundContentDMDirectUploadPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory)
     if len(filesInObjectDirectory) > 1 and args.ingestFormat == 'projectclient':
         generateCompoundContentDMProjectClientPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory)
-
