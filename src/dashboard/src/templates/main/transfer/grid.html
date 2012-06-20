@@ -23,6 +23,13 @@
 
         window.Sips = new SipCollection;
         window.App = new AppView({statusUrl: '/transfer/status/'});
+
+        // add hint to add transfer form
+        $('#id_name').val('Add transfer').click(function() {
+          if ($(this).val() == 'Add transfer') {
+            $(this).val('');
+          }
+        });
       });
 
     window.microservices_help = {
@@ -35,7 +42,6 @@
     setTimeout(function() {
       $('.content > footer').fadeOut();
     }, 4000);
-
   </script>
 {% endblock %}
 
@@ -55,8 +61,7 @@
 
   {% if form %}
     <form action='/transfer/add/' method='POST'>
-    {% include "_form.html" %}
-    <input type='submit'/>
+    {{ form.name }} {{ form.source_directory }} <input type='submit' value='Add' /> <a href='/transfer/browser/'>Browse backlog?</a>
     </form>
   {% endif %}
 
