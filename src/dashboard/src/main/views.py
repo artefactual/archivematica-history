@@ -552,9 +552,9 @@ def transfer_select(request, source_directory_id):
     return render(request, 'main/transfer/select_directory.html', locals())
 
 def transfer_browser(request):
-    directory = '/var/archivematica/sharedDirectory/transferBackups/originals'
+    originals_directory = '/var/archivematica/sharedDirectory/transferBackups/originals'
     arrange_directory = '/var/archivematica/sharedDirectory/transferBackups/arrange'
-    if not os.path.exists(directory):
+    if not os.path.exists(originals_directory):
         os.mkdir(directory)
     if not os.path.exists(arrange_directory):
         os.mkdir(arrange_directory)
