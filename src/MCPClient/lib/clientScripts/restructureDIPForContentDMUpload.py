@@ -52,14 +52,20 @@ def prepareOutputDir(outputDipDir, importMethod, dipUuid):
 # tag : [ value1, value2] members. Also, since minidom only handles byte strings
 # so we need to encode strings before passing them to minidom functions.
 def parseDcXml(dublincore):
+    # If the dublincore object is empty (i.e, there is no DC metadata), just return
+    # a placeholder title.
+    if not hasattr(dublincore, 'getElementsByTagName'):
+       return {'title' : ['Placeholder title']} 
+      
     # Check to see if there is a title (required by CONTENTdm). If not, assign a 
     # placeholder title.
-    dcTitlesDom = dublincore.getElementsByTagName('title')  # This is the line thowing the error
-    if not dcTitlesDom:
-        return {'title' : ['Placeholder title']} 
+    if hasattr(dublincore, 'getElementsByTagName'):
+        dcTitlesDom = dublincore.getElementsByTagName('title')  # This is the line thowing the error
+        if not dcTitlesDom:
+            return {'title' : ['Placeholder title']} 
 
-    # Get the element (regardless of namespace) found in the incoming DC XML DOM object.
-    dcElementsDom = dublincore.getElementsByTagNameNS('*', '*')  # This is the line thowing the error
+    # Get the elements found in the incoming DC XML DOM object.
+    dcElementsDom = dublincore.getElementsByTagName('*')
     dcElementsDict = {}
     for dcElement in dcElementsDom:
         # We only want elements that are not empty.
@@ -73,6 +79,7 @@ def parseDcXml(dublincore):
             else:
                 dcElementsDict[dcElement.tagName.encode( "utf-8" )].append(dcElement.firstChild.nodeValue.encode( "utf-8" ))
     return dcElementsDict
+
 
 # Takes in a DOM object containing the METS structMap, returns a dictionary with 
 # fptrValue : [ order, parent, dmdSec, label, filename ] members.
@@ -202,7 +209,8 @@ def getContentdmCollectionFieldInfo(contentdmServer, targetCollection):
     f = urllib.urlopen(CollectionFieldConfigUrl)
     collectionFieldConfigString = f.read()
     collectionFieldConfig = json.loads(collectionFieldConfigString)
-    # We want a dict containing items that looks like { 'contributor': { 'name': u'Contributors', 'nick': u'contri'},
+    # We want a dict containing items that looks like
+    # { 'contributor': { 'name': u'Contributors', 'nick': u'contri'},
     # 'creator': { 'name': u'Creator', 'nick': u'creato'}, 'date': { 'name': u'Date', 'nick': u'dateso'}, [...] }
     # We need these field-specific mappings when writing out metadata files for loading into CONTENTdm.
     # It is possible that more than one CONTENTdm field is mapped to the same DC element; in this case,
@@ -239,6 +247,8 @@ def getObjectDirectoryFiles(objectDir):
         for file in files:
             fileList.append(os.path.join(root, file))
             # print "Debug: file is " + os.path.join(root, file)
+    # We need to include elements that are in the collection field config but
+    # that do not have any values for the current item.
     return fileList
 
 
@@ -254,37 +264,50 @@ def zipProjectClientOutput(outputDipDir, dipUuid):
     outputFile.close()
 
 # Generate a .desc file used in CONTENTdm 'direct import' packages.
- # .desc file looks like this:
- # <?xml version="1.0" encoding="utf-8"?>
- # <itemmetadata>
- # <title>wall</title>
- #  [... every collection field, empty and with values]
- # <is></is>
- # <transc></transc>
- # <fullrs />
- # <dmoclcno></dmoclcno>
- # <dmcreated></dmcreated>
- # <dmmodified></dmmodified>
- # <dmrecord></dmrecord>
- # <find></find>
- # <dmimage></dmimage>
- # <dmad1></dmad1>
- # <dmad2></dmad2>
- # <dmaccess></dmaccess>
- # </itemmetadata>
+# .desc file looks like this:
+# <?xml version="1.0" encoding="utf-8"?>
+# <itemmetadata>
+# <title>wall</title>
+#  [... every collection field nick, empty and with values]
+# <is></is>
+# <transc></transc>
+# <fullrs />
+# <dmoclcno></dmoclcno>
+# <dmcreated></dmcreated>
+# <dmmodified></dmmodified>
+# <dmrecord></dmrecord>
+# <find></find>
+# <dmimage></dmimage>
+# <dmad1></dmad1>
+# <dmad2></dmad2>
+# <dmaccess></dmaccess>
+# </itemmetadata>
 # @todo: DC element names need to be converted to CONTENTdm nicknames.
 def generateDescFile(dcMetadata):
+    # pp = pprint.PrettyPrinter(indent=4) # Remove after development.
     collectionFieldInfo = getContentdmCollectionFieldInfo(args.contentdmServer, args.targetCollection)
+    # pp.pprint(collectionFieldInfo)
     output = '<?xml version="1.0" encoding="utf-8"?>' + "\n"
     output += "<itemmetadata>\n"
-    for key in dcMetadata:
-        # @todo: This dict value needs to be tested.
-        output += '<' + collectionFieldInfo[key][nick] + '>'
-        values = ''
-        for v in dcMetadata[key]:
-            values += v + '; '
-        output += values.rstrip('; ')
-        output += '</' + key + ">\n"
+
+    # Loop through the collection's field configuration and generate XML elements
+    # for all its fields. 
+    for dcElement in collectionFieldInfo['mappings'].keys():
+        # If a field is in the incoming item dcMetadata, populate it with its value.
+        if dcElement in dcMetadata.keys():
+            values = ''
+            output += '<' + dcElement + '>'
+            # Repeated values in CONTENTdm metadata need to be separated with semicolons.
+            for v in dcMetadata[dcElement]:
+                values += v + '; '
+                output += values.rstrip('; ')
+            output += '</' + dcElement + ">\n"
+        # We need to include elements that are in the collection field config but
+        # that do not have any values for the current item.
+        else:
+            output += '<' + dcElement + '></' + dcElement + ">\n"
+    
+    # These fields are boilerplate in new .desc files.            
     output += "<is></is>\n"
     output += "<transc></transc>\n"
     output += "<fullrs />\n"
@@ -305,29 +328,49 @@ def generateDescFile(dcMetadata):
 # Archivematica DIP. This package will contain the object file, its thumbnail, a .desc (DC metadata)
 # file, and a .full (manifest) file.
 def generateSimpleContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory):
+    outputDipDir = prepareOutputDir(outputDipDir, 'directupload', dipUuid)
     dmdSec = getDmdSec(metsDom)
     dcMetadata = parseDcXml(dmdSec)
+    descFileContents = generateDescFile(dcMetadata)
+    # Write the .desc file into the output directory.
+    descFile = open(os.path.join(outputDipDir, dipUuid + '.desc'), "wb")
+    descFile.write(descFileContents)
+    descFile.close()
+    
+    # Copy the thumbnail into the output directory. There will only be one.
+    # The file must end in .icon.
+    thumbnailFilename = dipUuid + '.icon'
+    shutil.copy(filesInThumbnailDirectory[0], os.path.join(outputDipDir, thumbnailFilename))
 
-    descFile = generateDescFile(dcMetadata)
+    # Copy the object file into the output directory. There will only be one.
+    objectFileFilename, objectFileFileExtension = os.path.splitext(filesInObjectDirectory[0])
+    # Copy the object file to the output directory.
+    shutil.copy(filesInObjectDirectory[0], outputDipDir)
+    # objectFilePath = os.path.join(outputDipDir, filesInObjectDirectory[0])
+    # Then move it to the desired filename.
+    shutil.move(os.path.join(outputDipDir, objectFileFilename + objectFileFileExtension), os.path.join(outputDipDir, dipUuid + objectFileFileExtension))
 
-    outputDipDir = prepareOutputDir(outputDipDir, 'directupload', dipUuid)
-
-    print "Debug: files in thumbnail directory - " + filesInThumbnailDirectory
-    print "Debug: outputDipDir - " + outputDipDir
-
-    # In 0.9 dev, there is a thumbnails directory (sibling of objects and METS file) that
-    # contains .jpg files with names the same as the front-end UUIDs (i.e., first 36 characters
-    # of the object filename) of the files in the objects directory.
-
+    # Write out the .full file into the output directory.
     # .full file looks like this:
- # <item>
- #  <title>wall</title>
- #  <object>142_58_131_27_2012-3-28_8525511-14722693060.jpg</object>
- #  <desc>142_58_131_27_2012-3-28_8525511-14722693060.desc</desc>
- #  <icon>142_58_131_27_2012-3-28_8525511-14722693060.icon</icon>
- #  <update>0</update>
- # <info>nopdf</info>
- # </item>
+    # <item>
+    #  <title>wall</title>
+    #  <object>142_58_131_27_2012-3-28_8525511-14722693060.jpg</object>
+    #  <desc>142_58_131_27_2012-3-28_8525511-14722693060.desc</desc>
+    #  <icon>142_58_131_27_2012-3-28_8525511-14722693060.icon</icon>
+    #  <update>0</update>
+    # <info>nopdf</info>
+    # </item>
+    fullFileContents = "<item>\n"
+    fullFileContents += "<object>" + dipUuid + objectFileFileExtension + "</object>\n"
+    fullFileContents += "<desc>" + dipUuid + '.desc' + "</desc>\n"
+    fullFileContents += "<icon>" + thumbnailFilename + "</icon>\n"
+    fullFileContents += "<update>0</update>\n"
+    fullFileContents += "<item>\n"
+    fullFile = open(os.path.join(outputDipDir, dipUuid + '.full'), "wb")
+    fullFile.write(fullFileContents)
+    fullFile.close()
+
+    print "Debug: outputDipDir - " + outputDipDir
 
 
 # Generate a 'project client' package for a simple item from the Archivematica DIP.
@@ -341,7 +384,6 @@ def generateSimpleContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir, 
     
     for file in filesInObjectDirectory:
       # First, copy the file into the output directory.
-      # shutil.copy(os.path.join(inputDipDir, 'objects', file), outputDipDir)
       shutil.copy(file, outputDipDir)
     # Then, write out a tab-delimited file containing the DC-mapped metadata, with 'Filename' as the last field.
     collectionFieldInfo = getContentdmCollectionFieldInfo(args.contentdmServer, args.targetCollection)
@@ -530,3 +572,4 @@ if __name__ == '__main__':
         generateCompoundContentDMDirectUploadPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory)
     if len(filesInObjectDirectory) > 1 and args.ingestFormat == 'projectclient':
         generateCompoundContentDMProjectClientPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory)
+
