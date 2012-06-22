@@ -7,6 +7,7 @@
 
 {% block js %}
   <script src="{{ STATIC_URL }}vendor/jquery.inputmask.js" type="text/javascript"></script>
+  <script src="{{ STATIC_URL }}js/repeatingfield.js" type="text/javascript"></script>
   <script src="{{ STATIC_URL }}js/rights_edit.js" type="text/javascript"></script>
 {% endblock %}
 
@@ -59,7 +60,21 @@
         {% endif %}
       {% endif %}
 
-        {% include "_formset.html" with formset=grantFormset %}
+{{ grantFormset.management_form }}
+{{ grantFormset.non_form_errors.as_ul }}
+
+{% for form in grantFormset %}
+  {% include "_form.html" %}
+
+  <div id='rightsfields_{{ form.initial.id }}'></div>
+
+  <script>
+  $(document).ready(function() {
+    setUpRepeatingField('{{ form.initial.id }}', 'rightsfields_', '{{ id }}');
+  });
+  </script>
+
+{% endfor %}
 
         {% include "_form.html" %}
 
