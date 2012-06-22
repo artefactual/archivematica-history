@@ -278,9 +278,18 @@ def startTransferD():
         time.sleep(5)
     print >>sys.stderr, "transferD crashed\n exitCode:", p.exitcode 
 
-def removeOldJobsAwaitingApproval():
+
+def cleanupOldDbEntriesOnNewRun():
     sql = """DELETE FROM Jobs WHERE Jobs.currentStep = 'Awaiting decision';"""
     databaseInterface.runSQL(sql)
+    
+    sql = """UPDATE Jobs SET currentStep='Failed' WHERE currentStep='Executing command(s)';"""
+    databaseInterface.runSQL(sql)
+    
+    sql = """UPDATE Tasks SET exitCode=-1, stdError='MCP shut down while processing.' WHERE exitCode IS NULL;"""
+    databaseInterface.runSQL(sql)
+    
+    
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
@@ -308,7 +317,7 @@ if __name__ == '__main__':
         t.daemon = True
         t.start()
 
-    removeOldJobsAwaitingApproval()
+    cleanupOldDbEntriesOnNewRun()
     watchDirectories()
     #t = threading.Thread(target=startTransferD)
     #t.daemon = True
