@@ -1072,7 +1072,10 @@ def formdata(request, type, parent_id):
     if (results != None):
         response['results'] = []
         for result in results:
-            response['results'].append(result.__dict__[field])
+            response['results'].append({
+              'id': result.pk,
+              'value': result.__dict__[field]
+            });
 
     if (model == None):
         response['message'] = 'Incorrect type.'
