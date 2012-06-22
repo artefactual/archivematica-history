@@ -36,6 +36,7 @@ var RepeatingFieldView = Backbone.View.extend({
       , self = this;
 
     $linkEl.click(function() {
+      $(this).attr('disabled', 'true');
       if (!self.waitingForInput) {
       self.waitingForInput = true;
       var $input = $('<input/>')
@@ -49,8 +50,8 @@ var RepeatingFieldView = Backbone.View.extend({
           type: 'POST',
           data: {'value': value},
           success: function(result) {
+            $(self).attr('disabled', 'false');
             self.waitingForInput = false;
-            alert('Added.');
             self.render();
           }
         });
