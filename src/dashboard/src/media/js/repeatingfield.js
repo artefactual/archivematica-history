@@ -62,6 +62,25 @@ var RepeatingFieldView = Backbone.View.extend({
     return $linkEl;
   },
 
+  appendDelHandlerToField: function(fieldEl, id) {
+    var $delHandle = $('<span>X</span>')
+      , self = this;
+
+    $(fieldEl).append($delHandle);
+
+    $delHandle.click(function() {
+      $.ajax({
+        url: self.url + '/' + id,
+        type: 'DELETE',
+        data: {'id': id},
+        success: function(result) {
+          alert('Deleted.');
+          self.render();
+        }
+      });
+    });
+  },
+
   render: function() {
     var self = this;
     $.ajax({
@@ -73,9 +92,12 @@ var RepeatingFieldView = Backbone.View.extend({
           .append(self.newLinkEl());
         for(var index in result.results) {
           var fieldData = result.results[index]
-            , field = new RepeatingFieldItemView(fieldData.id, fieldData.value);
+            , field = new RepeatingFieldItemView(fieldData.id, fieldData.value)
+            , fieldEl = field.render().el;
 
-          $(self.el).append(field.render().el);
+          self.appendDelHandlerToField(fieldEl, fieldData.id);
+
+          $(self.el).append(fieldEl);
         }
       }
     });
