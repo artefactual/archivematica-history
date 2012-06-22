@@ -1,3 +1,30 @@
+// repeating child field to a bound formset instance
+function setUpRepeatingField(instanceId, idPrefix, parentId) {
+
+  // if the form instance isn't blank, it's bound to data
+  var formInstance = instanceId;
+
+  if (formInstance != '') {
+    formInstance = parseInt(formInstance);
+
+    // use a fragile hack to figure out the pk of the parent element
+    //var parentId = $('#rightsfields_3').parent().children(':nth-child(4)').val();
+
+    if (typeof rightsNotes == 'undefined') {
+      rightsNotes = [];
+    }
+
+    var rights = new RepeatingFieldView({
+      el: $('#rightsfields_' + formInstance),
+      description: 'Rights Note',
+      parentId: parentId
+    });
+    rightsNotes.push(rights);
+    rights.render();
+  }
+}
+
+// logic to show appropriate subform
 function revealSelectedBasis() {
   var basis = $('#id_rightsbasis').val()
     , formsets = {
@@ -21,6 +48,7 @@ function revealSelectedBasis() {
   }
 }
 
+// setup
 $(document).ready(function() {
 
   $.extend($.inputmask.defaults.definitions, {
