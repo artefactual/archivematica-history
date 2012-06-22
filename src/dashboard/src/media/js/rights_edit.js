@@ -7,9 +7,6 @@ function setUpRepeatingField(instanceId, idPrefix, parentId) {
   if (formInstance != '') {
     formInstance = parseInt(formInstance);
 
-    // use a fragile hack to figure out the pk of the parent element
-    //var parentId = $('#rightsfields_3').parent().children(':nth-child(4)').val();
-
     if (typeof rightsNotes == 'undefined') {
       rightsNotes = [];
     }
