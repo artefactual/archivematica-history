@@ -1036,7 +1036,10 @@ def jobs_explore(request, uuid):
         contents.append(newItem)
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
-def formdata(request, type, parent_id):
+def formdata_delete(request, type, parent_id, delete_id):
+  return formdata(request, type, parent_id, delete_id)
+
+def formdata(request, type, parent_id, delete_id = None):
     model    = None
     results  = None
     response = {}
@@ -1066,7 +1069,11 @@ def formdata(request, type, parent_id):
 
     # handle deletion
     if (request.method == 'DELETE'):
-        response['message'] = 'Deleted.'
+        if (delete_id == None):
+            response['message'] = 'Error: no delete ID supplied.'
+        else:
+            model.objects.filter(pk=delete_id).delete()
+            response['message'] = 'Deleted.'
 
     # send back revised data
     if (results != None):
