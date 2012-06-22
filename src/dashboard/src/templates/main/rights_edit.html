@@ -60,21 +60,20 @@
         {% endif %}
       {% endif %}
 
-{{ grantFormset.management_form }}
-{{ grantFormset.non_form_errors.as_ul }}
+        {{ grantFormset.management_form }}
+        {{ grantFormset.non_form_errors.as_ul }}
 
-{% for form in grantFormset %}
-  {% include "_form.html" %}
+        {% for form in grantFormset %}
+          {% include "_form.html" %}
 
-  <div id='rightsfields_{{ form.initial.id }}'></div>
+          <div id='rightsfields_{{ form.initial.id }}'></div>
 
-  <script>
-  $(document).ready(function() {
-    setUpRepeatingField('{{ form.initial.id }}', 'rightsfields_', '{{ id }}');
-  });
-  </script>
-
-{% endfor %}
+          <script>
+          $(document).ready(function() {
+            setUpRepeatingField('{{ form.initial.id }}', 'rightsfields_', '{{ id }}');
+          });
+          </script>
+        {% endfor %}
 
         {% include "_form.html" %}
 
