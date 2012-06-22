@@ -1036,6 +1036,49 @@ def jobs_explore(request, uuid):
         contents.append(newItem)
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
+def formdata(request, type, parent_id):
+    model    = None
+    results  = None
+    response = {}
+
+    # define types handled
+    if (type == 'rightsnote'):
+        model = models.RightsStatementRightsGrantedNote
+        parent_model = models.RightsStatementRightsGranted
+        model_parent_field = 'rightsgranted'
+        model_value_field = 'rightsgrantednote'
+
+        results = model.objects.filter(rightsgranted=parent_id)
+        field = 'rightsgrantednote'
+
+    # handle creation
+    if (request.method == 'POST'):
+        value    = request.POST.get('value', '')
+        parent   = parent_model.objects.filter(pk=parent_id)
+
+        instance = model()
+        setattr(instance, model_parent_field, parent[0])
+        setattr(instance, model_value_field, value)
+        instance.save()
+
+        response['new_id']  = instance.pk
+        response['message'] = 'Added.'
+
+    # handle deletion
+    if (request.method == 'DELETE'):
+        response['message'] = 'Deleted.'
+
+    # send back revised data
+    if (results != None):
+        response['results'] = []
+        for result in results:
+            response['results'].append(result.__dict__[field])
+
+    if (model == None):
+        response['message'] = 'Incorrect type.'
+
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
 def chain_insert():
     # first choice
     standardTaskConfig = models.StandardTaskConfig()
