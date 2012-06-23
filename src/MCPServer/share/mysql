@@ -150,6 +150,17 @@ CREATE TABLE RightsStatementCopyrightNote (
     copyrightNote LONGTEXT NOT NULL
 ) DEFAULT CHARSET=utf8;
 
+-- 4.1.3.5 copyrightDocumentationIdentifier (O, R)
+DROP TABLE IF EXISTS RightsStatementCopyrightDocumentationIdentifier;
+CREATE TABLE RightsStatementCopyrightDocumentationIdentifier (
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    copyrightDocumentationIdentifierType longtext NOT NULL,
+    copyrightDocumentationIdentifierValue longtext NOT NULL,
+    copyrightDocumentationIdentifierRole longtext NOT NULL,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk)
+) DEFAULT CHARSET=utf8;
+
 -- 4.1.4.3 licenseNote (O, R)
 DROP TABLE IF EXISTS RightsStatementLicenseNote;
 CREATE TABLE RightsStatementLicenseNote (
