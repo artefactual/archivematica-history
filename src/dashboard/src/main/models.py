@@ -195,6 +195,16 @@ class RightsStatementCopyright(models.Model):
     class Meta:
         db_table = u'RightsStatementCopyright'
 
+class RightsStatementCopyrightDocumentationIdentifier(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk', editable=False)
+    rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+    copyrightdocumentationidentifiertype = models.TextField(db_column='copyrightDocumentationIdentifierType', blank=True, verbose_name='Copyright document identification type')
+    copyrightdocumentationidentifiervalue = models.TextField(db_column='copyrightDocumentationIdentifierValue', blank=True, verbose_name='Copyright document identification value')
+    copyrightdocumentationidentifierrole = models.TextField(db_column='copyrightDocumentationIdentifierRole', blank=True, verbose_name='Copyright document identification role')
+
+    class Meta:
+        db_table = u'RightsStatementCopyrightDocumentationIdentifier'
+
 class RightsStatementCopyrightNote(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
