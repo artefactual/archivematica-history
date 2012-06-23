@@ -5,7 +5,7 @@ var RepeatingFieldItemView = Backbone.View.extend({
   },
 
   render: function() {
-    var $input = $('<input/>');
+    var $input = $('<textarea></textarea>');
     $input.val(this.value);
     this.el = $('<div></div>');
     this.el.append($input);
@@ -39,7 +39,7 @@ var RepeatingFieldView = Backbone.View.extend({
       $(this).attr('disabled', 'true');
       if (!self.waitingForInput) {
       self.waitingForInput = true;
-      var $input = $('<input/>')
+      var $input = $('<textarea></textarea>')
         , $div = $('<div/>');
       $div.append($input);
       $(self.el).append($div);
