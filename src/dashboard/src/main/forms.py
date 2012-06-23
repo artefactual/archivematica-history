@@ -79,6 +79,14 @@ class RightsCopyrightForm(ModelForm):
             'copyrightjurisdiction': TextInput(attrs=INPUT_ATTRS),
             'copyrightstatusdeterminationdate': TextInput(attrs=INPUT_ATTRS), }
 
+class RightsStatementCopyrightDocumentationIdentifierForm(ModelForm):
+    class Meta:
+        model = models.RightsStatementCopyrightDocumentationIdentifier
+        widgets = {
+          'copyrightdocumentationidentifiertype': TextInput(attrs=INPUT_ATTRS),
+          'copyrightdocumentationidentifiervalue': TextInput(attrs=INPUT_ATTRS),
+          'copyrightdocumentationidentifierrole': TextInput(attrs=INPUT_ATTRS), }
+
 class RightsCopyrightNoteForm(ModelForm):
     class Meta:
         model = models.RightsStatementCopyrightNote
