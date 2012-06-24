@@ -127,6 +127,8 @@ CREATE TABLE RightsStatementLicense(
   licenseIdentifierType longtext,
   licenseIdentifierValue longtext,
   licenseTerms longtext,
+  licenseApplicableStartDate LONGTEXT NOT NULL,
+  licenseApplicableEndDate LONGTEXT NOT NULL,
   PRIMARY KEY (pk),
   KEY fkRightsStatement (fkRightsStatement)
 ) DEFAULT CHARSET=utf8;
