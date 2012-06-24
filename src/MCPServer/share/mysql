@@ -114,6 +114,8 @@ CREATE TABLE RightsStatementCopyright(
   copyrightStatus LONGTEXT NOT NULL,
   copyrightJurisdiction LONGTEXT NOT NULL,
   copyrightStatusDeterminationDate LONGTEXT NOT NULL,
+  copyrightApplicableStartDate LONGTEXT NOT NULL,
+  copyrightApplicableEndDate LONGTEXT NOT NULL,
   PRIMARY KEY (pk),
   KEY fkRightsStatement (fkRightsStatement)
 ) DEFAULT CHARSET=utf8;
