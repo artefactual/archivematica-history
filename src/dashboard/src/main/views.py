@@ -1055,19 +1055,20 @@ def formdata(request, type, parent_id, delete_id = None):
         model = models.RightsStatementRightsGrantedNote
         parent_model = models.RightsStatementRightsGranted
         model_parent_field = 'rightsgranted'
-        model_value_field = 'rightsgrantednote'
+        model_value_fields = ['rightsgrantednote']
 
         results = model.objects.filter(rightsgranted=parent_id)
         field = 'rightsgrantednote'
 
     # handle creation
     if (request.method == 'POST'):
-        value    = request.POST.get('value', '')
         parent   = parent_model.objects.filter(pk=parent_id)
 
         instance = model()
         setattr(instance, model_parent_field, parent[0])
-        setattr(instance, model_value_field, value)
+        for field in model_value_fields:
+            value = request.POST.get(field, '')
+            setattr(instance, field, value)
         instance.save()
 
         response['new_id']  = instance.pk
