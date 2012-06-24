@@ -191,6 +191,8 @@ class RightsStatementCopyright(models.Model):
     copyrightstatus = models.TextField(db_column='copyrightStatus', blank=True, verbose_name='Copyright status')
     copyrightjurisdiction = models.TextField(db_column='copyrightJurisdiction', blank=True, verbose_name='Copyright jurisdiction')
     copyrightstatusdeterminationdate = models.TextField(db_column='copyrightStatusDeterminationDate', blank=True, verbose_name='Copyright determination date', help_text='Use ISO 8061 (YYYY-MM-DD)')
+    copyrightapplicablestartdate = models.TextField(db_column='copyrightApplicableStartDate', blank=True, verbose_name='Copyright applicable start date', help_text='Use ISO 8061 (YYYY-MM-DD)')
+    copyrightapplicableenddate = models.TextField(db_column='copyrightApplicableEndDate', blank=True, verbose_name='Copyright applicable end date', help_text='Use ISO 8061 (YYYY-MM-DD)')
 
     class Meta:
         db_table = u'RightsStatementCopyright'
