@@ -31,6 +31,10 @@ var RepeatingRecordView = Backbone.View.extend({
   initialize: function() {
     this.items = [];
 
+    if (this.options.schema) {
+      this.schema = this.options.schema;
+    }
+
     if (this.options.description) {
       this.description = this.options.description;
     }
@@ -53,9 +57,7 @@ var RepeatingRecordView = Backbone.View.extend({
       self.waitingForInput = true;
       var field = new RepeatingRecordRecordView(
           0,
-          {
-            'rightsgrantednote': ''
-          }
+          self.schema
         )
         , fieldEl = field.render().el;
 

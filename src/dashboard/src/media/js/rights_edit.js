@@ -14,7 +14,10 @@ function setUpRepeatingField(instanceId, idPrefix, parentId) {
     var rights = new RepeatingRecordView({
       el: $('#rightsfields_' + formInstance),
       description: 'Rights Note',
-      parentId: parentId
+      parentId: parentId,
+      schema: {
+        'rightsgrantednote': ''
+      }
     });
     rightsNotes.push(rights);
     rights.render();
