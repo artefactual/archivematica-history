@@ -1086,9 +1086,12 @@ def formdata(request, type, parent_id, delete_id = None):
     if (results != None):
         response['results'] = []
         for result in results:
+            values = {}
+            for field in model_value_fields:
+                values[field] = result.__dict__[field]
             response['results'].append({
               'id': result.pk,
-              'value': result.__dict__[field]
+              'values': values
             });
 
     if (model == None):

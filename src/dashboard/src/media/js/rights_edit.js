@@ -16,7 +16,7 @@ function setUpRepeatingField(instanceId, idPrefix, parentId) {
       description: 'Rights Note',
       parentId: parentId,
       schema: {
-        'rightsgrantednote': ''
+        'rightsgrantednote': {}
       }
     });
     rightsNotes.push(rights);

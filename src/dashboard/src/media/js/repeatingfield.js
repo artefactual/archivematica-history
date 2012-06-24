@@ -1,12 +1,27 @@
+/*
+
+Field definition example:
+
+{
+  'someFieldName': {
+    'value': 'someValue',
+    'type':  'input',
+    'label': 'some text'
+  }
+}
+
+Type will default to textarea.
+
+*/
 var RepeatingRecordRecordView = Backbone.View.extend({
-  initialize: function(id, values) {
+  initialize: function(id, definition) {
     this.id    = id;
-    this.values = values;
+    this.definition = definition;
   },
 
   getValues: function() {
     var values = {};
-    $(this.el).children().each(function() {
+    $(this.el).children().children().each(function() {
       values[$(this).attr('name')] = $(this).val();
     });
     return values;
@@ -15,17 +30,46 @@ var RepeatingRecordRecordView = Backbone.View.extend({
   render: function() {
     this.el = $('<div></div>');
 
-    for(field in this.values) {
-      var $input = $('<textarea></textarea>');
+    for(field in this.definition) {
+      var type = this.definition[field].type
+        , label = this.definition[field].label;
+
+      if (typeof type == 'undefined') {
+        type = 'textarea';
+      }
+
+      var $container = $('<div></div>')
+        , $input = $('<' + type + '></' + type + '>');
+
       $input.attr('name', field);
-      $input.val(this.values[field]);
-      this.el.append($input);
+      $input.val(this.definition[field].value);
+
+      if (typeof label != 'undefined') {
+        this.el.append('<b>' + label + '</b><br/>');
+      }
+
+      $container.append($input);
+      this.el.append($container);
     }
 
     return this;
   }
 });
 
+/*
+
+Field schema example:
+
+{
+  'someFieldName': {
+    'type':  'input',
+    'label': 'some text'
+  }
+}
+
+Type will default to textarea.
+
+*/
 var RepeatingRecordView = Backbone.View.extend({
 
   initialize: function() {
@@ -67,7 +111,6 @@ var RepeatingRecordView = Backbone.View.extend({
       $div.append($input);
       $(self.el).append($div);
       $input.on('change', function() {
-console.log(field.getValues());
         $.ajax({
           url: self.url,
           type: 'POST',
@@ -87,21 +130,23 @@ console.log(field.getValues());
   },
 
   appendDelHandlerToRecord: function(fieldEl, id) {
-    var $delHandle = $('<span>X</span>')
+    var $delHandle = $('<span>Delete</span>')
       , self = this;
 
     $(fieldEl).append($delHandle);
 
     $delHandle.click(function() {
-      $.ajax({
-        url: self.url + '/' + id,
-        type: 'DELETE',
-        data: {'id': id},
-        success: function(result) {
-          alert('Deleted.');
-          self.render();
-        }
-      });
+      var deleteConfirm = 'Are you sure?';
+      if (confirm(deleteConfirm)) {
+        $.ajax({
+          url: self.url + '/' + id,
+          type: 'DELETE',
+          data: {'id': id},
+          success: function(result) {
+            self.render();
+          }
+        });
+      }
     });
   },
 
@@ -114,13 +159,29 @@ console.log(field.getValues());
         $(self.el)
           .empty()
           .append(self.newLinkEl());
+
+        // cycle through each result
         for(var index in result.results) {
-          var fieldData = result.results[index]
-            , field = new RepeatingRecordRecordView(
+          // use schema as basis of definition
+          var newDef = {}
+          for(var field in self.schema) {
+            newDef[field] = {
+              type: self.schema[field].type,
+              label: self.schema[field].label
+            };
+          }
+
+          // get single result
+          var fieldData = result.results[index];
+
+          // populate definition clone with result values
+          for (var field in fieldData.values) {
+            newDef[field]['value'] = fieldData.values[field];
+          }
+
+          var field = new RepeatingRecordRecordView(
                 fieldData.id,
-                {
-                  'rightsgrantednote': fieldData.value
-                }
+                newDef
               )
             , fieldEl = field.render().el;
 
