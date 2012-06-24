@@ -1,5 +1,15 @@
 // repeating child field to a bound formset instance
-function setUpRepeatingField(instanceId, idPrefix, parentId) {
+function setUpRepeatingField(instanceId, idPrefix, parentId, description, schema) {
+
+if (typeof description == 'undefined') {
+  description = 'Rights Note';
+}
+
+if (typeof scehma == 'undefined') {
+schema = {
+        'rightsgrantednote': {}
+      }
+}
 
   // if the form instance isn't blank, it's bound to data
   var formInstance = instanceId;
@@ -7,19 +17,12 @@ function setUpRepeatingField(instanceId, idPrefix, parentId) {
   if (formInstance != '') {
     formInstance = parseInt(formInstance);
 
-    if (typeof rightsNotes == 'undefined') {
-      rightsNotes = [];
-    }
-
     var rights = new RepeatingRecordView({
-      el: $('#rightsfields_' + formInstance),
-      description: 'Rights Note',
+      el: $('#' + idPrefix + formInstance),
+      description: description,
       parentId: parentId,
-      schema: {
-        'rightsgrantednote': {}
-      }
+      schema: schema
     });
-    rightsNotes.push(rights);
     rights.render();
   }
 }
