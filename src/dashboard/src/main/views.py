@@ -135,7 +135,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_grant_forms = 1 #max_notes - models.RightsStatementRightsGranted.objects.filter(rightsstatement=viewRights).count()
         extra_grant_notes = 1
         extra_copyright_forms = max_notes - models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights).count()
-        extra_copyright_identifier_forms = max_notes - models.RightsStatementCopyrightDocumentationIdentifier.objects.filter(rightsstatement=viewRights).count()
+        extra_copyright_identifier_forms = 1 # max_notes - models.RightsStatementCopyrightDocumentationIdentifier.objects.filter(rightsstatement=viewRights).count()
         extra_copyright_notes = 1 # max_notes - models.RightsStatementCopyrightNote.objects.filter(rightsstatement=viewRights).count()
         extra_statute_forms = max_notes - models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights).count()
         extra_statute_notes = 1 # max_notes - models.RightsStatementStatuteInformationNote.objects.filter(rightsstatement=viewRights).count()
