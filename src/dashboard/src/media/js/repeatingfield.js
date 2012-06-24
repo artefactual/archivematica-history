@@ -1,14 +1,26 @@
-var RepeatingFieldItemView = Backbone.View.extend({
-  initialize: function(id, value) {
+var RepeatingFieldRecordView = Backbone.View.extend({
+  initialize: function(id, values) {
     this.id    = id;
-    this.value = value;
+    this.values = values;
+  },
+
+  getValues: function() {
+    var values = {};
+    $(this.el).children().each(function() {
+      values[$(this).attr('name')] = $(this).val();
+    });
+    return values;
   },
 
   render: function() {
-    var $input = $('<textarea></textarea>');
-    $input.val(this.value);
     this.el = $('<div></div>');
-    this.el.append($input);
+
+    for(field in this.values) {
+      var $input = $('<textarea></textarea>');
+      $input.attr('name', field);
+      $input.val(this.values[field]);
+      this.el.append($input);
+    }
 
     return this;
   }
@@ -39,16 +51,25 @@ var RepeatingFieldView = Backbone.View.extend({
       $(this).attr('disabled', 'true');
       if (!self.waitingForInput) {
       self.waitingForInput = true;
-      var $input = $('<textarea></textarea>')
+      var field = new RepeatingFieldRecordView(
+          0,
+          {
+            'rightsgrantednote': ''
+          }
+        )
+        , fieldEl = field.render().el;
+
+      var $input = $(fieldEl)
         , $div = $('<div/>');
+
       $div.append($input);
       $(self.el).append($div);
       $input.on('change', function() {
-        var value = $input.val();
+console.log(field.getValues());
         $.ajax({
           url: self.url,
           type: 'POST',
-          data: {'value': value},
+          data: field.getValues(),
           success: function(result) {
             $(self).attr('disabled', 'false');
             self.waitingForInput = false;
@@ -93,7 +114,12 @@ var RepeatingFieldView = Backbone.View.extend({
           .append(self.newLinkEl());
         for(var index in result.results) {
           var fieldData = result.results[index]
-            , field = new RepeatingFieldItemView(fieldData.id, fieldData.value)
+            , field = new RepeatingFieldRecordView(
+                fieldData.id,
+                {
+                  'rightsgrantednote': fieldData.value
+                }
+              )
             , fieldEl = field.render().el;
 
           self.appendDelHandlerToField(fieldEl, fieldData.id);
