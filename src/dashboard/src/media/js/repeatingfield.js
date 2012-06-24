@@ -1,4 +1,4 @@
-var RepeatingFieldRecordView = Backbone.View.extend({
+var RepeatingRecordRecordView = Backbone.View.extend({
   initialize: function(id, values) {
     this.id    = id;
     this.values = values;
@@ -26,7 +26,7 @@ var RepeatingFieldRecordView = Backbone.View.extend({
   }
 });
 
-var RepeatingFieldView = Backbone.View.extend({
+var RepeatingRecordView = Backbone.View.extend({
 
   initialize: function() {
     this.items = [];
@@ -51,7 +51,7 @@ var RepeatingFieldView = Backbone.View.extend({
       $(this).attr('disabled', 'true');
       if (!self.waitingForInput) {
       self.waitingForInput = true;
-      var field = new RepeatingFieldRecordView(
+      var field = new RepeatingRecordRecordView(
           0,
           {
             'rightsgrantednote': ''
@@ -84,7 +84,7 @@ console.log(field.getValues());
     return $linkEl;
   },
 
-  appendDelHandlerToField: function(fieldEl, id) {
+  appendDelHandlerToRecord: function(fieldEl, id) {
     var $delHandle = $('<span>X</span>')
       , self = this;
 
@@ -114,7 +114,7 @@ console.log(field.getValues());
           .append(self.newLinkEl());
         for(var index in result.results) {
           var fieldData = result.results[index]
-            , field = new RepeatingFieldRecordView(
+            , field = new RepeatingRecordRecordView(
                 fieldData.id,
                 {
                   'rightsgrantednote': fieldData.value
@@ -122,7 +122,7 @@ console.log(field.getValues());
               )
             , fieldEl = field.render().el;
 
-          self.appendDelHandlerToField(fieldEl, fieldData.id);
+          self.appendDelHandlerToRecord(fieldEl, fieldData.id);
 
           $(self.el).append(fieldEl);
         }
