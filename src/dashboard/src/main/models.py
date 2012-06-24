@@ -221,6 +221,8 @@ class RightsStatementLicense(models.Model):
     licensetype = models.TextField(db_column='licenseIdentifierType', blank=True, verbose_name='Identifier type')
     licensevalue = models.TextField(db_column='licenseIdentifierValue', blank=True, verbose_name='Identifier value')
     licenseterms = models.TextField(db_column='licenseTerms', blank=True, verbose_name='License terms')
+    licenseapplicablestartdate = models.TextField(db_column='licenseApplicableStartDate', blank=True, verbose_name='License applicable start date', help_text='Use ISO 8061 (YYYY-MM-DD)')
+    licenseapplicableenddate = models.TextField(db_column='licenseApplicableEndDate', blank=True, verbose_name='License applicable end date', help_text='Use ISO 8061 (YYYY-MM-DD)')
 
     class Meta:
         db_table = u'RightsStatementLicense'

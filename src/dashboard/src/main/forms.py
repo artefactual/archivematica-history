@@ -115,7 +115,9 @@ class RightsLicenseForm(ModelForm):
         widgets = {
             'licensetype': TextInput(attrs=INPUT_ATTRS),
             'licensevalue': TextInput(attrs=INPUT_ATTRS),
-            'licenseterms': TextInput(attrs=INPUT_ATTRS), }
+            'licenseterms': TextInput(attrs=INPUT_ATTRS),
+            'licenseapplicablestartdate': TextInput(attrs=INPUT_ATTRS),
+            'licenseapplicableenddate': TextInput(attrs=INPUT_ATTRS), }
 
 class RightsLicenseNoteForm(ModelForm):
     class Meta:
