@@ -241,6 +241,17 @@ CREATE TABLE RightsStatementOtherRightsInformation (
     otherRightsApplicableEndDate LONGTEXT NOT NULL
 ) DEFAULT CHARSET=utf8;
 
+-- 4.1.6.1 otherRightsDocumentationIdentifier (O, R)
+DROP TABLE IF EXISTS RightsStatementOtherRightsDocumentationIdentifier;
+CREATE TABLE RightsStatementOtherRightsDocumentationIdentifier (
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatementOtherRightsInformation INT UNSIGNED,
+    otherRightsDocumentationIdentifierType longtext NOT NULL,
+    otherRightsDocumentationIdentifierValue longtext NOT NULL,
+    otherRightsDocumentationIdentifierRole longtext NOT NULL,
+    Foreign Key (fkRightsStatementOtherRightsInformation) references RightsStatementOtherRightsInformation(pk)
+) DEFAULT CHARSET=utf8;
+
 -- 4.1.7 rightsGranted (O, R)
 -- Issue 860:	rights granted restriction is a repeatable field.
 -- http://code.google.com/p/archivematica/issues/detail?id=860
