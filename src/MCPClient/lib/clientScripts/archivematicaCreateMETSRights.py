@@ -131,7 +131,7 @@ def getDocumentationIdentifier(pk, parent):
     sql = "SELECT pk, copyrightDocumentationIdentifierType, copyrightDocumentationIdentifierValue, copyrightDocumentationIdentifierRole FROM RightsStatementCopyrightDocumentationIdentifier WHERE fkRightsStatement = %d" % (pk)
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
-        statuteInformation = etree.SubElement(parent, "statuteInformation")
+        statuteInformation = etree.SubElement(parent, "copyrightDocumentationIdentifier")
         etree.SubElement(statuteInformation, "copyrightDocumentationIdentifierType").text = row[1]
         etree.SubElement(statuteInformation, "copyrightDocumentationIdentifierValue").text = row[2]
         etree.SubElement(statuteInformation, "copyrightDocumentationIdentifierRole").text = row[3]
@@ -157,11 +157,19 @@ def getrightsGranted(pk, parent, rightsGrantedNote=""):
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
         rightsGranted = etree.SubElement(parent, "rightsGranted")
+        restriction = row[4]
         #TODO : Issue 860:    rights granted restriction is a repeatable field.
         #http://code.google.com/p/archivematica/issues/detail?id=860
         etree.SubElement(rightsGranted, "act").text = row[1]
-        etree.SubElement(rightsGranted, "restriction").text = row[4]
-        termOfGrant = etree.SubElement(rightsGranted, "termOfGrant")
+        etree.SubElement(rightsGranted, "restriction").text = restriction
+        if restriction.lower() in ["allow"]:
+            termOfGrant = etree.SubElement(rightsGranted, "termOfGrant")
+        elif restriction.lower() in ["disallow", "conditional"]:
+            termOfGrant = etree.SubElement(rightsGranted, "termOfRestriction")
+        else:
+            print >>sys.stderr, "The value of element restriction must be: 'Allow', 'Dissallow', or 'Conditional'"
+            sharedVariablesAcrossModules.globalErrorCount +=1
+            continue
         etree.SubElement(termOfGrant, "startDate").text = formatDate(row[2])
         if not row[2]:
             sharedVariablesAcrossModules.globalErrorCount +=1
