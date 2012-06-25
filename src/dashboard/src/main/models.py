@@ -269,6 +269,8 @@ class RightsStatementStatuteInformation(models.Model):
     statutejurisdiction = models.TextField(db_column='statuteJurisdiction', verbose_name='Statute jurisdiction', blank=True)
     statutecitation = models.TextField(db_column='statuteCitation', verbose_name='Statute citation', blank=True)
     statutedeterminationdate = models.TextField(db_column='statuteInformationDeterminationDate', verbose_name='Statute determination date', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
+    statuteapplicablestartdate = models.TextField(db_column='statuteApplicableStartDate', blank=True, verbose_name='Statute applicable start date', help_text='Use ISO 8061 (YYYY-MM-DD)')
+    statuteapplicableenddate = models.TextField(db_column='statuteApplicableEndDate', blank=True, verbose_name='Statute applicable end date', help_text='Use ISO 8061 (YYYY-MM-DD)')
 
     class Meta:
         db_table = u'RightsStatementStatuteInformation'
