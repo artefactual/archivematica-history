@@ -70,10 +70,7 @@
 
           <script>
           $(document).ready(function() {
-            var schema = {
-              'rightsgrantednote': {},
-            };
-            setUpRepeatingField('rightsfields_', '{{ form.instance.pk }}', 'Rights Note', schema, '/formdata/rightsnote/{{ form.instance.pk }}/');
+            setUpRepeatingRightsGrantedNotesRecords('{{ form.instance.pk }}');
           });
           </script>
         {% endfor %}
@@ -97,21 +94,7 @@
 
           <script>
           $(document).ready(function() {
-            var schema = {
-              'statutedocumentationidentifiertype': {
-                'label': 'Type',
-                'type': 'input'
-              },
-              'statutedocumentationidentifiervalue': {
-                'label': 'Value',
-                'type': 'input'
-              },
-              'statutedocumentationidentifierrole': {
-                'label': 'Role',
-                'type': 'input'
-              }
-            };
-            setUpRepeatingField('statutedocidfields_', '{{ form.instance.pk }}', 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/{{ form.instance.pk }}/');
+            setUpRepeatingStatuteDocumentationIdentifierRecords('{{ form.instance.pk }}');
           });
           </script>
         {% endfor %}
