@@ -101,7 +101,9 @@ class RightsStatuteForm(ModelForm):
         widgets = {
             'statutejurisdiction': TextInput(attrs=INPUT_ATTRS),
             'statutecitation': TextInput(attrs=INPUT_ATTRS),
-            'statutedeterminationdate': TextInput(attrs=INPUT_ATTRS), }
+            'statutedeterminationdate': TextInput(attrs=INPUT_ATTRS),
+            'statuteapplicablestartdate': TextInput(attrs=INPUT_ATTRS),
+            'statuteapplicableenddate': TextInput(attrs=INPUT_ATTRS), }
 
 class RightsStatuteNoteForm(ModelForm):
     class Meta:
