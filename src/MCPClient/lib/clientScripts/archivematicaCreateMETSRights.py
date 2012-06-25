@@ -45,7 +45,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
     """[(fileUUID, fileUUIDTYPE), (sipUUID, sipUUIDTYPE), (transferUUID, transferUUIDType)]"""
     ret = []
     for metadataAppliesToidentifier, metadataAppliesToType in metadataAppliesToList:
-        list = "RightsStatement.pk, rightsStatementIdentifierType, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseIdentifierType, licenseIdentifierValue, licenseTerms, rightsNotes"
+        list = "RightsStatement.pk, rightsStatementIdentifierType, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseIdentifierType, licenseIdentifierValue, licenseTerms, rightsNotes, copyrightApplicableStartDate, copyrightApplicableEndDate"
         key = list.split(", ")
         sql = """SELECT %s FROM RightsStatement LEFT JOIN RightsStatementCopyright ON RightsStatementCopyright.fkRightsStatement = RightsStatement.pk LEFT JOIN RightsStatementLicense ON RightsStatementLicense.fkRightsStatement = RightsStatement.pk WHERE metadataAppliesToidentifier = '%s' AND metadataAppliesToType = %s;""" % (list, metadataAppliesToidentifier, metadataAppliesToType)
         rows = databaseInterface.queryAllSQL(sql)
@@ -55,7 +55,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
             for row in rows:
                 valueDic= {}
                 rightsStatement = etree.Element("rightsStatement", nsmap={None: premisNS})
-                rightsStatement.set(xsiBNS+"schemaLocation", premisNS + " http://www.loc.gov/standards/premis/v2/premis-v2-1.xsd")
+                rightsStatement.set(xsiBNS+"schemaLocation", premisNS + " http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd")
                 #rightsStatement.set("version", "2.1") #cvc-complex-type.3.2.2: Attribute 'version' is not allowed to appear in element 'rightsStatement'.
                 ret.append(rightsStatement)
                 for i in range(len(key)):
@@ -76,24 +76,30 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     etree.SubElement(copyrightInformation, "copyrightStatus").text = valueDic["copyrightStatus"]
                     etree.SubElement(copyrightInformation, "copyrightJurisdiction").text = valueDic["copyrightJurisdiction"]
                     etree.SubElement(copyrightInformation, "copyrightStatusDeterminationDate").text = formatDate(valueDic["copyrightStatusDeterminationDate"])
-                    
                     #copyrightNote Repeatable
                     sql = "SELECT copyrightNote FROM RightsStatementCopyrightNote WHERE fkRightsStatement = %d;" % (valueDic["RightsStatement.pk"])
                     rows2 = databaseInterface.queryAllSQL(sql)
                     for row2 in rows2:
                         etree.SubElement(copyrightInformation, "copyrightNote").text =  row2[0]
+                        
+                    #RightsStatementCopyrightDocumentationIdentifier
+                    if valueDic["rightsBasis"].lower() in ["copyright"]:
+                        getDocumentationIdentifier(valueDic["RightsStatement.pk"], copyrightInformation)
 
-                #RightsStatementCopyrightDocumentationIdentifier
-                if valueDic["rightsBasis"].lower() in ["copyright"]:
-                    getDocumentationIdentifier(valueDic["RightsStatement.pk"], rightsStatement)
-                
+                        copyrightApplicableDates = etree.SubElement(copyrightInformation, "copyrightApplicableDates")
+                        if valueDic["copyrightApplicableStartDate"]:
+                            etree.SubElement(copyrightApplicableDates, "startDate").text = formatDate(valueDic["copyrightApplicableStartDate"])
+                        if valueDic["copyrightApplicableEndDate"]:
+                            etree.SubElement(copyrightApplicableDates, "endDate").endDate = formatDate(valueDic["copyrightApplicableEndDate"])
+                    
+                    
                 # licenseInformation
-                if valueDic["rightsBasis"].lower() in ["allow"]:
-                    licenseInformation = etree.SubElement(rightsStatement, "licenseInformation")
-                    licenseIdentifier = etree.SubElement(licenseInformation, "licenseIdentifier")
-                    etree.SubElement(licenseIdentifier, "licenseIdentifierType").text = valueDic["licenseIdentifierType"]
-                    etree.SubElement(licenseIdentifier, "licenseIdentifierValue").text = valueDic["licenseIdentifierValue"]
-                    etree.SubElement(licenseInformation, "licenseTerms").text = valueDic["licenseTerms"]
+                #if valueDic["rightsBasis"].lower() in ["allow"]:
+                licenseInformation = etree.SubElement(rightsStatement, "licenseInformation")
+                licenseIdentifier = etree.SubElement(licenseInformation, "licenseIdentifier")
+                etree.SubElement(licenseIdentifier, "licenseIdentifierType").text = valueDic["licenseIdentifierType"]
+                etree.SubElement(licenseIdentifier, "licenseIdentifierValue").text = valueDic["licenseIdentifierValue"]
+                etree.SubElement(licenseInformation, "licenseTerms").text = valueDic["licenseTerms"]
                 
                 #4.1.4.3 licenseNote (O, R)
                 sql = "SELECT licenseNote FROM RightsStatementLicenseNote WHERE fkRightsStatement = %d;" % (valueDic["RightsStatement.pk"])
@@ -134,7 +140,7 @@ def getDocumentationIdentifier(pk, parent):
         statuteInformation = etree.SubElement(parent, "copyrightDocumentationIdentifier")
         etree.SubElement(statuteInformation, "copyrightDocumentationIdentifierType").text = row[1]
         etree.SubElement(statuteInformation, "copyrightDocumentationIdentifierValue").text = row[2]
-        etree.SubElement(statuteInformation, "copyrightDocumentationIdentifierRole").text = row[3]
+        etree.SubElement(statuteInformation, "copyrightDocumentationRole").text = row[3]
 
 
 def getstatuteInformation(pk, parent):
@@ -176,6 +182,8 @@ def getrightsGranted(pk, parent, rightsGrantedNote=""):
             print >>sys.stderr, "The value '' of element 'startDate' is not valid. "
         if row[3]:
             etree.SubElement(termOfGrant, "endDate").text = formatDate(row[3])
+        else:
+            etree.SubElement(termOfGrant, "endDate").text = "open"
         if rightsGrantedNote:
             etree.SubElement(rightsGranted, "rightsGrantedNote").text =  rightsGrantedNote
         #4.1.6.4 rightsGrantedNote (O, R)

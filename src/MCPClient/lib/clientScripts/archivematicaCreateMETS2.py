@@ -208,8 +208,8 @@ def createTechMD(fileUUID):
     #OBJECT
     object = etree.SubElement(xmlData, "object", nsmap={None: premisNS})
     object.set( xsiBNS+"type", "file")
-    object.set(xsiBNS+"schemaLocation", premisNS + " http://www.loc.gov/standards/premis/v2/premis-v2-1.xsd")
-    object.set("version", "2.1")
+    object.set(xsiBNS+"schemaLocation", premisNS + " http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd")
+    object.set("version", "2.2")
 
     objectIdentifier = etree.SubElement(object, "objectIdentifier")
     etree.SubElement(objectIdentifier, "objectIdentifierType").text = "UUID"
