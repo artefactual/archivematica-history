@@ -1058,7 +1058,14 @@ def formdata(request, type, parent_id, delete_id = None):
         model_value_fields = ['rightsgrantednote']
 
         results = model.objects.filter(rightsgranted=parent_id)
-        field = 'rightsgrantednote'
+
+    if (type == 'statutedocumentationidentifier'):
+        model = models.RightsStatementStatuteDocumentationIdentifier
+        parent_model = models.RightsStatementStatuteInformation
+        model_parent_field = 'rightsstatementstatute'
+        model_value_fields = ['statutedocumentationidentifiertype', 'statutedocumentationidentifiervalue']
+
+        results = model.objects.filter(rightsstatementstatute=parent_id)
 
     # handle creation
     if (request.method == 'POST'):
