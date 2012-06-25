@@ -1,14 +1,10 @@
 // repeating child field to a bound formset instance
-function setUpRepeatingField(instanceId, idPrefix, parentId, description, schema, url) {
+function setUpRepeatingField(idPrefix, parentId, description, schema, url) {
 
-  // if the form instance isn't blank, it's bound to data
-  var formInstance = instanceId;
-
-  if (formInstance != '') {
-    formInstance = parseInt(formInstance);
+  if (parentId != '') {
 
     var rights = new RepeatingDataView({
-      el: $('#' + idPrefix + formInstance),
+      el: $('#' + idPrefix + parentId),
       description: description,
       parentId: parentId,
       schema: schema,
