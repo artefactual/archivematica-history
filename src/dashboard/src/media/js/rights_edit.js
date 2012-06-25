@@ -1,4 +1,29 @@
-// repeating child field to a bound formset instance
+function setUpRepeatingRightsGrantedNotesRecords(parentId) {
+  var schema = {
+    'rightsgrantednote': {},
+  };
+  setUpRepeatingField('rightsfields_', parentId, 'Rights Note', schema, '/formdata/rightsnote/' + parentId + '/');
+}
+
+function setUpRepeatingStatuteDocumentationIdentifierRecords(parentId) {
+  var schema = {
+    'statutedocumentationidentifiertype': {
+      'label': 'Type',
+      'type': 'input'
+    },
+    'statutedocumentationidentifiervalue': {
+      'label': 'Value',
+      'type': 'input'
+    },
+    'statutedocumentationidentifierrole': {
+      'label': 'Role',
+      'type': 'input'
+    }
+  };
+  setUpRepeatingField('statutedocidfields_', parentId, 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/' + parentId + '/');
+}
+
+// repeating child field to a formset bound to existing data
 function setUpRepeatingField(idPrefix, parentId, description, schema, url) {
 
   if (parentId != '') {
