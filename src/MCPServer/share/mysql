@@ -187,6 +187,17 @@ CREATE TABLE RightsStatementStatuteInformation (
 
 ) DEFAULT CHARSET=utf8;
 
+-- 4.1.5.5 statuteDocumentationIdentifier (O, R)
+DROP TABLE IF EXISTS RightsStatementStatuteDocumentationIdentifier;
+CREATE TABLE RightsStatementStatuteDocumentationIdentifier (
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatementStatuteInformation INT UNSIGNED,
+    statuteDocumentationIdentifierType longtext NOT NULL,
+    statuteDocumentationIdentifierValue longtext NOT NULL,
+    statuteDocumentationIdentifierRole longtext NOT NULL,
+    Foreign Key (fkRightsStatementStatuteInformation) references RightsStatementStatuteInformation(pk)
+) DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS RightsStatementStatuteInformationNote;
 CREATE TABLE RightsStatementStatuteInformationNote (
   pk int(10) unsigned NOT NULL AUTO_INCREMENT,
