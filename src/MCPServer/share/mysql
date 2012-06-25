@@ -183,8 +183,9 @@ CREATE TABLE RightsStatementStatuteInformation (
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
     statuteJurisdiction LONGTEXT NOT NULL,
     statuteCitation LONGTEXT NOT NULL,
-    statuteInformationDeterminationDate LONGTEXT
-
+    statuteInformationDeterminationDate LONGTEXT,
+    statuteApplicableStartDate LONGTEXT NOT NULL,
+    statuteApplicableEndDate LONGTEXT NOT NULL
 ) DEFAULT CHARSET=utf8;
 
 -- 4.1.5.5 statuteDocumentationIdentifier (O, R)
