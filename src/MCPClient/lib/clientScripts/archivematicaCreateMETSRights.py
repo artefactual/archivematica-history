@@ -83,12 +83,17 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     for row2 in rows2:
                         etree.SubElement(copyrightInformation, "copyrightNote").text =  row2[0]
 
+                #RightsStatementCopyrightDocumentationIdentifier
+                if valueDic["rightsBasis"].lower() in ["copyright"]:
+                    getDocumentationIdentifier(valueDic["RightsStatement.pk"], rightsStatement)
+                
                 # licenseInformation
-                licenseInformation = etree.SubElement(rightsStatement, "licenseInformation")
-                licenseIdentifier = etree.SubElement(licenseInformation, "licenseIdentifier")
-                etree.SubElement(licenseIdentifier, "licenseIdentifierType").text = valueDic["licenseIdentifierType"]
-                etree.SubElement(licenseIdentifier, "licenseIdentifierValue").text = valueDic["licenseIdentifierValue"]
-                etree.SubElement(licenseInformation, "licenseTerms").text = valueDic["licenseTerms"]
+                if valueDic["rightsBasis"].lower() in ["allow"]:
+                    licenseInformation = etree.SubElement(rightsStatement, "licenseInformation")
+                    licenseIdentifier = etree.SubElement(licenseInformation, "licenseIdentifier")
+                    etree.SubElement(licenseIdentifier, "licenseIdentifierType").text = valueDic["licenseIdentifierType"]
+                    etree.SubElement(licenseIdentifier, "licenseIdentifierValue").text = valueDic["licenseIdentifierValue"]
+                    etree.SubElement(licenseInformation, "licenseTerms").text = valueDic["licenseTerms"]
                 
                 #4.1.4.3 licenseNote (O, R)
                 sql = "SELECT licenseNote FROM RightsStatementLicenseNote WHERE fkRightsStatement = %d;" % (valueDic["RightsStatement.pk"])
@@ -121,6 +126,16 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
             if False: # Issue 873:
                 break
     return ret
+
+def getDocumentationIdentifier(pk, parent):
+    sql = "SELECT pk, copyrightDocumentationIdentifierType, copyrightDocumentationIdentifierValue, copyrightDocumentationIdentifierRole FROM RightsStatementCopyrightDocumentationIdentifier WHERE fkRightsStatement = %d" % (pk)
+    rows = databaseInterface.queryAllSQL(sql)
+    for row in rows:
+        statuteInformation = etree.SubElement(parent, "statuteInformation")
+        etree.SubElement(statuteInformation, "copyrightDocumentationIdentifierType").text = row[1]
+        etree.SubElement(statuteInformation, "copyrightDocumentationIdentifierValue").text = row[2]
+        etree.SubElement(statuteInformation, "copyrightDocumentationIdentifierRole").text = row[3]
+
 
 def getstatuteInformation(pk, parent):
     sql = "SELECT pk, statuteJurisdiction, statuteCitation, statuteInformationDeterminationDate FROM RightsStatementStatuteInformation WHERE fkRightsStatement = %d" % (pk)
