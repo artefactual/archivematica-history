@@ -66,14 +66,14 @@
         {% for form in grantFormset %}
           {% include "_form.html" %}
 
-          <div id='rightsfields_{{ form.initial.id }}'></div>
+          <div id='rightsfields_{{ form.instance.pk }}'></div>
 
           <script>
           $(document).ready(function() {
             var schema = {
               'rightsgrantednote': {},
             };
-            setUpRepeatingField('{{ form.initial.id }}', 'rightsfields_', '{{ form.instance.pk }}', 'Rights Note', schema, '/formdata/rightsnote/{{ form.instance.pk }}/');
+            setUpRepeatingField('rightsfields_', '{{ form.instance.pk }}', 'Rights Note', schema, '/formdata/rightsnote/{{ form.instance.pk }}/');
           });
           </script>
         {% endfor %}
@@ -93,7 +93,7 @@
         {% for form in statuteFormset %}
           {% include "_form.html" %}
 
-          <div id='statutedocidfields_{{ form.initial.id }}'></div>
+          <div id='statutedocidfields_{{ form.instance.pk }}'></div>
 
           <script>
           $(document).ready(function() {
@@ -111,7 +111,7 @@
                 'type': 'input'
               }
             };
-            setUpRepeatingField('{{ form.initial.id }}', 'statutedocidfields_', '{{ form.instance.pk }}', 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/{{ form.instance.pk }}/');
+            setUpRepeatingField('statutedocidfields_', '{{ form.instance.pk }}', 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/{{ form.instance.pk }}/');
           });
           </script>
         {% endfor %}
