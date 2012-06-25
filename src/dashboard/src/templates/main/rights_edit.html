@@ -108,6 +108,10 @@
           {% include "_formset_table.html" with formset=licenseNoteFormset %}
         </div>
 
+        <div id='other_formset'>
+          {% include "_formset.html" with formset=otherFormset %}
+        </div>
+
         <div class="actions">
           {% if id %}
             <button type="submit" class="btn primary">Save</button>
