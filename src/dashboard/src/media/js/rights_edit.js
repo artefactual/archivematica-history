@@ -23,6 +23,24 @@ function setUpRepeatingStatuteDocumentationIdentifierRecords(parentId) {
   setUpRepeatingField('statutedocidfields_', parentId, 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/' + parentId + '/');
 }
 
+function setUpRepeatingOtherRightsDocumentationIdentifierRecords(parentId) {
+  var schema = {
+    'otherrightsdocumentationidentifiertype': {
+      'label': 'Type',
+      'type': 'input'
+    },
+    'otherrightsdocumentationidentifiervalue': {
+      'label': 'Value',
+      'type': 'input'
+    },
+    'otherrightsdocumentationidentifierrole': {
+      'label': 'Role',
+      'type': 'input'
+    }
+  };
+  setUpRepeatingField('otherrightsdocidfields_', parentId, 'Other Rights Documentation Identifier', schema, '/formdata/otherrightsdocumentationidentifier/' + parentId + '/');
+}
+
 // repeating child field to a formset bound to existing data
 function setUpRepeatingField(idPrefix, parentId, description, schema, url) {
 
