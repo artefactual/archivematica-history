@@ -1063,22 +1063,36 @@ def formdata(request, type, parent_id, delete_id = None):
         model = models.RightsStatementStatuteDocumentationIdentifier
         parent_model = models.RightsStatementStatuteInformation
         model_parent_field = 'rightsstatementstatute'
-        model_value_fields = ['statutedocumentationidentifiertype', 'statutedocumentationidentifiervalue']
+        model_value_fields = [
+          'statutedocumentationidentifiertype',
+          'statutedocumentationidentifiervalue',
+          'statutedocumentationidentifierrole'
+        ]
 
         results = model.objects.filter(rightsstatementstatute=parent_id)
 
     # handle creation
     if (request.method == 'POST'):
-        parent   = parent_model.objects.filter(pk=parent_id)
+        # load or initiate model instance
+        id = request.POST.get('id', 0)
+        if id > 0:
+            instance = model.objects.get(pk=id)
+        else:
+            instance = model()
 
-        instance = model()
+        # set instance parent
+        parent = parent_model.objects.filter(pk=parent_id)
         setattr(instance, model_parent_field, parent[0])
+
+        # set instance field values using request data
         for field in model_value_fields:
             value = request.POST.get(field, '')
             setattr(instance, field, value)
         instance.save()
 
-        response['new_id']  = instance.pk
+        if id == 0:
+          response['new_id']  = instance.pk
+
         response['message'] = 'Added.'
 
     # handle deletion
