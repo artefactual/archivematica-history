@@ -61,6 +61,8 @@ var RepeatingDataRecordView = Backbone.View.extend({
             type: 'POST',
             data: data,
             success: function(result) {
+              $input.hide();
+              $input.fadeIn();
             }
           });
         });
@@ -139,7 +141,10 @@ var RepeatingDataView = Backbone.View.extend({
           success: function(result) {
             $(self).attr('disabled', 'false');
             self.waitingForInput = false;
-            self.render();
+            $input.hide();
+            $input.fadeIn(function() {
+              self.render();
+            });
           }
         });
       });
