@@ -109,7 +109,20 @@
         </div>
 
         <div id='other_formset'>
-          {% include "_formset.html" with formset=otherFormset %}
+          {{ otherFormset.management_form }}
+          {{ otherFormset.non_form_errors.as_ul }}
+
+          {% for form in otherFormset %}
+            {% include "_form.html" %}
+
+            <div id='otherrightsdocidfields_{{ form.instance.pk }}'></div>
+
+            <script>
+            $(document).ready(function() {
+              setUpRepeatingOtherRightsDocumentationIdentifierRecords('{{ form.instance.pk }}');
+            });
+            </script>
+          {% endfor %}
         </div>
 
         <div class="actions">
