@@ -14,9 +14,10 @@ Type will default to textarea.
 
 */
 var RepeatingRecordRecordView = Backbone.View.extend({
-  initialize: function(id, definition) {
-    this.id    = id;
+  initialize: function(id, definition, url) {
+    this.id = id;
     this.definition = definition;
+    this.url = url;
   },
 
   getValues: function() {
@@ -46,6 +47,23 @@ var RepeatingRecordRecordView = Backbone.View.extend({
 
       if (typeof label != 'undefined') {
         this.el.append('<b>' + label + '</b><br/>');
+      }
+
+      if (this.id > 0) {
+        var self = this;
+        $input.change(function() {
+          var data = self.getValues();
+
+          data.id = self.id;
+
+          $.ajax({
+            url: self.url,
+            type: 'POST',
+            data: data,
+            success: function(result) {
+            }
+          });
+        });
       }
 
       $container.append($input);
@@ -87,7 +105,10 @@ var RepeatingRecordView = Backbone.View.extend({
       this.parentId = this.options.parentId;
     }
 
-    this.url = '/formdata/rightsnote/' + this.parentId + '/';
+    if (this.options.url) {
+      this.url = this.options.url;
+    }
+
     this.waitingForInput = false;
   },
 
@@ -176,12 +197,15 @@ var RepeatingRecordView = Backbone.View.extend({
 
           // populate definition clone with result values
           for (var field in fieldData.values) {
-            newDef[field]['value'] = fieldData.values[field];
+            if (typeof newDef[field] != 'undefined') {
+              newDef[field]['value'] = fieldData.values[field];
+            }
           }
 
           var field = new RepeatingRecordRecordView(
                 fieldData.id,
-                newDef
+                newDef,
+                self.url
               )
             , fieldEl = field.render().el;
 

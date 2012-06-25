@@ -1,15 +1,5 @@
 // repeating child field to a bound formset instance
-function setUpRepeatingField(instanceId, idPrefix, parentId, description, schema) {
-
-if (typeof description == 'undefined') {
-  description = 'Rights Note';
-}
-
-if (typeof scehma == 'undefined') {
-schema = {
-        'rightsgrantednote': {}
-      }
-}
+function setUpRepeatingField(instanceId, idPrefix, parentId, description, schema, url) {
 
   // if the form instance isn't blank, it's bound to data
   var formInstance = instanceId;
@@ -21,7 +11,8 @@ schema = {
       el: $('#' + idPrefix + formInstance),
       description: description,
       parentId: parentId,
-      schema: schema
+      schema: schema,
+      url: url
     });
     rights.render();
   }
