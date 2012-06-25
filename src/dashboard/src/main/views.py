@@ -141,6 +141,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_statute_notes = 1 # max_notes - models.RightsStatementStatuteInformationNote.objects.filter(rightsstatement=viewRights).count()
         extra_license_forms = max_notes - models.RightsStatementLicense.objects.filter(rightsstatement=viewRights).count()
         extra_license_notes = 1 # max_notes - models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights).count()
+        extra_other_forms = max_notes - models.RightsStatementOtherRightsInformation.objects.filter(rightsstatement=viewRights).count()
     else:
         #return HttpResponse(request.POST.get('rightsholder'))
         if request.method == 'POST':
@@ -160,6 +161,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_statute_notes = max_notes
         extra_license_forms = max_notes
         extra_license_notes = max_notes
+        extra_other_forms = max_notes
 
     # create inline formsets for child elements
     GrantFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementRightsGranted, extra=extra_grant_forms, can_delete=False, form=forms.RightsGrantedForm)
@@ -171,6 +173,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
     StatuteNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformationNote, extra=extra_statute_notes, can_delete=False, form=forms.RightsStatuteNoteForm)
     LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
     LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote, extra=extra_license_notes, can_delete=False, form=forms.RightsLicenseNoteForm)
+    OtherFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementOtherRightsInformation, extra=extra_other_forms, can_delete=False, form=forms.RightsOtherRightsForm)
 
     # handle form creation/saving
     if request.method == 'POST':
@@ -199,6 +202,8 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         licenseFormset.save()
         licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
         licenseNoteFormset.save()
+        otherFormset = OtherFormSet(request.POST, instance=createdRights)
+        otherFormset.save()
         return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
     else:
         grantFormset = GrantFormSet(instance=viewRights)
@@ -209,6 +214,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         statuteNoteFormset = StatuteNoteFormSet(instance=viewRights)
         licenseFormset = LicenseFormSet(instance=viewRights)
         licenseNoteFormset = LicenseNoteFormSet(instance=viewRights)
+        otherFormset = OtherFormSet(instance=viewRights)
 
     return render(request, 'main/rights_edit.html', locals())
 

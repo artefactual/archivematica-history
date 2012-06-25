@@ -293,6 +293,16 @@ class RightsStatementStatuteDocumentationIdentifier(models.Model):
     class Meta:
         db_table = u'RightsStatementStatuteDocumentationIdentifier'
 
+class RightsStatementOtherRightsInformation(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk', editable=False)
+    rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+    otherrightsbasis = models.TextField(db_column='otherRightsBasis', verbose_name='Other Rights Basis', blank=True)
+    otherrightsapplicablestartdate = models.TextField(db_column='otherRightsApplicableStartDate', blank=True, verbose_name='Other rights applicable start date', help_text='Use ISO 8061 (YYYY-MM-DD)')
+    otherrightsapplicableenddate = models.TextField(db_column='otherRightsApplicableEndDate', blank=True, verbose_name='Other rights applicable end date', help_text='Use ISO 8061 (YYYY-MM-DD)')
+
+    class Meta:
+        db_table = u'RightsStatementOtherRightsInformation'
+
 class RightsStatementLinkingAgentIdentifier(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')

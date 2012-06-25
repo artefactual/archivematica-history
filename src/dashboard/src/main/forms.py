@@ -40,7 +40,8 @@ class RightsForm(ModelForm):
         ('Statute', 'Statute'),
         ('License', 'License'),
         ('Policy', 'Policy'),
-        ('Donor', 'Donor')
+        ('Donor', 'Donor'),
+        ('Other', 'Other')
     ))
 
     class Meta:
@@ -110,6 +111,14 @@ class RightsStatuteNoteForm(ModelForm):
         model = models.RightsStatementStatuteInformationNote
         widgets = {
             'statutenote': Textarea(attrs=TEXTAREA_ATTRS), }
+
+class RightsOtherRightsForm(ModelForm):
+    class Meta:
+        model = models.RightsStatementOtherRightsInformation
+        widgets = {
+            'otherrightsbasis': TextInput(attrs=INPUT_ATTRS),
+            'otherrightsapplicablestartdate': TextInput(attrs=INPUT_ATTRS),
+            'otherrightsapplicableenddate': TextInput(attrs=INPUT_ATTRS), }
 
 class RightsLicenseForm(ModelForm):
     class Meta:
