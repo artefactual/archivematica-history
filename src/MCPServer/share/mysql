@@ -230,7 +230,18 @@ CREATE TABLE RightsStatementLinkingObjectIdentifierLinkingObjectRole (
 ) DEFAULT CHARSET=utf8;
 */
 
--- 4.1.6 rightsGranted (O, R)
+-- 4.1.6 otherRightsInformation (O, NR)
+DROP TABLE IF EXISTS RightsStatementOtherRightsInformation;
+CREATE TABLE RightsStatementOtherRightsInformation (
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    otherRightsBasis LONGTEXT NOT NULL,
+    otherRightsApplicableStartDate LONGTEXT NOT NULL,
+    otherRightsApplicableEndDate LONGTEXT NOT NULL
+) DEFAULT CHARSET=utf8;
+
+-- 4.1.7 rightsGranted (O, R)
 -- Issue 860:	rights granted restriction is a repeatable field.
 -- http://code.google.com/p/archivematica/issues/detail?id=860
 DROP TABLE IF EXISTS RightsStatementRightsGranted;
@@ -244,7 +255,7 @@ CREATE TABLE RightsStatementRightsGranted (
     restriction LONGTEXT NOT NULL
 ) DEFAULT CHARSET=utf8;
 
--- 4.1.6.2 restriction (O, R)
+-- 4.1.7.2 restriction (O, R)
 DROP TABLE IF EXISTS RightsStatementRightsGrantedRestriction;
 CREATE TABLE RightsStatementRightsGrantedRestriction (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -252,7 +263,8 @@ CREATE TABLE RightsStatementRightsGrantedRestriction (
     Foreign Key (fkRightsStatementRightsGranted) references RightsStatementRightsGranted(pk),
     restriction LONGTEXT
 ) DEFAULT CHARSET=utf8;
--- 4.1.6.4 rightsGrantedNote (O, R)
+
+-- 4.1.7.5 rightsGrantedNote (O, R)
 DROP TABLE IF EXISTS RightsStatementRightsGrantedNote;
 CREATE TABLE RightsStatementRightsGrantedNote (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -261,7 +273,7 @@ CREATE TABLE RightsStatementRightsGrantedNote (
     rightsGrantedNote LONGTEXT
 ) DEFAULT CHARSET=utf8;
 
--- 4.1.8 linkingAgentIdentifier (O, R)
+-- 4.1.9 linkingAgentIdentifier (O, R)
 DROP TABLE IF EXISTS RightsStatementLinkingAgentIdentifier;
 CREATE TABLE RightsStatementLinkingAgentIdentifier (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
