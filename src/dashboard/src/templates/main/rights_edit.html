@@ -70,7 +70,10 @@
 
           <script>
           $(document).ready(function() {
-            setUpRepeatingField('{{ form.initial.id }}', 'rightsfields_', '{{ id }}');
+            var schema = {
+              'rightsgrantednote': {},
+            };
+            setUpRepeatingField('{{ form.initial.id }}', 'rightsfields_', '{{ form.instance.pk }}', 'Rights Note', schema, '/formdata/rightsnote/{{ form.instance.pk }}/');
           });
           </script>
         {% endfor %}
@@ -84,7 +87,36 @@
         </div>
 
         <div id='statute_formset'>
-          {% include "_formset.html" with formset=statuteFormset %}
+          {{ statuteFormset.management_form }}
+          {{ statuteFormset.non_form_errors.as_ul }}
+
+        {% for form in statuteFormset %}
+          {% include "_form.html" %}
+
+          <div id='statutedocidfields_{{ form.initial.id }}'></div>
+
+          <script>
+          $(document).ready(function() {
+            var schema = {
+              'statutedocumentationidentifiertype': {
+                'label': 'Type',
+                'type': 'input'
+              },
+              'statutedocumentationidentifiervalue': {
+                'label': 'Value',
+                'type': 'input'
+              },
+              'statutedocumentationidentifierrole': {
+                'label': 'Role',
+                'type': 'input'
+              }
+            };
+            setUpRepeatingField('{{ form.initial.id }}', 'statutedocidfields_', '{{ form.instance.pk }}', 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/{{ form.instance.pk }}/');
+          });
+          </script>
+        {% endfor %}
+
+
           {% include "_formset_table.html" with formset=statuteNoteFormset %}
         </div>
 
