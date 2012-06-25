@@ -47,7 +47,8 @@ function revealSelectedBasis() {
       'Statute':   'statute_formset',
       'License':   'license_formset',
       'Policy':    false,
-      'Donor':     false
+      'Donor':     false,
+      'Other':     'other_formset'
   }
 
   // hide all formsets except basis
