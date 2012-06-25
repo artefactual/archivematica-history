@@ -13,7 +13,7 @@ Field definition example:
 Type will default to textarea.
 
 */
-var RepeatingRecordRecordView = Backbone.View.extend({
+var RepeatingDataRecordView = Backbone.View.extend({
   initialize: function(id, definition, url) {
     this.id = id;
     this.definition = definition;
@@ -88,7 +88,7 @@ Field schema example:
 Type will default to textarea.
 
 */
-var RepeatingRecordView = Backbone.View.extend({
+var RepeatingDataView = Backbone.View.extend({
 
   initialize: function() {
     this.items = [];
@@ -120,7 +120,7 @@ var RepeatingRecordView = Backbone.View.extend({
       $(this).attr('disabled', 'true');
       if (!self.waitingForInput) {
       self.waitingForInput = true;
-      var field = new RepeatingRecordRecordView(
+      var field = new RepeatingDataRecordView(
           0,
           self.schema
         )
@@ -202,7 +202,7 @@ var RepeatingRecordView = Backbone.View.extend({
             }
           }
 
-          var field = new RepeatingRecordRecordView(
+          var field = new RepeatingDataRecordView(
                 fieldData.id,
                 newDef,
                 self.url

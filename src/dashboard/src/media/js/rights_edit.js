@@ -7,7 +7,7 @@ function setUpRepeatingField(instanceId, idPrefix, parentId, description, schema
   if (formInstance != '') {
     formInstance = parseInt(formInstance);
 
-    var rights = new RepeatingRecordView({
+    var rights = new RepeatingDataView({
       el: $('#' + idPrefix + formInstance),
       description: description,
       parentId: parentId,
