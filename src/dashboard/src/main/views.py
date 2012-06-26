@@ -39,6 +39,9 @@ from datetime import datetime
 import os
 import re
 import subprocess
+import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
+import pyes
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Utils (decorators)
@@ -654,6 +657,21 @@ def transfer_delete(request, uuid):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def archival_storage(request, path=None):
+    if request.method == 'POST':
+        query = request.POST.get('query', '')
+        conn = pyes.ES('127.0.0.1:9200')
+
+        q = pyes.StringQuery(query)
+        results = conn.search(query=q, indices='transfers')
+
+        form = forms.StorageSearchForm(initial={'query': query})
+        return render(request, 'main/archival_storage.html', locals())
+    else:
+        return archival_storage_sip_display(request, path)
+
+def archival_storage_sip_display(request, path=None):
+    form = forms.StorageSearchForm()
+
     document = '/var/archivematica/sharedDirectory/www/index.html'
     # User requests a file
     if path is not None:

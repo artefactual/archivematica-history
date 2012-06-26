@@ -7,6 +7,9 @@ from main import models
 TEXTAREA_ATTRS = {'rows': '4', 'class': 'span11'}
 INPUT_ATTRS = {'class': 'span11'}
 
+class StorageSearchForm(forms.Form):
+    query = forms.CharField(label='', required=False, widget=TextInput(attrs=INPUT_ATTRS))
+
 class DublinCoreMetadataForm(forms.Form):
     title = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
     creator = forms.CharField(required=False, widget=TextInput(attrs=INPUT_ATTRS))
