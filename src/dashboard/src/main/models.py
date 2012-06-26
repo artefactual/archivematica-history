@@ -243,6 +243,8 @@ class RightsStatementRightsGranted(models.Model):
     restriction = models.TextField(db_column='restriction', blank=True)
     startdate = models.TextField(db_column='startDate', verbose_name='Start', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
     enddate = models.TextField(db_column='endDate', verbose_name='End', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
+    restrictionstartdate = models.TextField(db_column='restrictionStartDate', verbose_name='Restriction Start', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
+    restrictionenddate = models.TextField(db_column='restrictionEndDate', verbose_name='Restriction End', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
 
     class Meta:
         db_table = u'RightsStatementRightsGranted'
