@@ -47,7 +47,13 @@ if __name__ == '__main__':
             except pyes.exceptions.IndexAlreadyExistsException:
                 pass
 
-            filesIndexed = elasticSearchFunctions.index_transfer(conn, transferUUID, pathToTransfer)
+            filesIndexed = elasticSearchFunctions.index_directory_files(
+                conn,
+                transferUUID,
+                pathToTransfer,
+                'transfers',
+                'transfer'
+            )
 
             print 'Transfer UUID: ' + transferUUID
             print 'Files indexed: ' + str(filesIndexed)
