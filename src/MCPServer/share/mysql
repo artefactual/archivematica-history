@@ -202,10 +202,10 @@ CREATE TABLE RightsStatementStatuteDocumentationIdentifier (
 DROP TABLE IF EXISTS RightsStatementStatuteInformationNote;
 CREATE TABLE RightsStatementStatuteInformationNote (
   pk int(10) unsigned NOT NULL AUTO_INCREMENT,
-  fkRightsStatement int(10) unsigned DEFAULT NULL,
+  fkRightsStatementStatuteInformation int(10) unsigned DEFAULT NULL,
   statuteNote longtext NOT NULL,
   PRIMARY KEY (pk),
-  KEY fkRightsStatement (fkRightsStatement)
+  Foreign Key (fkRightsStatementStatuteInformation) references RightsStatementStatuteInformation(pk)
 ) DEFAULT CHARSET=utf8;
 
 /*
