@@ -27,6 +27,17 @@
 
 {% block content %}
 
+ <form method='POST'>
+  {{ form }}
+  <input type='submit' value='Search'/>
+  </form>
+
+  {% if results %}
+    {% for item in results %}
+      {{item.uuid}}<br/>
+    {% endfor %}
+  {% endif %}
+
   {% if sips %}
     <table>
       <thead>
