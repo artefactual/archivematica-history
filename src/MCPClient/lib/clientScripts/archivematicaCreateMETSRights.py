@@ -112,8 +112,9 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     if valueDic["licenseApplicableEndDate"]:
                         etree.SubElement(licenseApplicableDates, "endDate").endDate = formatDate(valueDic["licenseApplicableEndDate"])
                     
-                    
-                    
+                elif valueDic["rightsBasis"].lower() in ["statute"]:
+                    #4.1.5 statuteInformation (O, R)
+                    getstatuteInformation(valueDic["RightsStatement.pk"], rightsStatement)
                     
 
                 elif valueDic["rightsBasis"].lower() in ["donor agreement", "policy"]:
@@ -132,28 +133,6 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     rows2 = databaseInterface.queryAllSQL(sql)
                     for row2 in rows2:
                         etree.SubElement(otherRightsInformation, "otherRightsNote").text =  row2[0]
-
-                elif valueDic["rightsBasis"].lower() in ["statute"]:
-                    print "not implemented yet"        
-                                    
-                        
-                    
-                # licenseInformation
-                #if valueDic["rightsBasis"].lower() in ["allow"]:
-                #licenseInformation = etree.SubElement(rightsStatement, "licenseInformation")
-                #licenseIdentifier = etree.SubElement(licenseInformation, "licenseIdentifier")
-                #etree.SubElement(licenseIdentifier, "licenseIdentifierType").text = valueDic["licenseIdentifierType"]
-                #etree.SubElement(licenseIdentifier, "licenseIdentifierValue").text = valueDic["licenseIdentifierValue"]
-                #etree.SubElement(licenseInformation, "licenseTerms").text = valueDic["licenseTerms"]
-                
-                #4.1.4.3 licenseNote (O, R)
-                #sql = "SELECT licenseNote FROM RightsStatementLicenseNote WHERE fkRightsStatement = %d;" % (valueDic["RightsStatement.pk"])
-                #rows2 = databaseInterface.queryAllSQL(sql)
-                #for row2 in rows2:
-                #    etree.SubElement(licenseInformation, "licenseNote").text =  row2[0]
-
-                #4.1.5 statuteInformation (O, R)
-                getstatuteInformation(valueDic["RightsStatement.pk"], rightsStatement)
 
                 #4.1.6 rightsGranted (O, R)
                 getrightsGranted(valueDic["RightsStatement.pk"], rightsStatement, valueDic["rightsNotes"])
@@ -190,6 +169,7 @@ def getDocumentationIdentifier(pk, parent):
 
 def getstatuteInformation(pk, parent):
     sql = "SELECT pk, statuteJurisdiction, statuteCitation, statuteInformationDeterminationDate FROM RightsStatementStatuteInformation WHERE fkRightsStatement = %d" % (pk)
+    #print sql
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
         statuteInformation = etree.SubElement(parent, "statuteInformation")
@@ -202,6 +182,8 @@ def getstatuteInformation(pk, parent):
         rows2 = databaseInterface.queryAllSQL(sql)
         for row2 in rows2:
             etree.SubElement(statuteInformation, "statuteNote").text =  row2[0]
+        #if not len(rows2):
+            #print sql
 
 def getrightsGranted(pk, parent, rightsGrantedNote=""):
     sql = "SELECT pk, act, startDate, endDate, restriction FROM RightsStatementRightsGranted WHERE fkRightsStatement = %d" % (pk)
