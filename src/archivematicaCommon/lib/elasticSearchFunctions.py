@@ -25,7 +25,7 @@
 import time
 import os
 
-def index_transfer(conn, uuid, pathToTransfer):
+def index_directory_files(conn, uuid, pathToTransfer, index, type):
     filesIndexed = 0
 
     # document structure
@@ -46,7 +46,7 @@ def index_transfer(conn, uuid, pathToTransfer):
     transferData['filepaths'] = fileData
 
     # add document to index
-    conn.index(transferData, 'transfers', 'transfer')
+    conn.index(transferData, index, type)
 
     return filesIndexed
 
