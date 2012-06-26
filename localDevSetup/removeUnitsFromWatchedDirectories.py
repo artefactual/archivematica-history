@@ -30,7 +30,6 @@ from databaseFunctions import insertIntoEvents
 alsoRemove = ["/var/archivematica/sharedDirectory/watchedDirectories/SIPCreation/completedTransfers/", \
               "/var/archivematica/sharedDirectory/failed/", \
               "/var/archivematica/sharedDirectory/currentlyProcessing/", \
-              "/var/archivematica/sharedDirectory/transferBackups/", \
               "/var/archivematica/sharedDirectory/rejected/"]
 
 def removeEverythingInDirectory(directory):
