@@ -64,7 +64,9 @@ class RightsGrantedForm(ModelForm):
             'act': TextInput(attrs=INPUT_ATTRS),
             'restriction': TextInput(attrs=INPUT_ATTRS),
             'startdate': TextInput(attrs=INPUT_ATTRS),
-            'enddate': TextInput(attrs=INPUT_ATTRS), }
+            'enddate': TextInput(attrs=INPUT_ATTRS),
+            'restrictionstartdate': TextInput(attrs=INPUT_ATTRS),
+            'restrictionenddate': TextInput(attrs=INPUT_ATTRS), }
 
 class RightsGrantedNotesForm(ModelForm):
     class Meta:
