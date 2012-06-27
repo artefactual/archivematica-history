@@ -90,6 +90,34 @@ def copy_to_originals(request):
 
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
+def copy_to_start_transfer(request):
+    filepath = request.POST.get('filepath', '')
+    error = check_filepath_exists('/' + filepath)
+
+    if error == None:
+        # confine destination to subdir of originals
+        filepath = os.path.join('/', filepath)
+        destination = os.path.join(STANDARD_TRANSFER_DIR, os.path.basename(filepath))
+        destination = pad_destination_filepath_if_it_already_exists(destination)
+        #error = 'Copying from ' + filepath + ' to ' + destination + '.'
+        try:
+            shutil.copytree(
+                filepath,
+                destination
+            )
+        except:
+            error = 'Error copying from ' + filepath + ' to ' + destination + '.'
+
+    response = {}
+
+    if error != None:
+        response['message'] = error
+        response['error']   = True
+    else:
+        response['message'] = 'Copy successful.'
+
+    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+
 def copy_from_arrange_to_start_transfer(request):
     sourcepath  = request.POST.get('filepath', '')
 
