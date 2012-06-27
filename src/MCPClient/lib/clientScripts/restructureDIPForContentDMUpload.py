@@ -93,7 +93,7 @@ def parseDcXml(dublincore):
 #        </div>
 def parseStructMap(structMap, filesInObjectDirectory):
     structMapDict = {}
-    pp = pprint.PrettyPrinter(indent=4) # Remove after development.
+    # pp = pprint.PrettyPrinter(indent=4) # Remove after development.
     # Get filenames of all the files in the objects directory (recursively); filesInObjectDirectory contains
     # paths, we need to get the filename only for the structMap checking. Add each filename to structMapDict.
     filesInObjectDir = []
@@ -145,7 +145,6 @@ def getFptrObjectFilename(fptrValue, filesInObjectDir):
 # unqualified DC elements but we include the entire CONTENTdm DCTERMS mappings for good measure.
 def getContentdmCollectionFieldInfo(contentdmServer, targetCollection):
     collectionFieldInfo = {}
-    pp = pprint.PrettyPrinter(indent=4) # Remove after development.
     # First, define the CONTENTdm DC nicknames -> DCTERMs mapping. 
     contentdmDctermsMap = {
          'describ' : 'abstract',
@@ -206,9 +205,14 @@ def getContentdmCollectionFieldInfo(contentdmServer, targetCollection):
     }
     # Query CONTENTdm to get the target collection's field configurations.
     CollectionFieldConfigUrl = 'http://' + contentdmServer + '/dmwebservices/index.php?q=dmGetCollectionFieldInfo' + targetCollection + '/json'
-    f = urllib.urlopen(CollectionFieldConfigUrl)
-    collectionFieldConfigString = f.read()
-    collectionFieldConfig = json.loads(collectionFieldConfigString)
+    try:
+        f = urllib.urlopen(CollectionFieldConfigUrl)
+        collectionFieldConfigString = f.read()
+        collectionFieldConfig = json.loads(collectionFieldConfigString)
+    except:
+        print "Cannot retrieve CONTENTdm collection field configuration from " + CollectionFieldConfigUrl
+        sys.exit(1)
+
     # We want a dict containing items that looks like
     # { 'contributor': { 'name': u'Contributors', 'nick': u'contri'},
     # 'creator': { 'name': u'Creator', 'nick': u'creato'}, 'date': { 'name': u'Date', 'nick': u'dateso'}, [...] }
@@ -246,7 +250,6 @@ def getObjectDirectoryFiles(objectDir):
     for root, subFolders, files in os.walk(objectDir):
         for file in files:
             fileList.append(os.path.join(root, file))
-            # print "Debug: file is " + os.path.join(root, file)
     # We need to include elements that are in the collection field config but
     # that do not have any values for the current item.
     return fileList
@@ -281,12 +284,11 @@ def zipProjectClientOutput(outputDipDir, dipUuid):
 # <dmad1></dmad1>
 # <dmad2></dmad2>
 # <dmaccess></dmaccess>
-# </itemmetadata>
+# </xml>
 # @todo: DC element names need to be converted to CONTENTdm nicknames.
 def generateDescFile(dcMetadata):
     # pp = pprint.PrettyPrinter(indent=4) # Remove after development.
     collectionFieldInfo = getContentdmCollectionFieldInfo(args.contentdmServer, args.targetCollection)
-    # pp.pprint(collectionFieldInfo)
     output = '<?xml version="1.0" encoding="utf-8"?>' + "\n"
     output += "<itemmetadata>\n"
 
@@ -320,7 +322,7 @@ def generateDescFile(dcMetadata):
     output += "<dmad1></dmad1>\n"
     output += "<dmad2></dmad2>\n"
     output += "<dmaccess></dmaccess>\n"
-    output += "</itemmetadata>\n"
+    output += "</xml>\n"
     return output
 
 
@@ -342,13 +344,10 @@ def generateSimpleContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, f
     thumbnailFilename = dipUuid + '.icon'
     shutil.copy(filesInThumbnailDirectory[0], os.path.join(outputDipDir, thumbnailFilename))
 
-    # Copy the object file into the output directory. There will only be one.
+    # Copy the object file (there will only be one) into the output directory, giving it the
+    # same name as the other files in the package and the extension of its source file.
     objectFileFilename, objectFileFileExtension = os.path.splitext(filesInObjectDirectory[0])
-    # Copy the object file to the output directory.
-    shutil.copy(filesInObjectDirectory[0], outputDipDir)
-    # objectFilePath = os.path.join(outputDipDir, filesInObjectDirectory[0])
-    # Then move it to the desired filename.
-    shutil.move(os.path.join(outputDipDir, objectFileFilename + objectFileFileExtension), os.path.join(outputDipDir, dipUuid + objectFileFileExtension))
+    shutil.copy(filesInObjectDirectory[0], os.path.join(outputDipDir, dipUuid + objectFileFileExtension))
 
     # Write out the .full file into the output directory.
     # .full file looks like this:
@@ -365,7 +364,7 @@ def generateSimpleContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, f
     fullFileContents += "<desc>" + dipUuid + '.desc' + "</desc>\n"
     fullFileContents += "<icon>" + thumbnailFilename + "</icon>\n"
     fullFileContents += "<update>0</update>\n"
-    fullFileContents += "<item>\n"
+    fullFileContents += "</item>\n"
     fullFile = open(os.path.join(outputDipDir, dipUuid + '.full'), "wb")
     fullFile.write(fullFileContents)
     fullFile.close()
@@ -425,20 +424,65 @@ def generateSimpleContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir, 
     # Delete the unzipped version of the DIP since we don't use it anyway.
     shutil.rmtree(outputDipDir)
 
+# Compound items - multiple files in the DIP objects directory, ordered by the user-submitted
+# METS structMap. Need to consult the structMap and write out a corresponding structure
+# (.cpd) file. Also, for every file, copy the file, create an .icon, create a .desc file,
+#  plus create index.desc, index.cpd, index.full, and ready.txt.
 def generateCompoundContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory):
-    for file in filesInObjectDirectory:
-      print file 
-    #  Compound items - multiple files in the DIP objects directory, ordered by the METS structMap.
-    #    Need to consult the structMap and write out a corresponding structure file. Also, for every file,
-    #    copy the file, create an .icon, create a .desc file, plus create index.desc, index.cpd, index.full,
-    #    and ready.txt.
+    outputDipDir = prepareOutputDir(outputDipDir, 'directupload', dipUuid)
+    dmdSec = getDmdSec(metsDom)
+    dcMetadata = parseDcXml(dmdSec)
+    descFileContents = generateDescFile(dcMetadata)
+    # Output a .desc file for the parent item (index.desc).
+    descFile = open(os.path.join(outputDipDir, 'index.desc'), "wb")
+    descFile.write(descFileContents)
+    descFile.close()
+
+    # Write out the ready.txt file which contains the string '1'.
+    readyFile = open(os.path.join(outputDipDir, 'ready.txt'), "wb")
+    readyFile.write('1')
+    readyFile.close()
+
+    # Write out the index.cpd file. We get the order of the items in the .cpd file
+    # from the user-submitted structMap (if it is present) or the Archivematica
+    # structMap (if no user-submitted structMap is present).
+
+    # For each object file, output a .desc file.
+    # For each object file, output a thumbnail.
+
+    # Output a thumbnail for the parent item (index.icon), using the icon from the first item
+    # in the METS file.
+
+    # For each object file, output the object file.
+
+    # Write out the .full file. There is an <item> entry for the parent, then one for each child.
+    # Child entries do not have any <title> values, and each entry has a <info>nopdf</info> element.
+
+    # <item>
+    # <title>How to create a hierarchical book</title>
+    # <object>index.cpd</object>
+    # <desc>index.desc</desc>
+    # <icon>index.icon</icon>
+    # <update>0</update>
+    # <info>nopdf</info>
+    # </item>
+    # <item>
+    # <title></title>
+    # <object>142_58_131_27_2012-3-28_9539195-128672825729.jp2</object>
+    # <desc>142_58_131_27_2012-3-28_9539195-128672825729.desc</desc>
+    # <icon>142_58_131_27_2012-3-28_9539195-128672825729.icon</icon>
+    # <update>0</update>
+    # <info>nopdf</info>
+    # </item>
+
+    pass
 
 
 # Generate a 'project client' package for a compound CONTENTdm item from the Archivematica DIP.
 # This package will contain the object file and a delimited metadata file in a format suitable
 # for importing into CONTENTdm using its Project Client.
 def generateCompoundContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory):
-    pp = pprint.PrettyPrinter(indent=4) # Remove after development.
+    # pp = pprint.PrettyPrinter(indent=4) # Remove after development.
     dmdSec = getDmdSec(metsDom)
     dcMetadata = parseDcXml(dmdSec)
 

@@ -965,14 +965,13 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 -- 7: 'Upload DIP to contentDM'
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPName%-%SIPUUID%" --dipDir "%SIPDirectory%" --collection "%ContentdmCollection%" --server "%ContentdmServer%" --ingestFormat "%ContentdmIngestFormat%" --outputDir "%watchDirectoryPath%uploadedDIPs"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-contentDM_v0.0', '--uuid="%SIPName%-%SIPUUID%" --collection "%ContentdmCollection%" --server "%ContentdmServer%" --username "%ContentdmUser%" --group "%ContentdmGroup%" --outputDir "%watchDirectoryPath%uploadedDIPs"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Upload DIP to contentDM');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
--- these next two lines added by mj
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, NULL);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
@@ -1049,11 +1048,11 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'localhost', '{"%ContentdmServer%":"localhost"}');
+    VALUES (@MicroServiceChainLink, 'localhost', '{"%ContentdmServer%":"localhost", "%ContentdmUser%":"usernamefoo", "%ContentdmGroup%":"123"}');
 INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'content.lib.sfu.ca', '{"%ContentdmServer%":"142.58.129.69:81"}');
+    VALUES (@MicroServiceChainLink, 'content.lib.sfu.ca', '{"%ContentdmServer%":"142.58.129.69:81", "%ContentdmUser%":"usernamebar", "%ContentdmGroup%":"456"}');
 INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'be.cdm6.library.ubc.ca', '{"%ContentdmServer%":"142.103.160.77"}');
+    VALUES (@MicroServiceChainLink, 'be.cdm6.library.ubc.ca', '{"%ContentdmServer%":"142.103.160.77", "%ContentdmUser%":"usernamebaz", "%ContentdmGroup%":"789"}');
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
