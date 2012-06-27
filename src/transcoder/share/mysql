@@ -4804,17 +4804,19 @@ INSERT INTO Commands
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%
-#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"
-
 outputExtension=\"pdf\"
 ddirname=\"`dirname \"%fileFullName%\"`\"
 dbasename=\"`basename \"%fileFullName%\"`\"  
 cd \"$ddirname\"
-outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
+outputFile=\"%outputDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
 
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\" && mv \"${outputFile}\" \"%outputDirectory%\"
-exit \"$?\"\n'),
+flock -x /var/lock/documentConversion.lock -c \"soffice --nodefault --nologo --headless --convert-to $outputExtension \\\"${dbasename}\\\"\"
+echo The exit code was $?
+set -e
+
+echo mv \"%fileDirectory%%fileName%.${outputExtension}\" \"$outputFile\"
+mv \"%fileDirectory%%fileName%.${outputExtension}\" \"$outputFile\"
+'),
     '%outputDirectory%%prefix%%fileName%%postfix%.pdf',
     @openOfficeEventDetailCommandID,
     @standardVerificationCommand,
@@ -4847,21 +4849,23 @@ INSERT INTO Commands
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%
-#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"
-
-outputExtension=\"odt\"
+outputExtension=\"fodt\"
 ddirname=\"`dirname \"%fileFullName%\"`\"
 dbasename=\"`basename \"%fileFullName%\"`\"  
 cd \"$ddirname\"
-outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
+outputFile=\"%outputDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
 
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"
-exit \"$?\"\n'),
-    '%outputDirectory%%prefix%%fileName%%postfix%.odt',
+flock -x /var/lock/documentConversion.lock -c \"soffice --nodefault --nologo --headless --convert-to $outputExtension \\\"${dbasename}\\\"\"
+echo The exit code was $?
+set -e
+
+echo mv \"%fileDirectory%%fileName%.${outputExtension}\" \"$outputFile\"
+mv \"%fileDirectory%%fileName%.${outputExtension}\" \"$outputFile\"
+'),
+    '%outputDirectory%%prefix%%fileName%%postfix%.fodt',
     @openOfficeEventDetailCommandID,
     @standardVerificationCommand,
-    ('Transcoding to ODT with openOffice')
+    ('Transcoding to FODT with openOffice')
 );
 set @openOfficeToODTCommandID = LAST_INSERT_ID();
 
@@ -4890,17 +4894,18 @@ INSERT INTO Commands
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%
-#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"
-
 outputExtension=\"odp\"
 ddirname=\"`dirname \"%fileFullName%\"`\"
 dbasename=\"`basename \"%fileFullName%\"`\"  
 cd \"$ddirname\"
-outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
+outputFile=\"%outputDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
 
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"
-exit \"$?\"\n'),
+flock -x /var/lock/documentConversion.lock -c \"soffice --nodefault --nologo --headless --convert-to $outputExtension \\\"${dbasename}\\\"\"
+echo The exit code was $?
+set -e
+echo mv \"%fileDirectory%%fileName%.${outputExtension}\" \"$outputFile\"
+mv \"%fileDirectory%%fileName%.${outputExtension}\" \"$outputFile\"
+'),
     '%outputDirectory%%prefix%%fileName%%postfix%.odp',
     @openOfficeEventDetailCommandID,
     @standardVerificationCommand,
@@ -4933,17 +4938,19 @@ INSERT INTO Commands
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
-#%accessFormat% %fileFullName% %preservationFileDirectory%%fileTitle%.%accessFormat% %accessFileDirectory%
-#\"%fileFullName%\" \"%outputDirectory%%prefix%%fileName%%postfix%.tif\"
-
 outputExtension=\"ods\"
 ddirname=\"`dirname \"%fileFullName%\"`\"
 dbasename=\"`basename \"%fileFullName%\"`\"  
 cd \"$ddirname\"
-outputFile=\"%fileDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
+outputFile=\"%outputDirectory%%prefix%%fileName%%postfix%.${outputExtension}\"
 
-flock -x /var/lock/documentConversion.lock -c \"\\\"/usr/lib/archivematica/transcoder/transcoderScripts/unoconvAlternativeSupport.sh\\\" \\\"/usr/lib/archivematica/transcoder/transcoderScripts\\\" \\\"${dbasename}\\\" \\\"${outputFile}\\\"\"
-exit \"$?\"\n'),
+flock -x /var/lock/documentConversion.lock -c \"soffice --nodefault --nologo --headless --convert-to $outputExtension \\\"${dbasename}\\\"\"
+echo The exit code was $?
+set -e
+
+echo mv \"%fileDirectory%%fileName%.${outputExtension}\" \"$outputFile\"
+mv \"%fileDirectory%%fileName%.${outputExtension}\" \"$outputFile\"
+'),
     '%outputDirectory%%prefix%%fileName%%postfix%.ods',
     @openOfficeEventDetailCommandID,
     @standardVerificationCommand,
