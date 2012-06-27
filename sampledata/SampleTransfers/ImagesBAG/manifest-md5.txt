@@ -1,8 +1,0 @@
-04f7802b45838fed393d45afadaa9dcc  data/objects/oakland03.jp2
-1ea4939968f117de97b15437c6348847  data/objects/G31DS.TIF
-e5913bebe296eb433fdade7400860e73  data/objects/lion.svg
-d5e100eb19481b8b7f05ac8cc3fd4e26  data/objects/More images/MARBLES.TGA
-0b0f9676ead317f643e9a58f0177d1e6  data/objects/Nemastylis_geminiflora_Flower.PNG
-2eb15cb1834214b05d0083c691f9545f  data/objects/WFPC01.GIF
-e479688508922354bdab09bca60d8d0e  data/objects/LAND2.BMP
-0ff111013ad2f8ded1171cee683e718a  data/objects/More images/Landing zone.jpg
