@@ -34,11 +34,11 @@ function createDirectoryPicker(baseDirectory) {
         .append('<img src="/media/images/ajax-loader.gif"/>');
 
       $.post(
-        '/filesystem/copy_to_originals/',
+        '/filesystem/ransfer/',
         {filepath: result.path},
         function(result) {
           if (result.error == undefined) {
-            window.location = '/transfer/browser/';
+            window.location = '/transfer/';
           } else {
             $('#explorer').show();
             $('#page_instructions').text('');

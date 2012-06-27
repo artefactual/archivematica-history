@@ -87,5 +87,6 @@ urlpatterns += patterns('main.filesystem',
   (r'filesystem/delete/$', 'delete'),
   (r'filesystem/copy_to_originals/$', 'copy_to_originals'),
   (r'filesystem/copy_to_arrange/$', 'copy_to_arrange'),
+  (r'filesystem/ransfer/$', 'copy_to_start_transfer'),
   (r'filesystem/copy_from_arrange/$', 'copy_from_arrange_to_start_transfer')
 )
