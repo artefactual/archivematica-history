@@ -6,6 +6,10 @@
 
 {% block css %}
 <link href="{{ STATIC_URL }}vendor/select2/select2.css" rel="stylesheet" type="text/css" />
+
+<!-- browser related -->
+<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/backbone-file-explorer.css" />
+<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/directory_picker.css" />
 {% endblock %}
 
 {% block js %}
@@ -13,6 +17,14 @@
   <script type="text/javascript" src="{{ STATIC_URL }}js/online.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}js/ingest.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}vendor/select2/select2.js"></script>
+
+  <!-- browser related -->
+  <script type="text/javascript" src="{{ STATIC_URL }}vendor/jquery.event.drag-1.5.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}vendor/jquery.event.drop-1.1.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/file-explorer.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/file_browser.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/transfer/backlog_browser.js"></script>
+
   <script type="text/javascript">
 
     $(document).ready(function()
@@ -48,6 +60,17 @@
 
 {% block content %}
 
+  <div id='originals' class='backbone-file-explorer' style='float:left'></div>
+  <div id='arrange' class='backbone-file-explorer' style='margin-left: 30px; float:left'></div>
+
+  <script>
+  $(document).ready(function() {
+    //setupBacklogBrowser('/var/archivematica/sharedDirectory/watchedDirectories/SIPCreation/SIPsUnderConstruction', '/var/archivematica/sharedDirectory/watchedDirectories/SIPCreation/SIPsUnderConstruction');
+  });
+  </script>
+
+<!-- <br clear='all'/> -->
+
   <div class="span12" id="sip-container">
     <div id="sip-header">
       <div id="sip-header-directory">Submission Information Package</div>
@@ -60,6 +83,19 @@
   </div>
 
   <!-- Templates -->
+
+  <script type="text/template" id='template-dir-level'>
+    <div class="backbone-file-explorer-level"></div>
+  </script>
+
+  <script type="text/template" id='template-dir-entry'>
+    <div class="backbone-file-explorer-entry" style='clear:both'>
+      <span class="backbone-file-explorer-directory_icon_button"></span>
+      <span class="backbone-file-explorer-directory_entry_name"><%= name %></span>
+      <span class="backbone-file-explorer-directory_entry_actions"></span>
+    </div>
+  </script>
+
 
   <script type="text/template" id="sip-template">
     <div class="sip-row">
