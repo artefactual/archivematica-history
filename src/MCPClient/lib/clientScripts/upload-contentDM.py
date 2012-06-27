@@ -22,23 +22,79 @@
 # @author Mark Jordan <EMAIL@EMAIL.email>
 # @version svn: $Id$
 
-# http://docs.python.org/library/argparse.html#module-argparse
-# http://www.doughellmann.com/PyMOTW/argparse/
+import os
+import stat
+import glob
 import argparse
+import json
+import urllib
+
+def getDestinationImportDirectory(targetCollection, contentdmServer):
+  try:
+    CollectionParametersUrl = 'http://' + contentdmServer + '/dmwebservices/index.php?q=dmGetCollectionParameters' + targetCollection + '/json'
+    f = urllib.urlopen(CollectionParametersUrl)
+    collectionParametersString = f.read()
+    collectionParameters = json.loads(collectionParametersString)
+  except:
+    print >>sys.stderr, "Cannot retrieve CONTENTdm collection parameters from " + CollectionParametersUrl
+    quit(1)
+
+  print "collectionParameters is"
+  print collectionParameters
+
+  return collectionParameters['path']
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='restructure')
     parser.add_argument('--uuid', action="store", dest='uuid', metavar='UUID', help='AIP-UUID')
-    parser.add_argument('--dipDir', action="store", dest='dipDir', metavar='dipDir', help='DIP Directory')
     parser.add_argument('--server', action="store", dest='contentdmServer', metavar='server', help='Target CONTENTdm server')
+    parser.add_argument('--username', action="store", dest='contentdmUser', metavar='server', help='Username for rsyncing the DIP to the CONTENTdm server')
+    parser.add_argument('--group', action="store", dest='contentdmGroup', metavar='server', help='Group (numeric) ID for rsyncing the DIP to the CONTENTdm server')
     parser.add_argument('--collection', action="store", dest='targetCollection',
                         metavar='targetCollection', help='Target CONTENTdm Collection')
-    parser.add_argument('--ingestFormat', action="store", dest='ingestFormat', metavar='ingestFormat',
-                        default='directupload', help='The format of the ingest package, either directupload or projectclient')
     parser.add_argument('--outputDir', action="store", dest='outputDir', metavar='outputDir',
-                        help='The destination for the restructured DIPs')
+                        help='The location of the restructured DIPs')
 
     args = parser.parse_args()
-    
-    print args
-    
+
+    contentdmCollectionDirectory = getDestinationImportDirectory(args.targetCollection, args.contentdmServer)
+
+    # Determine if the package is for a simple item or a compound item by counting the
+    # number of .desc files in the DIP directory. If it's simple, append 'import' to the
+    # end of destinationImportDirectory; if it's compound, append 'import/cdoc' to the end. 
+    sourceDescFiles =  glob.glob(os.path.join(args.outputDir, 'CONTENTdm', 'directupload', args.uuid, "*.desc"))
+    if len(sourceDescFiles) > 1:
+        destinationImportDirectory = os.path.join(contentdmCollectionDirectory, 'import', 'cdoc')
+    else:
+        destinationImportDirectory = os.path.join(contentdmCollectionDirectory, 'import')
+
+    # We need to remove the port, if any, from server.
+    server, sep, port = args.contentdmServer.partition(':')
+    destPath = args.contentdmUser + '@' + server + ':' + destinationImportDirectory
+
+    sourceDir = os.path.join(args.outputDir, 'CONTENTdm', 'directupload', args.uuid)
+    for sourceFile in glob.glob(os.path.join(sourceDir, "*.*")):
+        # Copy the file to the CONTENTdm server with rsync.
+        sourcePath, sourceFilename = os.path.split(sourceFile)
+        rsyncDestPath = args.contentdmUser + "@" + server + ":" + os.path.join(destinationImportDirectory, sourceFilename)   
+        rsyncCmd = "rsync %s %s" % (sourceFile, rsyncDestPath)
+        print "rsyncCmd is " + rsyncCmd
+        rsyncExitCode = os.system(rsyncCmd)
+        if rsyncExitCode != 0:
+            print "Error copying direct upload package to " + destPath
+            quit(1)
+
+        # Change the permissions and group of the DIP files so they are correct on the CONTENTdm
+        sshLogin = args.contentdmUser + "@" + server
+        remoteDestPath = os.path.join(destinationImportDirectory, sourceFilename)
+        sshChgrpCmd = 'chgrp ' + args.contentdmGroup 
+        sshChmodCmd = 'chmod g+rw'
+        
+        sshCmd = 'ssh %s "%s %s && %s %s"' % (sshLogin, sshChgrpCmd, remoteDestPath, sshChmodCmd, remoteDestPath)
+        print "sshCmd is " + sshCmd
+        sshExitCode = os.system(sshCmd)
+        if sshExitCode != 0:
+            print "Error setting attributes of file " + destPath
+            quit(1)
+

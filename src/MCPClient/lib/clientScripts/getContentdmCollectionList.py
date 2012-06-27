@@ -25,11 +25,16 @@ import sys
 import json
 import urllib
 
-# The base URL will be specific to each CONTENTdm server; everything including and following 'dmwebservices' is the same.
-CollectionListUrl = 'http://%s/dmwebservices/index.php?q=dmGetCollectionList/json' % (sys.argv[1])
-f = urllib.urlopen(CollectionListUrl)
-collectionListString = f.read()
-collectionList = json.loads(collectionListString)
+# The base URL will be specific to each CONTENTdm server; everything including and
+# following 'dmwebservices' is the same.
+try:
+    CollectionListUrl = 'http://%s/dmwebservices/index.php?q=dmGetCollectionList/json' % (sys.argv[1])
+    f = urllib.urlopen(CollectionListUrl)
+    collectionListString = f.read()
+    collectionList = json.loads(collectionListString)
+except:
+    print "Cannot retrieve CONTENTdm collection list from " + sys.argv[1]
+    sys.exit(1) 
 
 # We only want two of the elements of each 'collection', alias and name.
 cleanCollectionList = {}
