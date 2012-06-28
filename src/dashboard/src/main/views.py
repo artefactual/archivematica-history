@@ -68,24 +68,6 @@ def home(request):
     return render(request, 'home.html', locals())
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-      Notifications
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
-
-def notifications(request):
-    client = MCPClient()
-    notifications = etree.XML(client.notifications())
- 
-    response = {'notifications': []}
-
-    for notification in notifications:
-        notificationData = {}
-        for element in notification:
-            notificationData[element.tag] = element.text
-        response['notifications'].append(notificationData)
-
-    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
-
-""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Status
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 

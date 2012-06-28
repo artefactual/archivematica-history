@@ -77,7 +77,6 @@ urlpatterns = patterns('main.views',
 
     # JSON feeds
     (r'status/$', 'status'),
-    (r'notifications/$', 'notifications'),
     (r'formdata/(?P<type>\w+)/(?P<parent_id>\d+)/(?P<delete_id>\d+)/$', 'formdata_delete'),
     (r'formdata/(?P<type>\w+)/(?P<parent_id>\d+)/$', 'formdata'),
 )
