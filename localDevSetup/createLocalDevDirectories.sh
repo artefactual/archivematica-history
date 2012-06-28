@@ -35,10 +35,11 @@ fi
 if [ ! -e  /etc/init/archivematica-mcp-client.conf ] ; then
 	sudo ln "${svnDir}src/MCPClient/init/archivematica-mcp-client.conf" "/etc/init/"
 fi
-if [ ! -e  /etc/init/openoffice-service.conf ] ; then
-	sudo ln "${svnDir}src/MCPClient/init/openoffice-service.conf" "/etc/init/"
+if [ -e  /etc/init/openoffice-service.conf ] ; then
+    sudo stop openoffice-service
+	sudo rm "/etc/init/openoffice-service.conf"
 fi
-if [ ! -e  /etc/init/openoffice-service.conf ] ; then
+if [ ! -e  /etc/init/qubit-sword.conf ] ; then
         sudo ln "${svnDir}../qubit-svn/init/qubit-sword.conf" "/etc/init/"
 fi
 
