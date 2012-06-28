@@ -506,6 +506,16 @@ INSERT INTO CommandRelationships
     (SELECT pk FROM FileIDs WHERE description = 'Access Defaults')
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultAccessNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultAccessNormalizationSucceededLink);
+SET @defaultNormalizeAccessMicroServiceChainLink = @MicroServiceChainLink;    
+
 -- Default Thumbnail command --
 INSERT INTO Commands 
     (commandType, verificationCommand, command, outputLocation, description) 
@@ -528,6 +538,32 @@ INSERT INTO CommandRelationships
     (SELECT pk FROM FileIDs WHERE description = 'Access Defaults')
 );
 
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize thumbnail');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultThumbnailNormalizationFailedLink);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, @defaultThumbnailNormalizationSucceededLink);
+
+SET @defaultNormalizeThumbnailMicroServiceChainLink = @MicroServiceChainLink;
+
+DROP TABLE IF EXISTS DefaultCommandsForClassifications;
+CREATE TABLE DefaultCommandsForClassifications (
+    pk  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    MicroserviceChainLink   INT UNSIGNED,
+    Foreign Key (MicroserviceChainLink) references MicroServiceChainLinks(pk),
+    forClassification   INT,
+    Foreign Key (forClassification) references CommandClassifications(pk)
+);
+
+INSERT INTO DefaultCommandsForClassifications
+    (MicroserviceChainLink, forClassification)
+    VALUES 
+        (@defaultNormalizeAccessMicroServiceChainLink, (SELECT pk FROM CommandClassifications WHERE classification = 'access')),
+        (@defaultNormalizeThumbnailMicroServiceChainLink, (SELECT pk FROM CommandClassifications WHERE classification = 'thumbnail'))
+;
 
 -- 
 INSERT INTO FileIDs 
