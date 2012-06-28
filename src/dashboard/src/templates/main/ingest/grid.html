@@ -34,7 +34,10 @@
         {% endif %}
 
         window.Sips = new SipCollection;
-        window.App = new AppView({statusUrl: '/ingest/status/'});
+        window.App = new AppView({
+          statusUrl: '/ingest/status/',
+          notificationUrl: '/notifications/'
+        });
       });
 
     window.microservices_help = {

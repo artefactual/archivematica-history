@@ -22,7 +22,10 @@
         {% endif %}
 
         window.Sips = new SipCollection;
-        window.App = new AppView({statusUrl: '/transfer/status/'});
+        window.App = new AppView({
+          statusUrl: '/transfer/status/',
+          notificationUrl: '/notifications/'
+        });
 
         // add hint to add transfer form
         $('#id_name').val('Add transfer').click(function() {
