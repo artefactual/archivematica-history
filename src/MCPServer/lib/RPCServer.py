@@ -61,6 +61,15 @@ def getJobsAwaitingApproval():
         ret.append(choice.xmlify())
     return etree.tostring(ret, pretty_print=True)
 
+def getDownloads():
+    ret = etree.Element("downloadsAvailable")
+    dbStatus = verifyDatabaseIsNotLocked()
+    if dbStatus:
+        #print etree.tostring(dbStatus)
+        return etree.tostring(dbStatus)
+    #for UUID, choice in choicesAvailableForUnits.items():
+    #    ret.append(choice.xmlify())
+    return etree.tostring(ret, pretty_print=True)
 
 def approveJob(jobUUID, chain):
     print "approving: ", jobUUID, chain
@@ -103,6 +112,22 @@ def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
         print >>sys.stderr, inst.args
         return ""
 
+def gearmanGetDownloads(gearman_worker, gearman_job):
+    try:
+        #print "DEBUG - getting list of jobs"
+        #execute = gearman_job.task
+        ret = cPickle.dumps(getDownloads())
+        #print ret
+        if not ret:
+            ret = ""
+        return ret
+    #catch OS errors
+    except Exception as inst:
+        print >>sys.stderr, "DEBUG EXCEPTION! gearmanGetDownloads"
+        traceback.print_exc(file=sys.stdout)
+        print >>sys.stderr, type(inst)     # the exception instance
+        print >>sys.stderr, inst.args
+        return ""
 
 def startRPCServer():
     gm_worker = gearman.GearmanWorker([archivematicaMCP.config.get('MCPServer', 'GearmanServerWorker')])
@@ -110,4 +135,5 @@ def startRPCServer():
     gm_worker.set_client_id(hostID)
     gm_worker.register_task("approveJob", gearmanApproveJob)
     gm_worker.register_task("getJobsAwaitingApproval", gearmanGetJobsAwaitingApproval)
+    gm_worker.register_task("getDownloads", gearmanGetDownloads)
     gm_worker.work()
