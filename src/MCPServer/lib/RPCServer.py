@@ -61,8 +61,14 @@ def getJobsAwaitingApproval():
         ret.append(choice.xmlify())
     return etree.tostring(ret, pretty_print=True)
 
-def getDownloads():
-    ret = etree.Element("downloadsAvailable")
+def approveJob(jobUUID, chain):
+    print "approving: ", jobUUID, chain
+    if jobUUID in choicesAvailableForUnits:
+        choicesAvailableForUnits[jobUUID].proceedWithChoice(chain)
+    return "approving: ", jobUUID, chain
+
+def getNotifications():
+    ret = etree.Element("notificationsAvailable")
     dbStatus = verifyDatabaseIsNotLocked()
     if dbStatus:
         #print etree.tostring(dbStatus)
@@ -70,12 +76,6 @@ def getDownloads():
     #for UUID, choice in choicesAvailableForUnits.items():
     #    ret.append(choice.xmlify())
     return etree.tostring(ret, pretty_print=True)
-
-def approveJob(jobUUID, chain):
-    print "approving: ", jobUUID, chain
-    if jobUUID in choicesAvailableForUnits:
-        choicesAvailableForUnits[jobUUID].proceedWithChoice(chain)
-    return "approving: ", jobUUID, chain
 
 def gearmanApproveJob(gearman_worker, gearman_job):
     try:
@@ -112,18 +112,18 @@ def gearmanGetJobsAwaitingApproval(gearman_worker, gearman_job):
         print >>sys.stderr, inst.args
         return ""
 
-def gearmanGetDownloads(gearman_worker, gearman_job):
+def gearmanGetNotifications(gearman_worker, gearman_job):
     try:
         #print "DEBUG - getting list of jobs"
         #execute = gearman_job.task
-        ret = cPickle.dumps(getDownloads())
+        ret = cPickle.dumps(getNotifications())
         #print ret
         if not ret:
             ret = ""
         return ret
     #catch OS errors
     except Exception as inst:
-        print >>sys.stderr, "DEBUG EXCEPTION! gearmanGetDownloads"
+        print >>sys.stderr, "DEBUG EXCEPTION! gearmanGetNotifications"
         traceback.print_exc(file=sys.stdout)
         print >>sys.stderr, type(inst)     # the exception instance
         print >>sys.stderr, inst.args
@@ -135,5 +135,5 @@ def startRPCServer():
     gm_worker.set_client_id(hostID)
     gm_worker.register_task("approveJob", gearmanApproveJob)
     gm_worker.register_task("getJobsAwaitingApproval", gearmanGetJobsAwaitingApproval)
-    gm_worker.register_task("getDownloads", gearmanGetDownloads)
+    gm_worker.register_task("getNotifications", gearmanGetNotifications)
     gm_worker.work()

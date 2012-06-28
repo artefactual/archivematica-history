@@ -45,9 +45,9 @@ class MCPClient:
         #self.check_request_status(completed_job_request)
         return cPickle.loads(completed_job_request.result)
 
-    def downloads(self):
+    def notifications(self):
         gm_client = gearman.GearmanClient([self.server])
-        completed_job_request = gm_client.submit_job("getDownloads", "", None)
+        completed_job_request = gm_client.submit_job("getNotifications", "", None)
         #self.check_request_status(completed_job_request)
         return cPickle.loads(completed_job_request.result)
 
