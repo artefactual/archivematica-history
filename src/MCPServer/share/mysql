@@ -2671,8 +2671,8 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(),  'Move to the failed directory');
 
-INSERT INTO MicroServiceChainLinks (currentTask, defaultNextChainLink, defaultPlaySound)
-    VALUES (LAST_INSERT_ID(), NULL, @errorSound);
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink, defaultPlaySound)
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL, @errorSound);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, NULL);
