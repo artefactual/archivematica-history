@@ -6,6 +6,7 @@ import shutil
 SHARED_DIRECTORY_ROOT = '/var/archivematica/sharedDirectory'
 ORIGINALS_DIR         = SHARED_DIRECTORY_ROOT + '/transferBackups/originals'
 STANDARD_TRANSFER_DIR = SHARED_DIRECTORY_ROOT + '/watchedDirectories/activeTransfers/standardTransfer'
+COMPLETED_TRANSFERS_DIR = SHARED_DIRECTORY_ROOT + '/watchedDirectories/SIPCreation/completedTransfers'
 
 def directory_to_dict(path, directory={}, entry=False):
     # if starting traversal, set entry to directory root
@@ -118,14 +119,14 @@ def copy_to_start_transfer(request):
 
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
 
-def copy_from_arrange_to_start_transfer(request):
+def copy_from_arrange_to_completed(request):
     sourcepath  = request.POST.get('filepath', '')
 
     error = check_filepath_exists('/' + sourcepath)
 
     if error == None:
         sourcepath = os.path.join('/', sourcepath)
-        destination = os.path.join(STANDARD_TRANSFER_DIR, os.path.basename(sourcepath))
+        destination = os.path.join(COMPLETED_TRANSFERS_DIR, os.path.basename(sourcepath))
 
         # do check if directory already exists
         if os.path.exists(destination):
