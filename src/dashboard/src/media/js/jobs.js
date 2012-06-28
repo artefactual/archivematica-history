@@ -714,6 +714,7 @@ BaseAppView = Backbone.View.extend({
   initialize: function(options)
     {
       this.statusUrl = options.statusUrl;
+      this.notificationUrl = options.notificationUrl;
 
       _.bindAll(this, 'add', 'remove');
       Sips.bind('add', this.add);
@@ -811,6 +812,52 @@ BaseAppView = Backbone.View.extend({
   poll: function(start)
     {
       this.firstPoll = undefined !== start;
+
+      $.ajax({
+        content: this,
+        dataType: 'json',
+        type: 'GET',
+        url: this.notificationUrl + '?' + new Date().getTime(),
+        success: function(response)
+          {
+            // initialize local storage
+            if (localStorage.getItem('archivematicaNotifications') == null)
+            {
+               localStorage.setItem('archivematicaNotifications', JSON.stringify({
+                 'notifications': [],
+                 'dismissed': []
+               }));
+            }
+
+            // get currently stored notifications
+            var localNotificationData = JSON.parse(localStorage.getItem('archivematicaNotifications'));
+
+            // cycle through existing notifications
+            for (var notificationIndex in response.notifications)
+            {
+              var notification = response.notifications[notificationIndex];
+
+              // see if notification already exists
+              var exists = false;
+              for (var index in localNotificationData.notifications)
+              {
+                var localNotification = localNotificationData.notifications[index];
+                if (localNotification.id == notification.id)
+                {
+                  exists = true;
+                }
+              }
+
+              //  add to localstorage if not already there and not dismissed
+              if (!exists && localNotificationData.dismissed.indexOf(notification.id) == -1)
+              {
+                localNotificationData.notifications.push(notification);
+              }
+            }
+
+            localStorage.setItem('archivematicaNotifications', JSON.stringify(localNotificationData))
+          }
+        });
 
       $.ajax({
         context: this,
