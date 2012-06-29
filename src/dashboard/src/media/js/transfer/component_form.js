@@ -1,6 +1,7 @@
 var TransferComponentFormView = Backbone.View.extend({
   initialize: function(options) {
     this.form_layout_template = _.template(options.form_layout_template);
+    this.sourceDirectories = options.sourceDirectories;
     this.directories = [];
   },
 
@@ -24,39 +25,37 @@ var TransferComponentFormView = Backbone.View.extend({
   },
 
   render: function() {
-    var $pathAreaEl = $('<div></div>');
-    var $pathContainerEl = $('<div id="path_container"></div>');
+    var $pathAreaEl = $('<div></div>')
+       , $pathContainerEl = $('<div id="path_container"></div>');
+
     this.pathContainerEl = $pathContainerEl;
 
+    // populate path container with any existing directories
     for(var index in this.directories)
     {
       var dirRow = $('<div></div>').html(this.directories[index]);
       $pathContainerEl.append(dirRow);
     }
 
+    // add path container to parent container
     $pathAreaEl.append($pathContainerEl);
 
+    // add button to add paths via a pop-up selector
     var addButton = $('<div id="path_add_button" class="btn">Add</div>')
       , self = this;
-
-    addButton.click(function() {
-      // add modal containing directory selector
-      // selecting makes modal disappear, adds directory, and re-renders
-      console.log('clicked');
-      self.showSelector();
-    });
 
     $pathAreaEl.append(addButton);
 
     // populate view's DOM element with template output
-    var context = {transfer_paths: $pathAreaEl.html()};
+    var context = {
+      transfer_paths: $pathAreaEl.html()
+    };
     $(this.el).html(this.form_layout_template(context));
 
     // make add button clickable
     $('#path_add_button').click(function() {
       // add modal containing directory selector
       // selecting makes modal disappear, adds directory, and re-renders
-      console.log('clicked');
       self.showSelector();
     });
   }
