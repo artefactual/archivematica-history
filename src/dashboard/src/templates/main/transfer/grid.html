@@ -6,6 +6,8 @@
 
 {% block css %}
 <link href="{{ STATIC_URL }}vendor/select2/select2.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/backbone-file-explorer.css" />
+<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/directory_picker.css" />
 {% endblock %}
 
 {% block js %}
@@ -13,6 +15,10 @@
   <script type="text/javascript" src="{{ STATIC_URL }}js/online.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}js/transfer.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}vendor/select2/select2.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/transfer/component_form.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/file-explorer.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/transfer/directory_picker.js"></script>
+
   <script type="text/javascript">
 
     $(document).ready(function()
@@ -62,6 +68,18 @@
 {% block content %}
 
   {% if form %}
+
+    <div id='transfer_component_form'></div>
+
+    <script>
+    /*
+    var form = new TransferComponentFormView({
+      el: $('#transfer_component_form')
+    });
+    form.render();
+    */
+    </script>
+
     <form action='/transfer/add/' method='POST'>
     {{ form.name }} {{ form.source_directory }} <input type='submit' value='Add' /> <a href='/transfer/browser/'>Browse backlog?</a>
     </form>
@@ -134,6 +152,20 @@
     <div id="status-bullet">
       <span>Initializing...</span>
       <img src="{{ STATIC_URL }}images/bullet_delete.png" />
+    </div>
+  </script>
+
+  <!-- File explorer templates -->
+
+  <script type="text/template" id='template-dir-level'>
+    <div class="backbone-file-explorer-level"></div>
+  </script>
+
+  <script type="text/template" id='template-dir-entry'>
+    <div class="backbone-file-explorer-entry" style='clear:both'>
+      <span class="backbone-file-explorer-directory_icon_button"></span>
+      <span class="backbone-file-explorer-directory_entry_name"><%= name %></span>
+      <span class="backbone-file-explorer-directory_entry_actions"></span>
     </div>
   </script>
 
