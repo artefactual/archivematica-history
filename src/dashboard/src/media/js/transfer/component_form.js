@@ -5,7 +5,7 @@ var TransferComponentFormView = Backbone.View.extend({
     this.directories = [];
   },
 
-  showSelector: function() {
+  showSelector: function(sourceDir) {
 
    // display action selector in modal window
     $('<div class="modal hide" id="transfer-component-select-modal"><div class="modal-header"><button type="button" class="close" id="transfer-component-select-close" data-dismiss="modal">×</button><h3>Select a directory</h3></div><div class="modal-body" id="transfer-component-select-body"><div id="explorer" class="backbone-file-explorer"></div></div><div class="modal-footer"><a href="#" class="btn" data-dismiss="modal" id="transfer-component-select-cancel">Cancel</a></div></div>')
@@ -18,7 +18,7 @@ var TransferComponentFormView = Backbone.View.extend({
 
     // add directory selector
     createDirectoryPicker(
-      '/home/demo/backbone-file-explorer',
+      sourceDir,
       'transfer-component-select-modal',
       'path_container'
     );
@@ -41,10 +41,22 @@ var TransferComponentFormView = Backbone.View.extend({
     $pathAreaEl.append($pathContainerEl);
 
     // add button to add paths via a pop-up selector
-    var addButton = $('<div id="path_add_button" class="btn">Add</div>')
+    var $buttonContainer = $('<div></div>')
+      , $addButton = $('<span id="path_add_button" class="btn">Add</span>')
+      , $sourceDirSelect = $('<select id="path_source_select"></select>')
       , self = this;
 
-    $pathAreaEl.append(addButton);
+    $buttonContainer.append($addButton);
+    $buttonContainer.append($sourceDirSelect);
+    $pathAreaEl.append($buttonContainer);
+
+    // populate select with source directory values
+    $.each(this.sourceDirectories, function(id, path) {   
+      $sourceDirSelect
+        .append($("<option></option>")
+        .attr("value", id)
+        .text(path)); 
+    });
 
     // populate view's DOM element with template output
     var context = {
@@ -56,7 +68,7 @@ var TransferComponentFormView = Backbone.View.extend({
     $('#path_add_button').click(function() {
       // add modal containing directory selector
       // selecting makes modal disappear, adds directory, and re-renders
-      self.showSelector();
+      self.showSelector($sourceDirSelect.text());
     });
   }
 });

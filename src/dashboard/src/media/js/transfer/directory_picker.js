@@ -12,8 +12,6 @@ var DirectorySelectorView = fileBrowser.FileExplorer.extend({
 });
 
 function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
-  $('#page_instructions').hide();
-
   var url = '/filesystem/contents/?path=' + encodeURIComponent(baseDirectory)
 
   var selector = new DirectorySelectorView({
@@ -35,17 +33,13 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
         $transferPathRowEl.remove();
       });
 
-      $transferPathEl.html(result.path);
+      $transferPathEl.html('/' + result.path);
       $transferPathRowEl.append($transferPathEl);
       $transferPathRowEl.append($transferPathDeleteRl);
       $('#' + targetCssId).append($transferPathRowEl);
       $('#' + modalCssId).remove();
       /*
       $('#explorer').hide();
-
-      $('#page_instructions')
-        .text('Copying to backlog... ')
-        .append('<img src="/media/images/ajax-loader.gif"/>');
 
       $.post(
         '/filesystem/ransfer/',
@@ -55,7 +49,6 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
             window.location = '/transfer/';
           } else {
             $('#explorer').show();
-            $('#page_instructions').text('');
             alert(result.message);
           }
         }
@@ -71,6 +64,5 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
     selector.render();
 
     selector.idle();
-    $('#page_instructions').fadeIn();
   });
 }
