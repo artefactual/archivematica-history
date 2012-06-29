@@ -1098,6 +1098,18 @@ def formdata(request, type, parent_id, delete_id = None):
 
         results = model.objects.filter(rightsstatementstatute=parent_id)
 
+    if (type == 'licensedocumentationidentifier'):
+        model = models.RightsStatementLicenseDocumentationIdentifier
+        parent_model = models.RightsStatementLicense
+        model_parent_field = 'rightsstatementlicense'
+        model_value_fields = [
+          'licensedocumentationidentifiertype',
+          'licensedocumentationidentifiervalue',
+          'licensedocumentationidentifierrole'
+        ]
+
+        results = model.objects.filter(rightsstatementlicense=parent_id)
+
     if (type == 'otherrightsdocumentationidentifier'):
         model = models.RightsStatementOtherRightsDocumentationIdentifier
         parent_model = models.RightsStatementOtherRightsInformation

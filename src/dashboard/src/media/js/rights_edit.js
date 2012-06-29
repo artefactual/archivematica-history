@@ -23,6 +23,24 @@ function setUpRepeatingStatuteDocumentationIdentifierRecords(parentId) {
   setUpRepeatingField('statutedocidfields_', parentId, 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/' + parentId + '/');
 }
 
+function setUpRepeatingLicenseDocumentationIdentifierRecords(parentId) {
+  var schema = {
+    'licensedocumentationidentifiertype': {
+      'label': 'Type',
+      'type': 'input'
+    },
+    'licensedocumentationidentifiervalue': {
+      'label': 'Value',
+      'type': 'input'
+    },
+    'licensedocumentationidentifierrole': {
+      'label': 'Role',
+      'type': 'input'
+    }
+  };
+  setUpRepeatingField('licensedocidfields_', parentId, 'License Documentation Identifier', schema, '/formdata/licensedocumentationidentifier/' + parentId + '/');
+}
+
 function setUpRepeatingOtherRightsDocumentationIdentifierRecords(parentId) {
   var schema = {
     'otherrightsdocumentationidentifiertype': {
