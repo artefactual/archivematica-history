@@ -27,9 +27,18 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
     description: 'Select',
     iconHtml: '<img src="/media/images/accept.png" />',
     logic: function(result) {
-      var $transferPathEl = $('<div class="transferPath"></div>');
+      var $transferPathRowEl = $('<div></div>')
+        , $transferPathEl = $('<span class="transferPath"></span>')
+        , $transferPathDeleteRl = $('<span style="float:right"><img src="/media/images/delete.png" /></span>');
+
+      $transferPathDeleteRl.click(function() {
+        $transferPathRowEl.remove();
+      });
+
       $transferPathEl.html(result.path);
-      $('#' + targetCssId).append($transferPathEl);
+      $transferPathRowEl.append($transferPathEl);
+      $transferPathRowEl.append($transferPathDeleteRl);
+      $('#' + targetCssId).append($transferPathRowEl);
       $('#' + modalCssId).remove();
       /*
       $('#explorer').hide();
