@@ -199,6 +199,16 @@ CREATE TABLE RightsStatementStatuteInformation (
     statuteApplicableEndDate LONGTEXT NOT NULL
 ) DEFAULT CHARSET=utf8;
 
+-- 4.1.5.4 statuteNote (O, R)
+DROP TABLE IF EXISTS RightsStatementStatuteInformationNote;
+CREATE TABLE RightsStatementStatuteInformationNote (
+  pk int(10) unsigned NOT NULL AUTO_INCREMENT,
+  fkRightsStatementStatuteInformation int(10) unsigned DEFAULT NULL,
+  statuteNote longtext NOT NULL,
+  PRIMARY KEY (pk),
+  Foreign Key (fkRightsStatementStatuteInformation) references RightsStatementStatuteInformation(pk)
+) DEFAULT CHARSET=utf8;
+
 -- 4.1.5.5 statuteDocumentationIdentifier (O, R)
 DROP TABLE IF EXISTS RightsStatementStatuteDocumentationIdentifier;
 CREATE TABLE RightsStatementStatuteDocumentationIdentifier (
@@ -208,15 +218,6 @@ CREATE TABLE RightsStatementStatuteDocumentationIdentifier (
     statuteDocumentationIdentifierValue longtext NOT NULL,
     statuteDocumentationIdentifierRole longtext NOT NULL,
     Foreign Key (fkRightsStatementStatuteInformation) references RightsStatementStatuteInformation(pk)
-) DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS RightsStatementStatuteInformationNote;
-CREATE TABLE RightsStatementStatuteInformationNote (
-  pk int(10) unsigned NOT NULL AUTO_INCREMENT,
-  fkRightsStatementStatuteInformation int(10) unsigned DEFAULT NULL,
-  statuteNote longtext NOT NULL,
-  PRIMARY KEY (pk),
-  Foreign Key (fkRightsStatementStatuteInformation) references RightsStatementStatuteInformation(pk)
 ) DEFAULT CHARSET=utf8;
 
 /*
@@ -262,6 +263,17 @@ CREATE TABLE RightsStatementOtherRightsDocumentationIdentifier (
     otherRightsDocumentationIdentifierRole longtext NOT NULL,
     Foreign Key (fkRightsStatementOtherRightsInformation) references RightsStatementOtherRightsInformation(pk)
 ) DEFAULT CHARSET=utf8;
+
+-- 4.1.6.4 otherRightsNote (O, R)
+DROP TABLE IF EXISTS RightsStatementOtherRightsNote;
+CREATE TABLE RightsStatementOtherRightsNote (
+  pk int(10) unsigned NOT NULL AUTO_INCREMENT,
+  fkRightsStatementOtherRightsInformation int(10) unsigned DEFAULT NULL,
+  otherRightsNote longtext NOT NULL,
+  PRIMARY KEY (pk),
+  Foreign Key (fkRightsStatementOtherRightsInformation) references RightsStatementOtherRightsInformation(pk)
+) DEFAULT CHARSET=utf8;
+
 
 -- 4.1.7 rightsGranted (O, R)
 -- Issue 860:	rights granted restriction is a repeatable field.
