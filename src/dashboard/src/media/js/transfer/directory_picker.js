@@ -46,23 +46,6 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
       $('.transfer_path:odd').each(function() {
         $(this).parent().css('background-color', '#eee');
       });
-
-      /*
-      $('#explorer').hide();
-
-      $.post(
-        '/filesystem/ransfer/',
-        {filepath: result.path},
-        function(result) {
-          if (result.error == undefined) {
-            window.location = '/transfer/';
-          } else {
-            $('#explorer').show();
-            alert(result.message);
-          }
-        }
-      )
-      */
     }
   });
 
