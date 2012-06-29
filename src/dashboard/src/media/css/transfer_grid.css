@@ -1,0 +1,13 @@
+#transfer-type {
+  width: 100px;
+}
+
+#transfer-name {
+  font-size: 10px;
+}
+
+#transfer-accession-number {
+  font-size: 10px;
+  width: 50px;
+  margin-right: 10px;
+}

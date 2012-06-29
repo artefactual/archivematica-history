@@ -11,7 +11,7 @@ var DirectorySelectorView = fileBrowser.FileExplorer.extend({
   }
 });
 
-function createDirectoryPicker(baseDirectory) {
+function createDirectoryPicker(baseDirectory, targetId) {
   $('#page_instructions').hide();
 
   var url = '/filesystem/contents/?path=' + encodeURIComponent(baseDirectory)
@@ -27,6 +27,11 @@ function createDirectoryPicker(baseDirectory) {
     description: 'Select',
     iconHtml: '<img src="/media/images/accept.png" />',
     logic: function(result) {
+      var $transferPathEl = $('<div class="transferPath"></div>');
+      $transferPathEl.html(result.path);
+console.log(targetId);
+      $('#' + targetId).append($transferPathEl);
+      /*
       $('#explorer').hide();
 
       $('#page_instructions')
@@ -46,6 +51,7 @@ function createDirectoryPicker(baseDirectory) {
           }
         }
       )
+      */
     }
   });
 
