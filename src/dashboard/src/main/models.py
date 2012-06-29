@@ -218,14 +218,22 @@ class RightsStatementCopyrightNote(models.Model):
 class RightsStatementLicense(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
-    licensetype = models.TextField(db_column='licenseIdentifierType', blank=True, verbose_name='Identifier type')
-    licensevalue = models.TextField(db_column='licenseIdentifierValue', blank=True, verbose_name='Identifier value')
     licenseterms = models.TextField(db_column='licenseTerms', blank=True, verbose_name='License terms')
     licenseapplicablestartdate = models.TextField(db_column='licenseApplicableStartDate', blank=True, verbose_name='License applicable start date', help_text='Use ISO 8061 (YYYY-MM-DD)')
     licenseapplicableenddate = models.TextField(db_column='licenseApplicableEndDate', blank=True, verbose_name='License applicable end date', help_text='Use ISO 8061 (YYYY-MM-DD)')
 
     class Meta:
         db_table = u'RightsStatementLicense'
+
+class RightsStatementLicenseDocumentationIdentifier(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk', editable=False)
+    rightsstatementstatute = models.ForeignKey(RightsStatementLicense, db_column='fkRightsStatementStatuteLicense')
+    licensedocumentationidentifiertype = models.TextField(db_column='licenseDocumentationIdentifierType', blank=True, verbose_name='License documentation identification type')
+    licensedocumentationidentifiervalue = models.TextField(db_column='licenseDocumentationIdentifierValue', blank=True, verbose_name='License documentation identification value')
+    licensedocumentationidentifierrole = models.TextField(db_column='licenseDocumentationIdentifierRole', blank=True, verbose_name='License document identification role')
+
+    class Meta:
+        db_table = u'RightsStatementLicenseDocumentationIdentifier'
 
 class RightsStatementLicenseNote(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
@@ -284,16 +292,6 @@ class RightsStatementStatuteInformationNote(models.Model):
 
     class Meta:
         db_table = u'RightsStatementStatuteInformationNote'
-
-class RightsStatementStatuteDocumentationIdentifier(models.Model):
-    id = models.AutoField(primary_key=True, db_column='pk', editable=False)
-    rightsstatementstatute = models.ForeignKey(RightsStatementStatuteInformation, db_column='fkRightsStatementStatuteInformation')
-    statutedocumentationidentifiertype = models.TextField(db_column='statuteDocumentationIdentifierType', blank=True, verbose_name='Statute document identification type')
-    statutedocumentationidentifiervalue = models.TextField(db_column='statuteDocumentationIdentifierValue', blank=True, verbose_name='Statute document identification value')
-    statutedocumentationidentifierrole = models.TextField(db_column='statuteDocumentationIdentifierRole', blank=True, verbose_name='Statute document identification role')
-
-    class Meta:
-        db_table = u'RightsStatementStatuteDocumentationIdentifier'
 
 class RightsStatementOtherRightsInformation(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
