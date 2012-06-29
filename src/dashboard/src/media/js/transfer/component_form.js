@@ -2,7 +2,6 @@ var TransferComponentFormView = Backbone.View.extend({
   initialize: function(options) {
     this.form_layout_template = _.template(options.form_layout_template);
     this.sourceDirectories = options.sourceDirectories;
-    this.directories = [];
   },
 
   showSelector: function(sourceDir) {
@@ -12,7 +11,7 @@ var TransferComponentFormView = Backbone.View.extend({
     .modal({show: true});
 
     // make it destroy rather than hide modal
-    $('#transfer-component-select-close').click(function() {
+    $('#transfer-component-select-close, #transfer-component-select-cancel').click(function() {
       $('#transfer-component-select-modal').remove();
     });
 
@@ -24,18 +23,19 @@ var TransferComponentFormView = Backbone.View.extend({
     );
   },
 
+  addedPaths: function() {
+    var paths = [];
+    $('.transfer_path').each(function() {
+      paths.push($(this).text());
+    });
+    return paths;
+  },
+
   render: function() {
     var $pathAreaEl = $('<div></div>')
        , $pathContainerEl = $('<div id="path_container"></div>');
 
     this.pathContainerEl = $pathContainerEl;
-
-    // populate path container with any existing directories
-    for(var index in this.directories)
-    {
-      var dirRow = $('<div></div>').html(this.directories[index]);
-      $pathContainerEl.append(dirRow);
-    }
 
     // add path container to parent container
     $pathAreaEl.append($pathContainerEl);
@@ -44,10 +44,14 @@ var TransferComponentFormView = Backbone.View.extend({
     var $buttonContainer = $('<div></div>')
       , $addButton = $('<span id="path_add_button" class="btn">Add</span>')
       , $sourceDirSelect = $('<select id="path_source_select"></select>')
+      , $startTransferButton = $('<span id="start_transfer_button" class="btn">Start Transfer</span>')
       , self = this;
 
-    $buttonContainer.append($addButton);
-    $buttonContainer.append($sourceDirSelect);
+    $buttonContainer
+      .append($addButton)
+      .append($sourceDirSelect)
+      .append($startTransferButton);
+
     $pathAreaEl.append($buttonContainer);
 
     // populate select with source directory values
@@ -69,6 +73,24 @@ var TransferComponentFormView = Backbone.View.extend({
       // add modal containing directory selector
       // selecting makes modal disappear, adds directory, and re-renders
       self.showSelector($sourceDirSelect.text());
+    });
+
+    // make start transfer button clickable
+    $('#start_transfer_button').click(function() {
+      var transferName = $('#transfer-name').val();
+
+      if (!transferName)
+      {
+        alert('Please enter a transfer name');
+      } else {
+        var transferData = {
+          'name':            transferName,
+          'type':            $('#transfer-type').val(),
+          'accessionNumber': '',
+          'sourcePaths':     self.addedPaths()
+        };
+        console.log(transferData);
+      }
     });
   }
 });
