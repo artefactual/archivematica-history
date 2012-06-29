@@ -38,6 +38,15 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
       $transferPathRowEl.append($transferPathDeleteRl);
       $('#' + targetCssId).append($transferPathRowEl);
       $('#' + modalCssId).remove();
+
+      // tiger stripe transfer paths
+      $('.transferPath').each(function() {
+        $(this).parent().css('background-color', '');
+      });
+      $('.transferPath:odd').each(function() {
+        $(this).parent().css('background-color', '#eee');
+      });
+
       /*
       $('#explorer').hide();
 
