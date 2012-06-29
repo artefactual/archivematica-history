@@ -26,7 +26,7 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
     iconHtml: '<img src="/media/images/accept.png" />',
     logic: function(result) {
       var $transferPathRowEl = $('<div></div>')
-        , $transferPathEl = $('<span class="transferPath"></span>')
+        , $transferPathEl = $('<span class="transfer_path"></span>')
         , $transferPathDeleteRl = $('<span style="float:right"><img src="/media/images/delete.png" /></span>');
 
       $transferPathDeleteRl.click(function() {
@@ -40,10 +40,10 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
       $('#' + modalCssId).remove();
 
       // tiger stripe transfer paths
-      $('.transferPath').each(function() {
+      $('.transfer_path').each(function() {
         $(this).parent().css('background-color', '');
       });
-      $('.transferPath:odd').each(function() {
+      $('.transfer_path:odd').each(function() {
         $(this).parent().css('background-color', '#eee');
       });
 
