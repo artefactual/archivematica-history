@@ -544,12 +544,14 @@ SELECT
 
 def transfer_grid(request):
     if models.SourceDirectory.objects.count() > 0:
-        form = forms.TransferForm()
+        source_directories = models.SourceDirectory.objects.all()
+        #form = forms.TransferForm()
 
     polling_interval = django_settings.POLLING_INTERVAL
     microservices_help = django_settings.MICROSERVICES_HELP
     return render(request, 'main/transfer/grid.html', locals())
 
+# will probably get rid of this and TransferForm
 def transfer_add(request):
     if request.method == 'POST':
         form = forms.TransferForm(request.POST)
