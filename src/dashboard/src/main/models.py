@@ -227,7 +227,7 @@ class RightsStatementLicense(models.Model):
 
 class RightsStatementLicenseDocumentationIdentifier(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
-    rightsstatementstatute = models.ForeignKey(RightsStatementLicense, db_column='fkRightsStatementStatuteLicense')
+    rightsstatementlicense = models.ForeignKey(RightsStatementLicense, db_column='fkRightsStatementLicense')
     licensedocumentationidentifiertype = models.TextField(db_column='licenseDocumentationIdentifierType', blank=True, verbose_name='License documentation identification type')
     licensedocumentationidentifiervalue = models.TextField(db_column='licenseDocumentationIdentifierValue', blank=True, verbose_name='License documentation identification value')
     licensedocumentationidentifierrole = models.TextField(db_column='licenseDocumentationIdentifierRole', blank=True, verbose_name='License document identification role')

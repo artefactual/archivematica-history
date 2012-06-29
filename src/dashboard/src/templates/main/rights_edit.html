@@ -104,7 +104,21 @@
         </div>
 
         <div id='license_formset'>
-          {% include "_formset.html" with formset=licenseFormset %}
+          {{ licenseFormset.management_form }}
+          {{ licenseFormset.non_form_errors.as_ul }}
+
+          {% for form in licenseFormset %}
+            {% include "_form.html" %}
+
+            <div id='licensedocidfields_{{ form.instance.pk }}'></div>
+
+            <script>
+            $(document).ready(function() {
+              setUpRepeatingLicenseDocumentationIdentifierRecords('{{ form.instance.pk }}');
+            });
+            </script>
+          {% endfor %}
+
           {% include "_formset_table.html" with formset=licenseNoteFormset %}
         </div>
 
