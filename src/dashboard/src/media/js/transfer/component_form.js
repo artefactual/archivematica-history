@@ -16,7 +16,11 @@ var TransferComponentFormView = Backbone.View.extend({
     });
 
     // add directory selector
-    createDirectoryPicker('/home/demo/backbone-file-explorer', 'path_container');
+    createDirectoryPicker(
+      '/home/demo/backbone-file-explorer',
+      'transfer-component-select-modal',
+      'path_container'
+    );
   },
 
   render: function() {

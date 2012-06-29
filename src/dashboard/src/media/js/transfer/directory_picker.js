@@ -11,7 +11,7 @@ var DirectorySelectorView = fileBrowser.FileExplorer.extend({
   }
 });
 
-function createDirectoryPicker(baseDirectory, targetId) {
+function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
   $('#page_instructions').hide();
 
   var url = '/filesystem/contents/?path=' + encodeURIComponent(baseDirectory)
@@ -29,8 +29,8 @@ function createDirectoryPicker(baseDirectory, targetId) {
     logic: function(result) {
       var $transferPathEl = $('<div class="transferPath"></div>');
       $transferPathEl.html(result.path);
-console.log(targetId);
-      $('#' + targetId).append($transferPathEl);
+      $('#' + targetCssId).append($transferPathEl);
+      $('#' + modalCssId).remove();
       /*
       $('#explorer').hide();
 
