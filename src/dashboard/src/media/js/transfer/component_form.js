@@ -1,14 +1,14 @@
 var TransferComponentFormView = Backbone.View.extend({
   initialize: function(options) {
     this.form_layout_template = _.template(options.form_layout_template);
+    this.modal_template = options.modal_template;
     this.sourceDirectories = options.sourceDirectories;
   },
 
   showSelector: function(sourceDir) {
 
    // display action selector in modal window
-    $('<div class="modal hide" id="transfer-component-select-modal"><div class="modal-header"><button type="button" class="close" id="transfer-component-select-close" data-dismiss="modal">×</button><h3>Select a directory</h3></div><div class="modal-body" id="transfer-component-select-body"><div id="explorer" class="backbone-file-explorer"></div></div><div class="modal-footer"><a href="#" class="btn" data-dismiss="modal" id="transfer-component-select-cancel">Cancel</a></div></div>')
-    .modal({show: true});
+    $(this.modal_template).modal({show: true});
 
     // make it destroy rather than hide modal
     $('#transfer-component-select-close, #transfer-component-select-cancel').click(function() {
