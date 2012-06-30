@@ -134,11 +134,11 @@ CREATE TABLE RightsStatementCopyrightNote (
 DROP TABLE IF EXISTS RightsStatementCopyrightDocumentationIdentifier;
 CREATE TABLE RightsStatementCopyrightDocumentationIdentifier (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    fkRightsStatement INT UNSIGNED,
+    fkRightsStatementCopyrightInformation INT UNSIGNED,
     copyrightDocumentationIdentifierType longtext NOT NULL,
     copyrightDocumentationIdentifierValue longtext NOT NULL,
     copyrightDocumentationIdentifierRole longtext NOT NULL,
-    Foreign Key (fkRightsStatement) references RightsStatement(pk)
+    Foreign Key (fkRightsStatementCopyrightInformation) references RightsStatementCopyright(pk)
 ) DEFAULT CHARSET=utf8;
 
 -- 4.1.4 licenseInformation (O, NR)
