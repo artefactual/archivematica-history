@@ -5,6 +5,13 @@ function setUpRepeatingRightsGrantedNotesRecords(parentId) {
   setUpRepeatingField('rightsfields_', parentId, 'Rights Note', schema, '/formdata/rightsnote/' + parentId + '/');
 }
 
+function setUpRepeatingCopyrightNotesRecords(parentId) {
+  var schema = {
+    'copyrightnote': {},
+  };
+  setUpRepeatingField('copyrightnotes_', parentId, 'Copyright Note', schema, '/formdata/copyrightnote/' + parentId + '/');
+}
+
 function setUpRepeatingStatuteDocumentationIdentifierRecords(parentId) {
   var schema = {
     'statutedocumentationidentifiertype': {

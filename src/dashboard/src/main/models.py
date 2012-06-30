@@ -209,7 +209,7 @@ class RightsStatementCopyrightDocumentationIdentifier(models.Model):
 
 class RightsStatementCopyrightNote(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
-    rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+    rightscopyright = models.ForeignKey(RightsStatementCopyright, db_column='fkRightsStatementCopyrightInformation')
     copyrightnote = models.TextField(db_column='copyrightNote', blank=True, verbose_name='Copyright note')
 
     class Meta:
