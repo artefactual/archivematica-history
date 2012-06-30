@@ -179,7 +179,6 @@ class RightsStatement(models.Model):
     rightsstatementidentifiertype = models.TextField(db_column='rightsStatementIdentifierType', blank=True, verbose_name='Type')
     rightsstatementidentifiervalue = models.TextField(db_column='rightsStatementIdentifierValue', blank=True, verbose_name='Value')
     #rightsholder = models.TextField(db_column='fkAgent', blank=True, verbose_name='Rights holder')
-    rightsnotes = models.TextField(db_column='rightsNotes', verbose_name='Rights note(s)', blank=True)
     rightsbasis = models.TextField(db_column='rightsBasis', verbose_name='Basis', blank=True)
 
     class Meta:
