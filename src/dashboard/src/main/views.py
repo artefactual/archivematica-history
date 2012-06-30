@@ -140,7 +140,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_grant_notes = 1
         extra_copyright_forms = max_notes - models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights).count()
         extra_copyright_identifier_forms = 1 # max_notes - models.RightsStatementCopyrightDocumentationIdentifier.objects.filter(rightsstatement=viewRights).count()
-        extra_copyright_notes = 1 # max_notes - models.RightsStatementCopyrightNote.objects.filter(rightsstatement=viewRights).count()
         extra_statute_forms = 1 # max_notes - models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights).count()
         extra_statute_notes = 1 # max_notes - models.RightsStatementStatuteInformationNote.objects.filter(rightsstatementstatute=viewRights).count()
         extra_license_forms = max_notes - models.RightsStatementLicense.objects.filter(rightsstatement=viewRights).count()
@@ -172,7 +171,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
     GrantNotesFormSet = inlineformset_factory(models.RightsStatementRightsGranted, models.RightsStatementRightsGrantedNote, extra=extra_grant_notes, can_delete=False, form=forms.RightsGrantedNotesForm)
     CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
     CopyrightIdentifierFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightDocumentationIdentifier, extra=extra_copyright_identifier_forms, can_delete=False, form=forms.RightsStatementCopyrightDocumentationIdentifierForm)
-    CopyrightNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyrightNote, extra=extra_copyright_notes, can_delete=False, form=forms.RightsCopyrightNoteForm)
     StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
     StatuteNoteFormSet = inlineformset_factory(models.RightsStatementStatuteInformation, models.RightsStatementStatuteInformationNote, extra=extra_statute_notes, can_delete=False, form=forms.RightsStatuteNoteForm)
     LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
@@ -196,8 +194,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         copyrightFormset.save()
         copyrightIdentifierFormset = CopyrightIdentifierFormSet(request.POST, instance=createdRights)
         copyrightIdentifierFormset.save()
-        copyrightNoteFormset = CopyrightNoteFormSet(request.POST, instance=createdRights)
-        copyrightNoteFormset.save()
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         statuteFormset.save()
         statuteNoteFormset = StatuteNoteFormSet(request.POST, instance=createdRights)
@@ -213,7 +209,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         grantFormset = GrantFormSet(instance=viewRights)
         copyrightFormset = CopyrightFormSet(instance=viewRights)
         copyrightIdentifierFormset = CopyrightIdentifierFormSet(instance=viewRights)
-        copyrightNoteFormset = CopyrightNoteFormSet(instance=viewRights)
         statuteFormset = StatuteFormSet(instance=viewRights)
         statuteNoteFormset = StatuteNoteFormSet(instance=viewRights)
         licenseFormset = LicenseFormSet(instance=viewRights)
@@ -1085,6 +1080,14 @@ def formdata(request, type, parent_id, delete_id = None):
         model_value_fields = ['rightsgrantednote']
 
         results = model.objects.filter(rightsgranted=parent_id)
+
+    if (type == 'copyrightnote'):
+        model = models.RightsStatementCopyrightNote
+        parent_model = models.RightsStatementCopyright
+        model_parent_field = 'rightscopyright'
+        model_value_fields = ['copyrightnote']
+
+        results = model.objects.filter(rightscopyright=parent_id)
 
     if (type == 'statutedocumentationidentifier'):
         model = models.RightsStatementStatuteDocumentationIdentifier

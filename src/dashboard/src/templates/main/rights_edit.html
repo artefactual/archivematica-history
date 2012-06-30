@@ -78,9 +78,22 @@
         {% include "_form.html" %}
 
         <div id='copyright_formset'>
-          {% include "_formset.html" with formset=copyrightFormset %}
+          {{ copyrightFormset.management_form }}
+          {{ copyrightFormset.non_form_errors.as_ul }}
+
+          {% for form in copyrightFormset %}
+            {% include "_form.html" %}
+
+            <div id='copyrightnotes_{{ form.instance.pk }}'></div>
+
+            <script>
+            $(document).ready(function() {
+              setUpRepeatingCopyrightNotesRecords('{{ form.instance.pk }}');
+            });
+            </script>
+          {% endfor %}
+
           {% include "_formset.html" with formset=copyrightIdentifierFormset %}
-          {% include "_formset_table.html" with formset=copyrightNoteFormset %}
         </div>
 
         <div id='statute_formset'>
