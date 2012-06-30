@@ -84,16 +84,16 @@
           {% for form in copyrightFormset %}
             {% include "_form.html" %}
 
+            <div id='copyrightdocidfields_{{ form.instance.pk }}'></div>
             <div id='copyrightnotes_{{ form.instance.pk }}'></div>
 
             <script>
             $(document).ready(function() {
+              setUpRepeatingCopyrightDocumentationIdentifierRecords('{{ form.instance.pk }}');
               setUpRepeatingCopyrightNotesRecords('{{ form.instance.pk }}');
             });
             </script>
           {% endfor %}
-
-          {% include "_formset.html" with formset=copyrightIdentifierFormset %}
         </div>
 
         <div id='statute_formset'>
