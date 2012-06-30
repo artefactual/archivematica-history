@@ -102,7 +102,6 @@ CREATE TABLE RightsStatement (
     rightsStatementIdentifierType LONGTEXT NOT NULL,
     rightsStatementIdentifierValue LONGTEXT NOT NULL,
     fkAgent int(10) UNSIGNED DEFAULT 0 NOT NULL,
-    rightsNotes LONGTEXT NOT NULL,
     rightsBasis LONGTEXT NOT NULL
 ) DEFAULT CHARSET=utf8;
 ALTER TABLE RightsStatement ADD INDEX fkAgent (fkAgent);
