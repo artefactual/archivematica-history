@@ -156,7 +156,6 @@ CREATE TABLE RightsStatementLicense(
 DROP TABLE IF EXISTS RightsStatementLicenseDocumentationIdentifier;
 CREATE TABLE RightsStatementLicenseDocumentationIdentifier (
   pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-  fkRightsStatement INT UNSIGNED,
   fkRightsStatementLicense INT UNSIGNED,
   licenseDocumentationIdentifierType longtext NOT NULL,
   licenseDocumentationIdentifierValue longtext NOT NULL,
