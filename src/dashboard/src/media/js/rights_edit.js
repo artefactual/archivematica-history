@@ -12,6 +12,24 @@ function setUpRepeatingCopyrightNotesRecords(parentId) {
   setUpRepeatingField('copyrightnotes_', parentId, 'Copyright Note', schema, '/formdata/copyrightnote/' + parentId + '/');
 }
 
+function setUpRepeatingCopyrightDocumentationIdentifierRecords(parentId) {
+  var schema = {
+    'copyrightdocumentationidentifiertype': {
+      'label': 'Type',
+      'type': 'input'
+    },
+    'copyrightdocumentationidentifiervalue': {
+      'label': 'Value',
+      'type': 'input'
+    },
+    'copyrightdocumentationidentifierrole': {
+      'label': 'Role',
+      'type': 'input'
+    }
+  };
+  setUpRepeatingField('copyrightdocidfields_', parentId, 'Copyright Documentation Identifier', schema, '/formdata/copyrightdocumentationidentifier/' + parentId + '/');
+}
+
 function setUpRepeatingStatuteDocumentationIdentifierRecords(parentId) {
   var schema = {
     'statutedocumentationidentifiertype': {
