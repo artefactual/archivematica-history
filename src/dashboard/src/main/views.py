@@ -1122,6 +1122,14 @@ def formdata(request, type, parent_id, delete_id = None):
 
         results = model.objects.filter(rightsstatementotherrights=parent_id)
 
+    if (type == 'otherrightsnote'):
+        model = models.RightsStatementOtherRightsInformationNote
+        parent_model = models.RightsStatementOtherRightsInformation
+        model_parent_field = 'rightsstatementotherrights'
+        model_value_fields = ['otherrightsnote']
+
+        results = model.objects.filter(rightsstatementotherrights=parent_id)
+
     # handle creation
     if (request.method == 'POST'):
         # load or initiate model instance
