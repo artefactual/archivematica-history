@@ -125,8 +125,8 @@ CREATE TABLE RightsStatementCopyright(
 DROP TABLE IF EXISTS RightsStatementCopyrightNote;
 CREATE TABLE RightsStatementCopyrightNote (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    fkRightsStatement INT UNSIGNED,
-    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    fkRightsStatementCopyrightInformation INT UNSIGNED,
+    Foreign Key (fkRightsStatementCopyrightInformation) references RightsStatementCopyright(pk),
     copyrightNote LONGTEXT NOT NULL
 ) DEFAULT CHARSET=utf8;
 
