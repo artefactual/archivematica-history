@@ -59,6 +59,13 @@ function setUpRepeatingOtherRightsDocumentationIdentifierRecords(parentId) {
   setUpRepeatingField('otherrightsdocidfields_', parentId, 'Other Rights Documentation Identifier', schema, '/formdata/otherrightsdocumentationidentifier/' + parentId + '/');
 }
 
+function setUpRepeatingOtherRightsNotesRecords(parentId) {
+  var schema = {
+    'otherrightsnote': {},
+  };
+  setUpRepeatingField('otherrightsnotes_', parentId, 'Other Rights Note', schema, '/formdata/otherrightsnote/' + parentId + '/');
+}
+
 // repeating child field to a formset bound to existing data
 function setUpRepeatingField(idPrefix, parentId, description, schema, url) {
 

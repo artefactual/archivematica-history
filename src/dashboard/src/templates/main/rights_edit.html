@@ -130,10 +130,12 @@
             {% include "_form.html" %}
 
             <div id='otherrightsdocidfields_{{ form.instance.pk }}'></div>
+            <div id='otherrightsnotes_{{ form.instance.pk }}'></div>
 
             <script>
             $(document).ready(function() {
               setUpRepeatingOtherRightsDocumentationIdentifierRecords('{{ form.instance.pk }}');
+              setUpRepeatingOtherRightsNotesRecords('{{ form.instance.pk }}');
             });
             </script>
           {% endfor %}

@@ -313,6 +313,14 @@ class RightsStatementOtherRightsDocumentationIdentifier(models.Model):
     class Meta:
         db_table = u'RightsStatementOtherRightsDocumentationIdentifier'
 
+class RightsStatementOtherRightsInformationNote(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk')
+    rightsstatementotherrights = models.ForeignKey(RightsStatementOtherRightsInformation, db_column='fkRightsStatementOtherRightsInformation')
+    otherrightsnote = models.TextField(db_column='otherRightsNote', verbose_name='Other rights note', blank=True)
+
+    class Meta:
+        db_table = u'RightsStatementOtherRightsNote'
+
 class RightsStatementLinkingAgentIdentifier(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk')
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
