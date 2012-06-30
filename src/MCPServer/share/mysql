@@ -144,6 +144,15 @@ CREATE TABLE RightsStatementLicenseDocumentationIdentifier (
   Foreign Key (fkRightsStatementLicense) references RightsStatementLicense(pk)
 ) DEFAULT CHARSET=utf8;
 
+-- 4.1.4.3 licenseNote (O, R)
+DROP TABLE IF EXISTS RightsStatementLicenseNote;
+CREATE TABLE RightsStatementLicenseNote (
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    fkRightsStatement INT UNSIGNED,
+    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    licenseNote LONGTEXT NOT NULL
+) DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS ArchivematicaRightsStatement;
 CREATE TABLE ArchivematicaRightsStatement (
     pk              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -175,16 +184,6 @@ CREATE TABLE RightsStatementCopyrightDocumentationIdentifier (
     copyrightDocumentationIdentifierRole longtext NOT NULL,
     Foreign Key (fkRightsStatement) references RightsStatement(pk)
 ) DEFAULT CHARSET=utf8;
-
--- 4.1.4.3 licenseNote (O, R)
-DROP TABLE IF EXISTS RightsStatementLicenseNote;
-CREATE TABLE RightsStatementLicenseNote (
-    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    fkRightsStatement INT UNSIGNED,
-    Foreign Key (fkRightsStatement) references RightsStatement(pk),
-    licenseNote LONGTEXT NOT NULL
-) DEFAULT CHARSET=utf8;
-
 
 -- 4.1.5 statuteInformation (O, R)
 DROP TABLE IF EXISTS RightsStatementStatuteInformation;
