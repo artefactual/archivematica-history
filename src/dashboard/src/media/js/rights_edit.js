@@ -100,18 +100,14 @@ function setUpRepeatingOtherRightsNotesRecords(parentId) {
 
 // repeating child field to a formset bound to existing data
 function setUpRepeatingField(idPrefix, parentId, description, schema, url) {
-
-  if (parentId != '') {
-
-    var rights = new RepeatingDataView({
-      el: $('#' + idPrefix + parentId),
-      description: description,
-      parentId: parentId,
-      schema: schema,
-      url: url
-    });
-    rights.render();
-  }
+  var rights = new RepeatingDataView({
+    el: $('#' + idPrefix + parentId),
+    description: description,
+    parentId: parentId,
+    schema: schema,
+    url: url
+  });
+  rights.render();
 }
 
 // logic to show appropriate subform
