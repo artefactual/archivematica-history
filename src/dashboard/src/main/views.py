@@ -1070,7 +1070,14 @@ def formdata(request, type, parent_id, delete_id = None):
 
         results = model.objects.filter(rightsgranted=parent_id)
 
-    # define types handled
+    if (type == 'rightsrestriction'):
+        model = models.RightsStatementRightsGrantedRestriction
+        parent_model = models.RightsStatementRightsGranted
+        model_parent_field = 'rightsgranted'
+        model_value_fields = ['restriction']
+
+        results = model.objects.filter(rightsgranted=parent_id)
+
     if (type == 'licensenote'):
         model = models.RightsStatementLicenseNote
         parent_model = models.RightsStatementLicense

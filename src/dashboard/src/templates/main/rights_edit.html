@@ -66,10 +66,12 @@
         {% for form in grantFormset %}
           {% include "_form.html" %}
 
+          <div id='rightsrestrictions_{{ form.instance.pk }}'></div>
           <div id='rightsfields_{{ form.instance.pk }}'></div>
 
           <script>
           $(document).ready(function() {
+            setUpRepeatingRightsGrantedRestrictionRecords('{{ form.instance.pk }}');
             setUpRepeatingRightsGrantedNotesRecords('{{ form.instance.pk }}');
           });
           </script>
