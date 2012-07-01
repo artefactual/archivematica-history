@@ -167,8 +167,8 @@ CREATE TABLE RightsStatementLicenseDocumentationIdentifier (
 DROP TABLE IF EXISTS RightsStatementLicenseNote;
 CREATE TABLE RightsStatementLicenseNote (
     pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    fkRightsStatement INT UNSIGNED,
-    Foreign Key (fkRightsStatement) references RightsStatement(pk),
+    fkRightsStatementLicense INT UNSIGNED,
+    Foreign Key (fkRightsStatementLicense) references RightsStatementLicense(pk),
     licenseNote LONGTEXT NOT NULL
 ) DEFAULT CHARSET=utf8;
 
