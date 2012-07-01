@@ -178,7 +178,6 @@ var RepeatingDataView = Backbone.View.extend({
 
   render: function() {
     var self = this;
-console.log(this.parentId)
     if (this.parentId != '' && this.parentId != 'None') {
       $.ajax({
         url: self.url,
