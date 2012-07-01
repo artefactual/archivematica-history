@@ -236,7 +236,7 @@ class RightsStatementLicenseDocumentationIdentifier(models.Model):
 
 class RightsStatementLicenseNote(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
-    rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
+    rightsstatementlicense = models.ForeignKey(RightsStatementLicense, db_column='fkRightsStatementLicense')
     licensenote = models.TextField(db_column='licenseNote', blank=True, verbose_name='License note')
 
     class Meta:
