@@ -115,6 +115,15 @@ function setUpRepeatingField(idPrefix, parentId, description, schema, url) {
     url: url
   });
   rights.render();
+
+  if (parentId == '' || parentId == 'None') {
+    var instructions = "You'll be able to create a "
+      + description.toLowerCase()
+      + " record once the above section is completed.";
+    $('#' + idPrefix + parentId).append(
+      '<span class="help-block">' + instructions + '</span>'
+    );
+  }
 }
 
 // logic to show appropriate subform
