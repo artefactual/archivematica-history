@@ -142,7 +142,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_statute_forms = 1 # max_notes - models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights).count()
         extra_statute_notes = 1 # max_notes - models.RightsStatementStatuteInformationNote.objects.filter(rightsstatementstatute=viewRights).count()
         extra_license_forms = max_notes - models.RightsStatementLicense.objects.filter(rightsstatement=viewRights).count()
-        extra_license_notes = 1 # max_notes - models.RightsStatementLicenseNote.objects.filter(rightsstatement=viewRights).count()
         extra_other_forms = max_notes - models.RightsStatementOtherRightsInformation.objects.filter(rightsstatement=viewRights).count()
     else:
         #return HttpResponse(request.POST.get('rightsholder'))
@@ -171,7 +170,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
     StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
     StatuteNoteFormSet = inlineformset_factory(models.RightsStatementStatuteInformation, models.RightsStatementStatuteInformationNote, extra=extra_statute_notes, can_delete=False, form=forms.RightsStatuteNoteForm)
     LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
-    LicenseNoteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicenseNote, extra=extra_license_notes, can_delete=False, form=forms.RightsLicenseNoteForm)
     OtherFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementOtherRightsInformation, extra=extra_other_forms, can_delete=False, form=forms.RightsOtherRightsForm)
 
     # handle form creation/saving
@@ -195,8 +193,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         statuteNoteFormset.save()
         licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
         licenseFormset.save()
-        licenseNoteFormset = LicenseNoteFormSet(request.POST, instance=createdRights)
-        licenseNoteFormset.save()
         otherFormset = OtherFormSet(request.POST, instance=createdRights)
         otherFormset.save()
         return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
@@ -206,7 +202,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         statuteFormset = StatuteFormSet(instance=viewRights)
         statuteNoteFormset = StatuteNoteFormSet(instance=viewRights)
         licenseFormset = LicenseFormSet(instance=viewRights)
-        licenseNoteFormset = LicenseNoteFormSet(instance=viewRights)
         otherFormset = OtherFormSet(instance=viewRights)
 
     return render(request, 'main/rights_edit.html', locals())
@@ -1074,6 +1069,15 @@ def formdata(request, type, parent_id, delete_id = None):
         model_value_fields = ['rightsgrantednote']
 
         results = model.objects.filter(rightsgranted=parent_id)
+
+    # define types handled
+    if (type == 'licensenote'):
+        model = models.RightsStatementLicenseNote
+        parent_model = models.RightsStatementLicense
+        model_parent_field = 'rightsstatementlicense'
+        model_value_fields = ['licensenote']
+
+        results = model.objects.filter(rightsstatementlicense=parent_id)
 
     if (type == 'copyrightnote'):
         model = models.RightsStatementCopyrightNote
