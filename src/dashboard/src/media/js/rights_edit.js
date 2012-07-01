@@ -2,7 +2,7 @@ function setUpRepeatingRightsGrantedNotesRecords(parentId) {
   var schema = {
     'rightsgrantednote': {},
   };
-  setUpRepeatingField('rightsfields_', parentId, 'Rights Note', schema, '/formdata/rightsnote/' + parentId + '/');
+  setUpRepeatingField('rightsfields_', parentId, 'Rights Granted Note', schema, '/formdata/rightsnote/' + parentId + '/');
 }
 
 function setUpRepeatingRightsGrantedRestrictionRecords(parentId) {
