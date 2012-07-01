@@ -178,48 +178,51 @@ var RepeatingDataView = Backbone.View.extend({
 
   render: function() {
     var self = this;
-    $.ajax({
-      url: self.url,
-      type: 'GET',
-      success: function(result) {
-        $(self.el)
-          .empty()
-          .append(self.newLinkEl());
+console.log(this.parentId)
+    if (this.parentId != '' && this.parentId != 'None') {
+      $.ajax({
+        url: self.url,
+        type: 'GET',
+        success: function(result) {
+          $(self.el)
+            .empty()
+            .append(self.newLinkEl());
 
-        // cycle through each result
-        for(var index in result.results) {
-          // use schema as basis of definition
-          var newDef = {}
-          for(var field in self.schema) {
-            newDef[field] = {
-              type: self.schema[field].type,
-              label: self.schema[field].label
-            };
-          }
-
-          // get single result
-          var fieldData = result.results[index];
-
-          // populate definition clone with result values
-          for (var field in fieldData.values) {
-            if (typeof newDef[field] != 'undefined') {
-              newDef[field]['value'] = fieldData.values[field];
+          // cycle through each result
+          for(var index in result.results) {
+            // use schema as basis of definition
+            var newDef = {}
+            for(var field in self.schema) {
+              newDef[field] = {
+                type: self.schema[field].type,
+                label: self.schema[field].label
+              };
             }
-          }
 
-          var field = new RepeatingDataRecordView(
+            // get single result
+            var fieldData = result.results[index];
+
+            // populate definition clone with result values
+            for (var field in fieldData.values) {
+              if (typeof newDef[field] != 'undefined') {
+                newDef[field]['value'] = fieldData.values[field];
+              }
+            }
+
+            var field = new RepeatingDataRecordView(
                 fieldData.id,
                 newDef,
                 self.url
               )
-            , fieldEl = field.render().el;
+              , fieldEl = field.render().el;
 
-          self.appendDelHandlerToRecord(fieldEl, fieldData.id);
+            self.appendDelHandlerToRecord(fieldEl, fieldData.id);
 
-          $(self.el).append(fieldEl);
+            $(self.el).append(fieldEl);
+          }
         }
-      }
-    });
+      });
+    }
     return this;
   }
 });
