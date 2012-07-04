@@ -33,6 +33,7 @@ import databaseInterface
 from sharedVariablesAcrossModules import sharedVariablesAcrossModules
 from archivematicaFunctions import escape
 
+DEBUG = True
 
 def formatDate(date):
     """hack fix for 0.8, easy dashboard insertion ISO 8061 -> edtfSimpleType"""
@@ -48,11 +49,15 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
         list = "RightsStatement.pk, rightsStatementIdentifierType, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseTerms, copyrightApplicableStartDate, copyrightApplicableEndDate, licenseApplicableStartDate, licenseApplicableEndDate"
         key = list.split(", ")
         sql = """SELECT %s FROM RightsStatement LEFT JOIN RightsStatementCopyright ON RightsStatementCopyright.fkRightsStatement = RightsStatement.pk LEFT JOIN RightsStatementLicense ON RightsStatementLicense.fkRightsStatement = RightsStatement.pk WHERE metadataAppliesToidentifier = '%s' AND metadataAppliesToType = %s;""" % (list, metadataAppliesToidentifier, metadataAppliesToType)
+        if DEBUG:
+            print sql
         rows = databaseInterface.queryAllSQL(sql)
         if not rows:
             continue
         else:
             for row in rows:
+                if DEBUG:
+                    print row
                 valueDic= {}
                 rightsStatement = etree.Element("rightsStatement", nsmap={None: premisNS})
                 rightsStatement.set(xsiBNS+"schemaLocation", premisNS + " http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd")
