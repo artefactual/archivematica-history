@@ -1,6 +1,5 @@
 #!/usr/bin/python -OO
 
-
 # This file is part of Archivematica.
 #
 # Copyright 2010-2012 Artefactual Systems Inc. <http://artefactual.com>
@@ -36,8 +35,10 @@ import zipfile
 import pprint # remove for production
 from xml.dom.minidom import parse, parseString
 
+# pp = pprint.PrettyPrinter(indent=4) # Remove after development.
+
 # Create the output dir for the CONTENTdm DIP. importMethod is either 'projectclient'
-# or 'directimport'. Also return the path. 
+# or 'directupload'. Also return the path. 
 def prepareOutputDir(outputDipDir, importMethod, dipUuid):
     outputDipDir = os.path.join(outputDipDir, importMethod, dipUuid)
     # Check for and then delete a subdirectory named after the current package. We always want
@@ -50,19 +51,24 @@ def prepareOutputDir(outputDipDir, importMethod, dipUuid):
 
 # Takes in a DOM object containing the Dublin Core XML, returns a dictionary with 
 # tag : [ value1, value2] members. Also, since minidom only handles byte strings
-# so we need to encode strings before passing them to minidom functions.
-def parseDcXml(dublincore):
-    # If the dublincore object is empty (i.e, there is no DC metadata), just return
+# so we need to encode strings before passing them to minidom functions. label is
+# an optional arguement for use with compound item children, which may not have a
+# dublincore object.
+def parseDcXml(dublincore, label = '[Placeholder title]'):
+    if dublincore is None:
+       return {'title' : [label]} 
+    # If the dublincore object is empty (i.e, there is no DC metadata), return
     # a placeholder title.
     if not hasattr(dublincore, 'getElementsByTagName'):
-       return {'title' : ['Placeholder title']} 
+       return {'title' : [label]} 
       
-    # Check to see if there is a title (required by CONTENTdm). If not, assign a 
+    # If we are dealing with a DOM object representing the Dublin Core metadata,
+    # check to see if there is a title (required by CONTENTdm). If not, assign a 
     # placeholder title.
     if hasattr(dublincore, 'getElementsByTagName'):
-        dcTitlesDom = dublincore.getElementsByTagName('title')  # This is the line thowing the error
+        dcTitlesDom = dublincore.getElementsByTagName('title')
         if not dcTitlesDom:
-            return {'title' : ['Placeholder title']} 
+            return {'title' : '[Placeholder title]'} 
 
     # Get the elements found in the incoming DC XML DOM object.
     dcElementsDom = dublincore.getElementsByTagName('*')
@@ -70,14 +76,15 @@ def parseDcXml(dublincore):
     for dcElement in dcElementsDom:
         # We only want elements that are not empty.
         if dcElement.firstChild: 
-            # To get the values of repeated DC elements, we need to create a list to correspond to each
-            # element name. If the element name is not yet a key in dcElementsDict, create the element's 
-            # value list.
+            # To get the values of repeated DC elements, we need to create a list to correspond
+            # to each element name. If the element name is not yet a key in dcElementsDict,
+            # create the element's value list.
             if dcElement.tagName not in dcElementsDict:
-                dcElementsDict[dcElement.tagName.encode( "utf-8" )] = [dcElement.firstChild.nodeValue.encode( "utf-8" )]
-            # If the element name is present in dcElementsDict, append the element's value to its value list.
+                dcElementsDict[dcElement.tagName.encode("utf-8")] = [dcElement.firstChild.nodeValue.encode("utf-8")]
+            # If the element name is present in dcElementsDict, append the element's value to
+            # its value list.
             else:
-                dcElementsDict[dcElement.tagName.encode( "utf-8" )].append(dcElement.firstChild.nodeValue.encode( "utf-8" ))
+                dcElementsDict[dcElement.tagName.encode("utf-8")].append(dcElement.firstChild.nodeValue.encode("utf-8"))
     return dcElementsDict
 
 
@@ -93,43 +100,45 @@ def parseDcXml(dublincore):
 #        </div>
 def parseStructMap(structMap, filesInObjectDirectory):
     structMapDict = {}
-    # pp = pprint.PrettyPrinter(indent=4) # Remove after development.
-    # Get filenames of all the files in the objects directory (recursively); filesInObjectDirectory contains
-    # paths, we need to get the filename only for the structMap checking. Add each filename to structMapDict.
+    # Get filenames of all the files in the objects directory (recursively);
+    # filesInObjectDirectory contains paths, we need to get the filename only
+    # for the structMap checking. Add each filename to structMapDict.
     filesInObjectDir = []
     for file in filesInObjectDirectory:
         head, tail = os.path.split(file)
         filesInObjectDir.append(tail)
         
     # Get all the fptr elements.
-    fptrs = structMap.getElementsByTagName('fptr')
     fptrOrder = 0
     for node in structMap.getElementsByTagName('fptr'):
         for k, v in node.attributes.items():
             if k == 'FILEID':
-                parentDivLabel = node.parentNode.getAttribute('LABEL')
-                # Placeholder for when we support compound items with their own descriptive metadata.
+                # parentDivDmdId is a placeholder for when we support compound
+                # items with their own descriptive metadata.
                 parentDivDmdId = node.parentNode.getAttribute('DMDID')
-                # Assumes that divs containing fptrs have LABEL attributes.
-                if len(parentDivLabel):
+                filename = getFptrObjectFilename(v, filesInObjectDir)
+                # We only want entries for files that are in the objects directory.
+                if filename != None:
+                    parentDivLabel = node.parentNode.getAttribute('LABEL')
+                    # If the parent div doesn't have a LABEL, use the filesname as the label.
+                    if not len(parentDivLabel):
+                        parentDivLabel = filename
                     fptrOrder = fptrOrder + 1
-                    # For each fptr, check to see if there is a matching file.
-                    # @todo: Check to see if file exists? Or can we assume it does?
-                    filename = getFptrObjectFilename(v, filesInObjectDir)
                     structMapDict[v] = {
-                        # Python has no natsort, so we padd fptOrder with zeros to make it more
-                        # easily sortable.
+                        # Python has no natsort, so we padd fptOrder with up to
+                        # 4 zeros to make it more easily sortable.
                         'order' : str(fptrOrder).zfill(5),
                         'parent' : '', # Placeholder for when we support hierarchical items.
                         'filename' : filename,
                         'label' : parentDivLabel,
                         'dmdSec' : parentDivDmdId
                     }
-        
 
     return structMapDict
 
-# Given a ftpr value (which looks like this: P1050154.JPG-09869659-fc89-46ce-ad1c-fe166becccca), return the
+
+# Given a ftpr value (which looks like this:
+# P1050154.JPG-09869659-fc89-46ce-ad1c-fe166becccca), return the
 # name of the corresponding file from the DIP objects directory.
 def getFptrObjectFilename(fptrValue, filesInObjectDir):
     # Assumes UUID is the last 36 characters of the fptr value.
@@ -138,11 +147,13 @@ def getFptrObjectFilename(fptrValue, filesInObjectDir):
         if uuid in filename:
             return filename
 
-# Generate a directory containing 1) 'mappings', a nested dictionary with DCTERMS elememts as keys,
-# each of which has as its values the CONTENTdm nick and name for the corresponding field in the
-# current collection and 2), 'order', a list of the collection's field nicks, which is needed
-# to write out the metadata in the correct field order. Archivematica only uses the legacy
-# unqualified DC elements but we include the entire CONTENTdm DCTERMS mappings for good measure.
+
+# Generate a directory containing 1) 'mappings', a nested dictionary with DCTERMS
+# elememts as keys, each of which has as its values the CONTENTdm nick and name for
+# the corresponding field in the current collection and 2), 'order', a list of the 
+# collection's field nicks, which is needed to write out the metadata in the correct
+# field order. Archivematica only uses the legacy unqualified DC elements but we
+# include the entire CONTENTdm DCTERMS mappings for good measure.
 def getContentdmCollectionFieldInfo(contentdmServer, targetCollection):
     collectionFieldInfo = {}
     # First, define the CONTENTdm DC nicknames -> DCTERMs mapping. 
@@ -215,10 +226,12 @@ def getContentdmCollectionFieldInfo(contentdmServer, targetCollection):
 
     # We want a dict containing items that looks like
     # { 'contributor': { 'name': u'Contributors', 'nick': u'contri'},
-    # 'creator': { 'name': u'Creator', 'nick': u'creato'}, 'date': { 'name': u'Date', 'nick': u'dateso'}, [...] }
-    # We need these field-specific mappings when writing out metadata files for loading into CONTENTdm.
-    # It is possible that more than one CONTENTdm field is mapped to the same DC element; in this case,
-    # just take the last mapping and ignore the rest, since there is no way to tell which should take precedence.
+    # 'creator': { 'name': u'Creator', 'nick': u'creato'},
+    # 'date': { 'name': u'Date', 'nick': u'dateso'}, [...] }
+    # We need these field-specific mappings when writing out metadata files for loading
+    # into CONTENTdm. It is possible that more than one CONTENTdm field is mapped to
+    # the same DC element; in this case, just take the last mapping and ignore the rest,
+    # since there is no way to tell which should take precedence.
     collectionFieldMappings = {}
     # We also want a simple list of all the fields in the current collection.
     collectionFieldOrder = [] 
@@ -231,6 +244,7 @@ def getContentdmCollectionFieldInfo(contentdmServer, targetCollection):
     collectionFieldInfo['order'] = collectionFieldOrder
     return collectionFieldInfo
 
+
 # Return the dmdSec with the specific ID value. If dublinCore is True, return
 # the <dublincore> child node only.
 def getDmdSec(metsDom, dmdSecId = 'dmdSec_1', dublinCore = True):
@@ -242,29 +256,41 @@ def getDmdSec(metsDom, dmdSecId = 'dmdSec_1', dublinCore = True):
             else:
                 return node
 
+
 # Get a list of all the files (recursive) in the DIP object directory. Even though there
 # can be subdirectories in the objects directory, assumes each file should have a unique name.
-# Optionally include the paths for each file.
 def getObjectDirectoryFiles(objectDir):
     fileList = []
     for root, subFolders, files in os.walk(objectDir):
         for file in files:
             fileList.append(os.path.join(root, file))
-    # We need to include elements that are in the collection field config but
-    # that do not have any values for the current item.
     return fileList
 
 
-# Create a .zip from the DIP file produced by generateXXProjectClientPackage functions.
+# Create a .zip from the DIP files produced by generateXXProjectClientPackage functions.
 # Zip files are written in the uploadedDIPs directory.
-def zipProjectClientOutput(outputDipDir, dipUuid):
+def zipProjectClientOutput(outputDipDir, dipUuid, type):
     outputFile = zipfile.ZipFile(outputDipDir + ".zip", "w")
-    for sourceFilename in glob.glob(os.path.join(outputDipDir, '*')):
-        # Prepend the UUID to the filename so the zip file will unzip into the corresponding
-        # directory.
-        destFilename = os.path.join(dipUuid, os.path.basename(sourceFilename))
-        outputFile.write(sourceFilename, destFilename, zipfile.ZIP_DEFLATED)
+    sourceFilesRoot = glob.glob(os.path.join(outputDipDir, '*'))
+    # For each of the files in the DIP directionn root directory, prepend the DIP UUID
+    # to the filename so the zip file will unzip into the corresponding directory.
+    for rootSourceFilename in sourceFilesRoot:
+        destFilename = os.path.join(dipUuid, os.path.basename(rootSourceFilename))
+        outputFile.write(rootSourceFilename, destFilename, zipfile.ZIP_DEFLATED)
+
+    if type is 'compound':
+        sourceFilesScans = glob.glob(os.path.join(outputDipDir, 'scans', '*'))
+        if not len(sourceFilesScans):
+            print "No DIP files found."
+            sys.exit(1)
+        # For each of the files in the 'scans' subdirectory, prepend the DIP UUID to the
+        # filename so the zip file will unzip into the corresponding directory.
+        for scansSourceFilename in sourceFilesScans:
+            destFilename = os.path.join(dipUuid, 'scans', os.path.basename(scansSourceFilename))
+            outputFile.write(scansSourceFilename, destFilename, zipfile.ZIP_DEFLATED)
+
     outputFile.close()
+
 
 # Generate a .desc file used in CONTENTdm 'direct import' packages.
 # .desc file looks like this:
@@ -285,9 +311,7 @@ def zipProjectClientOutput(outputDipDir, dipUuid):
 # <dmad2></dmad2>
 # <dmaccess></dmaccess>
 # </xml>
-# @todo: DC element names need to be converted to CONTENTdm nicknames.
 def generateDescFile(dcMetadata):
-    # pp = pprint.PrettyPrinter(indent=4) # Remove after development.
     collectionFieldInfo = getContentdmCollectionFieldInfo(args.contentdmServer, args.targetCollection)
     output = '<?xml version="1.0" encoding="utf-8"?>' + "\n"
     output += "<itemmetadata>\n"
@@ -295,13 +319,14 @@ def generateDescFile(dcMetadata):
     # Loop through the collection's field configuration and generate XML elements
     # for all its fields. 
     for dcElement in collectionFieldInfo['mappings'].keys():
-        # If a field is in the incoming item dcMetadata, populate it with its value.
+        # If a field is in the incoming item dcMetadata, populate the corresponding tag
+        # with its value.
         if dcElement in dcMetadata.keys():
             values = ''
             output += '<' + dcElement + '>'
             # Repeated values in CONTENTdm metadata need to be separated with semicolons.
-            for v in dcMetadata[dcElement]:
-                values += v + '; '
+            for value in dcMetadata[dcElement]:
+                values += value + '; '
                 output += values.rstrip('; ')
             output += '</' + dcElement + ">\n"
         # We need to include elements that are in the collection field config but
@@ -326,9 +351,47 @@ def generateDescFile(dcMetadata):
     return output
 
 
-# Generate a 'direct upload' (i.e., single object file) package for a simple item from the 
-# Archivematica DIP. This package will contain the object file, its thumbnail, a .desc (DC metadata)
-# file, and a .full (manifest) file.
+# Return a DOM object containing a skeletal Dublin Core XML structure
+# comprised of a <title> element. Used for generating .desc files for
+# compound item children.
+def generateCompoundItemChildDmdSec(label):
+    dublinCore = '<dublincore>'
+    dublinCore += '<title>' + label + '</title>'
+    dublinCore += """
+<creator/>
+<subject/>
+<description/>
+<publisher/>
+<contributor/>
+<date/>
+<type/>
+<format/>
+<identifier/>
+<source/>
+<language/>
+<coverage/>
+<rights/>
+</dublincore>
+"""
+    dublinCoreDom = parseString(dublinCore.encode('utf-8'))
+    return dublinCoreDom
+
+
+# Generate an object file's entry in the .full file.
+def generateFullFileEntry(title, filename, extension):
+    fullFileContent = "<item>\n"
+    fullFileContent += "  <title>" + title + "</title>\n"
+    fullFileContent += "  <object>" + filename + extension + "</object>\n"
+    fullFileContent += "  <desc>" + filename + ".desc</desc>\n"
+    fullFileContent += "  <icon>" + filename + ".icon</icon>\n"
+    fullFileContent += "  <update>0</update>\n  <info>nopdf</info>\n"
+    fullFileContent += "</item>\n"
+    return fullFileContent
+
+
+# Generate a 'direct upload' package for a simple item from the Archivematica DIP.
+# This package will contain the object file, its thumbnail, a .desc (DC metadata) file,
+# and a .full (manifest) file.
 def generateSimpleContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory):
     outputDipDir = prepareOutputDir(outputDipDir, 'directupload', dipUuid)
     dmdSec = getDmdSec(metsDom)
@@ -341,35 +404,17 @@ def generateSimpleContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, f
     
     # Copy the thumbnail into the output directory. There will only be one.
     # The file must end in .icon.
-    thumbnailFilename = dipUuid + '.icon'
-    shutil.copy(filesInThumbnailDirectory[0], os.path.join(outputDipDir, thumbnailFilename))
+    shutil.copy(filesInThumbnailDirectory[0], os.path.join(outputDipDir, dipUuid + '.icon'))
 
     # Copy the object file (there will only be one) into the output directory, giving it the
     # same name as the other files in the package and the extension of its source file.
     objectFileFilename, objectFileFileExtension = os.path.splitext(filesInObjectDirectory[0])
     shutil.copy(filesInObjectDirectory[0], os.path.join(outputDipDir, dipUuid + objectFileFileExtension))
 
-    # Write out the .full file into the output directory.
-    # .full file looks like this:
-    # <item>
-    #  <title>wall</title>
-    #  <object>142_58_131_27_2012-3-28_8525511-14722693060.jpg</object>
-    #  <desc>142_58_131_27_2012-3-28_8525511-14722693060.desc</desc>
-    #  <icon>142_58_131_27_2012-3-28_8525511-14722693060.icon</icon>
-    #  <update>0</update>
-    # <info>nopdf</info>
-    # </item>
-    fullFileContents = "<item>\n"
-    fullFileContents += "<object>" + dipUuid + objectFileFileExtension + "</object>\n"
-    fullFileContents += "<desc>" + dipUuid + '.desc' + "</desc>\n"
-    fullFileContents += "<icon>" + thumbnailFilename + "</icon>\n"
-    fullFileContents += "<update>0</update>\n"
-    fullFileContents += "</item>\n"
+    fullFileContents = generateFullFileEntry(dipUuid + objectFileFileExtension, dipUuid, objectFileFileExtension)
     fullFile = open(os.path.join(outputDipDir, dipUuid + '.full'), "wb")
     fullFile.write(fullFileContents)
     fullFile.close()
-
-    print "Debug: outputDipDir - " + outputDipDir
 
 
 # Generate a 'project client' package for a simple item from the Archivematica DIP.
@@ -378,20 +423,23 @@ def generateSimpleContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, f
 def generateSimpleContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory):
     dmdSec = getDmdSec(metsDom)
     dcMetadata = parseDcXml(dmdSec)
-
     outputDipDir = prepareOutputDir(outputDipDir, 'projectclient', dipUuid)
-    
+
     for file in filesInObjectDirectory:
       # First, copy the file into the output directory.
       shutil.copy(file, outputDipDir)
-    # Then, write out a tab-delimited file containing the DC-mapped metadata, with 'Filename' as the last field.
+
+    # Then, write out a tab-delimited file containing the DC-mapped metadata,
+    # with 'Filename' as the last field.
     collectionFieldInfo = getContentdmCollectionFieldInfo(args.contentdmServer, args.targetCollection)
-    # Write out the metadata file, with the first row containing the field labels and the second row
-    # containing the values. Both rows needs to be in the order expressed in collectionFieldInfo['order'].
-    # For each item in collectionFieldInfo['order'], query each mapping in collectionFieldInfo['mappings']
-    # to find a matching 'nick'; if the nick is found, write the value in the dmdSec's element that matches
-    # the mapping's key; if no matching mapping is found, write ''. The DIP filename (in this case, the
-    # file variable defined above) needs to go in the last column.
+    # Write out the metadata file, with the first row containing the field
+    # labels and the second row containing the values. Both rows needs to be
+    # in the order expressed in collectionFieldInfo['order']. For each item in
+    # collectionFieldInfo['order'], query each mapping in collectionFieldInfo['mappings']
+    # to find a matching 'nick'; if the nick is found, write the value in the dmdSec's
+    # element that matches the mapping's key; if no matching mapping is found, write ''.
+    # The DIP filename (in this case, the file variable defined above) needs to go in
+    # the last column.
     delimHeaderRow = []
     delimValuesRow = []
     for field in collectionFieldInfo['order']:
@@ -420,14 +468,15 @@ def generateSimpleContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir, 
     writer.writerow(delimValuesRow)
     delimitedFile.close()
 
-    zipProjectClientOutput(outputDipDir, dipUuid)
+    zipProjectClientOutput(outputDipDir, dipUuid, 'simple')
     # Delete the unzipped version of the DIP since we don't use it anyway.
     shutil.rmtree(outputDipDir)
 
-# Compound items - multiple files in the DIP objects directory, ordered by the user-submitted
-# METS structMap. Need to consult the structMap and write out a corresponding structure
-# (.cpd) file. Also, for every file, copy the file, create an .icon, create a .desc file,
-#  plus create index.desc, index.cpd, index.full, and ready.txt.
+# Generate a 'direct upload' package for a compound item from the Archivematica DIP.
+# Consults the structMap and write out a corresponding structure (.cpd) file. Also,
+# for every file, copy the file, create an .icon, create a .desc file, plus create
+# index.desc, index.cpd, index.full, and ready.txt. @todo: If a user-submitted
+# structMap is present, use it to order the files.
 def generateCompoundContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory):
     outputDipDir = prepareOutputDir(outputDipDir, 'directupload', dipUuid)
     dmdSec = getDmdSec(metsDom)
@@ -438,51 +487,111 @@ def generateCompoundContentDMDirectUploadPackage(metsDom, dipUuid, outputDipDir,
     descFile.write(descFileContents)
     descFile.close()
 
-    # Write out the ready.txt file which contains the string '1'.
-    readyFile = open(os.path.join(outputDipDir, 'ready.txt'), "wb")
-    readyFile.write('1')
-    readyFile.close()
+    # Start to build the index.cpd file.
+    # @todo: <type> will be 'Monograph' for hierarchical items.
+    cpdFileContent = "<cpd>\n  <type>Document</type>\n"
+
+    # Start to build the index.full file.
+    fullFileContent = ''
+    # Populate the 'full' elements for the parent item.
+    titleValues = ''
+    for titleValue in dcMetadata['title']:
+        titleValues += titleValue + '; '
+    titleValues = titleValues.rstrip('; ')
+    fullFileContents = generateFullFileEntry(titleValues, 'index', '.cpd')
+
+    # Archivematica's stuctMap is always the first one; the user-submitted structMap
+    # is always the second one. @todo: If the user-submitted structMap is present,
+    # parse it for the SIP structure so we can use that structure in the CONTENTdm packages.
+    structMapDom =  metsDom.getElementsByTagName('structMap')[0]
+    structMapDict = parseStructMap(structMapDom, filesInObjectDirectory)
+
+    # Determine the order in which we will add the child-level rows to the .cpd and .full files.
+    Orders = []
+    for fptr, details in structMapDict.iteritems():
+        Orders.append(details['order'])
+
+    # Iterate through the list of order values and add the matching structMapDict entry
+    # to the delimited file (and copy the file into the scans directory).
+    for order in sorted(Orders):
+        for k, v in structMapDict.iteritems():
+            # Get each access file's base filesname without extension, since we'll use it
+            # for the .icon and .desc files.
+            accessFileBasenameName, accessFileBasenameExt = os.path.splitext(v['filename'])
+
+            # Get the name of the first file in the sorted order; we use this later to create
+            # a thumbnail for current parent item.
+            if v['order'] == '00001':
+                parentThumbnailFilename = accessFileBasenameName + '.icon' 
+
+            if order == v['order']:
+               # Process each object file.
+               for fullPath in filesInObjectDirectory:
+                   # For each object file, output the object file. We need to find the full path
+                   # of the file identified in v['filename'].
+                   if (v['filename'] in fullPath):
+                       shutil.copy(fullPath, outputDipDir)
+
+                   # For each object file, copy the thumbnail in the DIP to the import package.
+                   # The file must have the same name as the object file but it must end in .icon.
+                   for thumbnailFilePath in filesInThumbnailDirectory:
+                       thumbnailBasename = os.path.basename(thumbnailFilePath)
+                       # Strip off thumbnail extension so we can match on the name.
+                       thumbnailBasenameName, thumbnailBasenameext = os.path.splitext(thumbnailBasename)
+                       if (thumbnailBasenameName in v['filename']):
+                           thumbnailFilename = accessFileBasenameName + '.icon'
+                           shutil.copy(thumbnailFilePath, os.path.join(outputDipDir, thumbnailFilename))
+
+               # For each object file, output a .desc file. For object files that do not
+               # have their own child-level descriptions (i.e., all object files currently),
+               # we need to use the filename as the title if there isn't a user-supplied
+               # csv or structMap to provide labels as per
+               # https://www.archivematica.org/wiki/CONTENTdm_integration.
+               dcMetadata = parseDcXml(None, v['label'])
+               descFileContents = generateDescFile(dcMetadata)
+               descFilename = accessFileBasenameName + '.desc'
+               descFile = open(os.path.join(outputDipDir, descFilename), "wb")
+               descFile.write(descFileContents)
+               descFile.close()
+
+               # For each object file, add its .full file values. These entries do not
+               # have anything in their <title> elements.
+               fullFileContents += generateFullFileEntry('', accessFileBasenameName, accessFileBasenameExt)
+               # For each object file, add its .cpd file values. 
+               # @todo: We will need to account for hierarchical items here.
+               cpdFileContent += "  <page>\n"
+               cpdFileContent += "    <pagetitle>" + v['label'] + "</pagetitle>\n"
+               cpdFileContent += "    <pagefile>" + v['filename'] + "</pagefile>\n"
+               cpdFileContent += "    <pageptr>+</pageptr>\n"
+               cpdFileContent += "  </page>\n"
+
+    # Write out the index.full file. 
+    fullFile = open(os.path.join(outputDipDir, 'index.full'), "wb")
+    fullFile.write(fullFileContents)
+    fullFile.close()
 
     # Write out the index.cpd file. We get the order of the items in the .cpd file
     # from the user-submitted structMap (if it is present) or the Archivematica
     # structMap (if no user-submitted structMap is present).
+    cpdFileContent += '</cpd>'
+    indexCpdFile = open(os.path.join(outputDipDir, 'index.cpd'), "wb")
+    indexCpdFile.write(cpdFileContent)
+    indexCpdFile.close()
 
-    # For each object file, output a .desc file.
-    # For each object file, output a thumbnail.
+    # Create a thumbnail for the parent item (index.icon), using the icon from the first item
+    # in the METS file. parentThumbnailFilename
+    shutil.copy(os.path.join(outputDipDir, parentThumbnailFilename), os.path.join(outputDipDir, 'index.icon'))
 
-    # Output a thumbnail for the parent item (index.icon), using the icon from the first item
-    # in the METS file.
-
-    # For each object file, output the object file.
-
-    # Write out the .full file. There is an <item> entry for the parent, then one for each child.
-    # Child entries do not have any <title> values, and each entry has a <info>nopdf</info> element.
-
-    # <item>
-    # <title>How to create a hierarchical book</title>
-    # <object>index.cpd</object>
-    # <desc>index.desc</desc>
-    # <icon>index.icon</icon>
-    # <update>0</update>
-    # <info>nopdf</info>
-    # </item>
-    # <item>
-    # <title></title>
-    # <object>142_58_131_27_2012-3-28_9539195-128672825729.jp2</object>
-    # <desc>142_58_131_27_2012-3-28_9539195-128672825729.desc</desc>
-    # <icon>142_58_131_27_2012-3-28_9539195-128672825729.icon</icon>
-    # <update>0</update>
-    # <info>nopdf</info>
-    # </item>
-
-    pass
+    # Write out the ready.txt file which contains the string '1'.
+    readyFile = open(os.path.join(outputDipDir, 'ready.txt'), "wb")
+    readyFile.write('1')
+    readyFile.close()
 
 
 # Generate a 'project client' package for a compound CONTENTdm item from the Archivematica DIP.
 # This package will contain the object file and a delimited metadata file in a format suitable
 # for importing into CONTENTdm using its Project Client.
 def generateCompoundContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir, filesInObjectDirectory):
-    # pp = pprint.PrettyPrinter(indent=4) # Remove after development.
     dmdSec = getDmdSec(metsDom)
     dcMetadata = parseDcXml(dmdSec)
 
@@ -498,12 +607,13 @@ def generateCompoundContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir
     scansDir = os.path.join(outputDipDir, 'scans')
     os.makedirs(scansDir)
 
-    # Write out the metadata file, with the first row containing the field labels and the second row
-    # containing the values. Both rows needs to be in the order expressed in collectionFieldInfo['order'].
-    # For each item in collectionFieldInfo['order'], query each mapping in collectionFieldInfo['mappings']
-    # to find a matching 'nick'; if the nick is found, write the value in the dmdSec's element that matches
-    # the mapping's key; if no matching mapping is found, write ''. The DIP filename (in this case, the
-    # file variable defined above) needs to go in the last column.
+    # Write out the metadata file, with the first row containing the field labels and the
+    # second row containing the values. Both rows needs to be in the order expressed in
+    # collectionFieldInfo['order']. For each item in collectionFieldInfo['order'],
+    # query each mapping in collectionFieldInfo['mappings'] to find a matching 'nick';
+    # if the nick is found, write the value in the dmdSec's element that matches the mapping's
+    # key; if no matching mapping is found, write ''. The DIP filename (in this case, the file
+    # variable defined above) needs to go in the last column.
     collectionFieldInfo = getContentdmCollectionFieldInfo(args.contentdmServer, args.targetCollection)
     delimHeaderRow = []
     delimItemValuesRow = []
@@ -547,22 +657,28 @@ def generateCompoundContentDMProjectClientPackage(metsDom, dipUuid, outputDipDir
                for fullPath in filesInObjectDirectory:
                    if (v['filename'] in fullPath):
                        shutil.copy(fullPath, scansDir)
-               # Write the child-level metadata row. @todo: For flat items with no child-level metadata,
-               # we are using the label for the child as defined in structMapDict and the filename only.
-               # This means that we put the label in the position allocated for the dc.title element,
-               # and the filename in the last position. Everthing in between is ''. This will need to be
-               # made more functional for flat with child-leve metadata, and for hierarchical.
+
+               # Write the child-level metadata row. @todo: For flat items with no
+               # child-level metadata, we are using the label for the child as defined
+               # in structMapDict and the filename only. This means that we put the
+               # label in the position allocated for the dc.title element, and the 
+               # filename in the last position. Everthing in between is ''. This will
+               # need to be made more functional for flat with child-level metadata,
+               # and for hierarchical.
                titlePosition = collectionFieldInfo['order'].index('title')
                if titlePosition == 0:
                    delimChildValuesRow.append(v['label'])
                    for i in range(1, len(delimHeaderRow) - 1):
                        delimChildValuesRow.append('')
-               delimChildValuesRow.append(v['filename']) # Must contain filename in last position
+               # Rows must contain filename in last position.
+               delimChildValuesRow.append(v['filename']) 
                writer.writerow(delimChildValuesRow)
 
     delimitedFile.close()
 
-    zipProjectClientOutput(outputDipDir)
+    zipProjectClientOutput(outputDipDir, dipUuid, 'compound')
+    # Delete the unzipped version of the DIP since we don't use it anyway.
+    shutil.rmtree(outputDipDir)
 
 
 if __name__ == '__main__':
@@ -616,4 +732,3 @@ if __name__ == '__main__':
         generateCompoundContentDMDirectUploadPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory)
     if len(filesInObjectDirectory) > 1 and args.ingestFormat == 'projectclient':
         generateCompoundContentDMProjectClientPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory)
-
