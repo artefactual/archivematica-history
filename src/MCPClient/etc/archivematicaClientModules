@@ -30,6 +30,7 @@ restructureDIPForContentDMUpload_v0.0 = %clientScriptsDirectory%restructureDIPFo
 storeAIP_v0.0 = %clientScriptsDirectory%storeAIP.py
 7z_v0.0 = /usr/bin/7z
 elasticSearchIndex_v0.0 = %clientScriptsDirectory%elasticSearchIndexProcessTransfer.py
+elasticSearchAIPIndex_v0.0 = %clientScriptsDirectory%elasticSearchIndexProcessAIP.py
 
 [supportedCommands]
 echo_v0.0 = /bin/echo

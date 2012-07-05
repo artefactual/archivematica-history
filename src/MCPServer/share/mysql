@@ -524,7 +524,12 @@ CREATE TABLE Derivations (
     relatedEventUUID VARCHAR(50)
 ) DEFAULT CHARSET=utf8;
 
-
+DROP TABLE IF EXISTS Notifications;
+CREATE TABLE Notifications (
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    message            LONGTEXT,
+    created            INT
+) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Sounds;
 CREATE TABLE Sounds(
@@ -1150,6 +1155,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
+
 -- --
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, @moveToProcessingDirectoryTaskConfig, @defaultNextChainLink);
@@ -1203,6 +1209,21 @@ INSERT INTO WatchedDirectories (watchedDirectoryPath, chain)
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'elasticSearchAIPIndex_v0.0', '"%SIPDirectory%" "%SIPUUID%"');
+SET @elasticSearchIndexTaskTask = LAST_INSERT_ID();
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      @elasticSearchIndexTaskTask, 'Index AIP contents');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+SET @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
+    VALUES (@MicroServiceChainLink, 0, NULL);
+SET @NextMicroServiceChainLink = @MicroServiceChainLink;
+
+
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/storeAIP/." "%SIPUUID%" "%sharedPath%" "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
@@ -1211,7 +1232,7 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
-    VALUES (@MicroServiceChainLink, 0, NULL);
+    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 -- --
 SET @microserviceGroup  = 'Prepare AIP';
