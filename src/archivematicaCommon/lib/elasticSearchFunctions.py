@@ -25,6 +25,48 @@
 import time
 import os
 
+import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
+import pyes
+
+pathToElasticSearchServer='/opt/elasticsearch/bin/elasticsearch'
+
+def connect_and_index(index, type, uuid, pathToTransfer):
+
+    exitCode = 0
+
+    # make sure elasticsearch is installed
+    if (os.path.exists(pathToElasticSearchServer)):
+
+        # make sure transfer files exist
+        if (os.path.exists(pathToTransfer)):
+            conn = pyes.ES('127.0.0.1:9200')
+            try:
+                conn.create_index(index)
+            except pyes.exceptions.IndexAlreadyExistsException:
+                pass
+
+            filesIndexed = index_directory_files(
+                conn,
+                uuid,
+                pathToTransfer,
+                index,
+                type
+            )
+
+            print type + ' UUID: ' + uuid
+            print 'Files indexed: ' + str(filesIndexed)
+
+        else:
+            print >>sys.stderr, "Directory does not exist: ", pathToTransfer
+            exitCode = 1
+    else:
+        print >>sys.stderr, "Elasticsearch not found, normally installed at ", pathToElasticSearchServer
+        exitCode = 1
+
+    return exitCode
+
 def index_directory_files(conn, uuid, pathToTransfer, index, type):
     filesIndexed = 0
 
