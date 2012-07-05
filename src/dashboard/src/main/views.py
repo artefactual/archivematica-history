@@ -649,7 +649,7 @@ def archival_storage(request, path=None):
         conn = pyes.ES('127.0.0.1:9200')
 
         q = pyes.StringQuery(query)
-        results = conn.search(query=q, indices='transfers')
+        results = conn.search(query=q, indices='aips')
 
         form = forms.StorageSearchForm(initial={'query': query})
         return render(request, 'main/archival_storage.html', locals())
