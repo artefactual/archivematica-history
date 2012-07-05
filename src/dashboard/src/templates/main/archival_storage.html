@@ -34,7 +34,12 @@
 
   {% if results %}
     {% for item in results %}
-      {{item.uuid}}<br/>
+      {{item.uuid}} (created: {{item.created}})<br/>
+      <blockquote>
+      {% for file in item.filepaths %}
+        {{file}}<br/>
+      {% endfor %}
+      </blockquote>
     {% endfor %}
   {% endif %}
 
