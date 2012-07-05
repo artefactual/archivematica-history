@@ -27,42 +27,13 @@ import time
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import elasticSearchFunctions
-import pyes
 
 exitCode = 0
-pathToElasticSearchServer='/opt/elasticsearch/bin/elasticsearch'
 
 if __name__ == '__main__':
     pathToTransfer = sys.argv[1] + 'objects'
     transferUUID = sys.argv[2]
 
-    # make sure elasticsearch is installed
-    if (os.path.exists(pathToElasticSearchServer)):
-
-        # make sure transfer files exist
-        if (os.path.exists(pathToTransfer)): 
-            conn = pyes.ES('127.0.0.1:9200')
-            try:
-                conn.create_index('transfers')
-            except pyes.exceptions.IndexAlreadyExistsException:
-                pass
-
-            filesIndexed = elasticSearchFunctions.index_directory_files(
-                conn,
-                transferUUID,
-                pathToTransfer,
-                'transfers',
-                'transfer'
-            )
-
-            print 'Transfer UUID: ' + transferUUID
-            print 'Files indexed: ' + str(filesIndexed)
-
-        else:
-            print >>sys.stderr, "Directory does not exist: ", pathToTransfer
-            exitCode = 1
-    else:
-        print >>sys.stderr, "Elasticsearch not found, normally installed at ", pathToElasticSearchServer
-        exitCode = 1
+    exitCode = elasticSearchFunctions.connect_and_index('transfers', 'transfer', transferUUID, pathToTransfer)
 
 quit(exitCode)
