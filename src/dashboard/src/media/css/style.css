@@ -510,3 +510,9 @@ textarea.command {
 .preview-help-text .content {
 
 }
+
+/* Global file browser tweaks */
+.backbone-file-explorer {
+  border: 1px solid #eee;
+  padding: 5px;
+}
