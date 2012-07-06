@@ -65,6 +65,34 @@ var NotificationView = Backbone.View.extend({
   }
 });
 
+Date.prototype.getArchivematicaDateTime = function()
+  {
+    return this.getArchivematicaDateString();
+  };
+
+Date.prototype.getArchivematicaDateString = function()
+  {
+    var pad = function (n)
+      {
+        return n < 10 ? '0' + n : n;
+      }
+
+    var dateText = this.getFullYear()
+      + '-' + pad(this.getMonth() + 1)
+      + '-' + pad(this.getDate())
+      + ' ' + pad(this.getHours())
+      + ':' + pad(this.getMinutes());
+
+    return dateText;
+  };
+
+function timestampToLocal(timestamp) {
+  // convert to milliseconds
+  var date = new Date(timestamp * 1000);
+
+  return date.getArchivematicaDateString();
+}
+
 $(document).ready(
   function()
     {
