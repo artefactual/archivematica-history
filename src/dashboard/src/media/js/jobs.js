@@ -38,27 +38,6 @@ function optimizeWidth() {
   }
 };
 
-Date.prototype.getArchivematicaDateTime = function()
-  {
-    return this.getArchivematicaDateString();
-  };
-
-Date.prototype.getArchivematicaDateString = function()
-  {
-    var pad = function (n)
-      {
-        return n < 10 ? '0' + n : n;
-      }
- 
-    var dateText = this.getFullYear()
-      + '-' + pad(this.getMonth() + 1)
-      + '-' + pad(this.getDate())
-      + ' ' + pad(this.getHours())
-      + ':' + pad(this.getMinutes());
-
-    return dateText;
-  };
-
 function tooltipPlugin(options)
   {
     var settings = {
