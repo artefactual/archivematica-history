@@ -65,7 +65,7 @@ def load_jobs(view):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def home(request):
-    return render(request, 'home.html', locals())
+    return HttpResponseRedirect(reverse('main.views.transfer_grid'))
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Status
