@@ -36,7 +36,7 @@ li.active {
 
 /* Override Bootstrap default */
 .container-fluid > .content {
-  margin-left: 10px;
+  margin-left: 0px;
 }
 
 /* Tooltips */
