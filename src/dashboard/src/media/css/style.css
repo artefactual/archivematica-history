@@ -34,6 +34,11 @@ li.active {
   background-color: #eee;
 } 
 
+/* Override Bootstrap default */
+.container-fluid > .content {
+  margin-left: 10px;
+}
+
 /* Tooltips */
 
 .tooltip {
