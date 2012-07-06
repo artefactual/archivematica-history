@@ -97,7 +97,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                         if valueDic["copyrightApplicableStartDate"]:
                             etree.SubElement(copyrightApplicableDates, "startDate").text = formatDate(valueDic["copyrightApplicableStartDate"])
                         if valueDic["copyrightApplicableEndDate"]:
-                            etree.SubElement(copyrightApplicableDates, "endDate").endDate = formatDate(valueDic["copyrightApplicableEndDate"])
+                            etree.SubElement(copyrightApplicableDates, "endDate").text = formatDate(valueDic["copyrightApplicableEndDate"])
                 
                 elif valueDic["rightsBasis"].lower() in ["license"]:
                     sql = """SELECT licenseTerms, licenseApplicableStartDate, licenseApplicableEndDate,  licenseDocumentationIdentifierType, licenseDocumentationIdentifierValue, RightsStatementLicense.pk 
@@ -122,7 +122,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                         if valueDic["licenseApplicableStartDate"]:
                             etree.SubElement(licenseApplicableDates, "startDate").text = formatDate(valueDic["licenseApplicableStartDate"])
                         if valueDic["licenseApplicableEndDate"]:
-                            etree.SubElement(licenseApplicableDates, "endDate").endDate = formatDate(valueDic["licenseApplicableEndDate"])
+                            etree.SubElement(licenseApplicableDates, "endDate").text = formatDate(valueDic["licenseApplicableEndDate"])
                     
                 elif valueDic["rightsBasis"].lower() in ["statute"]:
                     #4.1.5 statuteInformation (O, R)
@@ -138,7 +138,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     if valueDic["copyrightApplicableStartDate"]:
                         etree.SubElement(otherRightsApplicableDates, "startDate").text = formatDate(valueDic["copyrightApplicableStartDate"])
                     if valueDic["copyrightApplicableEndDate"]:
-                        etree.SubElement(otherRightsApplicableDates, "endDate").endDate = formatDate(valueDic["copyrightApplicableEndDate"])
+                        etree.SubElement(otherRightsApplicableDates, "endDate").text = formatDate(valueDic["copyrightApplicableEndDate"])
 
                     #otherRightsNote Repeatable
                     sql = "SELECT copyrightNote FROM RightsStatementCopyrightNote WHERE fkRightsStatement = %d;" % (valueDic["RightsStatement.pk"])
