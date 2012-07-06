@@ -58,14 +58,6 @@
   <div id="connection-status" class="pull-right"></div>
 {% endblock %}
 
-{% block sidebar %}
-  <h5>Transfer</h5>
-  <div class="preview-help-text">
-    <p class="preview">Create a structured transfer director... <a href="#">(read more)</a></p>
-    <p class="content">Create a structured transfer directory containing the files to be preserved in the objects folder and any submission documentation added to the metadata/ submissionDocumentation folder. In the dashboard, approve the transfer. Archivematica verifies the transfer, unpacks any zipped files, assigns file UUIDs and checksums, runs a virus check, characterizes and extracts metadata, and generates a METS file showing the physical arrangement of the transfer. When these micro-services are done, choose among multiple options for arranging the transfer into one or more Submission Information Packages (SIPs).</p>
-  </div>
-{% endblock %}
-
 {% block content %}
 
   {% if source_directories %}
