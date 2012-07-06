@@ -130,13 +130,13 @@
   <script type="text/template" id="microservice-group-template">
     <div class="microservice-group" style="padding-bottom: 3px">
       &nbsp;<span class="microservice-group-arrow">&#x25B8;</span>
-      <span class="microservice-group-name"><%= name %></span> microservice
+      <span class="microservice-group-name">Micro-service: <%= name %></span>
     </div>
   </script>
 
   <script type="text/template" id="job-template">
     <div class="job-detail-microservice">
-      <span>Micro-Service:&nbsp;</span><span title="<%= uuid %>"><%= type %></span>
+      <span>Job:&nbsp;</span><span title="<%= uuid %>"><%= type %></span>
       <% tmp = window.microservices_help[type]; %>
       <% if (tmp !== undefined) { %>
         [<a href="#" title="<%= tmp %>">?</a>]
