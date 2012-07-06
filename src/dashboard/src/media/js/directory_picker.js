@@ -12,7 +12,7 @@ var DirectoryPickerView = fileBrowser.FileExplorer.extend({
       { 
         name: 'Select', 
         description: 'Select directory', 
-        iconHtml: '<img src="/media/images/accept.png" />', 
+        iconHtml: 'Add', 
         logic: function(result) { 
           self.addSource(self, result.path); 
         } 
