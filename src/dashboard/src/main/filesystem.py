@@ -1,4 +1,5 @@
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.db import connection
 from django.utils import simplejson
 import os
 import shutil
@@ -157,6 +158,17 @@ def copy_to_arrange(request):
     error = check_filepath_exists('/' + sourcepath)
 
     if error == None:
+        # use lookup path to cleanly find UUID
+        lookup_path = '%sharedPath%' + sourcepath[SHARED_DIRECTORY_ROOT.__len__():sourcepath.__len__()] + '/'
+
+        #return HttpResponse(lookup_path)
+        cursor = connection.cursor()
+        query = 'SELECT unitUUID FROM transfersAndSIPs WHERE currentLocation=%s LIMIT 1'
+        cursor.execute(query, (lookup_path, ))
+        uuid = cursor.fetchone()[0]
+
+        return HttpResponse(uuid)
+
         # confine destination to subdir of originals
         sourcepath = os.path.join('/', sourcepath)
         destination = os.path.join('/', destination) + '/' + os.path.basename(sourcepath)
