@@ -160,18 +160,17 @@ def copy_to_arrange(request):
     if error == None:
         # use lookup path to cleanly find UUID
         lookup_path = '%sharedPath%' + sourcepath[SHARED_DIRECTORY_ROOT.__len__():sourcepath.__len__()] + '/'
-
-        #return HttpResponse(lookup_path)
         cursor = connection.cursor()
         query = 'SELECT unitUUID FROM transfersAndSIPs WHERE currentLocation=%s LIMIT 1'
         cursor.execute(query, (lookup_path, ))
         uuid = cursor.fetchone()[0]
 
-        return HttpResponse(uuid)
+        # remove UUID from destination directory name
+        modified_basename = os.path.basename(sourcepath).replace('-' + uuid, '')
 
         # confine destination to subdir of originals
         sourcepath = os.path.join('/', sourcepath)
-        destination = os.path.join('/', destination) + '/' + os.path.basename(sourcepath)
+        destination = os.path.join('/', destination) + '/' + modified_basename
         # do a check making sure destination is a subdir of ARRANGE_DIR
         destination = pad_destination_filepath_if_it_already_exists(destination)
         #error = 'Copying from ' + sourcepath + ' to ' + destination + '.'
