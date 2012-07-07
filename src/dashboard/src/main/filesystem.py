@@ -163,10 +163,15 @@ def copy_to_arrange(request):
         cursor = connection.cursor()
         query = 'SELECT unitUUID FROM transfersAndSIPs WHERE currentLocation=%s LIMIT 1'
         cursor.execute(query, (lookup_path, ))
-        uuid = cursor.fetchone()[0]
+        possible_uuid_data = cursor.fetchone()
 
-        # remove UUID from destination directory name
-        modified_basename = os.path.basename(sourcepath).replace('-' + uuid, '')
+        if possible_uuid_data:
+          uuid = possible_uuid_data[0]
+          
+          # remove UUID from destination directory name
+          modified_basename = os.path.basename(sourcepath).replace('-' + uuid, '')
+        else:
+          modified_basename = os.path.basename(sourcepath)
 
         # confine destination to subdir of originals
         sourcepath = os.path.join('/', sourcepath)
