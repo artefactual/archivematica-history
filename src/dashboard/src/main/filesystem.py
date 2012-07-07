@@ -34,6 +34,14 @@ def directory_to_dict(path, directory={}, entry=False):
     # return fully traversed data
     return directory
 
+def directory_contents(path, contents=[]):
+    for entry in os.listdir(path):
+        contents.append(os.path.join(path, entry))
+        entry_path = os.path.join(path, entry)
+        if os.path.isdir(entry_path) and os.access(entry_path, os.R_OK):
+            directory_contents(entry_path, contents)
+    return contents
+
 def contents(request):
     path = request.GET.get('path', '/home')
     response = directory_to_dict(path)
@@ -186,6 +194,13 @@ def copy_to_arrange(request):
             )
         except:
             error = 'Error copying from ' + sourcepath + ' to ' + destination + '.'
+
+        # remove any metadata and logs folders
+        for path in directory_contents(destination):
+            basename = os.path.basename(path)
+            if basename == 'metadata' or basename == 'logs':
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
 
     response = {}
 
