@@ -23,6 +23,16 @@
         </div>
       {% endif %}
 
+      <h5>Micro-Services</h5>
+      <ul>
+        <li><a href="{% url main.views.transfer_microservices uuid %}">List</a></li>
+      </ul>
+      <h5>Rights</h5>
+      <ul>
+        <li><a href="{% url main.views.transfer_rights_list uuid %}">List</a></li>
+        <li><a href="{% url main.views.transfer_rights_edit uuid %}">Add</a></li>
+      </ul>
+
     </div>
   </div>
 {% endblock %}
