@@ -45,7 +45,10 @@ def directory_contents(path, contents=[]):
 def contents(request):
     path = request.GET.get('path', '/home')
     response = directory_to_dict(path)
-    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+    return HttpResponse(
+        simplejson.JSONEncoder().encode(response),
+        mimetype='application/json'
+    )
 
 def delete(request):
     filepath = request.POST.get('filepath', '')
@@ -70,7 +73,10 @@ def delete(request):
     else:
       response['message'] = 'Delete successful.'
 
-    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+    return HttpResponse(
+        simplejson.JSONEncoder().encode(response),
+        mimetype='application/json'
+    )
 
 def copy_to_originals(request):
     filepath = request.POST.get('filepath', '')
@@ -98,7 +104,10 @@ def copy_to_originals(request):
     else:
         response['message'] = 'Copy successful.'
 
-    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+    return HttpResponse(
+        simplejson.JSONEncoder().encode(response),
+        mimetype='application/json'
+    )
 
 def copy_to_start_transfer(request):
     filepath = request.POST.get('filepath', '')
@@ -126,7 +135,10 @@ def copy_to_start_transfer(request):
     else:
         response['message'] = 'Copy successful.'
 
-    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+    return HttpResponse(
+        simplejson.JSONEncoder().encode(response),
+        mimetype='application/json'
+    )
 
 def copy_from_arrange_to_completed(request):
     sourcepath  = request.POST.get('filepath', '')
@@ -157,7 +169,10 @@ def copy_from_arrange_to_completed(request):
     else:
         response['message'] = 'Transfer started.'
 
-    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+    return HttpResponse(
+        simplejson.JSONEncoder().encode(response),
+        mimetype='application/json'
+    )
 
 def copy_to_arrange(request):
     sourcepath  = request.POST.get('filepath', '')
@@ -186,7 +201,6 @@ def copy_to_arrange(request):
         destination = os.path.join('/', destination) + '/' + modified_basename
         # do a check making sure destination is a subdir of ARRANGE_DIR
         destination = pad_destination_filepath_if_it_already_exists(destination)
-        #error = 'Copying from ' + sourcepath + ' to ' + destination + '.'
         try:
             shutil.copytree(
                 sourcepath,
@@ -210,7 +224,10 @@ def copy_to_arrange(request):
     else:
         response['message'] = 'Copy successful.'
 
-    return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
+    return HttpResponse(
+      simplejson.JSONEncoder().encode(response),
+      mimetype='application/json'
+    )
 
 def check_filepath_exists(filepath):
     error = None
