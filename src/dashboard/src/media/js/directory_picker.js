@@ -98,7 +98,7 @@ var DirectoryPickerView = fileBrowser.FileExplorer.extend({
         modal: true,
         buttons: [
           {
-            text: 'Okay',
+            text: 'OK',
             click: function() {
               $(this).dialog('close');
             }
