@@ -410,10 +410,18 @@ var MicroserviceGroupView = Backbone.View.extend({
       $(this.el).append(jobDiv);
 
       // render jobs to container
+      var failedJobExists = false;
       this.jobs.each(function(job) {
         var view = new JobView({model: job});
+        if (view.model.get('currentstep') == 'Failed') {
+          failedJobExists = true;
+        }
         jobDiv.append(view.render().el);
       });
+
+      if (failedJobExists) {
+        $(this.el).css('background-color', '#f2d8d8');
+      }
 
       // toggle job container when user clicks handle
       $(this.el).children(':first').click(function() {
