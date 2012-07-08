@@ -430,11 +430,34 @@ var MicroserviceGroupView = Backbone.View.extend({
       // render jobs to container
       var failedJobExists = false;
       this.jobs.each(function(job) {
-        var view = new JobView({model: job});
-        if (view.model.get('currentstep') == 'Failed') {
-          failedJobExists = true;
+        // render top-level jobs
+        if (job.attributes.subjobof == '') {
+          var jobView = new JobView({model: job});
+          if (jobView.model.get('currentstep') == 'Failed') {
+            failedJobExists = true;
+          }
+          jobDiv.append(jobView.render().el);
+
+          // render subjobs, if any
+          if (subjobs[job.attributes.uuid]) {
+            var subJobDiv = $('<div class="subjob"></div>');
+            subJobDiv.hide();
+            for (var index in subjobs[job.attributes.uuid]) {
+              var subjob = subjobs[job.attributes.uuid][index];
+              var subjobView = new JobView({model: subjob});
+              if (subjobView.model.get('currentstep') == 'Failed') {
+                failedJobExists = true;
+              }
+              subJobDiv.append(subjobView.render().el);
+            }
+            jobDiv.append(subJobDiv);
+
+            // make it so clicking on the job reveals the subjobs
+            $(jobView.el).click(function() {
+              subJobDiv.toggle();
+            });
+          }
         }
-        jobDiv.append(view.render().el);
       });
 
       if (failedJobExists) {
