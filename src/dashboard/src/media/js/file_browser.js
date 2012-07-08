@@ -9,12 +9,7 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
 
     var self = this;
     this.options.nameClickHandler = function(result) { 
-      if (result.type == 'directory') { 
-        self.alert(
-          'Click',
-          'User clicked name of ' + result.type + ' at path ' + result.path
-        ); 
-      } else {
+      if (result.type != 'directory') { 
         window.open(
           '/filesystem/download?filepath=' + encodeURIComponent(result.path),
           '_blank'
