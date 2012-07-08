@@ -228,20 +228,25 @@ def copy_to_arrange(request):
         destination = os.path.join('/', destination) + '/' + modified_basename
         # do a check making sure destination is a subdir of ARRANGE_DIR
         destination = pad_destination_filepath_if_it_already_exists(destination)
-        try:
-            shutil.copytree(
-                sourcepath,
-                destination
-            )
-        except:
-            error = 'Error copying from ' + sourcepath + ' to ' + destination + '.'
 
-        # remove any metadata and logs folders
-        for path in directory_contents(destination):
-            basename = os.path.basename(path)
-            if basename == 'metadata' or basename == 'logs':
-                if os.path.isdir(path):
-                    shutil.rmtree(path)
+        if os.path.isdir(sourcepath):
+            try:
+                shutil.copytree(
+                    sourcepath,
+                    destination
+                )
+            except:
+                error = 'Error copying from ' + sourcepath + ' to ' + destination + '.'
+
+            if error == None:
+                # remove any metadata and logs folders
+                for path in directory_contents(destination):
+                    basename = os.path.basename(path)
+                    if basename == 'metadata' or basename == 'logs':
+                        if os.path.isdir(path):
+                            shutil.rmtree(path)
+        else:
+            shutil.copy(sourcepath, destination)
 
     response = {}
 
