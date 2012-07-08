@@ -91,6 +91,7 @@
         var self = this;
         $(this.el).children('.backbone-file-explorer-directory_entry_name').click(function() {
           self.nameClickHandler({
+            self: self,
             path: self.model.path(),
             type: self.model.type()
           });
@@ -107,6 +108,7 @@
           (function(handler) {
             actionEl.click(function() {
               handler.logic({
+                self: self,
                 path: self.model.path(),
                 type: self.model.type()
               });
