@@ -3,6 +3,13 @@ from django.db import connection
 from django.utils import simplejson
 import os
 import shutil
+import MySQLdb
+
+import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
+import databaseFunctions
+from archivematicaCreateStructuredDirectory import createStructuredDirectory
 
 SHARED_DIRECTORY_ROOT = '/var/archivematica/sharedDirectory'
 ORIGINALS_DIR         = SHARED_DIRECTORY_ROOT + '/transferBackups/originals'
@@ -83,6 +90,25 @@ def copy_to_originals(request):
     error = check_filepath_exists('/' + filepath)
 
     if error == None:
+        processingDirectory = '/var/archivematica/sharedDirectory/currentlyProcessing/'
+        sipName = 'Bob'
+        autoProcessSIPDirectory = ORIGINALS_DIR
+        tmpSIPDir = os.path.join(processingDirectory, sipName) + "/"
+        destSIPDir =  os.path.join(autoProcessSIPDirectory, sipName) + "/"
+
+        createStructuredDirectory(tmpSIPDir)
+        databaseFunctions.createSIP(destSIPDir.replace(sharedPath, '%sharedPath%'), sipUUID)
+
+        objectsDirectory = os.path.join('/', filepath, 'objects')
+
+        #move the objects to the SIPDir
+        for item in os.listdir(objectsDirectory):
+            shutil.move(os.path.join(objectsDirectory, item), os.path.join(tmpSIPDir, "objects", item))
+
+        #moveSIPTo autoProcessSIPDirectory
+        shutil.move(tmpSIPDir, destSIPDir)
+
+        """
         # confine destination to subdir of originals
         filepath = os.path.join('/', filepath)
         destination = os.path.join(ORIGINALS_DIR, os.path.basename(filepath))
@@ -95,6 +121,7 @@ def copy_to_originals(request):
             )
         except:
             error = 'Error copying from ' + filepath + ' to ' + destination + '.'
+        """
 
     response = {}
 
