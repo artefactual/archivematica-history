@@ -4,6 +4,7 @@ from django.utils import simplejson
 import os
 import shutil
 import MySQLdb
+from django.core.servers.basehttp import FileWrapper
 
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
@@ -288,3 +289,17 @@ def pad_destination_filepath_if_it_already_exists(filepath, original=None, attem
     if os.path.exists(filepath):
         return pad_destination_filepath_if_it_already_exists(original + '_' + str(attempt), original, attempt)
     return filepath
+
+def download(request):
+    return send_file(request, '/' + request.GET.get('filepath', ''))
+
+def send_file(request, filepath):
+    """                                                                         
+    Send a file through Django without loading the whole file into              
+    memory at once. The FileWrapper will turn the file object into an           
+    iterator for chunks of 8KB.                                                 
+    """
+    wrapper = FileWrapper(file(filepath))
+    response = HttpResponse(wrapper, content_type='text/plain')
+    response['Content-Length'] = os.path.getsize(filepath)
+    return response

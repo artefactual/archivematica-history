@@ -83,6 +83,7 @@ urlpatterns = patterns('main.views',
 
 # Filesystem related JSON views
 urlpatterns += patterns('main.filesystem',
+  (r'filesystem/download/$', 'download'),
   (r'filesystem/contents/$', 'contents'),
   (r'filesystem/delete/$', 'delete'),
   (r'filesystem/copy_to_originals/$', 'copy_to_originals'),
