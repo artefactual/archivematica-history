@@ -29,9 +29,9 @@ function setupBacklogBrowser(originalsDirectory, arrangeDirectory) {
   }
 
   var originals = new FileExplorer({
-      el: $('#originals'),
-      levelTemplate: $('#template-dir-level').html(),
-      entryTemplate: $('#template-dir-entry').html()
+    el: $('#originals'),
+    levelTemplate: $('#template-dir-level').html(),
+    entryTemplate: $('#template-dir-entry').html()
   });
 
   originals.moveHandler = moveHandler;
@@ -47,6 +47,7 @@ function setupBacklogBrowser(originalsDirectory, arrangeDirectory) {
         description: 'Start transfer',
         iconHtml: '<img src="/media/images/accept.png" />',
         logic: function(result) {
+          var entryDiv = result.self.el;
           arrange.confirm(
             'Create SIP',
             'Are you sure you want to create a SIP?',
@@ -60,6 +61,10 @@ function setupBacklogBrowser(originalsDirectory, arrangeDirectory) {
                     title,
                     result.message
                   );
+                  if (!result.error) {
+                    $(entryDiv).next().hide();
+                    $(entryDiv).hide();
+                  }
                 }
               );
             }
