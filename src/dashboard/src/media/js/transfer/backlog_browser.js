@@ -48,8 +48,8 @@ function setupBacklogBrowser(originalsDirectory, arrangeDirectory) {
         iconHtml: '<img src="/media/images/accept.png" />',
         logic: function(result) {
           arrange.confirm(
-            'Add transfer',
-            'Are you sure you want to add this as a transfer?',
+            'Create SIP',
+            'Are you sure you want to create a SIP?',
             function() {
               $.post(
                 '/filesystem/copy_from_arrange/',
