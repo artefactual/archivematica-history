@@ -94,6 +94,7 @@ class Job(models.Model):
     unittype = models.CharField(max_length=150, db_column='unitType', blank=True)
     currentstep = models.CharField(max_length=150, db_column='currentStep', blank=True)
     microservicegroup = models.CharField(max_length=150, db_column='microserviceGroup', blank=True)
+    subjobof = models.CharField(max_length=50, db_column='subJobOf', blank=True)
     hidden = models.BooleanField(default=False, blank=False)
 
     class Meta:
