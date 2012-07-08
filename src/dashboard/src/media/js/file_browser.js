@@ -14,6 +14,11 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
           'Click',
           'User clicked name of ' + result.type + ' at path ' + result.path
         ); 
+      } else {
+        window.open(
+          '/filesystem/download?filepath=' + encodeURIComponent(result.path),
+          '_blank'
+        );
       } 
     };
 
