@@ -396,6 +396,22 @@ var MicroserviceGroupView = Backbone.View.extend({
       this.jobs = this.options.jobs || new JobCollection();
     },
 
+  amalgamateSubjobs: function()
+    {
+      var subjobs = {}
+
+      this.jobs.each(function(job) {
+        if (job.attributes.subjobof != '') {
+          if (!subjobs[job.attributes.subjobof]) {
+            subjobs[job.attributes.subjobof] = [];
+          }
+          subjobs[job.attributes.subjobof].push(job);
+        }
+      });
+
+      return subjobs;
+    },
+
   render: function()
     {
       var self = this;
@@ -408,6 +424,8 @@ var MicroserviceGroupView = Backbone.View.extend({
       // add container for jobs
       var jobDiv = $('<div></div>').hide();
       $(this.el).append(jobDiv);
+
+      var subjobs = this.amalgamateSubjobs();
 
       // render jobs to container
       var failedJobExists = false;
