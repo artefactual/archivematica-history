@@ -412,6 +412,18 @@
       }
     },
 
+    getPathForCssId: function(id) {
+      return exports.Data.idPaths[id];
+    },
+
+    getTypeForCssId: function(id) {
+      if ($('#' + id).hasClass('backbone-file-explorer-directory')) {
+        return 'directory';
+      } else {
+        return 'file';
+      }
+    },
+
     render: function() {
       var directory = this.directory;
 
