@@ -39,58 +39,31 @@ function setupBacklogBrowser(originalsDirectory, arrangeDirectory) {
   originals.refresh(originalsDirectory);
 
   var arrange = new FileExplorer({
-      el: $('#arrange'),
-      levelTemplate: $('#template-dir-level').html(),
-      entryTemplate: $('#template-dir-entry').html(),
-      entryClickHandler: function(event) {
-        var explorer = event.data.self.explorer
-          , explorerId = explorer.id
-          , entryEl = this
-          , entryId = $(this).attr('id');
+    el: $('#arrange'),
+    levelTemplate: $('#template-dir-level').html(),
+    entryTemplate: $('#template-dir-entry').html(),
+    entryClickHandler: function(event) {
+      var explorer = event.data.self.explorer
+        , explorerId = explorer.id
+        , entryEl = this
+        , entryId = $(this).attr('id');
 
-        $('#' + explorerId).find('.backbone-file-explorer-entry').click(function() {
-          // take note of selected entry
-          explorer.selectedEntryId = $(entryEl).attr('id');
+      $('#' + explorerId).find('.backbone-file-explorer-entry').click(function() {
+        // take note of selected entry
+        explorer.selectedEntryId = $(entryEl).attr('id');
 
-          // remove highlighting of existing entries
-          $('#' + explorerId).find('.backbone-file-explorer-entry').css('border', '');
+        // remove highlighting of existing entries
+        $('#' + explorerId).find('.backbone-file-explorer-entry').css('border', '');
 
-          // highlight selected entry
-          $(entryEl).css('border', '1px solid blue');
-        });
-      },
-      actionHandlers: [{
-        name: 'Start transfer',
-        description: 'Start transfer',
-        iconHtml: '<img src="/media/images/accept.png" />',
-        logic: function(result) {
-          var entryDiv = result.self.el;
-          arrange.confirm(
-            'Create SIP',
-            'Are you sure you want to create a SIP?',
-            function() {
-              $.post(
-                '/filesystem/copy_from_arrange/',
-                {filepath: result.path},
-                function(result) {
-                  var title = (result.error) ? 'Error' : '';
-                  arrange.alert(
-                    title,
-                    result.message
-                  );
-                  if (!result.error) {
-                    $(entryDiv).next().hide();
-                    $(entryDiv).hide();
-                  }
-                }
-              );
-            }
-          );
-        }
-      }]
+        // highlight selected entry
+        $(entryEl).css('border', '1px solid blue');
+      });
+    }
   });
 
+  arrange.options.actionHandlers = [];
   arrange.moveHandler = moveHandler;
-
   arrange.refresh(arrangeDirectory);
+
+  return arrange;
 }
