@@ -535,7 +535,7 @@ def ingest_browse_aip(request, jobuuid):
     sips = models.SIP.objects.filter(uuid=sipuuid)
     sip = sips[0]
 
-    sipdirectory = sip.currentpath.replace(
+    aipdirectory = sip.currentpath.replace(
       '%sharedPath%',
       '/var/archivematica/sharedDirectory/'
     )
