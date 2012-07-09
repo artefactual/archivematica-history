@@ -41,6 +41,7 @@ urlpatterns = patterns('main.views',
     (r'ingest/status/$', 'ingest_status'),
     (r'ingest/status/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_status'),
     (r'ingest/normalization-report/(?P<uuid>' + UUID_REGEX + ')/$', 'ingest_normalization_report'),
+    (r'ingest/preview/aip/(?P<jobuuid>' + UUID_REGEX + ')/$', 'ingest_browse_aip'),
 
     # Jobs and taks (is part of ingest)
     (r'jobs/(?P<uuid>' + UUID_REGEX + ')/explore/$', 'jobs_explore'),
