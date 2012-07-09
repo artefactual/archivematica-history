@@ -48,16 +48,14 @@ function setupBacklogBrowser(originalsDirectory, arrangeDirectory) {
         , entryEl = this
         , entryId = $(this).attr('id');
 
-      $('#' + explorerId).find('.backbone-file-explorer-entry').click(function() {
-        // take note of selected entry
-        explorer.selectedEntryId = $(entryEl).attr('id');
+      // take note of selected entry
+      explorer.selectedEntryId = $(entryEl).attr('id');
 
-        // remove highlighting of existing entries
-        $('#' + explorerId).find('.backbone-file-explorer-entry').css('border', '');
+      // remove highlighting of existing entries
+      $('#' + explorerId).find('.backbone-file-explorer-entry').css('border', '');
 
-        // highlight selected entry
-        $(entryEl).css('border', '1px solid blue');
-      });
+      // highlight selected entry
+      $(entryEl).css('border', '1px solid blue');
     }
   });
 
