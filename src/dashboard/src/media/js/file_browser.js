@@ -8,6 +8,9 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
     this.initDragAndDrop();
 
     var self = this;
+
+    this.eventClickHandler = this.options.eventClickHandler;
+
     this.options.nameClickHandler = function(result) { 
       if (result.type != 'directory') { 
         window.open(
