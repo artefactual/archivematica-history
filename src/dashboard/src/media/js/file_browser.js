@@ -49,10 +49,12 @@ var FileExplorer = fileBrowser.FileExplorer.extend({
       '/filesystem/delete/',
       {filepath: path},
       function(response) {
-        self.alert(
-          'Delete',
-          response.message
-        );
+        if (response.error) {
+          self.alert(
+            'Delete',
+            response.message
+          );
+        }
         self.refresh();
       }
     );
