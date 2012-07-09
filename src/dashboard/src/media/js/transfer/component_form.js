@@ -37,9 +37,6 @@ var TransferComponentFormView = Backbone.View.extend({
 
     this.pathContainerEl = $pathContainerEl;
 
-    // add path container to parent container
-    $pathAreaEl.append($pathContainerEl);
-
     // add button to add paths via a pop-up selector
     var $buttonContainer = $('<div></div>')
       , $addButton = $('<span id="path_add_button" class="btn" style="margin-right: 5px;">Browse</span>')
@@ -53,6 +50,9 @@ var TransferComponentFormView = Backbone.View.extend({
       .append($startTransferButton);
 
     $pathAreaEl.append($buttonContainer);
+
+    // add path container to parent container
+    $pathAreaEl.append($pathContainerEl);
 
     // populate select with source directory values
     $.each(this.sourceDirectories, function(id, path) {   
