@@ -20,7 +20,6 @@ urlpatterns = patterns('main.views',
     (r'transfer/(?P<uuid>' + UUID_REGEX + ')/rights/delete/(?P<id>\d+)/$', 'transfer_rights_delete'),
     (r'transfer/status/$', 'transfer_status'),
     (r'transfer/status/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer_status'),
-    (r'transfer/add/$', 'transfer_add'),
     (r'transfer/select/(?P<source_directory_id>\d+)/$', 'transfer_select'),
     (r'transfer/browser/$', 'transfer_browser'),
 

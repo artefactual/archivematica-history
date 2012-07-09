@@ -549,24 +549,12 @@ def ingest_browse_aip(request, jobuuid):
 def transfer_grid(request):
     if models.SourceDirectory.objects.count() > 0:
         source_directories = models.SourceDirectory.objects.all()
-        #form = forms.TransferForm()
 
     polling_interval = django_settings.POLLING_INTERVAL
     microservices_help = django_settings.MICROSERVICES_HELP
     return render(request, 'main/transfer/grid.html', locals())
 
-# will probably get rid of this and TransferForm
-def transfer_add(request):
-    if request.method == 'POST':
-        form = forms.TransferForm(request.POST)
-        if form.is_valid():
-            source_directory_id = request.POST['source_directory']
-            return HttpResponseRedirect(reverse('main.views.transfer_select', args=source_directory_id))
-    else:
-        form = forms.TransferForm()
-
-    return render(request, 'main/transfer/add.html', locals())
-
+# get rid of this?
 def transfer_select(request, source_directory_id):
     source_directory = models.SourceDirectory.objects.get(pk=source_directory_id)
     # TODO: check that path exists
