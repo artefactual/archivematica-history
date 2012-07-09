@@ -30,13 +30,15 @@ def directory_to_dict(path, directory={}, entry=False):
 
     # define entries
     for file in os.listdir(path):
-        new_entry = {}
-        new_entry['name'] = file
-        entry['children'].append(new_entry)
+        new_entry = None
+        if file != '.svn':
+            new_entry = {}
+            new_entry['name'] = file
+            entry['children'].append(new_entry)
 
         # if entry is a directory, recurse
         child_path = os.path.join(path, file)
-        if os.path.isdir(child_path) and os.access(child_path, os.R_OK):
+        if new_entry != None and os.path.isdir(child_path) and os.access(child_path, os.R_OK):
             directory_to_dict(child_path, directory, new_entry)
 
     # return fully traversed data
