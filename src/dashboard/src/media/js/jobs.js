@@ -446,6 +446,9 @@ var MicroserviceGroupView = Backbone.View.extend({
             approveNormalizationFound = true;
           }
 
+// add AIP browse link?
+console.log(job);
+
           // render subjobs, if any
           if (
             subjobs[job.attributes.uuid]

@@ -523,6 +523,25 @@ SELECT
 
     return render(request, 'main/normalization_report.html', locals())
 
+def ingest_browse_aip(request, jobuuid):
+    jobs = models.Job.objects.filter(jobuuid=jobuuid)
+
+    if jobs.count() == 0:
+      raise Http404
+
+    job = jobs[0]
+    sipuuid = job.sipuuid
+
+    sips = models.SIP.objects.filter(uuid=sipuuid)
+    sip = sips[0]
+
+    sipdirectory = sip.currentpath.replace(
+      '%sharedPath%',
+      '/var/archivematica/sharedDirectory/'
+    )
+
+    return render(request, 'main/ingest/aip_browse.html', locals())
+
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Transfer
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
