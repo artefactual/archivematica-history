@@ -428,7 +428,9 @@ var MicroserviceGroupView = Backbone.View.extend({
       var subjobs = this.amalgamateSubjobs();
 
       // render jobs to container
-      var failedJobExists = false;
+      var failedJobExists = false
+        , approveNormalizationFound = false;
+
       this.jobs.each(function(job) {
         // render top-level jobs
         if (job.attributes.subjobof == '') {
@@ -438,8 +440,17 @@ var MicroserviceGroupView = Backbone.View.extend({
           }
           jobDiv.append(jobView.render().el);
 
+          // for any jobs following 'Approve normalization', don't show
+          // subjobs
+          if (job.attributes.type == 'Approve normalization') {
+            approveNormalizationFound = true;
+          }
+
           // render subjobs, if any
-          if (subjobs[job.attributes.uuid]) {
+          if (
+            subjobs[job.attributes.uuid]
+            && !approveNormalizationFound
+          ) {
             var subJobDiv = $('<div class="subjob"></div>');
             subJobDiv.hide();
             for (var index in subjobs[job.attributes.uuid]) {
