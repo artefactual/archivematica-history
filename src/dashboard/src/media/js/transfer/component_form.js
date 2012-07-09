@@ -42,7 +42,7 @@ var TransferComponentFormView = Backbone.View.extend({
 
     // add button to add paths via a pop-up selector
     var $buttonContainer = $('<div></div>')
-      , $addButton = $('<span id="path_add_button" class="btn">Browse</span>')
+      , $addButton = $('<span id="path_add_button" class="btn" style="margin-right: 5px;">Browse</span>')
       , $sourceDirSelect = $('<select id="path_source_select"></select>')
       , $startTransferButton = $('<span id="start_transfer_button" class="btn success">Start Transfer</span>')
       , self = this;
