@@ -111,6 +111,7 @@ class SIPManager(models.Manager):
 class SIP(models.Model):
     uuid = models.CharField(max_length=150, primary_key=True, db_column='sipUUID')
     createdtime = models.DateTimeField(db_column='createdTime')
+    currentpath = models.TextField(db_column='currentPath', blank=True)
     # ...
     hidden = models.BooleanField(default=False, blank=False)
 
