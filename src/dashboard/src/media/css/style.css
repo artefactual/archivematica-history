@@ -213,7 +213,7 @@ li.active {
   border-right: 1px dotted #bbb;
 }
 
-.job-detail-microservice > span {
+.job-detail-microservice > .job-type-label {
   margin-left: 20px;
 }
 
