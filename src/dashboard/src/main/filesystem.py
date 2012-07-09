@@ -7,6 +7,7 @@ import MySQLdb
 from django.core.servers.basehttp import FileWrapper
 
 import sys
+import uuid
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import databaseFunctions
@@ -94,13 +95,16 @@ def copy_to_originals(request):
 
     if error == None:
         processingDirectory = '/var/archivematica/sharedDirectory/currentlyProcessing/'
-        sipName = 'Bob'
-        autoProcessSIPDirectory = ORIGINALS_DIR
+        sipName = os.path.basename(filepath)
+        #autoProcessSIPDirectory = ORIGINALS_DIR
+        autoProcessSIPDirectory = '/var/archivematica/sharedDirectory/watchedDirectories/SIPCreation/SIPsUnderConstruction/'
         tmpSIPDir = os.path.join(processingDirectory, sipName) + "/"
         destSIPDir =  os.path.join(autoProcessSIPDirectory, sipName) + "/"
 
+        sipUUID = uuid.uuid4().__str__()
+
         createStructuredDirectory(tmpSIPDir)
-        databaseFunctions.createSIP(destSIPDir.replace(sharedPath, '%sharedPath%'), sipUUID)
+        databaseFunctions.createSIP(destSIPDir.replace('/var/archivematica/sharedDirectory/', '%sharedPath%'), sipUUID)
 
         objectsDirectory = os.path.join('/', filepath, 'objects')
 
@@ -171,6 +175,8 @@ def copy_to_start_transfer(request):
     )
 
 def copy_from_arrange_to_completed(request):
+    return copy_to_originals(request)
+    """
     sourcepath  = request.POST.get('filepath', '')
 
     error = check_filepath_exists('/' + sourcepath)
@@ -203,6 +209,7 @@ def copy_from_arrange_to_completed(request):
         simplejson.JSONEncoder().encode(response),
         mimetype='application/json'
     )
+    """
 
 def copy_to_arrange(request):
     sourcepath  = request.POST.get('filepath', '')
