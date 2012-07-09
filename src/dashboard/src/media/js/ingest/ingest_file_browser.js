@@ -46,16 +46,25 @@ function setupBacklogBrowser(originalsDirectory, arrangeDirectory) {
       var explorer = event.data.self.explorer
         , explorerId = explorer.id
         , entryEl = this
-        , entryId = $(this).attr('id');
+        , entryId = $(this).attr('id')
+        , borderCssSpec = '1px solid blue';
 
-      // take note of selected entry
-      explorer.selectedEntryId = $(entryEl).attr('id');
+      if (explorer.selectedEntryId == entryId) {
+        // un-highlight selected entry
+        $(entryEl).css('border', '');
 
-      // remove highlighting of existing entries
-      $('#' + explorerId).find('.backbone-file-explorer-entry').css('border', '');
+        // remove selected entry
+        explorer.selectedEntryId = undefined;
+      } else {
+        // remove highlighting of existing entries
+        $('#' + explorerId).find('.backbone-file-explorer-entry').css('border', '');
 
-      // highlight selected entry
-      $(entryEl).css('border', '1px solid blue');
+        // highlight selected entry
+        $(entryEl).css('border', borderCssSpec);
+
+        // change selected entry
+        explorer.selectedEntryId = entryId; // $(entryEl).attr('id')
+      }
     }
   });
 
