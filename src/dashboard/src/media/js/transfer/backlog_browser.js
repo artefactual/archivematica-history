@@ -42,6 +42,23 @@ function setupBacklogBrowser(originalsDirectory, arrangeDirectory) {
       el: $('#arrange'),
       levelTemplate: $('#template-dir-level').html(),
       entryTemplate: $('#template-dir-entry').html(),
+      entryClickHandler: function(event) {
+        var explorer = event.data.self.explorer
+          , explorerId = explorer.id
+          , entryEl = this
+          , entryId = $(this).attr('id');
+
+        $('#' + explorerId).find('.backbone-file-explorer-entry').click(function() {
+          // take note of selected entry
+          explorer.selectedEntryId = $(entryEl).attr('id');
+
+          // remove highlighting of existing entries
+          $('#' + explorerId).find('.backbone-file-explorer-entry').css('border', '');
+
+          // highlight selected entry
+          $(entryEl).css('border', '1px solid blue');
+        });
+      },
       actionHandlers: [{
         name: 'Start transfer',
         description: 'Start transfer',
