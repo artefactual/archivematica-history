@@ -440,12 +440,6 @@ var MicroserviceGroupView = Backbone.View.extend({
           }
           jobDiv.append(jobView.render().el);
 
-          // for any jobs following 'Approve normalization', don't show
-          // subjobs
-          if (job.attributes.type == 'Approve normalization') {
-            approveNormalizationFound = true;
-          }
-
           // add link to browse SIP before it's made into an AIP
           if (
             job.attributes.microservicegroup == 'Store AIP'
@@ -466,7 +460,6 @@ var MicroserviceGroupView = Backbone.View.extend({
           // render subjobs, if any
           if (
             subjobs[job.attributes.uuid]
-            && !approveNormalizationFound
           ) {
             var subJobDiv = $('<div class="subjob"></div>');
             subJobDiv.hide();
