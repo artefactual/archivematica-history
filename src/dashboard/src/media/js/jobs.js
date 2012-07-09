@@ -452,9 +452,25 @@ var MicroserviceGroupView = Backbone.View.extend({
             }
             jobDiv.append(subJobDiv);
 
+            // add a "link" to toggle subjob display
+            var subjobToggle = $('<span>&nbsp;</span><a>(more)</a>');
+
+            $(jobView.el)
+              .children(':nth-child(1)')
+              .children(':nth-child(2)')
+              .append(subjobToggle);
+
+            // get rid of the "Job:" label to visually differentiate from
+            // top-level jobs
+            $('.subjob .job .job-detail-microservice .job-type-label').text('');
+
             // make it so clicking on the job reveals the subjobs
-            $(jobView.el).click(function() {
-              subJobDiv.toggle();
+            $(subjobToggle).click(function() {
+              if ($(subJobDiv).is(':visible')) {
+                subJobDiv.slideUp();
+              } else {
+                subJobDiv.slideDown();
+              }
             });
           }
         }
