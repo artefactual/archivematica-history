@@ -409,7 +409,7 @@ def getAMDSec(fileUUID, filePath, use, type, id, transferUUID, itemdirectoryPath
         if transferUUID:
             sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
             rows = databaseInterface.queryAllSQL(sql)
-            if rows[0][0] == "Dspace1.7":
+            if rows[0][0] == "Dspace":
                 for a in archivematicaCreateMETSRightsDspaceMDRef(fileUUID, filePath, transferUUID, itemdirectoryPath):
                     globalRightsMDCounter +=1
                     rightsMD = etree.SubElement(AMD, "rightsMD")
@@ -577,7 +577,7 @@ def createFileSec(directoryPath, structMapDiv):
         if transferUUID:
             sql = "SELECT type FROM Transfers WHERE transferUUID = '%s';" % (transferUUID)
             rows = databaseInterface.queryAllSQL(sql)
-            if rows[0][0] == "Dspace1.7":
+            if rows[0][0] == "Dspace":
                 if use == "DSPACEMETS":
                     use = "submissionDocumentation"
                     admidApplyTo = None
