@@ -917,7 +917,6 @@ SET @microserviceGroup  = 'Reject SIP';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%rejectedDirectory%." "%SIPUUID%" "%sharedPath%"');
-
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(),  'Move to the rejected directory');
@@ -929,6 +928,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject SIP');
 SET @rejectSIPMicroServiceChain = LAST_INSERT_ID();
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject AIP');
+SET @rejectAIPMicroServiceChain = LAST_INSERT_ID();
+
 
 -- Reject DIP --
 SET @microserviceGroup  = 'Reject DIP';
@@ -1215,7 +1217,7 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @MicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+    (@MicroServiceChainLink, @rejectAIPMicroServiceChain);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
