@@ -4000,7 +4000,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, @unquarantineDefaultTransferMagicChainLink, NULL);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (3,      LAST_INSERT_ID(), 'Designate to process as a DSpace 1.7 transfer when unquarantined');
+    (3,      LAST_INSERT_ID(), 'Designate to process as a DSpace transfer when unquarantined');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -4078,7 +4078,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, @WorkflowdecisionsendtransfertoquarantineDspace17TransferMagicChainLink, NULL);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (3,      LAST_INSERT_ID(), 'Designate to process as a DSpace 1.7 transfer');
+    (3,      LAST_INSERT_ID(), 'Designate to process as a DSpace transfer');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -4182,7 +4182,7 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/activeTransfers/Dspace1.7/." "%SIPUUID%" "%sharedPath%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/activeTransfers/Dspace/." "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Failed compliance. See output in dashboard. Transfer moved back to activeTransfers.');
@@ -4214,10 +4214,10 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'archivematicaSetTransferType_v0.0', '"%SIPUUID%" "Dspace1.7"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'archivematicaSetTransferType_v0.0', '"%SIPUUID%" "Dspace"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Set transfer type: DSpace 1.7');
+    (0,      LAST_INSERT_ID(), 'Set transfer type: DSpace');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -4264,11 +4264,11 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'DSpace 1.7 Transfers In progress');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'DSpace Transfers In progress');
 SET @MicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
-    VALUES ('%watchDirectoryPath%activeTransfers/Dspace1.7', @MicroServiceChain, @expectedTypeTransfer);
+    VALUES ('%watchDirectoryPath%activeTransfers/Dspace', @MicroServiceChain, @expectedTypeTransfer);
 
 -- /DPSACE TRANSFER --
 
