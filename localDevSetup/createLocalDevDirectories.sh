@@ -49,6 +49,8 @@ sudo ln "${svnDir}src/sanitizeNames/bin/sanitizeNames" "/usr/bin/"
 
 sudo ln "${svnDir}src/vm-includes/share/apache.default" "/etc/apache2/sites-enabled/000-default" -f
 sudo ln "${svnDir}src/vm-includes/share/apache.default" "/etc/apache2/sites-available/default" -f
+sudo ln -sf "${svnDir}qubit-svn" /var/www/ica-atom
+sudo chown -R www-data:www-data "${svnDir}qubit-svn"
 
 if [ ! -e /usr/share/fits/xml/fits.xmlbackup ]; then
 sudo cp /usr/share/fits/xml/fits.xml /usr/share/fits/xml/fits.xmlbackup
