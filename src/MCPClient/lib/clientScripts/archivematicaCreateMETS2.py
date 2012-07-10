@@ -151,7 +151,7 @@ def getDublinCore(type_, id):
 def createDublincoreDMDSec(type, id):
     dc = getDublinCore(type, id)
     if dc == None:
-        return None
+        return None #Here would be where to try to load the dublincore.xml file.
     global globalDmdSecCounter
     globalDmdSecCounter += 1
     dmdSec = etree.Element("dmdSec")
