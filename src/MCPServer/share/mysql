@@ -969,7 +969,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 */
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Upload DIP to ICA-ATOM');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Upload DIP to Atom');
 SET @MicroServiceChainUploadICAATOM = LAST_INSERT_ID();
 
 -- <uploadDIP - contentDM> --
