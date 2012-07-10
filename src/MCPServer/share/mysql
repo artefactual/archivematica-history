@@ -2024,7 +2024,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Access only -normalized from service files');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Access only normalized from service files');
 SET @normalizeAccessOnlyFromServiceMicroServiceChain = LAST_INSERT_ID();
 -- CREATE AIP AND DIP - Access normalization only --
 
