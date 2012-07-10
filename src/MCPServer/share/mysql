@@ -3343,7 +3343,7 @@ SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Do not create transfer backup');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Do not backup transfer');
 SET @DoNotCreateTransferBackupMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
