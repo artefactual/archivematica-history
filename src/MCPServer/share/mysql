@@ -930,6 +930,25 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject SIP');
 SET @rejectSIPMicroServiceChain = LAST_INSERT_ID();
 
+-- Reject DIP --
+SET @microserviceGroup  = 'Reject DIP';
+INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
+    VALUES
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%rejectedDirectory%."');
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (0,      LAST_INSERT_ID(),  'Move to the rejected directory');
+
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+SET @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
+    VALUES (@MicroServiceChainLink, 0, NULL);
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject DIP');
+SET @rejectDIPMicroServiceChain = LAST_INSERT_ID();
+
+
 -- <uploadDIP ICA-ATOM> --
 SET @microserviceGroup  = 'Upload DIP';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -1114,7 +1133,7 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @MicroServiceChainUploadContentDM);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+    (@MicroServiceChainLink, @rejectDIPMicroServiceChain);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 -- 1
