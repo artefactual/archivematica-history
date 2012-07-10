@@ -748,7 +748,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize preservation');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation');
 SET @NormalizePreservationChain = LAST_INSERT_ID();
 
 
@@ -766,7 +766,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for access');
 SET @NormalizeAccessChain = LAST_INSERT_ID();
 --
 
@@ -785,7 +785,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize preservation');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation');
 SET @NormalizePreservationChain = LAST_INSERT_ID();
 
 
@@ -803,7 +803,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for access');
 SET @NormalizeAccessFromServiceChain = LAST_INSERT_ID();
 --
 
@@ -853,7 +853,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize preservation');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation');
 SET @NormalizePreservationChain = LAST_INSERT_ID();
 
 
@@ -871,7 +871,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize preservation and access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation and access');
 SET @NormalizePreservationAndAccessChain = LAST_INSERT_ID();
 --
 
@@ -1726,7 +1726,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'No normalization'); -- No normalization for sip with access directory --
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Do not normalize'); -- No normalization for sip with access directory --
 SET @noNormalizationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
 
 SET @microserviceGroup  = 'Normalize';
@@ -1854,7 +1854,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, 'objects', FALSE, NULL, NULL, @NormalizePreservationAndAccessChain, Null); -- need itoa? --
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (6,      LAST_INSERT_ID(), 'Normalize preservation and access');
+    (6,      LAST_INSERT_ID(), 'Normalize for preservation and access');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @ResumeAferTranscodingPreservationAndAccessLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1900,7 +1900,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Preservation and access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation and access');
 SET @CreateDIPandAIPMicroServiceChain = LAST_INSERT_ID();
 -- /CREATE AIP AND DIP --
 
@@ -1983,7 +1983,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, 'objects', FALSE, NULL, NULL, @NormalizeAccessFromServiceChain, Null);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (6,      LAST_INSERT_ID(), 'Normalize access from service');
+    (6,      LAST_INSERT_ID(), 'Normalize service files for access');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @ResumeAferTranscodingPreservationAndAccessLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -2273,7 +2273,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'No normalization');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Do not normalize');
 SET @NoNormalizationLinkMicroServiceChain = LAST_INSERT_ID();
 
 
