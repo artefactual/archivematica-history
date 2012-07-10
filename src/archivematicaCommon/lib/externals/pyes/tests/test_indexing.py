@@ -215,7 +215,7 @@ class IndexingTestCase(ESTestCase):
                  "_index": "test-index"},
         ], "total": 2, "max_score": 0.2169777})
 
-        # fails because arrays don't work. fucking annoying.
+        # fails because arrays don't work. annoying!!!
         '''
         self.assertEqual(2, result['hits']['total'])
         self.assertEqual(0.19178301, result['hits']['max_score'])
