@@ -127,7 +127,7 @@ def getDublinCore(type_, id):
         return None
     ret = etree.Element( "dublincore", nsmap = {None: dcNS, "dcterms": dctermsNS} )
     ret.set(xsiBNS+"schemaLocation", dcNS + " http://dublincore.org/schemas/xmls/qdc/dc.xsd " + dctermsNS + " http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd")
-    dctermsElements= ["relation"]
+    dctermsElements= ["isPartOf"]
     while row != None:
         key = ["title", "creator", "subject", "description", "publisher", "contributor", "date", "type", "format", "identifier", "source", "relation", "language", "coverage", "rights"]
         #title, creator, subject, description, publisher, contributor, date, type, format, identifier, source, relation, language, coverage, rights = row
