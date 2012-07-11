@@ -181,7 +181,7 @@ def updateDirectoryLocation(src, dst, unitPath, unitIdentifier, unitIdentifierTy
     for row in rows:
         fileUUID = row[0]
         location = row[1]
-        destDB = location.replace(srcDB, dstDB)
+        destDB = location.replace(srcDB, dstDB) 
         sql =  """UPDATE Files SET currentLocation='%s' WHERE fileUUID='%s';""" % (MySQLdb.escape_string(destDB), fileUUID)
         databaseInterface.runSQL(sql)
     if os.path.isdir(dst):
