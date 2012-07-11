@@ -60,7 +60,7 @@ def restructureBagForComplianceFileUUIDsAssigned(unitPath, unitIdentifier, unitI
 		itemPath =  os.path.join(unitDataPath, item)
 		if os.path.isdir(itemPath) and item not in requiredDirectories:
 			print "moving directory to objects: ", item
-			dst = os.path.join(unitPath, "objects")
+			dst = os.path.join(unitPath, "objects", item)
 			updateDirectoryLocation(itemPath, dst, unitPath, unitIdentifier, unitIdentifierType, unitPathReplaceWith)
 		elif os.path.isfile(itemPath) and item not in optionalFiles:
 			print "moving file to objects: ", item
