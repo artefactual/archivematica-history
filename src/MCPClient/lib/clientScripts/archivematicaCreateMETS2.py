@@ -152,20 +152,23 @@ def getDublinCore(type_, id):
 def createDublincoreDMDSec(type, id):
     dc = getDublinCore(type, id)
     if dc == None:
-        dcXMLFile = os.path.join(baseDirectoryPath, "metadata/dublincore.xml")
-        if os.path.isfile(dcXMLFile):
-            try:
-                parser = etree.XMLParser(remove_blank_text=True)
-                dtree = etree.parse(dcXMLFile, parser)
-                dc = dtree.getroot()
-            except Exception as inst:
-                print >>sys.stderr, type(inst)     # the exception instance
-                print >>sys.stderr, inst.args
-                traceback.print_exc(file=sys.stdout)
-                sharedVariablesAcrossModules.globalErrorCount += 1
+        transfers = os.path.join(baseDirectoryPath, "metadata/transfers/")
+        for transfer in os.listdir(transfers):
+            dcXMLFile = os.path.join(transfers, transfer, "metadata/dublincore.xml")
+            if os.path.isfile(dcXMLFile):
+                try:
+                    parser = etree.XMLParser(remove_blank_text=True)
+                    dtree = etree.parse(dcXMLFile, parser)
+                    dc = dtree.getroot()
+                except Exception as inst:
+                    print >>sys.stderr, "error parsing file:", dcXMLFile
+                    print >>sys.stderr, type(inst)     # the exception instance
+                    print >>sys.stderr, inst.args
+                    traceback.print_exc(file=sys.stdout)
+                    sharedVariablesAcrossModules.globalErrorCount += 1
+                    return None
+            else:
                 return None
-        else:
-            return None
 
     global globalDmdSecCounter
     globalDmdSecCounter += 1
