@@ -443,6 +443,7 @@ SELECT
           WHERE
             Jobs.SIPUUID = %s AND
             Jobs.jobType = 'Normalize preservation' AND
+            Jobs.MicroServiceChainLinksPK NOT IN (SELECT MicroserviceChainLink FROM DefaultCommandsForClassifications ) AND
             Tasks.stdOut LIKE '%%[Command]%%')
         AS 'Preservation normalization attempted',
 
@@ -474,15 +475,9 @@ SELECT
               WHERE
                 Jobs.SIPUUID = %s AND
                 Jobs.jobType = 'Normalize access' AND
-                Tasks.stdOut LIKE '%%[Command]%%') AND
-            Tasks.fileUUID NOT IN (
-              SELECT Tasks.fileUUID
-              FROM Tasks
-                JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-              WHERE
-                Jobs.SIPUUID = %s AND
-                Jobs.jobType = 'Normalize access' AND
-                Tasks.stdOut LIKE '%%Not including %% in DIP.%%')
+                Tasks.stdOut LIKE '%%[Command]%%' AND
+                Jobs.MicroServiceChainLinksPK NOT IN (SELECT MicroserviceChainLink FROM DefaultCommandsForClassifications ) AND 
+                Tasks.stdOut NOT LIKE '%%Not including %% in DIP.%%'  )
         AS 'Access normalization attempted',
 
         (
@@ -517,7 +512,7 @@ SELECT
 
     cursor = connection.cursor()
     cursor.execute(query, (
-      uuid, uuid, uuid, uuid, uuid, uuid, uuid
+      uuid, uuid, uuid, uuid, uuid, uuid
     ))
     objects = cursor.fetchall()
 
