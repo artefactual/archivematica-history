@@ -4157,7 +4157,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 INSERT INTO FileIDs 
     (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .pdf file', TRUE, TRUE
+    'A .pdf file', False, TRUE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -5157,9 +5157,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .RTF --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .rtf file'
+    'A .rtf file', TRUE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -5361,9 +5361,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .XLS --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .xls file'
+    'A .xls file', TRUE, TRUE
 );
 set @fileID = LAST_INSERT_ID();
 
