@@ -294,7 +294,7 @@ $(function()
               });
             };
 
-          if ('Upload DIP' == this.model.get('type') && 2 == value)
+          if ('Upload DIP' == this.model.get('type') && 11 == value)
           {
             var modal = $('#upload-dip-modal');
             var input = modal.find('input');
