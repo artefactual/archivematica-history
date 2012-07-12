@@ -133,6 +133,8 @@ if [[ $a == "Y" || $a == "y" ]]; then
         svn checkout http://qubit-toolkit.googlecode.com/svn/trunk ${WDIR}/qubit-svn
 
 	# Link
+        # /var/www is created by the Apache package
+        # so it needs to be installer at this point
 	sudo ln -sf ${WDIR}/qubit-svn /var/www/ica-atom
 
 	# Permissions
