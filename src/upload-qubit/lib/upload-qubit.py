@@ -123,7 +123,7 @@ def start(data):
           -P = --partial + --stats
         """
         # Using rsync -rltzP
-        command = ["rsync", "-rltz", "-P", directory, data.rsync_target]
+        command = ["rsync", "-rltz", "-P", "--chmod=ugo=rwX", directory, data.rsync_target]
 
         # Add -e if data.rsync_command was passed to this script
         if data.rsync_command:
