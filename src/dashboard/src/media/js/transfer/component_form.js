@@ -64,6 +64,19 @@ var TransferComponentFormView = Backbone.View.extend({
           });
         }
         // move from temp to watchdir
+        var url = '/filesystem/ransfer/';
+        $.ajax({
+          url: url,
+          type: 'POST',
+          async: false,
+          cache: false,
+          data: {
+            filepath: tempDir + '/' + transfer.name
+          },
+          success: function(results) {
+            alert('Transfer copy complete.');
+          }
+        });
         // report progress
       }
     });
