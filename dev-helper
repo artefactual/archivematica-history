@@ -112,7 +112,11 @@ function restart() {
           sleep 1
           sudo stop archivematica-mcp-client
           sleep 1
-          sudo kill -9 `cat /tmp/archivematicaMCPServerPID`
+
+          if [ -e "/tmp/archivematicaMCPServerPID" ]
+          then
+            sudo kill -9 `cat /tmp/archivematicaMCPServerPID`
+          fi
 
           sleep 3
           sudo rm /tmp/archivematicaMCP*
