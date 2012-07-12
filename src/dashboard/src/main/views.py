@@ -1248,7 +1248,7 @@ def chain_insert():
     chain.save()
 
     # rewire old choice to point to new chain
-    choices = models.MicroServiceChainChoice.objects.filter(chainavailable=2)
+    choices = models.MicroServiceChainChoice.objects.filter(chainavailable=23)
     choice = choices[0]
     choice.chainavailable = chain.id
     choice.save()
