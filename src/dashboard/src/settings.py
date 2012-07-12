@@ -5,7 +5,7 @@ BASE_PATH = os.path.dirname(__file__)
 
 # Django settings for app project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -198,3 +198,11 @@ MICROSERVICES_HELP = {
     'Store AIP': 'If desired, review AIP contents. Click "Store AIP" to move the AIP into archival storage.',
     'UploadDIP': 'If desired, review the DIP and remove any access copies that should not be uploaded to the public access system, e.g. for copyright or security reasons. Select "Upload DIP" to upload the DIP to the access system.',
 }
+
+try:
+    LOCAL_SETTINGS
+except NameError:
+    try:
+        from settings_local import *
+    except ImportError:
+        pass
