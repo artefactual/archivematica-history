@@ -91,11 +91,11 @@ class unitTransfer(unit):
                         filePath = os.path.join(directory, file)
                     else:
                         filePath = directory + file
-                    print "filePath", filePath
+                    #print "filePath", filePath
                     self.fileList[filePath] = unitFile(filePath, owningUnit=self)
 
             sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND transferUUID =  '""" + self.UUID + "'"
-            print sql
+            #print sql
             c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             print self.fileList
@@ -104,7 +104,7 @@ class unitTransfer(unit):
                 UUID = row[0]
                 currentPath = row[1].encode("utf-8")
                 fileGrpUse = row[2]
-                print currentPath in self.fileList, row
+                #print currentPath in self.fileList, row
                 if currentPath in self.fileList:
                     self.fileList[currentPath].UUID = UUID
                     self.fileList[currentPath].fileGrpUse = fileGrpUse
