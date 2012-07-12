@@ -4,6 +4,7 @@ from django.utils import simplejson
 import os
 import shutil
 import MySQLdb
+import tempfile
 from django.core.servers.basehttp import FileWrapper
 
 import sys
@@ -83,6 +84,64 @@ def delete(request):
       response['error']   = True
     else:
       response['message'] = 'Delete successful.'
+
+    return HttpResponse(
+        simplejson.JSONEncoder().encode(response),
+        mimetype='application/json'
+    )
+
+def get_temp_directory(request):
+    temp_dir = tempfile.mkdtemp()
+
+    response = {}
+    response['tempDir'] = temp_dir
+
+    return HttpResponse(
+        simplejson.JSONEncoder().encode(response),
+        mimetype='application/json'
+    )
+
+def copy_transfer_component(request):
+    transfer_name = request.POST.get('name', '')
+    path = request.POST.get('path', '')
+    destination = request.POST.get('destination', '')
+
+    error = None
+
+    if transfer_name == '':
+        error = 'No transfer name provided.'
+    else:
+        if path == '':
+            error = 'No path provided.'
+        else:
+            transfer_dir = os.path.join(destination, transfer_name)
+            paths_copied = 0
+            #return HttpResponse(transfer_dir)
+
+            # cycle through each path copying files/dirs inside it to transfer dir
+            for entry in os.listdir(path):
+                entry_path = os.path.join(path, entry)
+                if os.path.isdir(entry_path):
+                    destination_dir = os.path.join(transfer_dir, entry)
+                    try:
+                        shutil.copytree(
+                            entry_path,
+                            destination_dir
+                        )
+                    except:
+                        error = 'Error copying from ' + entry_path + ' to ' + destination_dir + '.'
+                else:
+                    shutil.copy(entry_path, transfer_dir)
+
+                paths_copied = paths_copied + 1
+
+    response = {}
+
+    if error != None:
+      response['message'] = error
+      response['error']   = True
+    else:
+      response['message'] = 'Copied ' + str(paths_copied) + ' entries.'
 
     return HttpResponse(
         simplejson.JSONEncoder().encode(response),
