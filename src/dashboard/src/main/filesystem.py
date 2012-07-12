@@ -367,7 +367,19 @@ def send_file(request, filepath):
     memory at once. The FileWrapper will turn the file object into an           
     iterator for chunks of 8KB.                                                 
     """
+    filename = os.path.basename(filepath)
+    extension = os.path.splitext(filepath)[1]
+
     wrapper = FileWrapper(file(filepath))
     response = HttpResponse(wrapper, content_type='text/plain')
+
+    # force download for certain filetypes
+    extensions_to_download = ['.7z', '.zip']
+    try:
+        index = extensions_to_download.index(extension)
+        response['Content-Type'] = 'application/force-download'
+        response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    except:
+        pass
     response['Content-Length'] = os.path.getsize(filepath)
     return response
