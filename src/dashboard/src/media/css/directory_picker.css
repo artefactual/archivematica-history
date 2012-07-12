@@ -3,7 +3,7 @@
 }
 
 .backbone-file-explorer-busy {
-  background-image: url('../images/ajax-loader.gif')
+  background-image: url('../images/ajax-loader.gif');
 }
 
 .backbone-file-explorer-directory {
@@ -15,9 +15,9 @@
 }
 
 .backbone-file-explorer-busy {
-  background-image: url('../images/ajax-loader.gif')
+  background-image: url('../images/ajax-loader.gif');
 }
 
 .backbone-file-explorer-idle {
-  background-image: url('')
+  background-image: none;
 }
