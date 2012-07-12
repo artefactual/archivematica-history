@@ -8,12 +8,13 @@
   background-color: '#eee';
   opacity: .5;
   background-image: url('../img/ajax-loader.gif');
+  background-position: 99% 50%;
 }
 
 .backbone-file-explorer-idle {
   background-color: 'white';
   opacity: 1;
-  background-image: url('');
+  background-image: none;
 }
 
 .backbone-file-explorer-entry {
