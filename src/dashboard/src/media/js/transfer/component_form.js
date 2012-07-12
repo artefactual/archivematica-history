@@ -31,6 +31,44 @@ var TransferComponentFormView = Backbone.View.extend({
     return paths;
   },
 
+  startTransfer: function(transfer) {
+    var path
+      , copied = 0;
+    // get temp dir
+    $.ajax({
+      url: '/filesystem/get_temp_directory/',
+      type: 'GET',
+      cache: false,
+      success: function(results) {
+
+        var tempDir = results.tempDir;
+
+        // copy each transfer component to temp dir
+        for (var index in transfer.sourcePaths) {
+          path = transfer.sourcePaths[index];
+          // do sync copy from source to temp
+          var url = '/filesystem/copy_transfer_component/';
+          $.ajax({
+            url: url,
+            type: 'POST',
+            async: false,
+            cache: false,
+            data: {
+              name: transfer.name,
+              path: path,
+              destination: tempDir
+            },
+            success: function(results) {
+              copied++;
+            }
+          });
+        }
+        // move from temp to watchdir
+        // report progress
+      }
+    });
+  },
+
   render: function() {
     var $pathAreaEl = $('<div></div>')
        , $pathContainerEl = $('<div id="path_container"></div>');
@@ -86,10 +124,10 @@ var TransferComponentFormView = Backbone.View.extend({
         var transferData = {
           'name':            transferName,
           'type':            $('#transfer-type').val(),
-          'accessionNumber': '',
+          'accessionNumber': $('#transfer-accession-number').val(),
           'sourcePaths':     self.addedPaths()
         };
-        console.log(transferData);
+        self.startTransfer(transferData);
       }
     });
   }
