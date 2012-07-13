@@ -244,7 +244,7 @@ var BaseSipView = Backbone.View.extend({
       // if any jobs require user action, toggle the microservice group
       this.$jobContainer
         .children('.microservicegroup')
-        .children(':nth-child(2)')
+        .children()
         .children()
         .children('.job-detail-currentstep')
         .children('span')
@@ -340,6 +340,19 @@ var BaseSipView = Backbone.View.extend({
           $(this).children(':nth-child(2)').show();
         }
       });
+
+      // open microservice if any jobs await a decision
+      this.$jobContainer
+        .children('.microservicegroup')
+        .children()
+        .children()
+        .children('.job-detail-currentstep')
+        .children('span')
+        .each(function() {
+          if ($(this).text() == 'Awaiting decision') {
+            $(this).parent().parent().parent().show();
+          }
+        });
 
       this.$jobContainer.slideDown('fast', function()
         {
