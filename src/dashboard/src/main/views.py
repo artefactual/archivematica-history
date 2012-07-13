@@ -504,11 +504,14 @@ SELECT
       FROM filesPreservationAccessFormatStatus
       LEFT OUTER JOIN Tasks ON filesPreservationAccessFormatStatus.fileUUID = Tasks.fileUUID
       LEFT OUTER JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+      LEFT OUTER JOIN Files ON Tasks.fileUUID = Files.fileUUID
       WHERE
-        (Jobs.jobType = 'Normalize preservation' OR Jobs.jobType = 'Normalize access') AND
-        Jobs.SIPUUID = %s
+        Jobs.SIPUUID = %s AND
+        Files.fileGrpUse != 'preservation' AND
+        Files.currentLocation LIKE '%%%%SIPDirectory%%%%objects/%%'
       GROUP BY Tasks.fileUUID
-      ORDER BY Tasks.fileName;"""
+      ORDER BY Tasks.fileName;
+"""
 
     cursor = connection.cursor()
     cursor.execute(query, (
