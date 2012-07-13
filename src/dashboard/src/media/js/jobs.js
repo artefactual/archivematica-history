@@ -238,6 +238,22 @@ var BaseSipView = Backbone.View.extend({
          }
       );
 
+      // populate job container so we can see if any jobs require user action
+      this.updateJobContainer();
+
+      // if any jobs require user action, toggle the microservice group
+      $('.sip-detail-job-container:first')
+        .children('.microservicegroup')
+        .children(':nth-child(2)')
+        .children()
+        .children('.job-detail-currentstep')
+        .children('span')
+        .each(function() {
+          if ($(this).text() == 'Awaiting decision') {
+            self.doToggleJobs();
+          }
+        });
+
       return this;
     },
 
@@ -247,6 +263,13 @@ var BaseSipView = Backbone.View.extend({
 
       event.preventDefault();
       event.stopPropagation();
+
+      this.doToggleJobs();
+    },
+
+  doToggleJobs: function()
+    {
+      var self = this;
 
       if (this.$jobContainer.is(':visible'))
       {
