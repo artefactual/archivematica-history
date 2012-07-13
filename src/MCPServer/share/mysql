@@ -4919,6 +4919,16 @@ CREATE OR REPLACE VIEW FileExtensions AS
 -- Dashboard schema --
 
 BEGIN;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `auth_message`;
+DROP TABLE IF EXISTS `auth_user`;
+DROP TABLE IF EXISTS `auth_user_groups`;
+DROP TABLE IF EXISTS `auth_user_user_permissions`;
+DROP TABLE IF EXISTS `auth_group`;
+DROP TABLE IF EXISTS `auth_group_permissions`;
+DROP TABLE IF EXISTS `auth_permission`;
 CREATE TABLE `auth_permission` (
     `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
     `name` varchar(50) NOT NULL,
@@ -4927,6 +4937,7 @@ CREATE TABLE `auth_permission` (
     UNIQUE (`content_type_id`, `codename`)
 )
 ;
+ALTER TABLE `auth_permission` ADD CONSTRAINT `content_type_id_refs_id_728de91f` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`);
 CREATE TABLE `auth_group_permissions` (
     `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
     `group_id` integer NOT NULL,
@@ -4980,8 +4991,27 @@ CREATE TABLE `auth_message` (
 )
 ;
 ALTER TABLE `auth_message` ADD CONSTRAINT `user_id_refs_id_9af0b65a` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
--- The following references should be added but depend on non-existent tables:
--- ALTER TABLE `auth_permission` ADD CONSTRAINT `content_type_id_refs_id_728de91f` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`);
+CREATE INDEX `auth_permission_e4470c6e` ON `auth_permission` (`content_type_id`);
+CREATE INDEX `auth_message_fbfc09f1` ON `auth_message` (`user_id`);
+DROP TABLE IF EXISTS `django_content_type`;
+CREATE TABLE `django_content_type` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `name` varchar(100) NOT NULL,
+    `app_label` varchar(100) NOT NULL,
+    `model` varchar(100) NOT NULL,
+    UNIQUE (`app_label`, `model`)
+)
+;
+CREATE TABLE `django_session` (
+    `session_key` varchar(40) NOT NULL PRIMARY KEY,
+    `session_data` longtext NOT NULL,
+    `expire_date` datetime NOT NULL
+)
+;
+CREATE INDEX `django_session_c25c2c28` ON `django_session` (`expire_date`);
+
+SET FOREIGN_KEY_CHECKS = 1;
+
 COMMIT;
 
 -- END Dashboard schema --
