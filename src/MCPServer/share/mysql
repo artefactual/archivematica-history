@@ -928,6 +928,8 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject SIP');
 SET @rejectSIPMicroServiceChain = LAST_INSERT_ID();
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject SIP');
+SET @rejectSIPMicroServiceChain2 = LAST_INSERT_ID();
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject AIP');
 SET @rejectAIPMicroServiceChain = LAST_INSERT_ID();
 
@@ -1677,7 +1679,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Approve normalization'); -- approve normalization preservation and access
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Approve'); -- approve normalization preservation and access
 SET @MicroServiceChain = LAST_INSERT_ID();
 
 
@@ -1744,7 +1746,7 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @MicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain2);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
@@ -2236,7 +2238,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink2,  'Approve normalization');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink2,  'Approve'); -- approve normalization --
 SET @ProcessSubmissionDocumentationLinkMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
@@ -2291,7 +2293,7 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @ProcessSubmissionDocumentationLinkMicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain2);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
