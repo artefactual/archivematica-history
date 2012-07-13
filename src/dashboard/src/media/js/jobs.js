@@ -242,7 +242,7 @@ var BaseSipView = Backbone.View.extend({
       this.updateJobContainer();
 
       // if any jobs require user action, toggle the microservice group
-      $('.sip-detail-job-container:first')
+      this.$jobContainer
         .children('.microservicegroup')
         .children(':nth-child(2)')
         .children()
