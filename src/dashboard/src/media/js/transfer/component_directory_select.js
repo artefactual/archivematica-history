@@ -23,7 +23,7 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
   selector.options.actionHandlers.push({
     name: 'Select',
     description: 'Select',
-    iconHtml: '<img src="/media/images/accept.png" />',
+    iconHtml: 'Add',
     logic: function(result) {
       var $transferPathRowEl = $('<div></div>')
         , $transferPathEl = $('<span class="transfer_path"></span>')
