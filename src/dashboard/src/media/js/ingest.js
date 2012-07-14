@@ -294,7 +294,9 @@ $(function()
               });
             };
 
-          if ('Upload DIP' == this.model.get('type') && 13 == value)
+          
+          // if ('Upload DIP' == this.model.get('type') && 13 == value)
+          if ('- Upload DIP to Atom' == $select.find('option:selected').text())
           {
             var modal = $('#upload-dip-modal');
             var input = modal.find('input');
