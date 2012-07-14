@@ -22,34 +22,38 @@
   </head>
   <body id="page-{% block page_id %}default{% endblock %}">
 
-    <div class="topbar">
-      <div class="topbar-inner">
-        <div class="container-fluid">
+    {% block header %}
 
-          <a class="brand" href="{% url main.views.home %}">Archivematica</a>
+      <div class="topbar">
+        <div class="topbar-inner">
+          <div class="container-fluid">
 
-          {% url main.views.home as url_home %}
-          {% url main.views.transfer_grid as url_transfer %}
-          {% url main.views.ingest_grid as url_ingest %}
-          {% url main.views.archival_storage as url_archival_storage %}
-          {% url main.views.preservation_planning as url_preservation_planning %}
-          {% url main.views.access_list as url_access %}
-          {% url main.views.administration as url_administration %}
+            <a class="brand" href="{% url main.views.home %}">Archivematica</a>
 
-          <ul class="nav">
-            <li class="{% active request url_transfer %}"><a href="{{ url_transfer }}">Transfer</a></li>
-            <li class="{% active request url_ingest %}"><a href="{{ url_ingest }}">Ingest</a></li>
-            <li class="{% active request url_archival_storage %}"><a href="{{ url_archival_storage }}">Archival storage</a></li>
-            <li class="{% active request url_preservation_planning %}"><a href="{{ url_preservation_planning }}">Preservation planning</a></li>
-            <li class="{% active request url_access %}"><a href="{{ url_access }}">Access</a></li>
-            <li class="{% active request url_administration %}"><a href="{{ url_administration }}">Administration</a></li>
-          </ul>
+            {% url main.views.home as url_home %}
+            {% url main.views.transfer_grid as url_transfer %}
+            {% url main.views.ingest_grid as url_ingest %}
+            {% url main.views.archival_storage as url_archival_storage %}
+            {% url main.views.preservation_planning as url_preservation_planning %}
+            {% url main.views.access_list as url_access %}
+            {% url main.views.administration as url_administration %}
 
-          {% block topbar %}{% endblock %}
+            <ul class="nav">
+              <li class="{% active request url_transfer %}"><a href="{{ url_transfer }}">Transfer</a></li>
+              <li class="{% active request url_ingest %}"><a href="{{ url_ingest }}">Ingest</a></li>
+              <li class="{% active request url_archival_storage %}"><a href="{{ url_archival_storage }}">Archival storage</a></li>
+              <li class="{% active request url_preservation_planning %}"><a href="{{ url_preservation_planning }}">Preservation planning</a></li>
+              <li class="{% active request url_access %}"><a href="{{ url_access }}">Access</a></li>
+              <li class="{% active request url_administration %}"><a href="{{ url_administration }}">Administration</a></li>
+            </ul>
 
+            {% block topbar %}{% endblock %}
+
+          </div>
         </div>
       </div>
-    </div>
+
+    {% endblock %}
 
     {% block body %}
 
