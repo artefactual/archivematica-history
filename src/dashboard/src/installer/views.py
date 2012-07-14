@@ -15,8 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
 
 def welcome(request):
     return render(request, 'installer/welcome.html', locals())
+
+def create_superuser(request):
+    pass
+    # username
+    # password
+    # email
+    # User.objects.create_superuser(username, email, password)
