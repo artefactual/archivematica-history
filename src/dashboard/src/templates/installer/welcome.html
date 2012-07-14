@@ -33,9 +33,7 @@
 
       <form class="form-stacked" method="post" action="{% url installer.views.welcome %}">
 
-        {% with input_size=span8 %}
-          {% include "_form.html" %}
-        {% endwith %}
+        {% include "_form.html" %}
 
         <div class="well span9">
           <button class="btn primary" type="submit">Create</button>
