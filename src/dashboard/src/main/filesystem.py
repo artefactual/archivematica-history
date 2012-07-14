@@ -368,10 +368,10 @@ def send_file(request, filepath):
     iterator for chunks of 8KB.                                                 
     """
     filename = os.path.basename(filepath)
-    extension = os.path.splitext(filepath)[1]
+    extension = os.path.splitext(filepath)[1].lower()
 
     wrapper = FileWrapper(file(filepath))
-    response = HttpResponse(wrapper, content_type='text/plain')
+    response = HttpResponse(wrapper)
 
     # force download for certain filetypes
     extensions_to_download = ['.7z', '.zip']
@@ -380,6 +380,10 @@ def send_file(request, filepath):
         response['Content-Type'] = 'application/force-download'
         response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
     except:
-        pass
+        if extension == '.html':
+            response['Content-type'] = 'text/html'
+        else:
+            response['Content-type'] = 'text/plain'
+
     response['Content-Length'] = os.path.getsize(filepath)
     return response
