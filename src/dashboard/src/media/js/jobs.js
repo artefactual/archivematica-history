@@ -185,6 +185,10 @@ JobCollection = Backbone.Collection.extend({
         title = 'Reject SIP';
       }
 
+      if (job.microservicegroup == 'Failed transfer') {
+        icon = 'cancel.png';
+      }
+
       icon = icon   || 'accept.png';
       title = title || 'Completed successfully';
 
