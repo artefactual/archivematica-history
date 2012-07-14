@@ -17,20 +17,10 @@
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 
-from installer.forms import SuperUserCreationForm
-
-def welcome(request):
-    if request.method == 'POST':
-        form = SuperUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('main.views.home'))
-    else:
-        form = SuperUserCreationForm()
-
-    return render(request, 'installer/welcome.html', {
-        'form': form,
-      })
+class ConfigurationCheckMiddleware:
+    def process_request(self, request):
+        welcome_page = reverse('installer.views.welcome')
+        if welcome_page != request.path and User.objects.count() == 0:
+            return HttpResponseRedirect(reverse('installer.views.welcome'))
