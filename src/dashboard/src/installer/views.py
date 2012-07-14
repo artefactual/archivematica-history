@@ -16,15 +16,21 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+
+from installer.forms import SuperUserCreationForm
 
 def welcome(request):
-    return render(request, 'installer/welcome.html', locals())
+    if request.method == 'POST':
+        form = SuperUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('main.views.home'))
+    else:
+        form = SuperUserCreationForm()
 
-def create_superuser(request):
-    pass
-    # username
-    # password
-    # email
-    # User.objects.create_superuser(username, email, password)
+    return render(request, 'installer/welcome.html', {
+        'form': form,
+      })

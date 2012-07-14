@@ -116,7 +116,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'middleware.common.AJAXSimpleExceptionResponseMiddleware',
-    # 'middleware.common.ConfigurationCheckMiddleware',
+    # 'middleware.common.LoginRequiredMiddleware',
+    # 'installer.middleware.ConfigurationCheckMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
