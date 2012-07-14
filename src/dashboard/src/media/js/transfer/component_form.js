@@ -75,6 +75,7 @@ var TransferComponentFormView = Backbone.View.extend({
           },
           success: function(results) {
             alert('Transfer copy complete.');
+            $('#path_container').html('');
           }
         });
         // report progress
@@ -123,7 +124,6 @@ var TransferComponentFormView = Backbone.View.extend({
     $('#path_add_button').click(function() {
       // add modal containing directory selector
       // selecting makes modal disappear, adds directory, and re-renders
-console.log($sourceDirSelect.children('option:selected'));
       self.showSelector($sourceDirSelect.children('option:selected').text());
     });
 
