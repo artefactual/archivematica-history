@@ -187,6 +187,7 @@ JobCollection = Backbone.Collection.extend({
 
       if (job.microservicegroup == 'Failed transfer') {
         icon = 'cancel.png';
+        title = 'Failed transfer';
       }
 
       icon = icon   || 'accept.png';
