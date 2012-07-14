@@ -83,6 +83,10 @@ Date.prototype.getArchivematicaDateString = function()
       + ' ' + pad(this.getHours())
       + ':' + pad(this.getMinutes());
 
+    if (dateText == 'NaN-NaN-NaN NaN:NaN') {
+      dateText = '';
+    }
+
     return dateText;
   };
 
