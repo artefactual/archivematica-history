@@ -115,7 +115,8 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'middleware.common.AJAXSimpleExceptionResponse',
+    'middleware.common.AJAXSimpleExceptionResponseMiddleware',
+    # 'middleware.common.ConfigurationCheckMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -141,6 +142,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
 
     # Internal apps
+    'installer',
     'main',
     'mcp',
 )
