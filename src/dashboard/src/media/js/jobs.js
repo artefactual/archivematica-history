@@ -481,11 +481,12 @@ var MicroserviceGroupView = Backbone.View.extend({
           }
           jobDiv.append(jobView.render().el);
 
+console.log(job.attributes);
           // add link to browse SIP before it's made into an AIP
           if (
             (
               job.attributes.microservicegroup == 'Store AIP'
-              || job.attributes.microservicegroup == 'Normalize'
+              || job.attributes.type == 'Approve normalization'
             )
             && job.attributes.currentstep == 'Awaiting decision'
             && job.attributes.type != 'Store AIP location'
