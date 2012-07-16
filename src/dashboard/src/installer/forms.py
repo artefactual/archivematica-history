@@ -11,6 +11,7 @@ class SuperUserCreationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
         user.email = self.cleaned_data["email"]
         user.is_staff = True
         user.is_active = True

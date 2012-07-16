@@ -1,5 +1,4 @@
 import os
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 BASE_PATH = os.path.dirname(__file__)
 
@@ -101,13 +100,15 @@ TEMPLATE_LOADERS = (
     # 'django.template.loaders.eggs.Loader',
 )
 
-""" If you want to extend default tmpl context processors...
-
-TEMPLATE_CONTEXT_PROCESSORS = TEMPLATE_CONTEXT_PROCESSORS + (
-    ''
-
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+#    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
 )
-"""
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -116,8 +117,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'middleware.common.AJAXSimpleExceptionResponseMiddleware',
-    # 'middleware.common.LoginRequiredMiddleware',
-    # 'installer.middleware.ConfigurationCheckMiddleware',
+    'installer.middleware.ConfigurationCheckMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -144,6 +144,7 @@ INSTALLED_APPS = (
 
     # Internal apps
     'installer',
+    'accounts',
     'main',
     'mcp',
 )
@@ -170,6 +171,9 @@ LOGGING = {
       },
     }
 }
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/administration/accounts/login'
 
 # Django debug toolbar
 try:

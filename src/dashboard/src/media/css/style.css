@@ -32,7 +32,12 @@ body {
 
 li.active {
   background-color: #eee;
-} 
+}
+
+li.user > a {
+  cursor: pointer;
+  border-left: 2px solid #444;
+}
 
 /* Override Bootstrap default */
 .container-fluid > .content {
@@ -500,7 +505,7 @@ textarea.command {
  */
 
 .preview-help-text {
-  
+
 }
 
 .preview-help-text .preview {
@@ -515,4 +520,64 @@ textarea.command {
 .backbone-file-explorer {
   border: 1px solid #eee;
   padding: 5px;
+}
+
+/*
+ * Login
+ */
+
+#login {
+
+  width: 320px;
+  margin: auto;
+  padding-top: 120px;
+
+}
+
+#login * {
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+}
+
+#login h1 {
+
+  background-image: url('../images/logo.png');
+  background-size: 239px 28px;
+  background-position: top center;
+  background-repeat: no-repeat;
+  text-indent: -9999px;
+  overflow: hidden;
+
+}
+
+#login form {
+
+  padding: 26px 24px 26px;
+  background: #eee;
+  border: 1px solid #c5c5c5;
+  -moz-box-shadow: rgba(200,200,200,0.7) 0 4px 10px -1px;
+  -webkit-box-shadow: rgba(200, 200, 200, 0.7) 0 4px 10px -1px;
+  box-shadow: rgba(200, 200, 200, 0.7) 0 4px 10px -1px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+
+}
+
+#login input {
+
+  width: 100%;
+  height: 40px;
+  font-size: 24px;
+  line-height: 1;
+
+}
+
+#login button {
+
+  margin-top: 14px;
+
 }

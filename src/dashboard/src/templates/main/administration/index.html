@@ -10,12 +10,13 @@
 
   <div class="span12">
 
-    <p><a href='/administration/dip/' class='btn'>Configure AtoM DIP upload</a></p>
+    <p><a href="{% url main.views.administration_dip %}" class="btn">Configure AtoM DIP upload</a></p>
 
-    <p><a href='/administration/dips/contentdm/' class='btn'>Configure ContentDM DIP upload</a></p>
+    <p><a href="{% url main.views.administration_contentdm_dips %}" class="btn">Configure ContentDM DIP upload</a></p>
 
-    <p><a href='/administration/sources/' class='btn'>Configure transfer source directories</a></p>
+    <p><a href="{% url main.views.administration_sources %}" class="btn">Configure transfer source directories</a></p>
 
+    <p><a href="{% url accounts.views.list %}" class="btn">Users</a></p>
 
   </div>
 

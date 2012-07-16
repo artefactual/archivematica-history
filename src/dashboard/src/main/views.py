@@ -476,7 +476,7 @@ SELECT
                 Jobs.SIPUUID = %s AND
                 Jobs.jobType = 'Normalize access' AND
                 Tasks.stdOut LIKE '%%[Command]%%' AND
-                Jobs.MicroServiceChainLinksPK NOT IN (SELECT MicroserviceChainLink FROM DefaultCommandsForClassifications ) AND 
+                Jobs.MicroServiceChainLinksPK NOT IN (SELECT MicroserviceChainLink FROM DefaultCommandsForClassifications ) AND
                 Tasks.stdOut NOT LIKE '%%Not including %% in DIP.%%'  )
         AS 'Access normalization attempted',
 
@@ -1247,7 +1247,7 @@ def chain_insert():
     # make new chain to point to ICA AtoM DIP upload links
     chain = models.MicroServiceChain()
     chain.startinglink = choice_link_id
-    chain.description = 'Select DIP destination' 
+    chain.description = 'Select DIP destination'
     chain.save()
 
     # rewire old choice to point to new chain

@@ -1,0 +1,63 @@
+{% extends "layout_fluid.html" %}
+{% load breadcumbs %}
+
+{% block title %}Users{% endblock %}
+{% block h1 %}Users{% endblock %}
+{% block page_id %}accounts-list{% endblock %}
+
+{% block content %}
+
+  <ul class="breadcrumb">
+    {% breadcrumb_url 'Administration' main.views.administration %}
+    {% breadcrumb 'Users' %}
+  </ul>
+
+  <div class="row">
+
+    <div class="span16">
+
+      <h3>Users</h3>
+
+      <table>
+
+        <tr>
+          <th>Username</th>
+          <th>Name</th>
+          <th>E-mail</th>
+          <th>Staff</th>
+          <th>Administrator</th>
+          <th>Active</th>
+          <th>&nbsp;</th>
+        </tr>
+
+        {% for item in users %}
+
+          <tr>
+            <td><a href="{% url accounts.views.edit item.id %}">{{ item.username }}</a></td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.email }}</td>
+            <td>{{ item.is_staff }}</td>
+            <td>{{ item.is_superuser }}</td>
+            <td>{{ item.is_active }}</td>
+            <td>
+              {% if user.id == item.id %}
+                <a class="btn edit small" href="{% url accounts.views.edit item.id %}">Edit</a>
+              {% endif %}
+              {% if user.is_superuser and user.id != item.id %}
+                <a class="btn danger small" href="{% url accounts.views.delete item.id %}">Delete</a>
+              {% endif %}
+          </tr>
+
+        {% endfor %}
+
+      </table>
+
+      <div class="actions">
+        <a class="btn" href="{% url accounts.views.add %}">Add new</a>
+      </div>
+
+    </div>
+
+  </div>
+
+{% endblock %}
