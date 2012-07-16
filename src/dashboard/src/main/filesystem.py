@@ -116,6 +116,11 @@ def copy_transfer_component(request):
             error = 'No path provided.'
         else:
             transfer_dir = os.path.join(destination, transfer_name)
+
+            # Create directory before it is used, otherwise shutil.copy()
+            # would that location to store a file
+            os.mkdir(transfer_dir)
+            
             paths_copied = 0
             #return HttpResponse(transfer_dir)
 
