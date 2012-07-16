@@ -9,6 +9,7 @@ from django.core.servers.basehttp import FileWrapper
 
 import sys
 import uuid
+import mimetypes
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import databaseFunctions
@@ -375,15 +376,14 @@ def send_file(request, filepath):
 
     # force download for certain filetypes
     extensions_to_download = ['.7z', '.zip']
+
     try:
         index = extensions_to_download.index(extension)
         response['Content-Type'] = 'application/force-download'
         response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
     except:
-        if extension == '.html':
-            response['Content-type'] = 'text/html'
-        else:
-            response['Content-type'] = 'text/plain'
+        mimetype = mimetypes.guess_type(filename)[0]
+        response['Content-type'] = mimetype
 
     response['Content-Length'] = os.path.getsize(filepath)
     return response
