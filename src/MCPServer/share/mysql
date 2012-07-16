@@ -2871,7 +2871,7 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create single SIP');
 SET @MicroServiceChain2 = LAST_INSERT_ID();
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (Null,  'Create SIP(s) Manually');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (Null,  'Create SIP(s) manually');
 SET @MicroServiceChain3 = LAST_INSERT_ID();
 
 
