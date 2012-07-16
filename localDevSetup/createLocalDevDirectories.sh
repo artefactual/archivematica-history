@@ -55,7 +55,7 @@ sudo chown -R www-data:www-data "${svnDir}qubit-svn"
 if [ ! -e /usr/share/fits/xml/fits.xmlbackup ]; then
 sudo cp /usr/share/fits/xml/fits.xml /usr/share/fits/xml/fits.xmlbackup
 fi
-sudo ln "${svnDir}externals/fits/archivematicaConfigs/fits.xml" /usr/share/fits/xml/
+sudo ln -f "${svnDir}externals/fits/archivematicaConfigs/fits.xml" /usr/share/fits/xml/
 sudo chmod 775 /usr/share/fits/xml/fits.xml
 
 sudo mkdir /var/archivematica/
