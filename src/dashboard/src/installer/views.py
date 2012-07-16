@@ -24,6 +24,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from installer.forms import SuperUserCreationForm
 
 def welcome(request):
+    # This form will be only accessible when the database has no users
+    if 0 < User.objects.count():
+      return HttpResponseRedirect(reverse('main.views.home'))
+    # Form
     if request.method == 'POST':
         form = SuperUserCreationForm(request.POST)
         if form.is_valid():
