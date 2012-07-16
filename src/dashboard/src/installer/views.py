@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
@@ -26,8 +27,11 @@ def welcome(request):
     if request.method == 'POST':
         form = SuperUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('main.views.home'))
+            user = form.save()
+            user = authenticate(username=user.username, password=form.cleaned_data['password1'])
+            if user is not None:
+              login(request, user)
+              return HttpResponseRedirect(reverse('main.views.home'))
     else:
         form = SuperUserCreationForm()
 

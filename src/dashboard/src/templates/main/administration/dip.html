@@ -17,10 +17,10 @@
 
 {% block content %}
 
-<ul class="breadcrumb">
-  {% breadcrumb_url 'Administration' main.views.administration %}
-  {% breadcrumb 'Upload DIP' %}
-</ul>
+  <ul class="breadcrumb">
+    {% breadcrumb_url 'Administration' main.views.administration %}
+    {% breadcrumb 'Upload DIP' %}
+  </ul>
 
   <form class="form-stacked" method="post" action="{% url main.views.administration_dip_edit upload_setting.id %}">
 

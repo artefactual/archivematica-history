@@ -1,0 +1,33 @@
+{% extends "layout_fluid.html" %}
+{% load breadcumbs %}
+
+{% block title %}Users - Add new{% endblock %}
+{% block h1 %}Users - Add new{% endblock %}
+{% block page_id %}accounts-add{% endblock %}
+
+{% block content %}
+
+  <ul class="breadcrumb">
+    {% breadcrumb_url 'Administration' main.views.administration %}
+    {% breadcrumb_url 'Users' accounts.views.list %}
+    {% breadcrumb 'Add new' %}
+  </ul>
+
+  <div class="row">
+
+    <div class="span12">
+
+      <form method="post" action="{% url accounts.views.add %}">
+
+        <div class="actions">
+          <button type="submit" class="btn primary">Create</button>
+          <a class="btn" href="{% url accounts.views.list %}">Cancel</a>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+{% endblock %}

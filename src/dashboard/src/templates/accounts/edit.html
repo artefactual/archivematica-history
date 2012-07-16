@@ -1,0 +1,33 @@
+{% extends "layout_fluid.html" %}
+{% load breadcumbs %}
+
+{% block title %}Users - {{ user }}{% endblock %}
+{% block h1 %}Users - {{ user }}{% endblock %}
+{% block page_id %}accounts-edit{% endblock %}
+
+{% block content %}
+
+  <ul class="breadcrumb">
+    {% breadcrumb_url 'Administration' main.views.administration %}
+    {% breadcrumb_url 'Users' accounts.views.list %}
+    {% breadcrumb user %}
+  </ul>
+
+  <div class="row">
+
+    <div class="span12">
+
+      <form method="post" action="{% url accounts.views.edit user.id %}">
+
+        <div class="actions">
+          <button type="submit" class="btn primary">Save</button>
+          <a class="btn" href="{% url main.views.home %}">Cancel</a>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+{% endblock %}
