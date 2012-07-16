@@ -42,25 +42,25 @@ $(function()
 
       connect: function()
         {
-          log('Connected.');
+          // log('Connected.');
           this.$led.attr({'src': '/media/images/bullet_green.png', 'title': 'Connected'});
           this.$text.text('Connected');
         },
 
       startPoll: function()
         {
-          log('Start poll.');
+          // log('Start poll.');
           this.$led.attr({'src': '/media/images/bullet_orange.png', 'title': 'Loading'});
         },
 
       endPoll: function()
         {
-          log('End poll.');
+          // log('End poll.');
         },
 
       text: function(message, error)
         {
-          log('Status message: ' + message + ')');
+          // log('Status message: ' + message + ')');
 
           if (true === error)
           {
