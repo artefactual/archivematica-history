@@ -214,11 +214,20 @@ $(function()
 
       render: function()
         {
-          $(this.el).html(this.template(this.model.toJSON()));
+          var jobData = this.model.toJSON();
+
+          if (
+            jobData.type == 'Access normalization failed - copying'
+            || jobData.type == 'Preservation normalization failed - copying'
+          ) {
+            jobData.currentstep = 'Failed';
+          }
+
+          $(this.el).html(this.template(jobData));
 
           $(this.el).css(
             'background-color',
-            this.getStatusColor(this.model.get('currentstep'))
+            this.getStatusColor(jobData.currentstep)
           );
 
           // Micro-services requiring approval
