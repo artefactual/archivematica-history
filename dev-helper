@@ -35,16 +35,19 @@ function svn-update() {
   echo -n "\"Would you like to ${part}?\" (y/N) "
   read a
   if [[ $a == "Y" || $a == "y" ]]; then
-      echo "doing ${part} ..."
-      echo "cleaning up..."
+      echo "Doing ${part} ..."
+      echo "Cleaning up..."
       cd localDevSetup/
       colour ./cleanup.sh
       cd ..
 
-      echo "UPDATING..."
+      echo "Bringing latest changes to the working copy..."
       svn update 
 
-      echo "integrating into environment..."
+      echo "Restarting Apache..."
+      sudo apache2ctl restart
+
+      echo "Integrating into environment..."
       cd localDevSetup/
       colour ./createLocalDevDirectories.sh
       cd ..
