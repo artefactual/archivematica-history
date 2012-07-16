@@ -290,6 +290,12 @@ def ingest_status(request, uuid=None):
             for job in jobs:
                 newJob = {}
                 item['jobs'].append(newJob)
+
+                # allow user to know name of file that has failed normalization
+                if job.jobtype == 'Access normalization failed - copying':
+                    task = models.Task.objects.get(job=job)
+                    newJob['filename'] = task.filename
+
                 newJob['uuid'] = job.jobuuid
                 newJob['type'] = job.jobtype #map_known_values(job.jobtype)
                 newJob['microservicegroup'] = job.microservicegroup
