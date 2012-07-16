@@ -521,7 +521,14 @@ SELECT
 
     return render(request, 'main/normalization_report.html', locals())
 
+def ingest_browse_normalization(request):
+
+    directory = '/var/archivematica/sharedDirectory/watchedDirectories/approveNormalization'
+
+    return render(request, 'main/ingest/aip_browse.html', locals())
+
 def ingest_browse_aip(request, jobuuid):
+    """
     jobs = models.Job.objects.filter(jobuuid=jobuuid)
 
     if jobs.count() == 0:
@@ -537,6 +544,8 @@ def ingest_browse_aip(request, jobuuid):
       '%sharedPath%',
       '/var/archivematica/sharedDirectory/'
     )
+    """
+    directory = '/var/archivematica/sharedDirectory/watchedDirectories/storeAIP'
 
     return render(request, 'main/ingest/aip_browse.html', locals())
 
