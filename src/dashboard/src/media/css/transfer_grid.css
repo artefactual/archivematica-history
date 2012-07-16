@@ -1,6 +1,8 @@
 #transfer_component_form {
   border-bottom: 1px dotted #ddd;
   margin-bottom: 5px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 #transfer-type {
