@@ -481,7 +481,6 @@ var MicroserviceGroupView = Backbone.View.extend({
           }
           jobDiv.append(jobView.render().el);
 
-console.log(job.attributes);
           // add link to browse SIP before it's made into an AIP
           if (
             (
@@ -492,12 +491,17 @@ console.log(job.attributes);
             && job.attributes.type != 'Store AIP location'
             && job.attributes.choices != undefined
           ) {
+            if (job.attributes.microservicegroup == 'Store AIP') {
+              var url = '/ingest/preview/aip/' + job.attributes.uuid;
+            } else {
+              var url = '/ingest/preview/normalization/';
+            }
             $(jobView.el)
               .children(':first')
               .children(':nth-child(2)')
               .append(
-                '&nbsp;<a href="/ingest/preview/aip/'
-                + job.attributes.uuid
+                '&nbsp;<a href="'
+                + url
                 + '" target="_blank">(review)</a>'
               );
           }
