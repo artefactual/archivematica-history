@@ -971,7 +971,7 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', '--url="http://localhost/qubit/index.php" \\\r\n--email="demo@example.com" \\\r\n--password="demo" \\\r\n--uuid="%SIPUUID%" \\\r\n--rsync-target="/tmp"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', '--url="http://localhost/ica-atom/index.php" \\\r\n--email="demo@example.com" \\\r\n--password="demo" \\\r\n--uuid="%SIPUUID%" \\\r\n--rsync-target="/tmp"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Upload DIP');
