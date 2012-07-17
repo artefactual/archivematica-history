@@ -16,17 +16,39 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
 
-@user_passes_test(lambda u: u.is_superuser)
+from accounts.forms import UserChangeForm
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/forbidden/')
 def list(request):
     users = User.objects.all()
     return render(request, 'accounts/list.html', locals())
 
+@user_passes_test(lambda u: u.is_superuser, login_url='/forbidden/')
+def add(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_staff = True
+            user.save()
+            return HttpResponseRedirect(reverse('accounts.views.list'))
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'accounts/add.html', {'form': form })
+
 def edit(request, id=None):
+    # Security check
+    if request.user.id != id:
+        if request.user.is_superuser is False:
+            return HttpResponseRedirect(reverse('main.views.forbidden'))
     if id is None:
         user = request.user
     else:
@@ -34,18 +56,31 @@ def edit(request, id=None):
             user = User.objects.get(pk=id)
         except:
             raise Http404
-    return render(request, 'accounts/edit.html', locals())
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=user)
+        if form.is_valid():
+            user = form.save()
+            if user is not None:
+              return HttpResponseRedirect(reverse('accounts.views.list'))
+    else:
+        form = UserChangeForm(instance=user)
 
-@user_passes_test(lambda u: u.is_superuser)
-def add(request):
-    return render(request, 'accounts/add.html', locals())
+    return render(request, 'accounts/edit.html', {'form': form, 'user': user })
 
-@user_passes_test(lambda u: u.is_superuser)
 def delete(request, id):
+    # Security check
+    if request.user.id != id:
+        if request.user.is_superuser is False:
+            return HttpResponseRedirect(reverse('main.views.forbidden'))
+    # Avoid removing the last user
+    if 1 == User.objects.count():
+        return HttpResponseRedirect(reverse('main.views.forbidden'))
+    # Delete
     try:
         user = User.objects.get(pk=id)
         if request.user.username == user.username:
             raise Http404
         user.delete()
+        return HttpResponseRedirect(reverse('accounts.views.list'))
     except:
         raise Http404

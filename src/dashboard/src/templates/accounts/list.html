@@ -38,10 +38,8 @@
             <td>{{ item.is_superuser }}</td>
             <td>{{ item.is_active }}</td>
             <td>
-              {% if user.id == item.id %}
+              {% if user.is_superuser or user.id == item.id %}
                 <a class="btn edit small" href="{% url accounts.views.edit item.id %}">Edit</a>
-              {% endif %}
-              {% if user.is_superuser and user.id != item.id %}
                 <a class="btn danger small" href="{% url accounts.views.delete item.id %}">Delete</a>
               {% endif %}
           </tr>
