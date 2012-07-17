@@ -1,11 +1,25 @@
 var NotificationView = Backbone.View.extend({
   initialize: function() {
     this.displayed = [];
+    this.initializeLocalData();
   },
 
-  add: function(attributes)
+  initializeLocalData: function() {
+    // initialize local storage
+    if (localStorage.getItem('archivematicaNotifications') == null)
+    {
+       localStorage.setItem('archivematicaNotifications', JSON.stringify({
+         'notifications': [],
+         'dismissed': []
+       }));
+    }
+  },
+
+  add: function(notification)
   {
-    // logic to add notifications on client-side will go here
+    var localNotificationData = JSON.parse(localStorage.getItem('archivematicaNotifications'));
+    localNotificationData.notifications.push(notification);
+    localStorage.setItem('archivematicaNotifications', JSON.stringify(localNotificationData));
   },
 
   render: function() {

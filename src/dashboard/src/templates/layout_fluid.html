@@ -9,11 +9,12 @@
       <div id="notifications"></div>
 
       <script>
+        var archivematicaNotifications;
         $(document).ready(function() {
-          var notifications = new NotificationView({
+          archivematicaNotifications = new NotificationView({
             el: $('#notifications')
           });
-          notifications.render();
+          archivematicaNotifications.render();
         });
       </script>
 
