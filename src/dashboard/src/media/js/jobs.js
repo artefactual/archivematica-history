@@ -924,15 +924,6 @@ BaseAppView = Backbone.View.extend({
 
   cacheNotifications: function(notifications)
     {
-      // initialize local storage
-      if (localStorage.getItem('archivematicaNotifications') == null)
-      {
-         localStorage.setItem('archivematicaNotifications', JSON.stringify({
-           'notifications': [],
-           'dismissed': []
-         }));
-      }
-
       // get currently stored notifications
       var localNotificationData = JSON.parse(localStorage.getItem('archivematicaNotifications'));
 
