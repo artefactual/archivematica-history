@@ -16,7 +16,9 @@
 
     <p><a href="{% url main.views.administration_sources %}" class="btn">Configure transfer source directories</a></p>
 
-    <p><a href="{% url accounts.views.list %}" class="btn">Users</a></p>
+    {% if user.is_superuser %}
+      <p><a href="{% url accounts.views.list %}" class="btn">Users</a></p>
+    {% endif %}
 
   </div>
 
