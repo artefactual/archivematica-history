@@ -34,7 +34,9 @@ var TransferComponentFormView = Backbone.View.extend({
   startTransfer: function(transfer) {
     var path
       , copied = 0;
-    // get temp dir
+
+    // get path to temp directory in which to copy individual transfer
+    // components
     $.ajax({
       url: '/filesystem/get_temp_directory/',
       type: 'GET',
@@ -43,19 +45,17 @@ var TransferComponentFormView = Backbone.View.extend({
 
         var tempDir = results.tempDir;
 
-        // copy each transfer component to temp dir
+        // copy each transfer component to the temp directory
         for (var index in transfer.sourcePaths) {
           path = transfer.sourcePaths[index];
-          // do sync copy from source to temp
-          var url = '/filesystem/copy_transfer_component/';
           $.ajax({
-            url: url,
+            url: '/filesystem/copy_transfer_component/',
             type: 'POST',
             async: false,
             cache: false,
             data: {
-              name: transfer.name,
-              path: path,
+              name:        transfer.name,
+              path:        path,
               destination: tempDir
             },
             success: function(results) {
@@ -63,7 +63,7 @@ var TransferComponentFormView = Backbone.View.extend({
             }
           });
         }
-        // move from temp to watchdir
+        // move from temp directory to appropriate watchdir
         var url = '/filesystem/ransfer/';
         $.ajax({
           url: url,
@@ -71,10 +71,13 @@ var TransferComponentFormView = Backbone.View.extend({
           async: false,
           cache: false,
           data: {
-            filepath: tempDir + '/' + transfer.name
+            filepath: tempDir + '/' + transfer.name,
+            type:     transfer.type
           },
           success: function(results) {
-            alert('Transfer copy complete.');
+            archivematicaNotifications.add({
+              message: 'Transfer copy complete.'
+            });
             $('#path_container').html('');
           }
         });
