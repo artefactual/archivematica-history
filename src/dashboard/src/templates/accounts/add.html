@@ -19,6 +19,10 @@
 
       <form method="post" action="{% url accounts.views.add %}">
 
+        {% csrf_token %}
+
+        {% include "_form.html" %}
+
         <div class="actions">
           <button type="submit" class="btn primary">Create</button>
           <a class="btn" href="{% url accounts.views.list %}">Cancel</a>

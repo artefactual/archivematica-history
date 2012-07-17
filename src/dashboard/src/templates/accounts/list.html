@@ -24,7 +24,6 @@
           <th>Username</th>
           <th>Name</th>
           <th>E-mail</th>
-          <th>Staff</th>
           <th>Administrator</th>
           <th>Active</th>
           <th>&nbsp;</th>
@@ -34,9 +33,8 @@
 
           <tr>
             <td><a href="{% url accounts.views.edit item.id %}">{{ item.username }}</a></td>
-            <td>{{ item.name }}</td>
+            <td>{{ item.get_full_name }}</td>
             <td>{{ item.email }}</td>
-            <td>{{ item.is_staff }}</td>
             <td>{{ item.is_superuser }}</td>
             <td>{{ item.is_active }}</td>
             <td>
