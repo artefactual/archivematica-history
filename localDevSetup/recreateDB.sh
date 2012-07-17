@@ -7,7 +7,7 @@ echo "Removing existing units"
 sudo ./removeUnitsFromWatchedDirectories.py
 
 set -e
-echo "Enter the DATABASE root password (Hit enter if blank)"
+echo -n "Enter the DATABASE root password (Hit enter if blank):"
 read dbpassword
 
 if [ ! -z "$dbpassword" ] ; then
@@ -42,5 +42,5 @@ mysql -u root "${dbpassword}" --execute="GRANT SELECT, UPDATE, INSERT, DELETE ON
 #mysql -u root -p --execute="INSERT INTO auth_user (username, email, password, is_staff, is_active, is_superuser, date_joined) VALUES ('demo', 'demo@example.com', 'sha1$e7fc2$6123f456bba92c67a409baf2c282398fc5f70fc9', TRUE, TRUE, TRUE, NOW() );"
 
 #set +o verbose #echo off
-printGreen="Database created successfully."
+printGreen="${databaseName} database created successfully."
 echo -e "\e[6;32m${printGreen}\e[0m"
