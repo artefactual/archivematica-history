@@ -26,8 +26,13 @@ class UserChangeForm(UserChangeForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'is_active', 'is_superuser')
 
-    # TODO: hide is_active to the last superuser in the system
-    # TODO: hide is_active to the last superuser in the system
+    def __init__(self, *args, **kwargs):
+        super(UserChangeForm, self).__init__(*args, **kwargs)
+        ## Hide fields when there is only one superuser
+        if 1 == User.objects.filter(is_superuser=True).count():
+            del self.fields['is_active']
+            del self.fields['is_superuser']
+
 
     def save(self, commit=True):
         user = super(UserChangeForm, self).save(commit=False)
