@@ -940,6 +940,9 @@ def administration_sources_delete_json(request, id):
       Misc
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
+def forbidden(request):
+    return render(request, 'forbidden.html')
+
 def tasks(request, uuid):
     job = models.Job.objects.get(jobuuid=uuid)
     objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')

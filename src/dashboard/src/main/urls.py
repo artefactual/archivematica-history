@@ -9,6 +9,9 @@ urlpatterns = patterns('main.views',
     # Index
     (r'^$', 'home'),
 
+    # Forbidden
+    (r'forbidden/$', 'forbidden'),
+
     # Transfer
     (r'transfer/$', 'transfer_grid'),
     (r'transfer/(?P<uuid>' + UUID_REGEX + ')/$', 'transfer_detail'),
