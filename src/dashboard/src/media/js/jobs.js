@@ -494,7 +494,7 @@ var MicroserviceGroupView = Backbone.View.extend({
             if (job.attributes.microservicegroup == 'Store AIP') {
               var url = '/ingest/preview/aip/' + job.attributes.uuid;
             } else {
-              var url = '/ingest/preview/normalization/';
+              var url = '/ingest/preview/normalization/' + job.attributes.uuid;
             }
             $(jobView.el)
               .children(':first')

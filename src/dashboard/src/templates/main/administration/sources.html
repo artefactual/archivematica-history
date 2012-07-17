@@ -12,58 +12,61 @@
 {% endblock %}
 
 {% block css %}
-<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/backbone-file-explorer.css" />
-<link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/directory_picker.css" />
+  <link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/backbone-file-explorer.css" />
+  <link type="text/css" rel="stylesheet" media="all" href="{{ STATIC_URL }}css/directory_picker.css" />
 {% endblock %}
 
 {% block content %}
 
-<ul class="breadcrumb">
-  {% breadcrumb_url 'Administration' main.views.administration %}
-  {% breadcrumb 'Source Directories' %}
-</ul>
+  <div class="row">
 
-<div style="width:500px; margin-left: auto; margin-right: auto;">
-  <h1>Source Directories</h1>
+    {% include "main/administration/sidebar.html" %}
 
-  <div id='directories'></div>
+    <div class="span12">
 
-  <p id='source_page_instructions' style='margin-left: 5px'>Select new source directories using the selector below:</p>
+      <h3>Transfer source directories</h3>
 
-  <div id='explorer' class='backbone-file-explorer'></div>
-</div>
+      <div id="directories"></div>
 
-<!-- templates below -->
+      <p id="source_page_instructions" style="margin-left: 5px">Select new source directories using the selector below:</p>
 
-<script type="text/template" id='template-dir-level'>
-  <div class="backbone-file-explorer-level"></div>
-</script>
+      <div id="explorer" class="backbone-file-explorer"></div>
 
-<script type="text/template" id='template-dir-entry'>
-  <div class="backbone-file-explorer-entry" style='clear:both'>
-    <span class="backbone-file-explorer-directory_icon_button"></span>
-    <span class="backbone-file-explorer-directory_entry_name"><%= name %></span>
-    <span class="backbone-file-explorer-directory_entry_actions"></span>
+    </div>
+
   </div>
-</script>
 
-<script type="text/template" id="template-source-directory-table">
-<table>
-  <thead>
-    <th>Path</th>
-    <th></th>
-  </thead>
-  <tbody>
-    <%= rows %>
-  </tbody>
-</table>
-</script>
+  <!-- Templates below -->
 
-<script type="text/template" id="template-source-directory-table-row">
-  <tr>
-    <td><%= path %></td>
-    <td><a href='#' id='directory_<%= id %>' class='btn' style='float:right'>Remove</a></td>
-  </tr>
-</script>
+  <script type="text/template" id="template-dir-level">
+    <div class="backbone-file-explorer-level"></div>
+  </script>
+
+  <script type="text/template" id="template-dir-entry">
+    <div class="backbone-file-explorer-entry" style="clear: both;">
+      <span class="backbone-file-explorer-directory_icon_button"></span>
+      <span class="backbone-file-explorer-directory_entry_name"><%= name %></span>
+      <span class="backbone-file-explorer-directory_entry_actions"></span>
+    </div>
+  </script>
+
+  <script type="text/template" id="template-source-directory-table">
+    <table>
+      <thead>
+        <th>Path</th>
+        <th></th>
+      </thead>
+      <tbody>
+        <%= rows %>
+      </tbody>
+    </table>
+  </script>
+
+  <script type="text/template" id="template-source-directory-table-row">
+    <tr>
+      <td><%= path %></td>
+      <td><a href="#" id="directory_<%= id %>" class="btn" style="float: right;">Remove</a></td>
+    </tr>
+  </script>
 
 {% endblock %}

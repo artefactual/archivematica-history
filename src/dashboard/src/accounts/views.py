@@ -52,9 +52,11 @@ def edit(request, id=None):
     # Load user
     if id is None:
         user = request.user
+        title = 'Edit your profile (%s)' % user
     else:
         try:
             user = User.objects.get(pk=id)
+            title = 'Edit user %s' % user
         except:
             raise Http404
     # Form
@@ -66,8 +68,7 @@ def edit(request, id=None):
             return HttpResponseRedirect(reverse('accounts.views.list'))
     else:
         form = UserChangeForm(instance=user)
-
-    return render(request, 'accounts/edit.html', {'form': form, 'user': user })
+    return render(request, 'accounts/edit.html', {'form': form, 'user': user, 'title': title })
 
 def delete(request, id):
     # Security check

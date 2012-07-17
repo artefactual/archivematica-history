@@ -7,15 +7,16 @@
 
 {% block content %}
 
-  <ul class="breadcrumb">
-    {% breadcrumb_url 'Administration' main.views.administration %}
-    {% breadcrumb_url 'Users' accounts.views.list %}
-    {% breadcrumb 'Add new' %}
-  </ul>
-
   <div class="row">
 
+    {% include "main/administration/sidebar.html" %}
+
     <div class="span12">
+
+      <ul class="breadcrumb">
+        {% breadcrumb_url 'Users' accounts.views.list %}
+        {% breadcrumb 'Add new user' %}
+      </ul>
 
       <form method="post" action="{% url accounts.views.add %}">
 
