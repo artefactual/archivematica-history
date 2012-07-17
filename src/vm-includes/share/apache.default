@@ -1,7 +1,6 @@
 # NameVirtualHost directive is assigned at ports.conf
 
 <VirtualHost *:80>
-
   ServerAdmin webmaster@localhost
   DocumentRoot /var/www
 
