@@ -57,7 +57,7 @@ def directory_contents(path, contents=[]):
 
 def contents(request):
     path = request.GET.get('path', '/home')
-    response = directory_to_dict('/home/jesus/public')
+    response = directory_to_dict(path)
     return HttpResponse(
         simplejson.JSONEncoder().encode(response),
         mimetype='application/json'
