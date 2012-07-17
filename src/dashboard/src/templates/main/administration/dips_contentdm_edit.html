@@ -17,18 +17,17 @@
 
 {% block content %}
 
-<ul class="breadcrumb">
-  {% breadcrumb_url 'Administration' main.views.administration %}
-  {% breadcrumb 'Upload ContentDM DIP' %}
-</ul>
+  <div class="row">
 
-<form class="form-stacked" method="post" action="{% url main.views.administration_contentdm_dips %}">
+  {% include "main/administration/sidebar.html" %}
 
   <div class="span12">
 
+    <form class="form-stacked" method="post" action="{% url main.views.administration_contentdm_dips %}">
+
     <div class="preview-help-text">
 
-    <h3>Upload ContentDM DIP</h3>
+    <h3>ContentDM DIP upload</h3>
 
     <p class='preview'>Archivematica provides a micro-service to upload generated DIPs to <a href="http://www.qubit-toolkit.org">Qubit Toolkit</a>, only compatible with release 1.2 or newer. In the future we will extend this feature to other access systems. <a href='#'>(read more)</a></p>
 
@@ -77,7 +76,8 @@
       <button type="submit" class="btn primary">Save</button>
     </div>
 
-  </div>
-</form>
+  </form>
+
+</div>
 
 {% endblock %}

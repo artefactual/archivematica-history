@@ -17,79 +17,80 @@
 
 {% block content %}
 
-  <ul class="breadcrumb">
-    {% breadcrumb_url 'Administration' main.views.administration %}
-    {% breadcrumb 'Upload DIP' %}
-  </ul>
+  <div class="row">
 
-  <form class="form-stacked" method="post" action="{% url main.views.administration_dip_edit upload_setting.id %}">
+    {% include "main/administration/sidebar.html" %}
 
     <div class="span12">
 
-      <h3>Upload DIP</h3>
+      <form class="form-stacked" method="post" action="{% url main.views.administration_dip_edit upload_setting.id %}">
 
-      <p>Archivematica provides a micro-service to upload generated DIPs to <a href="http://www.qubit-toolkit.org">Qubit Toolkit</a>, only compatible with release 1.2 or newer. In the future we will extend this feature to other access systems.</p>
-      <p>The arguments below are passed to a Python script called upload-qubit.py. Please note that some arguments are mandatory:</p>
+        <h3>AtoM DIP upload</h3>
 
-      <table class="bordered-table">
-        <thead>
-          <tr>
-            <th>Option</th>
-            <th>Type</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="option">--url</td>
-            <td><span class="label important">Required</span></td>
-            <td>URL where the Qubit index.php frontend lives, SWORD services path will be appended.</td>
-          </tr>
-          <tr>
-            <td class="option">--email</td>
-            <td><span class="label important">Required</span></td>
-            <td>E-mail account used to log into Qubit.</td>
-          </tr>
-          <tr>
-            <td class="option">--password</td>
-            <td><span class="label important">Required</span></td>
-            <td>Password linked to your e-mail account.</td>
-          </tr>
-          <tr>
-            <td class="option">--uuid</td>
-            <td><span class="label important">Required</span></td>
-            <td>Use this wildcard: %SIPUUID%. Archivematica will do the rest for you.</td>
-          </tr>
-          <tr>
-            <td>--rsync-target</td>
-            <td><span class="label">Optional</span></td>
-            <td>The DIP can be sent with Rsync to a remote host before is deposited in Qubit. This is the destination value passed to Rsync (see man 1 rsync). For example: "foobar.com:~/dips/".</td>
-          </tr>
-          <tr>
-            <td class="option">--rsync-command</td>
-            <td><span class="label">Optional</span></td>
-            <td>If --rsync-target is used, you can use this argument to specify the remote shell manually. For example: "ssh -p 22222 -l user".</td>
-          </tr>
-          <tr>
-            <td class="option">--debug</td>
-            <td><span class="label">Optional</span></td>
-            <td>Show additional details.</td>
-          </tr>
-        </tbody>
-      </table>
+        <p>Archivematica provides a micro-service to upload generated DIPs to <a href="http://www.qubit-toolkit.org">Qubit Toolkit</a>, only compatible with release 1.2 or newer. In the future we will extend this feature to other access systems.</p>
+        <p>The arguments below are passed to a Python script called upload-qubit.py. Please note that some arguments are mandatory:</p>
 
-      <div class="clearfix">
-        <label for="arguments">Command arguments</label>
-        <textarea class="span12 command" name="arguments" rows="6">{{ upload_setting.arguments }}</textarea>
-        <span class="help-block">Note that a backslash is necessary for each new line.</span>
-      </div>
+        <table class="bordered-table">
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="option">--url</td>
+              <td><span class="label important">Required</span></td>
+              <td>URL where the Qubit index.php frontend lives, SWORD services path will be appended.</td>
+            </tr>
+            <tr>
+              <td class="option">--email</td>
+              <td><span class="label important">Required</span></td>
+              <td>E-mail account used to log into Qubit.</td>
+            </tr>
+            <tr>
+              <td class="option">--password</td>
+              <td><span class="label important">Required</span></td>
+              <td>Password linked to your e-mail account.</td>
+            </tr>
+            <tr>
+              <td class="option">--uuid</td>
+              <td><span class="label important">Required</span></td>
+              <td>Use this wildcard: %SIPUUID%. Archivematica will do the rest for you.</td>
+            </tr>
+            <tr>
+              <td>--rsync-target</td>
+              <td><span class="label">Optional</span></td>
+              <td>The DIP can be sent with Rsync to a remote host before is deposited in Qubit. This is the destination value passed to Rsync (see man 1 rsync). For example: "foobar.com:~/dips/".</td>
+            </tr>
+            <tr>
+              <td class="option">--rsync-command</td>
+              <td><span class="label">Optional</span></td>
+              <td>If --rsync-target is used, you can use this argument to specify the remote shell manually. For example: "ssh -p 22222 -l user".</td>
+            </tr>
+            <tr>
+              <td class="option">--debug</td>
+              <td><span class="label">Optional</span></td>
+              <td>Show additional details.</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <div class="actions">
-        <input type="submit" value="Save" class="btn primary" />
-      </div>
+        <div class="clearfix">
+          <label for="arguments">Command arguments</label>
+          <textarea class="span12 command" name="arguments" rows="6">{{ upload_setting.arguments }}</textarea>
+          <span class="help-block">Note that a backslash is necessary for each new line.</span>
+        </div>
+
+        <div class="actions">
+          <input type="submit" value="Save" class="btn primary" />
+        </div>
+
+      </form>
 
     </div>
 
-  </form>
+  </div>
 
 {% endblock %}

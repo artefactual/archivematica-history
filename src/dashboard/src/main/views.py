@@ -527,8 +527,11 @@ SELECT
 
     return render(request, 'main/normalization_report.html', locals())
 
-def ingest_browse_normalization(request):
-
+def ingest_browse_normalization(request, jobuuid):
+    jobs = models.Job.objects.filter(jobuuid=jobuuid)
+    job = jobs[0]
+    title = 'Review normalization'
+    name = utils.get_directory_name(job)
     directory = '/var/archivematica/sharedDirectory/watchedDirectories/approveNormalization'
 
     return render(request, 'main/ingest/aip_browse.html', locals())
@@ -551,6 +554,10 @@ def ingest_browse_aip(request, jobuuid):
       '/var/archivematica/sharedDirectory/'
     )
     """
+    jobs = models.Job.objects.filter(jobuuid=jobuuid)
+    job = jobs[0]
+    title = 'Review AIP'
+    name = utils.get_directory_name(job)
     directory = '/var/archivematica/sharedDirectory/watchedDirectories/storeAIP'
 
     return render(request, 'main/ingest/aip_browse.html', locals())
@@ -811,7 +818,7 @@ def access_delete(request, id):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def administration(request):
-    return render(request, 'main/administration/index.html', locals())
+    return HttpResponseRedirect(reverse('main.views.administration_dip'))
 
 def administration_dip(request):
     upload_setting = models.StandardTaskConfig.objects.get(execute="upload-qubit_v0.0")

@@ -57,7 +57,7 @@ def directory_contents(path, contents=[]):
 
 def contents(request):
     path = request.GET.get('path', '/home')
-    response = directory_to_dict(path)
+    response = directory_to_dict('/home/jesus/public')
     return HttpResponse(
         simplejson.JSONEncoder().encode(response),
         mimetype='application/json'
@@ -120,7 +120,7 @@ def copy_transfer_component(request):
             # Create directory before it is used, otherwise shutil.copy()
             # would that location to store a file
             os.mkdir(transfer_dir)
-            
+
             paths_copied = 0
             #return HttpResponse(transfer_dir)
 
@@ -292,7 +292,7 @@ def copy_to_arrange(request):
 
         if possible_uuid_data:
           uuid = possible_uuid_data[0]
-          
+
           # remove UUID from destination directory name
           modified_basename = os.path.basename(sourcepath).replace('-' + uuid, '')
         else:
@@ -368,10 +368,10 @@ def download(request):
     return send_file(request, '/' + request.GET.get('filepath', ''))
 
 def send_file(request, filepath):
-    """                                                                         
-    Send a file through Django without loading the whole file into              
-    memory at once. The FileWrapper will turn the file object into an           
-    iterator for chunks of 8KB.                                                 
+    """
+    Send a file through Django without loading the whole file into
+    memory at once. The FileWrapper will turn the file object into an
+    iterator for chunks of 8KB.
     """
     filename = os.path.basename(filepath)
     extension = os.path.splitext(filepath)[1].lower()
