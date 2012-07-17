@@ -39,7 +39,7 @@ if [ -e  /etc/init/openoffice-service.conf ] ; then
 	sudo rm "/etc/init/openoffice-service.conf"
 fi
 if [ ! -e  /etc/init/qubit-sword.conf ] ; then
-        sudo ln "${svnDir}../qubit-svn/init/qubit-sword.conf" "/etc/init/"
+        sudo ln "${svnDir}qubit-svn/init/qubit-sword.conf" "/etc/init/"
 fi
 
 sudo ln "${svnDir}src/upload-qubit/upload-qubit" "/usr/bin/" 
