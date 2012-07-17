@@ -555,7 +555,7 @@ textarea.command {
 
 #login form {
 
-  padding: 26px 24px 26px;
+  padding: 26px 0 0 0;
   background: #eee;
   border: 1px solid #c5c5c5;
   -moz-box-shadow: rgba(200,200,200,0.7) 0 4px 10px -1px;
@@ -576,8 +576,19 @@ textarea.command {
 
 }
 
-#login button {
+#login .fields {
+  padding: 0 20px 20px 20px;
+}
 
-  margin-top: 14px;
+#login .actions {
+
+  text-align: right;
+  margin: 0;
+  padding: 10px 20px;
+  background-color: #fafafa;
+  border-top: 1px solid #bbb;
+  -mox-box-shadow: inset 0px 3px 14px -6px rgba(0, 0, 0 ,0.6);
+  -webkit-box-shadow: inset 0px 3px 14px -6px rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0px 3px 14px -6px rgba(0, 0, 0, 0.6);
 
 }

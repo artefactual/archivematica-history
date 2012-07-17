@@ -12,9 +12,13 @@
 
       {% csrf_token %}
 
-      {% include "_form.html" %}
+      <div class="fields">
+        {% include "_form.html" %}
+      </div>
 
-      <button class="btn primary" type="submit">Log in</button>
+      <div class="actions">
+        <button class="btn primary" type="submit">Log in</button>
+      </div>
 
     </form>
 
