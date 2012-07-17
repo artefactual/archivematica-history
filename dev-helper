@@ -44,8 +44,8 @@ function svn-update() {
       echo "Bringing latest changes to the working copy..."
       svn update 
 
-      echo "Restarting Apache..."
-      sudo apache2ctl restart
+      echo "Reloading Apache"
+      sudo apache2ctl graceful
 
       echo "Integrating into environment..."
       cd localDevSetup/
