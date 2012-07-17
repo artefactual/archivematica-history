@@ -49,6 +49,7 @@ def edit(request, id=None):
     if request.user.id != id:
         if request.user.is_superuser is False:
             return HttpResponseRedirect(reverse('main.views.forbidden'))
+    # Load user
     if id is None:
         user = request.user
     else:
@@ -56,12 +57,13 @@ def edit(request, id=None):
             user = User.objects.get(pk=id)
         except:
             raise Http404
+    # Form
     if request.method == 'POST':
         form = UserChangeForm(request.POST, instance=user)
         if form.is_valid():
-            user = form.save()
-            if user is not None:
-              return HttpResponseRedirect(reverse('accounts.views.list'))
+            user = form.save(commit=False)
+            user.save()
+            return HttpResponseRedirect(reverse('accounts.views.list'))
     else:
         form = UserChangeForm(instance=user)
 

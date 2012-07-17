@@ -26,6 +26,9 @@ class UserChangeForm(UserChangeForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'is_active', 'is_superuser')
 
+    # TODO: hide is_active to the last superuser in the system
+    # TODO: hide is_active to the last superuser in the system
+
     def save(self, commit=True):
         user = super(UserChangeForm, self).save(commit=False)
         if commit:
