@@ -140,7 +140,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_grant_notes = 1
         extra_copyright_forms = max_notes - models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights).count()
         extra_statute_forms = 1 # max_notes - models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights).count()
-        extra_statute_notes = 1 # max_notes - models.RightsStatementStatuteInformationNote.objects.filter(rightsstatementstatute=viewRights).count()
         extra_license_forms = max_notes - models.RightsStatementLicense.objects.filter(rightsstatement=viewRights).count()
         extra_other_forms = max_notes - models.RightsStatementOtherRightsInformation.objects.filter(rightsstatement=viewRights).count()
     else:
@@ -158,7 +157,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_copyright_forms = max_notes
         extra_copyright_notes = max_notes
         extra_statute_forms = max_notes
-        extra_statute_notes = max_notes
         extra_license_forms = max_notes
         extra_license_notes = max_notes
         extra_other_forms = max_notes
@@ -168,7 +166,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
     GrantNotesFormSet = inlineformset_factory(models.RightsStatementRightsGranted, models.RightsStatementRightsGrantedNote, extra=extra_grant_notes, can_delete=False, form=forms.RightsGrantedNotesForm)
     CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
     StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
-    StatuteNoteFormSet = inlineformset_factory(models.RightsStatementStatuteInformation, models.RightsStatementStatuteInformationNote, extra=extra_statute_notes, can_delete=False, form=forms.RightsStatuteNoteForm)
     LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
     OtherFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementOtherRightsInformation, extra=extra_other_forms, can_delete=False, form=forms.RightsOtherRightsForm)
 
@@ -188,9 +185,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         copyrightFormset = CopyrightFormSet(request.POST, instance=createdRights)
         copyrightFormset.save()
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
-        statuteFormset.save()
-        statuteNoteFormset = StatuteNoteFormSet(request.POST, instance=createdRights)
-        statuteNoteFormset.save()
+        createdStatute = statuteFormset.save()
         licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
         licenseFormset.save()
         otherFormset = OtherFormSet(request.POST, instance=createdRights)
@@ -200,7 +195,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         grantFormset = GrantFormSet(instance=viewRights)
         copyrightFormset = CopyrightFormSet(instance=viewRights)
         statuteFormset = StatuteFormSet(instance=viewRights)
-        statuteNoteFormset = StatuteNoteFormSet(instance=viewRights)
         licenseFormset = LicenseFormSet(instance=viewRights)
         otherFormset = OtherFormSet(instance=viewRights)
 
@@ -1117,6 +1111,14 @@ def formdata(request, type, parent_id, delete_id = None):
         model_value_fields = ['licensenote']
 
         results = model.objects.filter(rightsstatementlicense=parent_id)
+
+    if (type == 'statutenote'):
+        model = models.RightsStatementStatuteInformationNote
+        parent_model = models.RightsStatementStatuteInformation
+        model_parent_field = 'rightsstatementstatute'
+        model_value_fields = ['statutenote']
+
+        results = model.objects.filter(rightsstatementstatute=parent_id)
 
     if (type == 'copyrightnote'):
         model = models.RightsStatementCopyrightNote

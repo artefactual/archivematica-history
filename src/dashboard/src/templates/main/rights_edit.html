@@ -102,16 +102,15 @@
           {% include "_form.html" %}
 
           <div id='statutedocidfields_{{ form.instance.pk }}'></div>
+          <div id='statutenotes_{{ form.instance.pk }}'></div>
 
           <script>
           $(document).ready(function() {
             setUpRepeatingStatuteDocumentationIdentifierRecords('{{ form.instance.pk }}');
+            setUpRepeatingStatuteNotesRecords('{{ form.instance.pk }}');
           });
           </script>
         {% endfor %}
-
-
-          {% include "_formset_table.html" with formset=statuteNoteFormset %}
         </div>
 
         <div id='license_formset'>
