@@ -35,9 +35,8 @@ class RightsForm(ModelForm):
         ('Copyright', 'Copyright'),
         ('Statute', 'Statute'),
         ('License', 'License'),
-        ('Policy', 'Policy'),
         ('Donor', 'Donor'),
-        ('Other', 'Other')
+        ('Other/Policy', 'Other/Policy')
     ))
 
     class Meta:

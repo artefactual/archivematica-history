@@ -140,9 +140,8 @@ function revealSelectedBasis() {
       'Copyright': 'copyright_formset',
       'Statute':   'statute_formset',
       'License':   'license_formset',
-      'Policy':    false,
       'Donor':     false,
-      'Other':     'other_formset'
+      'Other/Policy':     'other_formset'
   }
 
   // hide all formsets except basis
