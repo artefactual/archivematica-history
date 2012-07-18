@@ -284,8 +284,6 @@ CREATE TABLE RightsStatementRightsGranted (
     act LONGTEXT NOT NULL,
     startDate LONGTEXT NOT NULL,
     endDate LONGTEXT,
-    restrictionStartDate LONGTEXT NOT NULL,
-    restrictionEndDate LONGTEXT NOT NULL,
     restriction LONGTEXT NOT NULL
 ) DEFAULT CHARSET=utf8;
 
