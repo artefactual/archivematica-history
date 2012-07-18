@@ -17,7 +17,8 @@ from archivematicaCreateStructuredDirectory import createStructuredDirectory
 
 SHARED_DIRECTORY_ROOT = '/var/archivematica/sharedDirectory'
 ORIGINALS_DIR         = SHARED_DIRECTORY_ROOT + '/transferBackups/originals'
-STANDARD_TRANSFER_DIR = SHARED_DIRECTORY_ROOT + '/watchedDirectories/activeTransfers/standardTransfer'
+ACTIVE_TRANSFER_DIR   = SHARED_DIRECTORY_ROOT + '/watchedDirectories/activeTransfers'
+STANDARD_TRANSFER_DIR = ACTIVE_TRANSFER_DIR + '/standardTransfer'
 COMPLETED_TRANSFERS_DIR = SHARED_DIRECTORY_ROOT + '/watchedDirectories/SIPCreation/completedTransfers'
 
 def directory_to_dict(path, directory={}, entry=False):
@@ -135,7 +136,7 @@ def copy_transfer_component(request):
                             destination_dir
                         )
                     except:
-                        error = 'Error copying from ' + entry_path + ' to ' + destination_dir + '.'
+                        error = 'Error copying from ' + entry_path + ' to ' + destination_dir + '. (' + str(sys.exc_info()[0]) + ')'
                 else:
                     shutil.copy(entry_path, transfer_dir)
 
@@ -210,21 +211,39 @@ def copy_to_originals(request):
 
 def copy_to_start_transfer(request):
     filepath = request.POST.get('filepath', '')
+    type = request.POST.get('type', '')
+
     error = check_filepath_exists('/' + filepath)
 
     if error == None:
         # confine destination to subdir of originals
         filepath = os.path.join('/', filepath)
-        destination = os.path.join(STANDARD_TRANSFER_DIR, os.path.basename(filepath))
+        basename = os.path.basename(filepath)
+
+        # default to standard transfer
+        type_paths = {
+          'standard':     'standardTransfer',
+          'unzipped bag': 'baggitDirectory',
+          'zipped bag':   'baggitZippedDirectory',
+          'dspace':       'Dspace',
+          'maildir':      'maildir'
+        }
+
+        try:
+          type_subdir = type_paths[type]
+          destination = os.path.join(ACTIVE_TRANSFER_DIR, type_subdir, basename)
+        except KeyError:
+          destination = os.path.join(STANDARD_TRANSFER_DIR, basename)
+
         destination = pad_destination_filepath_if_it_already_exists(destination)
-        #error = 'Copying from ' + filepath + ' to ' + destination + '.'
+
         try:
             shutil.copytree(
                 filepath,
                 destination
             )
         except:
-            error = 'Error copying from ' + filepath + ' to ' + destination + '.'
+            error = 'Error copying from ' + entry_path + ' to ' + destination_dir + '. (' + str(sys.exc_info()[0]) + ')'
 
     response = {}
 

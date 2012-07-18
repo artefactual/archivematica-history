@@ -11,9 +11,10 @@ var TransferComponentFormView = Backbone.View.extend({
     $(this.modal_template).modal({show: true});
 
     // make it destroy rather than hide modal
-    $('#transfer-component-select-close, #transfer-component-select-cancel').click(function() {
-      $('#transfer-component-select-modal').remove();
-    });
+    $('#transfer-component-select-close, #transfer-component-select-cancel')
+      .click(function() {
+        $('#transfer-component-select-modal').remove();
+      });
 
     // add directory selector
     createDirectoryPicker(
