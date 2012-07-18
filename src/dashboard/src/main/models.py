@@ -292,6 +292,16 @@ class RightsStatementStatuteInformationNote(models.Model):
     class Meta:
         db_table = u'RightsStatementStatuteInformationNote'
 
+class RightsStatementStatuteDocumentationIdentifier(models.Model):
+    id = models.AutoField(primary_key=True, db_column='pk', editable=False)
+    rightsstatementstatute = models.ForeignKey(RightsStatementStatuteInformation, db_column='fkRightsStatementStatuteInformation')
+    statutedocumentationidentifiertype = models.TextField(db_column='statuteDocumentationIdentifierType', blank=True, verbose_name='Statute document identification type')
+    statutedocumentationidentifiervalue = models.TextField(db_column='statuteDocumentationIdentifierValue', blank=True, verbose_name='Statute document identification value')
+    statutedocumentationidentifierrole = models.TextField(db_column='statuteDocumentationIdentifierRole', blank=True, verbose_name='Statute document identification role')
+
+    class Meta:
+        db_table = u'RightsStatementStatuteDocumentationIdentifier'
+
 class RightsStatementOtherRightsInformation(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
