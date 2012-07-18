@@ -19,6 +19,13 @@ function setUpRepeatingCopyrightNotesRecords(parentId) {
   setUpRepeatingField('copyrightnotes_', parentId, 'Copyright Note', schema, '/formdata/copyrightnote/' + parentId + '/');
 }
 
+function setUpRepeatingStatuteNotesRecords(parentId) {
+  var schema = {
+    'statutenote': {},
+  };
+  setUpRepeatingField('statutenotes_', parentId, 'Statute Note', schema, '/formdata/statutenote/' + parentId + '/');
+}
+
 function setUpRepeatingLicenseNotesRecords(parentId) {
   var schema = {
     'licensenote': {},
