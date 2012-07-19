@@ -22,6 +22,8 @@
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
+#/src/dashboard/src/main/models.py
+
 from archivematicaXMLNamesSpace import *
 
 import os
@@ -33,7 +35,6 @@ import databaseInterface
 from sharedVariablesAcrossModules import sharedVariablesAcrossModules
 from archivematicaFunctions import escape
 
-DEBUG = True
 
 def formatDate(date):
     """hack fix for 0.8, easy dashboard insertion ISO 8061 -> edtfSimpleType"""
@@ -49,15 +50,11 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
         list = "RightsStatement.pk, rightsStatementIdentifierType, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseTerms, copyrightApplicableStartDate, copyrightApplicableEndDate, licenseApplicableStartDate, licenseApplicableEndDate"
         key = list.split(", ")
         sql = """SELECT %s FROM RightsStatement LEFT JOIN RightsStatementCopyright ON RightsStatementCopyright.fkRightsStatement = RightsStatement.pk LEFT JOIN RightsStatementLicense ON RightsStatementLicense.fkRightsStatement = RightsStatement.pk WHERE metadataAppliesToidentifier = '%s' AND metadataAppliesToType = %s;""" % (list, metadataAppliesToidentifier, metadataAppliesToType)
-        if DEBUG:
-            print sql
         rows = databaseInterface.queryAllSQL(sql)
         if not rows:
             continue
         else:
             for row in rows:
-                if DEBUG:
-                    print row
                 valueDic= {}
                 rightsStatement = etree.Element("rightsStatement", nsmap={None: premisNS})
                 rightsStatement.set(xsiBNS+"schemaLocation", premisNS + " http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd")
@@ -128,8 +125,9 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     #4.1.5 statuteInformation (O, R)
                     getstatuteInformation(valueDic["RightsStatement.pk"], rightsStatement)
                     
+                    
 
-                elif valueDic["rightsBasis"].lower() in ["donor agreement", "policy"]:
+                elif valueDic["rightsBasis"].lower() in ["donor agreement", "policy", "other"]:
                     otherRightsInformation = etree.SubElement(rightsStatement, "otherRightsInformation")
                     #RightsStatementotherRightsDocumentationIdentifier
                     getDocumentationIdentifier(valueDic["RightsStatement.pk"], otherRightsInformation)
@@ -180,7 +178,7 @@ def getDocumentationIdentifier(pk, parent):
 
 
 def getstatuteInformation(pk, parent):
-    sql = "SELECT pk, statuteJurisdiction, statuteCitation, statuteInformationDeterminationDate FROM RightsStatementStatuteInformation WHERE fkRightsStatement = %d" % (pk)
+    sql = "SELECT pk, statuteJurisdiction, statuteCitation, statuteInformationDeterminationDate, statuteapplicablestartdate, statuteapplicableenddate FROM RightsStatementStatuteInformation WHERE fkRightsStatement = %d" % (pk)
     #print sql
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
@@ -190,23 +188,46 @@ def getstatuteInformation(pk, parent):
         etree.SubElement(statuteInformation, "statuteInformationDeterminationDate").text = formatDate(row[3])
 
         #statuteNote Repeatable
-        sql = "SELECT statuteNote FROM RightsStatementStatuteInformationNote WHERE fkRightsStatement = %d;" % (row[0])
+        sql = "SELECT statuteNote FROM RightsStatementStatuteInformationNote WHERE fkRightsStatementStatuteInformation = %d;" % (row[0])
         rows2 = databaseInterface.queryAllSQL(sql)
         for row2 in rows2:
             etree.SubElement(statuteInformation, "statuteNote").text =  row2[0]
-        #if not len(rows2):
-            #print sql
+        
+        """SELECT statuteDocumentationIdentifierType, statuteDocumentationIdentifierValue, statuteDocumentationIdentifierRole FROM RightsStatementStatuteDocumentationIdentifier WHERE fkRightsStatementStatuteInformation = %s """ % (row[0])
+        rows2 = databaseInterface.queryAllSQL(sql)
+        for row2 in rows2:
+            statuteDocumentationIdentifier = etree.SubElement(statuteInformation, "statuteDocumentationIdentifier")
+            etree.SubElement(statuteDocumentationIdentifier, "statuteDocumentationIdentifierType").text = row[1]
+            etree.SubElement(statuteDocumentationIdentifier, "statuteDocumentationIdentifierValue").text = row[2]
+            etree.SubElement(statuteDocumentationIdentifier, "statuteDocumentationRole").text = row[3]
+        
+        statuteapplicablestartdate =  row[4]
+        statuteapplicableenddate = row[5]
+        if statuteapplicablestartdate or statuteapplicableenddate:
+             statuteApplicableDates = etree.SubElement(statuteInformation, "statuteApplicableDates")
+             if statuteapplicablestartdate: 
+                etree.SubElement(statuteApplicableDates, "startDate").text = formatDate(statuteapplicablestartdate)
+             if statuteapplicableenddate:
+                 etree.SubElement(statuteApplicableDates, "endDate").text = formatDate(statuteapplicableenddate)
+        
 
 def getrightsGranted(pk, parent):
-    sql = "SELECT pk, act, startDate, endDate, restriction FROM RightsStatementRightsGranted WHERE fkRightsStatement = %d" % (pk)
+    sql = "SELECT RightsStatementRightsGranted.pk, act, startDate, endDate FROM RightsStatementRightsGranted  WHERE fkRightsStatement = %d" % (pk)
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
         rightsGranted = etree.SubElement(parent, "rightsGranted")
-        restriction = row[4]
-        #TODO : Issue 860:    rights granted restriction is a repeatable field.
-        #http://code.google.com/p/archivematica/issues/detail?id=860
         etree.SubElement(rightsGranted, "act").text = row[1]
-        etree.SubElement(rightsGranted, "restriction").text = restriction
+        
+        restriction = "Undefined"
+        sql = """SELECT restriction FROM RightsStatementRightsGrantedRestriction WHERE RightsStatementRightsGrantedRestriction.fkRightsStatementRightsGranted = %s """ % (row[0])
+        rows2 = databaseInterface.queryAllSQL(sql)
+        for row2 in rows2:
+            restriction = row2[0]
+            if not restriction.lower() in ["disallow", "conditional", "allow"]:
+                print >>sys.stderr, "The value of element restriction must be: 'Allow', 'Dissallow', or 'Conditional'"
+                sharedVariablesAcrossModules.globalErrorCount +=1
+            etree.SubElement(rightsGranted, "restriction").text = restriction
+        
         if restriction.lower() in ["allow"]:
             termOfGrant = etree.SubElement(rightsGranted, "termOfGrant")
         elif restriction.lower() in ["disallow", "conditional"]:
