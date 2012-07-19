@@ -39,9 +39,6 @@ def getDestinationImportDirectory(targetCollection, contentdmServer):
     print >>sys.stderr, "Cannot retrieve CONTENTdm collection parameters from " + CollectionParametersUrl
     quit(1)
 
-  print "collectionParameters is"
-  print collectionParameters
-
   return collectionParameters['path']
 
 

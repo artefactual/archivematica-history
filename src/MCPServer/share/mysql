@@ -745,7 +745,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize preservation');
 SET @NormalizePreservationChain = LAST_INSERT_ID();
 
 
@@ -763,7 +763,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize access');
 SET @NormalizeAccessChain = LAST_INSERT_ID();
 --
 
@@ -782,7 +782,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize preservation');
 SET @NormalizePreservationChain = LAST_INSERT_ID();
 
 
@@ -800,7 +800,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize access');
 SET @NormalizeAccessFromServiceChain = LAST_INSERT_ID();
 --
 
@@ -850,7 +850,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize preservation');
 SET @NormalizePreservationChain = LAST_INSERT_ID();
 
 
@@ -868,7 +868,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation and access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize preservation and access');
 SET @NormalizePreservationAndAccessChain = LAST_INSERT_ID();
 --
 
@@ -914,6 +914,7 @@ SET @microserviceGroup  = 'Reject SIP';
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveSIP_v0.0', '"%SIPDirectory%" "%rejectedDirectory%." "%SIPUUID%" "%sharedPath%"');
+
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(),  'Move to the rejected directory');
@@ -925,30 +926,6 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, NULL);
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject SIP');
 SET @rejectSIPMicroServiceChain = LAST_INSERT_ID();
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject SIP');
-SET @rejectSIPMicroServiceChain2 = LAST_INSERT_ID();
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject AIP');
-SET @rejectAIPMicroServiceChain = LAST_INSERT_ID();
-
-
--- Reject DIP --
-SET @microserviceGroup  = 'Reject DIP';
-INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
-    VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'move_v0.0', '"%SIPDirectory%" "%rejectedDirectory%."');
-
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      LAST_INSERT_ID(),  'Move to the rejected directory');
-
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
-SET @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
-    VALUES (@MicroServiceChainLink, 0, NULL);
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Reject DIP');
-SET @rejectDIPMicroServiceChain = LAST_INSERT_ID();
-
 
 -- <uploadDIP ICA-ATOM> --
 SET @microserviceGroup  = 'Upload DIP';
@@ -968,7 +945,7 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', '--url="http://localhost/ica-atom/index.php" \\\r\n--email="demo@example.com" \\\r\n--password="demo" \\\r\n--uuid="%SIPUUID%" \\\r\n--rsync-target="/tmp"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'upload-qubit_v0.0', '--url="http://localhost/qubit/index.php" \\\r\n--email="demo@example.com" \\\r\n--password="demo" \\\r\n--uuid="%SIPUUID%" \\\r\n--rsync-target="/tmp"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Upload DIP');
@@ -989,7 +966,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 */
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Upload DIP to Atom');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Upload DIP to ICA-ATOM');
 SET @MicroServiceChainUploadICAATOM = LAST_INSERT_ID();
 
 -- <uploadDIP - contentDM> --
@@ -1063,10 +1040,10 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (10,      LAST_INSERT_ID(), 'Select destination collection');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
@@ -1076,10 +1053,10 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (9,      LAST_INSERT_ID(), 'Get list of collections on server');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
@@ -1096,9 +1073,7 @@ SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
     VALUES (@MicroServiceChainLink, 'localhost', '{"%ContentdmServer%":"localhost", "%ContentdmUser%":"usernamefoo", "%ContentdmGroup%":"123"}');
 INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'content.lib.sfu.ca', '{"%ContentdmServer%":"142.58.129.69:81", "%ContentdmUser%":"usernamebar", "%ContentdmGroup%":"456"}');
-INSERT INTO MicroServiceChoiceReplacementDic (choiceAvailableAtLink, description, replacementDic)
-    VALUES (@MicroServiceChainLink, 'be.cdm6.library.ubc.ca', '{"%ContentdmServer%":"142.103.160.77", "%ContentdmUser%":"usernamebaz", "%ContentdmGroup%":"789"}');
+    VALUES (@MicroServiceChainLink, 'contentdm.example.com', '{"%ContentdmServer%":"111.222.333.444:81", "%ContentdmUser%":"usernamebar", "%ContentdmGroup%":"456"}');
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
@@ -1134,7 +1109,7 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @MicroServiceChainUploadContentDM);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @rejectDIPMicroServiceChain);
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 -- 1
@@ -1216,7 +1191,7 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @MicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @rejectAIPMicroServiceChain);
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
@@ -1676,7 +1651,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Approve'); -- approve normalization preservation and access
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Approve normalization'); -- approve normalization preservation and access
 SET @MicroServiceChain = LAST_INSERT_ID();
 
 
@@ -1725,7 +1700,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Do not normalize'); -- No normalization for sip with access directory --
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'No normalization'); -- No normalization for sip with access directory --
 SET @noNormalizationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
 
 SET @microserviceGroup  = 'Normalize';
@@ -1743,7 +1718,7 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @MicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain2);
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
@@ -1845,7 +1820,7 @@ SET @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
 
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation'); -- preservation normalization for sip with access directory --
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Preservation'); -- preservation normalization for sip with access directory --
 SET @normalizePreservationWithAccessDirectoryMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -1853,7 +1828,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, 'objects', FALSE, NULL, NULL, @NormalizePreservationAndAccessChain, Null); -- need itoa? --
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (6,      LAST_INSERT_ID(), 'Normalize for preservation and access');
+    (6,      LAST_INSERT_ID(), 'Normalize preservation and access');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @ResumeAferTranscodingPreservationAndAccessLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -1899,7 +1874,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation and access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Preservation and access');
 SET @CreateDIPandAIPMicroServiceChain = LAST_INSERT_ID();
 -- /CREATE AIP AND DIP --
 
@@ -1961,7 +1936,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Access only');
 SET @normalizeAccessOnlyMicroServiceChain = LAST_INSERT_ID();
 -- CREATE AIP AND DIP - Access normalization only --
 
@@ -1982,7 +1957,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, 'objects', FALSE, NULL, NULL, @NormalizeAccessFromServiceChain, Null);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (6,      LAST_INSERT_ID(), 'Normalize service files for access');
+    (6,      LAST_INSERT_ID(), 'Normalize access from service');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @ResumeAferTranscodingPreservationAndAccessLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -2023,7 +1998,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize service files for access');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Access only -normalized from service files');
 SET @normalizeAccessOnlyFromServiceMicroServiceChain = LAST_INSERT_ID();
 -- CREATE AIP AND DIP - Access normalization only --
 
@@ -2235,7 +2210,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Approve'); -- approve normalization --
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink2,  'Approve normalization');
 SET @ProcessSubmissionDocumentationLinkMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
@@ -2272,7 +2247,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Do not normalize');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'No normalization');
 SET @NoNormalizationLinkMicroServiceChain = LAST_INSERT_ID();
 
 
@@ -2290,7 +2265,7 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     (@MicroServiceChainLink, @ProcessSubmissionDocumentationLinkMicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @rejectSIPMicroServiceChain2);
+    (@MicroServiceChainLink, @rejectSIPMicroServiceChain);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
@@ -2369,7 +2344,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink2 = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Normalize for preservation');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Preservation only');
 SET @CreateAIPMicroServiceChain = LAST_INSERT_ID();
 -- /CREATE AIP --
 
@@ -2388,19 +2363,19 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @NoNormalizationLinkMicroServiceChain); -- No normalization --
-INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
-    VALUES
-    (@MicroServiceChainLink, @CreateDIPandAIPMicroServiceChain);
+    (@MicroServiceChainLink, @CreateAIPMicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
     (@MicroServiceChainLink, @normalizeAccessOnlyMicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @CreateAIPMicroServiceChain);
+    (@MicroServiceChainLink, @normalizeAccessOnlyFromServiceMicroServiceChain);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @normalizeAccessOnlyFromServiceMicroServiceChain);
+    (@MicroServiceChainLink, @CreateDIPandAIPMicroServiceChain);
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+    VALUES
+    (@MicroServiceChainLink, @NoNormalizationLinkMicroServiceChain); -- No normalization --
 -- Issue 741:	Make manual normalization compatible with current data structure
 -- INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
 --    VALUES
@@ -2640,10 +2615,10 @@ SET @archivematicaVerifyMetsTask = LAST_INSERT_ID();
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      @archivematicaVerifyMetsTask, 'Verify mets_structmap.xml compliance');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailedSIPComplianceChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
@@ -2868,7 +2843,7 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create single SIP');
 SET @MicroServiceChain2 = LAST_INSERT_ID();
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (Null,  'Create SIP(s) manually');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (Null,  'Manual SIP creation');
 SET @MicroServiceChain3 = LAST_INSERT_ID();
 
 
@@ -2884,9 +2859,9 @@ SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
     (@MicroServiceChainLink, @MicroServiceChain);
-/*INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
+INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
-    (@MicroServiceChainLink, @MicroServiceChain2); */
+    (@MicroServiceChainLink, @MicroServiceChain2);
 INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
     VALUES
     (@MicroServiceChainLink, @MicroServiceChain3);
@@ -3363,7 +3338,7 @@ SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Do not backup transfer');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Do not create transfer backup');
 SET @DoNotCreateTransferBackupMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -3388,7 +3363,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Backup transfer');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'Create transfer backup');
 SET @CreateTransferBackupMicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
@@ -3605,10 +3580,10 @@ SET @microserviceGroup  = 'Verify transfer compliance';
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      @archivematicaVerifyMetsTask, 'Verify mets_structmap.xml compliance');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailTransferComplianceChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @PassedComplianceMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
@@ -3999,7 +3974,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, @unquarantineDefaultTransferMagicChainLink, NULL);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (3,      LAST_INSERT_ID(), 'Designate to process as a DSpace transfer when unquarantined');
+    (3,      LAST_INSERT_ID(), 'Designate to process as a DSpace 1.7 transfer when unquarantined');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -4077,7 +4052,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, @WorkflowdecisionsendtransfertoquarantineDspace17TransferMagicChainLink, NULL);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (3,      LAST_INSERT_ID(), 'Designate to process as a DSpace transfer');
+    (3,      LAST_INSERT_ID(), 'Designate to process as a DSpace 1.7 transfer');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -4181,7 +4156,7 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/activeTransfers/Dspace/." "%SIPUUID%" "%sharedPath%"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'moveTransfer_v0.0', '"%SIPDirectory%" "%sharedPath%watchedDirectories/activeTransfers/Dspace1.7/." "%SIPUUID%" "%sharedPath%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      LAST_INSERT_ID(), 'Failed compliance. See output in dashboard. Transfer moved back to activeTransfers.');
@@ -4193,10 +4168,10 @@ SET @microserviceGroup  = 'Verify transfer compliance';
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (0,      @archivematicaVerifyMetsTask, 'Verify mets_structmap.xml compliance');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @FailTransferComplianceChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
@@ -4213,10 +4188,10 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'archivematicaSetTransferType_v0.0', '"%SIPUUID%" "Dspace"');
+    (NULL, NULL, NULL, FALSE, NULL, NULL, 'archivematicaSetTransferType_v0.0', '"%SIPUUID%" "Dspace1.7"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (0,      LAST_INSERT_ID(), 'Set transfer type: DSpace');
+    (0,      LAST_INSERT_ID(), 'Set transfer type: DSpace 1.7');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -4250,7 +4225,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      LAST_INSERT_ID(), 'Approve transfer');
+    (2,      LAST_INSERT_ID(), 'Approve DSpace 1.7 transfer');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -4263,26 +4238,16 @@ INSERT INTO MicroServiceChainChoice (choiceAvailableAtLink, chainAvailable)
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
-INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'DSpace Transfers In progress');
+INSERT INTO MicroServiceChains (startingLink, description) VALUES (@MicroServiceChainLink,  'DSpace 1.7 Transfers In progress');
 SET @MicroServiceChain = LAST_INSERT_ID();
 
 INSERT INTO WatchedDirectories (watchedDirectoryPath, chain, expectedType)
-    VALUES ('%watchDirectoryPath%activeTransfers/Dspace', @MicroServiceChain, @expectedTypeTransfer);
+    VALUES ('%watchDirectoryPath%activeTransfers/Dspace1.7', @MicroServiceChain, @expectedTypeTransfer);
 
 -- /DPSACE TRANSFER --
 
 
 -- BAGIT Transfer
-INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
-    VALUES
-    (0,      @IncludedefaultTransferprocessingMCPxmlTask, 'Include default Transfer processingMCP.xml');
-INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
-SET @MicroServiceChainLink = LAST_INSERT_ID();
-INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
-    VALUES (@MicroServiceChainLink, 0, @bagitJoinStandardProcessingLink);
-SET @NextMicroServiceChainLink = @MicroServiceChainLink;
-
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
     (NULL, NULL, NULL, TRUE, NULL, NULL, 'verifyAndRestructureTransferBag_v0.0',  '"%SIPDirectory%" "%SIPUUID%"');
@@ -4293,14 +4258,14 @@ INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextC
     VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
-    VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
+    VALUES (@MicroServiceChainLink, 0, @bagitJoinStandardProcessingLink);
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
 -- Assign file uuid's
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'updateSizeAndChecksum_v0.0',  '--filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%"');
+    (NULL, NULL, 'NULL', FALSE, NULL, NULL, 'updateSizeAndChecksum_v0.0',  '--filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      LAST_INSERT_ID(), 'Assign checksums and file sizes to objects');
@@ -4312,9 +4277,10 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 
+
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, NULL, FALSE, NULL, NULL, 'assignFileUUIDs_v0.0',  '--transferUUID "%SIPUUID%" --sipDirectory "%SIPDirectory%" --filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%"');
+    (NULL, NULL, NULL, TRUE, NULL, NULL, 'assignFileUUIDs_v0.0',  '--transferUUID "%SIPUUID%" --sipDirectory "%SIPDirectory%" --filePath "%relativeLocation%" --fileUUID "%fileUUID%" --eventIdentifierUUID "%taskUUID%" --date "%date%"');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      LAST_INSERT_ID(), 'Assign file UUIDs to objects');
@@ -4362,7 +4328,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      LAST_INSERT_ID(), 'Approve transfer');
+    (2,      LAST_INSERT_ID(), 'Approve bagit transfer');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
@@ -4414,7 +4380,7 @@ INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, 
     (NULL, NULL, NULL, FALSE, NULL, NULL, '', '');
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
-    (2,      LAST_INSERT_ID(), 'Approve transfer');
+    (2,      LAST_INSERT_ID(), 'Approve bagit transfer');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
     VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
