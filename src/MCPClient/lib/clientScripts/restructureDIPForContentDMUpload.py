@@ -152,8 +152,10 @@ def getFptrObjectFilename(fptrValue, filesInObjectDir):
 # elememts as keys, each of which has as its values the CONTENTdm nick and name for
 # the corresponding field in the current collection and 2), 'order', a list of the 
 # collection's field nicks, which is needed to write out the metadata in the correct
-# field order. Archivematica only uses the legacy unqualified DC elements but we
-# include the entire CONTENTdm DCTERMS mappings for good measure.
+# field order. The Archivematica metadata CRUD form only uses the legacy unqualified
+# DC elements but we include the entire CONTENTdm DCTERMS mappings because the entire
+# set of DCTERMS are supported in dublincore.xml files included in the transfer
+# packages' metadata directory.
 def getContentdmCollectionFieldInfo(contentdmServer, targetCollection):
     collectionFieldInfo = {}
     # First, define the CONTENTdm DC nicknames -> DCTERMs mapping. 
@@ -732,3 +734,4 @@ if __name__ == '__main__':
         generateCompoundContentDMDirectUploadPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory, filesInThumbnailDirectory)
     if len(filesInObjectDirectory) > 1 and args.ingestFormat == 'projectclient':
         generateCompoundContentDMProjectClientPackage(metsDom, args.uuid, outputDipDir, filesInObjectDirectory)
+
