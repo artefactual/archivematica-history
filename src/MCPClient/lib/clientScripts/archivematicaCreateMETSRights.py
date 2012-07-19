@@ -46,6 +46,7 @@ def formatDate(date):
 def archivematicaGetRights(metadataAppliesToList, fileUUID):
     """[(fileUUID, fileUUIDTYPE), (sipUUID, sipUUIDTYPE), (transferUUID, transferUUIDType)]"""
     ret = []
+    rightsBasisActuallyOther = ["Policy", "Donor"]
     for metadataAppliesToidentifier, metadataAppliesToType in metadataAppliesToList:
         list = "RightsStatement.pk, rightsStatementIdentifierType, rightsStatementIdentifierType, rightsStatementIdentifierValue, rightsBasis, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, licenseTerms, copyrightApplicableStartDate, copyrightApplicableEndDate, licenseApplicableStartDate, licenseApplicableEndDate"
         key = list.split(", ")
@@ -70,7 +71,10 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                 else:
                     etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierType").text = "UUID"
                     etree.SubElement(rightsStatementIdentifier, "rightsStatementIdentifierValue").text = uuid.uuid4().__str__()
-                etree.SubElement(rightsStatement, "rightsBasis").text = valueDic["rightsBasis"]
+                if valueDic["rightsBasis"] in rightsBasisActuallyOther:
+                    etree.SubElement(rightsStatement, "rightsBasis").text = "Other"
+                else:
+                    etree.SubElement(rightsStatement, "rightsBasis").text = valueDic["rightsBasis"]
                 
                 #copright information
                 if valueDic["rightsBasis"].lower() in ["copyright"]:
@@ -125,25 +129,42 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     #4.1.5 statuteInformation (O, R)
                     getstatuteInformation(valueDic["RightsStatement.pk"], rightsStatement)
                     
-                    
-
                 elif valueDic["rightsBasis"].lower() in ["donor agreement", "policy", "other"]:
                     otherRightsInformation = etree.SubElement(rightsStatement, "otherRightsInformation")
-                    #RightsStatementotherRightsDocumentationIdentifier
-                    getDocumentationIdentifier(valueDic["RightsStatement.pk"], otherRightsInformation)
-
-                    otherRightsApplicableDates = etree.SubElement(otherRightsInformation, "otherRightsApplicableDates")
-                    if valueDic["copyrightApplicableStartDate"]:
-                        etree.SubElement(otherRightsApplicableDates, "startDate").text = formatDate(valueDic["copyrightApplicableStartDate"])
-                    if valueDic["copyrightApplicableEndDate"]:
-                        etree.SubElement(otherRightsApplicableDates, "endDate").text = formatDate(valueDic["copyrightApplicableEndDate"])
-
-                    #otherRightsNote Repeatable
-                    sql = "SELECT copyrightNote FROM RightsStatementCopyrightNote WHERE fkRightsStatement = %d;" % (valueDic["RightsStatement.pk"])
+                    sql = """SELECT pk, otherRightsBasis, otherRightsApplicableStartDate, otherRightsApplicableEndDate FROM RightsStatementOtherRightsInformation WHERE RightsStatementOtherRightsInformation.fkRightsStatement = %d;""" % (valueDic["RightsStatement.pk"])
                     rows2 = databaseInterface.queryAllSQL(sql)
                     for row2 in rows2:
-                        etree.SubElement(otherRightsInformation, "otherRightsNote").text =  row2[0]
-
+                        #otherRightsDocumentationIdentifier
+                        sql = """SELECT otherRightsDocumentationIdentifierType, otherRightsDocumentationIdentifierValue, otherRightsDocumentationIdentifierRole FROM RightsStatementOtherRightsDocumentationIdentifier WHERE fkRightsStatementotherRightsInformation = %s """ % (row2[0])
+                        rows3 = databaseInterface.queryAllSQL(sql)
+                        for row3 in rows3:
+                            otherRightsDocumentationIdentifier = etree.SubElement(otherRightsInformation, "otherRightsDocumentationIdentifier")
+                            etree.SubElement(otherRightsDocumentationIdentifier, "otherRightsDocumentationIdentifierType").text = row3[0]
+                            etree.SubElement(otherRightsDocumentationIdentifier, "otherRightsDocumentationIdentifierValue").text = row3[1]
+                            etree.SubElement(otherRightsDocumentationIdentifier, "otherRightsDocumentationRole").text = row3[2]
+                        
+                        otherRightsBasis = row2[1]
+                        
+                        if not otherRightsBasis or valueDic["rightsBasis"] in rightsBasisActuallyOther: #not 100%
+                            otherRightsBasis = valueDic["rightsBasis"]
+                        etree.SubElement(otherRightsInformation, "otherRightsBasis").text = otherRightsBasis
+                        
+                        
+                        otherRightsApplicableStartDate = row2[2]
+                        otherRightsApplicableEndDate = row2[3]
+                        if otherRightsApplicableStartDate or otherRightsApplicableEndDate:  
+                            otherRightsApplicableDates = etree.SubElement(otherRightsInformation, "otherRightsApplicableDates")
+                            if otherRightsApplicableStartDate:
+                                etree.SubElement(otherRightsApplicableDates, "startDate").text = formatDate(otherRightsApplicableStartDate)
+                            if otherRightsApplicableEndDate:
+                                etree.SubElement(otherRightsApplicableDates, "endDate").text = formatDate(otherRightsApplicableEndDate)
+    
+                        #otherRightsNote Repeatable
+                        sql = "SELECT otherRightsNote FROM RightsStatementOtherRightsNote WHERE fkRightsStatementOtherRightsInformation = %d;" % (row2[0])
+                        rows3 = databaseInterface.queryAllSQL(sql)
+                        for row3 in rows3:
+                            etree.SubElement(otherRightsInformation, "otherRightsNote").text =  row3[0]
+    
                 #4.1.6 rightsGranted (O, R)
                 getrightsGranted(valueDic["RightsStatement.pk"], rightsStatement)
 
@@ -193,13 +214,13 @@ def getstatuteInformation(pk, parent):
         for row2 in rows2:
             etree.SubElement(statuteInformation, "statuteNote").text =  row2[0]
         
-        """SELECT statuteDocumentationIdentifierType, statuteDocumentationIdentifierValue, statuteDocumentationIdentifierRole FROM RightsStatementStatuteDocumentationIdentifier WHERE fkRightsStatementStatuteInformation = %s """ % (row[0])
+        sql = """SELECT statuteDocumentationIdentifierType, statuteDocumentationIdentifierValue, statuteDocumentationIdentifierRole FROM RightsStatementStatuteDocumentationIdentifier WHERE fkRightsStatementStatuteInformation = %s """ % (row[0])
         rows2 = databaseInterface.queryAllSQL(sql)
         for row2 in rows2:
             statuteDocumentationIdentifier = etree.SubElement(statuteInformation, "statuteDocumentationIdentifier")
-            etree.SubElement(statuteDocumentationIdentifier, "statuteDocumentationIdentifierType").text = row[1]
-            etree.SubElement(statuteDocumentationIdentifier, "statuteDocumentationIdentifierValue").text = row[2]
-            etree.SubElement(statuteDocumentationIdentifier, "statuteDocumentationRole").text = row[3]
+            etree.SubElement(statuteDocumentationIdentifier, "statuteDocumentationIdentifierType").text = row2[0]
+            etree.SubElement(statuteDocumentationIdentifier, "statuteDocumentationIdentifierValue").text = row2[1]
+            etree.SubElement(statuteDocumentationIdentifier, "statuteDocumentationRole").text = row2[2]
         
         statuteapplicablestartdate =  row[4]
         statuteapplicableenddate = row[5]
@@ -224,7 +245,7 @@ def getrightsGranted(pk, parent):
         for row2 in rows2:
             restriction = row2[0]
             if not restriction.lower() in ["disallow", "conditional", "allow"]:
-                print >>sys.stderr, "The value of element restriction must be: 'Allow', 'Dissallow', or 'Conditional'"
+                print >>sys.stderr, "The value of element restriction must be: 'Allow', 'Disallow', or 'Conditional':", restriction
                 sharedVariablesAcrossModules.globalErrorCount +=1
             etree.SubElement(rightsGranted, "restriction").text = restriction
         
