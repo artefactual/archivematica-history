@@ -82,12 +82,6 @@
       form.render();
     });
     </script>
-
-    <!--
-    <form action='/transfer/add/' method='POST'>
-    {{ form.name }} {{ form.source_directory }} <input type='submit' value='Add' /> <a href='/transfer/browser/'>Browse backlog?</a>
-    </form>
-    -->
   {% endif %}
 
   <div class="span12" id="sip-container">
@@ -163,6 +157,9 @@
   <!-- Transfer component form layout templates -->
   <script type="text/template" id='transfer-component-layout'>
     <div id="transfer-component-form">
+      <div class="transfer-component-activity-indicator">
+        <img src='/media/images/ajax-loader.gif' />
+      </div>
       <div style="float:left">
         <form>
           <div id='transfer-type-container'>

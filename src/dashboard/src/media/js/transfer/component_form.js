@@ -36,6 +36,7 @@ var TransferComponentFormView = Backbone.View.extend({
     var path
       , copied = 0;
 
+    $('.transfer-component-activity-indicator').show();
     // get path to temp directory in which to copy individual transfer
     // components
     $.ajax({
@@ -80,6 +81,7 @@ var TransferComponentFormView = Backbone.View.extend({
               message: 'Transfer copy complete.'
             });
             $('#path_container').html('');
+            $('.transfer-component-activity-indicator').hide();
           }
         });
         // report progress
