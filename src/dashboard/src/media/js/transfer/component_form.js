@@ -130,7 +130,7 @@ var TransferComponentFormView = Backbone.View.extend({
     $('#path_add_button').click(function() {
       // add modal containing directory selector
       // selecting makes modal disappear, adds directory, and re-renders
-      self.showSelector($sourceDirSelect.children('option:selected').text());
+      self.showSelector($('#path_source_select').children(':selected').text());
     });
 
     // make start transfer button clickable
