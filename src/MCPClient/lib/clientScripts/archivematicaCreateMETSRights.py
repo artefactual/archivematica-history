@@ -129,7 +129,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     #4.1.5 statuteInformation (O, R)
                     getstatuteInformation(valueDic["RightsStatement.pk"], rightsStatement)
                     
-                elif valueDic["rightsBasis"].lower() in ["donor agreement", "policy", "other"]:
+                elif valueDic["rightsBasis"].lower() in ["donor", "policy", "other"]:
                     otherRightsInformation = etree.SubElement(rightsStatement, "otherRightsInformation")
                     sql = """SELECT pk, otherRightsBasis, otherRightsApplicableStartDate, otherRightsApplicableEndDate FROM RightsStatementOtherRightsInformation WHERE RightsStatementOtherRightsInformation.fkRightsStatement = %d;""" % (valueDic["RightsStatement.pk"])
                     rows2 = databaseInterface.queryAllSQL(sql)
