@@ -141,13 +141,17 @@ var TransferComponentFormView = Backbone.View.extend({
       {
         alert('Please enter a transfer name');
       } else {
-        var transferData = {
-          'name':            transferName,
-          'type':            $('#transfer-type').val(),
-          'accessionNumber': $('#transfer-accession-number').val(),
-          'sourcePaths':     self.addedPaths()
-        };
-        self.startTransfer(transferData);
+        if (!self.addedPaths().length) {
+          alert('Please click "Browse" to add one or more paths from the source directory.');
+        } else {
+          var transferData = {
+            'name':            transferName,
+            'type':            $('#transfer-type').val(),
+            'accessionNumber': $('#transfer-accession-number').val(),
+            'sourcePaths':     self.addedPaths()
+          };
+          self.startTransfer(transferData);
+        }
       }
     });
   }
