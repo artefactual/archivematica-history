@@ -280,8 +280,9 @@ $(function()
 
       action: function(event)
         {
-          var $select = $(event.target);
-          var value = $select.val();
+          var $select = $(event.target)
+            , value = $select.val()
+            , self = this;
 
           // Define function to execute
           var executeCommand = function(context)
@@ -298,6 +299,9 @@ $(function()
                     });
 
                     context.model.sip.view.updateIcon();
+
+                    // get rid of select, etc.
+                    self.$('.job-detail-actions').empty();
                   },
                 url: '/mcp/execute/'
               });

@@ -211,7 +211,7 @@ $(function()
                 this.model.sip.view.updateIcon();
 
                 // get rid of select, etc.
-                self.$('.job-detail-actions').html('');
+                self.$('.job-detail-actions').empty();
               },
             url: '/mcp/execute/'
           });
