@@ -35,7 +35,7 @@ def directory_to_dict(path, directory={}, entry=False):
     # define entries
     for file in os.listdir(path):
         new_entry = None
-        if file != '.svn':
+        if file[0] != '.':
             new_entry = {}
             new_entry['name'] = file
             entry['children'].append(new_entry)
