@@ -674,6 +674,12 @@ def archival_storage(request, path=None):
         q = pyes.StringQuery(query)
         results = conn.search(query=q, indices='aips')
 
+        try:
+            if results:
+                pass
+        except:
+            results = False
+
         form = forms.StorageSearchForm(initial={'query': query})
         return render(request, 'main/archival_storage.html', locals())
     else:
