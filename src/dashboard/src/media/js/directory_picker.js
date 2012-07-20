@@ -26,10 +26,9 @@ var DirectoryPickerView = fileBrowser.FileExplorer.extend({
       '/administration/sources/json/',
       {path: path},
       function(response) {
-        self.alert(
-          'Add source directory',
-          response.message
-        );
+        archivematicaNotifications.add({
+          message: response.message
+        });
         self.updateSources();
       }
     );
@@ -45,10 +44,9 @@ var DirectoryPickerView = fileBrowser.FileExplorer.extend({
           '/administration/sources/delete/json/' + id + '/',
           {},
           function(response) {
-            self.alert(
-              'Delete source directory',
-              response.message
-            );
+            archivematicaNotifications.add({
+              message: response.message
+            });
             self.updateSources();
           }
         );
