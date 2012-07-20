@@ -194,7 +194,8 @@ $(function()
 
       action: function(event)
         {
-          var value = $(event.target).val();
+          var value = $(event.target).val()
+            , self = this;
 
           $.ajax({
             context: this,
@@ -208,6 +209,9 @@ $(function()
                 });
 
                 this.model.sip.view.updateIcon();
+
+                // get rid of select, etc.
+                self.$('.job-detail-actions').html('');
               },
             url: '/mcp/execute/'
           });
