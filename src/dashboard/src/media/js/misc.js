@@ -1,8 +1,9 @@
 var NotificationView = Backbone.View.extend({
   initialize: function() {
-    this.currentId = 0;
-    this.displayed = [];
     this.initializeLocalData();
+    var notificationData = this.getNotificationData();
+    this.currentId = notificationData.currentId;
+    this.displayed = [];
   },
 
   initializeLocalData: function() {
@@ -11,7 +12,8 @@ var NotificationView = Backbone.View.extend({
     {
        localStorage.setItem('archivematicaNotifications', JSON.stringify({
          'notifications': [],
-         'dismissed': []
+         'dismissed': [],
+         'currentId': 0
        }));
     }
   },
@@ -20,9 +22,18 @@ var NotificationView = Backbone.View.extend({
   {
     this.currentId = this.currentId + 1;
     notification.id = this.currentId;
-    var localNotificationData = JSON.parse(localStorage.getItem('archivematicaNotifications'));
+    var localNotificationData = this.getNotificationData();
+    localNotificationData.currentId = this.currentId;
     localNotificationData.notifications.push(notification);
-    localStorage.setItem('archivematicaNotifications', JSON.stringify(localNotificationData));
+    this.setNotificationData(localNotificationData);
+  },
+
+  getNotificationData: function() {
+    return JSON.parse(localStorage.getItem('archivematicaNotifications'));
+  },
+
+  setNotificationData: function(notificationData) {
+    localStorage.setItem('archivematicaNotifications', JSON.stringify(notificationData));
   },
 
   render: function() {
