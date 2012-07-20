@@ -1,5 +1,6 @@
 var NotificationView = Backbone.View.extend({
   initialize: function() {
+    this.currentId = 0;
     this.displayed = [];
     this.initializeLocalData();
   },
@@ -17,6 +18,8 @@ var NotificationView = Backbone.View.extend({
 
   add: function(notification)
   {
+    this.currentId = this.currentId + 1;
+    notification.id = this.currentId;
     var localNotificationData = JSON.parse(localStorage.getItem('archivematicaNotifications'));
     localNotificationData.notifications.push(notification);
     localStorage.setItem('archivematicaNotifications', JSON.stringify(localNotificationData));
