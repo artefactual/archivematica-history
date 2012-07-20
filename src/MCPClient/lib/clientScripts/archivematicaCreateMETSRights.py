@@ -101,16 +101,16 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                             etree.SubElement(copyrightApplicableDates, "endDate").text = formatDate(valueDic["copyrightApplicableEndDate"])
                 
                 elif valueDic["rightsBasis"].lower() in ["license"]:
-                    sql = """SELECT licenseTerms, licenseApplicableStartDate, licenseApplicableEndDate,  licenseDocumentationIdentifierType, licenseDocumentationIdentifierValue, RightsStatementLicense.pk 
+                    sql = """SELECT licenseTerms, licenseApplicableStartDate, licenseApplicableEndDate,  licenseDocumentationIdentifierType, licenseDocumentationIdentifierValue, RightsStatementLicense.pk, licenseDocumentationIdentifierRole 
                                 FROM RightsStatementLicense JOIN RightsStatementLicenseDocumentationIdentifier ON RightsStatementLicenseDocumentationIdentifier.fkRightsStatementLicense = RightsStatementLicense.pk WHERE RightsStatementLicense.fkRightsStatement = %d;""" % (valueDic["RightsStatement.pk"])
                     rows2 = databaseInterface.queryAllSQL(sql)
                     for row2 in rows2:
                         licenseInformation = etree.SubElement(rightsStatement, "licenseInformation")
                         
-                        licenseDocumentIdentifier = etree.SubElement(licenseInformation, "licenseIdentifier")
-                        etree.SubElement(licenseDocumentIdentifier, "licenseIdentifierType").text = row2[3]
-                        etree.SubElement(licenseDocumentIdentifier, "licenseIdentifierValue").text = row2[4]
-                        #etree.SubElement(licenseDocumentIdentifier, "copyrightDocumentationRole").text = "unsupported?"
+                        licenseDocumentIdentifier = etree.SubElement(licenseInformation, "licenseDocumentationIdentifier")
+                        etree.SubElement(licenseDocumentIdentifier, "licenseDocumentationIdentifierType").text = row2[3]
+                        etree.SubElement(licenseDocumentIdentifier, "licenseDocumentationIdentifierValue").text = row2[4]
+                        etree.SubElement(licenseDocumentIdentifier, "licenseDocumentationRole").text = row2[6]
                         
                         etree.SubElement(licenseInformation, "licenseTerms").text = valueDic["licenseTerms"]
                         
