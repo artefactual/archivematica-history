@@ -667,7 +667,11 @@ def transfer_delete(request, uuid):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def archival_storage(request, path=None):
+    search_attempted = False
+
     if request.method == 'POST':
+        search_attempted = True
+
         query = request.POST.get('query', '')
         conn = pyes.ES('127.0.0.1:9200')
 
