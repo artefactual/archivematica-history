@@ -947,6 +947,19 @@ def administration_sources_delete_json(request, id):
     return HttpResponse(simplejson.JSONEncoder().encode(response), mimetype='application/json')
     #return HttpResponseRedirect(reverse('main.views.administration_sources'))
 
+def administration_processing(request):
+    file_path = '/var/archivematica/sharedDirectory/sharedMicroServiceTasksConfigs/processingMCPConfigs/defaultProcessingMCP.xml'
+
+    if request.method == 'POST':
+        xml = request.POST.get('xml', '')
+        file = open(file_path, 'w')
+        file.write(xml)
+    else:
+        file = open(file_path, 'r')
+        xml = file.read()
+
+    return render(request, 'main/administration/processing.html', locals())
+
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Misc
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
