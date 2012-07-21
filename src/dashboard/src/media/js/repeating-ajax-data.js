@@ -33,14 +33,25 @@ var RepeatingDataRecordView = Backbone.View.extend({
 
     for(field in this.definition) {
       var type = this.definition[field].type
-        , label = this.definition[field].label;
+        , label = this.definition[field].label
+        , options = this.definition[field].options;
 
       if (typeof type == 'undefined') {
         type = 'textarea';
+      } else {
+        type = type;
       }
 
       var $container = $('<div></div>')
         , $input = $('<' + type + '></' + type + '>');
+
+      if (type == 'select') {
+        for(var value in options) {
+          var $option = $('<option>' + options[value] + '</option>');
+          $option.attr('value', value);
+          $input.append($option);
+        }
+      }
 
       $input.attr('name', field);
       $input.val(this.definition[field].value);
@@ -82,7 +93,12 @@ Field schema example:
 
 {
   'someFieldName': {
-    'type':  'input',
+    'type':  'select',
+    'options': {
+      '': '',
+      '1': 'One',
+      '2': 'Two'
+    },
     'label': 'some text'
   }
 }
@@ -194,7 +210,8 @@ var RepeatingDataView = Backbone.View.extend({
             for(var field in self.schema) {
               newDef[field] = {
                 type: self.schema[field].type,
-                label: self.schema[field].label
+                label: self.schema[field].label,
+                options: self.schema[field].options
               };
             }
 
