@@ -7,7 +7,15 @@ function setUpRepeatingRightsGrantedNotesRecords(parentId) {
 
 function setUpRepeatingRightsGrantedRestrictionRecords(parentId) {
   var schema = {
-    'restriction': {},
+    'restriction': {
+      'type': 'select',
+      'options': {
+        '': '',
+        'Allow': 'Allow',
+        'Disallow': 'Disallow',
+        'Conditional': 'Conditional'
+      }
+    }
   };
   setUpRepeatingField('rightsrestrictions_', parentId, 'Restriction', schema, '/formdata/rightsrestriction/' + parentId + '/');
 }
