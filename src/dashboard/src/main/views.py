@@ -171,6 +171,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
     # handle form creation/saving
     if request.method == 'POST':
+        new_statute_created = False
         if id:
             createdRights = viewRights
         else:
@@ -186,11 +187,14 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         copyrightFormset.save()
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         createdStatute = statuteFormset.save()
+        if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
+            new_statute_created = True
         licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
         licenseFormset.save()
         otherFormset = OtherFormSet(request.POST, instance=createdRights)
         otherFormset.save()
-        return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
+        if not new_statute_created:
+            return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
     else:
         grantFormset = GrantFormSet(instance=viewRights)
         copyrightFormset = CopyrightFormSet(instance=viewRights)

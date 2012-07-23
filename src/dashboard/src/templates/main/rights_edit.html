@@ -101,6 +101,8 @@
         {% for form in statuteFormset %}
           {% include "_form.html" %}
 
+          <input name='statute_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
+
           <div id='statutedocidfields_{{ form.instance.pk }}'></div>
           <div id='statutenotes_{{ form.instance.pk }}'></div>
 
