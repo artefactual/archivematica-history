@@ -42,9 +42,13 @@
         {% endif %}
       {% endif %}
 
-      {% if new_statute_created %}
+      {% if new_content_type_created %}
           <div class="alert-message info">
-            <p>You may now add additional statute information such as document identifers and notes.</p>
+            {% if new_content_type_created == 'Other' %}
+              <p>You may now add additional information such as document identifers and notes.</p>
+            {% else %}
+              <p>You may now add additional {{ new_content_type_created|lower }} information such as document identifers and notes.</p>
+            {% endif %}
           </div>
       {% endif %}
 
@@ -88,6 +92,8 @@
           {% for form in copyrightFormset %}
             {% include "_form.html" %}
 
+            <input name='copyright_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
+
             <div id='copyrightdocidfields_{{ form.instance.pk }}'></div>
             <div id='copyrightnotes_{{ form.instance.pk }}'></div>
 
@@ -128,6 +134,8 @@
           {% for form in licenseFormset %}
             {% include "_form.html" %}
 
+            <input name='license_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
+
             <div id='licensedocidfields_{{ form.instance.pk }}'></div>
             <div id='licensenotes_{{ form.instance.pk }}'></div>
 
@@ -146,6 +154,8 @@
 
           {% for form in otherFormset %}
             {% include "_form.html" %}
+
+            <input name='other_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
 
             <div id='otherrightsdocidfields_{{ form.instance.pk }}'></div>
             <div id='otherrightsnotes_{{ form.instance.pk }}'></div>
