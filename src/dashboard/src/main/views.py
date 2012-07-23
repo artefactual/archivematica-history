@@ -138,15 +138,14 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             form = forms.RightsForm(instance=viewRights)
             form.cleaned_data = viewRights
             form.save()
+
         # determine how many empty forms should be shown for children
-        extra_grant_forms = 1 #max_notes - models.RightsStatementRightsGranted.objects.filter(rightsstatement=viewRights).count()
-        extra_grant_notes = 1
+        extra_grant_forms = 1
         extra_copyright_forms = max_notes - models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights).count()
-        extra_statute_forms = 1 # max_notes - models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights).count()
+        extra_statute_forms = 1
         extra_license_forms = max_notes - models.RightsStatementLicense.objects.filter(rightsstatement=viewRights).count()
         extra_other_forms = max_notes - models.RightsStatementOtherRightsInformation.objects.filter(rightsstatement=viewRights).count()
     else:
-        #return HttpResponse(request.POST.get('rightsholder'))
         if request.method == 'POST':
             postData = request.POST.copy()
             agentId = rights_parse_agent_id(postData.get('rightsholder'))
@@ -155,18 +154,16 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         else:
             form = forms.RightsForm()
             viewRights = models.RightsStatement()
-        extra_grant_forms = max_notes
-        extra_grant_notes = max_notes
+
+        extra_grant_forms     = max_notes
         extra_copyright_forms = max_notes
-        extra_copyright_notes = max_notes
-        extra_statute_forms = max_notes
-        extra_license_forms = max_notes
-        extra_license_notes = max_notes
-        extra_other_forms = max_notes
+        extra_statute_forms   = max_notes
+        extra_license_forms   = max_notes
+        extra_license_notes   = max_notes
+        extra_other_forms     = max_notes
 
     # create inline formsets for child elements
     GrantFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementRightsGranted, extra=extra_grant_forms, can_delete=False, form=forms.RightsGrantedForm)
-    GrantNotesFormSet = inlineformset_factory(models.RightsStatementRightsGranted, models.RightsStatementRightsGrantedNote, extra=extra_grant_notes, can_delete=False, form=forms.RightsGrantedNotesForm)
     CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
     StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
     LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
@@ -182,33 +179,38 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             createdRights.metadataappliestotype = sectionTypeID[section]
             createdRights.metadataappliestoidentifier = uuid
             createdRights.save()
+
         grantFormset = GrantFormSet(request.POST, instance=createdRights)
         grantFormset.save()
-        statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
+
         copyrightFormset = CopyrightFormSet(request.POST, instance=createdRights)
-        createCopyright = copyrightFormset.save()
-        if request.POST.get('copyright_previous_pk', '') == 'None' and len(createCopyright) == 1:
+        createdCopyright = copyrightFormset.save()
+        if request.POST.get('copyright_previous_pk', '') == 'None' and len(createdCopyright) == 1:
             new_content_type_created = 'copyright'
+
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         createdStatute = statuteFormset.save()
         if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
             new_content_type_created = 'statute'
+
         licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
-        createLicense = licenseFormset.save()
-        if request.POST.get('license_previous_pk', '') == 'None' and len(createLicense) == 1:
+        createdLicense = licenseFormset.save()
+        if request.POST.get('license_previous_pk', '') == 'None' and len(createdLicense) == 1:
             new_content_type_created = 'license'
+
         otherFormset = OtherFormSet(request.POST, instance=createdRights)
-        createOther = otherFormset.save()
-        if request.POST.get('other_previous_pk', '') == 'None' and len(createOther) == 1:
+        createdOther = otherFormset.save()
+        if request.POST.get('other_previous_pk', '') == 'None' and len(createdOther) == 1:
             new_content_type_created = createdRights.rightsbasis
+
         if new_content_type_created == None:
             return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
     else:
-        grantFormset = GrantFormSet(instance=viewRights)
+        grantFormset     = GrantFormSet(instance=viewRights)
         copyrightFormset = CopyrightFormSet(instance=viewRights)
-        statuteFormset = StatuteFormSet(instance=viewRights)
-        licenseFormset = LicenseFormSet(instance=viewRights)
-        otherFormset = OtherFormSet(instance=viewRights)
+        statuteFormset   = StatuteFormSet(instance=viewRights)
+        licenseFormset   = LicenseFormSet(instance=viewRights)
+        otherFormset     = OtherFormSet(instance=viewRights)
 
     return render(request, 'main/rights_edit.html', locals())
 
