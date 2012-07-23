@@ -641,3 +641,11 @@ textarea.command {
   color: Black;
   text-decoration: none;
 }
+
+.repeating-data, .repeating-data .btn {
+  margin-bottom: 1em;
+}
+
+.repeating-ajax-data-row {
+  margin-bottom: 1em;
+}
