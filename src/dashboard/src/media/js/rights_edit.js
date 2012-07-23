@@ -132,9 +132,23 @@ function setUpRepeatingField(idPrefix, parentId, description, schema, url) {
   rights.render();
 
   if (parentId == '' || parentId == 'None') {
-    var instructions = "You'll be able to create a "
-      + description.toLowerCase()
+    var instructionDescription = description.toLowerCase()
+      , instructions;
+
+    // make other rights fields instructions generic as they are used with
+    // a number of types of basises
+    if (instructionDescription == 'other rights documentation identifier') {
+      instructionDescription = 'documentation identifier';
+    }
+
+    if (instructionDescription == 'other rights note') {
+      instructionDescription = 'note';
+    }
+
+    instructions = "You'll be able to create a "
+      + instructionDescription
       + " record once the above section is completed.";
+
     $('#' + idPrefix + parentId).append(
       '<span class="help-block">' + instructions + '</span>'
     );
@@ -164,6 +178,13 @@ function revealSelectedBasis() {
   if (formsets[basis]) {
     $('#' + formsets[basis]).show();
   }
+
+  $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsbasis']")
+    .text(basis + ' rights Basis')
+  $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsapplicablestartdate']")
+    .text(basis + ' rights applicable start date')
+  $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsapplicableenddate']")
+    .text(basis + ' rights applicable end date')
 }
 
 // setup
