@@ -42,6 +42,12 @@
         {% endif %}
       {% endif %}
 
+      {% if new_statute_created %}
+          <div class="alert-message info">
+            <p>You may now add additional statute information such as document identifers and notes.</p>
+          </div>
+      {% endif %}
+
       {% if section == 'ingest' %}
         {% if id %}
           <form class="form-stacked" method="post" action="{% url main.views.ingest_rights_edit uuid id %}">

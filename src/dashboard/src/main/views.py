@@ -110,6 +110,9 @@ def rights_edit(request, uuid, id=None, section='ingest'):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     name = utils.get_directory_name(jobs[0])
 
+    # flags indicating that new parent content has been created
+    new_statute_created = False
+
     sidebar_template = "main/" + section + "/_sidebar.html"
     max_notes = 1
 
@@ -171,7 +174,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
     # handle form creation/saving
     if request.method == 'POST':
-        new_statute_created = False
         if id:
             createdRights = viewRights
         else:
