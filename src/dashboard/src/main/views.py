@@ -110,8 +110,8 @@ def rights_edit(request, uuid, id=None, section='ingest'):
     jobs = models.Job.objects.filter(sipuuid=uuid)
     name = utils.get_directory_name(jobs[0])
 
-    # flags indicating that new parent content has been created
-    new_statute_created = False
+    # flag indicating what kind of new content, if any, has been created
+    new_content_type_created = None
 
     sidebar_template = "main/" + section + "/_sidebar.html"
     max_notes = 1
@@ -186,16 +186,22 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         grantFormset.save()
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         copyrightFormset = CopyrightFormSet(request.POST, instance=createdRights)
-        copyrightFormset.save()
+        createCopyright = copyrightFormset.save()
+        if request.POST.get('copyright_previous_pk', '') == 'None' and len(createCopyright) == 1:
+            new_content_type_created = 'copyright'
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         createdStatute = statuteFormset.save()
         if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
-            new_statute_created = True
+            new_content_type_created = 'statute'
         licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
-        licenseFormset.save()
+        createLicense = licenseFormset.save()
+        if request.POST.get('license_previous_pk', '') == 'None' and len(createLicense) == 1:
+            new_content_type_created = 'license'
         otherFormset = OtherFormSet(request.POST, instance=createdRights)
-        otherFormset.save()
-        if not new_statute_created:
+        createOther = otherFormset.save()
+        if request.POST.get('other_previous_pk', '') == 'None' and len(createOther) == 1:
+            new_content_type_created = createdRights.rightsbasis
+        if new_content_type_created == None:
             return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
     else:
         grantFormset = GrantFormSet(instance=viewRights)
