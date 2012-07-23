@@ -29,7 +29,7 @@ var RepeatingDataRecordView = Backbone.View.extend({
   },
 
   render: function() {
-    this.el = $('<div></div>');
+    this.el = $('<div class="repeating-ajax-data-row"></div>');
 
     for(field in this.definition) {
       var type = this.definition[field].type

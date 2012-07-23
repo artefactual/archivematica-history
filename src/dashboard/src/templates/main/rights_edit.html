@@ -72,8 +72,8 @@
         {% for form in grantFormset %}
           {% include "_form.html" %}
 
-          <div id='rightsrestrictions_{{ form.instance.pk }}'></div>
-          <div id='rightsfields_{{ form.instance.pk }}'></div>
+          <div id='rightsrestrictions_{{ form.instance.pk }}' class='repeating-data'></div>
+          <div id='rightsfields_{{ form.instance.pk }}' class='repeating-data'></div>
 
           <script>
           $(document).ready(function() {
@@ -94,8 +94,8 @@
 
             <input name='copyright_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
 
-            <div id='copyrightdocidfields_{{ form.instance.pk }}'></div>
-            <div id='copyrightnotes_{{ form.instance.pk }}'></div>
+            <div id='copyrightdocidfields_{{ form.instance.pk }}' class='repeating-data'></div>
+            <div id='copyrightnotes_{{ form.instance.pk }}' class='repeating-data'></div>
 
             <script>
             $(document).ready(function() {
@@ -115,8 +115,8 @@
 
           <input name='statute_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
 
-          <div id='statutedocidfields_{{ form.instance.pk }}'></div>
-          <div id='statutenotes_{{ form.instance.pk }}'></div>
+          <div id='statutedocidfields_{{ form.instance.pk }}' class='repeating-data'></div>
+          <div id='statutenotes_{{ form.instance.pk }}' class='repeating-data'></div>
 
           <script>
           $(document).ready(function() {
@@ -136,8 +136,8 @@
 
             <input name='license_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
 
-            <div id='licensedocidfields_{{ form.instance.pk }}'></div>
-            <div id='licensenotes_{{ form.instance.pk }}'></div>
+            <div id='licensedocidfields_{{ form.instance.pk }}' class='repeating-data'></div>
+            <div id='licensenotes_{{ form.instance.pk }}' class='repeating-data'></div>
 
             <script>
             $(document).ready(function() {
@@ -157,8 +157,8 @@
 
             <input name='other_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
 
-            <div id='otherrightsdocidfields_{{ form.instance.pk }}'></div>
-            <div id='otherrightsnotes_{{ form.instance.pk }}'></div>
+            <div id='otherrightsdocidfields_{{ form.instance.pk }}' class='repeating-data'></div>
+            <div id='otherrightsnotes_{{ form.instance.pk }}' class='repeating-data'></div>
 
             <script>
             $(document).ready(function() {
