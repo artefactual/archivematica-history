@@ -68,7 +68,7 @@
             <td class="link-sip"><a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a></td>
             <td class="size">{{ item.size }}</td>
             <td class="uuid">{{ item.uuid }}</td>
-            <td>{{ item.date }}</td>
+            <td>{{ item.date|date:"Y-m-d h:i:s" }}</td>
           </tr>
         {% endfor %}
       </tbody>
