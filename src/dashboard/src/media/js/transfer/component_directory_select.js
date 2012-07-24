@@ -27,7 +27,7 @@ function createDirectoryPicker(baseDirectory, modalCssId, targetCssId) {
     logic: function(result) {
       var $transferPathRowEl = $('<div></div>')
         , $transferPathEl = $('<span class="transfer_path"></span>')
-        , $transferPathDeleteRl = $('<span style="float:right"><img src="/media/images/delete.png" /></span>');
+        , $transferPathDeleteRl = $('<span style="margin-left: 1em;"><img src="/media/images/delete.png" /></span>');
 
       $transferPathDeleteRl.click(function() {
         $transferPathRowEl.remove();
