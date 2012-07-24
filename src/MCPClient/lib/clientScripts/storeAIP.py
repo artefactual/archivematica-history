@@ -25,8 +25,11 @@ import sys
 import os
 import stat
 import shutil
+import MySQLdb
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from executeOrRunSubProcess import executeOrRun
+import databaseInterface
+
 
 printSubProcessOutput=True
 
@@ -94,55 +97,8 @@ for command in verificationCommands:
 #cleanup
 shutil.rmtree(extractDirectory)
 
-#write to html file
-if exitCode == 0:
-    link = storeLocation.replace(AIPsStore, "AIPsStore/")
-    import lxml.etree as etree
-    if os.path.isfile(HTMLFilePath):
-        tree = etree.parse(HTMLFilePath)
-        body = tree.find("body")
-
-    else:
-        root = etree.Element("html")
-        head = etree.SubElement(root, "head")
-        body = etree.SubElement(root, "body")
-        body.tail = "\n"
-        tree = etree.ElementTree(root)
-
-    # Calculate position
-    position = 0
-    for item in body.findall("div"):
-        name = item.find('p[@class="name"]/a').text
-        if SIPNAME < name:
-            break
-        position = position + 1
-
-    # Create HTML div object
-    div = etree.Element("div")
-    div.tail = "\n"
-
-    # SIP name
-    sip_name = etree.SubElement(div, "p")
-    sip_name.set("class", "name")
-    sip_name_link = etree.SubElement(sip_name, "a")
-    sip_name_link.text = SIPNAME
-    sip_name_link.set("href", link)
-
-    # SIP UUID
-    sip_uuid = etree.SubElement(div, "p")
-    sip_uuid.set("class", "uuid")
-    sip_uuid.text = SIPUUID
-
-    # SIP date
-    sip_uuid = etree.SubElement(div, "p")
-    sip_uuid.set("class", "date")
-    sip_uuid.text = SIPDATE
-
-    # Insert div
-    body.insert(position, div)
-
-    # Write HTML
-    tree.write(HTMLFilePath)
-    os.chmod(HTMLFilePath, mode)
+#write to database
+sql = """INSERT INTO AIPs (sipUUID, sipName, sipDate, filePath) VALUES ('%s', '%s', '%s', '%s')""" % (MySQLdb.escape_string(SIPUUID), MySQLdb.escape_string(SIPNAME), MySQLdb.escape_string(SIPDATE), MySQLdb.escape_string(storeLocation))
+databaseInterface.runSQL(sql)
 
 quit(exitCode)
