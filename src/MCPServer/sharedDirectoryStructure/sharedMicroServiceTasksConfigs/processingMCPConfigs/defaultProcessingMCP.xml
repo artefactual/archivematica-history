@@ -2,7 +2,7 @@
     <preconfiguredChoices>
         <preconfiguredChoice>
             <appliesTo>Workflow decision - create transfer backup</appliesTo>
-            <goToChain>Do not create transfer backup</goToChain>
+            <goToChain>Do not backup transfer</goToChain>
         </preconfiguredChoice>
         <preconfiguredChoice>
             <appliesTo>Workflow decision - send transfer to quarantine</appliesTo>
