@@ -219,6 +219,7 @@ $(function()
           if (
             jobData.type == 'Access normalization failed - copying'
             || jobData.type == 'Preservation normalization failed - copying'
+            || jobData.type == 'thumbnail normalization failed - copying'
           ) {
             jobData.currentstep = 'Failed';
           }
