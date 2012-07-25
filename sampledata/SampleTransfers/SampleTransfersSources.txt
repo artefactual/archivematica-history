@@ -32,7 +32,7 @@ Multimedia
 
 OfficeDocs
 -article.pdf http://www.ijdc.net/index.php/ijdc/article/view/110/87
--chemistry_review.wpd http://www.adeptscience.co.uk/products/mathsim/mathtype/samples/
+-Club-Report.doc http://busrc.com/wp/wp-content/uploads/2011/05/Club-Report.doc
 -[datavibe-l]_FW__job_vacancy.rtf created by Artefactual Systems staff member
 -FRPEnForm.pdf http://www.iccs-ciec.ca/pages/z_pdfs/FEP_FRP/FRPEnForm.pdf
 -MS-OfficeOpenXML-samples.zip http://openxmldeveloper.org/articles/SampleDocsAugust2007.aspx
