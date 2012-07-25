@@ -354,7 +354,7 @@ def ingest_status(request, uuid=None):
                 item['jobs'].append(newJob)
 
                 # allow user to know name of file that has failed normalization
-                if job.jobtype == 'Access normalization failed - copying' or job.jobtype == 'Preservation normalization failed - copying':
+                if job.jobtype == 'Access normalization failed - copying' or job.jobtype == 'Preservation normalization failed - copying' or job.jobtype == 'thumbnail normalization failed - copying':
                     task = models.Task.objects.get(job=job)
                     newJob['filename'] = task.filename
 
