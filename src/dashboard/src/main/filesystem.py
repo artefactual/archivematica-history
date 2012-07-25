@@ -48,6 +48,34 @@ def directory_to_dict(path, directory={}, entry=False):
     # return fully traversed data
     return directory
 
+def directory_children(request, basePath=False):
+    path = ''
+    if (basePath):
+        path = path + basePath
+    path = path + request.GET.get('base_path', '')
+    path = path + request.GET.get('path', '')
+
+    response    = {}
+    entries     = []
+    directories = []
+
+    for entry in os.listdir(path):
+        if entry[0] != '.':
+            entries.append(entry)
+            entry_path = os.path.join(path, entry)
+            if os.path.isdir(entry_path) and os.access(entry_path, os.R_OK):
+                directories.append(entry)
+
+    response = {
+      'entries': entries,
+      'directories': directories
+    }
+
+    return HttpResponse(
+        simplejson.JSONEncoder().encode(response),
+        mimetype='application/json'
+    )
+
 def directory_contents(path, contents=[]):
     for entry in os.listdir(path):
         contents.append(os.path.join(path, entry))
