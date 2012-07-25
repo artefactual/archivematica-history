@@ -113,7 +113,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
     # flag indicating what kind of new content, if any, has been created
     new_content_type_created = None
 
-    sidebar_template = "main/" + section + "/_sidebar.html"
     max_notes = 1
 
     if id:
@@ -161,10 +160,37 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_other_forms     = max_notes
 
     # create inline formsets for child elements
-    CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
-    StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
-    LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
-    OtherFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementOtherRightsInformation, extra=extra_other_forms, can_delete=False, form=forms.RightsOtherRightsForm)
+    CopyrightFormSet = inlineformset_factory(
+        models.RightsStatement,
+        models.RightsStatementCopyright,
+        extra=extra_copyright_forms,
+        can_delete=False,
+        form=forms.RightsCopyrightForm
+    )
+
+    StatuteFormSet = inlineformset_factory(
+        models.RightsStatement,
+        models.RightsStatementStatuteInformation,
+        extra=extra_statute_forms,
+        can_delete=False,
+        form=forms.RightsStatuteForm
+    )
+
+    LicenseFormSet = inlineformset_factory(
+        models.RightsStatement,
+        models.RightsStatementLicense,
+        extra=extra_license_forms,
+        can_delete=False,
+        form=forms.RightsLicenseForm
+    )
+
+    OtherFormSet = inlineformset_factory(
+        models.RightsStatement,
+        models.RightsStatementOtherRightsInformation,
+        extra=extra_other_forms,
+        can_delete=False,
+        form=forms.RightsOtherRightsForm
+    )
 
     # handle form creation/saving
     if request.method == 'POST':
@@ -198,7 +224,9 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             new_content_type_created = createdRights.rightsbasis
 
         if new_content_type_created == None:
-            return HttpResponseRedirect(reverse('main.views.%s_rights_grants_edit' % section, args=[uuid, createdRights.pk]))
+            return HttpResponseRedirect(
+              reverse('main.views.%s_rights_grants_edit' % section, args=[uuid, createdRights.pk])
+            )
     else:
         copyrightFormset = CopyrightFormSet(instance=viewRights)
         statuteFormset   = StatuteFormSet(instance=viewRights)
@@ -270,18 +298,23 @@ def rights_list(request, uuid, section):
 
     # See MetadataAppliesToTypes table
     types = { 'ingest': 1, 'transfer': 2, 'file': 3 }
-    grants = models.RightsStatementRightsGranted.objects.filter(rightsstatement__metadataappliestotype__exact=types[section], rightsstatement__metadataappliestoidentifier__exact=uuid)
+
+    grants = models.RightsStatementRightsGranted.objects.filter(
+        rightsstatement__metadataappliestotype__exact=types[section],
+        rightsstatement__metadataappliestoidentifier__exact=uuid
+    )
 
     # When listing ingest rights we also want to show transfer rights
     # The only way I've found to get the related transfer of a SIP is looking into the File table
     if section is "ingest":
         try:
             transfer_uuid = models.File.objects.filter(sip__uuid__exact=uuid)[0].transfer.uuid
-            transfer_grants = models.RightsStatementRightsGranted.objects.filter(rightsstatement__metadataappliestotype__exact=types['transfer'], rightsstatement__metadataappliestoidentifier__exact=transfer_uuid)
+            transfer_grants = models.RightsStatementRightsGranted.objects.filter(
+                rightsstatement__metadataappliestotype__exact=types['transfer'],
+                rightsstatement__metadataappliestoidentifier__exact=transfer_uuid
+            )
         except:
             pass
-
-    sidebar_template = "main/" + section + "/_sidebar.html"
 
     return render(request, 'main/rights_list.html', locals())
 
