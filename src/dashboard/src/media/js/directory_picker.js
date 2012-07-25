@@ -28,9 +28,6 @@ var DirectoryPickerView = fileBrowser.FileExplorer.extend({
       '/administration/sources/json/',
       {path: path},
       function(response) {
-        archivematicaNotifications.add({
-          message: response.message
-        });
         self.updateSources();
       }
     );
