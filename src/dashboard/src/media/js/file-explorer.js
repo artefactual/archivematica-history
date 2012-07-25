@@ -54,15 +54,15 @@
   exports.EntryView = Backbone.View.extend({
 
     initialize: function() {
-      this.model = this.options.entry;
-      this.explorer = this.options.explorer;
+      this.model     = this.options.entry;
+      this.explorer  = this.options.explorer;
       this.className = (this.model.children != undefined)
         ? 'backbone-file-explorer-directory'
         : 'directory-file';
-      this.template = this.options.template;
+      this.template          = this.options.template;
       this.entryClickHandler = this.options.entryClickHandler;
-      this.nameClickHandler = this.options.nameClickHandler;
-      this.actionHandlers = this.options.actionHandlers;
+      this.nameClickHandler  = this.options.nameClickHandler;
+      this.actionHandlers    = this.options.actionHandlers;
     },
 
     context: function() {
@@ -145,15 +145,16 @@
     tagName: 'div',
 
     initialize: function() {
-      this.model = this.options.directory;
-      this.explorer = this.options.explorer;
-      this.levelTemplate    = _.template(this.options.levelTemplate);
-      this.entryTemplate    = _.template(this.options.entryTemplate);
+      this.model              = this.options.directory;
+      this.explorer           = this.options.explorer;
+      this.ajaxChildDataUrl   = this.options.ajaxChildDataUrl;
+      this.levelTemplate      = _.template(this.options.levelTemplate);
+      this.entryTemplate      = _.template(this.options.entryTemplate);
       this.closeDirsByDefault = this.options.closeDirsByDefault;
-      this.hideFiles        = this.options.hideFiles;
-      this.entryClickHandler = this.options.entryClickHandler;
-      this.nameClickHandler = this.options.nameClickHandler;
-      this.actionHandlers   = this.options.actionHandlers;
+      this.hideFiles          = this.options.hideFiles;
+      this.entryClickHandler  = this.options.entryClickHandler;
+      this.nameClickHandler   = this.options.nameClickHandler;
+      this.actionHandlers     = this.options.actionHandlers;
     },
 
     renderChildren: function (self, entry, levelEl, level) {
@@ -236,21 +237,57 @@
 
         var uiUpdateLogic = function() {
           if (!rendered) {
-            self.renderChildren(self, entry, levelEl, level);
+            if (self.ajaxChildDataUrl) {
+              $.ajax({
+                url: self.ajaxChildDataUrl,
+                data: {
+                  path: entry.path()
+                },
+                success: function(results) {
+                  //console.log(results);
+                  for(var index in results.entries) {
+                    var entryName = results.entries[index];
+                    if (results.directories.indexOf(entryName) == -1) {
+                      entry.addFile({name: entryName});
+                    } else {
+                      entry.addDir({name: entryName});
+                    }
+                  }
 
-            // update zebra striping
-            $('.backbone-file-explorer-entry').removeClass(
-              'backbone-file-explorer-entry-odd'
-            );
-            $('.backbone-file-explorer-entry:visible:odd').addClass(
-              'backbone-file-explorer-entry-odd'
-            );
+              // this code repeats below and should be refactored
+              self.renderChildren(self, entry, levelEl, level);
 
-            // re-bind drag/drop
-            if (self.explorer.moveHandler) {
-              self.explorer.initDragAndDrop();
+              // update zebra striping
+              $('.backbone-file-explorer-entry').removeClass(
+                'backbone-file-explorer-entry-odd'
+              );
+              $('.backbone-file-explorer-entry:visible:odd').addClass(
+                'backbone-file-explorer-entry-odd'
+              );
+
+              // re-bind drag/drop
+              if (self.explorer.moveHandler) {
+                self.explorer.initDragAndDrop();
+              }
+
+                }
+              });
+            } else {
+              self.renderChildren(self, entry, levelEl, level);
+
+              // update zebra striping
+              $('.backbone-file-explorer-entry').removeClass(
+                'backbone-file-explorer-entry-odd'
+              );
+              $('.backbone-file-explorer-entry:visible:odd').addClass(
+                'backbone-file-explorer-entry-odd'
+              );
+
+              // re-bind drag/drop
+              if (self.explorer.moveHandler) {
+                self.explorer.initDragAndDrop();
+              }
             }
-
             rendered = true;
           }
         };
@@ -296,12 +333,13 @@
     tagName: 'div',
 
     initialize: function() {
-      this.directory = this.options.directory;
-      this.structure = this.options.structure;
-      this.moveHandler = this.options.moveHandler;
-      this.openDirs = this.options.openDirs;
-      this.openDirs = this.openDirs || [];
-      this.id = $(this.el).attr('id');
+      this.ajaxChildDataUrl = this.options.ajaxChildDataUrl;
+      this.directory        = this.options.directory;
+      this.structure        = this.options.structure;
+      this.moveHandler      = this.options.moveHandler;
+      this.openDirs         = this.options.openDirs;
+      this.openDirs         = this.openDirs || [];
+      this.id               = $(this.el).attr('id');
       this.render();
       this.initDragAndDrop();
     },
@@ -449,6 +487,7 @@
 
       this.dirView = new exports.DirectoryView({
         explorer: this,
+        ajaxChildDataUrl: this.ajaxChildDataUrl,
         directory: directory,
         openDirs: this.openDirs,
         levelTemplate: this.options.levelTemplate,
