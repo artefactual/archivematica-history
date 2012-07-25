@@ -214,6 +214,34 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
     return render(request, 'main/rights_edit.html', locals())
 
+def rights_grants_edit(request, uuid, id, section='ingest'):
+    jobs = models.Job.objects.filter(sipuuid=uuid)
+    name = utils.get_directory_name(jobs[0])
+
+    viewRights = models.RightsStatement.objects.get(pk=id)
+
+    # determine how many empty forms should be shown for children
+    extra_grant_forms = 1
+
+    # create inline formsets for child elements
+    GrantFormSet = inlineformset_factory(
+      models.RightsStatement,
+      models.RightsStatementRightsGranted,
+      extra=extra_grant_forms,
+      can_delete=False,
+      form=forms.RightsGrantedForm
+    )
+
+    # handle form creation/saving
+    if request.method == 'POST':
+        grantFormset = GrantFormSet(request.POST, instance=viewRights)
+        grantFormset.save()
+
+    else:
+        grantFormset = GrantFormSet(instance=viewRights)
+
+    return render(request, 'main/rights_grants_edit.html', locals())
+
 def rights_delete(request, uuid, id, section):
     models.RightsStatement.objects.get(pk=id).delete()
     return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
@@ -393,6 +421,9 @@ def ingest_rights_edit(request, uuid, id=None):
 
 def ingest_rights_delete(request, uuid, id):
     return rights_delete(request, uuid, id, 'ingest')
+
+def ingest_rights_grants_edit(request, uuid, id):
+    return rights_grants_edit(request, uuid, id, 'ingest')
 
 def ingest_delete(request, uuid):
     try:
@@ -665,6 +696,9 @@ def transfer_rights_edit(request, uuid, id=None):
 
 def transfer_rights_delete(request, uuid, id):
     return rights_delete(request, uuid, id, 'transfer')
+
+def transfer_rights_grants_edit(request, uuid, id):
+    return rights_grants_edit(request, uuid, id, 'transfer')
 
 def transfer_delete(request, uuid):
     try:
