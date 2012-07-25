@@ -77,9 +77,6 @@ var TransferComponentFormView = Backbone.View.extend({
             type:     transfer.type
           },
           success: function(results) {
-            archivematicaNotifications.add({
-              message: 'Transfer copy complete.'
-            });
             $('#path_container').html('');
             $('.transfer-component-activity-indicator').hide();
           }
