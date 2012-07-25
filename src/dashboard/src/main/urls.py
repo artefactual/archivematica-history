@@ -92,6 +92,8 @@ urlpatterns = patterns('main.views',
 urlpatterns += patterns('main.filesystem',
     (r'filesystem/download/$', 'download'),
     (r'filesystem/contents/$', 'contents'),
+    (r'filesystem/children/$', 'directory_children'),
+
     (r'filesystem/delete/$', 'delete'),
     (r'filesystem/copy_to_originals/$', 'copy_to_originals'),
     (r'filesystem/copy_to_arrange/$', 'copy_to_arrange'),
