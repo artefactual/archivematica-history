@@ -29,6 +29,8 @@ import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import pyes
+import xmltodict
+import xml.etree.ElementTree as ElementTree
 
 pathToElasticSearchServerFile='/etc/elasticsearch/elasticsearch.yml'
 
@@ -47,13 +49,26 @@ def connect_and_index(index, type, uuid, pathToTransfer):
             except pyes.exceptions.IndexAlreadyExistsException:
                 pass
 
-            filesIndexed = index_directory_files(
-                conn,
-                uuid,
-                pathToTransfer,
-                index,
-                type
-            )
+            # use METS file if indexing an AIP
+            metsFilePath = os.path.join(pathToTransfer, 'METS.' + uuid + '.xml')
+
+            if os.path.isfile(metsFilePath):
+                filesIndexed = index_mets_file_metadata(
+                    conn,
+                    uuid,
+                    metsFilePath,
+                    index,
+                    type
+                )
+
+            else:
+                filesIndexed = index_directory_files(
+                    conn,
+                    uuid,
+                    pathToTransfer,
+                    index,
+                    type
+                )
 
             print type + ' UUID: ' + uuid
             print 'Files indexed: ' + str(filesIndexed)
@@ -66,6 +81,48 @@ def connect_and_index(index, type, uuid, pathToTransfer):
         exitCode = 1
 
     return exitCode
+
+def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
+    filesIndexed     = 0
+    filePathAmdIDs   = {}
+    filePathMetsData = {}
+
+    tree = ElementTree.parse(metsFilePath)
+    root = tree.getroot()
+
+    # get amdSec IDs for each filepaths
+    for item in root.findall("{http://www.loc.gov/METS/}fileSec/{http://www.loc.gov/METS/}fileGrp/{http://www.loc.gov/METS/}file"):
+        for item2 in item.findall("{http://www.loc.gov/METS/}FLocat"):
+            filePath = item2.attrib['{http://www.w3.org/1999/xlink}href']
+            filePathAmdIDs[filePath] = item.attrib['ADMID']
+
+    # for each filepath, get data and convert to dictionary
+    for filePath in filePathAmdIDs:
+        filesIndexed = filesIndexed + 1
+        items = root.findall("{http://www.loc.gov/METS/}amdSec[@ID='" + filePathAmdIDs[filePath] + "']/{http://www.loc.gov/METS/}techMD/{http://www.loc.gov/METS/}mdWrap/{http://www.loc.gov/METS/}xmlData")
+        for item in items:
+            objects = item.findall('{info:lc/xmlns/premis-v2}object')
+            for object in objects:
+                if object != None:
+                    xml = ElementTree.tostring(object)
+                    filePathMetsData[filePath] = xmltodict.parse(xml)
+
+    print 'Parsed METS XML...'
+
+    # do indexing
+
+    # document structure
+    transferData = {
+      'uuid': uuid,
+      'created': time.time()
+    }
+
+    transferData['filepaths'] = filePathMetsData
+
+    # add document to index
+    conn.index(transferData, index, type)
+
+    return filesIndexed
 
 def index_directory_files(conn, uuid, pathToTransfer, index, type):
     filesIndexed = 0
