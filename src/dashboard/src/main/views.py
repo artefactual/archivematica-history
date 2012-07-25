@@ -140,7 +140,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             form.save()
 
         # determine how many empty forms should be shown for children
-        extra_grant_forms = 1
         extra_copyright_forms = max_notes - models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights).count()
         extra_statute_forms = 1
         extra_license_forms = max_notes - models.RightsStatementLicense.objects.filter(rightsstatement=viewRights).count()
@@ -155,7 +154,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             form = forms.RightsForm()
             viewRights = models.RightsStatement()
 
-        extra_grant_forms     = max_notes
         extra_copyright_forms = max_notes
         extra_statute_forms   = max_notes
         extra_license_forms   = max_notes
@@ -163,7 +161,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         extra_other_forms     = max_notes
 
     # create inline formsets for child elements
-    GrantFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementRightsGranted, extra=extra_grant_forms, can_delete=False, form=forms.RightsGrantedForm)
     CopyrightFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementCopyright, extra=extra_copyright_forms, can_delete=False, form=forms.RightsCopyrightForm)
     StatuteFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementStatuteInformation, extra=extra_statute_forms, can_delete=False, form=forms.RightsStatuteForm)
     LicenseFormSet = inlineformset_factory(models.RightsStatement, models.RightsStatementLicense, extra=extra_license_forms, can_delete=False, form=forms.RightsLicenseForm)
@@ -179,9 +176,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             createdRights.metadataappliestotype = sectionTypeID[section]
             createdRights.metadataappliestoidentifier = uuid
             createdRights.save()
-
-        grantFormset = GrantFormSet(request.POST, instance=createdRights)
-        grantFormset.save()
 
         copyrightFormset = CopyrightFormSet(request.POST, instance=createdRights)
         createdCopyright = copyrightFormset.save()
@@ -204,9 +198,8 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             new_content_type_created = createdRights.rightsbasis
 
         if new_content_type_created == None:
-            return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
+            return HttpResponseRedirect(reverse('main.views.%s_rights_grants_edit' % section, args=[uuid, createdRights.pk]))
     else:
-        grantFormset     = GrantFormSet(instance=viewRights)
         copyrightFormset = CopyrightFormSet(instance=viewRights)
         statuteFormset   = StatuteFormSet(instance=viewRights)
         licenseFormset   = LicenseFormSet(instance=viewRights)
