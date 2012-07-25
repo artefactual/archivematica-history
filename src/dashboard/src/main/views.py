@@ -258,8 +258,8 @@ def rights_grants_edit(request, uuid, id, section='ingest'):
         grantFormset = GrantFormSet(request.POST, instance=viewRights)
         grantFormset.save()
 
-    else:
-        grantFormset = GrantFormSet(instance=viewRights)
+    # display (possibly revised) formset
+    grantFormset = GrantFormSet(instance=viewRights)
 
     return render(request, 'main/rights_grants_edit.html', locals())
 
