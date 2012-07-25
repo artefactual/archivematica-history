@@ -1,9 +1,11 @@
 var DirectoryPickerView = fileBrowser.FileExplorer.extend({
 
   initialize: function() {
-    this.structure=         {};
+    this.structure                  = {};
     this.options.closeDirsByDefault = true;
-    this.options.hideFiles =        true;
+    this.options.hideFiles          = true;
+
+    this.ajaxChildDataUrl = this.options.ajaxChildDataUrl;
 
     this.render();
 
