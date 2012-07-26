@@ -520,7 +520,7 @@ SELECT
           FROM Tasks
           JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
           WHERE
-            Jobs.SIPUUID = 'e2da8c37-102a-4b33-b2b7-59143a53297e' AND
+            Jobs.SIPUUID = %s AND
             Jobs.jobType = 'Normalize access' AND
             Tasks.fileUUID = U
         ) AS 'access_normalization_task_uuid',
@@ -529,7 +529,7 @@ SELECT
           FROM Tasks
           JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
           WHERE
-            Jobs.SIPUUID = 'e2da8c37-102a-4b33-b2b7-59143a53297e' AND
+            Jobs.SIPUUID = %s AND
             Jobs.jobType = 'Normalize preservation' AND
             Tasks.fileUUID = U
         ) AS 'preservation_normalization_task_uuid',
@@ -615,7 +615,7 @@ SELECT
 
     cursor = connection.cursor()
     cursor.execute(query, (
-      uuid, uuid, uuid, uuid, uuid, uuid
+      uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid
     ))
     objects = dictfetchall(cursor)
 
