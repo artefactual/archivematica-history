@@ -18,18 +18,60 @@
         <tr>
           <!-- File name -->
           <td><a class="file-location" href="#" title="Location" data-location="{{ item.location }}">{{ item.fileName }}</a></td>
+
           <!-- Never red -->
-          <td><span id='normalization-report-task-{{ item.9 }}' class='normalization-report-task'>{{ item.preservation_normalization_attempted|yesno:"Yes,No" }}</span></td>
+          <td>
+            {% if item.preservation_normalization_task_uuid %}
+              <span id='normalization-report-task-{{ item.preservation_normalization_task_uuid }}' class='normalization-report-task'>{{ item.preservation_normalization_attempted|yesno:"Yes,No" }}</span>
+            {% else %}
+              {{ item.preservation_normalization_attempted|yesno:"Yes,No" }}
+            {% endif %}
+          </td>
+
           <!-- Red when yes -->
-          <td class="{{ item.preservation_normalization_failed|yesno:"error,ok" }}"><span id='normalization-report-task-{{ item.9 }}' class='normalization-report-task'>{{ item.preservation_normalization_failed|yesno:"Yes,No" }}</span></td>
+          <td class="{{ item.preservation_normalization_failed|yesno:"error,ok" }}">
+            {% if item.preservation_normalization_task_uuid %}
+              <span id='normalization-report-task-{{ item.preservation_normalization_task_uuid }}' class='normalization-report-task'>{{ item.preservation_normalization_failed|yesno:"Yes,No" }}</span>
+            {% else %}
+              {{ item.preservation_normalization_failed|yesno:"Yes,No" }}
+            {% endif %}
+          </td>
+
           <!-- Red is reservation_normalization_attempted is No and already_in_preservation_format is No -->
-          <td{% if not item.preservation_normalization_attempted and not item.already_in_preservation_format %} class="error"{% endif %}>{{ item.already_in_preservation_format|yesno:"Yes,No" }}</td>
+          <td{% if not item.preservation_normalization_attempted and not item.already_in_preservation_format %} class="error"{% endif %}>
+            {% if item.preservation_normalization_task_uuid %}
+              <span id='normalization-report-task-{{ item.preservation_normalization_task_uuid }}' class='normalization-report-task'>{{ item.already_in_preservation_format|yesno:"Yes,No" }}</span>
+            {% else %}
+              {{ item.already_in_preservation_format|yesno:"Yes,No" }}
+            {% endif %}
+          </td>
+
           <!-- Never red -->
-          <td>{{ item.access_normalization_attempted|yesno:"Yes,No" }}</td>
+          <td>
+            {% if item.access_normalization_task_uuid %}
+              <span id='normalization-report-task-{{ item.access_normalization_task_uuid }}' class='normalization-report-task'>{{ item.access_normalization_attempted|yesno:"Yes,No" }}</span>
+            {% else %}
+              {{ item.access_normalization_attempted|yesno:"Yes,No" }}
+            {% endif %}
+          </td>
+
           <!-- Red when yes -->
-          <td class="{{ item.access_normalization_failed|yesno:"error,ok" }}">{{ item.access_normalization_failed|yesno:"Yes,No" }}</td>
+          <td class="{{ item.access_normalization_failed|yesno:"error,ok" }}">
+            {% if item.access_normalization_task_uuid %}
+              <span id='normalization-report-task-{{ item.access_normalization_task_uuid }}' class='normalization-report-task'>{{ item.access_normalization_failed|yesno:"Yes,No" }}</span>
+            {% else %}
+              {{ item.access_normalization_failed|yesno:"Yes,No" }}
+            {% endif %}
+          </td>
+
           <!-- Red is [already_in_preservation_format is No and access_normalization_failed is No -->
-          <td{% if not item.access_normalization_attempted and not item.already_in_access_format %} class="error"{% endif %}>{{ item.already_in_access_format|yesno:"Yes,No" }}</td>
+          <td{% if not item.access_normalization_attempted and not item.already_in_access_format %} class="error"{% endif %}>
+            {% if item.access_normalization_task_uuid %}
+              <span id='normalization-report-task-{{ item.access_normalization_task_uuid }}' class='normalization-report-task'>{{ item.already_in_access_format|yesno:"Yes,No" }}</span>
+            {% else %}
+              {{ item.already_in_access_format|yesno:"Yes,No" }}
+            {% endif %}
+          </td>
         </tr>
       {% endfor %}
     </tbody>
