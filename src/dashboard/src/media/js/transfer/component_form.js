@@ -100,8 +100,8 @@ var TransferComponentFormView = Backbone.View.extend({
       , self = this;
 
     $buttonContainer
-      .append($addButton)
       .append($sourceDirSelect)
+      .append($addButton)
       .append($startTransferButton);
 
     $pathAreaEl.append($buttonContainer);
