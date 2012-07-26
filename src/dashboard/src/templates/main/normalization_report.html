@@ -21,7 +21,7 @@
           <!-- Never red -->
           <td>{{ item.2|yesno:"Yes,No" }}</td>
           <!-- Red when yes -->
-          <td class="{{ item.3|yesno:"error,ok" }}">{{ item.3|yesno:"Yes,No" }}</td>
+          <td class="{{ item.3|yesno:"error,ok" }}"><span id='job_{{ item.9 }}' class='job'>{{ item.3|yesno:"Yes,No" }}</span></td>
           <!-- Red is [2] is No and [4] is No -->
           <td{% if not item.2 and not item.4 %} class="error"{% endif %}>{{ item.4|yesno:"Yes,No" }}</td>
           <!-- Never red -->

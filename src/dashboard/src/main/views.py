@@ -570,7 +570,9 @@ SELECT
           WHERE
             Files.fileUUID = U
         )
-        AS 'Location'
+        AS 'Location',
+
+        Tasks.jobUUID AS 'jobUUID'
 
       FROM filesPreservationAccessFormatStatus
       LEFT OUTER JOIN Tasks ON filesPreservationAccessFormatStatus.fileUUID = Tasks.fileUUID
