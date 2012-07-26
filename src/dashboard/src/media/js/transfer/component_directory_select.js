@@ -3,7 +3,16 @@ var DirectorySelectorView = fileBrowser.FileExplorer.extend({
   initialize: function() {
     this.structure = {};
     this.options.closeDirsByDefault = true;
-    this.options.hideFiles = true;
+    this.options.entryDisplayFilter = function(entry) {
+      // if a file and not a ZIP file, then hide
+      if (
+        entry.children == undefined
+        && entry.attributes.name.toLowerCase().indexOf('.zip') == -1
+      ) {
+          return false;
+      }
+      return true;
+    };
 
     this.render();
 
