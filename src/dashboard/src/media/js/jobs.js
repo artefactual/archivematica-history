@@ -1,9 +1,3 @@
-function utcDateToLocal(dateText) {
-  dateText = dateText.replace('a.m.', 'AM').replace('p.m.', 'PM');
-  var date = new Date(dateText + ' UTC');
-  return date.getArchivematicaDateString();
-}
-
 function log(message) {
   try
   {
