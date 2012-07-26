@@ -68,7 +68,7 @@
             <td class="link-sip"><a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a></td>
             <td class="size">{{ item.size }}</td>
             <td class="uuid">{{ item.uuid }}</td>
-            <td>{{ item.date|date:"Y-m-d h:i:s" }}</td>
+            <td><span class='utcDate'>{{ item.date }}</a></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -91,5 +91,11 @@
   {% endif %}
 
   {% endif %}
+
+  <script>
+  $(document).ready(function() {
+    localizeUtcDateElements();
+  });
+  </script>
 
 {% endblock %}
