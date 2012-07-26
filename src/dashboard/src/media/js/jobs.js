@@ -571,6 +571,29 @@ var BaseJobView = Backbone.View.extend({
       this.model.view = this;
     },
 
+  taskDialog: function(data, theadHtml)
+    {
+      var dialog = $('<div class="task-dialog"></div>');
+
+      if (theadHtml == undefined) {
+        theadHtml = '';
+      }
+
+      dialog.append('<table>' + theadHtml + $(data).find('tbody').html() + '</table>')
+
+      return dialog.dialog({
+          title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('type') + ' &raquo Tasks',
+          width: 640,
+          height: 480,
+          modal: true,
+          buttons: [
+            {
+              text: 'Close',
+              click: function() { $(this).dialog('close'); }
+            }]
+        });
+    },
+
   showTasks: function(event)
     {
       event.preventDefault();
@@ -581,19 +604,7 @@ var BaseJobView = Backbone.View.extend({
         dataType: 'html',
         success: function(data)
           {
-            $('<div class="task-dialog"></div>')
-              .append('<table>' + $(data).find('tbody').html() + '</table>')
-              .dialog({
-                title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('type') + ' &raquo Tasks',
-                width: 640,
-                height: 480,
-                modal: true,
-                buttons: [
-                  {
-                    text: 'Close',
-                    click: function() { $(this).dialog('close'); }
-                  }]
-              });
+            this.taskDialog(data);
             // localize UTC dates
             $('.utcDate').each(function() {
               $(this).text(utcDateToLocal($(this).text()));

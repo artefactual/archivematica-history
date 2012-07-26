@@ -398,19 +398,7 @@ $(function()
             dataType: 'html',
             success: function(data)
               {
-                $('<div class="task-dialog"></div>')
-                  .append('<table>' + $(data).find('thead').html() + $(data).find('tbody').html() + '</table>')
-                  .dialog({
-                    title: this.model.sip.get('directory') + ' &raquo ' + this.model.get('type') + ' &raquo Normalization report',
-                    width: 860,
-                    height: 640,
-                    modal: true,
-                    buttons: [
-                      {
-                        text: 'Close',
-                        click: function() { $(this).dialog('close'); }
-                      }]
-                  })
+                this.taskDialog(data, $(data).find('thead').html())
                   .find('a.file-location')
                     .popover(
                       {
