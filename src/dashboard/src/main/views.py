@@ -525,7 +525,7 @@ SELECT
             Jobs.jobType = 'Normalize preservation' AND
             Jobs.MicroServiceChainLinksPK NOT IN (SELECT MicroserviceChainLink FROM DefaultCommandsForClassifications ) AND
             Tasks.stdOut LIKE '%%[Command]%%')
-        AS 'Preservation normalization attempted',
+        AS 'preservation_normalization_attempted',
 
         (
           SELECT Tasks.exitCode
@@ -536,9 +536,9 @@ SELECT
             Jobs.jobType = 'Normalize preservation' AND
             Tasks.fileUUID = U
         ) != 0
-        AS 'Preservation normalization failed',
+        AS 'preservation_normalization_failed',
 
-       filesPreservationAccessFormatStatus.inPreservationFormat AS 'Already in preservation format',
+       filesPreservationAccessFormatStatus.inPreservationFormat AS 'already_in_preservation_format',
 
         Tasks.fileUUID NOT IN (
           SELECT Tasks.fileUUID
@@ -558,7 +558,7 @@ SELECT
                 Tasks.stdOut LIKE '%%[Command]%%' AND
                 Jobs.MicroServiceChainLinksPK NOT IN (SELECT MicroserviceChainLink FROM DefaultCommandsForClassifications ) AND
                 Tasks.stdOut NOT LIKE '%%Not including %% in DIP.%%'  )
-        AS 'Access normalization attempted',
+        AS 'access_normalization_attempted',
 
         (
           SELECT Tasks.exitCode
@@ -569,9 +569,9 @@ SELECT
             Jobs.jobType = 'Normalize access' AND
             Tasks.fileUUID = U
         ) != 0
-        AS 'Access normalization failed',
+        AS 'access_normalization_failed',
 
-        filesPreservationAccessFormatStatus.inAccessFormat AS 'Already in access format',
+        filesPreservationAccessFormatStatus.inAccessFormat AS 'already_in_access_format',
 
         (
           SELECT Files.originalLocation
@@ -579,7 +579,7 @@ SELECT
           WHERE
             Files.fileUUID = U
         )
-        AS 'Location',
+        AS 'location',
 
         Tasks.jobUUID AS 'jobUUID'
 
@@ -599,7 +599,7 @@ SELECT
     cursor.execute(query, (
       uuid, uuid, uuid, uuid, uuid, uuid
     ))
-    objects = cursor.fetchall()
+    objects = dictfetchall(cursor)
 
     return render(request, 'main/normalization_report.html', locals())
 

@@ -17,19 +17,19 @@
       {% for item in objects %}
         <tr>
           <!-- File name -->
-          <td><a class="file-location" href="#" title="Location" data-location="{{ item.8 }}">{{ item.1 }}</a></td>
+          <td><a class="file-location" href="#" title="Location" data-location="{{ item.location }}">{{ item.fileName }}</a></td>
           <!-- Never red -->
-          <td>{{ item.2|yesno:"Yes,No" }}</td>
+          <td><span id='normalization-report-task-{{ item.9 }}' class='normalization-report-task'>{{ item.preservation_normalization_attempted|yesno:"Yes,No" }}</span></td>
           <!-- Red when yes -->
-          <td class="{{ item.3|yesno:"error,ok" }}"><span id='normalization-report-job-{{ item.9 }}' class='normalization-report-job'>{{ item.3|yesno:"Yes,No" }}</span></td>
-          <!-- Red is [2] is No and [4] is No -->
-          <td{% if not item.2 and not item.4 %} class="error"{% endif %}>{{ item.4|yesno:"Yes,No" }}</td>
+          <td class="{{ item.preservation_normalization_failed|yesno:"error,ok" }}"><span id='normalization-report-task-{{ item.9 }}' class='normalization-report-task'>{{ item.preservation_normalization_failed|yesno:"Yes,No" }}</span></td>
+          <!-- Red is reservation_normalization_attempted is No and already_in_preservation_format is No -->
+          <td{% if not item.preservation_normalization_attempted and not item.already_in_preservation_format %} class="error"{% endif %}>{{ item.already_in_preservation_format|yesno:"Yes,No" }}</td>
           <!-- Never red -->
-          <td>{{ item.5|yesno:"Yes,No" }}</td>
+          <td>{{ item.access_normalization_attempted|yesno:"Yes,No" }}</td>
           <!-- Red when yes -->
-          <td class="{{ item.6|yesno:"error,ok" }}">{{ item.6|yesno:"Yes,No" }}</td>
-          <!-- Red is [4] is No and [6] is No -->
-          <td{% if not item.5 and not item.7 %} class="error"{% endif %}>{{ item.7|yesno:"Yes,No" }}</td>
+          <td class="{{ item.access_normalization_failed|yesno:"error,ok" }}">{{ item.access_normalization_failed|yesno:"Yes,No" }}</td>
+          <!-- Red is [already_in_preservation_format is No and access_normalization_failed is No -->
+          <td{% if not item.access_normalization_attempted and not item.already_in_access_format %} class="error"{% endif %}>{{ item.already_in_access_format|yesno:"Yes,No" }}</td>
         </tr>
       {% endfor %}
     </tbody>
