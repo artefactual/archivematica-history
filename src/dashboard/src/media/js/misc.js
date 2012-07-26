@@ -118,6 +118,12 @@ Date.prototype.getArchivematicaDateString = function()
     return dateText;
   };
 
+function localizeUtcDateElements() {
+  $('.utcDate').each(function() {
+    $(this).text(utcDateToLocal($(this).text()));
+  });
+}
+
 function timestampToLocal(timestamp) {
   // convert to milliseconds
   var date = new Date(timestamp * 1000);

@@ -605,10 +605,7 @@ var BaseJobView = Backbone.View.extend({
         success: function(data)
           {
             this.taskDialog(data);
-            // localize UTC dates
-            $('.utcDate').each(function() {
-              $(this).text(utcDateToLocal($(this).text()));
-            });
+            localizeUtcDateElements();
           },
         url: '/tasks/' + this.model.get('uuid') + '/'
       });
