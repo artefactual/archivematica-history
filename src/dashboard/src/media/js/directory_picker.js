@@ -3,7 +3,14 @@ var DirectoryPickerView = fileBrowser.FileExplorer.extend({
   initialize: function() {
     this.structure                  = {};
     this.options.closeDirsByDefault = true;
-    this.options.hideFiles          = true;
+
+    // hide all files
+    this.options.entryDisplayFilter = function(entry) {
+      if (entry.children == undefined) {
+          return false;
+      }
+      return true;
+    };
 
     this.ajaxChildDataUrl = this.options.ajaxChildDataUrl;
 
