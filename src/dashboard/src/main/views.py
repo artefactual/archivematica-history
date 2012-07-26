@@ -1047,6 +1047,11 @@ def administration_processing(request):
 def forbidden(request):
     return render(request, 'forbidden.html')
 
+def task(request, uuid):
+    task = models.Task.objects.get(taskuuid=uuid)
+    objects = [task]
+    return render(request, 'main/tasks.html', locals())
+
 def tasks(request, uuid):
     job = models.Job.objects.get(jobuuid=uuid)
     objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')
