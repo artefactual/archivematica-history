@@ -52,6 +52,7 @@ urlpatterns = patterns('main.views',
     (r'jobs/(?P<uuid>' + UUID_REGEX + ')/explore/$', 'jobs_explore'),
     (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects/$', 'jobs_list_objects'),
     (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
+    (r'task/(?P<uuid>' + UUID_REGEX + ')/$', 'task'),
 
     # Archival storage
     (r'archival-storage/$', 'archival_storage'),
