@@ -60,6 +60,15 @@ def load_jobs(view):
         return view(request, uuid, *args, **kwargs)
     return inner
 
+# Used for raw SQL queries to return data in dictionaries instead of lists
+def dictfetchall(cursor):
+    "Returns all rows from a cursor as a dict"
+    desc = cursor.description
+    return [
+        dict(zip([col[0] for col in desc], row))
+        for row in cursor.fetchall()
+    ]
+
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Home
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
