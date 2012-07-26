@@ -390,6 +390,8 @@ $(function()
 
       normalizationReport: function(event)
         {
+          var self = this;
+
           event.preventDefault();
 
           $.ajax({
@@ -408,6 +410,29 @@ $(function()
                             return $(this).attr('data-location').replace(/%.*%/gi, '');
                           }
                       }).click(function(event) { event.preventDefault(); });
+
+                // make it so clicking on job shows details
+                $('.normalization-report-task').each(function() {
+                  var taskUUID = $(this).attr('id').replace('normalization-report-task-', '');
+                  $(this).click(function() {
+      	$.ajax({
+        context: this,
+        type: 'GET',
+        dataType: 'html',
+        success: function(jobData)
+          {
+console.log(jobData);
+            self.taskDialog(jobData);
+            // localize UTC dates
+            $('.utcDate').each(function() {
+              $(this).text(utcDateToLocal($(this).text()));
+            });
+          },
+        url: '/task/' + taskUUID + '/'
+      });
+
+                  });
+                });
               },
             url: '/ingest/normalization-report/' + this.model.sip.get('uuid') + '/'
           });

@@ -516,6 +516,24 @@ SELECT
         Tasks.fileUUID AS U,
         Tasks.fileName,
 
+        (SELECT IF(Tasks.taskUUID IS NULL, '', Tasks.taskUUID)
+          FROM Tasks
+          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+          WHERE
+            Jobs.SIPUUID = 'e2da8c37-102a-4b33-b2b7-59143a53297e' AND
+            Jobs.jobType = 'Normalize access' AND
+            Tasks.fileUUID = U
+        ) AS 'access_normalization_task_uuid',
+
+        (SELECT IF(Tasks.taskUUID IS NULL, '', Tasks.taskUUID)
+          FROM Tasks
+          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
+          WHERE
+            Jobs.SIPUUID = 'e2da8c37-102a-4b33-b2b7-59143a53297e' AND
+            Jobs.jobType = 'Normalize preservation' AND
+            Tasks.fileUUID = U
+        ) AS 'preservation_normalization_task_uuid',
+
         Tasks.fileUUID IN (
           SELECT Tasks.fileUUID
           FROM Tasks
