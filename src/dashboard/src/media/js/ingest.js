@@ -400,7 +400,10 @@ $(function()
             dataType: 'html',
             success: function(data)
               {
-                this.taskDialog(data, $(data).find('thead').html())
+                this.taskDialog(data, {
+                  theadHtml: $(data).find('thead').html(),
+                  width: 950
+                })
                   .find('a.file-location')
                     .popover(
                       {
