@@ -796,6 +796,8 @@ def archival_storage(request, path=None):
 
         results = modifiedResults
 
+        number_of_results = len(results)
+
         try:
             if results:
                 pass

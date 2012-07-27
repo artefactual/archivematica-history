@@ -17,6 +17,8 @@
 
   {% if search_attempted %}
     {% if results %}
+      <div>Found {{ number_of_results }} results.</p>
+
       {% for item in results %}
         <div>{{item.filename}}</div>
         <div style='margin-top: 1em; margin-bottom: 1em; margin-left: 2em;'>
