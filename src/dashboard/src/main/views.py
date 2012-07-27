@@ -44,6 +44,8 @@ import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import pyes
 
+AIPSTOREPATH = '/var/archivematica/sharedDirectory/www/AIPsStore'
+
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Utils (decorators)
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
@@ -781,6 +783,16 @@ def archival_storage(request, path=None):
         q = pyes.StringQuery(query)
         results = conn.search(query=q, indices='aips')
 
+        # create a copy of the results that we can tweak
+        modifiedResults = []
+
+        for item in results:
+            clone = item.copy()
+            clone['filename'] = os.path.basename(clone['filePath'])
+            modifiedResults.append(clone)
+
+        results = modifiedResults
+
         try:
             if results:
                 pass
@@ -804,12 +816,11 @@ def archival_storage_sip_display(request, path=None):
 
     # get AIPs from DB
     aips = models.AIP.objects.all()
-    AIPsStore = '/var/archivematica/sharedDirectory/www/AIPsStore/'
 
     sips = []
     for aip in aips:
         sip = {}
-        sip['href'] = aip.filepath.replace(AIPsStore, "AIPsStore/")
+        sip['href'] = aip.filepath.replace(AIPSTOREPATH + '/', "AIPsStore/")
         sip['name'] = aip.sipname
         sip['uuid'] = aip.sipuuid
 
