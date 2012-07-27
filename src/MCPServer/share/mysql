@@ -1967,7 +1967,7 @@ SET @NextMicroServiceChainLink = @MicroServiceChainLink;
 
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
     VALUES
-    (NULL, NULL, 'objects', FALSE, NULL, NULL, @NormalizeAccessFromServiceChain, Null);
+    (NULL, NULL, 'objects/service', FALSE, NULL, NULL, @NormalizeAccessFromServiceChain, Null);
 INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (6,      LAST_INSERT_ID(), 'Normalize service files for access');
