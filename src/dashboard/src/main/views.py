@@ -788,8 +788,11 @@ def archival_storage(request, path=None):
 
         for item in results:
             clone = item.copy()
-            clone['filename'] = os.path.basename(clone['filePath'])
-            modifiedResults.append(clone)
+            try:
+                clone['filename'] = os.path.basename(clone['filePath'])
+                modifiedResults.append(clone)
+            except:
+                pass
 
         results = modifiedResults
 
