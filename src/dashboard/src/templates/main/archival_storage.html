@@ -18,12 +18,13 @@
   {% if search_attempted %}
     {% if results %}
       {% for item in results %}
-        {{item.uuid}} (created: <script>document.write(timestampToLocal({{item.created}}))</script>)<br/>
-        <blockquote>
-        {% for file in item.filepaths %}
-          {{file}}<br/>
-        {% endfor %}
-        </blockquote>
+        {{item.filePath}} (indexed at: <script>document.write(timestampToLocal({{item.indexedAt}}))</script>)<br/>
+        <div style='margin-top: 1em; margin-bottom: 1em; margin-left: 2em;'>
+          <div>
+            <span style='margin-right: 3em;'>AIP: {{item.AIPUUID}}</span>
+            <span style='margin-right: 3em;'>Indexed at: {{item.indexedAt}}</span>
+          </div>
+        </div>
       {% endfor %}
     {% else %}
       No results, please try another search.
