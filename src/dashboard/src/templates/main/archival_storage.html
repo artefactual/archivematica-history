@@ -42,6 +42,11 @@
   {% else %}
 
   {% if sips %}
+    <h1>
+      Browse archival storage<br/>
+      <small>{{ total_size }} MB</small>
+    </h1>
+
     <table>
       <thead>
         <th>
@@ -83,14 +88,6 @@
           </tr>
         {% endfor %}
       </tbody>
-      <tfoot>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="3">
-            <span>{{ total_size }}</span> MB
-          </td>
-        </tr>
-      </tfoot>
     </table>
 
   {% else %}
