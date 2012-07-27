@@ -87,16 +87,25 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
     filePathAmdIDs   = {}
     filePathMetsData = {}
 
+    # establish structure to be indexed for each file item
+    fileData = {
+      'AIPUUID':   uuid,
+      'indexedAt': time.time(),
+      'filePath':  '',
+      'METS':      {}
+    }
+
+    # parse XML
     tree = ElementTree.parse(metsFilePath)
     root = tree.getroot()
 
-    # get amdSec IDs for each filepaths
+    # get amdSec IDs for each filepath
     for item in root.findall("{http://www.loc.gov/METS/}fileSec/{http://www.loc.gov/METS/}fileGrp/{http://www.loc.gov/METS/}file"):
         for item2 in item.findall("{http://www.loc.gov/METS/}FLocat"):
             filePath = item2.attrib['{http://www.w3.org/1999/xlink}href']
             filePathAmdIDs[filePath] = item.attrib['ADMID']
 
-    # for each filepath, get data and convert to dictionary
+    # for each filepath, get data and convert to dictionary then index
     for filePath in filePathAmdIDs:
         filesIndexed = filesIndexed + 1
         items = root.findall("{http://www.loc.gov/METS/}amdSec[@ID='" + filePathAmdIDs[filePath] + "']/{http://www.loc.gov/METS/}techMD/{http://www.loc.gov/METS/}mdWrap/{http://www.loc.gov/METS/}xmlData")
@@ -105,22 +114,17 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
             for object in objects:
                 if object != None:
                     xml = ElementTree.tostring(object)
-                    filePathMetsData[filePath] = xmltodict.parse(xml)
+                    #filePathMetsData[filePath] = xmltodict.parse(xml)
 
-    print 'Parsed METS XML...'
+                    # set up data for indexing
+                    indexData = fileData
+                    indexData['filePath'] = filePath
+                    indexData['METS'] = xmltodict.parse(xml)
 
-    # do indexing
+                    # index data
+                    conn.index(indexData, index, type)
 
-    # document structure
-    transferData = {
-      'uuid': uuid,
-      'created': time.time()
-    }
-
-    transferData['filepaths'] = filePathMetsData
-
-    # add document to index
-    conn.index(transferData, index, type)
+    print 'Indexed AIP files and corresponding METS XML.'
 
     return filesIndexed
 
