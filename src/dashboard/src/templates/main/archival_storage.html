@@ -1,4 +1,5 @@
 {% extends "layout_fluid.html" %}
+{% load breadcumbs %}
 
 {% block title %}Archival storage{% endblock %}
 {% block h1 %}Archival storage{% endblock %}
@@ -10,9 +11,16 @@
 
 {% block content %}
 
- <form method='POST'>
+  {% if search_attempted %}
+    <ul class="breadcrumb">
+      {% breadcrumb_url 'Archival storage' main.views.archival_storage %}
+      {% breadcrumb 'Search' %}
+    </ul>
+  {% endif %}
+
+  <form method='POST'>
   {{ form }}
-  <input type='submit' value='Search'/>
+  <input type='submit' value='Search archival storage'/>
   </form>
 
   {% if search_attempted %}
