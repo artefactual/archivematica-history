@@ -3205,9 +3205,9 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 
 -- ADD Normalization Path for .MPEG --
 INSERT INTO FileIDs 
-    (description)
+    (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .mpeg file'
+    'A .mpeg file', FALSE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -3266,7 +3266,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 INSERT INTO FileIDs 
     (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .mpg file', FALSE, TRUE
+    'A .mpg file', FALSE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
@@ -3600,7 +3600,7 @@ INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, ne
 INSERT INTO FileIDs 
     (description, validPreservationFormat, validAccessFormat)
     VALUES (
-    'A .mp3 file', FALSE, TRUE
+    'A .mp3 file', FALSE, FALSE
 );
 set @fileID = LAST_INSERT_ID();
 
