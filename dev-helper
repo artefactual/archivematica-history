@@ -40,8 +40,8 @@ function svn-update() {
       cd localDevSetup/
       colour ./cleanup.sh
       cd ..
-
-      echo "Bringing latest changes to the working copy..."
+      SVNVERSION="`svnversion`"
+      echo "Updating from ${SVNVERSION}. Bringing latest changes to the working copy..."
       svn update 
 
       echo "Integrating into environment..."
