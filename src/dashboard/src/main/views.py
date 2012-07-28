@@ -780,6 +780,9 @@ def archival_storage(request, path=None):
         query = request.POST.get('query', '')
         conn = pyes.ES('127.0.0.1:9200')
 
+        count_data = conn.count(indices='aips')
+        total_files_indexed = count_data.count
+
         q = pyes.StringQuery(query)
         results = conn.search(query=q, indices='aips')
 
