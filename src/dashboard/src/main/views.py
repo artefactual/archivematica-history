@@ -793,6 +793,9 @@ def archival_storage(request, path=None):
             clone = item.copy()
             try:
                 clone['filename'] = os.path.basename(clone['filePath'])
+                #return HttpResponse(clone['AIPUUID'])
+                aip = models.AIP.objects.get(sipuuid=clone['AIPUUID'])
+                clone['href']     = aip.filepath.replace(AIPSTOREPATH + '/', "AIPsStore/")
                 modifiedResults.append(clone)
             except:
                 pass
