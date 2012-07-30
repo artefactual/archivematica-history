@@ -127,12 +127,21 @@ var RepeatingDataView = Backbone.View.extend({
       this.url = this.options.url;
     }
 
+    if (this.options.noCreation != undefined) {
+      this.noCreation = this.options.noCreation;
+    }
+
     this.waitingForInput = false;
   },
 
   newLinkEl: function() {
     var $linkEl = $('<div class="btn">New ' + this.description + '</div>')
       , self = this;
+
+    // allow suppression of button for creating new records
+    if (this.noCreation) {
+      return;
+    }
 
     $linkEl.click(function() {
       $(this).attr('disabled', 'true');
