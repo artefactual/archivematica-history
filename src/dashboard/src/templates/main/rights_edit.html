@@ -95,6 +95,10 @@
             <input name='copyright_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
 
             <div id='copyrightdocidfields_{{ form.instance.pk }}' class='repeating-data'></div>
+
+            <div class='repeating-ajax-data-row'>
+              <textarea name='copyright_note'></textarea>
+            </div>
             <div id='copyrightnotes_{{ form.instance.pk }}' class='repeating-data'></div>
 
             <script>

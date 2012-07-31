@@ -219,6 +219,20 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         if request.POST.get('copyright_previous_pk', '') == 'None' and len(createdCopyright) == 1:
             new_content_type_created = 'copyright'
 
+        # handle creation of new copyright notes
+        if request.POST.get('copyright_note', '') != '':
+            # make new copyright record if it doesn't exist
+            if len(createdCopyright) != 1:
+                try:
+                    createdCopyright = models.RightsStatementCopyright.objects.get(rightsstatement=createdRights)
+                except:
+                    createdCopyright = models.RightsStatementCopyright(rightsstatement=createdRights)
+                    createdCopyright.save()
+
+            copyrightNote = models.RightsStatementCopyrightNote(rightscopyright=createdCopyright)
+            copyrightNote.copyrightnote = request.POST.get('copyright_note', '')
+            copyrightNote.save()
+
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         createdStatute = statuteFormset.save()
         if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
@@ -268,9 +282,59 @@ def rights_grants_edit(request, uuid, id, section='ingest'):
     if request.method == 'POST':
         grantFormset = GrantFormSet(request.POST, instance=viewRights)
         grantFormset.save()
+        restrictionCreated = False
+        noteCreated = False
+        for form in grantFormset.forms:
+            grantCreated = False
+
+            # handle restriction creation for a parent that's a blank grant
+            if request.POST.get('new_rights_restriction_None', '') != '' and not form.instance.pk:
+                grantCreated = models.RightsStatementRightsGranted(rightsstatement=viewRights)
+                grantCreated.save()
+                restrictionCreated = models.RightsStatementRightsGrantedRestriction(rightsgranted=grantCreated)
+                restrictionCreated.restriction = request.POST.get('new_rights_restriction_None', '')
+                restrictionCreated.save()
+            else:
+                # handle restriction creation for a parent grant that already exists
+                if request.POST.get('new_rights_restriction_' + str(form.instance.pk), '') != '':
+                    restrictionCreated = models.RightsStatementRightsGrantedRestriction(rightsgranted=form.instance)
+                    restrictionCreated.restriction = request.POST.get('new_rights_restriction_' + str(form.instance.pk), '')
+                    restrictionCreated.save()
+
+            # handle note creation for a parent that's a blank grant
+            if request.POST.get('new_rights_note_None', '') != '' and not form.instance.pk:
+                if not grantCreated:
+                    grantCreated = models.RightsStatementRightsGranted(rightsstatement=viewRights)
+                    grantCreated.save()
+                noteCreated = models.RightsStatementRightsGrantedNote(rightsgranted=grantCreated)
+                noteCreated.rightsgrantednote = request.POST.get('new_rights_note_None', '')
+                noteCreated.save()
+            else:
+                # handle note creation for a parent grant that already exists 
+                if request.POST.get('new_rights_note_' + str(form.instance.pk), '') != '':
+                    if not grantCreated:
+                        grantCreated = models.RightsStatementRightsGranted(rightsstatement=viewRights)
+                        grantCreated.save()
+                    noteCreated = models.RightsStatementRightsGrantedNote(rightsgranted=form.instance)
+                    noteCreated.rightsgrantednote = request.POST.get('new_rights_note_' + str(form.instance.pk), '')
+                    noteCreated.save()
+
+    # handle restriction creation for a parent that's just been created
+    if request.POST.get('new_rights_restriction_None', '') != '' and not restrictionCreated:
+        restrictionCreated = models.RightsStatementRightsGrantedRestriction(rightsgranted=form.instance)
+        restrictionCreated.restriction = request.POST.get('new_rights_restriction_None', '')
+        restrictionCreated.save()
+
+    # handle note creation for a parent that's just been created
+    if request.POST.get('new_rights_note_None', '') != '' and not noteCreated:
+        noteCreated = models.RightsStatementRightsGrantedNote(rightsgranted=form.instance)
+        noteCreated.rightsgrantednote = request.POST.get('new_rights_note_None', '')
+        noteCreated.save()
 
     # display (possibly revised) formset
     grantFormset = GrantFormSet(instance=viewRights)
+
+
 
     return render(request, 'main/rights_grants_edit.html', locals())
 
