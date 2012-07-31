@@ -216,14 +216,21 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             createdRights.save()
 
         copyrightFormset = CopyrightFormSet(request.POST, instance=createdRights)
-        createdCopyright = copyrightFormset.save()
-        if request.POST.get('copyright_previous_pk', '') == 'None' and len(createdCopyright) == 1:
+        createdCopyrightSet = copyrightFormset.save()
+
+        # establish whether or not there is a copyright information instance to use as a parent
+        if len(createdCopyrightSet) == 1:
+            createdCopyright = createdCopyrightSet[0]
+        else:
+            createdCopyright = False
+
+        if request.POST.get('copyright_previous_pk', '') == 'None' and createdCopyright:
             new_content_type_created = 'copyright'
 
-        # handle creation of new copyright notes
+        # handle creation of new copyright notes, creating parent if necessary
         if request.POST.get('copyright_note', '') != '':
             # make new copyright record if it doesn't exist
-            if len(createdCopyright) != 1:
+            if not createdCopyright:
                 try:
                     createdCopyright = models.RightsStatementCopyright.objects.get(rightsstatement=createdRights)
                 except:
@@ -233,6 +240,26 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             copyrightNote = models.RightsStatementCopyrightNote(rightscopyright=createdCopyright)
             copyrightNote.copyrightnote = request.POST.get('copyright_note', '')
             copyrightNote.save()
+
+            new_content_type_created = 'copyright'
+
+        # handle creation of new documentation identifiers
+        if request.POST.get('copyright_documentation_identifier_type', '') != '' or request.POST.get('copyright_documentation_identifier_value', '') != '' or request.POST.get('copyright_documentation_identifier_role', ''):
+            # make new copyright record if it doesn't exist
+            if not createdCopyright:
+                try:
+                    createdCopyright = models.RightsStatementCopyright.objects.get(rightsstatement=createdRights)
+                except:
+                    createdCopyright = models.RightsStatementCopyright(rightsstatement=createdRights)
+                    createdCopyright.save()
+
+            copyrightDocIdentifier = models.RightsStatementCopyrightDocumentationIdentifier(rightscopyright=createdCopyright)
+            copyrightDocIdentifier.copyrightdocumentationidentifiertype  = request.POST.get('copyright_documentation_identifier_type', '')
+            copyrightDocIdentifier.copyrightdocumentationidentifiervalue = request.POST.get('copyright_documentation_identifier_value', '')
+            copyrightDocIdentifier.copyrightdocumentationidentifierrole  = request.POST.get('copyright_documentation_identifier_role', '')
+            copyrightDocIdentifier.save()
+
+            new_content_type_created = 'copyright'
 
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         createdStatute = statuteFormset.save()
@@ -253,11 +280,19 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             return HttpResponseRedirect(
               reverse('main.views.%s_rights_grants_edit' % section, args=[uuid, createdRights.pk])
             )
+        else:
+            return HttpResponseRedirect(
+              reverse('main.views.%s_rights_edit' % section, args=[uuid, createdRights.pk]) + '?created=' + new_content_type_created
+            )
     else:
         copyrightFormset = CopyrightFormSet(instance=viewRights)
         statuteFormset   = StatuteFormSet(instance=viewRights)
         licenseFormset   = LicenseFormSet(instance=viewRights)
         otherFormset     = OtherFormSet(instance=viewRights)
+
+    # show what content's been created after a redirect
+    if request.GET.get('created', '') != '':
+        new_content_type_created = request.GET.get('created', '')
 
     return render(request, 'main/rights_edit.html', locals())
 
