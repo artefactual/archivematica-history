@@ -2,7 +2,7 @@ function setUpRepeatingRightsGrantedNotesRecords(parentId) {
   var schema = {
     'rightsgrantednote': {},
   };
-  setUpRepeatingField('rightsfields_', parentId, 'Rights Granted Note', schema, '/formdata/rightsnote/' + parentId + '/');
+  setUpRepeatingField('rightsfields_', parentId, 'Rights Granted Note', schema, '/formdata/rightsnote/' + parentId + '/', true);
 }
 
 function setUpRepeatingRightsGrantedRestrictionRecords(parentId) {
@@ -17,14 +17,14 @@ function setUpRepeatingRightsGrantedRestrictionRecords(parentId) {
       }
     }
   };
-  setUpRepeatingField('rightsrestrictions_', parentId, 'Restriction', schema, '/formdata/rightsrestriction/' + parentId + '/');
+  setUpRepeatingField('rightsrestrictions_', parentId, 'Restriction', schema, '/formdata/rightsrestriction/' + parentId + '/', true);
 }
 
 function setUpRepeatingCopyrightNotesRecords(parentId) {
   var schema = {
     'copyrightnote': {},
   };
-  setUpRepeatingField('copyrightnotes_', parentId, 'Copyright Note', schema, '/formdata/copyrightnote/' + parentId + '/');
+  setUpRepeatingField('copyrightnotes_', parentId, 'Copyright Note', schema, '/formdata/copyrightnote/' + parentId + '/', true);
 }
 
 function setUpRepeatingStatuteNotesRecords(parentId) {
@@ -121,13 +121,14 @@ function setUpRepeatingOtherRightsNotesRecords(parentId) {
 }
 
 // repeating child field to a formset bound to existing data
-function setUpRepeatingField(idPrefix, parentId, description, schema, url) {
+function setUpRepeatingField(idPrefix, parentId, description, schema, url, noCreation) {
   var rights = new RepeatingDataView({
     el: $('#' + idPrefix + parentId),
     description: description,
     parentId: parentId,
     schema: schema,
-    url: url
+    url: url,
+    noCreation: noCreation
   });
   rights.render();
 
@@ -145,13 +146,15 @@ function setUpRepeatingField(idPrefix, parentId, description, schema, url) {
       instructionDescription = 'note';
     }
 
-    instructions = "You'll be able to create a "
-      + instructionDescription
-      + " record once the above section is completed.";
+    if (noCreation == undefined || !noCreation) {
+      instructions = "You'll be able to create a "
+        + instructionDescription
+        + " record once the above section is completed.";
 
-    $('#' + idPrefix + parentId).append(
-      '<span class="help-block">' + instructions + '</span>'
-    );
+      $('#' + idPrefix + parentId).append(
+        '<span class="help-block">' + instructions + '</span>'
+      );
+    }
   }
 }
 
