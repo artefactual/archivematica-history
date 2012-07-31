@@ -58,22 +58,34 @@
         {% for form in grantFormset %}
           {% include "_form.html" %}
 
-          <div class='repeating-ajax-data-row'>
-            <select name='new_rights_restriction_{{ form.instance.pk }}'>
-              <option></option>
-              <option value='Allow'>Allow</option>
-              <option value='Disallow'>Disallow</option>
-              <option value='Conditional'>Conditional</option>
-            </select>
+          <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+            <h4>Grant restrictions</h4>
+
+            <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
+              <h4 style='float:right; color: #ccc;'>Add New</h4>
+
+              <select name='new_rights_restriction_{{ form.instance.pk }}'>
+                <option></option>
+                <option value='Allow'>Allow</option>
+                <option value='Disallow'>Disallow</option>
+                <option value='Conditional'>Conditional</option>
+              </select>
+            </div>
+
+            <div id='rightsrestrictions_{{ form.instance.pk }}' class='repeating-data'></div>
           </div>
 
-          <div id='rightsrestrictions_{{ form.instance.pk }}' class='repeating-data'></div>
+          <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+            <h4>Grant restrictions</h4>
 
-          <div class='repeating-ajax-data-row'>
-            <textarea name='new_rights_note_{{ form.instance.pk }}'></textarea>
+            <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
+              <h4 style='float:right; color: #ccc;'>Add New</h4>
+
+              <textarea name='new_rights_note_{{ form.instance.pk }}'></textarea>
+            </div>
+
+            <div id='rightsfields_{{ form.instance.pk }}' class='repeating-data'></div>
           </div>
-
-          <div id='rightsfields_{{ form.instance.pk }}' class='repeating-data'></div>
 
           <script>
           $(document).ready(function() {
