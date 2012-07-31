@@ -69,6 +69,7 @@ td.size {
 /* AIP search */
 #aip-search-summary {
   margin-bottom: 1em;
+  padding: .5em;
   background-color: #eee;
 }
 
