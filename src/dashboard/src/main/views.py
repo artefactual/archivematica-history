@@ -778,6 +778,8 @@ def archival_storage(request, path=None):
         search_attempted = True
 
         query = request.POST.get('query', '')
+        if query == '':
+            query = '*'
         conn = pyes.ES('127.0.0.1:9200')
 
         count_data = conn.count(indices='aips')
