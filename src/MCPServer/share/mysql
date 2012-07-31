@@ -4922,6 +4922,16 @@ CREATE OR REPLACE VIEW FileExtensions AS
     SELECT FileUUID, SUBSTRING_INDEX(SUBSTRING_INDEX(currentLocation,'/',-1),'.',-1) AS extension FROM Files WHERE removedTime = 0
 ;
 
+
+CREATE OR REPLACE VIEW developmentAide_choicesDisplayed AS
+    SELECT MicroServiceChainChoice.*,  TasksConfigs.description AS 'Text', MicroServiceChains.description AS 'Choice'
+	    FROM MicroServiceChainChoice
+	    JOIN MicroServiceChainLinks ON MicroServiceChainChoice.choiceAvailableAtLink = MicroServiceChainLinks.pk
+	    JOIN TasksConfigs ON MicroServiceChainLinks.currentTask = TasksConfigs.pk
+	    JOIN MicroServiceChains ON MicroServiceChainChoice.chainAvailable = MicroServiceChains.pk
+;
+
+
 -- /VIEWS --
 
 -- Dashboard schema --
