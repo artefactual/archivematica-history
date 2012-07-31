@@ -27,6 +27,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpRespo
 from django.utils import simplejson
 from django.utils.functional import wraps
 from django.views.static import serve
+from views_NormalizationReport import getNormalizationReportQuery
 from contrib.mcp.client import MCPClient
 from contrib import utils
 from main import forms
@@ -575,114 +576,11 @@ def ingest_upload(request, uuid):
 
     return HttpResponseBadRequest()
 
+
 def ingest_normalization_report(request, uuid):
-    query = """
-SELECT
-
-        Tasks.fileUUID AS U,
-        Tasks.fileName,
-
-        (SELECT IF(Tasks.taskUUID IS NULL, '', Tasks.taskUUID)
-          FROM Tasks
-          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-          WHERE
-            Jobs.SIPUUID = %s AND
-            Jobs.jobType = 'Normalize access' AND
-            Tasks.fileUUID = U
-        ) AS 'access_normalization_task_uuid',
-
-        (SELECT IF(Tasks.taskUUID IS NULL, '', Tasks.taskUUID)
-          FROM Tasks
-          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-          WHERE
-            Jobs.SIPUUID = %s AND
-            Jobs.jobType = 'Normalize preservation' AND
-            Tasks.fileUUID = U
-        ) AS 'preservation_normalization_task_uuid',
-
-        Tasks.fileUUID IN (
-          SELECT Tasks.fileUUID
-          FROM Tasks
-          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-          WHERE
-            Jobs.SIPUUID = %s AND
-            Jobs.jobType = 'Normalize preservation' AND
-            Jobs.MicroServiceChainLinksPK NOT IN (SELECT MicroserviceChainLink FROM DefaultCommandsForClassifications ) AND
-            Tasks.stdOut LIKE '%%[Command]%%')
-        AS 'preservation_normalization_attempted',
-
-        (
-          SELECT Tasks.exitCode
-          FROM Tasks
-          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-          WHERE
-            Jobs.SIPUUID = %s AND
-            Jobs.jobType = 'Normalize preservation' AND
-            Tasks.fileUUID = U
-        ) != 0
-        AS 'preservation_normalization_failed',
-
-       filesPreservationAccessFormatStatus.inPreservationFormat AS 'already_in_preservation_format',
-
-        Tasks.fileUUID NOT IN (
-          SELECT Tasks.fileUUID
-          FROM Tasks
-          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-          WHERE
-            Jobs.SIPUUID = %s AND
-            Tasks.exec = 'transcoderNormalizeAccess_v0.0' AND
-            Tasks.stdOut LIKE '%%description: Copying File.%%') AND
-            Tasks.fileUUID IN (
-              SELECT Tasks.fileUUID
-              FROM Tasks
-              JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-              WHERE
-                Jobs.SIPUUID = %s AND
-                Jobs.jobType = 'Normalize access' AND
-                Tasks.stdOut LIKE '%%[Command]%%' AND
-                Jobs.MicroServiceChainLinksPK NOT IN (SELECT MicroserviceChainLink FROM DefaultCommandsForClassifications ) AND
-                Tasks.stdOut NOT LIKE '%%Not including %% in DIP.%%'  )
-        AS 'access_normalization_attempted',
-
-        (
-          SELECT Tasks.exitCode
-          FROM Tasks
-          JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-          WHERE
-            Jobs.SIPUUID = %s AND
-            Jobs.jobType = 'Normalize access' AND
-            Tasks.fileUUID = U
-        ) != 0
-        AS 'access_normalization_failed',
-
-        filesPreservationAccessFormatStatus.inAccessFormat AS 'already_in_access_format',
-
-        (
-          SELECT Files.originalLocation
-          FROM Files
-          WHERE
-            Files.fileUUID = U
-        )
-        AS 'location',
-
-        Tasks.jobUUID AS 'jobUUID'
-
-      FROM filesPreservationAccessFormatStatus
-      LEFT OUTER JOIN Tasks ON filesPreservationAccessFormatStatus.fileUUID = Tasks.fileUUID
-      LEFT OUTER JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-      LEFT OUTER JOIN Files ON Tasks.fileUUID = Files.fileUUID
-      WHERE
-        Jobs.SIPUUID = %s AND
-        Files.fileGrpUse != 'preservation' AND
-        Files.currentLocation LIKE '%%%%SIPDirectory%%%%objects/%%'
-      GROUP BY Tasks.fileUUID
-      ORDER BY Tasks.fileName;
-"""
-
+    query = getNormalizationReportQuery()
     cursor = connection.cursor()
-    cursor.execute(query, (
-      uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid
-    ))
+    cursor.execute(query, ( uuid, uuid, uuid, uuid, uuid, uuid, uuid, uuid ))
     objects = dictfetchall(cursor)
 
     return render(request, 'main/normalization_report.html', locals())
@@ -1513,3 +1411,5 @@ def chain_insert():
     code.nextmicroservicechainlink = 4
     code.exitmessage = 'Completed successfully'
     code.save()
+    
+
