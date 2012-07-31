@@ -77,6 +77,7 @@ var TransferComponentFormView = Backbone.View.extend({
             type:     transfer.type
           },
           success: function(results) {
+            $('#transfer-name').val('');
             $('#path_container').html('');
             $('.transfer-component-activity-indicator').hide();
           }
