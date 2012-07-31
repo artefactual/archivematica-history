@@ -218,14 +218,15 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         copyrightFormset = CopyrightFormSet(request.POST, instance=createdRights)
         createdCopyrightSet = copyrightFormset.save()
 
+        # if copyright has been created, do a reload and inform user - MIGHT NOT NEED TO DO THIS NOW
+        #if request.POST.get('copyright_previous_pk', '') == 'None' and createdCopyright:
+        #    new_content_type_created = 'copyright'
+
         # establish whether or not there is a copyright information instance to use as a parent
         if len(createdCopyrightSet) == 1:
             createdCopyright = createdCopyrightSet[0]
         else:
             createdCopyright = False
-
-        if request.POST.get('copyright_previous_pk', '') == 'None' and createdCopyright:
-            new_content_type_created = 'copyright'
 
         # handle creation of new copyright notes, creating parent if necessary
         if request.POST.get('copyright_note', '') != '':
