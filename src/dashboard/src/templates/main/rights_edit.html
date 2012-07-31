@@ -45,9 +45,9 @@
       {% if new_content_type_created %}
           <div class="alert-message info">
             {% if new_content_type_created == 'Other' %}
-              <p>You may now add additional information such as document identifers and notes.</p>
+              <p>New content added.</p>
             {% else %}
-              <p>You may now add additional {{ new_content_type_created|lower }} information such as document identifers and notes.</p>
+              <p>New {{ new_content_type_created|lower }} content added.</p>
             {% endif %}
           </div>
       {% endif %}
@@ -94,12 +94,37 @@
 
             <input name='copyright_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
 
-            <div id='copyrightdocidfields_{{ form.instance.pk }}' class='repeating-data'></div>
+            <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+              <h4>Copyright Documentation Identifiers</h4>
 
-            <div class='repeating-ajax-data-row'>
-              <textarea name='copyright_note'></textarea>
+              <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
+                <h4 style='float:right; color: #ccc;'>Add New</h4>
+                <div>
+                  <strong>Type</strong><br/>
+                  <input name='copyright_documentation_identifier_type'>
+                </div>
+                <div>
+                  <strong>Value</strong><br/>
+                  <input name='copyright_documentation_identifier_value'>
+                </div>
+                <div>
+                  <strong>Role</strong><br/>
+                  <input name='copyright_documentation_identifier_role'>
+                </div>
+              </div>
+
+              <div id='copyrightdocidfields_{{ form.instance.pk }}' class='repeating-data'></div>
             </div>
-            <div id='copyrightnotes_{{ form.instance.pk }}' class='repeating-data'></div>
+
+            <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+              <h4>Copyright Notes</h4>
+
+              <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
+                <h4 style='float:right; color: #ccc;'>Add New</h4>
+                <textarea name='copyright_note'></textarea>
+              </div>
+              <div id='copyrightnotes_{{ form.instance.pk }}' class='repeating-data'></div>
+            </div>
 
             <script>
             $(document).ready(function() {

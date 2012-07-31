@@ -56,7 +56,7 @@ function setUpRepeatingCopyrightDocumentationIdentifierRecords(parentId) {
       'type': 'input'
     }
   };
-  setUpRepeatingField('copyrightdocidfields_', parentId, 'Copyright Documentation Identifier', schema, '/formdata/copyrightdocumentationidentifier/' + parentId + '/');
+  setUpRepeatingField('copyrightdocidfields_', parentId, 'Copyright Documentation Identifier', schema, '/formdata/copyrightdocumentationidentifier/' + parentId + '/', true);
 }
 
 function setUpRepeatingStatuteDocumentationIdentifierRecords(parentId) {
