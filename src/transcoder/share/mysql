@@ -5382,5 +5382,6 @@ INSERT INTO FileIDGroupMembers
 
 
 CREATE OR REPLACE VIEW filesPreservationAccessFormatStatus AS
-    SELECT Files.fileUUID, max(FileIDs.validPreservationFormat) AS 'inPreservationFormat', max(FileIDs.validAccessFormat) AS 'inAccessFormat' FROM Files LEFT OUTER JOIN FilesIdentifiedIDs ON Files.fileUUID = FilesIdentifiedIDs.fileUUID LEFT OUTER JOIN FileIDs ON FilesIdentifiedIDs.fileID = FileIDs.pk WHERE Files.fileGrpUse = 'original' GROUP BY Files.FileUUID;
+    SELECT Files.fileUUID, max(FileIDs.validPreservationFormat) AS 'inPreservationFormat', max(FileIDs.validAccessFormat) AS 'inAccessFormat' FROM Files LEFT OUTER JOIN FilesIdentifiedIDs ON Files.fileUUID = FilesIdentifiedIDs.fileUUID LEFT OUTER JOIN FileIDs ON FilesIdentifiedIDs.fileID = FileIDs.pk WHERE Files.fileGrpUse != 'preservation' GROUP BY Files.FileUUID;
+
 

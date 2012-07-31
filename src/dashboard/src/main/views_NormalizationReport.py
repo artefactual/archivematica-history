@@ -115,10 +115,10 @@ SELECT
 
         Tasks.jobUUID AS 'jobUUID'
 
-      FROM filesPreservationAccessFormatStatus
-      LEFT OUTER JOIN Tasks ON filesPreservationAccessFormatStatus.fileUUID = Tasks.fileUUID
+      FROM Files
+      LEFT OUTER JOIN Tasks ON Files.fileUUID = Tasks.fileUUID
       LEFT OUTER JOIN Jobs ON Tasks.jobUUID = Jobs.jobUUID
-      LEFT OUTER JOIN Files ON Tasks.fileUUID = Files.fileUUID
+      LEFT OUTER JOIN filesPreservationAccessFormatStatus ON filesPreservationAccessFormatStatus.fileUUID = Files.fileUUID
       WHERE
         Jobs.SIPUUID = %s AND
         Files.fileGrpUse != 'preservation' AND
@@ -128,9 +128,8 @@ SELECT
 """
 
 if __name__ == '__main__':
-    print "main"
     import sys
-    uuid = sys.argv[1]
+    uuid = "'%s'" % (sys.argv[1])
     sys.path.append("/usr/lib/archivematica/archivematicaCommon")
     import databaseInterface
     print "testing normalization report"
