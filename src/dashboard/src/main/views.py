@@ -784,25 +784,24 @@ def archival_storage(request, path=None):
         total_files_indexed = count_data.count
 
         q = pyes.StringQuery(query)
-        results = conn.search(query=q, indices='aips')
+        results = conn.search_raw(query=q, indices='aips', type='aip')
 
         # create a copy of the results that we can tweak
         modifiedResults = []
 
-        for item in results:
-            clone = item.copy()
+        for item in results.hits.hits:
+            clone = item._source.copy()
             try:
                 clone['filename'] = os.path.basename(clone['filePath'])
-                #return HttpResponse(clone['AIPUUID'])
                 aip = models.AIP.objects.get(sipuuid=clone['AIPUUID'])
                 clone['href']     = aip.filepath.replace(AIPSTOREPATH + '/', "AIPsStore/")
+                clone['document_id'] = item['_id']
                 modifiedResults.append(clone)
             except:
                 pass
 
+        number_of_results = results.hits.total
         results = modifiedResults
-
-        number_of_results = len(results)
 
         try:
             if results:
