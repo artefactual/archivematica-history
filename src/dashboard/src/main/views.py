@@ -44,6 +44,7 @@ import subprocess
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import pyes
+import httplib
 
 AIPSTOREPATH = '/var/archivematica/sharedDirectory/www/AIPsStore'
 
@@ -863,6 +864,13 @@ def archival_storage_sip_display(request, path=None):
     total_size = '{0:.2f}'.format(total_size)
 
     return render(request, 'main/archival_storage.html', locals())
+
+def archival_storage_file_json(request, document_id):
+    conn = httplib.HTTPConnection("127.0.0.1:9200")
+    conn.request("GET", "/aips/aip/" + document_id)
+    response = conn.getresponse()
+    data = response.read()
+    return HttpResponse(data)
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Preservation planning
