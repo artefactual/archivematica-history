@@ -105,24 +105,21 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
             filePath = item2.attrib['{http://www.w3.org/1999/xlink}href']
             filePathAmdIDs[filePath] = item.attrib['ADMID']
 
-    # for each filepath, get data and convert to dictionary then index
+    # for each filepath, get data and convert to dictionary then index everything in the appropriate amdSec element
     for filePath in filePathAmdIDs:
         filesIndexed = filesIndexed + 1
-        items = root.findall("{http://www.loc.gov/METS/}amdSec[@ID='" + filePathAmdIDs[filePath] + "']/{http://www.loc.gov/METS/}techMD/{http://www.loc.gov/METS/}mdWrap/{http://www.loc.gov/METS/}xmlData")
+        items = root.findall("{http://www.loc.gov/METS/}amdSec[@ID='" + filePathAmdIDs[filePath] + "']")
         for item in items:
-            objects = item.findall('{info:lc/xmlns/premis-v2}object')
-            for object in objects:
-                if object != None:
-                    xml = ElementTree.tostring(object)
-                    #filePathMetsData[filePath] = xmltodict.parse(xml)
+            if item != None:
+                xml = ElementTree.tostring(item)
 
-                    # set up data for indexing
-                    indexData = fileData
-                    indexData['filePath'] = filePath
-                    indexData['METS'] = xmltodict.parse(xml)
+                # set up data for indexing
+                indexData = fileData
+                indexData['filePath'] = filePath
+                indexData['METS'] = xmltodict.parse(xml)
 
-                    # index data
-                    conn.index(indexData, index, type)
+                # index data
+                conn.index(indexData, index, type)
 
     print 'Indexed AIP files and corresponding METS XML.'
 
