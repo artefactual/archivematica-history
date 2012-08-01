@@ -870,7 +870,8 @@ def archival_storage_file_json(request, document_id):
     conn.request("GET", "/aips/aip/" + document_id)
     response = conn.getresponse()
     data = response.read()
-    return HttpResponse(data)
+    pretty_json = simplejson.dumps(simplejson.loads(data), sort_keys=True, indent=2)
+    return HttpResponse(pretty_json, content_type='application/json')
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Preservation planning
