@@ -11,19 +11,19 @@
 
 {% block content %}
 
-  {% if search_attempted %}
+  {% if query %}
     <ul class="breadcrumb">
       {% breadcrumb_url 'Archival storage' main.views.archival_storage %}
       {% breadcrumb 'Search' %}
     </ul>
   {% endif %}
 
-  <form method='POST'>
+  <form method='GET'>
   {{ form }}
   <input type='submit' value='Search archival storage'/>
   </form>
 
-  {% if search_attempted %}
+  {% if query %}
     {% if results %}
       <div id='aip-search-summary'>Found {{ number_of_results }} files.</div>
 
