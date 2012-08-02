@@ -315,8 +315,8 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         createdStatute = statuteFormset.save()
-        #if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
-        #    new_content_type_created = 'statute'
+        if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
+            new_content_type_created = 'statute'
 
         #restrictionCreated = False
         noteCreated = False
@@ -360,25 +360,14 @@ def rights_edit(request, uuid, id=None, section='ingest'):
                     noteCreated.save()
                     new_content_type_created = 'statute'
 
-        """
-        # handle restriction creation for a parent that's just been created
-        if request.POST.get('new_rights_restriction_None', '') != '' and not restrictionCreated:
-            restrictionCreated = models.RightsStatementRightsGrantedRestriction(rightsgranted=form.instance)
-            restrictionCreated.restriction = request.POST.get('new_rights_restriction_None', '')
-            restrictionCreated.save()
-        """
-
         # handle note creation for a parent that's just been created
         if request.POST.get('new_statute_note_None', '') != '' and not noteCreated:
-            noteCreated = models.RightsStatementStatuteNote(rightsgranted=form.instance)
+            noteCreated = models.RightsStatementStatuteInformationNote(rightsstatementstatute=form.instance)
             noteCreated.statutenote = request.POST.get('new_statute_note_None', '')
             noteCreated.save()
 
         # display (possibly revised) formset
         statuteFormset = StatuteFormSet(instance=createdRights)
-
-
-
 
         otherFormset = OtherFormSet(request.POST, instance=createdRights)
         createdOtherSet = otherFormset.save()
