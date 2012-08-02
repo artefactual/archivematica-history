@@ -61,6 +61,8 @@
           <div class='repeating-ajax-data-fieldset'>
             <h4>Grant restrictions</h4>
 
+            <div id='rightsrestrictions_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+
             <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
               <h4 style='float:right; color: #ccc;'>Add new</h4>
 
@@ -71,20 +73,18 @@
                 <option value='Conditional'>Conditional</option>
               </select>
             </div>
-
-            <div id='rightsrestrictions_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
           </div>
 
           <div class='repeating-ajax-data-fieldset'>
             <h4>Grant notes</h4>
+
+            <div id='rightsfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
 
             <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
               <h4 style='float:right; color: #ccc;'>Add new</h4>
 
               <textarea name='new_rights_note_{{ form.instance.pk }}'></textarea>
             </div>
-
-            <div id='rightsfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
           </div>
 
           <script>
