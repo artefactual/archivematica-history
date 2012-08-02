@@ -31,6 +31,7 @@ import sys
 import uuid
 import lxml.etree as etree
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from countryCodes import getCodeForCountry
 import databaseInterface
 from sharedVariablesAcrossModules import sharedVariablesAcrossModules
 from archivematicaFunctions import escape
@@ -83,7 +84,11 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     for row2 in rows2:
                         copyrightInformation = etree.SubElement(rightsStatement, "copyrightInformation")
                         etree.SubElement(copyrightInformation, "copyrightStatus").text = valueDic["copyrightStatus"]
-                        etree.SubElement(copyrightInformation, "copyrightJurisdiction").text = valueDic["copyrightJurisdiction"]
+                        copyrightJurisdiction = valueDic["copyrightJurisdiction"]
+                        copyrightJurisdictionCode = getCodeForCountry(copyrightJurisdiction.__str__().upper())
+                        if copyrightJurisdictionCode != None:
+                            copyrightJurisdiction = copyrightJurisdictionCode 
+                        etree.SubElement(copyrightInformation, "copyrightJurisdiction").text = copyrightJurisdiction 
                         etree.SubElement(copyrightInformation, "copyrightStatusDeterminationDate").text = formatDate(valueDic["copyrightStatusDeterminationDate"])
                         #copyrightNote Repeatable
                         sql = "SELECT copyrightNote FROM RightsStatementCopyrightNote WHERE fkRightsStatementCopyrightInformation = %d;" % (row2[0])
