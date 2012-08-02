@@ -144,31 +144,38 @@ def copy_transfer_component(request):
         if path == '':
             error = 'No path provided.'
         else:
-            transfer_dir = os.path.join(destination, transfer_name)
+            # if transfer compontent path leads to a ZIP file, treat as zipped
+            # bag
+            try:
+                path.lower().index('.zip')
+                shutil.copy(path, destination)
+                paths_copied = 1
+            except:
+                transfer_dir = os.path.join(destination, transfer_name)
 
-            # Create directory before it is used, otherwise shutil.copy()
-            # would that location to store a file
-            os.mkdir(transfer_dir)
+                # Create directory before it is used, otherwise shutil.copy()
+                # would that location to store a file
+                os.mkdir(transfer_dir)
 
-            paths_copied = 0
-            #return HttpResponse(transfer_dir)
+                paths_copied = 0
+                #return HttpResponse(transfer_dir)
 
-            # cycle through each path copying files/dirs inside it to transfer dir
-            for entry in os.listdir(path):
-                entry_path = os.path.join(path, entry)
-                if os.path.isdir(entry_path):
-                    destination_dir = os.path.join(transfer_dir, entry)
-                    try:
-                        shutil.copytree(
-                            entry_path,
-                            destination_dir
-                        )
-                    except:
-                        error = 'Error copying from ' + entry_path + ' to ' + destination_dir + '. (' + str(sys.exc_info()[0]) + ')'
-                else:
-                    shutil.copy(entry_path, transfer_dir)
+                # cycle through each path copying files/dirs inside it to transfer dir
+                for entry in os.listdir(path):
+                    entry_path = os.path.join(path, entry)
+                    if os.path.isdir(entry_path):
+                        destination_dir = os.path.join(transfer_dir, entry)
+                        try:
+                            shutil.copytree(
+                                entry_path,
+                                destination_dir
+                            )
+                        except:
+                            error = 'Error copying from ' + entry_path + ' to ' + destination_dir + '. (' + str(sys.exc_info()[0]) + ')'
+                    else:
+                        shutil.copy(entry_path, transfer_dir)
 
-                paths_copied = paths_copied + 1
+                    paths_copied = paths_copied + 1
 
     response = {}
 
@@ -259,19 +266,28 @@ def copy_to_start_transfer(request):
 
         try:
           type_subdir = type_paths[type]
-          destination = os.path.join(ACTIVE_TRANSFER_DIR, type_subdir, basename)
+          destination = os.path.join(ACTIVE_TRANSFER_DIR, type_subdir)
         except KeyError:
-          destination = os.path.join(STANDARD_TRANSFER_DIR, basename)
+          destination = os.path.join(STANDARD_TRANSFER_DIR)
 
-        destination = pad_destination_filepath_if_it_already_exists(destination)
-
+        # if transfer compontent path leads to a ZIP file, treat as zipped
+        # bag
         try:
-            shutil.copytree(
-                filepath,
-                destination
-            )
+            filepath.lower().index('.zip')
+
+            shutil.copy(filepath, destination)
         except:
-            error = 'Error copying from ' + entry_path + ' to ' + destination_dir + '. (' + str(sys.exc_info()[0]) + ')'
+            destination = os.path.join(destination, basename)
+
+            destination = pad_destination_filepath_if_it_already_exists(destination)
+
+            try:
+                shutil.copytree(
+                    filepath,
+                    destination
+                )
+            except:
+                error = 'Error copying from ' + entry_path + ' to ' + destination_dir + '. (' + str(sys.exc_info()[0]) + ')'
 
     response = {}
 
