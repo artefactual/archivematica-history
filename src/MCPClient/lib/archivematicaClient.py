@@ -18,7 +18,7 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage Ingest
+# @subpackage archivematicaClient
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
@@ -28,6 +28,11 @@
 #It connects to the MCP server, and informs the server of the tasks it can perform.
 #The server can send a command (matching one of the tasks) for the client to perform.
 #The client will perform that task, and return the exit code and output to the server.
+#
+#For archivematica 0.9 release. Added integration with the transcoder.
+#The server will send the transcoder association pk, and file uuid to run.
+#The client is responsible for running the correct command on the file. 
+
 import sys
 import os
 import shlex

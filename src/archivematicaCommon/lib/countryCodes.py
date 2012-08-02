@@ -18,7 +18,7 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage DevCleanup
+# @subpackage archivematicaCommon
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 

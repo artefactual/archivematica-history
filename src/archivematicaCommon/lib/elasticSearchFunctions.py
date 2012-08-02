@@ -18,7 +18,7 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage Ingest
+# @subpackage archivematicaCommon
 # @author Mike Cantelon <mike@artefactual.com>
 # @version svn: $Id$
 

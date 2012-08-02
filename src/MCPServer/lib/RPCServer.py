@@ -42,7 +42,7 @@ def rpcError(code="", details=""):
 def verifyDatabaseIsNotLocked():
     timeBeforeReturningErrorLockedDB = 4
     timeToSleep = 0.1
-    numberOfRuns = 0
+    numberOfRuns = 0 #count of number of runs in loop
     while not databaseInterface.sqlLock.acquire(False):
         time.sleep(timeToSleep)
         numberOfRuns += 1

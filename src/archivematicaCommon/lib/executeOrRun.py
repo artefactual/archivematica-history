@@ -17,7 +17,7 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage transcoder
+# @subpackage archivematicaCommon
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 
