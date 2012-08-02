@@ -649,3 +649,10 @@ textarea.command {
 .repeating-ajax-data-row {
   margin-bottom: 1em;
 }
+
+.repeating-ajax-data-fieldset {
+  border-top: 1px solid #eee;
+  margin-bottom: 1em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
