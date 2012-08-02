@@ -485,9 +485,6 @@ def rights_grants_edit(request, uuid, id, section='ingest'):
             else:
                 # handle note creation for a parent grant that already exists 
                 if request.POST.get('new_rights_note_' + str(form.instance.pk), '') != '':
-                    if not grantCreated:
-                        grantCreated = models.RightsStatementRightsGranted(rightsstatement=viewRights)
-                        grantCreated.save()
                     noteCreated = models.RightsStatementRightsGrantedNote(rightsgranted=form.instance)
                     noteCreated.rightsgrantednote = request.POST.get('new_rights_note_' + str(form.instance.pk), '')
                     noteCreated.save()
@@ -506,8 +503,6 @@ def rights_grants_edit(request, uuid, id, section='ingest'):
 
     # display (possibly revised) formset
     grantFormset = GrantFormSet(instance=viewRights)
-
-
 
     if request.method == 'POST':
         if request.POST.get('next_button', '') != None and request.POST.get('next_button', '') != '':
