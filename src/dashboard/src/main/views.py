@@ -308,11 +308,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
             new_content_type_created = 'license'
 
-
-
-
-
-
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         createdStatute = statuteFormset.save()
         if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
@@ -414,14 +409,18 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
             new_content_type_created = 'other'
 
-        if new_content_type_created == None:
+        if request.POST.get('next_button', '') != None and request.POST.get('next_button', '') != '':
             return HttpResponseRedirect(
-              reverse('main.views.%s_rights_grants_edit' % section, args=[uuid, createdRights.pk])
+                reverse('main.views.%s_rights_grants_edit' % section, args=[uuid, createdRights.pk])
             )
         else:
-            return HttpResponseRedirect(
-              reverse('main.views.%s_rights_edit' % section, args=[uuid, createdRights.pk]) + '?created=' + new_content_type_created
-            )
+            url = reverse('main.views.%s_rights_edit' % section, args=[uuid, createdRights.pk])
+            try:
+                new_content_type_created                
+                url = url + '?created=' + new_content_type_created
+            except:
+                pass
+            return HttpResponseRedirect(url)
     else:
         copyrightFormset = CopyrightFormSet(instance=viewRights)
         statuteFormset   = StatuteFormSet(instance=viewRights)
