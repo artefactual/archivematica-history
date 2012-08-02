@@ -66,23 +66,6 @@
         {% endif %}
       {% endif %}
 
-        {{ grantFormset.management_form }}
-        {{ grantFormset.non_form_errors.as_ul }}
-
-        {% for form in grantFormset %}
-          {% include "_form.html" %}
-
-          <div id='rightsrestrictions_{{ form.instance.pk }}' class='repeating-data'></div>
-          <div id='rightsfields_{{ form.instance.pk }}' class='repeating-data'></div>
-
-          <script>
-          $(document).ready(function() {
-            setUpRepeatingRightsGrantedRestrictionRecords('{{ form.instance.pk }}');
-            setUpRepeatingRightsGrantedNotesRecords('{{ form.instance.pk }}');
-          });
-          </script>
-        {% endfor %}
-
         {% include "_form.html" %}
 
         <div id='copyright_formset'>
