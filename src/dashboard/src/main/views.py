@@ -263,8 +263,6 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
             new_content_type_created = 'copyright'
 
-
-
         licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
         createdLicenseSet = licenseFormset.save()
         #if request.POST.get('license_previous_pk', '') == 'None' and len(createdLicense) == 1:
@@ -320,10 +318,54 @@ def rights_edit(request, uuid, id=None, section='ingest'):
         if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
             new_content_type_created = 'statute'
 
+
+
+
+
         otherFormset = OtherFormSet(request.POST, instance=createdRights)
-        createdOther = otherFormset.save()
-        if request.POST.get('other_previous_pk', '') == 'None' and len(createdOther) == 1:
-            new_content_type_created = createdRights.rightsbasis
+        createdOtherSet = otherFormset.save()
+        #if request.POST.get('other_previous_pk', '') == 'None' and len(createdOther) == 1:
+        #    new_content_type_created = createdRights.rightsbasis
+
+        # establish whether or not there is an "other" instance to use as a parent
+        if len(createdOtherSet) == 1:
+            createdOther = createdOtherSet[0]
+        else:
+            createdOther = False
+
+        # handle creation of new "other" notes, creating parent if necessary
+        if request.POST.get('otherrights_note', '') != '':
+            # make new "other" record if it doesn't exist
+            if not createdOther:
+                try:
+                    createdOther = models.RightsStatementOtherRightsInformation.objects.get(rightsstatement=createdRights)
+                except:
+                    createdOther = models.RightsStatementOtherRightsInformation(rightsstatement=createdRights)
+                    createdOther.save()
+
+            otherNote = models.RightsStatementOtherRightsInformationNote(rightsstatementotherrights=createdOther)
+            otherNote.otherrightsnote = request.POST.get('otherrights_note', '')
+            otherNote.save()
+
+            new_content_type_created = 'other'
+
+        # handle creation of new documentation identifiers
+        if request.POST.get('other_documentation_identifier_type', '') != '' or request.POST.get('other_documentation_identifier_value', '') != '' or request.POST.get('other_documentation_identifier_role', ''):
+            # make new other record if it doesn't exist
+            if not createdOther:
+                try:
+                    createdOther = models.RightsStatementOtherRightsInformation.objects.get(rightsstatement=createdRights)
+                except:
+                    createdOther = models.RightsStatementOtherRightsInformation(rightsstatement=createdRights)
+                    createdOther.save()
+
+            otherDocIdentifier = models.RightsStatementOtherRightsDocumentationIdentifier(rightsstatementotherrights=createdOther)
+            otherDocIdentifier.otherrightsdocumentationidentifiertype  = request.POST.get('other_documentation_identifier_type', '')
+            otherDocIdentifier.otherrightsdocumentationidentifiervalue = request.POST.get('other_documentation_identifier_value', '')
+            otherDocIdentifier.otherrightsdocumentationidentifierrole  = request.POST.get('other_documentation_identifier_role', '')
+            otherDocIdentifier.save()
+
+            new_content_type_created = 'other'
 
         if new_content_type_created == None:
             return HttpResponseRedirect(
