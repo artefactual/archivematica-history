@@ -569,6 +569,7 @@ def rights_list(request, uuid, section):
     for grant in grants:
         item = {
             'act':          grant.act,
+            'basis':        grant.rightsstatement.rightsbasis,
             'restrictions': [],
             'startdate':    grant.startdate,
             'enddate':      grant.enddate,
