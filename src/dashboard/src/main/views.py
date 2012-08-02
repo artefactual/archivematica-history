@@ -263,15 +263,62 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
             new_content_type_created = 'copyright'
 
+
+
+        licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
+        createdLicenseSet = licenseFormset.save()
+        #if request.POST.get('license_previous_pk', '') == 'None' and len(createdLicense) == 1:
+        #    new_content_type_created = 'license'
+
+        # establish whether or not there is a license instance to use as a parent
+        if len(createdLicenseSet) == 1:
+            createdLicense = createdLicenseSet[0]
+        else:
+            createdLicense = False
+
+        # handle creation of new copyright notes, creating parent if necessary
+        if request.POST.get('license_note', '') != '':
+            # make new copyright record if it doesn't exist
+            if not createdLicense:
+                try:
+                    createdLicense = models.RightsStatementLicense.objects.get(rightsstatement=createdRights)
+                except:
+                    createdLicense = models.RightsStatementLicense(rightsstatement=createdRights)
+                    createdLicense.save()
+
+            licenseNote = models.RightsStatementLicenseNote(rightsstatementlicense=createdLicense)
+            licenseNote.licensenote = request.POST.get('license_note', '')
+            licenseNote.save()
+
+            new_content_type_created = 'license'
+
+        # handle creation of new documentation identifiers
+        if request.POST.get('license_documentation_identifier_type', '') != '' or request.POST.get('license_documentation_identifier_value', '') != '' or request.POST.get('license_documentation_identifier_role', ''):
+            # make new license record if it doesn't exist
+            if not createdLicense:
+                try:
+                    createdLicense = models.RightsStatementLicense.objects.get(rightsstatement=createdRights)
+                except:
+                    createdLicense = models.RightsStatementLicense(rightsstatement=createdRights)
+                    createdLicense.save()
+
+            licenseDocIdentifier = models.RightsStatementLicenseDocumentationIdentifier(rightsstatementlicense=createdLicense)
+            licenseDocIdentifier.licensedocumentationidentifiertype  = request.POST.get('license_documentation_identifier_type', '')
+            licenseDocIdentifier.licensedocumentationidentifiervalue = request.POST.get('license_documentation_identifier_value', '')
+            licenseDocIdentifier.licensedocumentationidentifierrole  = request.POST.get('license_documentation_identifier_role', '')
+            licenseDocIdentifier.save()
+
+            new_content_type_created = 'license'
+
+
+
+
+
+
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         createdStatute = statuteFormset.save()
         if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
             new_content_type_created = 'statute'
-
-        licenseFormset = LicenseFormSet(request.POST, instance=createdRights)
-        createdLicense = licenseFormset.save()
-        if request.POST.get('license_previous_pk', '') == 'None' and len(createdLicense) == 1:
-            new_content_type_created = 'license'
 
         otherFormset = OtherFormSet(request.POST, instance=createdRights)
         createdOther = otherFormset.save()
