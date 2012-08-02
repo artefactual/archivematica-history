@@ -656,3 +656,7 @@ textarea.command {
   padding-top: 1em;
   padding-bottom: 1em;
 }
+
+.repeating-ajax-data-row textarea {
+  width: 550px;
+}
