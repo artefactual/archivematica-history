@@ -144,8 +144,38 @@
 
           <input name='statute_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
 
-          <div id='statutedocidfields_{{ form.instance.pk }}' class='repeating-data'></div>
-          <div id='statutenotes_{{ form.instance.pk }}' class='repeating-data'></div>
+            <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+              <h4>Statute documentation identifiers</h4>
+
+              <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
+                <h4 style='float:right; color: #ccc;'>Add New</h4>
+                <div>
+                  <strong>Type</strong><br/>
+                  <input name='statute_documentation_identifier_type_{{ form.instance.pk }}'>
+                </div>
+                <div>
+                  <strong>Value</strong><br/>
+                  <input name='statute_documentation_identifier_value_{{ form.instance.pk }}'>
+                </div>
+                <div>
+                  <strong>Role</strong><br/>
+                  <input name='statute_documentation_identifier_role_{{ form.instance.pk }}'>
+                </div>
+              </div>
+
+              <div id='statutedocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+            </div>
+
+            <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+              <h4>Statute notes</h4>
+
+              <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
+                <h4 style='float:right; color: #ccc;'>Add New</h4>
+                <textarea name='new_statute_note_{{ form.instance.pk }}'></textarea>
+              </div>
+
+              <div id='statutenotes_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+            </div>
 
           <script>
           $(document).ready(function() {

@@ -315,9 +315,67 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
         createdStatute = statuteFormset.save()
-        if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
-            new_content_type_created = 'statute'
+        #if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
+        #    new_content_type_created = 'statute'
 
+        #restrictionCreated = False
+        noteCreated = False
+        for form in statuteFormset.forms:
+            statuteCreated = False
+
+            # handle documentation identifier creation for a parent that's a blank statute
+            if (request.POST.get('statute_documentation_identifier_type_None', '') != '' or request.POST.get('statute_documentation_identifier_value_None', '') != '' or request.POST.get('statute_documentation_identifier_role_None', '') != '') and not form.instance.pk:
+                statuteCreated = models.RightsStatementStatuteInformation(rightsstatement=createdRights)
+                statuteCreated.save()
+                statuteDocIdentifier = models.RightsStatementStatuteDocumentationIdentifier(rightsstatementstatute=statuteCreated)
+                statuteDocIdentifier.statutedocumentationidentifiertype = request.POST.get('statute_documentation_identifier_type_None', '')
+                statuteDocIdentifier.statutedocumentationidentifiervalue = request.POST.get('statute_documentation_identifier_value_None', '')
+                statuteDocIdentifier.statutedocumentationidentifierrole = request.POST.get('statute_documentation_identifier_role_None', '')
+                statuteDocIdentifier.save()
+                new_content_type_created = 'statute'
+            else:
+                # handle documentation identifier creation for a parent statute that already exists
+                if request.POST.get('statute_documentation_identifier_type_' + str(form.instance.pk), '') != '' or request.POST.get('statute_documentation_identifier_value_' + str(form.instance.pk), '') or request.POST.get('statute_documentation_identifier_role_' + str(form.instance.pk), ''):
+                    statuteDocIdentifier = models.RightsStatementStatuteDocumentationIdentifier(rightsstatementstatute=form.instance)
+                    statuteDocIdentifier.statutedocumentationidentifiertype = request.POST.get('statute_documentation_identifier_type_' +  str(form.instance.pk), '')
+                    statuteDocIdentifier.statutedocumentationidentifiervalue = request.POST.get('statute_documentation_identifier_value_' +  str(form.instance.pk), '')
+                    statuteDocIdentifier.statutedocumentationidentifierrole = request.POST.get('statute_documentation_identifier_role_' +  str(form.instance.pk), '')
+                    statuteDocIdentifier.save()
+                    new_content_type_created = 'statute'
+
+            # handle note creation for a parent that's a blank grant
+            if request.POST.get('new_statute_note_None', '') != '' and not form.instance.pk:
+                if not statuteCreated:
+                    statuteCreated = models.RightsStatementStatuteInformation(rightsstatement=createdRights)
+                    statuteCreated.save()
+                noteCreated = models.RightsStatementStatuteInformationNote(rightsstatementstatute=statuteCreated)
+                noteCreated.statutenote = request.POST.get('new_statute_note_None', '')
+                noteCreated.save()
+                new_content_type_created = 'statue'
+            else:
+                # handle note creation for a parent grant that already exists 
+                if request.POST.get('new_statute_note_' + str(form.instance.pk), '') != '':
+                    noteCreated = models.RightsStatementStatuteInformationNote(rightsstatementstatute=form.instance)
+                    noteCreated.statutenote = request.POST.get('new_statute_note_' + str(form.instance.pk), '')
+                    noteCreated.save()
+                    new_content_type_created = 'statute'
+
+        """
+        # handle restriction creation for a parent that's just been created
+        if request.POST.get('new_rights_restriction_None', '') != '' and not restrictionCreated:
+            restrictionCreated = models.RightsStatementRightsGrantedRestriction(rightsgranted=form.instance)
+            restrictionCreated.restriction = request.POST.get('new_rights_restriction_None', '')
+            restrictionCreated.save()
+        """
+
+        # handle note creation for a parent that's just been created
+        if request.POST.get('new_statute_note_None', '') != '' and not noteCreated:
+            noteCreated = models.RightsStatementStatuteNote(rightsgranted=form.instance)
+            noteCreated.statutenote = request.POST.get('new_statute_note_None', '')
+            noteCreated.save()
+
+        # display (possibly revised) formset
+        statuteFormset = StatuteFormSet(instance=createdRights)
 
 
 
