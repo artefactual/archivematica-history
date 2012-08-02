@@ -953,8 +953,11 @@ def archival_storage(request, path=None):
             clone = item._source.copy()
             try:
                 clone['filename'] = os.path.basename(clone['filePath'])
+
                 aip = models.AIP.objects.get(sipuuid=clone['AIPUUID'])
+                clone['sipname']  = aip.sipname
                 clone['href']     = aip.filepath.replace(AIPSTOREPATH + '/', "AIPsStore/")
+
                 clone['document_id'] = item['_id']
                 modifiedResults.append(clone)
             except:

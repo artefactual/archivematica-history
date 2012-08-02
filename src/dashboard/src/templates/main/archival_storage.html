@@ -31,7 +31,7 @@
         <div>{{item.filename}}</div>
         <div class='aip-search-item-details'>
           <div>
-            <span class='aip-search-item-detail-field'>AIP: <a href="{% url main.views.archival_storage item.href %}">{{item.AIPUUID}}</a></span>
+            <span class='aip-search-item-detail-field'>AIP: {{ item.sipname }} <a href="{% url main.views.archival_storage item.href %}">{{item.AIPUUID}}</a></span>
             <span class='aip-search-item-detail-field'>Indexed at: <script>document.write(timestampToLocal({{item.indexedAt}}))</script></span>
             <a href='/archival-storage/search/file/json/{{ item.document_id }}/' target='_blank'>(view raw)</a>
           </div>
