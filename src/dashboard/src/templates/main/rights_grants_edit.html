@@ -58,7 +58,7 @@
         {% for form in grantFormset %}
           {% include "_form.html" %}
 
-          <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+          <div class='repeating-ajax-data-fieldset'>
             <h4>Grant restrictions</h4>
 
             <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
@@ -75,7 +75,7 @@
             <div id='rightsrestrictions_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
           </div>
 
-          <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+          <div class='repeating-ajax-data-fieldset'>
             <h4>Grant notes</h4>
 
             <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
