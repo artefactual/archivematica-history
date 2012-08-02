@@ -1,46 +1,3 @@
-function setUpRepeatingRightsGrantedNotesRecords(parentId) {
-  var schema = {
-    'rightsgrantednote': {},
-  };
-  setUpRepeatingField('rightsfields_', parentId, 'Rights Granted Note', schema, '/formdata/rightsnote/' + parentId + '/', true);
-}
-
-function setUpRepeatingRightsGrantedRestrictionRecords(parentId) {
-  var schema = {
-    'restriction': {
-      'type': 'select',
-      'options': {
-        '': '',
-        'Allow': 'Allow',
-        'Disallow': 'Disallow',
-        'Conditional': 'Conditional'
-      }
-    }
-  };
-  setUpRepeatingField('rightsrestrictions_', parentId, 'Restriction', schema, '/formdata/rightsrestriction/' + parentId + '/', true);
-}
-
-function setUpRepeatingCopyrightNotesRecords(parentId) {
-  var schema = {
-    'copyrightnote': {},
-  };
-  setUpRepeatingField('copyrightnotes_', parentId, 'Copyright Note', schema, '/formdata/copyrightnote/' + parentId + '/', true);
-}
-
-function setUpRepeatingStatuteNotesRecords(parentId) {
-  var schema = {
-    'statutenote': {},
-  };
-  setUpRepeatingField('statutenotes_', parentId, 'Statute Note', schema, '/formdata/statutenote/' + parentId + '/', true);
-}
-
-function setUpRepeatingLicenseNotesRecords(parentId) {
-  var schema = {
-    'licensenote': {},
-  };
-  setUpRepeatingField('licensenotes_', parentId, 'License Note', schema, '/formdata/licensenote/' + parentId + '/', true);
-}
-
 function repeatingDocumentationIdentifierRecordsSchema(dataType) {
   var schema = {};
 
@@ -62,27 +19,39 @@ function repeatingDocumentationIdentifierRecordsSchema(dataType) {
   return schema;
 }
 
+function repeatingNotesRecordsSchema(dataType) {
+  var schema = {};
+  schema[dataType + 'note'] = {};
+  return schema;
+}
+
+function setUpRepeatingCopyrightNotesRecords(parentId) {
+  var schema = repeatingNotesRecordsSchema('copyright');
+  setUpRepeatingField('copyrightnotes_', parentId, 'Copyright Note', schema, '/formdata/copyrightnote/' + parentId + '/', true);
+}
+
 function setUpRepeatingCopyrightDocumentationIdentifierRecords(parentId) {
   var schema = repeatingDocumentationIdentifierRecordsSchema('copyright');
-
   setUpRepeatingField('copyrightdocidfields_', parentId, 'Copyright Documentation Identifier', schema, '/formdata/copyrightdocumentationidentifier/' + parentId + '/', true);
 }
 
 function setUpRepeatingStatuteDocumentationIdentifierRecords(parentId) {
   var schema = repeatingDocumentationIdentifierRecordsSchema('statute');
-
   setUpRepeatingField('statutedocidfields_', parentId, 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/' + parentId + '/', true);
+}
+
+function setUpRepeatingStatuteNotesRecords(parentId) {
+  var schema = repeatingNotesRecordsSchema('statute');
+  setUpRepeatingField('statutenotes_', parentId, 'Statute Note', schema, '/formdata/statutenote/' + parentId + '/', true);
 }
 
 function setUpRepeatingLicenseDocumentationIdentifierRecords(parentId) {
   var schema = repeatingDocumentationIdentifierRecordsSchema('license');
-
   setUpRepeatingField('licensedocidfields_', parentId, 'License Documentation Identifier', schema, '/formdata/licensedocumentationidentifier/' + parentId + '/', true);
 }
 
 function setUpRepeatingOtherRightsDocumentationIdentifierRecords(parentId) {
   var schema = repeatingDocumentationIdentifierRecordsSchema('otherrights');
-
   setUpRepeatingField('otherrightsdocidfields_', parentId, 'Other Rights Documentation Identifier', schema, '/formdata/otherrightsdocumentationidentifier/' + parentId + '/', true);
 }
 
@@ -91,6 +60,35 @@ function setUpRepeatingOtherRightsNotesRecords(parentId) {
     'otherrightsnote': {},
   };
   setUpRepeatingField('otherrightsnotes_', parentId, 'Other Rights Note', schema, '/formdata/otherrightsnote/' + parentId + '/', true);
+}
+
+function setUpRepeatingLicenseNotesRecords(parentId) {
+  var schema = {
+    'licensenote': {},
+  };
+  setUpRepeatingField('licensenotes_', parentId, 'License Note', schema, '/formdata/licensenote/' + parentId + '/', true);
+}
+
+function setUpRepeatingRightsGrantedRestrictionRecords(parentId) {
+  var schema = {
+    'restriction': {
+      'type': 'select',
+      'options': {
+        '': '',
+        'Allow': 'Allow',
+        'Disallow': 'Disallow',
+        'Conditional': 'Conditional'
+      }
+    }
+  };
+  setUpRepeatingField('rightsrestrictions_', parentId, 'Restriction', schema, '/formdata/rightsrestriction/' + parentId + '/', true);
+}
+
+function setUpRepeatingRightsGrantedNotesRecords(parentId) {
+  var schema = {
+    'rightsgrantednote': {},
+  };
+  setUpRepeatingField('rightsfields_', parentId, 'Rights Granted Note', schema, '/formdata/rightsnote/' + parentId + '/', true);
 }
 
 // repeating child field to a formset bound to existing data
