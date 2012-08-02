@@ -771,21 +771,22 @@ def transfer_delete(request, uuid):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def archival_storage(request, path=None):
-    search_attempted = False
-
-    if request.method == 'POST':
-        search_attempted = True
-
-        query = request.POST.get('query', '')
+    # determine whether a search has been submitted
+    try:
+        query = request.GET['query']
         if query == '':
             query = '*'
+    except KeyError:
+        query = False
+
+    if query:
         conn = pyes.ES('127.0.0.1:9200')
 
         count_data = conn.count(indices='aips')
         total_files_indexed = count_data.count
 
         q = pyes.StringQuery(query)
-        results = conn.search_raw(query=q, indices='aips', type='aip')
+        results = conn.search_raw(query=q, indices='aips', type='aip', size=50)
 
         # create a copy of the results that we can tweak
         modifiedResults = []
