@@ -142,6 +142,16 @@ var TransferComponentFormView = Backbone.View.extend({
       self.showSelector($('#path_source_select').children(':selected').text());
     });
 
+    // add logic to determine whether or not transfer name needs to be
+    // visible if transfer type changed
+    $('#transfer-type').change(function() {
+      if ($(this).val() == 'zipped bag') {
+        $('#transfer-name-container').hide('slide', {direction: 'left'}, 250);
+      } else {
+        $('#transfer-name-container').show('slide', {direction: 'left'}, 250);
+      }
+    });
+
     // make start transfer button clickable
     $('#start_transfer_button').click(function() {
       var transferName = $('#transfer-name').val();
