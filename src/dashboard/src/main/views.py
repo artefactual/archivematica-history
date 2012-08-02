@@ -780,15 +780,26 @@ def archival_storage(request, path=None):
         query = False
 
     if query:
+        # set pagination-related variables
+        items_per_page = 20
+
+        page = request.GET.get('page', 0)
+        if page == '':
+            page = 0
+        page = int(page)
+
+        start = page * items_per_page + 1
+
         conn = pyes.ES('127.0.0.1:9200')
 
         count_data = conn.count(indices='aips')
         total_files_indexed = count_data.count
 
+        # do fulltext search
         q = pyes.StringQuery(query)
-        results = conn.search_raw(query=q, indices='aips', type='aip', size=50)
+        results = conn.search_raw(query=q, indices='aips', type='aip', start=start - 1, size=items_per_page)
 
-        # create a copy of the results that we can tweak
+        # augment result data
         modifiedResults = []
 
         for item in results.hits.hits:
@@ -803,8 +814,26 @@ def archival_storage(request, path=None):
                 pass
 
         number_of_results = results.hits.total
+
+        # use augmented result data
         results = modifiedResults
 
+        # limit end by total hits
+        end = start + items_per_page - 1
+        if end > number_of_results:
+            end = number_of_results
+
+        # determine the previous page, if any
+        previous_page = False
+        if page > 0:
+            previous_page = page - 1
+
+        # determine the next page, if any
+        next_page = False
+        if (items_per_page * (page + 1)) < number_of_results:
+            next_page = page + 1
+
+        # make sure results is set
         try:
             if results:
                 pass
