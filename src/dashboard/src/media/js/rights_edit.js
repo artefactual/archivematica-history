@@ -31,7 +31,7 @@ function setUpRepeatingStatuteNotesRecords(parentId) {
   var schema = {
     'statutenote': {},
   };
-  setUpRepeatingField('statutenotes_', parentId, 'Statute Note', schema, '/formdata/statutenote/' + parentId + '/');
+  setUpRepeatingField('statutenotes_', parentId, 'Statute Note', schema, '/formdata/statutenote/' + parentId + '/', true);
 }
 
 function setUpRepeatingLicenseNotesRecords(parentId) {
@@ -74,7 +74,7 @@ function setUpRepeatingStatuteDocumentationIdentifierRecords(parentId) {
       'type': 'input'
     }
   };
-  setUpRepeatingField('statutedocidfields_', parentId, 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/' + parentId + '/');
+  setUpRepeatingField('statutedocidfields_', parentId, 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/' + parentId + '/', true);
 }
 
 function setUpRepeatingLicenseDocumentationIdentifierRecords(parentId) {
