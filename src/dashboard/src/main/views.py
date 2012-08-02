@@ -509,7 +509,19 @@ def rights_grants_edit(request, uuid, id, section='ingest'):
 
 
 
-    return render(request, 'main/rights_grants_edit.html', locals())
+    if request.method == 'POST':
+        if request.POST.get('next_button', '') != None and request.POST.get('next_button', '') != '':
+            return HttpResponseRedirect(reverse('main.views.%s_rights_list' % section, args=[uuid]))
+        else:
+            url = reverse('main.views.%s_rights_grants_edit' % section, args=[uuid, viewRights.pk])
+            try:
+                new_content_type_created
+                url = url + '?created=' + new_content_type_created
+            except:
+                pass
+            return HttpResponseRedirect(url)
+    else:
+        return render(request, 'main/rights_grants_edit.html', locals())
 
 def rights_delete(request, uuid, id, section):
     models.RightsStatement.objects.get(pk=id).delete()
