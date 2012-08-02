@@ -110,14 +110,14 @@ function setUpRepeatingOtherRightsDocumentationIdentifierRecords(parentId) {
       'type': 'input'
     }
   };
-  setUpRepeatingField('otherrightsdocidfields_', parentId, 'Other Rights Documentation Identifier', schema, '/formdata/otherrightsdocumentationidentifier/' + parentId + '/');
+  setUpRepeatingField('otherrightsdocidfields_', parentId, 'Other Rights Documentation Identifier', schema, '/formdata/otherrightsdocumentationidentifier/' + parentId + '/', true);
 }
 
 function setUpRepeatingOtherRightsNotesRecords(parentId) {
   var schema = {
     'otherrightsnote': {},
   };
-  setUpRepeatingField('otherrightsnotes_', parentId, 'Other Rights Note', schema, '/formdata/otherrightsnote/' + parentId + '/');
+  setUpRepeatingField('otherrightsnotes_', parentId, 'Other Rights Note', schema, '/formdata/otherrightsnote/' + parentId + '/', true);
 }
 
 // repeating child field to a formset bound to existing data

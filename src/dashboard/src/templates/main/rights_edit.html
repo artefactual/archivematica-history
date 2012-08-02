@@ -187,10 +187,6 @@
               <div id='licensedocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
             </div>
 
-
-
-
-
            <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
               <h4>License notes</h4>
 
@@ -219,8 +215,37 @@
 
             <input name='other_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
 
-            <div id='otherrightsdocidfields_{{ form.instance.pk }}' class='repeating-data'></div>
-            <div id='otherrightsnotes_{{ form.instance.pk }}' class='repeating-data'></div>
+            <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+              <h4>Documentation identifiers</h4>
+
+              <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
+                <h4 style='float:right; color: #ccc;'>Add New</h4>
+                <div>
+                  <strong>Type</strong><br/>
+                  <input name='other_documentation_identifier_type'>
+                </div>
+                <div>
+                  <strong>Value</strong><br/>
+                  <input name='other_documentation_identifier_value'>
+                </div>
+                <div>
+                  <strong>Role</strong><br/>
+                  <input name='other_documentation_identifier_role'>
+                </div>
+              </div>
+
+              <div id='otherrightsdocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+            </div>
+
+            <div style='border: 1px dashed #eee; margin-bottom: 1em; padding: 1em;'>
+              <h4>Notes</h4>
+
+              <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
+                <h4 style='float:right; color: #ccc;'>Add New</h4>
+                <textarea name='otherrights_note'></textarea>
+              </div>
+              <div id='otherrightsnotes_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+            </div>
 
             <script>
             $(document).ready(function() {
