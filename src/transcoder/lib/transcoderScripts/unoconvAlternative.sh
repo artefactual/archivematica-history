@@ -17,7 +17,7 @@
 
 
 # @package Archivematica
-# @subpackage Ingest
+# @subpackage Transcoder
 # @author Joseph Perry <joseph@artefactual.com>
 # @version svn: $Id$
 

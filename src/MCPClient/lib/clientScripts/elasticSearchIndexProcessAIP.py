@@ -18,7 +18,7 @@
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
 # @package Archivematica
-# @subpackage Ingest
+# @subpackage archivematicaClientScript
 # @author Mike Cantelon <mike@artefactual.com>
 # @version svn: $Id$
 import sys
