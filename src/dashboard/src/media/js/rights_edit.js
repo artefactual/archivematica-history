@@ -153,12 +153,20 @@ function revealSelectedBasis() {
     $('#' + formsets[basis]).show();
   }
 
+  // relabel certain form fields to be specific to selected basis
   $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsbasis']")
-    .text(basis + ' rights Basis')
+    .text(basis + ' rights Basis');
   $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsapplicablestartdate']")
-    .text(basis + ' rights applicable start date')
+    .text(basis + ' rights applicable start date');
   $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsapplicableenddate']")
-    .text(basis + ' rights applicable end date')
+    .text(basis + ' rights applicable end date');
+
+  // hide extra basis field for donor and policy basis
+  if (basis == 'Donor' || basis == 'Policy') {
+    $('#id_rightsstatementotherrightsinformation_set-0-otherrightsbasis').parent().parent().hide();
+  } else {
+    $('#id_rightsstatementotherrightsinformation_set-0-otherrightsbasis').parent().parent().show();
+  }
 }
 
 // setup
