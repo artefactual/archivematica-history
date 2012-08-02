@@ -566,6 +566,11 @@ class ES(object):
                 body = json.dumps(body, cls=self.encoder)
         else:
             body = ""
+        # Patched to make start parameter work as it's supposed to
+        # As per https://github.com/aparo/pyes/issues/153
+        if 'start' in params:
+            params['from']=params['start']
+            del params['start']
         request = RestRequest(method=Method._NAMES_TO_VALUES[method.upper()],
                               uri=path, parameters=params, headers=headers, body=body)
         if self.dump_curl is not None:
