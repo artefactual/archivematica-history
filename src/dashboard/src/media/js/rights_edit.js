@@ -38,7 +38,7 @@ function setUpRepeatingLicenseNotesRecords(parentId) {
   var schema = {
     'licensenote': {},
   };
-  setUpRepeatingField('licensenotes_', parentId, 'License Note', schema, '/formdata/licensenote/' + parentId + '/');
+  setUpRepeatingField('licensenotes_', parentId, 'License Note', schema, '/formdata/licensenote/' + parentId + '/', true);
 }
 
 function setUpRepeatingCopyrightDocumentationIdentifierRecords(parentId) {
@@ -92,7 +92,7 @@ function setUpRepeatingLicenseDocumentationIdentifierRecords(parentId) {
       'type': 'input'
     }
   };
-  setUpRepeatingField('licensedocidfields_', parentId, 'License Documentation Identifier', schema, '/formdata/licensedocumentationidentifier/' + parentId + '/');
+  setUpRepeatingField('licensedocidfields_', parentId, 'License Documentation Identifier', schema, '/formdata/licensedocumentationidentifier/' + parentId + '/', true);
 }
 
 function setUpRepeatingOtherRightsDocumentationIdentifierRecords(parentId) {
