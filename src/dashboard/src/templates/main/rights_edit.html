@@ -80,6 +80,7 @@
             <div class='repeating-ajax-data-fieldset'>
               <h4>Copyright documentation identifiers</h4>
 
+              <div id='copyrightdocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
               <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
                 <h4 style='float:right; color: #ccc;'>Add New</h4>
                 <div>
@@ -95,18 +96,17 @@
                   <input name='copyright_documentation_identifier_role'>
                 </div>
               </div>
-
-              <div id='copyrightdocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
             </div>
 
             <div class='repeating-ajax-data-fieldset'>
               <h4>Copyright notes</h4>
 
+              <div id='copyrightnotes_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+
               <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
                 <h4 style='float:right; color: #ccc;'>Add New</h4>
                 <textarea name='copyright_note'></textarea>
               </div>
-              <div id='copyrightnotes_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
             </div>
 
             <script>
@@ -130,6 +130,8 @@
             <div class='repeating-ajax-data-fieldset'>
               <h4>Statute documentation identifiers</h4>
 
+              <div id='statutedocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+
               <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
                 <h4 style='float:right; color: #ccc;'>Add New</h4>
                 <div>
@@ -145,8 +147,6 @@
                   <input name='statute_documentation_identifier_role_{{ form.instance.pk }}'>
                 </div>
               </div>
-
-              <div id='statutedocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
             </div>
 
             <div class='repeating-ajax-data-fieldset'>
@@ -181,6 +181,8 @@
             <div class='repeating-ajax-data-fieldset'>
               <h4>License documentation identifiers</h4>
 
+              <div id='licensedocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+
               <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
                 <h4 style='float:right; color: #ccc;'>Add New</h4>
                 <div>
@@ -196,8 +198,6 @@
                   <input name='license_documentation_identifier_role'>
                 </div>
               </div>
-
-              <div id='licensedocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
             </div>
 
             <div class='repeating-ajax-data-fieldset'>
@@ -231,6 +231,8 @@
             <div class='repeating-ajax-data-fieldset'>
               <h4>Documentation identifiers</h4>
 
+              <div id='otherrightsdocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+
               <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
                 <h4 style='float:right; color: #ccc;'>Add New</h4>
                 <div>
@@ -246,18 +248,17 @@
                   <input name='other_documentation_identifier_role'>
                 </div>
               </div>
-
-              <div id='otherrightsdocidfields_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
             </div>
 
             <div class='repeating-ajax-data-fieldset'>
               <h4>Notes</h4>
 
+              <div id='otherrightsnotes_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
+
               <div class='repeating-ajax-data-row' style='background-color: whiteSmoke; padding: .5em;'>
                 <h4 style='float:right; color: #ccc;'>Add New</h4>
                 <textarea name='otherrights_note'></textarea>
               </div>
-              <div id='otherrightsnotes_{{ form.instance.pk }}' class='repeating-data' style='margin-left: .5em;'></div>
             </div>
 
             <script>
