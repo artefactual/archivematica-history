@@ -25,7 +25,7 @@
 
   {% if query %}
     {% if results %}
-      <div id='aip-search-summary'>Found {{ number_of_results }} files.</div>
+      {% include "main/_archival_storage_search_summary.html" %}
 
       {% for item in results %}
         <div>{{item.filename}}</div>
@@ -37,6 +37,9 @@
           </div>
         </div>
       {% endfor %}
+
+      {% include "main/_archival_storage_search_summary.html" %}
+
     {% else %}
       <div id='aip-search-summary'>No results, please try another search.</div>
     {% endif %}
