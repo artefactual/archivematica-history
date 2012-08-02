@@ -41,75 +41,48 @@ function setUpRepeatingLicenseNotesRecords(parentId) {
   setUpRepeatingField('licensenotes_', parentId, 'License Note', schema, '/formdata/licensenote/' + parentId + '/', true);
 }
 
-function setUpRepeatingCopyrightDocumentationIdentifierRecords(parentId) {
-  var schema = {
-    'copyrightdocumentationidentifiertype': {
-      'label': 'Type',
-      'type': 'input'
-    },
-    'copyrightdocumentationidentifiervalue': {
-      'label': 'Value',
-      'type': 'input'
-    },
-    'copyrightdocumentationidentifierrole': {
-      'label': 'Role',
-      'type': 'input'
-    }
+function repeatingDocumentationIdentifierRecordsSchema(dataType) {
+  var schema = {};
+
+  schema[dataType + 'documentationidentifiertype'] = {
+    'label': 'Type',
+    'type': 'input'
   };
+
+  schema[dataType + 'documentationidentifiervalue'] = {
+    'label': 'Value',
+    'type': 'input'
+  };
+
+  schema[dataType + 'documentationidentifierrole'] = {
+    'label': 'Role',
+    'type': 'input'
+  };
+
+  return schema;
+}
+
+function setUpRepeatingCopyrightDocumentationIdentifierRecords(parentId) {
+  var schema = repeatingDocumentationIdentifierRecordsSchema('copyright');
+
   setUpRepeatingField('copyrightdocidfields_', parentId, 'Copyright Documentation Identifier', schema, '/formdata/copyrightdocumentationidentifier/' + parentId + '/', true);
 }
 
 function setUpRepeatingStatuteDocumentationIdentifierRecords(parentId) {
-  var schema = {
-    'statutedocumentationidentifiertype': {
-      'label': 'Type',
-      'type': 'input'
-    },
-    'statutedocumentationidentifiervalue': {
-      'label': 'Value',
-      'type': 'input'
-    },
-    'statutedocumentationidentifierrole': {
-      'label': 'Role',
-      'type': 'input'
-    }
-  };
+  var schema = repeatingDocumentationIdentifierRecordsSchema('statute');
+
   setUpRepeatingField('statutedocidfields_', parentId, 'Statute Documentation Identifier', schema, '/formdata/statutedocumentationidentifier/' + parentId + '/', true);
 }
 
 function setUpRepeatingLicenseDocumentationIdentifierRecords(parentId) {
-  var schema = {
-    'licensedocumentationidentifiertype': {
-      'label': 'Type',
-      'type': 'input'
-    },
-    'licensedocumentationidentifiervalue': {
-      'label': 'Value',
-      'type': 'input'
-    },
-    'licensedocumentationidentifierrole': {
-      'label': 'Role',
-      'type': 'input'
-    }
-  };
+  var schema = repeatingDocumentationIdentifierRecordsSchema('license');
+
   setUpRepeatingField('licensedocidfields_', parentId, 'License Documentation Identifier', schema, '/formdata/licensedocumentationidentifier/' + parentId + '/', true);
 }
 
 function setUpRepeatingOtherRightsDocumentationIdentifierRecords(parentId) {
-  var schema = {
-    'otherrightsdocumentationidentifiertype': {
-      'label': 'Type',
-      'type': 'input'
-    },
-    'otherrightsdocumentationidentifiervalue': {
-      'label': 'Value',
-      'type': 'input'
-    },
-    'otherrightsdocumentationidentifierrole': {
-      'label': 'Role',
-      'type': 'input'
-    }
-  };
+  var schema = repeatingDocumentationIdentifierRecordsSchema('otherrights');
+
   setUpRepeatingField('otherrightsdocidfields_', parentId, 'Other Rights Documentation Identifier', schema, '/formdata/otherrightsdocumentationidentifier/' + parentId + '/', true);
 }
 
