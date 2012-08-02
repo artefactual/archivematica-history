@@ -21,7 +21,7 @@
       <table>
         <thead>
           <th>Act</th>
-          <th>Restriction</th>
+          <th>Restriction(s)</th>
           <th>Start</th>
           <th>End</th>
           <th></th>
@@ -30,7 +30,11 @@
           {% for grant in grants %}
             <tr>
               <td>{{ grant.act }}</td>
-              <td>{{ grant.restriction }}</td>
+              <td>
+                {% for restriction in grant.restrictions %}
+                  <div>{{ restriction }}</div>
+                {% endfor %}
+              </td>
               <td>{{ grant.startdate }}</td>
               <td>{{ grant.enddate }}</td>
               <td>
