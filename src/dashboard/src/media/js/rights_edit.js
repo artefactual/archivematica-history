@@ -198,7 +198,7 @@ $(document).ready(function() {
     var $toggleButton = $('<h3 class="btn" style="float:right">Create new statute?</h3>');
 
     $toggleButton.click(function() {
-      $toggleButton.remove();
+      $toggleButton.fadeOut();
       $('.statute_fieldset').last().slideDown();
     });
 
