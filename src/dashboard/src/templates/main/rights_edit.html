@@ -123,6 +123,9 @@
           {{ statuteFormset.non_form_errors.as_ul }}
 
         {% for form in statuteFormset %}
+
+          <div class='statute_fieldset'>
+
           {% include "_form.html" %}
 
           <input name='statute_previous_pk' type='hidden' value='{{ form.instance.pk }}'>
@@ -166,6 +169,8 @@
             setUpRepeatingStatuteNotesRecords('{{ form.instance.pk }}');
           });
           </script>
+
+          </div>
         {% endfor %}
         </div>
 

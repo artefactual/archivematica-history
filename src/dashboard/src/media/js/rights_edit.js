@@ -188,6 +188,24 @@ $(document).ready(function() {
   $('#id_rightsbasis').change(revealSelectedBasis);
   revealSelectedBasis();
 
+  // if a statute has already been made, hide the blank form to create one
+  // and offer a button to reveal it
+  if ($('.statute_fieldset').length > 1) {
+    // hide last statute form
+    $('.statute_fieldset').last().hide();
+
+    // make toggle button
+    var $toggleButton = $('<h3 class="btn" style="float:right">Create new statute?</h3>');
+
+    $toggleButton.click(function() {
+      $toggleButton.remove();
+      $('.statute_fieldset').last().slideDown();
+    });
+
+    // append toggle button to second to last statute form
+    $('.statute_fieldset').last().prev().append($toggleButton);
+  }
+
   if ($('#id_rightsholder').length > 0) {
     // lookup rightsholder
     $.get('lookup/rightsholder/' + $('#id_rightsholder').val(), function(data) {
