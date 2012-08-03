@@ -283,7 +283,8 @@ CREATE TABLE RightsStatementRightsGranted (
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
     act LONGTEXT NOT NULL,
     startDate LONGTEXT NOT NULL,
-    endDate LONGTEXT
+    endDate LONGTEXT,
+    endDateOpen BOOLEAN NOT NULL DEFAULT 0
 ) DEFAULT CHARSET=utf8;
 
 -- 4.1.7.2 restriction (O, R)
