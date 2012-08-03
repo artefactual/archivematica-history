@@ -92,12 +92,22 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
       'AIPUUID':   uuid,
       'indexedAt': time.time(),
       'filePath':  '',
-      'METS':      {}
+      'METS':      {
+        'dmdSec': {},
+        'amdSec': {}
+      }
     }
+    dmdSecData = {}
 
     # parse XML
     tree = ElementTree.parse(metsFilePath)
     root = tree.getroot()
+
+    # get SIP-wide dmdSec
+    dmdSec = root.findall("{http://www.loc.gov/METS/}dmdSec/{http://www.loc.gov/METS/}mdWrap/{http://www.loc.gov/METS/}xmlData")
+    for item in dmdSec:
+        xml = ElementTree.tostring(item)
+        dmdSecData = xmltodict.parse(xml)
 
     # get amdSec IDs for each filepath
     for item in root.findall("{http://www.loc.gov/METS/}fileSec/{http://www.loc.gov/METS/}fileGrp/{http://www.loc.gov/METS/}file"):
@@ -116,7 +126,8 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
                 # set up data for indexing
                 indexData = fileData
                 indexData['filePath'] = filePath
-                indexData['METS'] = xmltodict.parse(xml)
+                indexData['METS']['dmdSec'] = dmdSecData
+                indexData['METS']['amdSec'] = xmltodict.parse(xml)
 
                 # index data
                 conn.index(indexData, index, type)
