@@ -89,6 +89,7 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
 
     # establish structure to be indexed for each file item
     fileData = {
+      'archivematicaVersion': '0.9',
       'AIPUUID':   uuid,
       'indexedAt': time.time(),
       'filePath':  '',
