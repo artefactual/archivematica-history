@@ -62,10 +62,10 @@ if __name__ == '__main__':
     listdir = os.listdir(destinationDirectory)
     if len(listdir) == 1:
         internalBagName = listdir[0]
-        print "using BagIt internal name: ", internalBagName  
+        #print "ignoring BagIt internal name: ", internalBagName  
         temp = destinationDirectory + "-tmp"
         shutil.move(destinationDirectory, temp)
-        destinationDirectory = os.path.join(processingDirectory, internalBagName)
+        #destinationDirectory = os.path.join(processingDirectory, internalBagName)
         shutil.move(os.path.join(temp, internalBagName), destinationDirectory)
         os.rmdir(temp)
     
