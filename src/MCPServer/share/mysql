@@ -116,6 +116,7 @@ CREATE TABLE RightsStatementCopyright(
   copyrightStatusDeterminationDate LONGTEXT NOT NULL,
   copyrightApplicableStartDate LONGTEXT NOT NULL,
   copyrightApplicableEndDate LONGTEXT NOT NULL,
+  copyrightApplicableEndDateOpen BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (pk),
   KEY fkRightsStatement (fkRightsStatement)
 ) DEFAULT CHARSET=utf8;
@@ -148,6 +149,7 @@ CREATE TABLE RightsStatementLicense(
   licenseTerms longtext,
   licenseApplicableStartDate LONGTEXT NOT NULL,
   licenseApplicableEndDate LONGTEXT NOT NULL,
+  licenseApplicableEndDateOpen BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (pk),
   KEY fkRightsStatement (fkRightsStatement)
 ) DEFAULT CHARSET=utf8;
@@ -194,7 +196,8 @@ CREATE TABLE RightsStatementStatuteInformation (
     statuteCitation LONGTEXT NOT NULL,
     statuteInformationDeterminationDate LONGTEXT,
     statuteApplicableStartDate LONGTEXT NOT NULL,
-    statuteApplicableEndDate LONGTEXT NOT NULL
+    statuteApplicableEndDate LONGTEXT NOT NULL,
+    statuteApplicableEndDateOpen BOOLEAN NOT NULL DEFAULT 0
 ) DEFAULT CHARSET=utf8;
 
 -- 4.1.5.4 statuteNote (O, R)
@@ -248,7 +251,8 @@ CREATE TABLE RightsStatementOtherRightsInformation (
     Foreign Key (fkRightsStatement) references RightsStatement(pk),
     otherRightsBasis LONGTEXT NOT NULL,
     otherRightsApplicableStartDate LONGTEXT NOT NULL,
-    otherRightsApplicableEndDate LONGTEXT NOT NULL
+    otherRightsApplicableEndDate LONGTEXT NOT NULL,
+    otherRightsApplicableEndDateOpen BOOLEAN NOT NULL DEFAULT 0
 ) DEFAULT CHARSET=utf8;
 
 -- 4.1.6.1 otherRightsDocumentationIdentifier (O, R)
