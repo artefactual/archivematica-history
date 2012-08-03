@@ -350,7 +350,7 @@ def createDigiprovMD(fileUUID):
         mdWrap.set("MDTYPE", "PREMIS:EVENT")
         xmlData = newChild(mdWrap,"xmlData")
         event = etree.SubElement(xmlData, "event", nsmap={None: premisNS})
-        event.set(xsiBNS+"schemaLocation", premisNS + " http://www.loc.gov/standards/premis/v2/premis-v2-1.xsd")
+        event.set(xsiBNS+"schemaLocation", premisNS + " http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd")
         event.set("version", "2.2")
 
         eventIdentifier = etree.SubElement(event, "eventIdentifier")
