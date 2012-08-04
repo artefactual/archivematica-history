@@ -79,7 +79,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                 
                 #copright information
                 if valueDic["rightsBasis"].lower() in ["copyright"]:
-                    sql = """SELECT pk, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, copyrightApplicableStartDate, copyrightApplicableEndDate FROM RightsStatementCopyright WHERE fkRightsStatement = %d""" % (valueDic["RightsStatement.pk"])
+                    sql = """SELECT pk, copyrightStatus, copyrightJurisdiction, copyrightStatusDeterminationDate, copyrightApplicableStartDate, copyrightApplicableEndDate, copyrightApplicableEndDateOpen FROM RightsStatementCopyright WHERE fkRightsStatement = %d""" % (valueDic["RightsStatement.pk"])
                     rows2 = databaseInterface.queryAllSQL(sql)
                     for row2 in rows2:
                         copyrightInformation = etree.SubElement(rightsStatement, "copyrightInformation")
@@ -102,11 +102,13 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                         copyrightApplicableDates = etree.SubElement(copyrightInformation, "copyrightApplicableDates")
                         if valueDic["copyrightApplicableStartDate"]:
                             etree.SubElement(copyrightApplicableDates, "startDate").text = formatDate(valueDic["copyrightApplicableStartDate"])
-                        if valueDic["copyrightApplicableEndDate"]:
+                        if row2[6]: #, copyrightApplicableEndDateOpen
+                            etree.SubElement(copyrightApplicableDates, "endDate").text = "OPEN"
+                        elif valueDic["copyrightApplicableEndDate"]:
                             etree.SubElement(copyrightApplicableDates, "endDate").text = formatDate(valueDic["copyrightApplicableEndDate"])
                 
                 elif valueDic["rightsBasis"].lower() in ["license"]:
-                    sql = """SELECT licenseTerms, licenseApplicableStartDate, licenseApplicableEndDate,  licenseDocumentationIdentifierType, licenseDocumentationIdentifierValue, RightsStatementLicense.pk, licenseDocumentationIdentifierRole 
+                    sql = """SELECT licenseTerms, licenseApplicableStartDate, licenseApplicableEndDate,  licenseDocumentationIdentifierType, licenseDocumentationIdentifierValue, RightsStatementLicense.pk, licenseDocumentationIdentifierRole, licenseApplicableEndDateOpen
                                 FROM RightsStatementLicense JOIN RightsStatementLicenseDocumentationIdentifier ON RightsStatementLicenseDocumentationIdentifier.fkRightsStatementLicense = RightsStatementLicense.pk WHERE RightsStatementLicense.fkRightsStatement = %d;""" % (valueDic["RightsStatement.pk"])
                     rows2 = databaseInterface.queryAllSQL(sql)
                     for row2 in rows2:
@@ -127,7 +129,9 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                         licenseApplicableDates = etree.SubElement(licenseInformation, "licenseApplicableDates")
                         if valueDic["licenseApplicableStartDate"]:
                             etree.SubElement(licenseApplicableDates, "startDate").text = formatDate(valueDic["licenseApplicableStartDate"])
-                        if valueDic["licenseApplicableEndDate"]:
+                        if row2[7]: #licenseApplicableEndDateOpen
+                            etree.SubElement(licenseApplicableDates, "endDate").text = "OPEN"
+                        elif valueDic["licenseApplicableEndDate"]:
                             etree.SubElement(licenseApplicableDates, "endDate").text = formatDate(valueDic["licenseApplicableEndDate"])
                     
                 elif valueDic["rightsBasis"].lower() in ["statute"]:
@@ -136,7 +140,7 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                     
                 elif valueDic["rightsBasis"].lower() in ["donor", "policy", "other"]:
                     otherRightsInformation = etree.SubElement(rightsStatement, "otherRightsInformation")
-                    sql = """SELECT pk, otherRightsBasis, otherRightsApplicableStartDate, otherRightsApplicableEndDate FROM RightsStatementOtherRightsInformation WHERE RightsStatementOtherRightsInformation.fkRightsStatement = %d;""" % (valueDic["RightsStatement.pk"])
+                    sql = """SELECT pk, otherRightsBasis, otherRightsApplicableStartDate, otherRightsApplicableEndDate, otherRightsApplicableEndDateOpen FROM RightsStatementOtherRightsInformation WHERE RightsStatementOtherRightsInformation.fkRightsStatement = %d;""" % (valueDic["RightsStatement.pk"])
                     rows2 = databaseInterface.queryAllSQL(sql)
                     for row2 in rows2:
                         #otherRightsDocumentationIdentifier
@@ -157,11 +161,14 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                         
                         otherRightsApplicableStartDate = row2[2]
                         otherRightsApplicableEndDate = row2[3]
+                        otherRightsApplicableEndDateOpen = row2[4]
                         if otherRightsApplicableStartDate or otherRightsApplicableEndDate:  
                             otherRightsApplicableDates = etree.SubElement(otherRightsInformation, "otherRightsApplicableDates")
                             if otherRightsApplicableStartDate:
                                 etree.SubElement(otherRightsApplicableDates, "startDate").text = formatDate(otherRightsApplicableStartDate)
-                            if otherRightsApplicableEndDate:
+                            if otherRightsApplicableEndDateOpen:
+                                etree.SubElement(otherRightsApplicableDates, "endDate").text = "OPEN"
+                            elif otherRightsApplicableEndDate:
                                 etree.SubElement(otherRightsApplicableDates, "endDate").text = formatDate(otherRightsApplicableEndDate)
     
                         #otherRightsNote Repeatable
@@ -204,7 +211,7 @@ def getDocumentationIdentifier(pk, parent):
 
 
 def getstatuteInformation(pk, parent):
-    sql = "SELECT pk, statuteJurisdiction, statuteCitation, statuteInformationDeterminationDate, statuteapplicablestartdate, statuteapplicableenddate FROM RightsStatementStatuteInformation WHERE fkRightsStatement = %d" % (pk)
+    sql = "SELECT pk, statuteJurisdiction, statuteCitation, statuteInformationDeterminationDate, statuteapplicablestartdate, statuteapplicableenddate, statuteApplicableEndDateOpen FROM RightsStatementStatuteInformation WHERE fkRightsStatement = %d" % (pk)
     #print sql
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
@@ -229,16 +236,19 @@ def getstatuteInformation(pk, parent):
         
         statuteapplicablestartdate =  row[4]
         statuteapplicableenddate = row[5]
-        if statuteapplicablestartdate or statuteapplicableenddate:
+        statuteApplicableEndDateOpen = row[6]
+        if statuteapplicablestartdate or statuteapplicableenddate or statuteApplicableEndDateOpen:
              statuteApplicableDates = etree.SubElement(statuteInformation, "statuteApplicableDates")
              if statuteapplicablestartdate: 
                 etree.SubElement(statuteApplicableDates, "startDate").text = formatDate(statuteapplicablestartdate)
-             if statuteapplicableenddate:
+             if statuteApplicableEndDateOpen:
+                 etree.SubElement(statuteApplicableDates, "endDate").text = "OPEN"
+             elif statuteapplicableenddate:
                  etree.SubElement(statuteApplicableDates, "endDate").text = formatDate(statuteapplicableenddate)
         
 
 def getrightsGranted(pk, parent):
-    sql = "SELECT RightsStatementRightsGranted.pk, act, startDate, endDate FROM RightsStatementRightsGranted  WHERE fkRightsStatement = %d" % (pk)
+    sql = "SELECT RightsStatementRightsGranted.pk, act, startDate, endDate, endDateOpen FROM RightsStatementRightsGranted  WHERE fkRightsStatement = %d" % (pk)
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
         rightsGranted = etree.SubElement(parent, "rightsGranted")
@@ -266,7 +276,9 @@ def getrightsGranted(pk, parent):
         if not row[2]:
             sharedVariablesAcrossModules.globalErrorCount +=1
             print >>sys.stderr, "The value '' of element 'startDate' is not valid. "
-        if row[3]:
+        if row[4]:
+            etree.SubElement(termOfGrant, "endDate").text = "OPEN"
+        elif row[3]:
             etree.SubElement(termOfGrant, "endDate").text = formatDate(row[3])
         
         #4.1.6.4 rightsGrantedNote (O, R)
