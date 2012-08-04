@@ -89,6 +89,8 @@ var TransferComponentFormView = Backbone.View.extend({
           },
           success: function(results) {
             $('#transfer-name').val('');
+            $('#transfer-name-container').show();
+            $('#transfer-type').val('standard');
             $('#path_container').html('');
             $('.transfer-component-activity-indicator').hide();
           }
@@ -155,6 +157,11 @@ var TransferComponentFormView = Backbone.View.extend({
     // make start transfer button clickable
     $('#start_transfer_button').click(function() {
       var transferName = $('#transfer-name').val();
+
+      // if transfering a zipped bag, give it a dummy name
+      if ($('#transfer-type').val() == 'zipped bag') {
+        transferName = 'ZippedBag';
+      }
 
       if (!transferName)
       {
