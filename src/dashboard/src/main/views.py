@@ -571,6 +571,9 @@ def rights_list(request, uuid, section):
             'rightsstatement': grant.rightsstatement
         }
 
+        if (grant.enddateopen):
+            item['enddate'] = '(open)'
+
         restriction_data = models.RightsStatementRightsGrantedRestriction.objects.filter(rightsgranted=grant)
         restrictions = []
         for restriction in restriction_data:

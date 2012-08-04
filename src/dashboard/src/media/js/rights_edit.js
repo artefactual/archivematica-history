@@ -182,7 +182,7 @@ $(document).ready(function() {
     }
   });
 
-  $('input[name*="date"]').inputmask('y/m/d');
+  $('input[type="text"][name*="date"]').inputmask('y/m/d');
 
   // active formset changer
   $('#id_rightsbasis').change(revealSelectedBasis);
