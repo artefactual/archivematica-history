@@ -260,6 +260,7 @@ class RightsStatementRightsGranted(models.Model):
     act = models.TextField(db_column='act', blank=True)
     startdate = models.TextField(db_column='startDate', verbose_name='Start', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
     enddate = models.TextField(db_column='endDate', verbose_name='End', help_text='Use ISO 8061 (YYYY-MM-DD)', blank=True)
+    enddateopen = models.BooleanField(db_column='endDateOpen', verbose_name='Open End Date', help_text='Indicate end date is open')
 
     class Meta:
         db_table = u'RightsStatementRightsGranted'
