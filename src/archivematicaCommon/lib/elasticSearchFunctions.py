@@ -24,9 +24,12 @@
 
 import time
 import os
-
 import sys
+import MySQLdb
+import cPickle
+import base64
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+import databaseInterface
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import pyes
 import xmltodict
@@ -131,7 +134,9 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
                 indexData['METS']['amdSec'] = xmltodict.parse(xml)
 
                 # index data
-                conn.index(indexData, index, type)
+                result = conn.index(indexData, index, type)
+
+                backup_indexed_document(result, indexData, index, type)
 
     print 'Indexed AIP files and corresponding METS XML.'
 
@@ -175,3 +180,9 @@ def list_files_in_dir(path, filepaths=[]):
     # return fully traversed data
     return filepaths
 
+def backup_indexed_document(result, indexData, index, type):
+    sql = "INSERT INTO ElasticsearchIndexBackup (docId, data, indexName, typeName) VALUES ('%s', '%s', '%s', '%s')"
+
+    sql = sql % (MySQLdb.escape_string(result['_id']), unicode(base64.encodestring(cPickle.dumps(indexData))), MySQLdb.escape_string(index), MySQLdb.escape_string(type))
+
+    databaseInterface.runSQL(sql)
