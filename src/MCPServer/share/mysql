@@ -712,6 +712,16 @@ CREATE TABLE SourceDirectories (
   path longtext,
   PRIMARY KEY (pk)
 ) DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS ElasticsearchIndexBackup;
+CREATE TABLE ElasticsearchIndexBackup (
+    pk INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    docId  VARCHAR(255),
+    indexName VARCHAR(255),
+    typeName VARCHAR(255),
+    data LONGTEXT NOT NULL
+) DEFAULT CHARSET=utf8;
+
 SET @microserviceGroup  = 'Process submission documentation';
 --
 INSERT INTO StandardTasksConfigs (filterFileEnd, filterFileStart, filterSubDir, requiresOutputLock, standardOutputFile, standardErrorFile, execute, arguments)
