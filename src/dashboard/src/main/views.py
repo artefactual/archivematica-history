@@ -968,17 +968,20 @@ def archival_storage(request, path=None):
 
         for item in results.hits.hits:
             clone = item._source.copy()
+
+            # try to find AIP details in database
             try:
-                clone['filename'] = os.path.basename(clone['filePath'])
-
                 aip = models.AIP.objects.get(sipuuid=clone['AIPUUID'])
-                clone['sipname']  = aip.sipname
-                clone['href']     = aip.filepath.replace(AIPSTOREPATH + '/', "AIPsStore/")
-
-                clone['document_id'] = item['_id']
-                modifiedResults.append(clone)
+                clone['sipname'] = aip.sipname
+                clone['href']    = aip.filepath.replace(AIPSTOREPATH + '/', "AIPsStore/")
             except:
-                pass
+                aip = None
+                clone['sipname'] = False
+
+            clone['filename'] = os.path.basename(clone['filePath'])
+            clone['document_id'] = item['_id']
+
+            modifiedResults.append(clone)
 
         number_of_results = results.hits.total
 
