@@ -959,9 +959,6 @@ def archival_storage(request, path=None):
 
         conn = pyes.ES('127.0.0.1:9200')
 
-        count_data = conn.count(indices='aips')
-        total_files_indexed = count_data.count
-
         # do fulltext search
         q = pyes.StringQuery(query)
         results = conn.search_raw(query=q, indices='aips', type='aip', start=start - 1, size=items_per_page)
