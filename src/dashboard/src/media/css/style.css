@@ -650,7 +650,7 @@ textarea.command {
 }
 
 .statute-fieldset, .non-repeating-formset {
-  margin-top: 4em;
+  margin-top: 2em;
 }
 
 .statute-fieldset:nth-child(odd), .grant-fieldset:nth-child(odd) {
