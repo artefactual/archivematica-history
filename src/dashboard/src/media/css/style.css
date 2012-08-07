@@ -179,7 +179,7 @@ li.user > a {
 }
 
 .btn_show_metadata { background-image: url(/media/images/zoom.png); }
-.sip-selected .btn_show_metadata { background-image: url(/media/images/zoom_out.png); }
+.sip-selected .btn_show_metadata { background-image: url(/media/images/table_edit.png); }
 .btn_remove_sip { background-image: url(/media/images/delete.png); }
 .btn_edit_metadata { background-image: url(/media/images/table_edit.png); }
 
