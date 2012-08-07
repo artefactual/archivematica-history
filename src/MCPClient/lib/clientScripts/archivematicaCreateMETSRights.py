@@ -93,8 +93,8 @@ def archivematicaGetRights(metadataAppliesToList, fileUUID):
                         #copyrightNote Repeatable
                         sql = "SELECT copyrightNote FROM RightsStatementCopyrightNote WHERE fkRightsStatementCopyrightInformation = %d;" % (row2[0])
                         rows3 = databaseInterface.queryAllSQL(sql)
-                        for row2 in rows3:
-                            etree.SubElement(copyrightInformation, "copyrightNote").text =  row2[0]
+                        for row3 in rows3:
+                            etree.SubElement(copyrightInformation, "copyrightNote").text =  row3[0]
                             
                         #RightsStatementCopyrightDocumentationIdentifier
                         getDocumentationIdentifier(valueDic["RightsStatement.pk"], copyrightInformation)
