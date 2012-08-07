@@ -211,7 +211,7 @@ $(document).ready(function() {
 
   // if a statute or grant has already been made, hide the blank form to create one
   // and offer a button to reveal it
-  appendRevealButton($('.statute_fieldset'), 'statute');
+  appendRevealButton($('.statute-fieldset'), 'statute');
   appendRevealButton($('.grant-fieldset'), 'grant');
 
   // use JQuery for this as pure CSS selector isn't IE safe
