@@ -672,3 +672,7 @@ textarea.command {
 .repeating-ajax-data-row textarea {
   width: 550px;
 }
+
+.grant-fieldset > .repeating-ajax-data-fieldset {
+  padding-top: 0em;
+}
