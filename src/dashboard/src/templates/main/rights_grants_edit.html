@@ -56,6 +56,7 @@
         {{ grantFormset.non_form_errors.as_ul }}
 
         {% for form in grantFormset %}
+          <div class='grant-fieldset'>
           {% include "_form.html" %}
 
           <div class='repeating-ajax-data-fieldset'>
@@ -93,6 +94,7 @@
             setUpRepeatingRightsGrantedNotesRecords('{{ form.instance.pk }}');
           });
           </script>
+          </div>
         {% endfor %}
 
         <div class="actions">

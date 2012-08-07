@@ -169,9 +169,30 @@ function revealSelectedBasis() {
   }
 }
 
+// hide the last fieldset, to reduce visual clutter, and add a button to reveal it
+function appendRevealButton($list, dataType) {
+
+  if ($list.length > 1) {
+    // hide last statute form
+    $list.last().hide();
+
+    // make toggle button
+    var $toggleButton = $('<h3 class="btn" style="float:right">Create new ' + dataType + '?</h3>');
+
+    $toggleButton.click(function() {
+      $toggleButton.fadeOut();
+      $list.last().slideDown();
+    });
+
+    // append toggle button to second to last statute form
+    $list.last().prev().append($toggleButton).append('<br clear="all"></br>');
+  }
+}
+
 // setup
 $(document).ready(function() {
 
+  // apply input mask to date fields
   $.extend($.inputmask.defaults.definitions, {
     'y': {
       'validator': '[012]\\d\\d\\d',
@@ -188,24 +209,15 @@ $(document).ready(function() {
   $('#id_rightsbasis').change(revealSelectedBasis);
   revealSelectedBasis();
 
-  // if a statute has already been made, hide the blank form to create one
+  // if a statute or grant has already been made, hide the blank form to create one
   // and offer a button to reveal it
-  if ($('.statute_fieldset').length > 1) {
-    // hide last statute form
-    $('.statute_fieldset').last().hide();
+  appendRevealButton($('.statute_fieldset'), 'statute');
+  appendRevealButton($('.grant-fieldset'), 'grant');
 
-    // make toggle button
-    var $toggleButton = $('<h3 class="btn" style="float:right">Create new statute?</h3>');
+  // use JQuery for this as pure CSS selector isn't IE safe
+  $(".grant-fieldset:not(:first)").css('margin-top', '4em');
 
-    $toggleButton.click(function() {
-      $toggleButton.fadeOut();
-      $('.statute_fieldset').last().slideDown();
-    });
-
-    // append toggle button to second to last statute form
-    $('.statute_fieldset').last().prev().append($toggleButton).append('<br clear="all"></br>');
-  }
-
+  // establish rightsholder autocomplete
   if ($('#id_rightsholder').length > 0) {
     // lookup rightsholder
     $.get('lookup/rightsholder/' + $('#id_rightsholder').val(), function(data) {

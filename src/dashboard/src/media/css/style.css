@@ -653,7 +653,7 @@ textarea.command {
   margin-top: 4em;
 }
 
-.statute_fieldset:nth-child(odd) {
+.statute_fieldset:nth-child(odd), .grant-fieldset:nth-child(odd) {
   background: #ffe;
 }
 
