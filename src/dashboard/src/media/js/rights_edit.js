@@ -157,9 +157,9 @@ function revealSelectedBasis() {
   $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsbasis']")
     .text(basis + ' rights Basis');
   $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsapplicablestartdate']")
-    .text(basis + ' rights applicable start date');
+    .text(basis + ' rights start date');
   $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsapplicableenddate']")
-    .text(basis + ' rights applicable end date');
+    .text(basis + ' rights end date');
 
   // hide extra basis field for donor and policy basis
   if (basis == 'Donor' || basis == 'Policy') {
