@@ -309,8 +309,8 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             new_content_type_created = 'license'
 
         statuteFormset = StatuteFormSet(request.POST, instance=createdRights)
-        createdStatute = statuteFormset.save()
-        if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatute) == 1:
+        createdStatuteSet = statuteFormset.save()
+        if request.POST.get('statute_previous_pk', '') == 'None' and len(createdStatuteSet) == 1:
             new_content_type_created = 'statute'
 
         #restrictionCreated = False
@@ -319,9 +319,13 @@ def rights_edit(request, uuid, id=None, section='ingest'):
             statuteCreated = False
 
             # handle documentation identifier creation for a parent that's a blank statute
-            if (request.POST.get('statute_documentation_identifier_type_None', '') != '' or request.POST.get('statute_documentation_identifier_value_None', '') != '' or request.POST.get('statute_documentation_identifier_role_None', '') != '') and not form.instance.pk:
-                statuteCreated = models.RightsStatementStatuteInformation(rightsstatement=createdRights)
-                statuteCreated.save()
+            if (request.POST.get('statute_documentation_identifier_type_None', '') != '' or request.POST.get('statute_documentation_identifier_value_None', '') != '' or request.POST.get('statute_documentation_identifier_role_None', '') != ''):
+                if form.instance.pk:
+                    statuteCreated = form.instance
+                else:
+                    statuteCreated = models.RightsStatementStatuteInformation(rightsstatement=createdRights)
+                    statuteCreated.save()
+
                 statuteDocIdentifier = models.RightsStatementStatuteDocumentationIdentifier(rightsstatementstatute=statuteCreated)
                 statuteDocIdentifier.statutedocumentationidentifiertype = request.POST.get('statute_documentation_identifier_type_None', '')
                 statuteDocIdentifier.statutedocumentationidentifiervalue = request.POST.get('statute_documentation_identifier_value_None', '')
