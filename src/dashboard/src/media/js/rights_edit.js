@@ -129,6 +129,18 @@ function setUpRepeatingField(idPrefix, parentId, description, schema, url, noCre
   }
 }
 
+// logic to hide forms to create new data if data already exists:
+// if this is *not* called multiple data items can be created
+function hideNewFormsWhenDataExists() {
+  // hide "new" forms for any instances where data exists
+  $('.repeating-ajax-data-fieldset').each(function() {
+    var $fieldset = $(this);
+    if ($fieldset.children('.repeating-data').children().length) {
+      $fieldset.children('.repeating-ajax-data-row').hide();
+    }
+  });
+}
+
 // logic to show appropriate subform
 function revealSelectedBasis() {
   var basis = $('#id_rightsbasis').val()
