@@ -68,7 +68,7 @@
 
         {% include "_form.html" %}
 
-        <div id='copyright_formset'>
+        <div id='copyright_formset' class='non-repeating-formset'>
           {{ copyrightFormset.management_form }}
           {{ copyrightFormset.non_form_errors.as_ul }}
 
@@ -174,7 +174,7 @@
         {% endfor %}
         </div>
 
-        <div id='license_formset'>
+        <div id='license_formset' class='non-repeating-formset'>
           {{ licenseFormset.management_form }}
           {{ licenseFormset.non_form_errors.as_ul }}
 
@@ -224,7 +224,7 @@
           {% endfor %}
         </div>
 
-        <div id='other_formset'>
+        <div id='other_formset' class='non-repeating-formset'>
           {{ otherFormset.management_form }}
           {{ otherFormset.non_form_errors.as_ul }}
 

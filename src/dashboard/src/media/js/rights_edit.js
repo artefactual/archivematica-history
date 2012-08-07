@@ -203,7 +203,7 @@ $(document).ready(function() {
     });
 
     // append toggle button to second to last statute form
-    $('.statute_fieldset').last().prev().append($toggleButton);
+    $('.statute_fieldset').last().prev().append($toggleButton).append('<br clear="all"></br>');
   }
 
   if ($('#id_rightsholder').length > 0) {
