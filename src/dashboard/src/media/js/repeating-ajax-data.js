@@ -131,6 +131,10 @@ var RepeatingDataView = Backbone.View.extend({
       this.noCreation = this.options.noCreation;
     }
 
+    if (this.options.canDelete != undefined) {
+      this.canDelete = this.options.canDelete;
+    }
+
     this.waitingForInput = false;
   },
 
@@ -241,7 +245,9 @@ var RepeatingDataView = Backbone.View.extend({
               )
               , fieldEl = field.render().el;
 
-            self.appendDelHandlerToRecord(fieldEl, fieldData.id);
+            if (self.canDelete) {
+              self.appendDelHandlerToRecord(fieldEl, fieldData.id);
+            }
 
             $(self.el).append(fieldEl);
           }
