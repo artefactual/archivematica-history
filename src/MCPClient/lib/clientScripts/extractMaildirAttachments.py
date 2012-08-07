@@ -26,6 +26,7 @@ import mailbox
 import sys
 import os
 import uuid
+import traceback
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 from externals.extractMaildirAttachments import parse
 from fileOperations import addFileToTransfer
@@ -77,11 +78,18 @@ path = %s
    
 if __name__ == '__main__':
     #http://www.doughellmann.com/PyMOTW/mailbox/
+    global errorCounter
+    errorCounter = 0
     transferDir = sys.argv[1]
     transferUUID =  sys.argv[2]
     date =  sys.argv[3]
     maildir = transferDir + "objects/Maildir/" 
     outXML = transferDir + "logs/attachmentExtraction.xml"
+    mirrorDir = os.path.join(transferDir, "objects/attachments")
+    try:
+        os.makedirs(mirrorDir)
+    except:
+        pass
     import lxml.etree as etree
     #print "Extracting attachments from: " + maildir
     root = etree.Element("ArchivematicaMaildirAttachmentExtractionRecord")
@@ -93,39 +101,56 @@ if __name__ == '__main__':
         directory = etree.SubElement(root, "subDir")
         directory.set("dir", maildirsub2)
         for item in md.iterkeys():
-            fil = md.get_file(item)
-            out = parse(fil)
-            subDir = md.get_message(item).get_subdir()
-            sourceFilePath = os.path.join(maildir, maildirsub2, subDir, item).replace(transferDir, "%transferDirectory%", 1)
-            sourceFileUUID = getFileUUIDofSourceFile(transferUUID, sourceFilePath)
-            setSourceFileToBeExcludedFromDIP(sourceFileUUID)
-            if len(out['attachments']):
-                msg = etree.SubElement(directory, "msg")
-                etree.SubElement(msg, "Message-ID").text = out['msgobj']['Message-ID'][1:-1]
-                etree.SubElement(msg, "Extracted-from").text = item
-                etree.SubElement(msg, "Subject").text = out["subject"] 
-                etree.SubElement(msg, "Date").text = out['msgobj']['date']
-                etree.SubElement(msg, "To").text = out["to"]
-                etree.SubElement(msg, "From").text = out["from"]
-                for i in range(len(out['attachments'])):
-                    attachment = out['attachments'][i]
-                    #attachment = StringIO(file_data) TODO LOG TO FILE
-                    attch = etree.SubElement(msg, "attachment")
-                    attachment.name = attachment.name[1:-1]
-                    etree.SubElement(attch, "name").text = attachment.name
-                    etree.SubElement(attch, "content_type").text = attachment.content_type
-                    etree.SubElement(attch, "size").text = str(attachment.size)
-                    #print attachment.create_date
-                    # Dates don't appear to be working. Disabling for the moment - Todo
-                    #etree.SubElement(attch, "create_date").text = attachment.create_date
-                    #etree.SubElement(attch, "mod_date").text = attachment.mod_date
-                    #etree.SubElement(attch, "read_date").text = attachment.read_date
-                    
-                    filePath = os.path.join(transferDir, "objects/attachments", maildirsub2, subDir, "[%s][%s]%s" % (item, out["subject"], attachment.name))
-                    writeFile(filePath, \
-                             attachment)
-                    eventDetail="Unpacked from: {%s}%s" % (sourceFileUUID, sourceFilePath) 
-                    addFile(filePath, transferDir, transferUUID, date, eventDetail=eventDetail)
+            try:
+                fil = md.get_file(item)
+                out = parse(fil)
+                subDir = md.get_message(item).get_subdir()
+                sourceFilePath = os.path.join(maildir, maildirsub2, subDir, item).replace(transferDir, "%transferDirectory%", 1)
+                sourceFileUUID = getFileUUIDofSourceFile(transferUUID, sourceFilePath)
+                setSourceFileToBeExcludedFromDIP(sourceFileUUID)
+                if len(out['attachments']):
+                    msg = etree.SubElement(directory, "msg")
+                    etree.SubElement(msg, "Message-ID").text = out['msgobj']['Message-ID'][1:-1]
+                    etree.SubElement(msg, "Extracted-from").text = item
+                    etree.SubElement(msg, "Subject").text = out["subject"] 
+                    etree.SubElement(msg, "Date").text = out['msgobj']['date']
+                    etree.SubElement(msg, "To").text = out["to"]
+                    etree.SubElement(msg, "From").text = out["from"]
+                    for i in range(len(out['attachments'])):
+                        try:
+                            attachment = out['attachments'][i]
+                            #attachment = StringIO(file_data) TODO LOG TO FILE
+                            attch = etree.SubElement(msg, "attachment")
+                            attachment.name = attachment.name[1:-1]
+                            etree.SubElement(attch, "name").text = attachment.name
+                            etree.SubElement(attch, "content_type").text = attachment.content_type
+                            etree.SubElement(attch, "size").text = str(attachment.size)
+                            #print attachment.create_date
+                            # Dates don't appear to be working. Disabling for the moment - Todo
+                            #etree.SubElement(attch, "create_date").text = attachment.create_date
+                            #etree.SubElement(attch, "mod_date").text = attachment.mod_date
+                            #etree.SubElement(attch, "read_date").text = attachment.read_date
+                            
+                            filePath = os.path.join(transferDir, "objects/attachments", maildirsub2, subDir, "[%s][%s]%s" % (item, out["subject"], attachment.name))
+                            writeFile(filePath, \
+                                     attachment)
+                            eventDetail="Unpacked from: {%s}%s" % (sourceFileUUID, sourceFilePath) 
+                            addFile(filePath, transferDir, transferUUID, date, eventDetail=eventDetail)
+                        except Exception as inst:
+                            traceback.print_exc(file=sys.stderr)
+                            print >>sys.stderr, type(inst)     # the exception instance
+                            print >>sys.stderr, inst.args
+                            print >>sys.stderr, etree.tostring(msg) 
+                            print >>sys.stderr, "attachment:", attachment
+                            print >>sys.stderr
+                            errorCounter += 1
+            except Exception as inst:
+                traceback.print_exc(file=sys.stderr)
+                print >>sys.stderr, type(inst)     # the exception instance
+                print >>sys.stderr, inst.args
+                print >>sys.stderr
+                errorCounter += 1
+                        
         mirrorDir = os.path.join(transferDir, "objects/attachments", maildirsub2)
         try:
             os.makedirs(mirrorDir)
@@ -135,5 +160,6 @@ if __name__ == '__main__':
         addKeyFileToNormalizeMaildirOffOf(os.path.join(maildir, maildirsub2).replace(transferDir, "%transferDirectory%", 1), mirrorDir, transferDir, transferUUID, date, eventDetail=eventDetail)
     tree = etree.ElementTree(root)
     tree.write(outXML, pretty_print=True, xml_declaration=True)
+    exit(errorCounter)
 
                     
