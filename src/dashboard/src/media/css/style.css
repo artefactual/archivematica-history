@@ -679,3 +679,13 @@ textarea.command {
 .repeating-ajax-data-row > textarea, .repeating-ajax-data-field > textarea {
   width: 625px;
 }
+
+.rights-grant-restrictions > div > .repeating-ajax-data-row {
+  padding-left: 0em;
+  padding-bottom: 0em;
+}
+
+.rights-grant-restrictions > .repeating-ajax-data-row {
+  padding-left: 0em;
+  padding-bottom: 0em;
+}

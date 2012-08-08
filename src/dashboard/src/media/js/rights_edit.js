@@ -242,6 +242,11 @@ $(document).ready(function() {
   // use JQuery for this as pure CSS selector isn't IE safe
   $(".grant-fieldset:not(:first)").css('margin-top', '4em');
 
+  // reposition restriction field to inside a modelform
+  $('.rights-grant-restrictions').each(function() {
+    $($(this).parent().children().first().next().next()).after($(this));
+  });
+
   // establish rightsholder autocomplete
   if ($('#id_rightsholder').length > 0) {
     // lookup rightsholder
