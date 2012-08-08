@@ -665,14 +665,6 @@ textarea.command {
   margin-bottom: 1em;
 }
 
-.repeating-ajax-data-fieldset {
-  padding-top: 1em;
-}
-
 .repeating-ajax-data-row textarea {
   width: 550px;
-}
-
-.grant-fieldset > .repeating-ajax-data-fieldset {
-  padding-top: 0em;
 }
