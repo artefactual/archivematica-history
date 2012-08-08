@@ -663,8 +663,14 @@ textarea.command {
 
 .repeating-ajax-data-row {
   margin-bottom: 1em;
+  padding-left: .5em;
+  padding-bottom: .5em;
 }
 
 .repeating-ajax-data-row textarea {
   width: 550px;
+}
+
+.repeating-data-multifield {
+  background-color: #eee;
 }
