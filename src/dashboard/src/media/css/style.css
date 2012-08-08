@@ -657,14 +657,11 @@ textarea.command {
   background: #ffe;
 }
 
-.repeating-data, .repeating-data .btn {
-  margin-bottom: 1em;
-}
-
 .repeating-ajax-data-row {
   margin-bottom: 1em;
   padding-left: .5em;
   padding-bottom: .5em;
+  padding-top: .5em;
 }
 
 .repeating-ajax-data-row textarea {

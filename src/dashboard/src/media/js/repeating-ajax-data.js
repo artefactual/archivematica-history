@@ -42,7 +42,7 @@ var RepeatingDataRecordView = Backbone.View.extend({
         type = type;
       }
 
-      var $container = $('<div></div>')
+      var $container = $('<div class="repeating-ajax-data-field"></div>')
         , $input = $('<' + type + '></' + type + '>');
 
       if (type == 'select') {
@@ -57,7 +57,7 @@ var RepeatingDataRecordView = Backbone.View.extend({
       $input.val(this.definition[field].value);
 
       if (typeof label != 'undefined') {
-        this.el.append('<b>' + label + '</b><br/>');
+        this.el.append('<label>' + label + '</label>');
       }
 
       if (this.id > 0) {
