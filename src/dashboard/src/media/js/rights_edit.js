@@ -170,19 +170,29 @@ function revealSelectedBasis() {
     $('#id_rightsstatementotherrightsinformation_set-0-otherrightsbasis').parent().parent().hide();
   } else {
     $('#id_rightsstatementotherrightsinformation_set-0-otherrightsbasis').parent().parent().show();
-  }
-
-  if (basis == 'Donor') {
-    basis = 'Donor agreement';
+    $('#other_rights_notes_label').text('Note');
   }
 
   // relabel certain form fields to be specific to selected basis
-  //$("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsbasis']")
-  //  .text(basis + ' rights Basis');
+  $('#other_documentation_identifier_label').text(basis + ' documentation identifier');
+
+  if (basis == 'Donor') {
+    basis = 'Donor agreement';
+    $('#other_rights_notes_label').text(basis + ' note');
+  } else {
+    if (basis == 'Policy') {
+      $('#other_rights_notes_label').text(basis + ' note');
+    } else {
+      $('#other_rights_notes_label').text('Note');
+    }
+    basis = basis + ' rights';
+  }
+
+  // relabel certain form fields to be specific to selected basis
   $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsapplicablestartdate']")
-    .text(basis + ' rights start date');
+    .text(basis + ' start date');
   $("label[for='id_rightsstatementotherrightsinformation_set-0-otherrightsapplicableenddate']")
-    .text(basis + ' rights end date');
+    .text(basis + ' end date');
 }
 
 // hide the last fieldset, to reduce visual clutter, and add a button to reveal it
