@@ -671,3 +671,11 @@ textarea.command {
 .repeating-data-multifield {
   background-color: #eee;
 }
+
+.repeating-ajax-data-row > div > input {
+  width: 625px;
+}
+
+.repeating-ajax-data-row > textarea, .repeating-ajax-data-field > textarea {
+  width: 625px;
+}
