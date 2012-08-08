@@ -174,7 +174,7 @@ function revealSelectedBasis() {
   }
 
   // relabel certain form fields to be specific to selected basis
-  $('#other_documentation_identifier_label').text(basis + ' documentation identifier');
+  $('#other_documentation_identifier_label').text(basis + ' documentation identifier:');
 
   if (basis == 'Donor') {
     basis = 'Donor agreement';
