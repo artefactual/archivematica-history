@@ -114,7 +114,7 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
         dmdSecData = xmltodict.parse(xml)
 
     # get amdSec IDs for each filepath
-    for item in root.findall("{http://www.loc.gov/METS/}fileSec/{http://www.loc.gov/METS/}fileGrp/{http://www.loc.gov/METS/}file"):
+    for item in root.findall("{http://www.loc.gov/METS/}fileSec/{http://www.loc.gov/METS/}fileGrp[@USE='original']/{http://www.loc.gov/METS/}file"):
         for item2 in item.findall("{http://www.loc.gov/METS/}FLocat"):
             filePath = item2.attrib['{http://www.w3.org/1999/xlink}href']
             filePathAmdIDs[filePath] = item.attrib['ADMID']
