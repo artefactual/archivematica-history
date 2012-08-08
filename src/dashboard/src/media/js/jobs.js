@@ -501,8 +501,10 @@ var MicroserviceGroupView = Backbone.View.extend({
           }
 
           // render subjobs, if any
+          // NOTE: currently disabled due to browser performance issues until
+          // we can implement paging
           if (
-            subjobs[job.attributes.uuid]
+            false && subjobs[job.attributes.uuid]
           ) {
             var subJobDiv = $('<div class="subjob"></div>');
             subJobDiv.hide();
