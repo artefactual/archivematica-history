@@ -25,13 +25,9 @@
 
     <form class="form-stacked" method="post" action="{% url main.views.administration_contentdm_dips %}">
 
-    <div class="preview-help-text">
-
     <h3>ContentDM DIP upload</h3>
 
-    <p class='preview'>Archivematica provides a micro-service to upload generated DIPs to <a href="http://www.qubit-toolkit.org">Qubit Toolkit</a>, only compatible with release 1.2 or newer. In the future we will extend this feature to other access systems. <a href='#'>(read more)</a></p>
-
-    <div class='content' style='margin-bottom: 20px'>
+    <div style='margin-bottom: 20px'>
 
       <p>The arguments below are passed to a Python script called upload-qubit.py. Please note that some arguments are mandatory:</p>
 
@@ -54,7 +50,6 @@
 
       <p><strong>Example configuration:</strong></p>
       <pre>{"%ContentdmServer%": "142.103.160.77"}</pre>
-    </div>
     </div>
 
     {% if request.method == 'POST' %}
