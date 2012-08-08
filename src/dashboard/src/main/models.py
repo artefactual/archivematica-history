@@ -317,7 +317,7 @@ class RightsStatementStatuteDocumentationIdentifier(models.Model):
 class RightsStatementOtherRightsInformation(models.Model):
     id = models.AutoField(primary_key=True, db_column='pk', editable=False)
     rightsstatement = models.ForeignKey(RightsStatement, db_column='fkRightsStatement')
-    otherrightsbasis = models.TextField(db_column='otherRightsBasis', verbose_name='Other Rights Basis', blank=True)
+    otherrightsbasis = models.TextField(db_column='otherRightsBasis', verbose_name='Other rights basis', blank=True)
     otherrightsapplicablestartdate = models.TextField(db_column='otherRightsApplicableStartDate', blank=True, verbose_name='Other rights start date', help_text='Use ISO 8061 (YYYY-MM-DD)')
     otherrightsapplicableenddate = models.TextField(db_column='otherRightsApplicableEndDate', blank=True, verbose_name='Other rights end date', help_text='Use ISO 8061 (YYYY-MM-DD)')
     otherrightsenddateopen = models.BooleanField(db_column='otherRightsApplicableEndDateOpen', verbose_name='Open End Date', help_text='Indicate end date is open')
