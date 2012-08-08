@@ -185,7 +185,6 @@ function revealSelectedBasis() {
     } else {
       $('#other_rights_notes_label').text('Note');
     }
-    basis = basis + ' rights';
   }
 
   // relabel certain form fields to be specific to selected basis
@@ -238,7 +237,7 @@ $(document).ready(function() {
   // if a statute or grant has already been made, hide the blank form to create one
   // and offer a button to reveal it
   appendRevealButton($('.statute-fieldset'), 'statute');
-  appendRevealButton($('.grant-fieldset'), 'grant');
+  appendRevealButton($('.grant-fieldset'), 'grant/restriction');
 
   // use JQuery for this as pure CSS selector isn't IE safe
   $(".grant-fieldset:not(:first)").css('margin-top', '4em');
