@@ -1041,6 +1041,16 @@ def archival_storage(request, path=None):
     else:
         return archival_storage_sip_display(request, path)
 
+def archival_storage_indexed_count(index):
+    aip_indexed_file_count = 0
+    try:
+        conn = pyes.ES('127.0.0.1:9200')
+        count_data = conn.count(indices=index)
+        aip_indexed_file_count = count_data.count
+    except:
+        pass
+    return aip_indexed_file_count
+
 def archival_storage_sip_display(request, path=None):
     form = forms.StorageSearchForm()
 
@@ -1052,13 +1062,7 @@ def archival_storage_sip_display(request, path=None):
     total_size = 0
 
     # get ElasticSearch stats
-    aip_indexed_file_count = 0
-    try:
-        conn = pyes.ES('127.0.0.1:9200')
-        count_data = conn.count(indices='aips')
-        aip_indexed_file_count = count_data.count
-    except:
-        pass
+    aip_indexed_file_count = archival_storage_indexed_count('aips')
 
     # get AIPs from DB
     aips = models.AIP.objects.all()
@@ -1198,14 +1202,15 @@ def administration(request):
 
 def administration_search(request):
     message = request.GET.get('message', '')
+    aip_files_indexed = archival_storage_indexed_count('aips')
     return render(request, 'main/administration/search.html', locals())
 
-def remove_file_context(request):
+def administration_search_flush_aips_context(request):
     prompt = 'Flush AIP search index?'
     cancel_url = reverse("main.views.administration_search")
     return RequestContext(request, {'action': 'Flush', 'prompt': prompt, 'cancel_url': cancel_url})
 
-@confirm_required('simple_confirm.html', remove_file_context)
+@confirm_required('simple_confirm.html', administration_search_flush_aips_context)
 @user_passes_test(lambda u: u.is_superuser, login_url='/forbidden/')
 def administration_search_flush_aips(request):
     conn = pyes.ES('127.0.0.1:9200')
