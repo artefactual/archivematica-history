@@ -155,10 +155,10 @@ def copy_transfer_component(request):
 
                 # Create directory before it is used, otherwise shutil.copy()
                 # would that location to store a file
-                os.mkdir(transfer_dir)
+                if not os.path.isdir(transfer_dir):
+                    os.mkdir(transfer_dir)
 
                 paths_copied = 0
-                #return HttpResponse(transfer_dir)
 
                 # cycle through each path copying files/dirs inside it to transfer dir
                 for entry in os.listdir(path):
