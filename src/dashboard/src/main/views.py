@@ -27,6 +27,8 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpRespo
 from django.utils import simplejson
 from django.utils.functional import wraps
 from django.views.static import serve
+from django.utils.functional import wraps
+from django.template import RequestContext
 from views_NormalizationReport import getNormalizationReportQuery
 from contrib.mcp.client import MCPClient
 from contrib import utils
@@ -45,6 +47,8 @@ import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import pyes
 import httplib
+from django.contrib.auth.decorators import user_passes_test
+import urllib
 
 AIPSTOREPATH = '/var/archivematica/sharedDirectory/www/AIPsStore'
 
@@ -72,6 +76,20 @@ def dictfetchall(cursor):
         dict(zip([col[0] for col in desc], row))
         for row in cursor.fetchall()
     ]
+
+# Requires confirmation from a prompt page before executing a request
+# (see http://djangosnippets.org/snippets/1922/)
+def confirm_required(template_name, context_creator, key='__confirm__'):
+    def decorator(func):
+        def inner(request, *args, **kwargs):
+            if request.POST.has_key(key):
+                return func(request, *args, **kwargs)
+            else:
+                context = context_creator and context_creator(request, *args, **kwargs) \
+                    or RequestContext(request)
+                return render_to_response(template_name, context)
+        return wraps(func)(inner)
+    return decorator
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Home
@@ -965,7 +983,11 @@ def archival_storage(request, path=None):
 
         # do fulltext search
         q = pyes.StringQuery(query)
-        results = conn.search_raw(query=q, indices='aips', type='aip', start=start - 1, size=items_per_page)
+
+        try:
+            results = conn.search_raw(query=q, indices='aips', type='aip', start=start - 1, size=items_per_page)
+        except:
+            return HttpResponse('Error accessing index.')
 
         # augment result data
         modifiedResults = []
@@ -1164,6 +1186,36 @@ def access_delete(request, id):
 
 def administration(request):
     return HttpResponseRedirect(reverse('main.views.administration_dip'))
+
+def administration_search(request):
+    message = request.GET.get('message', '')
+    return render(request, 'main/administration/search.html', locals())
+
+def remove_file_context(request):
+    prompt = 'Flush AIP search index?'
+    cancel_url = reverse("main.views.administration_search")
+    return RequestContext(request, {'action': 'Flush', 'prompt': prompt, 'cancel_url': cancel_url})
+
+@confirm_required('simple_confirm.html', remove_file_context)
+@user_passes_test(lambda u: u.is_superuser, login_url='/forbidden/')
+def administration_search_flush_aips(request):
+    conn = pyes.ES('127.0.0.1:9200')
+    index = 'aips'
+
+    try:
+        conn.delete_index(index)
+        message = 'AIP search index flushed.'
+        try:
+            conn.create_index(index)
+        except pyes.exceptions.IndexAlreadyExistsException:
+            message = 'Error recreating AIP search index.'
+
+    except:
+        message = 'Error flushing AIP search index.'
+        pass
+
+    params = urllib.urlencode({'message': message})
+    return HttpResponseRedirect(reverse("main.views.administration_search") + "?%s" % params)
 
 def administration_dip(request):
     upload_setting = models.StandardTaskConfig.objects.get(execute="upload-qubit_v0.0")
