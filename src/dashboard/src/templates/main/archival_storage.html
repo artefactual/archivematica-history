@@ -52,7 +52,12 @@
   {% if sips %}
     <h1>
       Browse archival storage<br/>
-      <small>Total size {{ total_size }} MB</small>
+      <small>
+        Total size {{ total_size }} MB
+      {% if aip_indexed_file_count %}
+        ({{ aip_indexed_file_count }} files indexed for search)
+      {% endif %}
+      </small>
     </h1>
 
     <table>
