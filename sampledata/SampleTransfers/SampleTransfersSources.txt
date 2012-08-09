@@ -4,9 +4,6 @@ Created by Artefactual Systems staff member
 DSpaceExport 
 University of British Columbia Library
 
-Email_test
-Created by Artefactual Systems staff member
-
 Images
 -799px-Euroleague-LE Roma vs Toulouse IC-27.bmp from http://en.wikipedia.org/wiki/File:Euroleague_-_LE_Roma_vs_Toulouse_IC-27.jpg (converted from jpeg)
 -003.JPG created by Artefactual Systems staff member
@@ -19,7 +16,6 @@ Images
 -oakland03.jp2 http://www.microimages.com/gallery/jp2/
 -Vector.NET-Free-Vector-Art-Pack-28-Freedom-Flight.eps http://vector4free.com/vectors/id/413
 -WFPC01.GIF http://www.fileformat.info/format/gif/sample/index.htm
-/metadata/submissionDocumentation/Accession Form Samples.pdf http://www.loc.gov/rr/print/tp/Accession%20Form%20Samples.pdf
 
 Multimedia
 -0239.mpg http://open-video.org/details.php?videoid=4639
