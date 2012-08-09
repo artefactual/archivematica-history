@@ -264,22 +264,22 @@ def getrightsGranted(pk, parent):
                 sharedVariablesAcrossModules.globalErrorCount +=1
             etree.SubElement(rightsGranted, "restriction").text = restriction
         
-        if restriction.lower() in ["allow"]:
-            termOfGrant = etree.SubElement(rightsGranted, "termOfGrant")
-        elif restriction.lower() in ["disallow", "conditional"]:
-            termOfGrant = etree.SubElement(rightsGranted, "termOfRestriction")
-        else:
-            print >>sys.stderr, "The value of element restriction must be: 'Allow', 'Dissallow', or 'Conditional'"
-            sharedVariablesAcrossModules.globalErrorCount +=1
-            continue
-        etree.SubElement(termOfGrant, "startDate").text = formatDate(row[2])
-        if not row[2]:
-            sharedVariablesAcrossModules.globalErrorCount +=1
-            print >>sys.stderr, "The value '' of element 'startDate' is not valid. "
-        if row[4]:
-            etree.SubElement(termOfGrant, "endDate").text = "OPEN"
-        elif row[3]:
-            etree.SubElement(termOfGrant, "endDate").text = formatDate(row[3])
+        if row2 or row3 or row4:
+            if restriction.lower() in ["allow"]:
+                termOfGrant = etree.SubElement(rightsGranted, "termOfGrant")
+            elif restriction.lower() in ["disallow", "conditional"]:
+                termOfGrant = etree.SubElement(rightsGranted, "termOfRestriction")
+            else:
+                print >>sys.stderr, "The value of element restriction must be: 'Allow', 'Dissallow', or 'Conditional'"
+                sharedVariablesAcrossModules.globalErrorCount +=1
+                continue
+        
+            if row[2]:
+                etree.SubElement(termOfGrant, "startDate").text = formatDate(row[2])
+            if row[4]:
+                etree.SubElement(termOfGrant, "endDate").text = "OPEN"
+            elif row[3]:
+                etree.SubElement(termOfGrant, "endDate").text = formatDate(row[3])
         
         #4.1.6.4 rightsGrantedNote (O, R)
         sql = "SELECT rightsGrantedNote FROM RightsStatementRightsGrantedNote WHERE fkRightsStatementRightsGranted = %d;" % (row[0])
