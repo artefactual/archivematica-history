@@ -48,7 +48,7 @@ urlpatterns = patterns('main.views',
     (r'ingest/preview/aip/(?P<jobuuid>' + UUID_REGEX + ')/$', 'ingest_browse_aip'),
     (r'ingest/preview/normalization/(?P<jobuuid>' + UUID_REGEX + ')/$', 'ingest_browse_normalization'),
 
-    # Jobs and taks (is part of ingest)
+    # Jobs and tasks (is part of ingest)
     (r'jobs/(?P<uuid>' + UUID_REGEX + ')/explore/$', 'jobs_explore'),
     (r'jobs/(?P<uuid>' + UUID_REGEX + ')/list-objects/$', 'jobs_list_objects'),
     (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
@@ -83,6 +83,8 @@ urlpatterns = patterns('main.views',
     (r'administration/sources/delete/json/(?P<id>\d+)/$', 'administration_sources_delete_json'),
     (r'administration/processing/$', 'administration_processing'),
     (r'administration/sources/json/$', 'administration_sources_json'),
+    (r'administration/search/$', 'administration_search'),
+    (r'administration/search/flush/aips/$', 'administration_search_flush_aips'),
 
     # JSON feeds
     (r'status/$', 'status'),
