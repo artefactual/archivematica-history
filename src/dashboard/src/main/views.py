@@ -1051,6 +1051,15 @@ def archival_storage_sip_display(request, path=None):
 
     total_size = 0
 
+    # get ElasticSearch stats
+    aip_indexed_file_count = 0
+    try:
+        conn = pyes.ES('127.0.0.1:9200')
+        count_data = conn.count(indices='aips')
+        aip_indexed_file_count = count_data.count
+    except:
+        pass
+
     # get AIPs from DB
     aips = models.AIP.objects.all()
 
