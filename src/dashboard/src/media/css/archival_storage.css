@@ -18,7 +18,7 @@ td.link-sip > a {
   display: block;
 }
 
-td.uuid {
+td.uuid, .uuid {
   font-family: "Courier New", Courier, "Lucida Console", monospace;
 }
 
