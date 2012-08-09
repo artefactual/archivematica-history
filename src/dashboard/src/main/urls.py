@@ -83,8 +83,10 @@ urlpatterns = patterns('main.views',
     (r'administration/sources/delete/json/(?P<id>\d+)/$', 'administration_sources_delete_json'),
     (r'administration/processing/$', 'administration_processing'),
     (r'administration/sources/json/$', 'administration_sources_json'),
-    (r'administration/search/$', 'administration_search'),
-    (r'administration/search/flush/aips/$', 'administration_search_flush_aips'),
+
+    # Disabled until further development can be done
+    #(r'administration/search/$', 'administration_search'),
+    #(r'administration/search/flush/aips/$', 'administration_search_flush_aips'),
 
     # JSON feeds
     (r'status/$', 'status'),

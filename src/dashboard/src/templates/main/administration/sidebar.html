@@ -5,7 +5,6 @@
   {% url main.views.administration_contentdm_dips as url_contentdm_dips %}
   {% url main.views.administration_sources as url_sources %}
   {% url main.views.administration_processing as url_processing %}
-  {% url main.views.administration_search as url_search %}
   {% url accounts.views.list as url_user_list %}
 
   <ul>
@@ -17,8 +16,6 @@
     <li class="{% active request url_sources %}"><a href="{{ url_sources }}">Transfer source directories</a></li>
 
     <li class="{% active request url_processing %}"><a href="{{ url_processing }}">Processing configuration</a></li>
-
-    <li class="{% active request url_search %}"><a href="{{ url_search }}">Search</a></li>
 
     {% if user.is_superuser %}
       <li class="{% active request url_user_list %}"><a href="{{ url_user_list }}">Users</a></li>
