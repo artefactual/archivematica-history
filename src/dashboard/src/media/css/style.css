@@ -3,7 +3,7 @@ body {
 }
 
 .topbar .brand {
-  background: transparent url(../../media/images/logo.r.png) no-repeat 50% 50%;
+  background: transparent url(../../media/images/logo_header.png) no-repeat 50% 50%;
   width: 229px;
   text-indent: -99999em;
 }
@@ -565,8 +565,8 @@ textarea.command {
 
 #login h1 {
 
-  background-image: url('../images/logo.png');
-  background-size: 239px 28px;
+  background-image: url('../images/logo_login.gif');
+  background-size: 239px 27px;
   background-position: top center;
   background-repeat: no-repeat;
   text-indent: -9999px;
