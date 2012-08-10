@@ -130,8 +130,6 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
                 # set up data for indexing
                 indexData = fileData
                 indexData['filePath'] = filePath
-                #indexData['METS']['dmdSec'] = normalize_dict_values(rename_dict_keys_with_child_dicts(dmdSecData))
-                #indexData['METS']['amdSec'] = normalize_dict_values(rename_dict_keys_with_child_dicts(xmltodict.parse(xml)))
                 indexData['METS']['dmdSec'] = rename_dict_keys_with_child_dicts(normalize_dict_values(dmdSecData))
                 indexData['METS']['amdSec'] = rename_dict_keys_with_child_dicts(normalize_dict_values(xmltodict.parse(xml)))
 
