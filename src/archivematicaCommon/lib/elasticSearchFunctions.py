@@ -130,8 +130,10 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
                 # set up data for indexing
                 indexData = fileData
                 indexData['filePath'] = filePath
-                indexData['METS']['dmdSec'] = dmdSecData
-                indexData['METS']['amdSec'] = xmltodict.parse(xml)
+                #indexData['METS']['dmdSec'] = normalize_dict_values(rename_dict_keys_with_child_dicts(dmdSecData))
+                #indexData['METS']['amdSec'] = normalize_dict_values(rename_dict_keys_with_child_dicts(xmltodict.parse(xml)))
+                indexData['METS']['dmdSec'] = rename_dict_keys_with_child_dicts(normalize_dict_values(dmdSecData))
+                indexData['METS']['amdSec'] = rename_dict_keys_with_child_dicts(normalize_dict_values(xmltodict.parse(xml)))
 
                 # index data
                 result = conn.index(indexData, index, type)
@@ -141,6 +143,52 @@ def index_mets_file_metadata(conn, uuid, metsFilePath, index, type):
     print 'Indexed AIP files and corresponding METS XML.'
 
     return filesIndexed
+
+# To avoid Elasticsearch schema collisions, if a dict value is itself a
+# dict then rename the dict key to differentiate it from similar instances
+# where the same key has a different value type.
+#
+def rename_dict_keys_with_child_dicts(data):
+    new = {}
+    for key in data:
+        if type(data[key]) is dict:
+            new[key + '_data'] = rename_dict_keys_with_child_dicts(data[key])
+        elif type(data[key]) is list:
+            new[key + '_list'] = rename_list_elements_if_they_are_dicts(data[key])
+        else:
+            new[key] = data[key]
+    return new
+
+def rename_list_elements_if_they_are_dicts(list):
+    for index, value in enumerate(list):
+        if type(value) is list:
+            list[index] = rename_list_elements_if_they_are_dicts(value)
+        elif type(value) is dict:
+            list[index] = rename_dict_keys_with_child_dicts(value)
+    return list
+
+# Because an XML document node may include one or more children, conversion
+# to a dict can result in the converted child being one of two types.
+# this causes problems in an Elasticsearch index as it expects consistant
+# types to be indexed.
+# The below function recurses a dict and if a dict's value is another dict,
+# it encases it in a list.
+#
+def normalize_dict_values(data):
+    for key in data:
+        if type(data[key]) is dict:
+            data[key] = [normalize_dict_values(data[key])]
+        elif type(data[key]) is list:
+            data[key] = normalize_list_dict_elements(data[key])
+    return data
+
+def normalize_list_dict_elements(list):
+    for index, value in enumerate(list):
+        if type(value) is list:
+            list[index] = normalize_list_dict_elements(value)
+        elif type(value) is dict:
+            list[index] =  normalize_dict_values(value)
+    return list
 
 def index_directory_files(conn, uuid, pathToTransfer, index, type):
     filesIndexed = 0
