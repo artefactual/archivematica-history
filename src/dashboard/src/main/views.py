@@ -1006,6 +1006,7 @@ def archival_storage(request, path=None):
 
             clone['filename'] = os.path.basename(clone['filePath'])
             clone['document_id'] = item['_id']
+            clone['document_id_no_hyphens'] = item['_id'].replace('-', '____')
 
             modifiedResults.append(clone)
 
@@ -1104,7 +1105,8 @@ def archival_storage_sip_display(request, path=None):
 
     return render(request, 'main/archival_storage.html', locals())
 
-def archival_storage_file_json(request, document_id):
+def archival_storage_file_json(request, document_id_modified):
+    document_id = document_id_modified.replace('____', '-')
     conn = httplib.HTTPConnection("127.0.0.1:9200")
     conn.request("GET", "/aips/aip/" + document_id)
     response = conn.getresponse()
