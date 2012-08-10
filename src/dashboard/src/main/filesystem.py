@@ -15,11 +15,18 @@ import databaseInterface
 import databaseFunctions
 from archivematicaCreateStructuredDirectory import createStructuredDirectory
 
+# for unciode sorting support
+import locale
+locale.setlocale(locale.LC_ALL, '')
+
 SHARED_DIRECTORY_ROOT = '/var/archivematica/sharedDirectory'
 ORIGINALS_DIR         = SHARED_DIRECTORY_ROOT + '/transferBackups/originals'
 ACTIVE_TRANSFER_DIR   = SHARED_DIRECTORY_ROOT + '/watchedDirectories/activeTransfers'
 STANDARD_TRANSFER_DIR = ACTIVE_TRANSFER_DIR + '/standardTransfer'
 COMPLETED_TRANSFERS_DIR = SHARED_DIRECTORY_ROOT + '/watchedDirectories/SIPCreation/completedTransfers'
+
+def sorted_directory_list(path):
+    return sorted(os.listdir(path), cmp=locale.strcoll)
 
 def directory_to_dict(path, directory={}, entry=False):
     # if starting traversal, set entry to directory root
@@ -33,7 +40,7 @@ def directory_to_dict(path, directory={}, entry=False):
     entry['children'] = []
 
     # define entries
-    entries = sorted(os.listdir(path))
+    entries = sorted_directory_list(path)
     for file in entries:
         new_entry = None
         if file[0] != '.':
@@ -60,7 +67,7 @@ def directory_children(request, basePath=False):
     entries     = []
     directories = []
 
-    for entry in os.listdir(path):
+    for entry in sorted_directory_list(path):
         if entry[0] != '.':
             entries.append(entry)
             entry_path = os.path.join(path, entry)
@@ -78,7 +85,7 @@ def directory_children(request, basePath=False):
     )
 
 def directory_contents(path, contents=[]):
-    entries = sorted(os.listdir(path))
+    entries = sorted_directory_list(path)
     for entry in entries:
         contents.append(os.path.join(path, entry))
         entry_path = os.path.join(path, entry)
@@ -163,7 +170,7 @@ def copy_transfer_component(request):
                 paths_copied = 0
 
                 # cycle through each path copying files/dirs inside it to transfer dir
-                for entry in os.listdir(path):
+                for entry in sorted_directory_list(path):
                     entry_path = os.path.join(path, entry)
                     if os.path.isdir(entry_path):
                         destination_dir = os.path.join(transfer_dir, entry)
