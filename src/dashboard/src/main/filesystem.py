@@ -33,7 +33,9 @@ def directory_to_dict(path, directory={}, entry=False):
     entry['children'] = []
 
     # define entries
-    for file in os.listdir(path):
+    entries = os.listdir(path)
+    entries.sort()
+    for file in entries:
         new_entry = None
         if file[0] != '.':
             new_entry = {}
@@ -77,7 +79,9 @@ def directory_children(request, basePath=False):
     )
 
 def directory_contents(path, contents=[]):
-    for entry in os.listdir(path):
+    entries = os.listdir(path)
+    entries.sort()
+    for entry in entries:
         contents.append(os.path.join(path, entry))
         entry_path = os.path.join(path, entry)
         if os.path.isdir(entry_path) and os.access(entry_path, os.R_OK):
