@@ -522,6 +522,11 @@ textarea.command {
   padding: 5px;
 }
 
+.modal-body > .backbone-file-explorer {
+  height: 300px;
+  overflow: scroll;
+}
+
 /*
  * Welcome
  */
