@@ -4,6 +4,12 @@
 #Author Ian Lewis
 #http://www.ianlewis.org/en/parsing-email-attachments-python
 
+
+# Modification
+# Author Joseph Perry
+# date Aug 10 2010
+# Using rfc6266 library
+
 from email.Header import decode_header
 import email
 from base64 import b64decode
