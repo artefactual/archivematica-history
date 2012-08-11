@@ -128,7 +128,7 @@ if __name__ == '__main__':
                                     continue
                                 #attachment = StringIO(file_data) TODO LOG TO FILE
                                 attch = etree.SubElement(msg, "attachment")
-                                attachment.name = attachment.name[1:-1]
+                                #attachment.name = attachment.name[1:-1]
                                 etree.SubElement(attch, "name").text = attachment.name
                                 etree.SubElement(attch, "content_type").text = attachment.content_type
                                 etree.SubElement(attch, "size").text = str(attachment.size)
