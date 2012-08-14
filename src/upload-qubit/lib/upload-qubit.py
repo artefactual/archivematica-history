@@ -192,7 +192,7 @@ def start(data):
     headers['Create-Parent'] = str(target['intermediate']).lower()
 
     # Build URL (expected sth like http://localhost/ica-atom/index.php)
-    data.url = "%s/sword/deposit/%s" % (data.url, target['target'])
+    data.url = "%s/;sword/deposit/%s" % (data.url, target['target'])
 
     # Auth and request!
     log("About to deposit to: %s" % data.url)
