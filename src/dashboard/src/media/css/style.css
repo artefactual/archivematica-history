@@ -284,9 +284,13 @@ li.user > a {
   text-decoration: none;
 }
 
-.task-dialog .stderror {
+.task-dialog .stdout .stderror {
   background-color: #ddd;
   font-family: "Courier New";
+}
+
+.stderror > pre {
+  background-color: #f2d8d8; 
 }
 
 #polling-notification {
