@@ -234,9 +234,8 @@ $(document).ready(function() {
   $('#id_rightsbasis').change(revealSelectedBasis);
   revealSelectedBasis();
 
-  // if a statute or grant has already been made, hide the blank form to create one
-  // and offer a button to reveal it
-  appendRevealButton($('.statute-fieldset'), 'statute');
+  // if a grant has already been made, hide the blank form to create one and
+  // offer a button to reveal it
   appendRevealButton($('.grant-fieldset'), 'grant/restriction');
 
   // use JQuery for this as pure CSS selector isn't IE safe

@@ -171,7 +171,7 @@ def rights_edit(request, uuid, id=None, section='ingest'):
 
         # determine how many empty forms should be shown for children
         extra_copyright_forms = max_notes - models.RightsStatementCopyright.objects.filter(rightsstatement=viewRights).count()
-        extra_statute_forms = 1
+        extra_statute_forms = max_notes - models.RightsStatementStatuteInformation.objects.filter(rightsstatement=viewRights).count()
         extra_license_forms = max_notes - models.RightsStatementLicense.objects.filter(rightsstatement=viewRights).count()
         extra_other_forms = max_notes - models.RightsStatementOtherRightsInformation.objects.filter(rightsstatement=viewRights).count()
     else:
