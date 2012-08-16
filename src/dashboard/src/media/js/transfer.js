@@ -168,7 +168,8 @@ $(function()
          if (choices)
           {
             var $select = $('<select />').append('<option>Actions</option>')
-              , numberOfChoices = Object.keys(choices).length;
+              , numberOfChoices = Object.keys(choices).length
+              , optionHtml;
 
             // use pop-up action selector for long choice lists
             if (numberOfChoices >= 10)
@@ -179,7 +180,10 @@ $(function()
 
             for (var code in choices)
             {
-              $select.append('<option value="' + code + '">- ' + choices[code] + '</option>');
+              optionHtml = (choices[code] == 'Create SIP(s) manually')
+                ? '<option value="' + code + '" disabled="disabled" style="color: #aaa">- ' + choices[code] + '</option>'
+                : '<option value="' + code + '">- ' + choices[code] + '</option>';
+              $select.append(optionHtml);
             }
 
             this.$('.job-detail-actions').append($select);
