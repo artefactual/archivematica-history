@@ -21,9 +21,7 @@
 # @subpackage archivematicaClientScript
 # @author Mike Cantelon <mike@artefactual.com>
 # @version svn: $Id$
-import sys
-import os
-import time
+import sys, os, time, ConfigParser
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import elasticSearchFunctions
@@ -31,9 +29,24 @@ import elasticSearchFunctions
 exitCode = 0
 
 if __name__ == '__main__':
-    pathToAIP = sys.argv[1]
-    uuid = sys.argv[2]
+    clientConfigFilePath = '/etc/archivematica/MCPClient/clientConfig.conf'
+    config = ConfigParser.SafeConfigParser()
+    config.read(clientConfigFilePath)
 
-    exitCode = elasticSearchFunctions.connect_and_index('aips', 'aip', uuid, pathToAIP)
+    elasticsearchDisabled = False
+
+    try:
+        elasticsearchDisabled = config.getboolean('MCPClient', "disableElasticsearchIndexing")
+    except:
+        pass
+
+    if elasticsearchDisabled is True:
+        print 'Skipping indexing: indexing is currently disabled in ' + clientConfigFilePath + '.'
+
+    else:
+        pathToAIP = sys.argv[1]
+        uuid = sys.argv[2]
+
+        exitCode = elasticSearchFunctions.connect_and_index('aips', 'aip', uuid, pathToAIP)
 
 quit(exitCode)
