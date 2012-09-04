@@ -465,6 +465,7 @@ INSERT INTO FileIDs
 );
 set @fileID = LAST_INSERT_ID();
 
+
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
     VALUES (
@@ -685,6 +686,35 @@ INSERT INTO CommandRelationships
     (SELECT pk FROM FileIDs WHERE description = 'unrar-nonfreeCompatable')
 );
 -- END unrar-nonfreeCompatable
+
+
+-- Maildir file--
+INSERT INTO FileIDs 
+    (description, validPreservationFormat, validAccessFormat)
+    VALUES (
+    'A maildir email file', TRUE, TRUE
+);
+set @fileID = LAST_INSERT_ID();
+
+
+INSERT INTO CommandRelationships 
+    (GroupMember, commandClassification, command, fileID)
+    VALUES (
+    @fileIDByExtensionDefaultGroupMemberID,
+    (SELECT pk FROM CommandClassifications WHERE classification = 'access'),
+    @accessNoOpCommandID,
+    @fileID
+);
+
+INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
+    VALUES
+    (8,      LAST_INSERT_ID(), 'Normalize access - exclude');
+INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)     
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), NULL);
+set @MicroServiceChainLink = LAST_INSERT_ID();
+INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink) 
+    VALUES (@MicroServiceChainLink, 0, NULL);
+--
 
 
 -- PST extraction & normalization
