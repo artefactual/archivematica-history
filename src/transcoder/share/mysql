@@ -696,6 +696,10 @@ INSERT INTO FileIDs
 );
 set @fileID = LAST_INSERT_ID();
 
+INSERT INTO FileIDGroupMembers 
+    (fileID, groupID) 
+    VALUES (@fileID, @emailGroup);
+
 
 INSERT INTO CommandRelationships 
     (GroupMember, commandClassification, command, fileID)
@@ -4137,7 +4141,7 @@ INSERT INTO FileIDsByExtension
 
 INSERT INTO FileIDGroupMembers 
     (fileID, groupID) 
-    VALUES (@fileID, @vectorImageGroup);
+    VALUES (@fileID, @emailGroup);
 
 
 INSERT INTO Commands 
