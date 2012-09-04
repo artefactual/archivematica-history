@@ -43,9 +43,8 @@ def writeFile(filePath, fileContents):
     FILE.writelines(fileContents)    
     FILE.close()
 
-def addFile(filePath, transferPath, transferUUID, date, eventDetail = ""): 
+def addFile(filePath, transferPath, transferUUID, date, eventDetail = "", fileUUID = uuid.uuid4().__str__()): 
     taskUUID = uuid.uuid4().__str__()
-    fileUUID = uuid.uuid4().__str__()
     filePathRelativeToSIP = filePath.replace(transferPath, "%transferDirectory%", 1)
     addFileToTransfer(filePathRelativeToSIP, fileUUID, transferUUID, taskUUID, date, sourceType="unpacking", eventDetail=eventDetail)
     updateSizeAndChecksum(fileUUID, filePath, date, uuid.uuid4.__str__())
@@ -59,10 +58,10 @@ def getFileUUIDofSourceFile(transferUUID, sourceFilePath):
     return ret
 
 def setSourceFileToBeExcludedFromDIP(sourceFileUUID):
-    sql = """INSERT INTO FilesIdentifiedIDs (fileUUID, fileID) VALUES ('%s', (SELECT pk FROM FileIDs WHERE description = 'Do not include in archivematica DIP')); """ % (sourceFileUUID)
+    sql = """INSERT INTO FilesIdentifiedIDs (fileUUID, fileID) VALUES ('%s', (SELECT pk FROM FileIDs WHERE description = 'A maildir email file')); """ % (sourceFileUUID)
     databaseInterface.runSQL(sql)
     
-def addKeyFileToNormalizeMaildirOffOf(relativePathToRepresent, mirrorDir, transferPath, transferUUID, date, eventDetail = ""):
+def addKeyFileToNormalizeMaildirOffOf(relativePathToRepresent, mirrorDir, transferPath, transferUUID, date, eventDetail = "", fileUUID=uuid.uuid4().__str__()):
     basename = os.path.basename(mirrorDir)
     dirname = os.path.dirname(mirrorDir)
     outFile = os.path.join(dirname, basename + ".archivematicaMaildir")
@@ -73,7 +72,7 @@ path = %s
     f = open(outFile, 'w')
     f.write(content)
     f.close()
-    addFile(outFile, transferPath, transferUUID, date, eventDetail=eventDetail)
+    addFile(outFile, transferPath, transferUUID, date, eventDetail=eventDetail, fileUUID=fileUUID)
     return
    
 if __name__ == '__main__':
@@ -126,6 +125,7 @@ if __name__ == '__main__':
                                 attachment = out['attachments'][i]
                                 if attachment.name == None:
                                     continue
+                                attachedFileUUID = uuid.uuid4().__str__()
                                 #attachment = StringIO(file_data) TODO LOG TO FILE
                                 attch = etree.SubElement(msg, "attachment")
                                 #attachment.name = attachment.name[1:-1]
@@ -138,11 +138,10 @@ if __name__ == '__main__':
                                 #etree.SubElement(attch, "mod_date").text = attachment.mod_date
                                 #etree.SubElement(attch, "read_date").text = attachment.read_date
                                 
-                                filePath = os.path.join(transferDir, "objects/attachments", maildirsub2, subDir, "[%s][%s]%s" % (item, out["subject"], attachment.name))
-                                writeFile(filePath, \
-                                         attachment)
+                                filePath = os.path.join(transferDir, "objects/attachments", maildirsub2, subDir, "%s_%s" % (attachedFileUUID, attachment.name))
+                                writeFile(filePath, attachment)
                                 eventDetail="Unpacked from: {%s}%s" % (sourceFileUUID, sourceFilePath) 
-                                addFile(filePath, transferDir, transferUUID, date, eventDetail=eventDetail)
+                                addFile(filePath, transferDir, transferUUID, date, eventDetail=eventDetail, fileUUID=attachedFileUUID)
                             except Exception as inst:
                                 print >>sys.stderr, sourceFilePath
                                 traceback.print_exc(file=sys.stderr)
@@ -169,7 +168,8 @@ if __name__ == '__main__':
         except:
             pass
         eventDetail = "added for normalization purposes"
-        addKeyFileToNormalizeMaildirOffOf(os.path.join(maildir, maildirsub2).replace(transferDir, "%transferDirectory%", 1), mirrorDir, transferDir, transferUUID, date, eventDetail=eventDetail)
+        fileUUID=uuid.uuid4().__str__()
+        addKeyFileToNormalizeMaildirOffOf(os.path.join(maildir, maildirsub2).replace(transferDir, "%transferDirectory%", 1), mirrorDir, transferDir, transferUUID, date, eventDetail=eventDetail, fileUUID=fileUUID)
     tree = etree.ElementTree(root)
     tree.write(outXML, pretty_print=True, xml_declaration=True)
     exit(errorCounter)

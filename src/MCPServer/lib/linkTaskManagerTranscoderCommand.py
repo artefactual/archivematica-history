@@ -53,7 +53,7 @@ class linkTaskManagerTranscoderCommand:
         self.exitCode = 0
         self.clearToNextLink = False
 
-        opts = {"inputFile":"%relativeLocation%", "commandClassifications":"preservation", "fileUUID":"%fileUUID%", "taskUUID":"%taskUUID%", "objectsDirectory":"%SIPObjectsDirectory%", "logsDirectory":"%SIPLogsDirectory%", "sipUUID":"%SIPUUID%", "sipPath":"%SIPDirectory%", "fileGrpUse":"%fileGrpUse%", "normalizeFileGrpUse":"%normalizeFileGrpUse%", "excludeDirectory":"%excludeDirectory%", "standardErrorFile":"%standardErrorFile%", "standardOutputFile":"%standardOutputFile%"}
+        opts = {"inputFile":"%relativeLocation%", "fileUUID":"%fileUUID%", 'commandClassifications':'%commandClassifications%', "taskUUID":"%taskUUID%", "objectsDirectory":"%SIPObjectsDirectory%", "logsDirectory":"%SIPLogsDirectory%", "sipUUID":"%SIPUUID%", "sipPath":"%SIPDirectory%", "fileGrpUse":"%fileGrpUse%", "normalizeFileGrpUse":"%normalizeFileGrpUse%", "excludeDirectory":"%excludeDirectory%", "standardErrorFile":"%standardErrorFile%", "standardOutputFile":"%standardOutputFile%"}
         
         SIPReplacementDic = unit.getReplacementDic(unit.currentPath)
         for optsKey, optsValue in opts.iteritems():
@@ -70,7 +70,7 @@ class linkTaskManagerTranscoderCommand:
 
         self.tasksLock.acquire()
         commandReplacementDic = unit.getReplacementDic()
-        sql = """SELECT CommandRelationships.pk FROM CommandRelationships JOIN Commands on CommandRelationships.command = Commands.pk WHERE CommandRelationships.pk = %s;""" % (pk.__str__())
+        sql = """SELECT CommandRelationships.pk FROM CommandRelationships JOIN Commands ON CommandRelationships.command = Commands.pk WHERE CommandRelationships.pk = %s;""" % (pk.__str__())
         rows = databaseInterface.queryAllSQL(sql)
         taskCount = 0
         if rows:

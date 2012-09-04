@@ -102,7 +102,7 @@ class linkTaskManagerSplitOnFileIdAndruleset:
             ComandClassification = self.execute
             #passVar=self.jobChainLink.passVar
             toPassVar = eval(arguments)
-            toPassVar.update({"%standardErrorFile%":standardErrorFile, "%standardOutputFile%":standardOutputFile})
+            toPassVar.update({"%standardErrorFile%":standardErrorFile, "%standardOutputFile%":standardOutputFile, '%commandClassifications%':ComandClassification})
             print "debug", toPassVar
             passVar=replacementDic(toPassVar)
             sql = """SELECT MicroServiceChainLinks.pk FROM FilesIdentifiedIDs JOIN CommandRelationships ON FilesIdentifiedIDs.fileID = CommandRelationships.fileID JOIN CommandClassifications ON CommandClassifications.pk = CommandRelationships.commandClassification JOIN TasksConfigs ON TasksConfigs.taskTypePKReference = CommandRelationships.pk JOIN MicroServiceChainLinks ON MicroServiceChainLinks.currentTask = TasksConfigs.pk WHERE TasksConfigs.taskType = 8 AND FilesIdentifiedIDs.fileUUID = '%s' AND CommandClassifications.classification = '%s';""" % (fileUUID, ComandClassification)
