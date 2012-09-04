@@ -1604,7 +1604,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @ExtractpackagesinsubmissiondocumentationTask, 'Extract packages in submission documentation');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -2186,7 +2186,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @ExtractpackagesinsubmissiondocumentationTask, 'Extract packages in submission documentation');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -3080,7 +3080,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @ExtractpackagesTask, 'Extract packages');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -3924,7 +3924,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      @ExtractpackagesTask, 'Extract packages');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
@@ -4574,7 +4574,7 @@ INSERT INTO TasksConfigs (taskType, taskTypePKReference, description)
     VALUES
     (1,      LAST_INSERT_ID(), 'Extract packages');
 INSERT INTO MicroServiceChainLinks (microserviceGroup, currentTask, defaultNextChainLink)
-    VALUES (@microserviceGroup, LAST_INSERT_ID(), @NextMicroServiceChainLink);
+    VALUES (@microserviceGroup, LAST_INSERT_ID(), @defaultNextChainLink);
 SET @MicroServiceChainLink = LAST_INSERT_ID();
 INSERT INTO MicroServiceChainLinksExitCodes (microServiceChainLink, exitCode, nextMicroServiceChainLink)
     VALUES (@MicroServiceChainLink, 0, @NextMicroServiceChainLink);
