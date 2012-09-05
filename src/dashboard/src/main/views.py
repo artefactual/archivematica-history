@@ -1038,7 +1038,7 @@ def archival_storage_search(request):
         results = False
 
     form = forms.StorageSearchForm(initial={'query': query})
-    return render(request, 'main/archival_storage.html', locals())
+    return render(request, 'main/archival_storage_search.html', locals())
 
 def archival_storage_indexed_count(index):
     aip_indexed_file_count = 0
