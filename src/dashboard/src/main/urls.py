@@ -57,7 +57,7 @@ urlpatterns = patterns('main.views',
     # Archival storage
     (r'archival-storage/$', 'archival_storage'),
     (r'archival-storage/search/file/json/(?P<document_id_modified>\w+)/$', 'archival_storage_file_json'),
-    (r'archival-storage/(?P<path>AIPsStore/[0-9a-z]{4}/[0-9a-z]{3}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/.*\.(7z|zip))/$', 'archival_storage'),
+    (r'archival-storage/(?P<path>AIPsStore/[0-9a-z]{4}/[0-9a-z]{3}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/[0-9a-z]{4}/.*\.(7z|zip))/$', 'archival_storage_sip_download'),
 
     # Preservation planning
     (r'preservation-planning/$', 'preservation_planning'),
