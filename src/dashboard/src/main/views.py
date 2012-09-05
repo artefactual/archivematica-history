@@ -1041,7 +1041,7 @@ def archival_storage(request, path=None):
         form = forms.StorageSearchForm(initial={'query': query})
         return render(request, 'main/archival_storage.html', locals())
     else:
-        return archival_storage_sip_display(request, path)
+        return archival_storage_sip_display(request)
 
 def archival_storage_indexed_count(index):
     aip_indexed_file_count = 0
@@ -1053,13 +1053,11 @@ def archival_storage_indexed_count(index):
         pass
     return aip_indexed_file_count
 
-def archival_storage_sip_display(request, path=None):
-    form = forms.StorageSearchForm()
+def archival_storage_sip_download(request, path):
+    return serve(request, path, document_root='/var/archivematica/sharedDirectory/www')
 
-    document = '/var/archivematica/sharedDirectory/www/index.html'
-    # User requests a file
-    if path is not None:
-        return serve(request, path, document_root=os.path.dirname(document))
+def archival_storage_sip_display(request):
+    form = forms.StorageSearchForm()
 
     total_size = 0
 

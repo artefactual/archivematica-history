@@ -94,7 +94,7 @@
       <tbody>
         {% for item in sips %}
           <tr>
-            <td class="link-sip"><a href="{% url main.views.archival_storage item.href %}">{{ item.name }}</a></td>
+            <td class="link-sip"><a href="{% url main.views.archival_storage_sip_download item.href %}">{{ item.name }}</a></td>
             <td class="size">{{ item.size }}</td>
             <td class="uuid">{{ item.uuid }}</td>
             <td><span class='utcDate'>{{ item.date }}</a></td>
