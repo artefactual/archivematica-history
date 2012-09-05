@@ -961,87 +961,84 @@ def transfer_delete(request, uuid):
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def archival_storage(request, path=None):
-    # determine whether a search has been submitted
+    return archival_storage_sip_display(request)
+
+def archival_storage_search(request):
+    query = request.GET.get('query', '')
+
+    if query == '':
+        query = '*'
+
+    # set pagination-related variables
+    items_per_page = 20
+
+    page = request.GET.get('page', 0)
+    if page == '':
+        page = 0
+    page = int(page)
+
+    start = page * items_per_page + 1
+
+    conn = pyes.ES('127.0.0.1:9200')
+
+    # do fulltext search
+    q = pyes.StringQuery(query)
+
     try:
-        query = request.GET['query']
-        if query == '':
-            query = '*'
-    except KeyError:
-        query = False
+        results = conn.search_raw(query=q, indices='aips', type='aip', start=start - 1, size=items_per_page)
+    except:
+        return HttpResponse('Error accessing index.')
 
-    if query:
-        # set pagination-related variables
-        items_per_page = 20
+    # augment result data
+    modifiedResults = []
 
-        page = request.GET.get('page', 0)
-        if page == '':
-            page = 0
-        page = int(page)
+    for item in results.hits.hits:
+        clone = item._source.copy()
 
-        start = page * items_per_page + 1
-
-        conn = pyes.ES('127.0.0.1:9200')
-
-        # do fulltext search
-        q = pyes.StringQuery(query)
-
+        # try to find AIP details in database
         try:
-            results = conn.search_raw(query=q, indices='aips', type='aip', start=start - 1, size=items_per_page)
+            aip = models.AIP.objects.get(sipuuid=clone['AIPUUID'])
+            clone['sipname'] = aip.sipname
+            clone['href']    = aip.filepath.replace(AIPSTOREPATH + '/', "AIPsStore/")
         except:
-            return HttpResponse('Error accessing index.')
+            aip = None
+            clone['sipname'] = False
 
-        # augment result data
-        modifiedResults = []
+        clone['filename'] = os.path.basename(clone['filePath'])
+        clone['document_id'] = item['_id']
+        clone['document_id_no_hyphens'] = item['_id'].replace('-', '____')
 
-        for item in results.hits.hits:
-            clone = item._source.copy()
+        modifiedResults.append(clone)
 
-            # try to find AIP details in database
-            try:
-                aip = models.AIP.objects.get(sipuuid=clone['AIPUUID'])
-                clone['sipname'] = aip.sipname
-                clone['href']    = aip.filepath.replace(AIPSTOREPATH + '/', "AIPsStore/")
-            except:
-                aip = None
-                clone['sipname'] = False
+    number_of_results = results.hits.total
 
-            clone['filename'] = os.path.basename(clone['filePath'])
-            clone['document_id'] = item['_id']
-            clone['document_id_no_hyphens'] = item['_id'].replace('-', '____')
+    # use augmented result data
+    results = modifiedResults
 
-            modifiedResults.append(clone)
+    # limit end by total hits
+    end = start + items_per_page - 1
+    if end > number_of_results:
+        end = number_of_results
 
-        number_of_results = results.hits.total
+    # determine the previous page, if any
+    previous_page = False
+    if page > 0:
+        previous_page = page - 1
 
-        # use augmented result data
-        results = modifiedResults
+    # determine the next page, if any
+    next_page = False
+    if (items_per_page * (page + 1)) < number_of_results:
+        next_page = page + 1
 
-        # limit end by total hits
-        end = start + items_per_page - 1
-        if end > number_of_results:
-            end = number_of_results
+    # make sure results is set
+    try:
+        if results:
+            pass
+    except:
+        results = False
 
-        # determine the previous page, if any
-        previous_page = False
-        if page > 0:
-            previous_page = page - 1
-
-        # determine the next page, if any
-        next_page = False
-        if (items_per_page * (page + 1)) < number_of_results:
-            next_page = page + 1
-
-        # make sure results is set
-        try:
-            if results:
-                pass
-        except:
-            results = False
-
-        form = forms.StorageSearchForm(initial={'query': query})
-        return render(request, 'main/archival_storage.html', locals())
-    else:
-        return archival_storage_sip_display(request)
+    form = forms.StorageSearchForm(initial={'query': query})
+    return render(request, 'main/archival_storage.html', locals())
 
 def archival_storage_indexed_count(index):
     aip_indexed_file_count = 0
