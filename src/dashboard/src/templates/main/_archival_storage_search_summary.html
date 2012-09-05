@@ -1,7 +1,7 @@
 <div id='aip-search-summary'>
   <div style='float:right;'>
     {% if page %}
-      <a href='{% url main.views.archival_storage %}?query={{ query }}&page={{ previous_page }}'>Previous</a>
+      <a href='{% url main.views.archival_storage_search %}?query={{ query }}&page={{ previous_page }}'>Previous</a>
     {% endif %}
 
     {% if page and next_page %}
@@ -9,7 +9,7 @@
     {% endif %}
 
     {% if next_page %}
-      <a href='{% url main.views.archival_storage %}?query={{ query }}&page={{ next_page }}'>Next</a>
+      <a href='{% url main.views.archival_storage_search %}?query={{ query }}&page={{ next_page }}'>Next</a>
     {% endif %}
   </div>
 
