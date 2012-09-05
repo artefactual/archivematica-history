@@ -29,6 +29,7 @@ from django.utils.functional import wraps
 from django.views.static import serve
 from django.utils.functional import wraps
 from django.template import RequestContext
+from django.utils.dateformat import format
 from views_NormalizationReport import getNormalizationReportQuery
 from contrib.mcp.client import MCPClient
 from contrib import utils
@@ -1376,14 +1377,26 @@ def administration_processing(request):
 def forbidden(request):
     return render(request, 'forbidden.html')
 
+def task_duration_in_seconds(task):
+    duration = int(format(task.endtime, 'U')) - int(format(task.starttime, 'U'))
+    if duration == 0:
+        duration = '< 1'
+    return duration
+
 def task(request, uuid):
     task = models.Task.objects.get(taskuuid=uuid)
+    task.duration = task_duration_in_seconds(task)
     objects = [task]
     return render(request, 'main/tasks.html', locals())
 
 def tasks(request, uuid):
     job = models.Job.objects.get(jobuuid=uuid)
     objects = job.task_set.all().order_by('-exitcode', '-endtime', '-starttime', '-createdtime')
+
+    # figure out duration in seconds
+    for object in objects:
+         object.duration = task_duration_in_seconds(object)
+
     return render(request, 'main/tasks.html', locals())
 
 def map_known_values(value):

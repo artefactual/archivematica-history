@@ -6,16 +6,17 @@
       {% for item in objects %}
         <tr class="{% cycle 'odd' 'even' %}{% ifnotequal item.exitcode 0 %} exiterror{% endifnotequal %}">
           <td>
-            <span>Task UUID:</span> {{ item.taskuuid }}<br />
+            <span>ATTTask UUID:</span> {{ item.taskuuid }}<br />
             <span>File UUID:</span> {{ item.fileuuid }}<br />
             <span>File name:</span> {{ item.filename }}<br />
             <span>Client:</span> {{ item.client }}<br />
             <span>&nbsp;</span> {{ item.exec_field }} (exit code: {{ item.exitcode }})
           </td>
           <td>
-            <abbr title="Start time">ST:</abbr> <span class='utcDate'>{{ item.starttime }}</span><br />
-            <abbr title="End time">ET:</abbr> <span class='utcDate'>{{ item.endtime }}</span><br />
-            <abbr title="Created time">CT:</abbr> <span class='utcDate'>{{ item.createdtime }}<span>
+            <abbr title="Start time">SST:</abbr> <span class='utcDate'>{{ item.starttime }}</span><br />
+            <abbr title="End time">EET:</abbr> <span class='utcDate'>{{ item.endtime }}</span><br />
+            <abbr title="Created time">CT:</abbr> <span class='utcDate'>{{ item.createdtime }}</span><br />
+            <abbr title="Duration">DU:</abbtr> {{ item.duration }} second(s)
           </td>
         </tr>
         <tr>
