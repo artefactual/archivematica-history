@@ -482,6 +482,7 @@ CREATE TABLE Files(
     fileUUID            VARCHAR(50) PRIMARY KEY,
     originalLocation   LONGTEXT,
     currentLocation     LONGTEXT,
+    INDEX (currentLocation(996)),
     sipUUID             VARCHAR(50),
     Foreign Key (sipUUID) references SIPs(sipUUID),
     transferUUID        VARCHAR(50),
