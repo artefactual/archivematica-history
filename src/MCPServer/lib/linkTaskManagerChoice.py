@@ -42,7 +42,8 @@ import archivematicaMCP
 global choicesAvailableForUnits
 choicesAvailableForUnits = {}
 choicesAvailableForUnitsLock = threading.Lock()
-waitingOnTimer = "waitingOnTimer"
+
+waitingOnTimer="waitingOnTimer"
 
 class linkTaskManagerChoice:
     def __init__(self, jobChainLink, pk, unit):
@@ -51,6 +52,8 @@ class linkTaskManagerChoice:
         self.jobChainLink = jobChainLink
         self.UUID = uuid.uuid4().__str__()
         self.unit = unit
+        self.delayTimerLock = threading.Lock()
+        self.delayTimer = None
         sql = """SELECT chainAvailable, description FROM MicroServiceChainChoice JOIN MicroServiceChains on chainAvailable = MicroServiceChains.pk WHERE choiceAvailableAtLink = %s ORDER BY MicroServiceChainChoice.pk;""" % (jobChainLink.pk.__str__())
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
@@ -64,16 +67,14 @@ class linkTaskManagerChoice:
 
         preConfiguredChain = self.checkForPreconfiguredXML()
         if preConfiguredChain != None:
-            if preConfiguredChain != waitingOnTimer:
-                time.sleep(archivematicaMCP.config.getint('MCPServer', "waitOnAutoApprove"))
-                print "checking for xml file for processing rules. TODO"
-                self.jobChainLink.setExitMessage("Completed successfully")
-                jobChain.jobChain(self.unit, preConfiguredChain)
-            else:
-                print "waiting on delay to resume processing on unit:", unit
+            time.sleep(archivematicaMCP.config.getint('MCPServer', "waitOnAutoApprove"))
+            self.jobChainLink.setExitMessage("Completed successfully")
+            jobChain.jobChain(self.unit, preConfiguredChain)
+
         else:
             choicesAvailableForUnitsLock.acquire()
-            self.jobChainLink.setExitMessage('Awaiting decision')
+            if self.delayTimer == None:
+                self.jobChainLink.setExitMessage('Awaiting decision')
             choicesAvailableForUnits[self.jobChainLink.UUID] = self
             choicesAvailableForUnitsLock.release()
 
@@ -120,13 +121,11 @@ class linkTaskManagerChoice:
                                 #print "that will be: ", (nowTime + timeToGo)
                                 self.jobChainLink.setExitMessage("Waiting till: " + datetime.datetime.fromtimestamp((nowTime + timeToGo)).ctime())
 
-                                t = threading.Timer(timeToGo, jobChain.jobChain, args=[self.unit, ret], kwargs={})
+                                t = threading.Timer(timeToGo, self.proceedWithChoice, args=[ret], kwargs={"delayTimerStart":True})
                                 t.daemon = True
+                                self.delayTimer = t
                                 t.start()
-
-                                t2 = threading.Timer(timeToGo, self.jobChainLink.setExitMessage, args=["Completed successfully"], kwargs={})
-                                t2.start()
-                                return waitingOnTimer
+                                return None
 
                         except Exception as inst:
                             print >>sys.stderr, "Error parsing xml:"
@@ -137,8 +136,6 @@ class linkTaskManagerChoice:
                 print >>sys.stderr, "Error parsing xml:"
                 print >>sys.stderr, type(inst)
                 print >>sys.stderr, inst.args
-
-
         return ret
 
     def xmlify(self):
@@ -154,13 +151,14 @@ class linkTaskManagerChoice:
 
 
 
-    def proceedWithChoice(self, chain):
+    def proceedWithChoice(self, chain, delayTimerStart=False):
         choicesAvailableForUnitsLock.acquire()
         del choicesAvailableForUnits[self.jobChainLink.UUID]
+        self.delayTimerLock.acquire()
+        if self.delayTimer != None and not delayTimerStart:
+            self.delayTimer.cancel()
+            self.delayTimer = None
+        self.delayTimerLock.release()
         choicesAvailableForUnitsLock.release()
-        while archivematicaMCP.transferDMovedFromCounter.value != 0:
-            print "Waiting for all files to finish updating their location in the database"
-            print transferD.movedFrom
-            time.sleep(1)
         self.jobChainLink.setExitMessage("Completed successfully")
         jobChain.jobChain(self.unit, chain)
