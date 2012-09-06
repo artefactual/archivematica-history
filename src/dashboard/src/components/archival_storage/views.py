@@ -15,46 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with Archivematica.  If not, see <http://www.gnu.org/licenses/>.
 
-from django.db.models import Max
-from django.conf import settings as django_settings
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.db import connection, transaction
-from django.forms.models import modelformset_factory, inlineformset_factory
-from django.shortcuts import render_to_response, get_object_or_404, redirect, render
-from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.shortcuts import render
+from django.http import HttpResponse
 from django.utils import simplejson
-from django.utils.functional import wraps
 from django.views.static import serve
-from django.utils.functional import wraps
-from django.template import RequestContext
-from django.utils.dateformat import format
-from contrib.mcp.client import MCPClient
-from contrib import utils
 from main import forms
 from main import models
-from main import filesystem
-from lxml import etree
-from lxml import objectify
-import calendar
-import cPickle
-from datetime import datetime
 import os
-import re
-import subprocess
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import pyes
 import httplib
-from django.contrib.auth.decorators import user_passes_test
-import urllib
 
 AIPSTOREPATH = '/var/archivematica/sharedDirectory/www/AIPsStore'
-
-""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-      Archival storage
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
 def archival_storage(request):
     return archival_storage_sip_display(request)
@@ -150,6 +124,7 @@ def archival_storage_indexed_count(index):
     return aip_indexed_file_count
 
 def archival_storage_sip_download(request, path):
+    # TODO: use AIPSTOREPATH instead of hardcoded path
     return serve(request, path, document_root='/var/archivematica/sharedDirectory/www')
 
 def archival_storage_sip_display(request, current_page_number=None):
