@@ -960,8 +960,11 @@ def transfer_delete(request, uuid):
       Archival storage
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
 
-def archival_storage(request, path=None):
+def archival_storage(request):
     return archival_storage_sip_display(request)
+
+def archival_storage_page(request, page=None):
+    return archival_storage_sip_display(request, page)
 
 def archival_storage_search(request):
     query = request.GET.get('query', '')
@@ -1053,7 +1056,7 @@ def archival_storage_indexed_count(index):
 def archival_storage_sip_download(request, path):
     return serve(request, path, document_root='/var/archivematica/sharedDirectory/www')
 
-def archival_storage_sip_display(request):
+def archival_storage_sip_display(request, current_page_number=None):
     form = forms.StorageSearchForm()
 
     total_size = 0
@@ -1064,8 +1067,18 @@ def archival_storage_sip_display(request):
     # get AIPs from DB
     aips = models.AIP.objects.all()
 
+    # handle pagination
+    p                   = Paginator(aips, 20)
+    current_page_number = 1 if current_page_number == None else int(current_page_number)
+    page                = p.page(current_page_number)
+    has_next            = page.has_next()
+    next_page           = current_page_number + 1
+    has_previous        = page.has_previous()
+    previous_page       = current_page_number - 1
+    has_other_pages     = page.has_other_pages()
+
     sips = []
-    for aip in aips:
+    for aip in page.object_list:
         sip = {}
         sip['href'] = aip.filepath.replace(AIPSTOREPATH + '/', "AIPsStore/")
         sip['name'] = aip.sipname

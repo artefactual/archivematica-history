@@ -70,6 +70,18 @@
       </tbody>
     </table>
 
+    {% if has_other_pages %}
+      {% if has_previous %}
+        <a href="{% url main.views.archival_storage_page previous_page %}">Previous</a>
+        {% if has_next %}
+          |
+        {% endif %}
+      {% endif %}
+      {% if has_next %}
+        <a href="{% url main.views.archival_storage_page next_page %}">Next</a>
+      {% endif %}
+    {% endif %}
+
   {% else %}
 
     <div class="alert-message">
