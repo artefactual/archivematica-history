@@ -145,7 +145,7 @@ INSTALLED_APPS = (
 
     # Internal apps
     'installer',
-    'accounts',
+    'components.accounts',
     'main',
     'mcp',
 )

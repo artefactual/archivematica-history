@@ -53,7 +53,7 @@
                 <li class="user dropdown" data-dropdown="dropdown">
                   <a class="dropdown-toggle">{{ user }}</a>
                   <ul class="dropdown-menu">
-                    <li><a href="{% url accounts.views.edit %}">Your profile</a></li>
+                    <li><a href="{% url components.accounts.views.edit %}">Your profile</a></li>
                     <li class="divider"></li>
                     <li><a href="{% url django.contrib.auth.views.logout_then_login %}">Log out</a></li>
                   </ul>
