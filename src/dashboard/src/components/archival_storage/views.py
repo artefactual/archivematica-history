@@ -137,7 +137,7 @@ def archival_storage_search(request):
         results = False
 
     form = forms.StorageSearchForm(initial={'query': query})
-    return render(request, 'main/archival_storage_search.html', locals())
+    return render(request, 'archival_storage/archival_storage_search.html', locals())
 
 def archival_storage_indexed_count(index):
     aip_indexed_file_count = 0
@@ -208,7 +208,7 @@ def archival_storage_sip_display(request, current_page_number=None):
 
     total_size = '{0:.2f}'.format(total_size)
 
-    return render(request, 'main/archival_storage.html', locals())
+    return render(request, 'archival_storage/archival_storage.html', locals())
 
 def archival_storage_file_json(request, document_id_modified):
     document_id = document_id_modified.replace('____', '-')
