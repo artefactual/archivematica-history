@@ -14,11 +14,11 @@
     <div class="span12">
 
       <ul class="breadcrumb">
-        {% breadcrumb_url 'Users' accounts.views.list %}
+        {% breadcrumb_url 'Users' components.accounts.views.list %}
         {% breadcrumb 'Add new user' %}
       </ul>
 
-      <form method="post" action="{% url accounts.views.add %}">
+      <form method="post" action="{% url components.accounts.views.add %}">
 
         {% csrf_token %}
 
@@ -26,7 +26,7 @@
 
         <div class="actions">
           <button type="submit" class="btn primary">Create</button>
-          <a class="btn" href="{% url accounts.views.list %}">Cancel</a>
+          <a class="btn" href="{% url components.accounts.views.list %}">Cancel</a>
         </div>
 
       </form>

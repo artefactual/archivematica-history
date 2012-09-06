@@ -23,7 +23,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpRespo
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 
-from accounts.forms import UserChangeForm
+from components.accounts.forms import UserChangeForm
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/forbidden/')
 def list(request):
@@ -38,7 +38,7 @@ def add(request):
             user = form.save(commit=False)
             user.is_staff = True
             user.save()
-            return HttpResponseRedirect(reverse('accounts.views.list'))
+            return HttpResponseRedirect(reverse('components.accounts.views.list'))
     else:
         form = UserCreationForm()
 
@@ -65,7 +65,7 @@ def edit(request, id=None):
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
-            return HttpResponseRedirect(reverse('accounts.views.list'))
+            return HttpResponseRedirect(reverse('components.accounts.views.list'))
     else:
         form = UserChangeForm(instance=user)
     return render(request, 'accounts/edit.html', {'form': form, 'user': user, 'title': title })
@@ -84,6 +84,6 @@ def delete(request, id):
         if request.user.username == user.username:
             raise Http404
         user.delete()
-        return HttpResponseRedirect(reverse('accounts.views.list'))
+        return HttpResponseRedirect(reverse('components.accounts.views.list'))
     except:
         raise Http404
