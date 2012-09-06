@@ -11,7 +11,7 @@
 
 {% block content %}
 
-  <form action='{% url main.views.archival_storage_search %}' method='GET'>
+  <form action='{% url components.archival_storage.views.archival_storage_search %}' method='GET'>
   {{ form }}
   <input type='submit' value='Search archival storage'/>
   </form>
@@ -61,7 +61,7 @@
       <tbody>
         {% for item in sips %}
           <tr>
-            <td class="link-sip"><a href="{% url main.views.archival_storage_sip_download item.href %}">{{ item.name }}</a></td>
+            <td class="link-sip"><a href="{% url components.archival_storage.views.archival_storage_sip_download item.href %}">{{ item.name }}</a></td>
             <td class="size">{{ item.size }}</td>
             <td class="uuid">{{ item.uuid }}</td>
             <td><span class='utcDate'>{{ item.date }}</a></td>
@@ -72,13 +72,13 @@
 
     {% if has_other_pages %}
       {% if has_previous %}
-        <a href="{% url main.views.archival_storage_page previous_page %}">Previous</a>
+        <a href="{% url components.archival_storage.views.archival_storage_page previous_page %}">Previous</a>
         {% if has_next %}
           |
         {% endif %}
       {% endif %}
       {% if has_next %}
-        <a href="{% url main.views.archival_storage_page next_page %}">Next</a>
+        <a href="{% url components.archival_storage.views.archival_storage_page next_page %}">Next</a>
       {% endif %}
     {% endif %}
 
