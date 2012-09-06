@@ -47,11 +47,8 @@ import subprocess
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import pyes
-import httplib
 from django.contrib.auth.decorators import user_passes_test
 import urllib
-
-AIPSTOREPATH = '/var/archivematica/sharedDirectory/www/AIPsStore'
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Utils (decorators)
