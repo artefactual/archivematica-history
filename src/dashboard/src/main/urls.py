@@ -54,9 +54,6 @@ urlpatterns = patterns('main.views',
     (r'tasks/(?P<uuid>' + UUID_REGEX + ')/$', 'tasks'),
     (r'task/(?P<uuid>' + UUID_REGEX + ')/$', 'task'),
 
-    # Preservation planning
-    (r'preservation-planning/$', 'preservation_planning'),
-
     # Access
     (r'access/$', 'access_list'),
     (r'access/(?P<id>\d+)/delete/$', 'access_delete'),
