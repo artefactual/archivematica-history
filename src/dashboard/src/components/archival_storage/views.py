@@ -20,7 +20,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.views.static import serve
-from main import forms
+from components.archival_storage import forms
 from main import models
 import os
 import sys
