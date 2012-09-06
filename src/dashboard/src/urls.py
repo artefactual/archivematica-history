@@ -5,5 +5,6 @@ urlpatterns = patterns('',
     (r'^installer/', include('installer.urls')),
     (r'^administration/accounts/', include('accounts.urls')),
     (r'^archival-storage/', include('components.archival_storage.urls')),
+    (r'^preservation-planning/', include('components.preservation_planning.urls')),
     (r'', include('main.urls'))
 )
