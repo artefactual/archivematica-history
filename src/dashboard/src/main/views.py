@@ -25,9 +25,7 @@ from django.forms.models import modelformset_factory, inlineformset_factory
 from django.shortcuts import render_to_response, get_object_or_404, redirect, render
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.utils import simplejson
-from django.utils.functional import wraps
 from django.views.static import serve
-from django.utils.functional import wraps
 from django.template import RequestContext
 from django.utils.dateformat import format
 from views_NormalizationReport import getNormalizationReportQuery
@@ -49,22 +47,7 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import pyes
 from django.contrib.auth.decorators import user_passes_test
 import urllib
-
-""" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-      Utils (decorators)
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ """
-
-# Try to update context instead of sending new params
-def load_jobs(view):
-    @wraps(view)
-    def inner(request, uuid, *args, **kwargs):
-        jobs = models.Job.objects.filter(sipuuid=uuid)
-        if 0 == jobs.count:
-            raise Http404
-        kwargs['jobs'] = jobs
-        kwargs['name'] = utils.get_directory_name(jobs[0])
-        return view(request, uuid, *args, **kwargs)
-    return inner
+import components.decorators as decorators
 
 # Used for raw SQL queries to return data in dictionaries instead of lists
 def dictfetchall(cursor):
@@ -74,20 +57,6 @@ def dictfetchall(cursor):
         dict(zip([col[0] for col in desc], row))
         for row in cursor.fetchall()
     ]
-
-# Requires confirmation from a prompt page before executing a request
-# (see http://djangosnippets.org/snippets/1922/)
-def confirm_required(template_name, context_creator, key='__confirm__'):
-    def decorator(func):
-        def inner(request, *args, **kwargs):
-            if request.POST.has_key(key):
-                return func(request, *args, **kwargs)
-            else:
-                context = context_creator and context_creator(request, *args, **kwargs) \
-                    or RequestContext(request)
-                return render_to_response(template_name, context)
-        return wraps(func)(inner)
-    return decorator
 
 """ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       Home
@@ -681,7 +650,7 @@ def ingest_status(request, uuid=None):
     response['mcp'] = mcp_available
     return HttpResponse(simplejson.JSONEncoder(default=encoder).encode(response), mimetype='application/json')
 
-@load_jobs # Adds jobs, name
+@decorators.load_jobs # Adds jobs, name
 def ingest_metadata_list(request, uuid, jobs, name):
     # See MetadataAppliesToTypes table
     # types = { 'ingest': 1, 'transfer': 2, 'file': 3 }
@@ -983,7 +952,7 @@ def administration_search_flush_aips_context(request):
     cancel_url = reverse("main.views.administration_search")
     return RequestContext(request, {'action': 'Flush', 'prompt': prompt, 'cancel_url': cancel_url})
 
-@confirm_required('simple_confirm.html', administration_search_flush_aips_context)
+@decorators.confirm_required('simple_confirm.html', administration_search_flush_aips_context)
 @user_passes_test(lambda u: u.is_superuser, login_url='/forbidden/')
 def administration_search_flush_aips(request):
     conn = pyes.ES('127.0.0.1:9200')
