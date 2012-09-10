@@ -18,7 +18,7 @@ foundCount= 0
 for row in rows:
     basename = os.path.basename(row[0])
     dirname =  os.path.dirname(row[0])
-    search = os.path.join(dirname, basename[0:len(basename)/2]).replace('%', '%%') + "%"
+    search = os.path.join(dirname, basename[0:len(basename)/2]).replace('%', '\%') + "%"
     sql = """SELECT fileUUID FROM %s WHERE currentLocation LIKE '%s'""" % (sys.argv[1], search)
     c=database.cursor()
     c.execute(sql)
