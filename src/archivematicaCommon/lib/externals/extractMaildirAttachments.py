@@ -84,19 +84,11 @@ def parse(content):
         elif part.get_content_type() == "text/plain":
             if body is None:
                 body = ""
-            body += unicode(
-                part.get_payload(decode=True),
-                part.get_content_charset(),
-                'replace'
-            ).encode('utf8','replace')
+            body += part.get_payload().decode(part.get_content_charset().replace("windows-", "cp"))
         elif part.get_content_type() == "text/html":
             if html is None:
                 html = ""
-            html += unicode(
-                part.get_payload(decode=True),
-                part.get_content_charset(),
-                'replace'
-            ).encode('utf8','replace')
+            html += part.get_payload().decode(part.get_content_charset().replace("windows-", "cp"))
     return {
         'subject' : subject,
         'body' : body,
