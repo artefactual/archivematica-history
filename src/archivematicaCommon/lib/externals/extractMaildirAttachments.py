@@ -33,7 +33,16 @@ def parse_attachment(message_part):
                     #print error or warning?
                     return None
                 else:
+                    a = """payload = message_part.get_payload()
+                    encoding = message_part.get_content_charset()
+                    if encoding:
+                        encoding = encoding.replace("windows-", "cp")
+                        payload = payload.decode(encoding)
+                    file_data = payload """
                     file_data = message_part.get_payload(decode=True)
+                    if not file_data:
+                        print >>sys.stderr, message_part.get_payload()
+                        print >>sys.stderr, message_part.get_content_charset()
                     attachment = StringIO(file_data)
                     attachment.content_type = message_part.get_content_type()
                     attachment.size = len(file_data)
@@ -84,11 +93,21 @@ def parse(content):
         elif part.get_content_type() == "text/plain":
             if body is None:
                 body = ""
-            body += part.get_payload().decode(part.get_content_charset().replace("windows-", "cp"))
+            payload = part.get_payload()
+            encoding = part.get_content_charset()
+            if encoding:
+                encoding = encoding.replace("windows-", "cp")
+                payload = payload.decode(encoding)
+            body += payload 
         elif part.get_content_type() == "text/html":
             if html is None:
                 html = ""
-            html += part.get_payload().decode(part.get_content_charset().replace("windows-", "cp"))
+            payload = part.get_payload()
+            encoding = part.get_content_charset()
+            if encoding:
+                encoding = encoding.replace("windows-", "cp")
+                payload = payload.decode(encoding)
+            html += payload
     return {
         'subject' : subject,
         'body' : body,
