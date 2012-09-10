@@ -66,7 +66,7 @@ if __name__ == '__main__':
         print verificationCommandsOutputs[i]
         print
         
-    sql = "SELECT Files.fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation LIKE '%%transferDirectory%%objects/%' AND transferUUID = '" + transferUUID + "';"
+    sql = "SELECT Files.fileUUID FROM Files WHERE removedTime = 0 AND Files.currentLocation LIKE '\%transferDirectory\%objects/%' AND transferUUID = '" + transferUUID + "';"
     rows = databaseInterface.queryAllSQL(sql)
     for row in rows:
         insertIntoEvents(fileUUID=row[0], \

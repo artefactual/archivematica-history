@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     #get the database list of files in the objects directory
     #for each file, confirm it's in the SIP objects directory, and update the current location/ owning SIP'
-    sql = """SELECT  fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND currentLocation LIKE '%%transferDirectory%%objects%' AND transferUUID =  '""" + transferUUID + "'"
+    sql = """SELECT  fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND currentLocation LIKE '\%transferDirectory\%objects%' AND transferUUID =  '""" + transferUUID + "'"
     for row in databaseInterface.queryAllSQL(sql):
         fileUUID = row[0]
         currentPath = row[1]

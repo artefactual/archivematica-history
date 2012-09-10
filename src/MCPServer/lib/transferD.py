@@ -132,7 +132,7 @@ class SIPWatch(pyinotify.ProcessEvent):
                              self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
                              "%SIPDirectory%", 1)
         filesMoved = []
-        sql = """SELECT fileUUID, currentLocation FROM Files WHERE sipUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "%%") + "%';"
+        sql = """SELECT fileUUID, currentLocation FROM Files WHERE sipUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "\%") + "%';"
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
@@ -161,7 +161,7 @@ class SIPWatch(pyinotify.ProcessEvent):
                              self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
                              "%SIPDirectory%", 1)
         filesMoved = []
-        sql = """SELECT fileUUID, currentLocation FROM Files WHERE sipUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "%%") + "%';"
+        sql = """SELECT fileUUID, currentLocation FROM Files WHERE sipUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "\%") + "%';"
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
@@ -223,7 +223,7 @@ class transferWatch(pyinotify.ProcessEvent):
                              self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
                              "%transferDirectory%", 1)
         filesMoved = []
-        sql = """SELECT fileUUID, currentLocation FROM Files WHERE transferUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "%%") + "%';"
+        sql = """SELECT fileUUID, currentLocation FROM Files WHERE transferUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "\%") + "%';"
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
@@ -301,7 +301,7 @@ class transferWatch(pyinotify.ProcessEvent):
                              self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
                              "%transferDirectory%", 1)
         filesMoved = []
-        sql = """SELECT fileUUID, currentLocation FROM Files WHERE transferUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "%%") + "%';"
+        sql = """SELECT fileUUID, currentLocation FROM Files WHERE transferUUID = '""" + self.unit.UUID + "' AND removedTime = 0 AND currentLocation LIKE '" + MySQLdb.escape_string(movedFromPath).replace("%", "\%") + "%';"
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:

@@ -572,7 +572,7 @@ def createFileSec(directoryPath, structMapDiv):
         elif use == "license" or use == "text/ocr" or use == "DSPACEMETS":
             sql = """SELECT originalLocation FROM Files where fileUUID = '%s'""" % (myuuid)
             originalLocation = databaseInterface.queryAllSQL(sql)[0][0]
-            sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND originalLocation LIKE '%s/%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(os.path.dirname(originalLocation)).replace("%", "%%"))
+            sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND originalLocation LIKE '%s/%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(os.path.dirname(originalLocation)).replace("%", "\%"))
             c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             while row != None:
@@ -584,7 +584,7 @@ def createFileSec(directoryPath, structMapDiv):
             fileFileIDPath = itemdirectoryPath.replace(baseDirectoryPath + "objects/service/", baseDirectoryPathString + "objects/")
             objectNameExtensionIndex = fileFileIDPath.rfind(".")
             fileFileIDPath = fileFileIDPath[:objectNameExtensionIndex + 1]
-            sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND currentLocation LIKE '%s%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(fileFileIDPath.replace("%", "%%")))
+            sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND %s = '%s' AND fileGrpUse = 'original' AND currentLocation LIKE '%s%%'""" % (fileGroupType, fileGroupIdentifier, MySQLdb.escape_string(fileFileIDPath.replace("%", "\%")))
             c, sqlLock = databaseInterface.querySQL(sql)
             row = c.fetchone()
             while row != None:

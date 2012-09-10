@@ -122,7 +122,7 @@ SELECT
       WHERE
         Jobs.SIPUUID = %s AND
         Files.fileGrpUse != 'preservation' AND
-        Files.currentLocation LIKE '%%%%SIPDirectory%%%%objects/%%'
+        Files.currentLocation LIKE '\%%SIPDirectory\%%objects/%%'
       GROUP BY Tasks.fileUUID
       ORDER BY Tasks.fileName;
 """

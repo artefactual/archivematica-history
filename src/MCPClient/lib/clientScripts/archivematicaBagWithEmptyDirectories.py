@@ -65,7 +65,6 @@ def createDirectoriesAsNeeded(baseDir, dirList):
 				continue
 
 if __name__ == '__main__':
-	#create "%SIPDirectory%%SIPName%-%SIPUUID%" "%SIPLogsDirectory%" "%SIPObjectsDirectory%" "%SIPDirectory%METS.%SIPUUID%.xml" "%SIPDirectory%metadata/" "%SIPDirectory%thumbnails/" --writer filesystem --payloadmanifestalgorithm "sha512"
 	dest = sys.argv[2]
 	SIPDir = os.path.dirname(dest)
 	dirList = getListOfDirectories(SIPDir)

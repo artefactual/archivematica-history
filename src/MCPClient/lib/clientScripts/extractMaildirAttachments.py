@@ -51,7 +51,7 @@ def addFile(filePath, transferPath, transferUUID, date, eventDetail = "", fileUU
 
 def getFileUUIDofSourceFile(transferUUID, sourceFilePath):
     ret = ""
-    sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND transferUUID = '%s' AND currentLocation LIKE '%s%%';""" % (transferUUID, sourceFilePath.replace('%', '%%'))
+    sql = """SELECT fileUUID FROM Files WHERE removedTime = 0 AND transferUUID = '%s' AND currentLocation LIKE '%s%%';""" % (transferUUID, sourceFilePath.replace('%', '\%'))
     rows = databaseInterface.queryAllSQL(sql)
     if len(rows):
         ret = rows[0][0]
