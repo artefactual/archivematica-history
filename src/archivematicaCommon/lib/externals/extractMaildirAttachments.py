@@ -68,7 +68,7 @@ def parse(content):
         subj_fragments = []
         for s , enc in decodefrag:
             if enc:
-                s = unicode(s , enc).encode('utf8','replace')
+                s = s.decode(enc)
             subj_fragments.append(s)
         subject = ''.join(subj_fragments)
     else:
