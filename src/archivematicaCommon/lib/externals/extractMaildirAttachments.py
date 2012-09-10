@@ -23,7 +23,7 @@ from rfc6266 import parse_headers #TODO: add notes
 class NotSupportedMailFormat(Exception):
     pass
 
-def parse_attachment(message_part):
+def parse_attachment(message_part, attachments=None):
     content_disposition = message_part.get("Content-Disposition", None)
     if content_disposition:
         try:
@@ -33,14 +33,13 @@ def parse_attachment(message_part):
                     #print error or warning?
                     return None
                 else:
-                    a = """payload = message_part.get_payload()
-                    encoding = message_part.get_content_charset()
-                    if encoding:
-                        encoding = encoding.replace("windows-", "cp")
-                        payload = payload.decode(encoding)
-                    file_data = payload """
                     file_data = message_part.get_payload(decode=True)
                     if not file_data:
+                        payload = message_part.get_payload()
+                        if isinstance(payload, list):
+                            for msgobj in payload:
+                                parse2(msgobj, attachments)
+                            return None
                         print >>sys.stderr, message_part.get_payload()
                         print >>sys.stderr, message_part.get_content_charset()
                     attachment = StringIO(file_data)
@@ -72,6 +71,10 @@ def parse(content):
     """
     p = EmailParser()
     msgobj = p.parse(content)
+    attachments = []
+    return parse2(msgobj, attachments)
+
+def parse2(msgobj, attachments=None):    
     if msgobj['Subject'] is not None:
         decodefrag = decode_header(msgobj['Subject'])
         subj_fragments = []
@@ -82,12 +85,13 @@ def parse(content):
         subject = ''.join(subj_fragments)
     else:
         subject = None
-
-    attachments = []
+    
+    if attachments == None:
+        attachments = []
     body = None
     html = None
     for part in msgobj.walk():
-        attachment = parse_attachment(part)
+        attachment = parse_attachment(part, attachments=attachments)
         if attachment:
             attachments.append(attachment)
         elif part.get_content_type() == "text/plain":
