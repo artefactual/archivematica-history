@@ -100,7 +100,7 @@ def parse2(msgobj, attachments=None):
             payload = part.get_payload()
             encoding = part.get_content_charset()
             if encoding:
-                encoding = encoding.replace("windows-", "cp")
+                encoding = encoding.replace("windows-874", "cp874")
                 payload = payload.decode(encoding)
             body += payload 
         elif part.get_content_type() == "text/html":
@@ -109,7 +109,7 @@ def parse2(msgobj, attachments=None):
             payload = part.get_payload()
             encoding = part.get_content_charset()
             if encoding:
-                encoding = encoding.replace("windows-", "cp")
+                encoding = encoding.replace("windows-874", "cp874")
                 payload = payload.decode(encoding)
             html += payload
     return {
