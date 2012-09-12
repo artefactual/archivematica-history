@@ -224,9 +224,7 @@ def updateFileLocation(src, dst, eventType, eventDateTime, eventDetail, eventIde
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
-            print row
             fileUUID = unicodeToStr(row[0])
-            print type(fileUUID), fileUUID
             row = c.fetchone()
         sqlLock.release()
 

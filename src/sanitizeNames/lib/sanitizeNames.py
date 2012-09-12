@@ -26,14 +26,34 @@ import string
 import os
 from shutil import move as rename
 import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from executeOrRunSubProcess import executeOrRun
 
 VERSION = "1.0." +  "$Rev$".replace(" $", "").replace("$Rev: ","")
 valid = "-_.()" + string.ascii_letters + string.digits
 replacementChar = "_"
 
+def transliterate(basename):
+    #command = "iconv -f latin1 -t ASCII//TRANSLIT"
+    #command = "iconv -f ISO-8859-1 -t ASCII//TRANSLIT"
+    command = "iconv -f utf-8 -t ASCII//TRANSLIT"
+    #command = "iconv -f utf-8 -t ISO-8859-1"
+    #command = "iconv -t ASCII//TRANSLIT"
+    #print  >>sys.stderr,  type(basename), basename
+    exitCode, stdOut, stdError = executeOrRun("command", command, stdIn=basename)
+    if exitCode == 0:
+        #print  >>sys.stderr, stdOut
+        return stdOut
+    else:
+        #print  >>sys.stderr, command
+        #print  >>sys.stderr, exitCode, stdOut, stdError 
+        return basename
+    
 def sanitizeName(basename):
     ret = ""
-    basename = basename.decode('utf-8')
+    basename = transliterate(basename)
+    basename = basename.strip()
+    basename = basename.decode('utf8')    
     for c in basename:
         if c in valid:
             ret += c
@@ -95,3 +115,4 @@ if __name__ == '__main__':
     path = os.path.abspath(path)
     print "Scanning: " + path
     sanitizeRecursively(path)
+    print >>sys.stderr, "TEST DEBUG CLEAR DON'T INCLUDE IN RELEASE"

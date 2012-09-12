@@ -32,8 +32,8 @@ def launchSubProcess(command, stdIn="", printing=True):
     stdOut = ""
     #print  >>sys.stderr, command
     try:
-        p = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdOut, stdError = p.communicate()
+        p = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        stdOut, stdError = p.communicate(input=stdIn)
         #append the output to stderror and stdout
         if printing:
             print stdOut
@@ -42,8 +42,10 @@ def launchSubProcess(command, stdIn="", printing=True):
     except OSError, ose:
         print >>sys.stderr, "Execution failed:", ose
         return -1, "Config Error!", ose.__str__()
-    except :
+    except Exception  as inst:
         print  >>sys.stderr, "Execution failed:", command
+        print >>sys.stderr, type(inst)     # the exception instance
+        print >>sys.stderr, inst.args
         return -1, "Execution failed:", command
     return retcode, stdOut, stdError
 
