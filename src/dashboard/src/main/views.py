@@ -25,7 +25,6 @@ from django.forms.models import modelformset_factory, inlineformset_factory
 from django.shortcuts import render_to_response, get_object_or_404, redirect, render
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.utils import simplejson
-from django.views.static import serve
 from django.template import RequestContext
 from django.utils.dateformat import format
 from views_NormalizationReport import getNormalizationReportQuery
