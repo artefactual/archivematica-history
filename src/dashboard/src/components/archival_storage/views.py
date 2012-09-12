@@ -19,9 +19,9 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import simplejson
-from django.views.static import serve
 from components.archival_storage import forms
 from main import models
+from main import filesystem
 import os
 import sys
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
@@ -124,8 +124,8 @@ def archival_storage_indexed_count(index):
     return aip_indexed_file_count
 
 def archival_storage_sip_download(request, path):
-    # TODO: use AIPSTOREPATH instead of hardcoded path
-    return serve(request, path, document_root='/var/archivematica/sharedDirectory/www')
+    full_path = os.path.join(os.path.dirname(AIPSTOREPATH), path)
+    return filesystem.send_file(request, full_path)
 
 def archival_storage_sip_display(request, current_page_number=None):
     form = forms.StorageSearchForm()
