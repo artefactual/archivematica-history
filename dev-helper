@@ -61,21 +61,21 @@ function package-update() {
           echo "Going to ${part} ..."
           cd localDevSetup/
           colour sudo apt-get update
-          colour ./installDependsFromDebianFile.py ./../src/archivematicaCommon/debian/control
-          #colour ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/dashboard/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/archivematicaCommon/debian/control
+          #colour sudo ./installDependsFromDebianFile.py ./../src/createDublinCore/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/dashboard/debian/control
           #./installDependsFromDebianFile.py ./../src/easy-extract/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/MCPClient/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/MCPrpcCLI/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/MCPServer/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/MCPClient/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/MCPrpcCLI/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/MCPServer/debian/control
           colour #./installDependsFromDebianFile.py ./../src/metaPackage-forensic-tools/debian/control
           colour #./installDependsFromDebianFile.py ./../src/metaPackage-shotgun/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/sanitizeNames/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/SIPCreationTools/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/transcoder/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/upload-qubit/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/sanitizeNames/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/SIPCreationTools/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/transcoder/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/upload-qubit/debian/control
           colour #./installDependsFromDebianFile.py ./../src/vm-includes/debian/control
-          colour ./installDependsFromDebianFile.py ./../src/xubuntuGuiScriptsEditor/debian/control
+          colour sudo ./installDependsFromDebianFile.py ./../src/xubuntuGuiScriptsEditor/debian/control
           cd ..
   else
           echo "Not going to ${part}."
@@ -164,8 +164,8 @@ function update-qubit() {
           sudo chmod -R 777 qubit-svn
           colour svn update qubit-svn
           sudo chmod -R 777 qubit-svn
-          sudo stop qubit-sword
-          sudo start qubit-sword
+          colour sudo stop qubit-sword
+          colour sudo start qubit-sword
           echo "Remember to activate sfSwordPlugin and restart Qubit database if necessary!"
   else
           echo "Not going to ${part}."
