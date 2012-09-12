@@ -244,9 +244,9 @@ def signal_handler(signalReceived, frame):
             try:
                 thread.stop()
             except Exception as inst:
-                print "DEBUG EXCEPTION!"
-                print type(inst)     # the exception instance
-                print inst.args
+                print >>sys.stderr, "DEBUG EXCEPTION!"
+                print >>sys.stderr, type(inst)     # the exception instance
+                print >>sys.stderr, inst.args
         else:
             print "not stopping: ", type(thread), thread
     sys.stdout.flush()

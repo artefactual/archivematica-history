@@ -61,11 +61,13 @@ if __name__ == '__main__':
         retcode = p.returncode
 
         #print output
+        #print output[1]
+        #print >>sys.stderr, output[1]
 
         #it executes check for errors
         if retcode != 0:
             print >>sys.stderr, "error code:" + retcode.__str__()
-            print output[1]# sError
+            print >>sys.stderr, output[1]# sError
             quit(retcode)
         lines = output[0].split("\n")
 
@@ -116,7 +118,6 @@ if __name__ == '__main__':
                 c, sqlLock = databaseInterface.querySQL(sql)
                 row = c.fetchone()
                 while row != None:
-                    print row
                     fileUUID = row[0]
                     oldPath = row[1]
                     newPath = unicodeToStr(oldPath).replace(oldfile, newfile, 1)
@@ -128,3 +129,4 @@ if __name__ == '__main__':
 
                 for fileUUID, oldPath, newPath in directoryContents:
                     updateFileLocation(oldPath, newPath, "name cleanup", date, "prohibited characters removed:" + eventDetail, fileUUID=fileUUID)
+
