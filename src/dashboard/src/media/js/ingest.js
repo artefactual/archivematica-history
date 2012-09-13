@@ -418,22 +418,21 @@ $(function()
                 $('.normalization-report-task').each(function() {
                   var taskUUID = $(this).attr('id').replace('normalization-report-task-', '');
                   $(this).click(function() {
-      	$.ajax({
-        context: this,
-        type: 'GET',
-        dataType: 'html',
-        success: function(jobData)
-          {
-console.log(jobData);
-            self.taskDialog(jobData);
-            // localize UTC dates
-            $('.utcDate').each(function() {
-              $(this).text(utcDateToLocal($(this).text()));
-            });
-          },
-        url: '/task/' + taskUUID + '/'
-      });
-
+      	            $.ajax({
+                      context: this,
+                      type: 'GET',
+                      dataType: 'html',
+                      success: function(jobData)
+                      {
+                        console.log(jobData);
+                        self.taskDialog(jobData);
+                        // localize UTC dates
+                        $('.utcDate').each(function() {
+                          $(this).text(utcDateToLocal($(this).text()));
+                        });
+                      },
+                      url: '/task/' + taskUUID + '/'
+                    });
                   });
                 });
               },
