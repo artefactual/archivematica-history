@@ -63,7 +63,7 @@ $(function()
             context: this,
             dataType: 'json',
             type: 'GET',
-            url: '/status/',
+            url: '/status/' + '?' + new Date().getTime(),
             beforeSend: function()
               {
 
