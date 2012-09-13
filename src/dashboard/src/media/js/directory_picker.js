@@ -62,7 +62,7 @@ var DirectoryPickerView = fileBrowser.FileExplorer.extend({
 
   updateSources: function(cb) {
     var self = this;
-    $.get('/administration/sources/json/', function(results) {
+    $.get('/administration/sources/json/'  + '?' + new Date().getTime(), function(results) {
       tableTemplate = _.template($('#template-source-directory-table').html());
       rowTemplate   = _.template($('#template-source-directory-table-row').html());
 
