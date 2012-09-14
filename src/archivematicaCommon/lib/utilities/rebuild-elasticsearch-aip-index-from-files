@@ -15,7 +15,6 @@ try:
 except:
     print "Configuration item 'sharedDirectoryMounted' not available at /etc/archivematica/MCPClient/clientConfig.conf."
     quit(1)
-    pass
 
 rootdir = os.path.join(sharedDirectory, 'www/AIPsStore')
 
