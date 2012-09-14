@@ -37,7 +37,7 @@ import xml.etree.ElementTree as ElementTree
 
 pathToElasticSearchServerFile='/etc/elasticsearch/elasticsearch.yml'
 
-def connect_and_index(index, type, uuid, pathToTransfer):
+def connect_and_index(index, type, uuid, pathToArchive):
 
     exitCode = 0
 
@@ -45,7 +45,7 @@ def connect_and_index(index, type, uuid, pathToTransfer):
     if (os.path.exists(pathToElasticSearchServerFile)):
 
         # make sure transfer files exist
-        if (os.path.exists(pathToTransfer)):
+        if (os.path.exists(pathToArchive)):
             conn = pyes.ES('127.0.0.1:9200')
             try:
                 conn.create_index(index)
@@ -53,7 +53,7 @@ def connect_and_index(index, type, uuid, pathToTransfer):
                 pass
 
             # use METS file if indexing an AIP
-            metsFilePath = os.path.join(pathToTransfer, 'METS.' + uuid + '.xml')
+            metsFilePath = os.path.join(pathToArchive, 'METS.' + uuid + '.xml')
 
             if os.path.isfile(metsFilePath):
                 filesIndexed = index_mets_file_metadata(
@@ -68,7 +68,7 @@ def connect_and_index(index, type, uuid, pathToTransfer):
                 filesIndexed = index_directory_files(
                     conn,
                     uuid,
-                    pathToTransfer,
+                    pathToArchive,
                     index,
                     type
                 )
@@ -77,7 +77,7 @@ def connect_and_index(index, type, uuid, pathToTransfer):
             print 'Files indexed: ' + str(filesIndexed)
 
         else:
-            print >>sys.stderr, "Directory does not exist: ", pathToTransfer
+            print >>sys.stderr, "Directory does not exist: ", pathToArchive
             exitCode = 1
     else:
         print >>sys.stderr, "Elasticsearch not found, normally installed at ", pathToElasticSearchServerFile
