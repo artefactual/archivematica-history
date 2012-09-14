@@ -62,7 +62,7 @@ if __name__ == '__main__':
     sql = """SELECT  fileUUID, currentLocation FROM Files WHERE removedTime = 0 AND currentLocation LIKE '\%transferDirectory\%objects%' AND transferUUID =  '""" + transferUUID + "'"
     for row in databaseInterface.queryAllSQL(sql):
         fileUUID = row[0]
-        currentPath = row[1]
+        currentPath = databaseFunctions.deUnicode(row[1])
         currentSIPFilePath = currentPath.replace("%transferDirectory%", tmpSIPDir)
         if os.path.isfile(currentSIPFilePath):
             sql = """UPDATE Files SET currentLocation='%s', sipUUID='%s' WHERE fileUUID='%s'""" % (MySQLdb.escape_string(currentPath.replace("%transferDirectory%", "%SIPDirectory%")), sipUUID, fileUUID)

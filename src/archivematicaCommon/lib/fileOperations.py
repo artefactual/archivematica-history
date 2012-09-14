@@ -76,10 +76,11 @@ def addFileToSIP(filePathRelativeToSIP, fileUUID, sipUUID, taskUUID, date, sourc
 #@fileName - The name of the file to create, or append to.
 #@returns - 0 if ok, non zero if error occured.
 def writeToFile(output, fileName, writeWhite=False):
+    #print fileName
     if not writeWhite and output.isspace():
         return 0
     if fileName and output:
-        print "writing to: " + fileName
+        #print "writing to: " + fileName
         if fileName.startswith("<^Not allowed to write to file^> "):
             return -1
         try:

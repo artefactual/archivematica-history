@@ -32,6 +32,7 @@ import threading
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import databaseFunctions
+from databaseFunctions import deUnicode
 
 
 class linkTaskManagerDirectories:
@@ -45,18 +46,17 @@ class linkTaskManagerDirectories:
         while row != None:
             print row
             #pk = row[0]
-            filterFileEnd = row[1]
-            filterFileStart = row[2]
-            filterSubDir = row[3]
-            self.requiresOutputLock = row[4]
-            standardOutputFile = row[5]
-            standardErrorFile = row[6]
-            execute = row[7]
+            filterFileEnd = deUnicode(row[1])
+            filterFileStart = deUnicode(row[2])
+            filterSubDir = deUnicode(row[3])
+            self.requiresOutputLock = deUnicode(row[4])
+            standardOutputFile = deUnicode(row[5])
+            standardErrorFile = deUnicode(row[6])
+            execute = deUnicode(row[7])
             self.execute = execute
-            arguments = row[8]
+            arguments = deUnicode(row[8])
             row = c.fetchone()
         sqlLock.release()
-
         #if reloadFileList:
         #    unit.reloadFileList()
 
@@ -87,7 +87,7 @@ class linkTaskManagerDirectories:
                 standardOutputFile = standardOutputFile.replace(key, value)
             if standardErrorFile:
                 standardErrorFile = standardErrorFile.replace(key, value)
-
+        
         UUID = uuid.uuid4().__str__()
         self.task = taskStandard(self, execute, arguments, standardOutputFile, standardErrorFile, UUID=UUID)
         databaseFunctions.logTaskCreatedSQL(self, commandReplacementDic, UUID, arguments)

@@ -25,6 +25,9 @@
 import os
 import time
 import threading
+import sys
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from archivematicaFunctions import unicodeToStr
 
 from archivematicaMCP import debug
 DEBUG = debug
@@ -75,12 +78,16 @@ class archivematicaWatchDirectory:
                 if DEBUG:
                     print "Added: ", ", ".join (added)
                 for i in added:
-                    self.event(os.path.join(self.directory, i), self.variablesAdded, self.callBackFunctionAdded)
+                    i = unicodeToStr(i)
+                    directory = unicodeToStr(self.directory)
+                    self.event(os.path.join(directory, i), self.variablesAdded, self.callBackFunctionAdded)
             if removed:
                 if DEBUG: 
                     print "Removed: ", ", ".join (removed)
                 for i in removed:
-                    self.event(os.path.join(self.directory, i), self.variablesRemoved, self.callBackFunctionRemoved)
+                    i = unicodeToStr(i)
+                    directory = unicodeToStr(self.directory)
+                    self.event(os.path.join(directory, i), self.variablesRemoved, self.callBackFunctionRemoved)
             before = after
     
     def event(self, path, variables, function):
