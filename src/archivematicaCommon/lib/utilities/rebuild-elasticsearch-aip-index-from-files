@@ -2,10 +2,11 @@
 
 import os, sys, subprocess, tempfile, shutil, ConfigParser
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
-import elasticSearchFunctions
+import elasticSearchFunctions, databaseInterface
 sys.path.append("/usr/lib/archivematica/archivematicaCommon/externals")
 import pyes
 
+# Determine root of shared directories
 clientConfigFilePath = '/etc/archivematica/MCPClient/clientConfig.conf'
 config = ConfigParser.SafeConfigParser()
 config.read(clientConfigFilePath)
@@ -15,6 +16,10 @@ try:
 except:
     print "Configuration item 'sharedDirectoryMounted' not available at /etc/archivematica/MCPClient/clientConfig.conf."
     quit(1)
+
+# Clear database backups of indexed AIPs
+sql = "DELETE FROM ElasticsearchIndexBackup WHERE indexName='aips' AND typeName='aip'"
+databaseInterface.runSQL(sql)
 
 rootdir = os.path.join(sharedDirectory, 'www/AIPsStore')
 
