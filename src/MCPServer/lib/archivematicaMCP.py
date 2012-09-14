@@ -65,7 +65,9 @@ sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 import databaseFunctions
 import multiprocessing 
+import traceback
 from externals.singleInstance import singleinstance
+from archivematicaFunctions import unicodeToStr
 
 global countOfCreateUnitAndJobChainThreaded
 countOfCreateUnitAndJobChainThreaded = 0
@@ -140,6 +142,7 @@ def findOrCreateSipInDB(path, waitSleep=dbWaitSleep):
     return UUID
 
 def createUnitAndJobChain(path, config, terminate=False):
+    path = unicodeToStr(path)
     if os.path.isdir(path):
             path = path + "/"
     print "createUnitAndJobChain", path, config
@@ -172,7 +175,8 @@ def createUnitAndJobChainThreaded(path, config, terminate=True):
     #createUnitAndJobChain(path, config)
     #return
     try:
-        print "DEBGUG alert watch path: ", path
+        if debug:
+            print "DEBGUG alert watch path: ", path
         t = threading.Thread(target=createUnitAndJobChain, args=(path, config), kwargs={"terminate":terminate})
         t.daemon = True
         countOfCreateUnitAndJobChainThreaded += 1
@@ -187,6 +191,7 @@ def createUnitAndJobChainThreaded(path, config, terminate=True):
         t.start()
     except Exception as inst:
         print "DEBUG EXCEPTION!"
+        traceback.print_exc(file=sys.stdout)
         print type(inst)     # the exception instance
         print inst.args
 
@@ -207,7 +212,8 @@ def watchDirectories():
         for item in os.listdir(directory):
             if item == ".svn":
                 continue
-            path = os.path.join(directory, item)
+            item = item.decode("utf-8")
+            path = os.path.join(unicode(directory), item)
             #createUnitAndJobChain(path, row)
             while(limitTaskThreads <= threading.activeCount() + reservedAsTaskProcessingThreads ):
                 time.sleep(1)

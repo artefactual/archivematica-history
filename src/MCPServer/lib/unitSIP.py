@@ -32,6 +32,7 @@ import lxml.etree as etree
 sys.path.append("/usr/lib/archivematica/archivematicaCommon")
 import databaseInterface
 from databaseFunctions import insertIntoEvents
+from databaseFunctions import deUnicode
 
 
 
@@ -104,8 +105,8 @@ class unitSIP(unit):
         while row != None:
             print row
             #self.UUID = row[0]
-            self.createdTime = row[1]
-            self.currentPath = row[2]
+            self.createdTime = deUnicode(row[1])
+            self.currentPath = deUnicode(row[2])
             row = c.fetchone()
         sqlLock.release()
 

@@ -42,6 +42,8 @@ import archivematicaMCP
 global choicesAvailableForUnits
 choicesAvailableForUnits = {}
 choicesAvailableForUnitsLock = threading.Lock()
+sys.path.append("/usr/lib/archivematica/archivematicaCommon")
+from archivematicaFunctions import unicodeToStr
 
 waitingOnTimer="waitingOnTimer"
 
@@ -84,7 +86,7 @@ class linkTaskManagerChoice:
                                         self.unit.currentPath.replace("%sharedPath%", archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1), \
                                         archivematicaMCP.config.get('MCPServer', "processingXMLFile") \
                                     )
-
+        xmlFilePath = unicodeToStr(xmlFilePath)
         if os.path.isfile(xmlFilePath):
             # For a list of items with pks:
             # SELECT TasksConfigs.description, choiceAvailableAtLink, ' ' AS 'SPACE', MicroServiceChains.description, chainAvailable FROM MicroServiceChainChoice Join MicroServiceChains on MicroServiceChainChoice.chainAvailable = MicroServiceChains.pk Join MicroServiceChainLinks on MicroServiceChainLinks.pk = MicroServiceChainChoice.choiceAvailableAtLink Join TasksConfigs on TasksConfigs.pk = MicroServiceChainLinks.currentTask ORDER BY choiceAvailableAtLink desc;

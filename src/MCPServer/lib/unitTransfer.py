@@ -39,6 +39,7 @@ import databaseInterface
 import lxml.etree as etree
 from fileOperations import renameAsSudo
 from databaseFunctions import insertIntoEvents
+from databaseFunctions import deUnicode
 
 class unitTransfer(unit):
     def __init__(self, currentPath, UUID=""):
@@ -83,15 +84,14 @@ class unitTransfer(unit):
                                                archivematicaMCP.config.get('MCPServer', "sharedDirectory"), 1) + "/"
         #print "currentPath: ", currentPath, type(currentPath)
         try:
-            print currentPath, type(currentPath)
-            for directory, subDirectories, files in os.walk(currentPath.encode("utf-8")):
-                directory = directory.replace( currentPath.encode("utf-8"), "%transferDirectory%", 1) 
+            #print currentPath, type(currentPath)
+            for directory, subDirectories, files in os.walk(currentPath):
+                directory = directory.replace( currentPath, "%transferDirectory%", 1) 
                 for file in files:
                     if "%transferDirectory%" !=  directory:
                         filePath = os.path.join(directory, file)
                     else:
                         filePath = directory + file
-                    #print "filePath", filePath
                     self.fileList[filePath] = unitFile(filePath, owningUnit=self)
 
             sql = """SELECT  fileUUID, currentLocation, fileGrpUse FROM Files WHERE removedTime = 0 AND transferUUID =  '""" + self.UUID + "'"
@@ -149,10 +149,9 @@ class unitTransfer(unit):
         c, sqlLock = databaseInterface.querySQL(sql)
         row = c.fetchone()
         while row != None:
-            print row
-            self.UUID = row[0]
+            self.UUID = deUnicode(row[0])
             #self.createdTime = row[1]
-            self.currentPath = row[1]
+            self.currentPath = deUnicode(row[1])
             row = c.fetchone()
         sqlLock.release()
         return
@@ -192,6 +191,8 @@ class unitTransfer(unit):
         etree.SubElement(ret, "type").text = "Transfer"
         unitXML = etree.SubElement(ret, "unitXML")
         etree.SubElement(unitXML, "UUID").text = self.UUID
-        etree.SubElement(unitXML, "currentPath").text = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%")
+        tempPath = self.currentPath.replace(archivematicaMCP.config.get('MCPServer', "sharedDirectory"), "%sharedPath%").decode("utf-8")
+        etree.SubElement(unitXML, "currentPath").text = tempPath
+        
         return ret
 
